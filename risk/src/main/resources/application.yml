@@ -1,0 +1,9 @@
+server:
+  port: 8001
+  context-path: /risk
+spring:
+  devtools:
+    restart:
+      additional-paths: risk/src/main/java
+  mvc:
+    throw-exception-if-no-handler-found: true

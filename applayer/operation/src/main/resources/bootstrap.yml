@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: operation
+  config:
+    name: application
+  cloud:
+    config:
+      uri: http://localhost:8888/config/
+      label: master
+      profile: @active@
+feign:
+  hystrix:
+    enabled: true
+  httpclient:
+    enabled: true

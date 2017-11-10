@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: monitor
+  profiles:
+    active: @active@
+  cloud:
+    config:
+      enabled: true
+#      discovery:
+#        enabled: true
+#        serviceId: config
+      profile: @active@
+      name: ${spring.application.name}
+      uri: @config.server@
