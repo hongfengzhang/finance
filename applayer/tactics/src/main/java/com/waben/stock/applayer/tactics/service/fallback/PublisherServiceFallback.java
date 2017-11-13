@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.tactics.service.fallback;
 
 import com.waben.stock.applayer.tactics.service.PublisherService;
+import com.waben.stock.interfaces.dto.PublisherDto;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,8 +11,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class PublisherServiceFallback implements PublisherService {
-
-    public String echo() {
-        return "server error";
+    @Override
+    public PublisherDto findById(Long id) {
+        return new PublisherDto();
     }
 }

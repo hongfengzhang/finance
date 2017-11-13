@@ -6,9 +6,11 @@ spring:
   cloud:
     config:
       enabled: true
-#      discovery:
-#        enabled: true
-#        serviceId: config
       profile: @active@
       name: ${spring.application.name}
       uri: @config.server@
+turbine:
+  app-config: tactics
+  aggregator:
+    cluster-config: default
+  cluster-name-expression:  new String("default")

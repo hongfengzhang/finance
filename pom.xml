@@ -15,6 +15,7 @@
         <module>config</module>
         <module>discovery</module>
         <module>monitor</module>
+        <module>interfaces</module>
     </modules>
 
     <name>finance</name>
@@ -163,6 +164,11 @@
             <artifactId>httpmime</artifactId>
             <version>4.5.3</version>
         </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.2.5</version>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -219,6 +225,15 @@
             </resource>
         </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
