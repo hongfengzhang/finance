@@ -1,25 +1,49 @@
 package com.waben.stock.applayer.operation.controller;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @author Created by yuyidi on 2017/11/6.
  * @desc
  */
-@RestController
-@RequestMapping("/system")
+@Controller
 public class SystemController {
 
-    @Value("${spring.jpa.show-sql:error}")
-    private String flag;
-    @Value("${spring.cloud.config.profile:error}")
-    private String profile;
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 
 
-    @RequestMapping("/show")
-    public String show() {
-        return flag + ":" + profile;
+    @GetMapping("/")
+    public String root() {
+        return "index";
+    }
+
+    @GetMapping("/index")
+    public String index() {
+        return "index";
+    }
+
+    @GetMapping("/403")
+    public String forbidden() {
+        return "403";
+    }
+
+    @GetMapping("/404")
+    public String notfound() {
+        return "404";
+    }
+
+    @GetMapping("/500")
+    public String servererror() {
+        return "500";
+    }
+
+    @GetMapping("/login-error")
+    public String loginerror() {
+        return "login";
     }
 }
+

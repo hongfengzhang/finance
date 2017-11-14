@@ -7,3 +7,5 @@ spring:
       additional-paths: applayer/operation/src/main/java
   mvc:
     throw-exception-if-no-handler-found: true
+  thymeleaf:
+    cache: false
