@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.operation.proxy;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
+import com.waben.stock.applayer.operation.warpper.auth.Authority;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +17,7 @@ import java.util.List;
  * @description Security 用户授权访问Dao实现
  */
 @Component
-public class DaoUserDetailService implements UserDetailsService {
+public class InvestorUserDetailService implements UserDetailsService {
 
 //    @Autowired
 //    private UserService userService;
@@ -28,9 +29,14 @@ public class DaoUserDetailService implements UserDetailsService {
 //            //根据用户获取权限
 //            List<GrantedAuthority> authorization = new ArrayList<>();
 //            authorization.add(new Authority("ROLE_USER"));
-//            AccountCredentials accountCredentials = new AccountCredentials(user.getPhone(), user.getPassword(), authorization);
+//            AccountCredentials accountCredentials = new AccountCredentials(user.getPhone(), user.getPassword(),
+// authorization);
 //            return accountCredentials;
 //        }
-        throw new UsernameNotFoundException("当前用户找不到");
+        //        throw new UsernameNotFoundException("当前用户找不到");
+        List<GrantedAuthority> authorization = new ArrayList<>();
+        authorization.add(new Authority("ROLE_USER"));
+        AccountCredentials accountCredentials = new AccountCredentials("user", "$2a$10$KspDy5bHoUuuQ8setXjf9eqq4o/D567LUl77uwTQlD8N5G6ZGTgqu", authorization);
+        return accountCredentials;
     }
 }

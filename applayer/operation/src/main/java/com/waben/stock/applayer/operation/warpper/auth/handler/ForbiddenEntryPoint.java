@@ -21,7 +21,7 @@ public class ForbiddenEntryPoint extends ResponseHandler implements Authenticati
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException
             authException) throws IOException, ServletException {
-        logger.warn("用户未登陆状态访问需要登陆接口，异常:请求地址:{},{}",request.getRequestURI(),authException);
+        logger.warn("用户未登陆状态访问需要登陆接口，请求地址:{}",request.getRequestURI());
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         Response<Object> result = new Response<>();
         result.setMessage("未登陆，请先登陆");

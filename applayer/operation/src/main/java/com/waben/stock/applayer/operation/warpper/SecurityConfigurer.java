@@ -20,6 +20,8 @@ import com.waben.stock.applayer.operation.warpper.auth.filter.LoginProcessingFil
 import com.waben.stock.applayer.operation.warpper.auth.handler.*;
 import com.waben.stock.applayer.operation.warpper.auth.provider.DaoAuthenticationProvider;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InMemoryAuthenticationProvider;
+import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
+import com.waben.stock.applayer.operation.warpper.auth.provider.ManagerAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -38,10 +40,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_ENTRY_POINT = "/login";
+//    @Autowired
+//    private DaoAuthenticationProvider daoAuthenticationProvider;
+//    @Autowired
+//    private InMemoryAuthenticationProvider memoryAuthenticationProvider;
     @Autowired
-    private DaoAuthenticationProvider daoAuthenticationProvider;
+    private InvestorAuthenticationProvider investorAuthenticationProvider;
     @Autowired
-    private InMemoryAuthenticationProvider memoryAuthenticationProvider;
+    private ManagerAuthenticationProvider managerAuthenticationProvider;
     @Autowired
     private LoginSuccessHandler successHandler;
     @Autowired
@@ -72,8 +78,9 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
 //                    .successForwardUrl("/index")
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
-                .and().exceptionHandling().authenticationEntryPoint(new ForbiddenEntryPoint())
-                .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
+                .and().exceptionHandling()
+                                        .authenticationEntryPoint(new ForbiddenEntryPoint())
+                                        .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
 //                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .addFilterBefore(processingFilter(), UsernamePasswordAuthenticationFilter.class)
@@ -101,8 +108,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(daoAuthenticationProvider)
-                .authenticationProvider(memoryAuthenticationProvider);
+        auth.authenticationProvider(investorAuthenticationProvider)
+                .authenticationProvider(managerAuthenticationProvider);
 
     }
 

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waben.stock.applayer.operation.exception.AuthMethodNotSupportedException;
 import com.waben.stock.applayer.operation.util.WebUtil;
 import com.waben.stock.applayer.operation.warpper.auth.LoginRequest;
+import com.waben.stock.applayer.operation.warpper.auth.UPTypeAuthenticationToken;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,8 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
         this.objectMapper = objectMapper;
+        setAuthenticationSuccessHandler(successHandler);
+        setAuthenticationFailureHandler(failureHandler);
     }
 
     @Override
@@ -51,28 +54,32 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
             }
             throw new AuthMethodNotSupportedException("Authentication method not supported");
         }
+        Boolean isOperater = Boolean.valueOf(request.getParameter("isOperater"));
         LoginRequest loginRequest = new LoginRequest(request.getParameter("username"), request.getParameter("password"));
+        loginRequest.setOperator(isOperater);
 //        LoginRequest loginRequest = objectMapper.readValue(request.getReader(), LoginRequest.class);
         if (StringUtils.isBlank(loginRequest.getUsername()) || StringUtils.isBlank(loginRequest.getPassword())) {
             throw new AuthenticationServiceException("用户名或密码未输入");
         }
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(loginRequest.getUsername
-                (), loginRequest.getPassword());
+        UsernamePasswordAuthenticationToken token = new UPTypeAuthenticationToken(loginRequest.getUsername
+                (), loginRequest.getPassword(),loginRequest.getOperator());
         return this.getAuthenticationManager().authenticate(token);
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain
             chain, Authentication authResult) throws IOException, ServletException {
-//        super.successfulAuthentication(request,response,chain,authResult);
-        SecurityContextHolder.getContext().setAuthentication(authResult);
-        successHandler.onAuthenticationSuccess(request, response, authResult);
+        logger.info("认证成功");
+        super.successfulAuthentication(request,response,chain,authResult);
+//        SecurityContextHolder.getContext().setAuthentication(authResult);
+//        successHandler.onAuthenticationSuccess(request, response, authResult);
     }
 
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
                                               AuthenticationException failed) throws IOException, ServletException {
-        SecurityContextHolder.clearContext();
-        failureHandler.onAuthenticationFailure(request, response, failed);
+//        SecurityContextHolder.clearContext();
+//        failureHandler.onAuthenticationFailure(request, response, failed);
+        super.unsuccessfulAuthentication(request,response,failed);
     }
 }

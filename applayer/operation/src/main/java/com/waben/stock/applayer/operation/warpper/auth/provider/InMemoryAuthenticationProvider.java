@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.operation.warpper.auth.provider;
 
+import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
 import com.waben.stock.applayer.operation.warpper.auth.Authority;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +29,7 @@ public class InMemoryAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+//        AccountCredentials accountCredentials = (AccountCredentials) authentication.getDetails();
         if(isMatch(authentication)){
             User user = new User(authentication.getName(),authentication.getCredentials().toString(),authorities);
             return new UsernamePasswordAuthenticationToken(user,authentication.getCredentials(),authorities);

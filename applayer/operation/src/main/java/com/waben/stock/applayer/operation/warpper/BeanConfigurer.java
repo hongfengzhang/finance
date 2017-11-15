@@ -2,14 +2,16 @@ package com.waben.stock.applayer.operation.warpper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.waben.stock.applayer.operation.proxy.DaoUserDetailService;
+import com.waben.stock.applayer.operation.proxy.InvestorUserDetailService;
+import com.waben.stock.applayer.operation.proxy.ManagerUserDetailService;
 import com.waben.stock.applayer.operation.warpper.auth.provider.DaoAuthenticationProvider;
+import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
+import com.waben.stock.applayer.operation.warpper.auth.provider.ManagerAuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -30,7 +32,10 @@ public class BeanConfigurer {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    private DaoUserDetailService daoUserDetailService;
+    private InvestorUserDetailService investorDetailService;
+
+    @Autowired
+    private ManagerUserDetailService managerUserDetailService;
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
@@ -56,8 +61,22 @@ public class BeanConfigurer {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(daoUserDetailService);
+        daoAuthenticationProvider.setUserDetailsService(investorDetailService);
         return  daoAuthenticationProvider;
+    }
+
+    @Bean
+    public InvestorAuthenticationProvider investorAuthenticationProvider() {
+        InvestorAuthenticationProvider investorAuthenticationProvider = new InvestorAuthenticationProvider(passwordEncoder());
+        investorAuthenticationProvider.setUserDetailsService(investorDetailService);
+        return investorAuthenticationProvider;
+    }
+
+    @Bean
+    public ManagerAuthenticationProvider managerAuthenticationProvider() {
+        ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider(passwordEncoder());
+        managerAuthenticationProvider.setUserDetailsService(managerUserDetailService);
+        return managerAuthenticationProvider;
     }
 
     @Bean
