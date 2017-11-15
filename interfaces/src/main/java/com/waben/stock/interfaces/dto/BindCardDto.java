@@ -1,51 +1,27 @@
-package com.waben.stock.datalayer.publisher.entity;
+package com.waben.stock.interfaces.dto;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class BindCardDto {
 
-import com.waben.stock.interfaces.dto.BindCardDto;
-
-import net.sf.cglib.beans.BeanCopier;
-
-/**
- * @author Created by yuyidi on 2017/11/10.
- * @desc
- */
-@Entity
-@Table(name = "bind_card")
-public class BindCard {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * 姓名
 	 */
-	@Column(name = "name")
 	private String name;
 	/**
 	 * 身份证号
 	 */
-	@Column(name = "idCard")
 	private String idCard;
 	/**
 	 * 手机号
 	 */
-	@Column(name = "phone")
 	private String phone;
 	/**
 	 * 银行卡号
 	 */
-	@Column(name = "bank_card")
 	private String bankCard;
 	/**
 	 * 策略发布人序列号
 	 */
-	@Column(name = "publisher_serial_code")
 	private String publisherSerialCode;
 
 	public Long getId() {
@@ -94,13 +70,6 @@ public class BindCard {
 
 	public void setPublisherSerialCode(String publisherSerialCode) {
 		this.publisherSerialCode = publisherSerialCode;
-	}
-
-	public BindCardDto copy() {
-		BindCardDto result = new BindCardDto();
-		BeanCopier copier = BeanCopier.create(BindCard.class, BindCardDto.class, false);
-		copier.copy(this, result, null);
-		return result;
 	}
 
 }

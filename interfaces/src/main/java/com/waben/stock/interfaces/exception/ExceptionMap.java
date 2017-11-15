@@ -11,6 +11,7 @@ public class ExceptionMap {
 
     static {
         exceptionMap.put(ExceptionConstant.UNKNOW_EXCEPTION, "服务器未知异常");
-
+        
+        exceptionMap.put(ExceptionConstant.SENDMESSAGE_FAILED_EXCEPTION, "发送短信失败");
     }
 }
