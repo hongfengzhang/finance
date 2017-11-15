@@ -6,10 +6,11 @@ import net.sf.cglib.beans.BeanCopier;
 import javax.persistence.*;
 import java.util.Date;
 
-/**
- * @author Created by yuyidi on 2017/11/10.
- * @desc
- */
+/***
+* @author yuyidi 2017-11-15 17:30:16
+* @class com.waben.stock.datalayer.publisher.entity.Publisher
+* @description 策略发布人
+*/
 @Entity
 @Table(name = "publisher")
 public class Publisher {
@@ -117,11 +118,11 @@ public class Publisher {
         this.role = role;
     }
 
-    public PublisherDto copy(Publisher publisher) {
+    public PublisherDto copy() {
         PublisherDto publisherDto= new PublisherDto();
         BeanCopier copier = BeanCopier.create(Publisher.class, PublisherDto.class,
                 false);
-        copier.copy(publisher, publisherDto, null);
+        copier.copy(this, publisherDto, null);
         return publisherDto;
     }
 }

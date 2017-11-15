@@ -47,6 +47,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 message = "找不到处理器";
                 code = "404";
+                error = "404";
             } else if (ex instanceof DataNotFoundException) {
                 response.setStatus(HttpServletResponse.SC_OK);
                 DataNotFoundException dataNotFoundException = (DataNotFoundException) ex;
@@ -66,6 +67,18 @@ public class ExecptionHandler implements HandlerExceptionResolver {
                 }
                 message = invalidArguments;
                 code = "400";
+                error = "400";
+            }else if(ex instanceof IllegalArgumentException) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                IllegalArgumentException service = (IllegalArgumentException) ex;
+                message = service.getMessage();
+                code = "400";
+                error = "400";
+            }else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                message = "系统异常";
+                code = "500";
+                error = "400";
             }
             logger.warn("请求：{},异常：{},堆栈：{}", request.getRequestURI(), message, ex );
         } finally {

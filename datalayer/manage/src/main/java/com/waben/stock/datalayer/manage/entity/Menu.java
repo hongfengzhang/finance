@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.manage.entity;
 
 import javax.persistence.*;
+import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/13.
@@ -19,6 +20,11 @@ public class Menu {
     private Long pid;
     @Column(length = 1)
     private Boolean state;
+
+    private Integer sort;
+
+    @ManyToMany(targetEntity = Role.class,mappedBy = "menus")
+    private Set<Role> roles;
 
     public Long getId() {
         return id;
@@ -50,5 +56,21 @@ public class Menu {
 
     public void setState(Boolean state) {
         this.state = state;
+    }
+
+    public Integer getSort() {
+        return sort;
+    }
+
+    public void setSort(Integer sort) {
+        this.sort = sort;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }

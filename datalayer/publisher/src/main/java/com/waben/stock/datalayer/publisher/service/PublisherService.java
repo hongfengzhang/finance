@@ -22,6 +22,6 @@ public class PublisherService {
         if (publisher == null) {
             throw new RuntimeException();
         }
-        return publisher.copy(publisher);
+        return publisher.copy();
     }
 }
