@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.operation.proxy;
+package com.waben.stock.applayer.operation.service.security;
 
 import com.waben.stock.applayer.operation.service.StaffService;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
@@ -6,8 +6,6 @@ import com.waben.stock.applayer.operation.warpper.auth.Authority;
 import com.waben.stock.interfaces.dto.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

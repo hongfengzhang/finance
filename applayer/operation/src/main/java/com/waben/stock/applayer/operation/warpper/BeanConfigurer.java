@@ -2,9 +2,8 @@ package com.waben.stock.applayer.operation.warpper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.waben.stock.applayer.operation.proxy.InvestorUserDetailService;
-import com.waben.stock.applayer.operation.proxy.ManagerUserDetailService;
-import com.waben.stock.applayer.operation.warpper.auth.provider.DaoAuthenticationProvider;
+import com.waben.stock.applayer.operation.service.security.InvestorUserDetailService;
+import com.waben.stock.applayer.operation.service.security.ManagerUserDetailService;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
 import com.waben.stock.applayer.operation.warpper.auth.provider.ManagerAuthenticationProvider;
 import org.slf4j.Logger;
@@ -58,12 +57,12 @@ public class BeanConfigurer {
         return new BCryptPasswordEncoder(10);
     }
 
-    @Bean
-    public DaoAuthenticationProvider daoAuthenticationProvider() {
-        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder());
-        daoAuthenticationProvider.setUserDetailsService(investorDetailService);
-        return  daoAuthenticationProvider;
-    }
+//    @Bean
+//    public DaoAuthenticationProvider daoAuthenticationProvider() {
+//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider(passwordEncoder());
+//        daoAuthenticationProvider.setUserDetailsService(investorDetailService);
+//        return  daoAuthenticationProvider;
+//    }
 
     @Bean
     public InvestorAuthenticationProvider investorAuthenticationProvider() {
@@ -71,7 +70,7 @@ public class BeanConfigurer {
         investorAuthenticationProvider.setUserDetailsService(investorDetailService);
         return investorAuthenticationProvider;
     }
-
+//
     @Bean
     public ManagerAuthenticationProvider managerAuthenticationProvider() {
         ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider(passwordEncoder());

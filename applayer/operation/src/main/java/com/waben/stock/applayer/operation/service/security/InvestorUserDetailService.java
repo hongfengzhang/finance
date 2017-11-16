@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.operation.proxy;
+package com.waben.stock.applayer.operation.service.security;
 
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
 import com.waben.stock.applayer.operation.warpper.auth.Authority;
