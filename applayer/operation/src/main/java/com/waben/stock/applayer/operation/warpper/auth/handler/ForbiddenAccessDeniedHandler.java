@@ -27,7 +27,7 @@ public class ForbiddenAccessDeniedHandler extends ResponseHandler implements Acc
         Response<Object> result = new Response<>();
         result.setMessage("权限不足，请联系管理员");
         result.setCode("403");
-        response(result, request, response, "/system/403");
+        response(result, request, response, "/403");
         logger.warn("请求禁止结束");
     }
 }

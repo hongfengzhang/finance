@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.operation.warpper;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.waben.stock.applayer.operation.service.security.InvestorUserDetailService;
@@ -14,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -41,7 +43,7 @@ public class BeanConfigurer {
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
-//        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         objectMapper.configure(SerializationFeature.FAIL_ON_SELF_REFERENCES, false);
         objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
         jackson2HttpMessageConverter.setObjectMapper(objectMapper);
@@ -77,6 +79,13 @@ public class BeanConfigurer {
         managerAuthenticationProvider.setUserDetailsService(managerUserDetailService);
         return managerAuthenticationProvider;
     }
+
+//    @Bean
+//    public RoleVoter roleVoter() {
+//        RoleVoter roleVoter = new RoleVoter();
+//        roleVoter.setRolePrefix("");
+//        return roleVoter;
+//    }
 
     @Bean
     public ResourceBundleMessageSource messageSource() {

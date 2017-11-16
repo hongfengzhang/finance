@@ -1,10 +1,13 @@
 package com.waben.stock.datalayer.manage.entity;
 
-import com.waben.stock.interfaces.dto.PublisherDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.waben.stock.interfaces.dto.StaffDto;
 import net.sf.cglib.beans.BeanCopier;
+import net.sf.cglib.core.Converter;
+import org.apache.commons.lang.ClassUtils;
 
 import javax.persistence.*;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 
@@ -24,6 +27,8 @@ public class Staff {
     private String userName;
     @Column
     private String password;
+
+    @JsonIgnore
     @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
     @JoinTable(name = "staff_role", joinColumns = {@JoinColumn(name = "staff_id")}, inverseJoinColumns = {@JoinColumn
             (name = "role_id")})
@@ -121,13 +126,4 @@ public class Staff {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
-
-    public StaffDto copy() {
-        StaffDto staffDto= new StaffDto();
-        BeanCopier copier = BeanCopier.create(Staff.class, StaffDto.class,
-                false);
-        copier.copy(this, staffDto, null);
-        return staffDto;
-    }
-
 }

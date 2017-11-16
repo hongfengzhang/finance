@@ -1,7 +1,7 @@
-package com.waben.stock.applayer.operation.service;
+package com.waben.stock.applayer.operation.service.manage;
 
 import com.waben.stock.applayer.operation.service.fallback.StaffServiceFallback;
-import com.waben.stock.interfaces.service.StaffInterface;
+import com.waben.stock.interfaces.service.manage.StaffInterface;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.context.annotation.Primary;
 

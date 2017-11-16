@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.service;
+package com.waben.stock.interfaces.service.publisher;
 
 import java.util.List;
 

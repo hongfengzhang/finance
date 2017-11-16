@@ -169,6 +169,16 @@
             <artifactId>cglib-nodep</artifactId>
             <version>3.2.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.mottox</groupId>
+            <artifactId>bean-utils</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.baidu.unbiz</groupId>-->
+            <!--<artifactId>easy-mapper</artifactId>-->
+            <!--<version>1.0.1</version>-->
+        <!--</dependency>-->
     </dependencies>
 
     <profiles>

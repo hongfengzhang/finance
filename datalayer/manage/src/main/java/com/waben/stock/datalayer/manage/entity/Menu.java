@@ -1,6 +1,13 @@
 package com.waben.stock.datalayer.manage.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,10 +27,13 @@ public class Menu {
     private Long pid;
     @Column(length = 1)
     private Boolean state;
-
+    @Column
     private Integer sort;
+    @Column
+    private String url;
 
-    @ManyToMany(targetEntity = Role.class,mappedBy = "menus")
+    @JsonIgnore
+    @ManyToMany(targetEntity = Role.class,mappedBy = "menus",fetch = FetchType.LAZY)
     private Set<Role> roles;
 
     public Long getId() {
@@ -72,5 +82,13 @@ public class Menu {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

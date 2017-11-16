@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.service;
+package com.waben.stock.interfaces.service.manage;
 
 import com.waben.stock.interfaces.dto.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.*;
  */
 public interface StaffInterface {
 
-    @RequestMapping(value = "/login",method = RequestMethod.GET)
-    Response<StaffDto> fetchByUserName(@RequestParam("username") String username);
+    @RequestMapping(value = "/{username}",method = RequestMethod.GET)
+    Response<StaffDto> fetchByUserName(@PathVariable("username") String username);
 }
 
 

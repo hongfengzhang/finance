@@ -40,10 +40,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_ENTRY_POINT = "/login";
-//    @Autowired
-//    private DaoAuthenticationProvider daoAuthenticationProvider;
-//    @Autowired
-//    private InMemoryAuthenticationProvider memoryAuthenticationProvider;
     @Autowired
     private InvestorAuthenticationProvider investorAuthenticationProvider;
     @Autowired
@@ -74,6 +70,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT,"/login-error").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
+//                .antMatchers("/index").hasAuthority("ADMINISTRATOR")
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
 //                    .successForwardUrl("/index")

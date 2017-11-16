@@ -44,6 +44,8 @@ public class StaffDto implements Serializable {
      */
     private String ip;
 
+    private Set<RoleDto> roleDtos;
+
     public Long getId() {
         return id;
     }
@@ -115,4 +117,13 @@ public class StaffDto implements Serializable {
     public void setIp(String ip) {
         this.ip = ip;
     }
+
+    public Set<RoleDto> getRoleDtos() {
+        return roleDtos;
+    }
+
+    public void setRoleDtos(Set<RoleDto> roleDtos) {
+        this.roleDtos = roleDtos;
+    }
+
 }

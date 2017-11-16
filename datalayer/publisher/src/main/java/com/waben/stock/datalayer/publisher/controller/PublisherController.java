@@ -13,7 +13,7 @@ import com.waben.stock.datalayer.publisher.service.PublisherService;
 import com.waben.stock.interfaces.dto.BindCardDto;
 import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.PublisherDto;
-import com.waben.stock.interfaces.service.PublisherInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 /**
  * @author Created by yuyidi on 2017/11/5.
@@ -28,6 +28,7 @@ public class PublisherController implements PublisherInterface {
 	@Autowired
 	private PublisherService publisherService;
 
+	@Override
 	public PublisherDto findById(@PathVariable Long id) {
 		logger.info("获取发布策略人信息:{}", id);
 		return publisherService.findById(id);
