@@ -42,4 +42,14 @@ public class PublisherDaoImpl implements PublisherDao {
     public List<Publisher> list() {
         return null;
     }
+
+	@Override
+	public Publisher findByPhone(String phone) {
+		return repository.findByPhone(phone);
+	}
+
+	@Override
+	public Publisher findBySerialCode(String serialCode) {
+		return repository.findBySerialCode(serialCode);
+	}
 }

@@ -14,6 +14,11 @@
 
     <name>tactics</name>
     <description>策略人平台</description>
+    
+    <properties>
+		<java.version>1.7</java.version>
+		<springfox.version>2.6.0</springfox.version>
+	</properties>
 
     <dependencies>
         <dependency>
@@ -21,6 +26,17 @@
             <artifactId>interfaces</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
+        
+        <dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
     </dependencies>
 
     <build>
