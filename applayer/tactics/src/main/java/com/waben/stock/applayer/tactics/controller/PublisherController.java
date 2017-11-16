@@ -32,7 +32,7 @@ import io.swagger.annotations.ApiOperation;
  * @desc
  */
 @RestController
-@RequestMapping("/publish")
+@RequestMapping("/publisher")
 public class PublisherController {
 
 	@Autowired
@@ -111,6 +111,7 @@ public class PublisherController {
 		return new Response<>(publisherService.publisherBankCardList(serialCode));
 	}
 
+	@SuppressWarnings("unused")
 	@GetMapping("/myExtension")
 	@ApiOperation(value = "我的推广")
 	public Response<PublisherExtensionDto> myExtension() {
