@@ -29,6 +29,6 @@ public class BannerController implements BannerInterface {
 
 	@Override
 	public List<BannerDto> getEnabledBannerList() {
-		return bannerService.getEnabledBannerList();
+		return null;
 	}
 }

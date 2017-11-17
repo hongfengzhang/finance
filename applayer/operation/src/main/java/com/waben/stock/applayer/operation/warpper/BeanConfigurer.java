@@ -3,10 +3,13 @@ package com.waben.stock.applayer.operation.warpper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.waben.stock.applayer.operation.exception.AuthMethodNotSupportedException;
 import com.waben.stock.applayer.operation.service.security.InvestorUserDetailService;
 import com.waben.stock.applayer.operation.service.security.ManagerUserDetailService;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
 import com.waben.stock.applayer.operation.warpper.auth.provider.ManagerAuthenticationProvider;
+import com.waben.stock.interfaces.exception.ExecptionHandler;
+import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +19,15 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.access.vote.RoleVoter;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -92,6 +99,14 @@ public class BeanConfigurer {
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
         messageSource.setBasename("messages/messages_zh_CN");
         return messageSource;
+    }
+
+    @Bean
+    public ExecptionHandler execptionHandler() {
+        ExecptionHandler execptionHandler = new ExecptionHandler();
+        execptionHandler.extendException(Arrays.asList(new ExceptionInformation(AuthMethodNotSupportedException.class,
+                HttpServletResponse.SC_FORBIDDEN,"403")));
+        return execptionHandler;
     }
 
 

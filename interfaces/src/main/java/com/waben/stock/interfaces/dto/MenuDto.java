@@ -3,6 +3,8 @@ package com.waben.stock.interfaces.dto;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -16,6 +18,8 @@ public class MenuDto implements Serializable {
     private Long pid;
     private Boolean state;
     private Integer sort;
+
+    private List<MenuDto> childs = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -55,5 +59,13 @@ public class MenuDto implements Serializable {
 
     public void setSort(Integer sort) {
         this.sort = sort;
+    }
+
+    public List<MenuDto> getChilds() {
+        return childs;
+    }
+
+    public void setChilds(List<MenuDto> childs) {
+        this.childs = childs;
     }
 }
