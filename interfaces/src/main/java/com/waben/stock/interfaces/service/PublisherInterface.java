@@ -39,5 +39,5 @@ public interface PublisherInterface {
 
 	@RequestMapping(value = "/publisherBankCardList", method = RequestMethod.GET)
 	List<BindCardDto> publisherBankCardList(String serialCode);
-
+	
 }
