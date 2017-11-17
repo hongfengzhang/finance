@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.manage.service.BannerService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.BannerInterface;
 
 /**
@@ -28,7 +29,7 @@ public class BannerController implements BannerInterface {
 	private BannerService bannerService;
 
 	@Override
-	public List<BannerDto> getEnabledBannerList() {
-		return null;
+	public Response<List<BannerDto>> getEnabledBannerList() {
+		return new Response<>();
 	}
 }
