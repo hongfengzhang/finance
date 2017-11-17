@@ -23,6 +23,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.PublisherDto;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
 
 @Service("juheSmsService")
 public class JuheSmsService implements SmsService {
@@ -46,11 +47,14 @@ public class JuheSmsService implements SmsService {
 
 	public void sendMessage(SmsType smsType, String phone, List<String> paramValues) {
 		// 检查手机号
-		PublisherDto publisher = publisherService.findByPhone(phone);
-		if (publisher != null && smsType == SmsType.RegistVerificationCode) {
+		Response<PublisherDto> publisherResp = publisherService.findByPhone(phone);
+		if (!"200".equals(publisherResp.getCode())) {
+			throw new ServiceException(publisherResp.getCode());
+		}
+		if (publisherResp.getResult() != null && smsType == SmsType.RegistVerificationCode) {
 			throw new ServiceException(ExceptionConstant.PHONE_BEEN_REGISTERED_EXCEPTION);
 		}
-		if (publisher == null && smsType == SmsType.ModifyPasswordCode) {
+		if (publisherResp.getResult() == null && smsType == SmsType.ModifyPasswordCode) {
 			throw new ServiceException(ExceptionConstant.PHONE_ISNOT_REGISTERED_EXCEPTION);
 		}
 		// 检查发送条件是否满足

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.stockcontent.service.StockService;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.StockInterface;
 
 /**
@@ -25,13 +26,13 @@ public class StockController implements StockInterface {
 	private StockService stockService;
 
 	@Override
-	public List<StockDto> selectStock(String keyword) {
-		return stockService.selectStock(keyword);
+	public Response<List<StockDto>> selectStock(String keyword) {
+		return new Response<>(stockService.selectStock(keyword));
 	}
 
 	@Override
-	public List<StockRecommendDto> getStockRecommendList() {
-		return stockService.getStockRecommendList();
+	public Response<List<StockRecommendDto>> getStockRecommendList() {
+		return new Response<>(stockService.getStockRecommendList());
 	}
 
 }

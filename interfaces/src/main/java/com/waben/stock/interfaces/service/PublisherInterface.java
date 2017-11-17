@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.waben.stock.interfaces.dto.BindCardDto;
 import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.PublisherDto;
+import com.waben.stock.interfaces.pojo.Response;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
@@ -17,27 +18,27 @@ import com.waben.stock.interfaces.dto.PublisherDto;
 public interface PublisherInterface {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	PublisherDto findById(@PathVariable("id") Long id);
+	Response<PublisherDto> findById(@PathVariable("id") Long id);
 
 	@RequestMapping(value = "/findByPhone", method = RequestMethod.GET)
-	PublisherDto findByPhone(String phone);
+	Response<PublisherDto> findByPhone(String phone);
 
 	@RequestMapping(value = "/getCurrent", method = RequestMethod.GET)
-	PublisherCapitalAccountDto getCurrent(String serialCode);
+	Response<PublisherCapitalAccountDto> getCurrent(String serialCode);
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	PublisherCapitalAccountDto register(String phone, String password);
+	Response<PublisherCapitalAccountDto> register(String phone, String password);
 
 	@RequestMapping(value = "/modifyPassword", method = RequestMethod.PUT)
-	PublisherCapitalAccountDto modifyPassword(String phone, String password);
+	Response<PublisherCapitalAccountDto> modifyPassword(String phone, String password);
 
 	@RequestMapping(value = "/modifyPaymentPassword", method = RequestMethod.PUT)
-	void modifyPaymentPassword(String serialCode, String paymentPassword);
+	Response<String> modifyPaymentPassword(String serialCode, String paymentPassword);
 
 	@RequestMapping(value = "/bindBankCard", method = RequestMethod.POST)
-	BindCardDto bindBankCard(String serialCode, String name, String idCard, String phone, String bankCard);
+	Response<BindCardDto> bindBankCard(String serialCode, String name, String idCard, String phone, String bankCard);
 
 	@RequestMapping(value = "/publisherBankCardList", method = RequestMethod.GET)
-	List<BindCardDto> publisherBankCardList(String serialCode);
-	
+	Response<List<BindCardDto>> publisherBankCardList(String serialCode);
+
 }

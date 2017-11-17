@@ -33,23 +33,23 @@ public class SystemController {
 	public String index() {
 		return show;
 	}
-	
+
 	@Autowired
 	private BannerService bannerService;
-	
+
 	@Autowired
 	private CircularsService circularsService;
-	
+
 	@GetMapping("/getEnabledBannerList")
 	@ApiOperation(value = "获取轮播图列表")
 	public Response<List<BannerDto>> getEnabledBannerList() {
-		return new Response<>(bannerService.getEnabledBannerList());
+		return bannerService.getEnabledBannerList();
 	}
-	
+
 	@GetMapping("/getEnabledCircularsList")
 	@ApiOperation(value = "获取通告列表")
 	public Response<List<CircularsDto>> getEnabledCircularsList() {
-		return new Response<>(circularsService.getEnabledCircularsList());
+		return circularsService.getEnabledCircularsList();
 	}
-	
+
 }

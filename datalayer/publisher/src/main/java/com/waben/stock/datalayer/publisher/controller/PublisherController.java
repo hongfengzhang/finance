@@ -13,6 +13,7 @@ import com.waben.stock.datalayer.publisher.service.PublisherService;
 import com.waben.stock.interfaces.dto.BindCardDto;
 import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.PublisherDto;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.PublisherInterface;
 
 /**
@@ -28,44 +29,46 @@ public class PublisherController implements PublisherInterface {
 	@Autowired
 	private PublisherService publisherService;
 
-	public PublisherDto findById(@PathVariable Long id) {
+	public Response<PublisherDto> findById(@PathVariable Long id) {
 		logger.info("获取发布策略人信息:{}", id);
-		return publisherService.findById(id);
+		return new Response<>(publisherService.findById(id));
 	}
 
 	@Override
-	public PublisherCapitalAccountDto register(String phone, String password) {
-		return publisherService.register(phone, password);
+	public Response<PublisherCapitalAccountDto> register(String phone, String password) {
+		return new Response<>(publisherService.register(phone, password));
 	}
 
 	@Override
-	public PublisherCapitalAccountDto getCurrent(String serialCode) {
-		return publisherService.findBySerialCode(serialCode);
+	public Response<PublisherCapitalAccountDto> getCurrent(String serialCode) {
+		return new Response<>(publisherService.findBySerialCode(serialCode));
 	}
 
 	@Override
-	public PublisherCapitalAccountDto modifyPassword(String phone, String password) {
-		return publisherService.modifyPassword(phone, password);
+	public Response<PublisherCapitalAccountDto> modifyPassword(String phone, String password) {
+		return new Response<>(publisherService.modifyPassword(phone, password));
 	}
 
 	@Override
-	public PublisherDto findByPhone(String phone) {
-		return publisherService.findByPhone(phone);
+	public Response<PublisherDto> findByPhone(String phone) {
+		return new Response<>(publisherService.findByPhone(phone));
 	}
 
 	@Override
-	public void modifyPaymentPassword(String serialCode, String paymentPassword) {
+	public Response<String> modifyPaymentPassword(String serialCode, String paymentPassword) {
 		publisherService.modifyPaymentPassword(serialCode, paymentPassword);
+		return new Response<>("修改支付密码成功");
 	}
 
 	@Override
-	public BindCardDto bindBankCard(String serialCode, String name, String idCard, String phone, String bankCard) {
-		return publisherService.bindBankCard(serialCode, name, idCard, phone, bankCard);
+	public Response<BindCardDto> bindBankCard(String serialCode, String name, String idCard, String phone,
+			String bankCard) {
+		return new Response<>(publisherService.bindBankCard(serialCode, name, idCard, phone, bankCard));
 	}
 
 	@Override
-	public List<BindCardDto> publisherBankCardList(String serialCode) {
-		return publisherService.publisherBankCardList(serialCode);
+	public Response<List<BindCardDto>> publisherBankCardList(String serialCode) {
+		return new Response<>(publisherService.publisherBankCardList(serialCode));
 	}
 
 }

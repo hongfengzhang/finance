@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
+import com.waben.stock.interfaces.pojo.Response;
 
 /**
  * 股票 公共接口
@@ -17,8 +18,9 @@ import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
 public interface StockInterface {
 
 	@RequestMapping(value = "/selectStock", method = RequestMethod.GET)
-	List<StockDto> selectStock(String keyword);
+	Response<List<StockDto>> selectStock(String keyword);
 
 	@RequestMapping(value = "/getStockRecommendList", method = RequestMethod.GET)
-	List<StockRecommendDto> getStockRecommendList();
+	Response<List<StockRecommendDto>> getStockRecommendList();
+
 }

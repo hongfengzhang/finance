@@ -42,7 +42,7 @@ public class PublisherController {
 	private SmsService smsService;
 
 	@GetMapping("/{id}")
-	public PublisherDto echo(@PathVariable Long id) {
+	public Response<PublisherDto> echo(@PathVariable Long id) {
 		return publisherService.findById(id);
 	}
 
@@ -66,7 +66,7 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
-		return new Response<>(publisherService.register(phone, password));
+		return publisherService.register(phone, password);
 	}
 
 	@GetMapping("/getCurrent")
@@ -74,7 +74,7 @@ public class PublisherController {
 	public Response<PublisherCapitalAccountDto> getCurrent() {
 		// TODO 从Security中获取当前登录的发布策略人的序列号
 		String serialCode = "aa58d2d45df82d82d82d8";
-		return new Response<>(publisherService.getCurrent(serialCode));
+		return publisherService.getCurrent(serialCode);
 	}
 
 	@PutMapping("/modifyPassword")
@@ -83,7 +83,7 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
 		// 修改密码
-		return new Response<>(publisherService.modifyPassword(phone, password));
+		return publisherService.modifyPassword(phone, password);
 	}
 
 	@PutMapping("/modifyPaymentPassword")
@@ -100,7 +100,7 @@ public class PublisherController {
 	public Response<BindCardDto> bindBankCard(String name, String idCard, String phone, String bankCard) {
 		// TODO 从Security中获取当前登录的发布策略人的序列号
 		String serialCode = "aa58d2d45df82d82d82d8";
-		return new Response<>(publisherService.bindBankCard(serialCode, name, idCard, phone, bankCard));
+		return publisherService.bindBankCard(serialCode, name, idCard, phone, bankCard);
 	}
 
 	@GetMapping("/myBankCardList")
@@ -108,7 +108,7 @@ public class PublisherController {
 	public Response<List<BindCardDto>> myBankCardList() {
 		// TODO 从Security中获取当前登录的发布策略人的序列号
 		String serialCode = "aa58d2d45df82d82d82d8";
-		return new Response<>(publisherService.publisherBankCardList(serialCode));
+		return publisherService.publisherBankCardList(serialCode);
 	}
 
 	@SuppressWarnings("unused")

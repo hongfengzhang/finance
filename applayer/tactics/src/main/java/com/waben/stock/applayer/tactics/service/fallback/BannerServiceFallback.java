@@ -8,6 +8,7 @@ import com.waben.stock.applayer.tactics.service.BannerService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
 
 /**
  * 轮播 断路器回调
@@ -19,7 +20,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 public class BannerServiceFallback implements BannerService {
 
 	@Override
-	public List<BannerDto> getEnabledBannerList() {
+	public Response<List<BannerDto>> getEnabledBannerList() {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

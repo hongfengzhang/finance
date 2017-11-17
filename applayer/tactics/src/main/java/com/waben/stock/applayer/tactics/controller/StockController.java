@@ -30,13 +30,13 @@ public class StockController {
 	@GetMapping("/selectStock")
 	@ApiOperation(value = "查询股票，匹配股票名称/代码/简拼")
 	public Response<List<StockDto>> selectStock(String keyword) {
-		return new Response<>(stockService.selectStock(keyword));
+		return stockService.selectStock(keyword);
 	}
 
 	@GetMapping("/getStockRecommendList")
 	@ApiOperation(value = "获取股票推荐列表")
 	public Response<List<StockRecommendDto>> getStockRecommendList() {
-		return new Response<>(stockService.getStockRecommendList());
+		return stockService.getStockRecommendList();
 	}
 
 }
