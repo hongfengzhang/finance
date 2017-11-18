@@ -5,12 +5,12 @@ import java.math.BigDecimal;
 
 /***
 * @author yuyidi 2017-11-13 23:17:41
-* @class com.waben.stock.datalayer.investors.entity.StockAccount
-* @description 股票账户
+* @class com.waben.stock.datalayer.investors.entity.SecuritiesAccount
+* @description 投资人证券资金账户
 */
 @Entity
-@Table(name = "stock_account")
-public class StockAccount {
+@Table(name = "securities_account")
+public class SecuritiesAccount {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

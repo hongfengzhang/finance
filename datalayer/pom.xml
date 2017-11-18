@@ -13,9 +13,12 @@
     <description>网贝金融数据访问层</description>
 
     <modules>
-        <module>modelentity</module>
         <module>publisher</module>
         <module>investors</module>
+        <module>strategy</module>
+        <module>manage</module>
+        <module>stockcontent</module>
+        <module>financial</module>
     </modules>
 
     <properties>

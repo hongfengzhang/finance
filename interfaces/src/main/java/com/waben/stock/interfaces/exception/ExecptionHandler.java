@@ -46,7 +46,6 @@ public class ExecptionHandler implements HandlerExceptionResolver {
         String error = "404";
         try {
             for (ExceptionInformation exception : exceptions) {
-                logger.info(exception.getException().getName());
                 Class exceptionClass = exception.getException();
                 if (ex.getClass().equals(exceptionClass)) {
                     response.setStatus(exception.getHttpStatus());

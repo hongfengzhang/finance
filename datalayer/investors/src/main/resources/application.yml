@@ -1,5 +1,5 @@
 server:
-  port: 8005
+  port: 8002
   context-path: /investors
 spring:
   devtools:
