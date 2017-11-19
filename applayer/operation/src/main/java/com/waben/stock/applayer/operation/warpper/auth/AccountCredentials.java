@@ -1,6 +1,6 @@
 package com.waben.stock.applayer.operation.warpper.auth;
 
-import com.waben.stock.interfaces.dto.MenuDto;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 

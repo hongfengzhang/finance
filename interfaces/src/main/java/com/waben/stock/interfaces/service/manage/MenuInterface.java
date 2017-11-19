@@ -1,13 +1,12 @@
 package com.waben.stock.interfaces.service.manage;
 
-import com.waben.stock.interfaces.dto.MenuDto;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/17.

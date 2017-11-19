@@ -1,13 +1,8 @@
 package com.waben.stock.datalayer.manage.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.waben.stock.interfaces.dto.StaffDto;
-import net.sf.cglib.beans.BeanCopier;
-import net.sf.cglib.core.Converter;
-import org.apache.commons.lang.ClassUtils;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 

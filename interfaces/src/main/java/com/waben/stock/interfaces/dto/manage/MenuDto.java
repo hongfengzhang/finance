@@ -1,11 +1,8 @@
-package com.waben.stock.interfaces.dto;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
+package com.waben.stock.interfaces.dto.manage;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/16.

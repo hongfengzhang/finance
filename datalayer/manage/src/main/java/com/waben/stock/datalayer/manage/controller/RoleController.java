@@ -2,7 +2,7 @@ package com.waben.stock.datalayer.manage.controller;
 
 import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.service.RoleService;
-import com.waben.stock.interfaces.dto.RoleDto;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.manage.RoleInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;

@@ -1,10 +1,9 @@
 package com.waben.stock.datalayer.manage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.entity.Staff;
-import com.waben.stock.interfaces.dto.MenuDto;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.junit.Test;
 

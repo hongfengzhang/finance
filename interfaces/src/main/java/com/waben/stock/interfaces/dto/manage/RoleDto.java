@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.dto;
+package com.waben.stock.interfaces.dto.manage;
 
 import java.io.Serializable;
 import java.util.Set;

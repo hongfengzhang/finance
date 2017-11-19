@@ -3,10 +3,11 @@ package com.waben.stock.datalayer.manage.repository.impl;
 import com.waben.stock.datalayer.manage.entity.Menu;
 import com.waben.stock.datalayer.manage.repository.MenuDao;
 import com.waben.stock.datalayer.manage.repository.impl.jpa.MenuRepository;
-import com.waben.stock.datalayer.manage.repository.impl.jpa.RoleRepository;
-import com.waben.stock.interfaces.dto.MenuDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -54,6 +55,11 @@ public class MenuDaoImpl implements MenuDao {
     @Override
     public Page<Menu> page(int page, int limit) {
         return null;
+    }
+
+    @Override
+    public Page<Menu> page(Specification<Menu> specification,Pageable pageable) {
+        return repository.findAll(specification,new PageRequest(pageable.getPageNumber(),pageable.getPageSize()));
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.manage.MenuService;
-import com.waben.stock.interfaces.dto.MenuDto;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.stereotype.Component;
 

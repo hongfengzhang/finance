@@ -1,11 +1,16 @@
 package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.manage.MenuService;
+import com.waben.stock.applayer.operation.service.manage.StaffService;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
-import com.waben.stock.interfaces.dto.MenuDto;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
+import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.StaffQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -17,7 +22,7 @@ import java.util.List;
  * @desc
  */
 @Service
-public class SystemManageBusiness {
+public class MenuBusiness {
 
     @Autowired
     private MenuService menuService;
@@ -34,4 +39,7 @@ public class SystemManageBusiness {
         }
         throw new ServiceException(menuResponse.getCode());
     }
+
+
+
 }

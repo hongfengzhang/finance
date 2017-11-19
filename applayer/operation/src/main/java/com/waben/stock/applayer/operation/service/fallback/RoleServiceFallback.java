@@ -1,7 +1,7 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.manage.RoleService;
-import com.waben.stock.interfaces.dto.RoleDto;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.stereotype.Component;
 

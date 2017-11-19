@@ -18,6 +18,8 @@ public class ExceptionConstant {
 	public static final String MENU_SERVICE_EXCEPTION = "3001";
 	//权限服务异常
 	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "4001";
+	//员工服务异常
+	public static final String STAFF_NOT_FOUND_EXCEPTION = "5001";
 
 	/*业务异常*/
 
