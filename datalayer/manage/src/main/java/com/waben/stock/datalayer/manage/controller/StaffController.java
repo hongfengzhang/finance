@@ -45,4 +45,12 @@ public class StaffController implements StaffInterface {
         return new Response<>(result);
     }
 
+    @Override
+    public Response<StaffDto> saveStaff(@RequestBody StaffDto staffDto) {
+        Staff staff = CopyBeanUtils.copyBeanProperties(staffDto, new Staff(), false);
+        Staff result = staffService.saveStaff(staff);
+        StaffDto staffDtoResult =  CopyBeanUtils.copyBeanProperties(result, new StaffDto(), false);
+        return new Response<>(staffDtoResult);
+    }
+
 }

@@ -20,14 +20,6 @@ public class StockDto {
 	 */
 	private String code;
 	/**
-	 * 拼音缩写，股票名称的首字母
-	 */
-	private String pinyinAbbr;
-	/**
-	 * 所属行业板块，如医药制造、保险、食品饮料、医疗行业等
-	 */
-	private String industrySector;
-	/**
 	 * 创建时间
 	 */
 	private Date createTime;
@@ -54,22 +46,6 @@ public class StockDto {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public String getPinyinAbbr() {
-		return pinyinAbbr;
-	}
-
-	public void setPinyinAbbr(String pinyinAbbr) {
-		this.pinyinAbbr = pinyinAbbr;
-	}
-
-	public String getIndustrySector() {
-		return industrySector;
-	}
-
-	public void setIndustrySector(String industrySector) {
-		this.industrySector = industrySector;
 	}
 
 	public Date getCreateTime() {
