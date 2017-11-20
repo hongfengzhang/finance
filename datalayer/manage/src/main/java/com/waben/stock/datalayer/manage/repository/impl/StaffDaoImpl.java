@@ -30,7 +30,7 @@ public class StaffDaoImpl implements StaffDao {
 
     @Override
     public Staff create(Staff staff) {
-        return null;
+        return repository.save(staff);
     }
 
     @Override
