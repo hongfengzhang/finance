@@ -38,4 +38,6 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
         super.addResourceHandlers(registry);
     }
 
+
+
 }
