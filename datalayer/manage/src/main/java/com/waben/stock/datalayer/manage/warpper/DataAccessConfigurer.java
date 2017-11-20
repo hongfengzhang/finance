@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.transaction.TransactionScoped;
+
 @EnableTransactionManagement
 @EnableJpaRepositories(queryLookupStrategy = QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND,
         basePackages = "com.waben.stock.datalayer.manage.repository.impl.jpa")

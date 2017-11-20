@@ -1,10 +1,8 @@
 package com.waben.stock.applayer.operation.warpper.auth.provider;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /***
@@ -13,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 * @description 管理及运营人员认证器
 */
 public class ManagerAuthenticationProvider extends DaoAuthenticationProvider {
+
 
     public ManagerAuthenticationProvider(PasswordEncoder passwordEncoder) {
         super(passwordEncoder);
@@ -24,4 +23,6 @@ public class ManagerAuthenticationProvider extends DaoAuthenticationProvider {
         logger.info("管理用户认证");
         return super.retrieveUser(username,usernamePasswordAuthenticationToken);
     }
+
+
 }

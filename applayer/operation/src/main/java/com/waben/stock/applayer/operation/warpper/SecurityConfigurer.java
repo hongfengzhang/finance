@@ -40,10 +40,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_ENTRY_POINT = "/login";
-//    @Autowired
-//    private DaoAuthenticationProvider daoAuthenticationProvider;
-//    @Autowired
-//    private InMemoryAuthenticationProvider memoryAuthenticationProvider;
     @Autowired
     private InvestorAuthenticationProvider investorAuthenticationProvider;
     @Autowired

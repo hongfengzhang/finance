@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: stockcontent
+  profiles:
+    active: @active@
+  cloud:
+    config:
+      enabled: true
+      profile: @active@
+      name: ${spring.application.name}
+      uri: @config.server@

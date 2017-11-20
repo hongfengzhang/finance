@@ -1,7 +1,17 @@
 package com.waben.stock.datalayer.manage.entity;
 
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
+
+import net.sf.cglib.beans.BeanCopier;
 
 /***
 * @author yuyidi 2017-11-13 22:12:52
@@ -63,4 +73,12 @@ public class Circulars {
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }
+    
+    public CircularsDto copy() {
+    	CircularsDto result = new CircularsDto();
+		BeanCopier copier = BeanCopier.create(Circulars.class, CircularsDto.class, false);
+		copier.copy(this, result, null);
+		return result;
+	}
+    
 }

@@ -37,7 +37,7 @@ public class JacksonUtil {
 	 * @Title: decode
 	 * @Description: json字符串转对象
 	 * @author yuyidi0630@163.com
-	 * @param jsonStr
+	 * @param json
 	 * @param valueType
 	 * @param @return
 	 * @return T
@@ -61,7 +61,7 @@ public class JacksonUtil {
 	 * @Title: decode
 	 * @Description: json数组 转javaList
 	 * @author yuyidi0630@163.com
-	 * @param jsonStr
+	 * @param json
 	 * @param valueTypeRef
 	 * @param @return
 	 * @return T

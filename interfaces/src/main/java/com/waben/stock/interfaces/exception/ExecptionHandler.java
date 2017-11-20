@@ -1,12 +1,9 @@
 package com.waben.stock.interfaces.exception;
 
-import com.waben.stock.interfaces.pojo.ArgumentInvalidResult;
-import org.apache.commons.lang3.StringUtils;
+import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
-import org.springframework.validation.BindException;
-import org.springframework.validation.FieldError;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -27,6 +24,18 @@ public class ExecptionHandler implements HandlerExceptionResolver {
     Logger logger = LoggerFactory.getLogger(getClass());
     MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
 
+    private List<ExceptionInformation> exceptions = new ArrayList<>();
+
+    public ExecptionHandler() {
+        this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse
+                .SC_SERVICE_UNAVAILABLE, "503"));
+        this.exceptions.add(new ExceptionInformation(NoHandlerFoundException.class, HttpServletResponse.SC_NOT_FOUND,
+                "404"));
+        this.exceptions.add(new ExceptionInformation(DataNotFoundException.class, HttpServletResponse.SC_OK, "205"));
+        this.exceptions.add(new ExceptionInformation(IllegalArgumentException.class, HttpServletResponse
+                .SC_BAD_REQUEST, "400"));
+    }
+
     @Override
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
                                          Exception ex) {
@@ -36,43 +45,22 @@ public class ExecptionHandler implements HandlerExceptionResolver {
         String code = "0000";
         String error = "404";
         try {
-            if (ex instanceof ServiceException) {
-                // 服务端服务不可用
-                response.setStatus(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-                ServiceException service = (ServiceException) ex;
-                message = service.message();
-                code = service.getType();
-                error = "500";
-            } else if (ex instanceof NoHandlerFoundException) {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                message = "找不到处理器";
-                code = "404";
-            } else if (ex instanceof DataNotFoundException) {
-                response.setStatus(HttpServletResponse.SC_OK);
-                DataNotFoundException dataNotFoundException = (DataNotFoundException) ex;
-                message = StringUtils.isEmpty(dataNotFoundException.getMessage()) ? "没有响应数据" : dataNotFoundException
-                        .getMessage();
-                code = "205";
-            } else if (ex instanceof BindException) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                BindException exception = (BindException) ex;
-                List<ArgumentInvalidResult> invalidArguments = new ArrayList<>();
-                //解析原错误信息，封装后返回，此处返回非法的字段名称，原始值，错误信息
-                for (FieldError errorField : exception.getBindingResult().getFieldErrors()) {
-                    ArgumentInvalidResult invalidArgument = new ArgumentInvalidResult();
-                    invalidArgument.setDefaultMessage(errorField.getDefaultMessage());
-                    invalidArgument.setField(errorField.getField());
-                    invalidArguments.add(invalidArgument);
+            for (ExceptionInformation exception : exceptions) {
+                Class exceptionClass = exception.getException();
+                if (ex.getClass().equals(exceptionClass)) {
+                    response.setStatus(exception.getHttpStatus());
+                    code = ex.getMessage();
+                    message = message(code);
+                    error = exception.getError();
                 }
-                message = invalidArguments;
-                code = "400";
             }
-            logger.warn("请求：{},异常：{},堆栈：{}", request.getRequestURI(), message, ex );
+            logger.warn("请求：{},异常：{}", request.getRequestURI(), message);
         } finally {
             mv.addObject("message", message);
             mv.addObject("code", code);
+            logger.info("响应状态码:{}", response.getStatus());
             if (request.getContentType() != null
-                    && request.getContentType().indexOf("application/json") >-1) {
+                    && request.getContentType().indexOf("application/json") > -1) {
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE); //设置ContentType
                 response.setCharacterEncoding("UTF-8"); //避免乱码
                 mv.setView(jsonView);
@@ -81,5 +69,18 @@ public class ExecptionHandler implements HandlerExceptionResolver {
             }
         }
         return mv;
+    }
+
+
+    public void extendException(List<ExceptionInformation> exceptions) {
+        this.exceptions.addAll(exceptions);
+    }
+
+    private String message(String type){
+        String message = null;
+        if (ExceptionMap.exceptionMap.containsKey(type)) {
+            message = ExceptionMap.exceptionMap.get(type);
+        }
+        return message;
     }
 }

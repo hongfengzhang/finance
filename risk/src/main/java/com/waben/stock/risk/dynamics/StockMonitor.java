@@ -12,15 +12,13 @@ import org.springframework.stereotype.Component;
  * @desc 股票行情监控
  */
 @Component
-@RefreshScope
 public class StockMonitor implements CommandLineRunner {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${info.comment:error}")
-    private String show;
+
 
     public void run(String... strings) throws Exception {
-        logger.info("初始化：{}", show);
+
     }
 }
