@@ -1,5 +1,8 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.MenuBusiness;
+import com.waben.stock.interfaces.util.JacksonUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -9,6 +12,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class SystemController {
+
+    @Autowired
+    private MenuBusiness systemManageBusiness;
 
     @GetMapping("/login")
     public String login() {
@@ -22,6 +28,7 @@ public class SystemController {
 
     @GetMapping("/index")
     public String index() {
+        System.out.println(JacksonUtil.encode(systemManageBusiness.menus()));
         return "index";
     }
 
@@ -44,5 +51,6 @@ public class SystemController {
     public String loginerror() {
         return "login";
     }
+
 }
 

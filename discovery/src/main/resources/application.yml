@@ -1,5 +1,5 @@
 server:
-  port: 8887
+  port: 8882
   context-path: /discovery
 spring:
   devtools:

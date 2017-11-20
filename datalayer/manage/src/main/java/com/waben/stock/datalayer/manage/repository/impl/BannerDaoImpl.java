@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.manage.entity.Banner;
@@ -48,6 +50,11 @@ public class BannerDaoImpl implements BannerDao {
 	@Override
 	public Page<Banner> page(int page, int limit) {
 		return repository.findAll(new PageRequest(page, limit));
+	}
+
+	@Override
+	public Page<Banner> page(Specification<Banner> specification, Pageable pageable) {
+		return repository.findAll(specification,new PageRequest(pageable.getPageNumber(),pageable.getPageSize()));
 	}
 
 	@Override

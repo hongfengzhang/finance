@@ -30,6 +30,6 @@ public class BannerController implements BannerInterface {
 
 	@Override
 	public Response<List<BannerDto>> getEnabledBannerList() {
-		return new Response<>(bannerService.getEnabledBannerList());
+		return new Response<>();
 	}
 }

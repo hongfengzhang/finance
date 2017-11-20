@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.manage.entity.Circulars;
@@ -46,6 +48,11 @@ public class CircularsDaoImpl implements CircularsDao {
 	@Override
 	public Page<Circulars> page(int page, int limit) {
 		return repository.findAll(new PageRequest(page, limit));
+	}
+
+	@Override
+	public Page<Circulars> page(Specification<Circulars> specification, Pageable pageable) {
+		return repository.findAll(specification,new PageRequest(pageable.getPageNumber(),pageable.getPageSize()));
 	}
 
 	@Override

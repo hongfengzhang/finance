@@ -6,9 +6,22 @@ package com.waben.stock.interfaces.constants;
  */
 public class ExceptionConstant {
 
+	// 系统内部异常
 	public static final String UNKNOW_EXCEPTION = "1001";
 	public static final String DATETIME_ERROR = "1002";
+	public static final String DATANOTFOUND_EXCEPTION = "1003";
+	public static final String ARGUMENT_EXCEPTION = "1004";
 
+	/*业务异常*/
+	//系统管理业务异常
+	//菜单服务异常
+	public static final String MENU_SERVICE_EXCEPTION = "3001";
+	//权限服务异常
+	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "4001";
+	//员工服务异常
+	public static final String STAFF_NOT_FOUND_EXCEPTION = "5001";
+
+	/*业务异常*/
 	// 发送短信失败
 	public static final String SENDMESSAGE_FAILED_EXCEPTION = "2001";
 	// 短信发送间隔时间太短

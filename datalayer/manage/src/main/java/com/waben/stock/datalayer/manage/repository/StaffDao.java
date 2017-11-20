@@ -9,4 +9,5 @@ import com.waben.stock.datalayer.manage.entity.Staff;
 public interface StaffDao extends BaseDao<Staff, Long> {
 
     Staff findByUserName(String userName);
+
 }

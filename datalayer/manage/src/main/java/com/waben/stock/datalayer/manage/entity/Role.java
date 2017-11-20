@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.manage.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,20 +24,22 @@ public class Role {
     @Column(length = 30)
     private String describtion;
 
-    @ManyToMany(targetEntity = Staff.class, mappedBy = "roles")
+    @JsonIgnore
+    @ManyToMany(targetEntity = Staff.class, mappedBy = "roles", fetch = FetchType.LAZY)
     private Set<Staff> staffs = new HashSet<>();
 
-    @ManyToMany(targetEntity = Menu.class)
+    @JsonIgnore
+    @ManyToMany(targetEntity = Menu.class, fetch = FetchType.LAZY)
     @JoinTable(name = "role_menu", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn
             (name = "menu_id")})
     private Set<Menu> menus = new HashSet<>();
 
-    @ManyToMany(targetEntity = Permission.class)
+    @JsonIgnore
+    @ManyToMany(targetEntity = Permission.class, fetch = FetchType.LAZY)
     @JoinTable(name = "role_permission", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns =
             {@JoinColumn(name =
-            "permission_id")})
+                    "permission_id")})
     private Set<Permission> permissions = new HashSet<>();
-
 
     public Long getId() {
         return id;
@@ -92,4 +96,5 @@ public class Role {
     public void setCode(String code) {
         this.code = code;
     }
+
 }

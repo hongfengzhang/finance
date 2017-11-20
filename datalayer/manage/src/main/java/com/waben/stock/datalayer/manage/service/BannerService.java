@@ -22,15 +22,5 @@ public class BannerService {
 	@Autowired
 	private BannerDao bannerDao;
 
-	public List<BannerDto> getEnabledBannerList() {
-		List<BannerDto> result = new ArrayList<>();
-		List<Banner> entityList = bannerDao.findByState(true);
-		if (entityList != null && entityList.size() > 0) {
-			for (Banner entity : entityList) {
-				result.add(entity.copy());
-			}
-		}
-		return result;
-	}
 
 }

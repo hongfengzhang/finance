@@ -1,5 +1,9 @@
 package com.waben.stock.datalayer.manage.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -22,7 +26,8 @@ public class Permission {
     @Column
     private String expression;
 
-    @ManyToMany(targetEntity = Role.class,mappedBy = "permissions")
+    @JsonIgnore
+    @ManyToMany(targetEntity = Role.class,mappedBy = "permissions",fetch = FetchType.LAZY)
     private Set<Role> roles = new HashSet<>();
 
     public Long getId() {
