@@ -27,6 +27,10 @@ public class PublisherCapitalAccountDto {
 	 * 账户余额
 	 */
 	private BigDecimal balance;
+	/**
+	 * 令牌
+	 */
+	private String token;
 
 	public PublisherCapitalAccountDto() {
 	}
@@ -77,6 +81,14 @@ public class PublisherCapitalAccountDto {
 
 	public void setBalance(BigDecimal balance) {
 		this.balance = balance;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

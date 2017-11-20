@@ -13,7 +13,7 @@ import com.waben.stock.interfaces.service.BannerInterface;
  * @author luomengan
  *
  */
-@FeignClient(name = "manage/banner", path = "manage", fallback = BannerServiceFallback.class, configuration = FeignConfiguration.class)
+@FeignClient(name = "manage/manage", path = "banner", fallback = BannerServiceFallback.class, configuration = FeignConfiguration.class)
 @Primary
 public interface BannerService extends BannerInterface {
 

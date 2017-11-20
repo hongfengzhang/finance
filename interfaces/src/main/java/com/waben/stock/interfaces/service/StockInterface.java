@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
@@ -18,7 +19,7 @@ import com.waben.stock.interfaces.pojo.Response;
 public interface StockInterface {
 
 	@RequestMapping(value = "/selectStock", method = RequestMethod.GET)
-	Response<List<StockDto>> selectStock(String keyword);
+	Response<List<StockDto>> selectStock(@RequestParam(name = "keyword") String keyword);
 
 	@RequestMapping(value = "/getStockRecommendList", method = RequestMethod.GET)
 	Response<List<StockRecommendDto>> getStockRecommendList();

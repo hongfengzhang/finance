@@ -98,6 +98,8 @@ public class JuheSmsService implements SmsService {
 				if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode) {
 					SmsCache.cache(smsType, phone, paramValues.get(0));
 				}
+			} else if (responseBean.getError_code() == 205401) {
+				throw new ServiceException(ExceptionConstant.PHONE_WRONG_EXCEPTION);
 			} else {
 				throw new ServiceException(ExceptionConstant.SENDMESSAGE_FAILED_EXCEPTION);
 			}
@@ -113,7 +115,7 @@ public class JuheSmsService implements SmsService {
 		}
 	}
 
-	public class JuheResponseBean {
+	public static class JuheResponseBean {
 
 		private int error_code;
 
