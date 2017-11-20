@@ -1,9 +1,8 @@
-package com.waben.stock.applayer.operation.warpper;
+package com.waben.stock.applayer.tactics.wrapper;
 
 import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.warpper.converter.DateConverter;
 import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -19,9 +18,6 @@ import java.util.List;
 @Configuration
 public class WebConfigurer extends WebMvcConfigurerAdapter {
 
-    @Autowired
-    private ExecptionHandler execptionHandler;
-
     @Override
     public void addFormatters(FormatterRegistry registry) {
         super.addFormatters(registry);
@@ -31,7 +27,7 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add(execptionHandler);
+		exceptionResolvers.add(new ExecptionHandler());
 		super.configureHandlerExceptionResolvers(exceptionResolvers);
 	}
 
@@ -41,7 +37,5 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
                 .addResourceLocations("classpath:/static/");
         super.addResourceHandlers(registry);
     }
-
-
 
 }

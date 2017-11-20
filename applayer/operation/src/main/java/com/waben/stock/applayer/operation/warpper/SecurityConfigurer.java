@@ -72,7 +72,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
-//                    .successForwardUrl("/index")
+//                    .successForwardUrl("/aa")
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
                 .and().exceptionHandling()
                                         .authenticationEntryPoint(new ForbiddenEntryPoint())

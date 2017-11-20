@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * @author Created by yuyidi on 2017/11/6.
@@ -13,6 +14,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class SystemController {
 
+    @RequestMapping("/conform")
+    public String conform(){
+        return "conform";
+    }
+
+    @RequestMapping("/left")
+    public String left(){
+        return "aa/left";
+    }
+
+    @RequestMapping("/right")
+    public String right(){
+        return "aa/right";
+    }
     @Autowired
     private MenuBusiness systemManageBusiness;
 
@@ -23,7 +38,7 @@ public class SystemController {
 
     @GetMapping("/")
     public String root() {
-        return "index";
+        return "aa";
     }
 
     @GetMapping("/index")

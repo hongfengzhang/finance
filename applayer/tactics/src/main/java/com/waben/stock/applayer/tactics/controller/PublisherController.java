@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.tactics.security.CustomUserDetails;
+import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
@@ -66,59 +69,63 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
-		return publisherService.register(phone, password);
+		Response<PublisherCapitalAccountDto> result = publisherService.register(phone, password);
+		if ("200".equals(result.getCode()) && result.getResult() != null) {
+			String token = JWTTokenUtil
+					.generateToken(new CustomUserDetails(result.getResult().getId(), result.getResult().getSerialCode(),
+							result.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+			result.getResult().setToken(token);
+		}
+		return result;
 	}
 
 	@GetMapping("/getCurrent")
 	@ApiOperation(value = "获取当前发布策略人信息")
 	public Response<PublisherCapitalAccountDto> getCurrent() {
-		// TODO 从Security中获取当前登录的发布策略人的序列号
-		String serialCode = "aa58d2d45df82d82d82d8";
-		return publisherService.getCurrent(serialCode);
+		return publisherService.getCurrent(SecurityUtil.getSerialCode());
 	}
 
-	@PutMapping("/modifyPassword")
+	@PostMapping("/modifyPassword")
 	@ApiOperation(value = "修改密码")
 	public Response<PublisherCapitalAccountDto> modifyPassword(String phone, String password, String verificationCode) {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
 		// 修改密码
-		return publisherService.modifyPassword(phone, password);
+		Response<PublisherCapitalAccountDto> result = publisherService.modifyPassword(phone, password);
+		if ("200".equals(result.getCode()) && result.getResult() != null) {
+			String token = JWTTokenUtil
+					.generateToken(new CustomUserDetails(result.getResult().getId(), result.getResult().getSerialCode(),
+							result.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+			result.getResult().setToken(token);
+		}
+		return result;
 	}
 
 	@PutMapping("/modifyPaymentPassword")
 	@ApiOperation(value = "设置支付密码")
 	public Response<String> modifyPaymentPassword(String paymentPassword) {
-		// TODO 从Security中获取当前登录的发布策略人的序列号
-		String serialCode = "aa58d2d45df82d82d82d8";
-		publisherService.modifyPaymentPassword(serialCode, paymentPassword);
+		publisherService.modifyPaymentPassword(SecurityUtil.getSerialCode(), paymentPassword);
 		return new Response<>("设置支付密码成功");
 	}
 
 	@PostMapping("/bindBankCard")
 	@ApiOperation(value = "绑定银行卡")
 	public Response<BindCardDto> bindBankCard(String name, String idCard, String phone, String bankCard) {
-		// TODO 从Security中获取当前登录的发布策略人的序列号
-		String serialCode = "aa58d2d45df82d82d82d8";
-		return publisherService.bindBankCard(serialCode, name, idCard, phone, bankCard);
+		return publisherService.bindBankCard(SecurityUtil.getSerialCode(), name, idCard, phone, bankCard);
 	}
 
 	@GetMapping("/myBankCardList")
 	@ApiOperation(value = "我的已绑定银行卡列表")
 	public Response<List<BindCardDto>> myBankCardList() {
-		// TODO 从Security中获取当前登录的发布策略人的序列号
-		String serialCode = "aa58d2d45df82d82d82d8";
-		return publisherService.publisherBankCardList(serialCode);
+		return publisherService.publisherBankCardList(SecurityUtil.getSerialCode());
 	}
 
 	@SuppressWarnings("unused")
 	@GetMapping("/myExtension")
 	@ApiOperation(value = "我的推广")
 	public Response<PublisherExtensionDto> myExtension() {
-		// TODO 从Security中获取当前登录的发布策略人的序列号
-		String serialCode = "aa58d2d45df82d82d82d8";
+		String serialCode = SecurityUtil.getSerialCode();
 		// TODO 获取当前用户的推广详情，此处先模拟假数据
-
 		PublisherExtensionDto result = new PublisherExtensionDto();
 		result.setExtensionLink("http://www.baidu.com");
 		result.setExtensionTotalProfit(new BigDecimal(100));

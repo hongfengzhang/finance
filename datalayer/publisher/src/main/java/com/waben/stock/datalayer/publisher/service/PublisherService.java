@@ -62,7 +62,7 @@ public class PublisherService {
 		publisherDao.create(publisher);
 		// 保存资金账号信息
 		CapitalAccount account = new CapitalAccount();
-		account.setBalance(new BigDecimal(0));
+		account.setBalance(new BigDecimal(0.00));
 		account.setPublisherSerialCode(publisher.getSerialCode());
 		account.setUpdateTime(new Date());
 		capitalAccountDao.create(account);
