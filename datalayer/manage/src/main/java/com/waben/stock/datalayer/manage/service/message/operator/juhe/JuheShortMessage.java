@@ -29,11 +29,11 @@ public class JuheShortMessage implements ShortMessageService {
     }
 
     @Override
-    public String modifyPassword(String phone, String method) {
+    public String modifyPassword(String phone, String message) {
         JuheModifyPasswordTemplate juheModifyPasswordTemplate = new JuheModifyPasswordTemplate();
         Map<String, String> params = new HashMap<>();
         params.put("phone", phone);
-        params.put("message", method);
+        params.put("message", message);
         juheModifyPasswordTemplate.variable(params);
         return send(juheModifyPasswordTemplate);
     }
@@ -53,7 +53,6 @@ public class JuheShortMessage implements ShortMessageService {
     public String send(MessageTemplate messageTemplate) {
         messageTemplate.code();
         Map<String, String> template = messageTemplate.template();
-
         return null;
     }
 }
