@@ -12,6 +12,6 @@ import com.waben.stock.datalayer.stockcontent.entity.Stock;
  */
 public interface StockRepository extends CustomJpaRepository<Stock, Long> {
 
-	List<Stock> findByNameLikeOrCodeLikeOrPinyinAbbrLike(String name, String code, String pinyinAbbr);
+//	List<Stock> findByNameLikeOrCodeLikeOrPinyinAbbrLike(String name, String code, String pinyinAbbr);
 
 }

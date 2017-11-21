@@ -2,12 +2,7 @@ package com.waben.stock.datalayer.stockcontent.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 
@@ -29,28 +24,24 @@ public class Stock {
 	/**
 	 * 股票名称
 	 */
-	@Column(name = "name")
+	@Column
 	private String name;
 	/**
 	 * 股票代码
 	 */
-	@Column(name = "code", unique = true)
+	@Column(unique = true,length = 10)
 	private String code;
 	/**
-	 * 拼音缩写，股票名称的首字母
+	 * 股票状态(可买可卖状态 非开始闭市状态)
 	 */
-	@Column(name = "pinyin_abbr")
-	private String pinyinAbbr;
+	@Column
+	private Boolean status;
 	/**
-	 * 所属行业板块，如医药制造、保险、食品饮料、医疗行业等
+	 * 所属交易指数
 	 */
-	@Column(name = "industry_sector")
-	private String industrySector;
-	/**
-	 * 创建时间
-	 */
-	@Column(name = "create_time")
-	private Date createTime;
+	@JoinColumn(name = "exponent",referencedColumnName = "exponent_code")
+	@ManyToOne(targetEntity = StockExponent.class)
+	private StockExponent exponent;
 
 	public Long getId() {
 		return id;
@@ -76,35 +67,19 @@ public class Stock {
 		this.code = code;
 	}
 
-	public String getPinyinAbbr() {
-		return pinyinAbbr;
+	public Boolean getStatus() {
+		return status;
 	}
 
-	public void setPinyinAbbr(String pinyinAbbr) {
-		this.pinyinAbbr = pinyinAbbr;
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
-	public String getIndustrySector() {
-		return industrySector;
+	public StockExponent getExponent() {
+		return exponent;
 	}
 
-	public void setIndustrySector(String industrySector) {
-		this.industrySector = industrySector;
+	public void setExponent(StockExponent exponent) {
+		this.exponent = exponent;
 	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public StockDto copy() {
-		StockDto result = new StockDto();
-		BeanCopier copier = BeanCopier.create(Stock.class, StockDto.class, false);
-		copier.copy(this, result, null);
-		return result;
-	}
-
 }

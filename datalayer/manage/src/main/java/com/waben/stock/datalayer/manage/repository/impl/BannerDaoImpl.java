@@ -34,7 +34,7 @@ public class BannerDaoImpl implements BannerDao {
 
 	@Override
 	public List<Banner> retrieveBannersOrderByCreateTime() {
-		return repository.findOrderByCreateTimeDesc();
+		return repository.findByOrderByCreateTimeDesc();
 	}
 
 	@Override

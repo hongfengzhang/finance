@@ -1,6 +1,8 @@
 package com.waben.stock.datalayer.stockcontent.repository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.io.Serializable;
 import java.util.List;
@@ -19,6 +21,8 @@ public interface BaseDao<T, S extends Serializable> {
     T retrieve(S id);
 
     Page<T> page(int page, int limit);
+
+    Page<T> page(Specification<T> specification, Pageable pageable);
 
     List<T> list();
 }

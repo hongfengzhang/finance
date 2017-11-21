@@ -16,6 +16,6 @@ public interface BannerRepository extends CustomJpaRepository<Banner, Long> {
 
 	List<Banner> findByEnableOrderBySortAsc(Boolean enable);
 
-	List<Banner> findOrderByCreateTimeDesc();
+	List<Banner> findByOrderByCreateTimeDesc();
 
 }
