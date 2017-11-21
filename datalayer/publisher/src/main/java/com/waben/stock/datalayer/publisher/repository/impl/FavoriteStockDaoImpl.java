@@ -71,4 +71,24 @@ public class FavoriteStockDaoImpl implements FavoriteStockDao {
 		return repository.findByPublisherSerialCode(serialCode, sort);
 	}
 
+	@Override
+	public List<FavoriteStock> findByStockIdNotIn(Long[] stockIds) {
+		return repository.findByStockIdNotIn(stockIds);
+	}
+
+	@Override
+	public void deleteBySerialCodeAndStockIdIn(String serialCode, Long[] stockIds) {
+		if (stockIds != null && stockIds.length > 0) {
+			for (Long stockId : stockIds) {
+				repository.deleteByPublisherSerialCodeAndStockId(serialCode, stockId);
+			}
+		}
+
+	}
+
+	@Override
+	public List<Long> findStockIdByPublisherSerialCode(String serialCode) {
+		return repository.findStockIdByPublisherSerialCode(serialCode);
+	}
+
 }

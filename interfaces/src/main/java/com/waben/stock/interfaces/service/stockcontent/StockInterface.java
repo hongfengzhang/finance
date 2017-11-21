@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.service;
+package com.waben.stock.interfaces.service.stockcontent;
 
 import java.util.List;
 
@@ -18,8 +18,12 @@ import com.waben.stock.interfaces.pojo.Response;
  */
 public interface StockInterface {
 
+	@RequestMapping(value = "/findById", method = RequestMethod.GET)
+	Response<StockDto> findById(@RequestParam("id") Long id);
+
 	@RequestMapping(value = "/selectStock", method = RequestMethod.GET)
-	Response<List<StockDto>> selectStock(@RequestParam(name = "keyword") String keyword);
+	Response<List<StockDto>> selectStock(@RequestParam(name = "keyword") String keyword,
+			@RequestParam(name = "limit") Integer limit);
 
 	@RequestMapping(value = "/getStockRecommendList", method = RequestMethod.GET)
 	Response<List<StockRecommendDto>> getStockRecommendList();

@@ -28,6 +28,10 @@ public class StockDto {
 	 */
 	private String industrySector;
 	/**
+	 * 是否收藏
+	 */
+	private boolean favorite;
+	/**
 	 * 创建时间
 	 */
 	private Date createTime;
@@ -78,6 +82,14 @@ public class StockDto {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public boolean isFavorite() {
+		return favorite;
+	}
+
+	public void setFavorite(boolean favorite) {
+		this.favorite = favorite;
 	}
 
 }

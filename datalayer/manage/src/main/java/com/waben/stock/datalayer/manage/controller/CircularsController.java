@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.manage.service.CircularsService;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.service.CircularsInterface;
+import com.waben.stock.interfaces.service.manage.CircularsInterface;
 
 /**
  * 通告 Controller
@@ -29,7 +29,7 @@ public class CircularsController implements CircularsInterface {
 	private CircularsService circularsService;
 
 	@Override
-	public Response<List<CircularsDto>> getEnabledCircularsList() {
-		return new Response<>(circularsService.getEnabledCircularsList());
+	public Response<List<CircularsDto>> getByEnable(boolean enable) {
+		return new Response<>(circularsService.getByEnable(enable));
 	}
 }

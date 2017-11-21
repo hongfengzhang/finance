@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.service;
+package com.waben.stock.interfaces.service.manage;
 
 import java.util.List;
 
@@ -9,8 +9,8 @@ import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.pojo.Response;
 
 public interface CircularsInterface {
-	
-	@RequestMapping(value = "/getEnabledCircularsList", method = RequestMethod.GET)
-	Response<List<CircularsDto>> getEnabledCircularsList();
-	
+
+	@RequestMapping(value = "/getByEnable", method = RequestMethod.GET)
+	Response<List<CircularsDto>> getByEnable(boolean enable);
+
 }

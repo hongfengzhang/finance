@@ -1,7 +1,5 @@
 package com.waben.stock.datalayer.publisher.controller;
 
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.publisher.service.PublisherService;
-import com.waben.stock.interfaces.dto.BindCardDto;
-import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
-import com.waben.stock.interfaces.dto.PublisherDto;
-import com.waben.stock.interfaces.service.PublisherInterface;
+import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 /**
  * @author Created by yuyidi on 2017/11/5.
@@ -41,7 +38,7 @@ public class PublisherController implements PublisherInterface {
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> getCurrent(String serialCode) {
+	public Response<PublisherCapitalAccountDto> findBySerialCode(String serialCode) {
 		return new Response<>(publisherService.findBySerialCode(serialCode));
 	}
 
@@ -59,17 +56,6 @@ public class PublisherController implements PublisherInterface {
 	public Response<String> modifyPaymentPassword(String serialCode, String paymentPassword) {
 		publisherService.modifyPaymentPassword(serialCode, paymentPassword);
 		return new Response<>("修改支付密码成功");
-	}
-
-	@Override
-	public Response<BindCardDto> bindBankCard(String serialCode, String name, String idCard, String phone,
-			String bankCard) {
-		return new Response<>(publisherService.bindBankCard(serialCode, name, idCard, phone, bankCard));
-	}
-
-	@Override
-	public Response<List<BindCardDto>> publisherBankCardList(String serialCode) {
-		return new Response<>(publisherService.publisherBankCardList(serialCode));
 	}
 
 }

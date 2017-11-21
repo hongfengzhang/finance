@@ -20,7 +20,7 @@ import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -95,7 +95,8 @@ public class JuheSmsService implements SmsService {
 			// 处理发送结果
 			JuheResponseBean responseBean = objectMapper.readValue(response, JuheResponseBean.class);
 			if (responseBean.getError_code() == 0) {
-				if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode) {
+				if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
+						|| smsType == SmsType.BindCardCode) {
 					SmsCache.cache(smsType, phone, paramValues.get(0));
 				}
 			} else if (responseBean.getError_code() == 205401) {

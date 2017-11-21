@@ -17,7 +17,7 @@ import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.CustomUsernamePasswordAuthenticationToken;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -51,7 +51,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		customUserDetails.setToken(token);
 		// step 2 : 返回用户信息和token到客户端
 		Response<PublisherCapitalAccountDto> result = new Response<>(
-				publisherService.getCurrent(customUserDetails.getSerialCode()).getResult());
+				publisherService.findBySerialCode(customUserDetails.getSerialCode()).getResult());
 		result.getResult().setToken(token);
 		res.setContentType("application/json;charset=utf-8");
 		res.setStatus(HttpServletResponse.SC_OK);

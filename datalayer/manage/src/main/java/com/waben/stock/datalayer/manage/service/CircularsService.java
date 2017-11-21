@@ -23,13 +23,17 @@ public class CircularsService {
 	@Autowired
 	private CircularsDao circularsDao;
 
-	public List<CircularsDto> getEnabledCircularsList() {
+	public List<CircularsDto> getByEnable(boolean enable) {
 		List<CircularsDto> result = new ArrayList<>();
-		List<Circulars> entityList = circularsDao.findByExpireTimeGreaterThan(new Date());
-		if (entityList != null && entityList.size() > 0) {
-			for (Circulars entity : entityList) {
-				result.add(entity.copy());
+		if (enable) {
+			List<Circulars> entityList = circularsDao.findByExpireTimeGreaterThan(new Date());
+			if (entityList != null && entityList.size() > 0) {
+				for (Circulars entity : entityList) {
+					result.add(entity.copy());
+				}
 			}
+		} else {
+			// TODO
 		}
 		return result;
 	}

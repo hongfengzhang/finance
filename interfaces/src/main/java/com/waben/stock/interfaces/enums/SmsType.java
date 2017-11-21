@@ -9,7 +9,9 @@ public enum SmsType implements CommonalityEnum {
 
 	ModifyPasswordCode("2", "修改密码验证码"),
 
-	StrategyWarning("3", "点买持仓提醒");
+	BindCardCode("3", "绑定银行卡验证码"),
+
+	StrategyWarning("4", "点买持仓提醒");
 
 	private String index;
 

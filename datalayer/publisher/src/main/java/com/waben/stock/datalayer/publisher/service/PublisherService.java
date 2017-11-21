@@ -1,25 +1,20 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.waben.stock.datalayer.publisher.entity.BindCard;
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
-import com.waben.stock.datalayer.publisher.repository.BindCardDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.BindCardDto;
-import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
-import com.waben.stock.interfaces.dto.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 
 /**
@@ -34,9 +29,6 @@ public class PublisherService {
 
 	@Autowired
 	private CapitalAccountDao capitalAccountDao;
-
-	@Autowired
-	private BindCardDao bindCardDao;
 
 	public PublisherDto findById(Long id) {
 		Publisher publisher = publisherDao.retrieve(id);
@@ -98,37 +90,6 @@ public class PublisherService {
 		CapitalAccount account = capitalAccountDao.findByPublisherSerialCode(serialCode);
 		account.setPaymentPassword(paymentPassword);
 		capitalAccountDao.update(account);
-	}
-
-	public BindCardDto bindBankCard(String serialCode, String name, String idCard, String phone, String bankCard) {
-		BindCard bindCard = bindCardDao.findByPublisherSerialCodeAndBankCard(serialCode, bankCard);
-		if (bindCard != null) {
-			bindCard.setName(name);
-			bindCard.setIdCard(idCard);
-			bindCard.setPhone(phone);
-			bindCardDao.update(bindCard);
-		} else {
-			bindCard = new BindCard();
-			bindCard.setName(name);
-			bindCard.setIdCard(idCard);
-			bindCard.setPhone(phone);
-			bindCard.setPublisherSerialCode(serialCode);
-			bindCard.setBankCard(bankCard);
-			bindCardDao.create(bindCard);
-		}
-		return bindCard.copy();
-	}
-
-
-	public List<BindCardDto> publisherBankCardList(String serialCode) {
-		List<BindCardDto> result = new ArrayList<>();
-		List<BindCard> bindCardList = bindCardDao.findByPublisherSerialCode(serialCode);
-		if (bindCardList != null && bindCardList.size() > 0) {
-			for (BindCard bindCard : bindCardList) {
-				result.add(bindCard.copy());
-			}
-		}
-		return result;
 	}
 
 }

@@ -22,5 +22,15 @@ public class BannerService {
 	@Autowired
 	private BannerDao bannerDao;
 
+	public List<BannerDto> getByState(boolean state) {
+		List<BannerDto> result = new ArrayList<>();
+		List<Banner> entityList = bannerDao.findByState(state);
+		if (entityList != null && entityList.size() > 0) {
+			for (Banner entity : entityList) {
+				result.add(entity.copy());
+			}
+		}
+		return result;
+	}
 
 }

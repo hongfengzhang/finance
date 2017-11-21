@@ -42,14 +42,14 @@ public class SystemController {
 
 	@GetMapping("/getEnabledBannerList")
 	@ApiOperation(value = "获取轮播图列表")
-	public Response<List<BannerDto>> getEnabledBannerList() {
-		return bannerService.getEnabledBannerList();
+	public Response<List<BannerDto>> getBannerList() {
+		return bannerService.getByState(true);
 	}
 
 	@GetMapping("/getEnabledCircularsList")
 	@ApiOperation(value = "获取通告列表")
-	public Response<List<CircularsDto>> getEnabledCircularsList() {
-		return circularsService.getEnabledCircularsList();
+	public Response<List<CircularsDto>> getCircularsList() {
+		return circularsService.getByEnable(true);
 	}
 
 }

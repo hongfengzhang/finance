@@ -13,7 +13,7 @@ import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
  */
 public interface StockDao extends BaseDao<Stock, Long> {
 
-	List<Stock> selectStock(String keyword);
+	List<Stock> selectStock(String keyword, Integer limit);
 
 	List<StockRecommendDto> getStockRecommendList();
 

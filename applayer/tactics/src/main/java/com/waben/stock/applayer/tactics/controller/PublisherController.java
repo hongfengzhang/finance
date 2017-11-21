@@ -19,11 +19,10 @@ import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
-import com.waben.stock.interfaces.dto.BindCardDto;
-import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
-import com.waben.stock.interfaces.dto.PublisherDto;
-import com.waben.stock.interfaces.dto.PublisherExtensionDto;
-import com.waben.stock.interfaces.dto.PublisherExtensionDto.PublisherExtensionUserDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherExtensionDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherExtensionDto.PublisherExtensionUserDto;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.RandomUtil;
@@ -50,12 +49,13 @@ public class PublisherController {
 	}
 
 	@PostMapping("/sendSms")
-	@ApiOperation(value = "发送短信", notes = "type(1:注册,2:修改密码)")
+	@ApiOperation(value = "发送短信", notes = "type(1:注册,2:修改密码,3:绑定银行卡)")
 	public Response<String> sendAuthCode(String phone, int type) {
 		SmsType smsType = SmsType.getByIndex(String.valueOf(type));
 		List<String> paramValues = new ArrayList<>();
 		// 发送注册短信
-		if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode) {
+		if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
+				|| smsType == SmsType.BindCardCode) {
 			paramValues.add(RandomUtil.generateRandomCode(4));
 			paramValues.add("020-888888");
 		}
@@ -82,7 +82,7 @@ public class PublisherController {
 	@GetMapping("/getCurrent")
 	@ApiOperation(value = "获取当前发布策略人信息")
 	public Response<PublisherCapitalAccountDto> getCurrent() {
-		return publisherService.getCurrent(SecurityUtil.getSerialCode());
+		return publisherService.findBySerialCode(SecurityUtil.getSerialCode());
 	}
 
 	@PostMapping("/modifyPassword")
@@ -106,18 +106,6 @@ public class PublisherController {
 	public Response<String> modifyPaymentPassword(String paymentPassword) {
 		publisherService.modifyPaymentPassword(SecurityUtil.getSerialCode(), paymentPassword);
 		return new Response<>("设置支付密码成功");
-	}
-
-	@PostMapping("/bindBankCard")
-	@ApiOperation(value = "绑定银行卡")
-	public Response<BindCardDto> bindBankCard(String name, String idCard, String phone, String bankCard) {
-		return publisherService.bindBankCard(SecurityUtil.getSerialCode(), name, idCard, phone, bankCard);
-	}
-
-	@GetMapping("/myBankCardList")
-	@ApiOperation(value = "我的已绑定银行卡列表")
-	public Response<List<BindCardDto>> myBankCardList() {
-		return publisherService.publisherBankCardList(SecurityUtil.getSerialCode());
 	}
 
 	@SuppressWarnings("unused")

@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.service;
+package com.waben.stock.interfaces.service.manage;
 
 import java.util.List;
 
@@ -16,7 +16,7 @@ import com.waben.stock.interfaces.pojo.Response;
  */
 public interface BannerInterface {
 
-	@RequestMapping(value = "/getEnabledBannerList", method = RequestMethod.GET)
-	Response<List<BannerDto>> getEnabledBannerList();
+	@RequestMapping(value = "/getByState", method = RequestMethod.GET)
+	Response<List<BannerDto>> getByState(boolean enable);
 
 }

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Primary;
 
 import com.waben.stock.applayer.tactics.service.fallback.BannerServiceFallback;
 import com.waben.stock.applayer.tactics.wrapper.FeignConfiguration;
-import com.waben.stock.interfaces.service.BannerInterface;
+import com.waben.stock.interfaces.service.manage.BannerInterface;
 
 /**
  * 轮播 reference服务接口

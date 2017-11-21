@@ -22,17 +22,19 @@ public class StockService {
 
 	@Autowired
 	private StockDao stockDao;
-	
+
 	/**
 	 * 查询股票，匹配股票名称/代码/简拼
 	 * 
 	 * @param keyword
 	 *            关键字
+	 * @param limit
+	 *            取多少条
 	 * @return 股票结果列表
 	 */
-	public List<StockDto> selectStock(String keyword) {
+	public List<StockDto> selectStock(String keyword, Integer limit) {
 		List<StockDto> result = new ArrayList<>();
-		List<Stock> entityList = stockDao.selectStock(keyword);
+		List<Stock> entityList = stockDao.selectStock(keyword, limit);
 		for (Stock entity : entityList) {
 			result.add(entity.copy());
 		}
@@ -46,6 +48,18 @@ public class StockService {
 	 */
 	public List<StockRecommendDto> getStockRecommendList() {
 		return stockDao.getStockRecommendList();
+	}
+
+	/**
+	 * 根据ID获取股票
+	 * 
+	 * @param id
+	 *            股票ID
+	 * @return 股票
+	 */
+	public StockDto findById(Long id) {
+		Stock stock = stockDao.retrieve(id);
+		return stock != null ? stock.copy() : null;
 	}
 
 }

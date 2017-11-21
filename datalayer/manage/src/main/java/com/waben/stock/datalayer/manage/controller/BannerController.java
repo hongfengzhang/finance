@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.manage.service.BannerService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.service.BannerInterface;
+import com.waben.stock.interfaces.service.manage.BannerInterface;
 
 /**
  * 轮播 Controller
@@ -29,7 +29,7 @@ public class BannerController implements BannerInterface {
 	private BannerService bannerService;
 
 	@Override
-	public Response<List<BannerDto>> getEnabledBannerList() {
-		return new Response<>();
+	public Response<List<BannerDto>> getByState(boolean state) {
+		return new Response<>(bannerService.getByState(state));
 	}
 }

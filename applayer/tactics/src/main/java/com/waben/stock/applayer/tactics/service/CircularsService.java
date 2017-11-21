@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Primary;
 
 import com.waben.stock.applayer.tactics.service.fallback.CircularsServiceFallback;
 import com.waben.stock.applayer.tactics.wrapper.FeignConfiguration;
-import com.waben.stock.interfaces.service.CircularsInterface;
+import com.waben.stock.interfaces.service.manage.CircularsInterface;
 
 /**
  * 通告 reference服务接口

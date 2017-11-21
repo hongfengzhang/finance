@@ -10,7 +10,7 @@ import com.waben.stock.datalayer.stockcontent.service.StockService;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.service.StockInterface;
+import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 
 /**
  * 股票 Controller
@@ -26,8 +26,13 @@ public class StockController implements StockInterface {
 	private StockService stockService;
 
 	@Override
-	public Response<List<StockDto>> selectStock(String keyword) {
-		return new Response<>(stockService.selectStock(keyword));
+	public Response<StockDto> findById(Long id) {
+		return new Response<>(stockService.findById(id));
+	}
+	
+	@Override
+	public Response<List<StockDto>> selectStock(String keyword, Integer limit) {
+		return new Response<>(stockService.selectStock(keyword, limit));
 	}
 
 	@Override

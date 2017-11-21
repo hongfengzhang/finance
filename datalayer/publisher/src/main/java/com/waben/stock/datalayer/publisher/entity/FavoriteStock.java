@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.waben.stock.interfaces.dto.FavoriteStockDto;
+import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 
 import net.sf.cglib.beans.BeanCopier;
 
@@ -44,7 +44,7 @@ public class FavoriteStock {
 	/**
 	 * 股票代码
 	 */
-	@Column(name = "code", unique = true)
+	@Column(name = "code")
 	private String code;
 	/**
 	 * 拼音缩写，股票名称的首字母
