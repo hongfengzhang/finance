@@ -13,6 +13,8 @@ import com.waben.stock.datalayer.manage.entity.Circulars;
  */
 public interface CircularsDao extends BaseDao<Circulars, Long> {
 
-	List<Circulars> findByExpireTimeGreaterThan(Date date);
+	List<Circulars> retrieveCircularsWithInExpireTime(Date date);
+
+	List<Circulars> retrieveCirculars(Boolean enable);
 
 }

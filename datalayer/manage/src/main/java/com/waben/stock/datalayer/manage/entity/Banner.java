@@ -32,7 +32,7 @@ public class Banner {
 	@Column
 	private Integer sort;
 	@Column(length = 1)
-	private Boolean state;
+	private Boolean enable;
 	@Column(name = "create_time")
 	private Date createTime;
 
@@ -68,12 +68,12 @@ public class Banner {
 		this.sort = sort;
 	}
 
-	public Boolean getState() {
-		return state;
+	public Boolean getEnable() {
+		return enable;
 	}
 
-	public void setState(Boolean state) {
-		this.state = state;
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 	public Date getCreateTime() {
@@ -82,13 +82,6 @@ public class Banner {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
-	}
-
-	public BannerDto copy() {
-		BannerDto result = new BannerDto();
-		BeanCopier copier = BeanCopier.create(Banner.class, BannerDto.class, false);
-		copier.copy(this, result, null);
-		return result;
 	}
 
 }

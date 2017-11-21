@@ -121,4 +121,8 @@ public class Staff {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    public void addRole(Role role) {
+        getRoles().add(role);
+    }
 }

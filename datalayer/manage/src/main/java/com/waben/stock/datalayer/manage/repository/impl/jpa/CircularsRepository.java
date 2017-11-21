@@ -13,6 +13,8 @@ import com.waben.stock.datalayer.manage.entity.Circulars;
  */
 public interface CircularsRepository extends CustomJpaRepository<Circulars, Long> {
 
-	List<Circulars> findByExpireTimeGreaterThan(Date date);
+	List<Circulars> findByEnableAndExpireTimeGreaterThan(Boolean enable,Date date);
+
+	List<Circulars> findAllByEnable(Boolean enable);
 
 }

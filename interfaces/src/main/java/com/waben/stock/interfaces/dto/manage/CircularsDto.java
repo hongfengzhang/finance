@@ -31,6 +31,10 @@ public class CircularsDto {
 	 */
 	private Date expireTime;
 
+	private Boolean enable;
+
+	private String link;
+
 	public Long getId() {
 		return id;
 	}
@@ -69,5 +73,21 @@ public class CircularsDto {
 
 	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
+	}
+
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 }

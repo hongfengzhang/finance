@@ -1,35 +1,38 @@
 package com.waben.stock.datalayer.manage.controller;
 
-import java.util.List;
-
+import com.waben.stock.datalayer.manage.entity.Banner;
+import com.waben.stock.datalayer.manage.service.BannerService;
+import com.waben.stock.interfaces.dto.manage.BannerDto;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.BannerInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.datalayer.manage.service.BannerService;
-import com.waben.stock.interfaces.dto.manage.BannerDto;
-import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.service.BannerInterface;
+import java.util.List;
 
-/**
- * 轮播 Controller
- * 
- * @author luomengan
- *
+/***
+ * @author yuyidi 2017-11-21 10:59:28
+ * @class com.waben.stock.datalayer.manage.controller.BannerController
+ * @description 系统轮播图
  */
 @RestController
 @RequestMapping("/banner")
 public class BannerController implements BannerInterface {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private BannerService bannerService;
+    @Autowired
+    private BannerService bannerService;
 
-	@Override
-	public Response<List<BannerDto>> getEnabledBannerList() {
-		return new Response<>();
-	}
+    @Override
+    public Response<List<BannerDto>> fetchBanners(Boolean enable) {
+        logger.info("是否获取是否可用的轮播图列表:{}", enable);
+        List<Banner> banners = bannerService.findBanners(enable);
+        List<BannerDto> bannerDtos = CopyBeanUtils.copyListBeanPropertiesToList(banners, BannerDto.class);
+        return new Response<>(bannerDtos);
+    }
 }
