@@ -17,8 +17,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public interface PublisherInterface {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	Response<PublisherDto> findById(@PathVariable("id") Long id);
 
+	Response<PublisherDto> findById(@PathVariable("id") Long id);
 	@RequestMapping(value = "/findByPhone", method = RequestMethod.GET)
 	Response<PublisherDto> findByPhone(@RequestParam(name = "phone") String phone);
 

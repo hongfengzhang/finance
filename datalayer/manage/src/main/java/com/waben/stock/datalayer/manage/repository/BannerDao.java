@@ -12,6 +12,7 @@ import com.waben.stock.datalayer.manage.entity.Banner;
  */
 public interface BannerDao extends BaseDao<Banner, Long> {
 
-	List<Banner> findByState(boolean state);
+	List<Banner> retrieveBanners(Boolean enable);
 
+	List<Banner> retrieveBannersOrderByCreateTime();
 }

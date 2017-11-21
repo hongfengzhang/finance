@@ -46,13 +46,13 @@ public class SystemController {
 	@GetMapping("/getEnabledBannerList")
 	@ApiOperation(value = "获取轮播图列表")
 	public Response<List<BannerDto>> getBannerList() {
-		return bannerService.getByState(true);
+		return bannerService.fetchBanners(true);
 	}
 
 	@GetMapping("/getEnabledCircularsList")
 	@ApiOperation(value = "获取通告列表")
 	public Response<List<CircularsDto>> getCircularsList() {
-		return circularsService.getByEnable(true);
+		return circularsService.fetchCirculars(true);
 	}
 
 	@GetMapping("/getAppHomeTopData")
@@ -60,7 +60,7 @@ public class SystemController {
 	public Response<AppHomeTopDataDto> getAppHomeTopData() {
 		Response<AppHomeTopDataDto> result = new Response<>(new AppHomeTopDataDto());
 		// 获取轮播图
-		Response<List<BannerDto>> bannerListResp = bannerService.getByState(true);
+		Response<List<BannerDto>> bannerListResp = bannerService.fetchBanners(true);
 		if ("200".equals(bannerListResp.getCode())) {
 			result.getResult().setBannerList(bannerListResp.getResult());
 		} else {
@@ -69,7 +69,7 @@ public class SystemController {
 			return result;
 		}
 		// 获取公告
-		Response<List<CircularsDto>> capitalAccountResp = circularsService.getByEnable(true);
+		Response<List<CircularsDto>> capitalAccountResp = circularsService.fetchCirculars(true);
 		if ("200".equals(capitalAccountResp.getCode())) {
 			result.getResult().setCircularsList(capitalAccountResp.getResult());
 		} else {

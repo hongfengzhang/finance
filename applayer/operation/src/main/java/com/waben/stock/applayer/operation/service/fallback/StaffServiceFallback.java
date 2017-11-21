@@ -25,4 +25,10 @@ public class StaffServiceFallback implements StaffService {
     public Response<PageInfo<StaffDto>> pagesByQuery(StaffQuery staffQuery) {
         return new Response<>("205","用户列表服务异常");
     }
+
+	@Override
+	public Response<StaffDto> saveStaff(StaffDto staffDto) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

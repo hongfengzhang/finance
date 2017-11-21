@@ -45,7 +45,8 @@ public class FavoriteStockController {
 		Response<StockDto> stockResp = stockService.findById(stockId);
 		favoriteStockDto.setCode(stockResp.getResult().getCode());
 		favoriteStockDto.setStockId(stockId);
-		favoriteStockDto.setPinyinAbbr(stockResp.getResult().getPinyinAbbr());
+
+//	TODO	favoriteStockDto.setPinyinAbbr(stockResp.getResult().getPinyinAbbr());
 		favoriteStockDto.setName(stockResp.getResult().getName());
 		favoriteStockDto.setPublisherSerialCode(SecurityUtil.getSerialCode());
 		return favoriteStockService.addFavoriteStock(favoriteStockDto);

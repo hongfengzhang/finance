@@ -3,10 +3,8 @@ package com.waben.stock.interfaces.dto.stockcontent;
 import java.util.Date;
 
 /**
- * 股票推荐
- * 
- * @author luomengan
- *
+ * @author Created by yuyidi on 2017/11/21.
+ * @desc
  */
 public class StockRecommendDto {
 

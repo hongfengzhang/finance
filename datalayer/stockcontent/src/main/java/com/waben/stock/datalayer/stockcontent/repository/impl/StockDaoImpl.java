@@ -1,34 +1,27 @@
 package com.waben.stock.datalayer.stockcontent.repository.impl;
 
-import java.util.List;
-
+import com.waben.stock.datalayer.stockcontent.entity.Stock;
+import com.waben.stock.datalayer.stockcontent.repository.StockDao;
+import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
-import com.waben.stock.datalayer.stockcontent.entity.Stock;
-import com.waben.stock.datalayer.stockcontent.repository.StockDao;
-import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StockRecommendRepository;
-import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StockRepository;
-import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
+import java.util.List;
 
 /**
  * 股票 Dao实现
- * 
- * @author luomengan
  *
+ * @author luomengan
  */
 @Repository
 public class StockDaoImpl implements StockDao {
 
 	@Autowired
 	private StockRepository repository;
-
-	@Autowired
-	private StockRecommendRepository stockRecommendRepository;
 
 	@Override
 	public Stock create(Stock t) {
@@ -56,6 +49,11 @@ public class StockDaoImpl implements StockDao {
 	}
 
 	@Override
+	public Page<Stock> page(Specification<Stock> specification, Pageable pageable) {
+		return null;
+	}
+
+	@Override
 	public List<Stock> list() {
 		return repository.findAll();
 	}
@@ -64,12 +62,6 @@ public class StockDaoImpl implements StockDao {
 	public List<Stock> selectStock(String keyword, Integer limit) {
 		return repository.findByNameLikeOrCodeLikeOrPinyinAbbrLike("%" + keyword + "%", "%" + keyword + "%",
 				"%" + keyword + "%", limit);
-	}
-
-	@Override
-	public List<StockRecommendDto> getStockRecommendList() {
-		Sort sort = new Sort(new Sort.Order(Direction.ASC, "sort"));
-		return stockRecommendRepository.findAll(sort);
 	}
 
 }

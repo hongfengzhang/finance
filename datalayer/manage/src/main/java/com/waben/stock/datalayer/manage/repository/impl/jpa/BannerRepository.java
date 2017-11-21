@@ -14,6 +14,8 @@ import com.waben.stock.datalayer.manage.entity.Banner;
  */
 public interface BannerRepository extends CustomJpaRepository<Banner, Long> {
 
-	List<Banner> findByState(boolean state, Sort sort);
+	List<Banner> findByEnableOrderBySortAsc(Boolean enable);
+
+	List<Banner> findByOrderByCreateTimeDesc();
 
 }

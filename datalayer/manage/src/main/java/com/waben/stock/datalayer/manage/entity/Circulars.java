@@ -33,6 +33,9 @@ public class Circulars {
     private Date createTime;
     @Column(name = "expire_time")
     private Date expireTime;
+    @Column
+    private Boolean enable;
+
 
     public Long getId() {
         return id;
@@ -73,12 +76,13 @@ public class Circulars {
     public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }
-    
-    public CircularsDto copy() {
-    	CircularsDto result = new CircularsDto();
-		BeanCopier copier = BeanCopier.create(Circulars.class, CircularsDto.class, false);
-		copier.copy(this, result, null);
-		return result;
-	}
-    
+
+    public Boolean getEnable() {
+        return enable;
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
+
 }

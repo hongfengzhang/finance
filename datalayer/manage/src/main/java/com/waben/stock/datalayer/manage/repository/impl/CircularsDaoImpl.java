@@ -26,6 +26,16 @@ public class CircularsDaoImpl implements CircularsDao {
 	private CircularsRepository repository;
 
 	@Override
+	public List<Circulars> retrieveCirculars(Boolean enable) {
+		return repository.findAllByEnable(enable);
+	}
+
+	@Override
+	public List<Circulars> retrieveCircularsWithInExpireTime(Date date) {
+		return repository.findByEnableAndExpireTimeGreaterThan(true,date);
+	}
+
+	@Override
 	public Circulars create(Circulars t) {
 		return repository.save(t);
 	}
@@ -58,11 +68,6 @@ public class CircularsDaoImpl implements CircularsDao {
 	@Override
 	public List<Circulars> list() {
 		return repository.findAll();
-	}
-
-	@Override
-	public List<Circulars> findByExpireTimeGreaterThan(Date date) {
-		return repository.findByExpireTimeGreaterThan(date);
 	}
 
 }

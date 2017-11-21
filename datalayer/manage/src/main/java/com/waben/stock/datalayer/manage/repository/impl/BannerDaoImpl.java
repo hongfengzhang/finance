@@ -28,6 +28,16 @@ public class BannerDaoImpl implements BannerDao {
 	private BannerRepository repository;
 
 	@Override
+	public List<Banner> retrieveBanners(Boolean enable) {
+		return repository.findByEnableOrderBySortAsc(enable);
+	}
+
+	@Override
+	public List<Banner> retrieveBannersOrderByCreateTime() {
+		return repository.findByOrderByCreateTimeDesc();
+	}
+
+	@Override
 	public Banner create(Banner t) {
 		return repository.save(t);
 	}
@@ -60,12 +70,6 @@ public class BannerDaoImpl implements BannerDao {
 	@Override
 	public List<Banner> list() {
 		return repository.findAll();
-	}
-
-	@Override
-	public List<Banner> findByState(boolean state) {
-		Sort sort = new Sort(new Sort.Order(Direction.ASC, "sort"));
-		return repository.findByState(state, sort);
 	}
 
 }

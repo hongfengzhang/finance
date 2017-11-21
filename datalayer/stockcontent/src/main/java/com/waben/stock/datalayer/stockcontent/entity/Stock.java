@@ -1,110 +1,78 @@
 package com.waben.stock.datalayer.stockcontent.entity;
 
-import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-
-import net.sf.cglib.beans.BeanCopier;
+import javax.persistence.*;
 
 /**
  * 股票
- * 
- * @author luomengan
  *
+ * @author luomengan
  */
 @Entity
 @Table(name = "stock")
 public class Stock {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	/**
-	 * 股票名称
-	 */
-	@Column(name = "name")
-	private String name;
-	/**
-	 * 股票代码
-	 */
-	@Column(name = "code", unique = true)
-	private String code;
-	/**
-	 * 拼音缩写，股票名称的首字母
-	 */
-	@Column(name = "pinyin_abbr")
-	private String pinyinAbbr;
-	/**
-	 * 所属行业板块，如医药制造、保险、食品饮料、医疗行业等
-	 */
-	@Column(name = "industry_sector")
-	private String industrySector;
-	/**
-	 * 创建时间
-	 */
-	@Column(name = "create_time")
-	private Date createTime;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    /**
+     * 股票名称
+     */
+    @Column
+    private String name;
+    /**
+     * 股票代码
+     */
+    @Column(unique = true, length = 10)
+    private String code;
+    /**
+     * 股票状态(可买可卖状态 非开始闭市状态)
+     */
+    @Column
+    private Boolean status;
+    /**
+     * 所属交易指数
+     */
+    @JoinColumn(name = "exponent_code")
+    @ManyToOne(targetEntity = StockExponent.class)
+    private StockExponent exponent;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getCode() {
-		return code;
-	}
+    public String getCode() {
+        return code;
+    }
 
-	public void setCode(String code) {
-		this.code = code;
-	}
+    public void setCode(String code) {
+        this.code = code;
+    }
 
-	public String getPinyinAbbr() {
-		return pinyinAbbr;
-	}
+    public Boolean getStatus() {
+        return status;
+    }
 
-	public void setPinyinAbbr(String pinyinAbbr) {
-		this.pinyinAbbr = pinyinAbbr;
-	}
+    public void setStatus(Boolean status) {
+        this.status = status;
+    }
 
-	public String getIndustrySector() {
-		return industrySector;
-	}
+    public StockExponent getExponent() {
+        return exponent;
+    }
 
-	public void setIndustrySector(String industrySector) {
-		this.industrySector = industrySector;
-	}
-
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public StockDto copy() {
-		StockDto result = new StockDto();
-		BeanCopier copier = BeanCopier.create(Stock.class, StockDto.class, false);
-		copier.copy(this, result, null);
-		return result;
-	}
-
+    public void setExponent(StockExponent exponent) {
+        this.exponent = exponent;
+    }
 }

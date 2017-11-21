@@ -43,7 +43,7 @@ public class StockController {
 				if (stockIds.getResult() != null && stockIds.getResult().size() > 0) {
 					for (StockDto stockDto : result.getResult()) {
 						if (stockIds.getResult().contains(stockDto.getId())) {
-							stockDto.setFavorite(true);
+							// stockDto.setFavorite(true);
 						}
 					}
 				}

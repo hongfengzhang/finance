@@ -1,21 +1,19 @@
 package com.waben.stock.datalayer.stockcontent.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
 import com.waben.stock.datalayer.stockcontent.repository.StockDao;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 股票 Service
- * 
- * @author luomengan
  *
+ * @author luomengan
  */
 @Service
 public class StockService {
@@ -35,20 +33,10 @@ public class StockService {
 	public List<StockDto> selectStock(String keyword, Integer limit) {
 		List<StockDto> result = new ArrayList<>();
 		List<Stock> entityList = stockDao.selectStock(keyword, limit);
-		for (Stock entity : entityList) {
-			result.add(entity.copy());
-		}
+		//TODO
 		return result;
 	}
 
-	/**
-	 * 获取股票推荐列表
-	 * 
-	 * @return 股票推荐列表
-	 */
-	public List<StockRecommendDto> getStockRecommendList() {
-		return stockDao.getStockRecommendList();
-	}
 
 	/**
 	 * 根据ID获取股票
@@ -59,7 +47,8 @@ public class StockService {
 	 */
 	public StockDto findById(Long id) {
 		Stock stock = stockDao.retrieve(id);
-		return stock != null ? stock.copy() : null;
+		StockDto stockDto = CopyBeanUtils.copyBeanProperties(stock, new StockDto(), false);
+		return stock != null ? stockDto : null;
 	}
 
 }

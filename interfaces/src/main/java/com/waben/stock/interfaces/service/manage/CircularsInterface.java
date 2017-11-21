@@ -10,8 +10,8 @@ import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.pojo.Response;
 
 public interface CircularsInterface {
-
-	@RequestMapping(value = "/getByEnable", method = RequestMethod.GET)
-	Response<List<CircularsDto>> getByEnable(@RequestParam(name = "enable") boolean enable);
-
+	
+	@RequestMapping(value = "/",method = RequestMethod.GET)
+	Response<List<CircularsDto>> fetchCirculars(@RequestParam(value = "enable",required = false) Boolean enable);
+	
 }

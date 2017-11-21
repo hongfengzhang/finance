@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.pojo.Response;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 轮播 公共接口
@@ -17,7 +18,7 @@ import com.waben.stock.interfaces.pojo.Response;
  */
 public interface BannerInterface {
 
-	@RequestMapping(value = "/getByState", method = RequestMethod.GET)
-	Response<List<BannerDto>> getByState(@RequestParam(name = "enable") boolean enable);
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	Response<List<BannerDto>> fetchBanners(@RequestParam(value = "enable",required = false) Boolean enable);
 
 }
