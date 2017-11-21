@@ -76,20 +76,20 @@ public class StockDto {
 		this.industrySector = industrySector;
 	}
 
-	public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
 	public boolean isFavorite() {
 		return favorite;
 	}
 
 	public void setFavorite(boolean favorite) {
 		this.favorite = favorite;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -31,6 +32,7 @@ public class StaffService {
 
     @Autowired
     private StaffDao staffDao;
+
 
     public Staff fetchByUserName(String username) {
         Staff result = staffDao.findByUserName(username);
@@ -55,6 +57,11 @@ public class StaffService {
             }
         }, pageable);
         return pages;
+    }
+
+    public Staff saveStaff(Staff staff) {
+        Staff result = staffDao.create(staff);
+        return result;
     }
 
 

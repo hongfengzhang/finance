@@ -18,8 +18,12 @@ public interface StaffInterface {
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     Response<StaffDto> fetchByUserName(@PathVariable("username") String username);
 
-    @RequestMapping(value = "/", method = RequestMethod.GET, consumes = "application/json")
+    @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
     Response<PageInfo<StaffDto>> pagesByQuery(@RequestBody StaffQuery staffQuery);
+
+    @RequestMapping(value = "/", method = RequestMethod.POST, consumes = "application/json")
+    Response<StaffDto> saveStaff(@RequestBody StaffDto staffDto);
+
 }
 
 
