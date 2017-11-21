@@ -9,20 +9,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
+import com.waben.stock.applayer.tactics.service.BindCardService;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
+import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherExtensionDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherExtensionDto.PublisherExtensionUserDto;
+import com.waben.stock.interfaces.dto.publisher.SettingRemindDto;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.RandomUtil;
@@ -39,6 +42,9 @@ public class PublisherController {
 
 	@Autowired
 	private PublisherService publisherService;
+
+	@Autowired
+	private BindCardService bindCardService;
 
 	@Autowired
 	private SmsService smsService;
@@ -85,6 +91,39 @@ public class PublisherController {
 		return publisherService.findBySerialCode(SecurityUtil.getSerialCode());
 	}
 
+	@GetMapping("/getSettingRemind")
+	@ApiOperation(value = "获取当前发布策略人设置提醒信息")
+	public Response<SettingRemindDto> getSettingRemind() {
+		Response<SettingRemindDto> result = new Response<>(new SettingRemindDto());
+		result.getResult().setPhone(SecurityUtil.getUsername());
+		// 获取是否绑卡
+		Response<List<BindCardDto>> bindCardListResp = bindCardService
+				.publisherBankCardList(SecurityUtil.getSerialCode());
+		if ("200".equals(bindCardListResp.getCode())) {
+			if (bindCardListResp.getResult() != null && bindCardListResp.getResult().size() > 0) {
+				result.getResult().setSettingBindCard(true);
+			}
+		} else {
+			result.setCode(bindCardListResp.getCode());
+			result.setMessage(bindCardListResp.getMessage());
+			return result;
+		}
+		// 获取是否设置过支付密码
+		Response<CapitalAccountDto> capitalAccountResp = publisherService
+				.getCapitalAccount(SecurityUtil.getSerialCode());
+		if ("200".equals(capitalAccountResp.getCode())) {
+			if (capitalAccountResp.getResult() != null && capitalAccountResp.getResult().getPaymentPassword() != null
+					&& !"".equals(capitalAccountResp.getResult().getPaymentPassword())) {
+				result.getResult().setSettingPaymentPassword(true);
+			}
+		} else {
+			result.setCode(capitalAccountResp.getCode());
+			result.setMessage(capitalAccountResp.getMessage());
+			return result;
+		}
+		return result;
+	}
+
 	@PostMapping("/modifyPassword")
 	@ApiOperation(value = "修改密码")
 	public Response<PublisherCapitalAccountDto> modifyPassword(String phone, String password, String verificationCode) {
@@ -101,7 +140,7 @@ public class PublisherController {
 		return result;
 	}
 
-	@PutMapping("/modifyPaymentPassword")
+	@PostMapping("/modifyPaymentPassword")
 	@ApiOperation(value = "设置支付密码")
 	public Response<String> modifyPaymentPassword(String paymentPassword) {
 		publisherService.modifyPaymentPassword(SecurityUtil.getSerialCode(), paymentPassword);

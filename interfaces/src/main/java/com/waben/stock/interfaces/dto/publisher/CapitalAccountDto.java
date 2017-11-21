@@ -26,8 +26,6 @@ public class CapitalAccountDto {
 	 */
 	private Date updateTime;
 
-	private Date createTime;
-
 	public Long getId() {
 		return id;
 	}

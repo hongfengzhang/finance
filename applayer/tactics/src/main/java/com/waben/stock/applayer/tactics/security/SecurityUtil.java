@@ -38,4 +38,13 @@ public class SecurityUtil {
 		}
 	}
 
+	public static String getUsername() {
+		CustomUserDetails details = getUserDetails();
+		if (details != null) {
+			return details.getUsername();
+		} else {
+			return null;
+		}
+	}
+
 }

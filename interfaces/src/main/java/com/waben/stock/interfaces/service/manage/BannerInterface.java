@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -17,6 +18,6 @@ import com.waben.stock.interfaces.pojo.Response;
 public interface BannerInterface {
 
 	@RequestMapping(value = "/getByState", method = RequestMethod.GET)
-	Response<List<BannerDto>> getByState(boolean enable);
+	Response<List<BannerDto>> getByState(@RequestParam(name = "enable") boolean enable);
 
 }

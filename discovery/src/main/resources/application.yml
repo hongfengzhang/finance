@@ -4,7 +4,7 @@ server:
 spring:
   devtools:
     restart:
-      additional-paths: discovery/src/main/java
+      additional-paths: src/main/java
 logging:
   config: classpath:log/logback.xml
 eureka:

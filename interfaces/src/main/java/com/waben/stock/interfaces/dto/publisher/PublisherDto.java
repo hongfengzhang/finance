@@ -1,13 +1,12 @@
 package com.waben.stock.interfaces.dto.publisher;
 
-import java.io.Serializable;
 import java.util.Date;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
  * @desc
  */
-public class PublisherDto implements Serializable {
+public class PublisherDto {
 
 	private Long id;
 	/**

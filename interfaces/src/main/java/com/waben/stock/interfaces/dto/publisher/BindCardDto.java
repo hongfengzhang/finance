@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.dto.publisher;
 
+import com.waben.stock.interfaces.enums.BankEnum;
+
 public class BindCardDto {
 
 	private Long id;
@@ -94,6 +96,19 @@ public class BindCardDto {
 
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
+	}
+
+	/**
+	 * 获取银行图标链接
+	 * 
+	 * @return 银行图标链接
+	 */
+	public String getBankIconLink() {
+		BankEnum bankEnum = BankEnum.getByBank(bankName);
+		if (bankEnum == null) {
+			bankEnum = BankEnum.DEFAULT;
+		}
+		return bankEnum.getIconLink();
 	}
 
 }
