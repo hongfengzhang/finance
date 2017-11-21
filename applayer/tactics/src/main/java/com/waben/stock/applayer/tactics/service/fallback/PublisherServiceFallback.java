@@ -1,14 +1,11 @@
 package com.waben.stock.applayer.tactics.service.fallback;
 
-import java.util.List;
-
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.BindCardDto;
-import com.waben.stock.interfaces.dto.PublisherCapitalAccountDto;
-import com.waben.stock.interfaces.dto.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -30,7 +27,7 @@ public class PublisherServiceFallback implements PublisherService {
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> getCurrent(String serialCode) {
+	public Response<PublisherCapitalAccountDto> findBySerialCode(String serialCode) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
@@ -46,17 +43,6 @@ public class PublisherServiceFallback implements PublisherService {
 
 	@Override
 	public Response<String> modifyPaymentPassword(String serialCode, String paymentPassword) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
-	}
-
-	@Override
-	public Response<BindCardDto> bindBankCard(String serialCode, String name, String idCard, String phone,
-			String bankCard) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
-	}
-
-	@Override
-	public Response<List<BindCardDto>> publisherBankCardList(String serialCode) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

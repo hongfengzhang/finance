@@ -4,14 +4,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.service.spi.ServiceException;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.publisher.entity.FavoriteStock;
 import com.waben.stock.datalayer.publisher.repository.FavoriteStockDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.FavoriteStockDto;
+import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
+import com.waben.stock.interfaces.exception.ServiceException;
 
 /**
  * 收藏股票 Service
@@ -44,6 +46,11 @@ public class FavoriteStockService {
 		return check.copy();
 	}
 
+	@Transactional
+	public void removeFavoriteStock(String serialCode, Long[] stockIds) {
+		favoriteStockDao.deleteBySerialCodeAndStockIdIn(serialCode, stockIds);
+	}
+
 	public List<FavoriteStockDto> favoriteStockList(String serialCode) {
 		List<FavoriteStockDto> result = new ArrayList<>();
 		List<FavoriteStock> entityList = favoriteStockDao.favoriteStockList(serialCode);
@@ -53,6 +60,33 @@ public class FavoriteStockService {
 			}
 		}
 		return result;
+	}
+
+	public void topFavoriteStock(String serialCode, Long[] stockIds) {
+		if (stockIds != null && stockIds.length > 0) {
+			List<FavoriteStock> others = favoriteStockDao.findByStockIdNotIn(stockIds);
+			int topSize = 0;
+			for (Long stockId : stockIds) {
+				FavoriteStock favoriteStock = favoriteStockDao.findByPublisherSerialCodeAndStockId(serialCode, stockId);
+				if (favoriteStock != null) {
+					favoriteStock.setSort(topSize + 1);
+					favoriteStockDao.update(favoriteStock);
+					topSize++;
+				}
+			}
+
+			if (others != null && others.size() > 0) {
+				for (FavoriteStock favoriteStock : others) {
+					favoriteStock.setSort(topSize + 1);
+					favoriteStockDao.update(favoriteStock);
+					topSize++;
+				}
+			}
+		}
+	}
+
+	public List<Long> findStockIdByPublisherSerialCode(String serialCode) {
+		return favoriteStockDao.findStockIdByPublisherSerialCode(serialCode);
 	}
 
 }

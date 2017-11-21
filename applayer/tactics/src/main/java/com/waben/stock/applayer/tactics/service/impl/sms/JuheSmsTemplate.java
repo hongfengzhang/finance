@@ -12,7 +12,9 @@ public enum JuheSmsTemplate implements CommonalityEnum {
 
 	ModifyPasswordCode("2", "50350", "修改密码验证码", new String[] { "code", "phoneNum" }),
 
-	StrategyWarning("3", "50597", "点买持仓提醒", new String[] { "stgyName", "delayDay" });
+	BindCardCode("3", "50350", "绑定银行卡验证码", new String[] { "code", "phoneNum" }),
+
+	StrategyWarning("4", "50597", "点买持仓提醒", new String[] { "stgyName", "delayDay" });
 
 	private String index;
 

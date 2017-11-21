@@ -59,6 +59,7 @@ public class JWTTokenUtil {
 			}
 		}
 		return Jwts.builder().claim("authorities", grantedAuthStr).claim("userId", customUserDetails.getUserId())
+				.claim("serialCode", customUserDetails.getSerialCode())
 				.setSubject(customUserDetails.getUsername())
 				.setExpiration(new Date(System.currentTimeMillis() + EXPIRATIONTIME))
 				.signWith(SignatureAlgorithm.HS512, SECRET).compact();
@@ -72,7 +73,7 @@ public class JWTTokenUtil {
 		result.put("sub", claims.getSubject());
 		result.put("userId", claims.get("userId"));
 		result.put("name", claims.get("name"));
-		result.put("isAdmin", claims.get("isAdmin"));
+		result.put("serialCode", claims.get("serialCode"));
 		result.put("authorities", claims.get("authorities"));
 		result.put("exp", claims.getExpiration());
 		return result;

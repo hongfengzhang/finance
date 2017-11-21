@@ -4,7 +4,7 @@ import com.waben.stock.datalayer.manage.entity.Banner;
 import com.waben.stock.datalayer.manage.service.BannerService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.service.BannerInterface;
+import com.waben.stock.interfaces.service.manage.BannerInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

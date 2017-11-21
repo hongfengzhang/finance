@@ -22,4 +22,11 @@ public interface FavoriteStockRepository extends CustomJpaRepository<FavoriteSto
 
 	List<FavoriteStock> findByPublisherSerialCode(String serialCode, Sort sort);
 
+	@Query("select stockId from FavoriteStock where publisherSerialCode = ?1")
+	List<Long> findStockIdByPublisherSerialCode(String serialCode);
+
+	List<FavoriteStock> findByStockIdNotIn(Long[] stockIds);
+
+	void deleteByPublisherSerialCodeAndStockId(String serialCode, Long stockId);
+
 }

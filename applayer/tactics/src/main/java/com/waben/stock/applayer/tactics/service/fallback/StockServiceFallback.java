@@ -21,12 +21,17 @@ import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 public class StockServiceFallback implements StockInterface {
 
 	@Override
-	public Response<List<StockDto>> selectStock(String keyword) {
+	public Response<List<StockDto>> selectStock(String keyword, Integer limit) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
 	public Response<List<StockRecommendDto>> getStockRecommendList() {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockDto> findById(Long id) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

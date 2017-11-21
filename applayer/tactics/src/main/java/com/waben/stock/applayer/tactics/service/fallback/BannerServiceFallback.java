@@ -20,7 +20,7 @@ import com.waben.stock.interfaces.pojo.Response;
 public class BannerServiceFallback implements BannerService {
 
 	@Override
-	public Response<List<BannerDto>> getEnabledBannerList() {
+	public Response<List<BannerDto>> getByState(boolean enable) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

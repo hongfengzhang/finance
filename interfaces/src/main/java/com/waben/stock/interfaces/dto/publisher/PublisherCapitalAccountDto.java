@@ -1,9 +1,9 @@
-package com.waben.stock.interfaces.dto;
+package com.waben.stock.interfaces.dto.publisher;
 
 import java.math.BigDecimal;
 
 /**
- * 策略发布人资金账号
+ * 策略发布人和资金账号
  * 
  * @author luomengan
  *

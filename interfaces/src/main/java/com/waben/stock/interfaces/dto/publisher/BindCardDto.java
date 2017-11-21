@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.dto;
+package com.waben.stock.interfaces.dto.publisher;
 
 public class BindCardDto {
 
@@ -19,6 +19,14 @@ public class BindCardDto {
 	 * 银行卡号
 	 */
 	private String bankCard;
+	/**
+	 * 银行名称
+	 */
+	private String bankName;
+	/**
+	 * 支行名称
+	 */
+	private String branchName;
 	/**
 	 * 策略发布人序列号
 	 */
@@ -70,6 +78,22 @@ public class BindCardDto {
 
 	public void setPublisherSerialCode(String publisherSerialCode) {
 		this.publisherSerialCode = publisherSerialCode;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
+	}
+
+	public String getBranchName() {
+		return branchName;
+	}
+
+	public void setBranchName(String branchName) {
+		this.branchName = branchName;
 	}
 
 }

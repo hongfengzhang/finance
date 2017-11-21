@@ -12,16 +12,16 @@ public class ExceptionConstant {
 	public static final String DATANOTFOUND_EXCEPTION = "1003";
 	public static final String ARGUMENT_EXCEPTION = "1004";
 
-	/*业务异常*/
-	//系统管理业务异常
-	//菜单服务异常
+	/* 业务异常 */
+	// 系统管理业务异常
+	// 菜单服务异常
 	public static final String MENU_SERVICE_EXCEPTION = "3001";
-	//权限服务异常
+	// 权限服务异常
 	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "4001";
-	//员工服务异常
+	// 员工服务异常
 	public static final String STAFF_NOT_FOUND_EXCEPTION = "5001";
 
-	/*业务异常*/
+	/* 业务异常--个人中心 */
 	// 发送短信失败
 	public static final String SENDMESSAGE_FAILED_EXCEPTION = "2001";
 	// 短信发送间隔时间太短
@@ -36,7 +36,11 @@ public class ExceptionConstant {
 	public static final String USERNAME_OR_PASSWORD_ERROR_EXCEPTION = "2006";
 	// 该手机号尚未注册
 	public static final String PHONE_ISNOT_REGISTERED_EXCEPTION = "2007";
+	// 该银行卡已绑定，不能重复绑定
+	public static final String BANKCARD_ALREADY_BIND_EXCEPTION = "2008";
+
+	/* 业务异常--自选股票 */
 	// 该股票已收藏，不能重复收藏
-	public static final String STOCK_ALREADY_FAVORITE_EXCEPTION = "2008";
+	public static final String STOCK_ALREADY_FAVORITE_EXCEPTION = "3001";
 
 }

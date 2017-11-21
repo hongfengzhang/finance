@@ -33,5 +33,22 @@ public class CircularsService {
         return circularsDao.retrieveCircularsWithInExpireTime(new Date());
     }
 
+<<<<<<< HEAD
+=======
+	public List<CircularsDto> getByEnable(boolean enable) {
+		List<CircularsDto> result = new ArrayList<>();
+		if (enable) {
+			List<Circulars> entityList = circularsDao.findByExpireTimeGreaterThan(new Date());
+			if (entityList != null && entityList.size() > 0) {
+				for (Circulars entity : entityList) {
+					result.add(entity.copy());
+				}
+			}
+		} else {
+			// TODO
+		}
+		return result;
+	}
+>>>>>>> 5091503fca7ec8bf69793ce6aebaded483393d07
 
 }

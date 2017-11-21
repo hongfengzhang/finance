@@ -18,4 +18,10 @@ public interface FavoriteStockDao extends BaseDao<FavoriteStock, Long> {
 
 	List<FavoriteStock> favoriteStockList(String serialCode);
 
+	List<FavoriteStock> findByStockIdNotIn(Long[] stockIds);
+
+	void deleteBySerialCodeAndStockIdIn(String serialCode, Long[] stockIds);
+
+	List<Long> findStockIdByPublisherSerialCode(String serialCode);
+
 }

@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.dto;
+package com.waben.stock.interfaces.dto.publisher;
 
 import java.util.Date;
 

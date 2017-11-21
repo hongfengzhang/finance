@@ -11,4 +11,11 @@ import java.util.List;
  */
 public interface StockDao extends BaseDao<Stock, Long> {
 
+<<<<<<< HEAD
+=======
+	List<Stock> selectStock(String keyword, Integer limit);
+
+	List<StockRecommendDto> getStockRecommendList();
+
+>>>>>>> 5091503fca7ec8bf69793ce6aebaded483393d07
 }

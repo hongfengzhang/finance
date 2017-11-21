@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
 import com.waben.stock.applayer.tactics.service.PublisherService;
-import com.waben.stock.interfaces.dto.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 

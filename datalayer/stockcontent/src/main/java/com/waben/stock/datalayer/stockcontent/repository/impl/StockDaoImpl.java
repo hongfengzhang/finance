@@ -53,10 +53,18 @@ public class StockDaoImpl implements StockDao {
         return null;
     }
 
+<<<<<<< HEAD
     @Override
     public List<Stock> list() {
         return repository.findAll();
     }
+=======
+	@Override
+	public List<Stock> selectStock(String keyword, Integer limit) {
+		return repository.findByNameLikeOrCodeLikeOrPinyinAbbrLike("%" + keyword + "%", "%" + keyword + "%",
+				"%" + keyword + "%", limit);
+	}
+>>>>>>> 5091503fca7ec8bf69793ce6aebaded483393d07
 
 
 }

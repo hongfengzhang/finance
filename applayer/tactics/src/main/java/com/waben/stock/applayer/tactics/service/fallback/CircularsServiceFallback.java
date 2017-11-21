@@ -20,7 +20,7 @@ import com.waben.stock.interfaces.pojo.Response;
 public class CircularsServiceFallback implements CircularsService {
 
 	@Override
-	public Response<List<CircularsDto>> getEnabledCircularsList() {
+	public Response<List<CircularsDto>> getByEnable(boolean enable) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
