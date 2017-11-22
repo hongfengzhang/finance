@@ -32,7 +32,7 @@ public class Stock {
     /**
      * 所属交易指数
      */
-    @JoinColumn(name = "exponent_code")
+    @JoinColumn(name = "exponent",referencedColumnName = "exponent_code")
     @ManyToOne(targetEntity = StockExponent.class)
     private StockExponent exponent;
 

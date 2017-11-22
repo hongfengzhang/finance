@@ -1,6 +1,8 @@
 package com.waben.stock.datalayer.stockcontent.entity;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/21.
@@ -8,7 +10,7 @@ import javax.persistence.*;
  */
 @Entity
 @Table(name = "stock_exponent")
-public class StockExponent {
+public class StockExponent implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,6 +36,8 @@ public class StockExponent {
     @JoinColumn(name = "product")
     @ManyToOne(targetEntity = VarietyProduct.class)
     private VarietyProduct product;
+    @OneToMany(mappedBy = "exponent")
+    private Set<Stock> stocks;
 
     public Long getId() {
         return id;
@@ -77,5 +81,13 @@ public class StockExponent {
 
     public String getOpenMarketTime() {
         return this.getProduct().getOpenMarketTime();
+    }
+
+    public Set<Stock> getStocks() {
+        return stocks;
+    }
+
+    public void setStocks(Set<Stock> stocks) {
+        this.stocks = stocks;
     }
 }

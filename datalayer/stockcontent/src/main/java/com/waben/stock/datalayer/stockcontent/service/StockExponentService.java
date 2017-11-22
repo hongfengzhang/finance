@@ -20,4 +20,8 @@ public class StockExponentService {
     public List<StockExponent> findStockExponts() {
         return stockExponentDao.list();
     }
+
+    public StockExponent findStockExponent(String exponeneCode) {
+        return stockExponentDao.retrieveWithExponeneCode(exponeneCode);
+    }
 }

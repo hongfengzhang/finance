@@ -22,6 +22,11 @@ public class StockExponentDaoImpl implements StockExponentDao {
     private StockExponentRepository repository;
 
     @Override
+    public StockExponent retrieveWithExponeneCode(String exponentCode) {
+        return repository.findByExponentCode(exponentCode);
+    }
+
+    @Override
     public StockExponent create(StockExponent stockExponent) {
         return null;
     }

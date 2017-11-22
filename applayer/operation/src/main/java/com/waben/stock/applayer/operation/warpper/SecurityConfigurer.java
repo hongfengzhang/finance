@@ -68,11 +68,11 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT,"/login-error").permitAll()
+                .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT,"/login-error","/staff/**","/stock/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
-//                    .successForwardUrl("/aa")
+//                    .successForwardUrl("/index")
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
                 .and().exceptionHandling()
                                         .authenticationEntryPoint(new ForbiddenEntryPoint())
