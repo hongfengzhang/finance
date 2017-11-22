@@ -18,9 +18,9 @@
     </properties>
 
     <modules>
-        <module>invest</module>
-        <module>tactics</module>
-        <module>operation</module>
+        <module>invest</module><!--8081-->
+        <module>operation</module><!--8082-->
+        <module>tactics</module><!--8083-->
     </modules>
 
     <dependencies>

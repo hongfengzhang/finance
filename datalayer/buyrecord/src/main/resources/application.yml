@@ -1,0 +1,22 @@
+server:
+  port: 8007
+  context-path: /buyrecord
+spring:
+  devtools:
+    restart:
+      additional-paths: datalayer/buyrecord/src/main/java
+  mvc:
+    throw-exception-if-no-handler-found: true
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+      naming:
+        strategy: org.hibernate.cfg.ImprovedNamingStrategy
+    properties:
+        hibernate:
+          dialect: org.hibernate.dialect.MySQL5Dialect
+          connection:
+            autocommit: true

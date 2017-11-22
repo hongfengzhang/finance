@@ -10,16 +10,11 @@
 	</parent>
 
 	<groupId>com.waben.stock.datalayer</groupId>
-	<artifactId>financial</artifactId>
+	<artifactId>buyrecord</artifactId>
 	<packaging>jar</packaging>
 
-	<name>financial</name>
-	<description>财务模块</description>
-
-
-	<properties>
-
-	</properties>
+	<name>buyrecord</name>
+	<description>点买交易记录服务</description>
 
 	<dependencies>
 
