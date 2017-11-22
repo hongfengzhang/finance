@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.tactics.controller;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +11,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.tactics.dto.system.AppHomeTopDataDto;
+import com.waben.stock.applayer.tactics.dto.system.StockMarketIndex;
 import com.waben.stock.applayer.tactics.service.BannerService;
 import com.waben.stock.applayer.tactics.service.CircularsService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
-import com.waben.stock.interfaces.dto.system.AppHomeTopDataDto;
-import com.waben.stock.interfaces.dto.system.StockMarketIndex;
 import com.waben.stock.interfaces.pojo.Response;
 
 import io.swagger.annotations.ApiOperation;
@@ -78,11 +79,14 @@ public class SystemController {
 			return result;
 		}
 		// 获取股票市场指数
-		StockMarketIndex stockMarketIndex = new StockMarketIndex();
-		stockMarketIndex.setSzzs(new BigDecimal(3410.50), new BigDecimal(3392.40));
-		stockMarketIndex.setSzcz(new BigDecimal(11602.10), new BigDecimal(11437.55));
-		stockMarketIndex.setCybz(new BigDecimal(1856.96), new BigDecimal(1859.75));
-		result.getResult().setStockMarketIndex(stockMarketIndex);
+		List<StockMarketIndex> stockMarketIndexList = new ArrayList<>();
+		stockMarketIndexList.add(new StockMarketIndex("上证指数", "1A0001", new BigDecimal(3427.93), new BigDecimal(17.43),
+				new BigDecimal(0.0051)));
+		stockMarketIndexList.add(new StockMarketIndex("深证成指", "2A01", new BigDecimal(11636.86), new BigDecimal(34.76),
+				new BigDecimal(0.003)));
+		stockMarketIndexList.add(new StockMarketIndex("创业板指", "399006", new BigDecimal(1863.36), new BigDecimal(6.4),
+				new BigDecimal(0.0034)));
+		result.getResult().setStockMarketIndexList(stockMarketIndexList);
 		return result;
 	}
 

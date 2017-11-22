@@ -1,7 +1,6 @@
 package com.waben.stock.applayer.tactics.dto.system;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * 股票市场指数
@@ -12,134 +11,78 @@ import java.math.RoundingMode;
 public class StockMarketIndex {
 
 	/**
-	 * 上证指数
+	 * 指数名称
 	 */
-	private BigDecimal szzs;
+	private String name;
 	/**
-	 * 上证指数相对于上一天收盘价的波动
+	 * 指数代码
 	 */
-	private BigDecimal szzsWave;
+	private String code;
 	/**
-	 * 上证指数相对于上一天收盘价的波动比例
+	 * 最新价
 	 */
-	private BigDecimal szzsWaveRatio;
+	private BigDecimal lastPrice;
 	/**
-	 * 深圳成指
+	 * 涨跌价格
 	 */
-	private BigDecimal szcz;
+	private BigDecimal upDropPrice;
 	/**
-	 * 深圳成指相对于上一天收盘价的波动
+	 * 涨跌幅度
 	 */
-	private BigDecimal szczWave;
-	/**
-	 * 深圳成指相对于上一天收盘价的波动比例
-	 */
-	private BigDecimal szczWaveRatio;
-	/**
-	 * 创业板指
-	 */
-	private BigDecimal cybz;
+	private BigDecimal upDropSpeed;
 
-	/**
-	 * 创业板指相对于上一天收盘价的波动
-	 */
-	private BigDecimal cybzWave;
-	/**
-	 * 创业板指相对于上一天收盘价的波动比例
-	 */
-	private BigDecimal cybzWaveRatio;
-
-	public void setSzzs(BigDecimal szzs, BigDecimal szzsBefore) {
-		this.szzs = szzs;
-		this.szzsWave = szzs.subtract(szzsBefore);
-		this.szczWaveRatio = szzs.subtract(szzsBefore).multiply(new BigDecimal(100)).divide(szzsBefore, 2,
-				RoundingMode.HALF_UP);
+	public StockMarketIndex(String name, String code, BigDecimal lastPrice, BigDecimal upDropPrice,
+			BigDecimal upDropSpeed) {
+		super();
+		this.name = name;
+		this.code = code;
+		this.lastPrice = lastPrice;
+		this.upDropPrice = upDropPrice;
+		this.upDropSpeed = upDropSpeed;
 	}
 
-	public void setSzcz(BigDecimal szcz, BigDecimal szczBefore) {
-		this.szcz = szcz;
-		this.szczWave = szcz.subtract(szczBefore);
-		this.szczWaveRatio = szcz.subtract(szczBefore).multiply(new BigDecimal(100)).divide(szczBefore, 2,
-				RoundingMode.HALF_UP);
+	public StockMarketIndex() {
+		super();
 	}
 
-	public void setCybz(BigDecimal cybz, BigDecimal cybzBefore) {
-		this.cybz = cybz;
-		this.cybzWave = cybz.subtract(cybzBefore);
-		this.cybzWaveRatio = cybz.subtract(cybzBefore).multiply(new BigDecimal(100)).divide(cybzBefore, 2,
-				RoundingMode.HALF_UP);
+	public String getName() {
+		return name;
 	}
 
-	public BigDecimal getSzzs() {
-		return szzs;
+	public void setName(String name) {
+		this.name = name;
 	}
 
-	public void setSzzs(BigDecimal szzs) {
-		this.szzs = szzs;
+	public String getCode() {
+		return code;
 	}
 
-	public BigDecimal getSzzsWave() {
-		return szzsWave;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
-	public void setSzzsWave(BigDecimal szzsWave) {
-		this.szzsWave = szzsWave;
+	public BigDecimal getLastPrice() {
+		return lastPrice;
 	}
 
-	public BigDecimal getSzzsWaveRatio() {
-		return szzsWaveRatio;
+	public void setLastPrice(BigDecimal lastPrice) {
+		this.lastPrice = lastPrice;
 	}
 
-	public void setSzzsWaveRatio(BigDecimal szzsWaveRatio) {
-		this.szzsWaveRatio = szzsWaveRatio;
+	public BigDecimal getUpDropPrice() {
+		return upDropPrice;
 	}
 
-	public BigDecimal getSzcz() {
-		return szcz;
+	public void setUpDropPrice(BigDecimal upDropPrice) {
+		this.upDropPrice = upDropPrice;
 	}
 
-	public void setSzcz(BigDecimal szcz) {
-		this.szcz = szcz;
+	public BigDecimal getUpDropSpeed() {
+		return upDropSpeed;
 	}
 
-	public BigDecimal getSzczWave() {
-		return szczWave;
-	}
-
-	public void setSzczWave(BigDecimal szczWave) {
-		this.szczWave = szczWave;
-	}
-
-	public BigDecimal getSzczWaveRatio() {
-		return szczWaveRatio;
-	}
-
-	public void setSzczWaveRatio(BigDecimal szczWaveRatio) {
-		this.szczWaveRatio = szczWaveRatio;
-	}
-
-	public BigDecimal getCybz() {
-		return cybz;
-	}
-
-	public void setCybz(BigDecimal cybz) {
-		this.cybz = cybz;
-	}
-
-	public BigDecimal getCybzWave() {
-		return cybzWave;
-	}
-
-	public void setCybzWave(BigDecimal cybzWave) {
-		this.cybzWave = cybzWave;
-	}
-
-	public BigDecimal getCybzWaveRatio() {
-		return cybzWaveRatio;
-	}
-
-	public void setCybzWaveRatio(BigDecimal cybzWaveRatio) {
-		this.cybzWaveRatio = cybzWaveRatio;
+	public void setUpDropSpeed(BigDecimal upDropSpeed) {
+		this.upDropSpeed = upDropSpeed;
 	}
 
 }

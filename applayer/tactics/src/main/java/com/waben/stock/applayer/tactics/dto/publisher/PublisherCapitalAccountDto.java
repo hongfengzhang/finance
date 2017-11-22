@@ -2,6 +2,9 @@ package com.waben.stock.applayer.tactics.dto.publisher;
 
 import java.math.BigDecimal;
 
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+
 /**
  * 策略发布人和资金账号
  * 

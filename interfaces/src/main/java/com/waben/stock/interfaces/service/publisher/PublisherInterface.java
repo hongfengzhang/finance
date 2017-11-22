@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -23,14 +22,14 @@ public interface PublisherInterface {
 	Response<PublisherDto> findByPhone(@RequestParam(name = "phone") String phone);
 
 	@RequestMapping(value = "/findBySerialCode", method = RequestMethod.GET)
-	Response<PublisherCapitalAccountDto> findBySerialCode(@RequestParam(name = "serialCode") String serialCode);
+	Response<PublisherDto> findBySerialCode(@RequestParam(name = "serialCode") String serialCode);
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
-	Response<PublisherCapitalAccountDto> register(@RequestParam(name = "phone") String phone,
+	Response<PublisherDto> register(@RequestParam(name = "phone") String phone,
 			@RequestParam(name = "password") String password);
 
 	@RequestMapping(value = "/modifyPassword", method = RequestMethod.PUT)
-	Response<PublisherCapitalAccountDto> modifyPassword(@RequestParam(name = "phone") String phone,
+	Response<PublisherDto> modifyPassword(@RequestParam(name = "phone") String phone,
 			@RequestParam(name = "password") String password);
 
 	@RequestMapping(value = "/modifyPaymentPassword", method = RequestMethod.PUT)

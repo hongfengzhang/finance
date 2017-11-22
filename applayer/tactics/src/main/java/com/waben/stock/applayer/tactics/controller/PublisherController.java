@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
+import com.waben.stock.applayer.tactics.dto.publisher.PublisherExtensionDto;
+import com.waben.stock.applayer.tactics.dto.publisher.PublisherExtensionDto.PublisherExtensionUserDto;
+import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
@@ -21,11 +25,7 @@ import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherExtensionDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherExtensionDto.PublisherExtensionUserDto;
-import com.waben.stock.interfaces.dto.publisher.SettingRemindDto;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.RandomUtil;
@@ -75,20 +75,28 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
-		Response<PublisherCapitalAccountDto> result = publisherService.register(phone, password);
-		if ("200".equals(result.getCode()) && result.getResult() != null) {
-			String token = JWTTokenUtil
-					.generateToken(new CustomUserDetails(result.getResult().getId(), result.getResult().getSerialCode(),
-							result.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
-			result.getResult().setToken(token);
+		Response<PublisherDto> publisherResp = publisherService.register(phone, password);
+		Response<CapitalAccountDto> accountResp = publisherService
+				.getCapitalAccount(publisherResp.getResult().getSerialCode());
+		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
+				accountResp.getResult());
+		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {
+			String token = JWTTokenUtil.generateToken(
+					new CustomUserDetails(publisherResp.getResult().getId(), publisherResp.getResult().getSerialCode(),
+							publisherResp.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+			data.setToken(token);
 		}
-		return result;
+		return new Response<>(data);
 	}
 
 	@GetMapping("/getCurrent")
 	@ApiOperation(value = "获取当前发布策略人信息")
 	public Response<PublisherCapitalAccountDto> getCurrent() {
-		return publisherService.findBySerialCode(SecurityUtil.getSerialCode());
+		Response<PublisherDto> publisherResp = publisherService.findBySerialCode(SecurityUtil.getSerialCode());
+		Response<CapitalAccountDto> accountResp = publisherService.getCapitalAccount(SecurityUtil.getSerialCode());
+		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
+				accountResp.getResult());
+		return new Response<>(data);
 	}
 
 	@GetMapping("/getSettingRemind")
@@ -130,14 +138,18 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
 		// 修改密码
-		Response<PublisherCapitalAccountDto> result = publisherService.modifyPassword(phone, password);
-		if ("200".equals(result.getCode()) && result.getResult() != null) {
-			String token = JWTTokenUtil
-					.generateToken(new CustomUserDetails(result.getResult().getId(), result.getResult().getSerialCode(),
-							result.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
-			result.getResult().setToken(token);
+		Response<PublisherDto> publisherResp = publisherService.modifyPassword(phone, password);
+		Response<CapitalAccountDto> accountResp = publisherService
+				.getCapitalAccount(publisherResp.getResult().getSerialCode());
+		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
+				accountResp.getResult());
+		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {
+			String token = JWTTokenUtil.generateToken(
+					new CustomUserDetails(publisherResp.getResult().getId(), publisherResp.getResult().getSerialCode(),
+							publisherResp.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+			data.setToken(token);
 		}
-		return result;
+		return new Response<>(data);
 	}
 
 	@PostMapping("/modifyPaymentPassword")
