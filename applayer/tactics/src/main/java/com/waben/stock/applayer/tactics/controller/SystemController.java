@@ -1,7 +1,5 @@
 package com.waben.stock.applayer.tactics.controller;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.dto.system.AppHomeTopDataDto;
-import com.waben.stock.applayer.tactics.dto.system.StockMarketIndex;
 import com.waben.stock.applayer.tactics.service.BannerService;
 import com.waben.stock.applayer.tactics.service.CircularsService;
+import com.waben.stock.applayer.tactics.service.StockMarketService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -43,6 +41,9 @@ public class SystemController {
 
 	@Autowired
 	private CircularsService circularsService;
+	
+	@Autowired
+	private StockMarketService stockMarketService;
 
 	@GetMapping("/getEnabledBannerList")
 	@ApiOperation(value = "获取轮播图列表")
@@ -79,14 +80,7 @@ public class SystemController {
 			return result;
 		}
 		// 获取股票市场指数
-		List<StockMarketIndex> stockMarketIndexList = new ArrayList<>();
-		stockMarketIndexList.add(new StockMarketIndex("上证指数", "1A0001", new BigDecimal(3427.93), new BigDecimal(17.43),
-				new BigDecimal(0.0051)));
-		stockMarketIndexList.add(new StockMarketIndex("深证成指", "2A01", new BigDecimal(11636.86), new BigDecimal(34.76),
-				new BigDecimal(0.003)));
-		stockMarketIndexList.add(new StockMarketIndex("创业板指", "399006", new BigDecimal(1863.36), new BigDecimal(6.4),
-				new BigDecimal(0.0034)));
-		result.getResult().setStockMarketIndexList(stockMarketIndexList);
+		result.getResult().setStockMarketIndexList(stockMarketService.listStockExponent());
 		return result;
 	}
 

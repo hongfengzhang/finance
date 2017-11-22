@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author luomengan
  *
  */
-public class StockMarketIndex {
+public class StockExponentDto {
 
 	/**
 	 * 指数名称
@@ -31,7 +31,7 @@ public class StockMarketIndex {
 	 */
 	private BigDecimal upDropSpeed;
 
-	public StockMarketIndex(String name, String code, BigDecimal lastPrice, BigDecimal upDropPrice,
+	public StockExponentDto(String name, String code, BigDecimal lastPrice, BigDecimal upDropPrice,
 			BigDecimal upDropSpeed) {
 		super();
 		this.name = name;
@@ -41,7 +41,7 @@ public class StockMarketIndex {
 		this.upDropSpeed = upDropSpeed;
 	}
 
-	public StockMarketIndex() {
+	public StockExponentDto() {
 		super();
 	}
 
@@ -66,7 +66,7 @@ public class StockMarketIndex {
 	}
 
 	public void setLastPrice(BigDecimal lastPrice) {
-		this.lastPrice = lastPrice;
+		this.lastPrice = lastPrice.setScale(2, BigDecimal.ROUND_HALF_UP);
 	}
 
 	public BigDecimal getUpDropPrice() {
@@ -74,7 +74,7 @@ public class StockMarketIndex {
 	}
 
 	public void setUpDropPrice(BigDecimal upDropPrice) {
-		this.upDropPrice = upDropPrice;
+		this.upDropPrice = upDropPrice.setScale(2, BigDecimal.ROUND_HALF_UP);
 	}
 
 	public BigDecimal getUpDropSpeed() {
@@ -82,7 +82,7 @@ public class StockMarketIndex {
 	}
 
 	public void setUpDropSpeed(BigDecimal upDropSpeed) {
-		this.upDropSpeed = upDropSpeed;
+		this.upDropSpeed = upDropSpeed.setScale(4, BigDecimal.ROUND_HALF_UP);
 	}
 
 }

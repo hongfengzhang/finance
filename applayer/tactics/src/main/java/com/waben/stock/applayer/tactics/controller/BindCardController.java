@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.tactics.dto.publisher.BindCardFullDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.service.BindCardService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -33,7 +35,7 @@ public class BindCardController {
 
 	@PostMapping("/bindBankCard")
 	@ApiOperation(value = "绑定银行卡")
-	public Response<BindCardDto> bindBankCard(@RequestParam(required = true) String name,
+	public Response<BindCardFullDto> bindBankCard(@RequestParam(required = true) String name,
 			@RequestParam(required = true) String idCard, @RequestParam(required = true) String phone,
 			@RequestParam(required = true) String bankCard, @RequestParam(required = true) String verificationCode) {
 		// 检查验证码
@@ -47,13 +49,14 @@ public class BindCardController {
 		bindCardDto.setPublisherSerialCode(SecurityUtil.getSerialCode());
 
 		Response<BindCardDto> result = bindCardService.bindBankCard(bindCardDto);
-		return result;
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, result.getResult(), false));
 	}
 
 	@GetMapping("/myBankCardList")
 	@ApiOperation(value = "我的已绑定银行卡列表")
-	public Response<List<BindCardDto>> myBankCardList() {
-		return bindCardService.publisherBankCardList(SecurityUtil.getSerialCode());
+	public Response<List<BindCardFullDto>> myBankCardList() {
+		Response<List<BindCardDto>> listResp = bindCardService.publisherBankCardList(SecurityUtil.getSerialCode());
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(listResp.getResult(), BindCardFullDto.class));
 	}
 
 }

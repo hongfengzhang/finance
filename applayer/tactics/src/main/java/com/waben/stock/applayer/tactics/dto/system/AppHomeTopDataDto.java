@@ -24,7 +24,7 @@ public class AppHomeTopDataDto {
 	/**
 	 * 股票市场指数
 	 */
-	private List<StockMarketIndex> stockMarketIndexList;
+	private List<StockExponentDto> stockMarketIndexList;
 
 	public List<BannerDto> getBannerList() {
 		return bannerList;
@@ -42,11 +42,11 @@ public class AppHomeTopDataDto {
 		this.circularsList = circularsList;
 	}
 
-	public List<StockMarketIndex> getStockMarketIndexList() {
+	public List<StockExponentDto> getStockMarketIndexList() {
 		return stockMarketIndexList;
 	}
 
-	public void setStockMarketIndexList(List<StockMarketIndex> stockMarketIndexList) {
+	public void setStockMarketIndexList(List<StockExponentDto> stockMarketIndexList) {
 		this.stockMarketIndexList = stockMarketIndexList;
 	}
 
