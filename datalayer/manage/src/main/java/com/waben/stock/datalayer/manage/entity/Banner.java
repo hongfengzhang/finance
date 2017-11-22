@@ -86,7 +86,7 @@ public class Banner {
         this.bannerForward = bannerForward;
     }
 
-    private String getForward() {
+    public String getForward() {
         return getBannerForward().getForward();
     }
 }

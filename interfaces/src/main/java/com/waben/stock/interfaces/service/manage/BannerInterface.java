@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * 轮播 公共接口

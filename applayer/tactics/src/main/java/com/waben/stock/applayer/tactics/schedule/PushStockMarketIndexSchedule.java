@@ -25,7 +25,7 @@ public class PushStockMarketIndexSchedule {
 	/**
 	 * 推送间隔
 	 */
-	public static final long Push_Interval = 10000;
+	public static final long Push_Interval = 5000;
 
 	@Autowired
 	private StockMarketWebsocket socket;

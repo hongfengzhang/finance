@@ -10,30 +10,12 @@ import java.util.Date;
  */
 public class CircularsDto {
 
-	/**
-	 * 主键ID
-	 */
 	private Long id;
-	/**
-	 * 标题
-	 */
 	private String title;
-	/**
-	 * 内容
-	 */
 	private String content;
-	/**
-	 * 创建时间
-	 */
 	private Date createTime;
-	/**
-	 * 过期时间
-	 */
 	private Date expireTime;
-
 	private Boolean enable;
-
-	private String link;
 
 	public Long getId() {
 		return id;
@@ -83,11 +65,4 @@ public class CircularsDto {
 		this.enable = enable;
 	}
 
-	public String getLink() {
-		return link;
-	}
-
-	public void setLink(String link) {
-		this.link = link;
-	}
 }

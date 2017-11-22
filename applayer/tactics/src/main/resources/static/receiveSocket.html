@@ -12,7 +12,7 @@ var stompClient = Stomp.over(s);
 stompClient.connect({}, function () {
 	console.log('notice socket connected!');
 	stompClient.subscribe('/topic/stockMarketIndex', function (data) {            
-		$('#content')[0].innerHTML += data.body + "<br /><br />";        
+		$('#content')[0].innerHTML += "---" + data.body + "---<br /><br />";        
 	});
 	
 	// 监听断开连接

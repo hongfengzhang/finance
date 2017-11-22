@@ -10,30 +10,13 @@ import java.util.Date;
  */
 public class BannerDto {
 
-	/**
-	 * 主键ID
-	 */
 	private Long id;
-	/**
-	 * 轮播图链接
-	 */
 	private String link;
-	/**
-	 * 描述
-	 */
 	private String describtion;
-	/**
-	 * 排序
-	 */
 	private Integer sort;
-	/**
-	 * 状态
-	 */
-	private Boolean state;
-	/**
-	 * 创建时间
-	 */
+	private Boolean enable;
 	private Date createTime;
+	private String forward;
 
 	public Long getId() {
 		return id;
@@ -67,12 +50,12 @@ public class BannerDto {
 		this.sort = sort;
 	}
 
-	public Boolean getState() {
-		return state;
+	public Boolean getEnable() {
+		return enable;
 	}
 
-	public void setState(Boolean state) {
-		this.state = state;
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 	public Date getCreateTime() {
@@ -82,4 +65,13 @@ public class BannerDto {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
+
+	public String getForward() {
+		return forward;
+	}
+
+	public void setForward(String forward) {
+		this.forward = forward;
+	}
+
 }
