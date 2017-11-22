@@ -13,11 +13,13 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.CustomUsernamePasswordAuthenticationToken;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -50,12 +52,15 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		String token = JWTTokenUtil.generateToken(customUserDetails);
 		customUserDetails.setToken(token);
 		// step 2 : 返回用户信息和token到客户端
-		Response<PublisherCapitalAccountDto> result = new Response<>(
-				publisherService.findBySerialCode(customUserDetails.getSerialCode()).getResult());
-		result.getResult().setToken(token);
+		String serialCode = customUserDetails.getSerialCode();
+		Response<PublisherDto> publisherResp = publisherService.findBySerialCode(serialCode);
+		Response<CapitalAccountDto> accountResp = publisherService.getCapitalAccount(serialCode);
+		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
+				accountResp.getResult());
+		data.setToken(token);
 		res.setContentType("application/json;charset=utf-8");
 		res.setStatus(HttpServletResponse.SC_OK);
-		res.getWriter().println(JacksonUtil.encode(result));
+		res.getWriter().println(JacksonUtil.encode(new Response<>(data)));
 	}
 
 	@Override

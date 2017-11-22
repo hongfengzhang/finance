@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -23,17 +22,17 @@ public class PublisherServiceFallback implements PublisherService {
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> register(String phone, String password) {
+	public Response<PublisherDto> register(String phone, String password) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> findBySerialCode(String serialCode) {
+	public Response<PublisherDto> findBySerialCode(String serialCode) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> modifyPassword(String phone, String password) {
+	public Response<PublisherDto> modifyPassword(String phone, String password) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

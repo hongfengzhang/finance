@@ -46,6 +46,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
+		// 静态页面
+		http.authorizeRequests().antMatchers("/receiveSocket.html", "/js/**", "/bankIcon/**").permitAll();
+		// websocket
+		http.authorizeRequests().antMatchers("/socket/**").permitAll();
 		// swagger页面
 		http.authorizeRequests().antMatchers("/swagger-ui.html").permitAll();
 		http.authorizeRequests().antMatchers("/webjars/**").permitAll();

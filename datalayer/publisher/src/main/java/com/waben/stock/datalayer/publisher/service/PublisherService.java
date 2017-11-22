@@ -14,7 +14,6 @@ import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 
@@ -40,7 +39,7 @@ public class PublisherService {
 	}
 
 	@Transactional
-	public PublisherCapitalAccountDto register(String phone, String password) {
+	public PublisherDto register(String phone, String password) {
 		// 检查手机号
 		Publisher check = publisherDao.findByPhone(phone);
 		if (check != null) {
@@ -60,16 +59,15 @@ public class PublisherService {
 		account.setUpdateTime(new Date());
 		capitalAccountDao.create(account);
 		// 返回
-		return new PublisherCapitalAccountDto(publisher.copy(), account.copy());
+		return publisher.copy();
 	}
 
-	public PublisherCapitalAccountDto findBySerialCode(String serialCode) {
+	public PublisherDto findBySerialCode(String serialCode) {
 		Publisher publisher = publisherDao.findBySerialCode(serialCode);
-		CapitalAccount account = capitalAccountDao.findByPublisherSerialCode(serialCode);
-		return new PublisherCapitalAccountDto(publisher.copy(), account.copy());
+		return publisher.copy();
 	}
 
-	public PublisherCapitalAccountDto modifyPassword(String phone, String password) {
+	public PublisherDto modifyPassword(String phone, String password) {
 		// 检查手机号
 		Publisher publisher = publisherDao.findByPhone(phone);
 		if (publisher == null) {
@@ -78,8 +76,7 @@ public class PublisherService {
 		// 更新密码
 		publisher.setPassword(password);
 		publisherDao.update(publisher);
-		CapitalAccount account = capitalAccountDao.findByPublisherSerialCode(publisher.getSerialCode());
-		return new PublisherCapitalAccountDto(publisher.copy(), account.copy());
+		return publisher.copy();
 	}
 
 	public PublisherDto findByPhone(String phone) {

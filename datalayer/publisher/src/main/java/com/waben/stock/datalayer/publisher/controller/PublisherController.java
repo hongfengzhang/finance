@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.publisher.service.PublisherService;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.publisher.PublisherInterface;
@@ -34,17 +33,17 @@ public class PublisherController implements PublisherInterface {
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> register(String phone, String password) {
+	public Response<PublisherDto> register(String phone, String password) {
 		return new Response<>(publisherService.register(phone, password));
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> findBySerialCode(String serialCode) {
+	public Response<PublisherDto> findBySerialCode(String serialCode) {
 		return new Response<>(publisherService.findBySerialCode(serialCode));
 	}
 
 	@Override
-	public Response<PublisherCapitalAccountDto> modifyPassword(String phone, String password) {
+	public Response<PublisherDto> modifyPassword(String phone, String password) {
 		return new Response<>(publisherService.modifyPassword(phone, password));
 	}
 
