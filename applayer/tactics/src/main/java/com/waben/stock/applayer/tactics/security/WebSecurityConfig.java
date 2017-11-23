@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
 		// 静态页面
-		http.authorizeRequests().antMatchers("/receiveSocket.html", "/js/**", "/bankIcon/**").permitAll();
+		http.authorizeRequests().antMatchers("/receiveSocket.html", "/js/**", "/bankIcon/**", "/bannerPic/**").permitAll();
 		// websocket
 		http.authorizeRequests().antMatchers("/socket/**").permitAll();
 		// swagger页面
