@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -16,8 +15,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public interface PublisherInterface {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-
 	Response<PublisherDto> findById(@PathVariable("id") Long id);
+
 	@RequestMapping(value = "/findByPhone", method = RequestMethod.GET)
 	Response<PublisherDto> findByPhone(@RequestParam(name = "phone") String phone);
 
@@ -35,8 +34,5 @@ public interface PublisherInterface {
 	@RequestMapping(value = "/modifyPaymentPassword", method = RequestMethod.PUT)
 	Response<String> modifyPaymentPassword(@RequestParam(name = "serialCode") String serialCode,
 			@RequestParam(name = "paymentPassword") String paymentPassword);
-	
-	@RequestMapping(value = "/getCapitalAccount", method = RequestMethod.GET)
-	Response<CapitalAccountDto> getCapitalAccount(@RequestParam(name = "serialCode") String serialCode);
 
 }

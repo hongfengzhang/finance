@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
+import com.waben.stock.applayer.tactics.service.CapitalAccountService;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 
 @Configuration
@@ -20,12 +21,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private PublisherService publisherService;
+	
+	@Autowired
+	private CapitalAccountService accountService;
 
 	@Bean
 	public JWTLoginFilter jwtLoginFilter() {
 		try {
 			JWTLoginFilter result = new JWTLoginFilter(authenticationManager());
 			result.setPublisherService(publisherService);
+			result.setAccountService(accountService);
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("get AuthenticationManager exception!", e);

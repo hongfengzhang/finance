@@ -58,4 +58,9 @@ public class CapitalAccountDaoImpl implements CapitalAccountDao {
 		return repository.findByPublisherSerialCode(serialCode);
 	}
 
+	@Override
+	public CapitalAccount findByPublisherId(Long publisherId) {
+		return repository.findByPublisherId(publisherId);
+	}
+
 }

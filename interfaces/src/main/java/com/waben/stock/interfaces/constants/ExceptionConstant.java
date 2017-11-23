@@ -38,6 +38,8 @@ public class ExceptionConstant {
 	public static final String PHONE_ISNOT_REGISTERED_EXCEPTION = "2007";
 	// 该银行卡已绑定，不能重复绑定
 	public static final String BANKCARD_ALREADY_BIND_EXCEPTION = "2008";
+	// 账户可用余额不足
+	public static final String AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION = "2009";
 
 	/* 业务异常--自选股票 */
 	// 该股票已收藏，不能重复收藏

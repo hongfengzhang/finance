@@ -20,6 +20,7 @@ import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
 import com.waben.stock.applayer.tactics.service.BindCardService;
+import com.waben.stock.applayer.tactics.service.CapitalAccountService;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
@@ -42,6 +43,9 @@ public class PublisherController {
 
 	@Autowired
 	private PublisherService publisherService;
+
+	@Autowired
+	private CapitalAccountService accountService;
 
 	@Autowired
 	private BindCardService bindCardService;
@@ -76,8 +80,8 @@ public class PublisherController {
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
 		Response<PublisherDto> publisherResp = publisherService.register(phone, password);
-		Response<CapitalAccountDto> accountResp = publisherService
-				.getCapitalAccount(publisherResp.getResult().getSerialCode());
+		Response<CapitalAccountDto> accountResp = accountService
+				.findByPublisherSerialCode(publisherResp.getResult().getSerialCode());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {
@@ -93,7 +97,8 @@ public class PublisherController {
 	@ApiOperation(value = "获取当前发布策略人信息")
 	public Response<PublisherCapitalAccountDto> getCurrent() {
 		Response<PublisherDto> publisherResp = publisherService.findBySerialCode(SecurityUtil.getSerialCode());
-		Response<CapitalAccountDto> accountResp = publisherService.getCapitalAccount(SecurityUtil.getSerialCode());
+		Response<CapitalAccountDto> accountResp = accountService
+				.findByPublisherSerialCode(SecurityUtil.getSerialCode());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		return new Response<>(data);
@@ -117,8 +122,8 @@ public class PublisherController {
 			return result;
 		}
 		// 获取是否设置过支付密码
-		Response<CapitalAccountDto> capitalAccountResp = publisherService
-				.getCapitalAccount(SecurityUtil.getSerialCode());
+		Response<CapitalAccountDto> capitalAccountResp = accountService
+				.findByPublisherSerialCode(SecurityUtil.getSerialCode());
 		if ("200".equals(capitalAccountResp.getCode())) {
 			if (capitalAccountResp.getResult() != null && capitalAccountResp.getResult().getPaymentPassword() != null
 					&& !"".equals(capitalAccountResp.getResult().getPaymentPassword())) {
@@ -139,8 +144,8 @@ public class PublisherController {
 		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
 		// 修改密码
 		Response<PublisherDto> publisherResp = publisherService.modifyPassword(phone, password);
-		Response<CapitalAccountDto> accountResp = publisherService
-				.getCapitalAccount(publisherResp.getResult().getSerialCode());
+		Response<CapitalAccountDto> accountResp = accountService
+				.findByPublisherSerialCode(publisherResp.getResult().getSerialCode());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {

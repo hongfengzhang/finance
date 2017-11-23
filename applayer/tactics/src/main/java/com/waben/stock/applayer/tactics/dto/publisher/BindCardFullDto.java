@@ -1,7 +1,7 @@
 package com.waben.stock.applayer.tactics.dto.publisher;
 
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
-import com.waben.stock.interfaces.enums.BankEnum;
+import com.waben.stock.interfaces.enums.BankType;
 
 public class BindCardFullDto extends BindCardDto {
 
@@ -14,11 +14,11 @@ public class BindCardFullDto extends BindCardDto {
 	 * @return 银行图标链接
 	 */
 	public String getBankIconLink() {
-		BankEnum bankEnum = BankEnum.getByBank(this.getBankName());
-		if (bankEnum == null) {
-			bankEnum = BankEnum.DEFAULT;
+		BankType bankType = BankType.getByBank(this.getBankName());
+		if (bankType == null) {
+			bankType = BankType.DEFAULT;
 		}
-		return bankEnum.getIconLink();
+		return bankType.getIconLink();
 	}
 
 	public void setBankIconLink(String bankIconLink) {

@@ -3,7 +3,7 @@ package com.waben.stock.interfaces.enums;
 import java.util.HashMap;
 import java.util.Map;
 
-public enum BankEnum implements CommonalityEnum {
+public enum BankType implements CommonalityEnum {
 
 	DEFAULT("1", "默认银行", "/bankIcon/default@3x.png"),
 
@@ -49,21 +49,21 @@ public enum BankEnum implements CommonalityEnum {
 
 	private String iconLink;
 
-	private BankEnum(String index, String bank, String iconLink) {
+	private BankType(String index, String bank, String iconLink) {
 		this.index = index;
 		this.bank = bank;
 		this.iconLink = iconLink;
 	}
 
-	private static Map<String, BankEnum> valueMap = new HashMap<String, BankEnum>();
+	private static Map<String, BankType> valueMap = new HashMap<String, BankType>();
 
 	static {
-		for (BankEnum _enum : BankEnum.values()) {
+		for (BankType _enum : BankType.values()) {
 			valueMap.put(_enum.getBank(), _enum);
 		}
 	}
 
-	public static BankEnum getByBank(String bank) {
+	public static BankType getByBank(String bank) {
 		return valueMap.get(bank);
 	}
 

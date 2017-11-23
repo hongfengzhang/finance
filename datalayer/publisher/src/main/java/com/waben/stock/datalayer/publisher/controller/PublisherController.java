@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.publisher.service.PublisherService;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.publisher.PublisherInterface;
@@ -56,11 +55,6 @@ public class PublisherController implements PublisherInterface {
 	public Response<String> modifyPaymentPassword(String serialCode, String paymentPassword) {
 		publisherService.modifyPaymentPassword(serialCode, paymentPassword);
 		return new Response<>("修改支付密码成功");
-	}
-
-	@Override
-	public Response<CapitalAccountDto> getCapitalAccount(String serialCode) {
-		return new Response<>(publisherService.getCapitalAccount(serialCode));
 	}
 
 }

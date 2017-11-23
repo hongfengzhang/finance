@@ -27,15 +27,20 @@ public class CapitalAccount {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 策略发布人序列号
-	 */
-	@Column(name = "publisher_serial_code", nullable = false)
-	private String publisherSerialCode;
-	/**
 	 * 账户余额
 	 */
 	@Column(name = "balance")
 	private BigDecimal balance;
+	/**
+	 * 账户可用余额
+	 */
+	@Column(name = "available_balance")
+	private BigDecimal availableBalance;
+	/**
+	 * 冻结资金
+	 */
+	@Column(name = "frozen_capital")
+	private BigDecimal frozenCapital;
 	/**
 	 * 支付密码
 	 */
@@ -46,6 +51,16 @@ public class CapitalAccount {
 	 */
 	@Column(name = "update_time")
 	private Date updateTime;
+	/**
+	 * 发布人ID
+	 */
+	@Column(name = "publisher_id")
+	private Long publisherId;
+	/**
+	 * 发布人序列号
+	 */
+	@Column(name = "publisher_serial_code")
+	private String publisherSerialCode;
 
 	public Long getId() {
 		return id;
@@ -53,14 +68,6 @@ public class CapitalAccount {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
-
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
 	}
 
 	public BigDecimal getBalance() {
@@ -71,12 +78,20 @@ public class CapitalAccount {
 		this.balance = balance;
 	}
 
-	public Date getUpdateTime() {
-		return updateTime;
+	public BigDecimal getAvailableBalance() {
+		return availableBalance;
 	}
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
+	public void setAvailableBalance(BigDecimal availableBalance) {
+		this.availableBalance = availableBalance;
+	}
+
+	public BigDecimal getFrozenCapital() {
+		return frozenCapital;
+	}
+
+	public void setFrozenCapital(BigDecimal frozenCapital) {
+		this.frozenCapital = frozenCapital;
 	}
 
 	public String getPaymentPassword() {
@@ -85,6 +100,30 @@ public class CapitalAccount {
 
 	public void setPaymentPassword(String paymentPassword) {
 		this.paymentPassword = paymentPassword;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
+	}
+
+	public String getPublisherSerialCode() {
+		return publisherSerialCode;
+	}
+
+	public void setPublisherSerialCode(String publisherSerialCode) {
+		this.publisherSerialCode = publisherSerialCode;
 	}
 
 	public CapitalAccountDto copy() {

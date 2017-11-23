@@ -13,7 +13,6 @@ import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 
@@ -55,7 +54,10 @@ public class PublisherService {
 		// 保存资金账号信息
 		CapitalAccount account = new CapitalAccount();
 		account.setBalance(new BigDecimal(0.00));
+		account.setAvailableBalance(new BigDecimal(0.00));
+		account.setFrozenCapital(new BigDecimal(0.00));
 		account.setPublisherSerialCode(publisher.getSerialCode());
+		account.setPublisherId(publisher.getId());
 		account.setUpdateTime(new Date());
 		capitalAccountDao.create(account);
 		// 返回
@@ -88,11 +90,6 @@ public class PublisherService {
 		CapitalAccount account = capitalAccountDao.findByPublisherSerialCode(serialCode);
 		account.setPaymentPassword(paymentPassword);
 		capitalAccountDao.update(account);
-	}
-
-	public CapitalAccountDto getCapitalAccount(String serialCode) {
-		CapitalAccount account = capitalAccountDao.findByPublisherSerialCode(serialCode);
-		return account != null ? account.copy() : null;
 	}
 
 }

@@ -12,4 +12,6 @@ public interface CapitalAccountRepository extends CustomJpaRepository<CapitalAcc
 
 	CapitalAccount findByPublisherSerialCode(String serialCode);
 
+	CapitalAccount findByPublisherId(Long publisherId);
+
 }

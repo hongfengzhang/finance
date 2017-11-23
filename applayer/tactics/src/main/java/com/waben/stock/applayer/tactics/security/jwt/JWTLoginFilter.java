@@ -16,6 +16,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.CustomUsernamePasswordAuthenticationToken;
+import com.waben.stock.applayer.tactics.service.CapitalAccountService;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -31,6 +32,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	private static final String loginUrl = "/login";
 
 	private PublisherService publisherService;
+
+	private CapitalAccountService accountService;
 
 	public JWTLoginFilter(AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(loginUrl, HttpMethod.POST.name()));
@@ -54,7 +57,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		// step 2 : 返回用户信息和token到客户端
 		String serialCode = customUserDetails.getSerialCode();
 		Response<PublisherDto> publisherResp = publisherService.findBySerialCode(serialCode);
-		Response<CapitalAccountDto> accountResp = publisherService.getCapitalAccount(serialCode);
+		Response<CapitalAccountDto> accountResp = accountService.findByPublisherSerialCode(serialCode);
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		data.setToken(token);
@@ -76,6 +79,10 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	public void setPublisherService(PublisherService publisherService) {
 		this.publisherService = publisherService;
+	}
+
+	public void setAccountService(CapitalAccountService accountService) {
+		this.accountService = accountService;
 	}
 
 }
