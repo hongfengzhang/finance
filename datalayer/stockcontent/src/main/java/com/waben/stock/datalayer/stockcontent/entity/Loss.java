@@ -1,7 +1,10 @@
 package com.waben.stock.datalayer.stockcontent.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/22.
@@ -17,6 +20,10 @@ public class Loss {
     @Column
     private BigDecimal point;
 
+    @JsonBackReference
+    @ManyToMany(targetEntity = StraegyType.class,mappedBy = "losses")
+    private Set<StraegyType> straegyTypes;
+
     public Long getId() {
         return id;
     }
@@ -31,5 +38,13 @@ public class Loss {
 
     public void setPoint(BigDecimal point) {
         this.point = point;
+    }
+
+    public Set<StraegyType> getStraegyTypes() {
+        return straegyTypes;
+    }
+
+    public void setStraegyTypes(Set<StraegyType> straegyTypes) {
+        this.straegyTypes = straegyTypes;
     }
 }

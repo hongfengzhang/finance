@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.stockcontent.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.Set;
 
@@ -17,6 +19,7 @@ public class AmountValue {
     @Column
     private Long value;
 
+    @JsonBackReference
     @ManyToMany(targetEntity = StraegyType.class, mappedBy = "amountValues")
     private Set<StraegyType> straegyTypes;
 
@@ -34,5 +37,13 @@ public class AmountValue {
 
     public void setValue(Long value) {
         this.value = value;
+    }
+
+    public Set<StraegyType> getStraegyTypes() {
+        return straegyTypes;
+    }
+
+    public void setStraegyTypes(Set<StraegyType> straegyTypes) {
+        this.straegyTypes = straegyTypes;
     }
 }
