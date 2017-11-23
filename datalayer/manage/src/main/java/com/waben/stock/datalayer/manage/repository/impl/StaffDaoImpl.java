@@ -55,7 +55,7 @@ public class StaffDaoImpl implements StaffDao {
 
     @Override
     public Page<Staff> page(Specification<Staff> specification, Pageable pageable) {
-        return repository.findAll(specification,new PageRequest(pageable.getPageNumber(),pageable.getPageSize()));
+        return repository.findAll(specification,pageable);
     }
 
     @Override

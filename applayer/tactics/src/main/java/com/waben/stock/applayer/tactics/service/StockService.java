@@ -4,7 +4,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.context.annotation.Primary;
 
 import com.waben.stock.applayer.tactics.wrapper.FeignConfiguration;
-import com.waben.stock.interfaces.service.stockcontent.StockInterface;
+import com.waben.stock.interfaces.service.StockInterface;
 
 /**
  * 股票 reference服务接口

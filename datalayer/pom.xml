@@ -13,12 +13,13 @@
     <description>网贝金融数据访问层</description>
 
     <modules>
-        <module>publisher</module>
-        <module>investors</module>
-        <module>strategy</module>
-        <module>manage</module>
-        <module>stockcontent</module>
-        <module>financial</module>
+        <module>publisher</module><!--8001-->
+        <module>investors</module><!--8002-->
+        <module>strategy</module><!--8003-->
+        <module>manage</module><!--8004-->
+        <module>stockcontent</module><!--8005-->
+        <module>financial</module><!--8006-->
+        <module>buyrecord</module><!--8007-->
     </modules>
 
     <properties>
@@ -60,6 +61,11 @@
             <version>2.8.8</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.waben.stock</groupId>
+            <artifactId>interfaces</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <build>

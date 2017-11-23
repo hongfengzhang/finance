@@ -8,5 +8,5 @@ import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
  */
 public interface StockExponentRepository extends CustomJpaRepository<StockExponent, Long> {
 
-
+    StockExponent findByExponentCode(String exponentCode);
 }

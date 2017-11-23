@@ -29,7 +29,6 @@ public class CircularsController implements CircularsInterface {
     @Autowired
     private CircularsService circularsService;
 
-
     @Override
     public Response<List<CircularsDto>> fetchCirculars(Boolean enable) {
         logger.info("是否获取是否可用的公告列表:{}", enable);

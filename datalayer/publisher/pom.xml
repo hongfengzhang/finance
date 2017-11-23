@@ -21,11 +21,7 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>com.waben.stock</groupId>
-            <artifactId>interfaces</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
+
     </dependencies>
 
     <build>

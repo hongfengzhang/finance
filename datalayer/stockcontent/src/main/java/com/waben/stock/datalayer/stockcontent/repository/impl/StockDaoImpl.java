@@ -12,11 +12,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * 股票 Dao实现
- *
- * @author luomengan
- */
 @Repository
 public class StockDaoImpl implements StockDao {
 
@@ -50,7 +45,7 @@ public class StockDaoImpl implements StockDao {
 
 	@Override
 	public Page<Stock> page(Specification<Stock> specification, Pageable pageable) {
-		return null;
+		return repository.findAll(specification, pageable);
 	}
 
 	@Override
@@ -58,10 +53,5 @@ public class StockDaoImpl implements StockDao {
 		return repository.findAll();
 	}
 
-	@Override
-	public List<Stock> selectStock(String keyword, Integer limit) {
-		return repository.findByNameLikeOrCodeLikeOrPinyinAbbrLike("%" + keyword + "%", "%" + keyword + "%",
-				"%" + keyword + "%", limit);
-	}
 
 }

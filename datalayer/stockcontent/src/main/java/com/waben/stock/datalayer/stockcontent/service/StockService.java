@@ -2,53 +2,56 @@ package com.waben.stock.datalayer.stockcontent.service;
 
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
 import com.waben.stock.datalayer.stockcontent.repository.StockDao;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.pojo.query.StockQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
-/**
- * 股票 Service
- *
- * @author luomengan
+/***
+ * @author yuyidi 2017-11-22 10:08:52
+ * @class com.waben.stock.datalayer.stockcontent.service.StockService
+ * @description
  */
 @Service
 public class StockService {
 
-	@Autowired
-	private StockDao stockDao;
+    @Autowired
+    private StockDao stockDao;
 
-	/**
-	 * 查询股票，匹配股票名称/代码/简拼
-	 * 
-	 * @param keyword
-	 *            关键字
-	 * @param limit
-	 *            取多少条
-	 * @return 股票结果列表
-	 */
-	public List<StockDto> selectStock(String keyword, Integer limit) {
-		List<StockDto> result = new ArrayList<>();
-		List<Stock> entityList = stockDao.selectStock(keyword, limit);
-		//TODO
-		return result;
-	}
+    @Transactional
+    public Stock saveStock(Stock stock) {
+        return stockDao.create(stock);
+    }
 
-
-	/**
-	 * 根据ID获取股票
-	 * 
-	 * @param id
-	 *            股票ID
-	 * @return 股票
-	 */
-	public StockDto findById(Long id) {
-		Stock stock = stockDao.retrieve(id);
-		StockDto stockDto = CopyBeanUtils.copyBeanProperties(stock, new StockDto(), false);
-		return stock != null ? stockDto : null;
-	}
+    public Page<Stock> stocks(final StockQuery stockQuery) {
+        Pageable pageable = new PageRequest(stockQuery.getPage(), stockQuery.getSize());
+        Page<Stock> result = stockDao.page(new Specification<Stock>() {
+            @Override
+            public Predicate toPredicate(Root<Stock> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
+                    criteriaBuilder) {
+                if (!StringUtils.isEmpty(stockQuery.getName())) {
+                    Predicate nameQuery = criteriaBuilder.equal(root.get("name").as(String.class), stockQuery.getName
+                            ());
+                    criteriaQuery.where(criteriaBuilder.and(nameQuery));
+                } else if (!StringUtils.isEmpty(stockQuery.getCode())) {
+                    Predicate codeQuery = criteriaBuilder.equal(root.get("code").as(String.class), stockQuery.getCode
+                            ());
+                    criteriaQuery.where(criteriaBuilder.and(codeQuery));
+                }
+                return criteriaQuery.getRestriction();
+            }
+        }, pageable);
+        return result;
+    }
 
 }

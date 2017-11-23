@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.pojo.query;
 
+import com.waben.stock.interfaces.util.CopyBeanUtils;
+import org.springframework.data.domain.Page;
+
 import java.util.List;
 
 /**
@@ -28,6 +31,16 @@ public class PageInfo<T> {
         this.size = size;
         this.number = number;
         this.frist = frist;
+    }
+
+    public PageInfo(Page<?> page, Class<T> tClass) {
+        this.content = CopyBeanUtils.copyListBeanPropertiesToList(page.getContent(), tClass);
+        this.totalPages = page.getTotalPages();
+        this.last = page.isLast();
+        this.totalElements = page.getTotalElements();
+        this.size = page.getSize();
+        this.number = page.getNumber();
+        this.frist = page.isFirst();
     }
 
     public List<T> getContent() {
