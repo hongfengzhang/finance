@@ -1,11 +1,10 @@
 package com.waben.stock.datalayer.stockcontent;
 
-import com.waben.stock.datalayer.stockcontent.entity.Stock;
-import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
+import com.netflix.discovery.converters.Auto;
+import com.waben.stock.datalayer.stockcontent.entity.*;
 import com.waben.stock.datalayer.stockcontent.pojo.Resonse;
 import com.waben.stock.datalayer.stockcontent.pojo.StockVariety;
-import com.waben.stock.datalayer.stockcontent.service.StockExponentService;
-import com.waben.stock.datalayer.stockcontent.service.StockService;
+import com.waben.stock.datalayer.stockcontent.service.*;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.web.HttpRest;
 import org.junit.Test;
@@ -14,7 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RunWith(SpringRunner.class)
@@ -25,18 +26,47 @@ public class StockContentApplicationTests {
     private StockService stockService;
     @Autowired
     private StockExponentService stockExponentService;
+    @Autowired
+    private AmountValueService amountValueService;
+    @Autowired
+    private LossService lossService;
+    @Autowired
+    private StraegyTypeService straegyTypeService;
 
     @Test
-    public void contextLoads() {
+    public void initAmountValue() {
+        AmountValue amountValue = new AmountValue();
+        amountValue.setValue(20000L);
+        amountValueService.save(amountValue);
     }
 
     @Test
+    public void initLoss() {
+        Loss loss = new Loss();
+        loss.setPoint(new BigDecimal(17.5));
+        lossService.save(loss);
+    }
+
+    @Test
+    public void initStraegyType() {
+        StraegyType straegyType = new StraegyType();
+        straegyType.setName("T+5");
+        straegyType.setProfit(new BigDecimal(0.5));
+        straegyType.setState(true);
+        straegyType.setCycle(5);
+        straegyType.setDeferred(18);
+        List<AmountValue> amountValues = amountValueService.fetchAmountValues();
+        List<Loss> losses = lossService.fetchLosses();
+        StraegyType result = straegyTypeService.save(straegyType, amountValues, losses);
+        System.out.println(JacksonUtil.encode(result));
+    }
+
+
     public void testGetStockList() {
         String url = "http://lemi.esongbai.com/order/order/getStockVariety.do?page={page}&pageSize={pageSize}";
         int page = 0, pageSize = 500;
         int index = 0;
         request(url, page, pageSize, index);
-
     }
 
     private Resonse request(String url, Integer page, Integer pageSize, int index) {

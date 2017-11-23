@@ -1,6 +1,11 @@
 package com.waben.stock.datalayer.stockcontent.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -18,24 +23,37 @@ public class StraegyType {
     private String name;
     @Column
     private Boolean state;
-
+    /**
+     * 市值集合
+     */
+    @JsonManagedReference
     @JoinTable(name = "strategy_amount", joinColumns = {@JoinColumn(name = "strategy_type")}, inverseJoinColumns =
             {@JoinColumn(name = "amount_value")})
     @ManyToMany(targetEntity = AmountValue.class, fetch = FetchType.EAGER)
-    private Set<AmountValue> amountValues;
-
-    @JoinTable(name = "strategy_profit", joinColumns = {@JoinColumn(name = "strategy_type")}, inverseJoinColumns =
-            {@JoinColumn(name = "profit")})
-    @ManyToMany(targetEntity = AmountValue.class, fetch = FetchType.EAGER)
-    private Set<Profit> profits;
+    private Set<AmountValue> amountValues = new HashSet<>();
+    /**
+     * 止损点集合
+     */
+    @JsonManagedReference
     @JoinTable(name = "strategy_loss", joinColumns = {@JoinColumn(name = "strategy_type")}, inverseJoinColumns =
             {@JoinColumn(name = "loss")})
-    @ManyToMany(targetEntity = AmountValue.class, fetch = FetchType.EAGER)
-    private Set<Loss> losses;
-
-    @JoinColumn(name = "deferrd", referencedColumnName = "id")
-    @ManyToOne(targetEntity = Deferred.class)
-    private Deferred deferred;
+    @ManyToMany(targetEntity = Loss.class, fetch = FetchType.EAGER)
+    private Set<Loss> losses = new HashSet<>();
+    /**
+     * 止盈点
+     */
+    @Column
+    private BigDecimal profit;
+    /**
+     * 递延费
+     */
+    @Column
+    private Integer deferred;
+    /**
+     * 周期
+     */
+    @Column
+    private Integer cycle;
 
     public Long getId() {
         return id;
@@ -69,12 +87,12 @@ public class StraegyType {
         this.amountValues = amountValues;
     }
 
-    public Set<Profit> getProfits() {
-        return profits;
+    public BigDecimal getProfit() {
+        return profit;
     }
 
-    public void setProfits(Set<Profit> profits) {
-        this.profits = profits;
+    public void setProfit(BigDecimal profit) {
+        this.profit = profit;
     }
 
     public Set<Loss> getLosses() {
@@ -85,11 +103,27 @@ public class StraegyType {
         this.losses = losses;
     }
 
-    public Deferred getDeferred() {
+    public Integer getDeferred() {
         return deferred;
     }
 
-    public void setDeferred(Deferred deferred) {
+    public void setDeferred(Integer deferred) {
         this.deferred = deferred;
+    }
+
+    public void addAmountValues(List<AmountValue> amountValues) {
+        this.getAmountValues().addAll(amountValues);
+    }
+
+    public void addLosses(List<Loss> losses) {
+        this.getLosses().addAll(losses);
+    }
+
+    public Integer getCycle() {
+        return cycle;
+    }
+
+    public void setCycle(Integer cycle) {
+        this.cycle = cycle;
     }
 }
