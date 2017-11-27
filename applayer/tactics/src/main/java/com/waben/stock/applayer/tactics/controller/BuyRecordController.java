@@ -12,7 +12,6 @@ import com.waben.stock.applayer.tactics.service.BuyRecordService;
 import com.waben.stock.applayer.tactics.service.CapitalAccountService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.enums.InPositionTimeType;
 import com.waben.stock.interfaces.pojo.Response;
 
 import io.swagger.annotations.ApiOperation;
@@ -35,8 +34,8 @@ public class BuyRecordController {
 
 	@PostMapping("/buy")
 	@ApiOperation(value = "点买")
-	public Response<BuyRecordDto> buy(Integer positionType, BigDecimal applyAmount, BigDecimal serviceFee,
-			BigDecimal frozenCapital, BigDecimal stopProfitPoint, BigDecimal stopLossPoint, String stockCode) {
+	public Response<BuyRecordDto> buy(Long strategyTypeId, BigDecimal applyAmount, BigDecimal serviceFee,
+			BigDecimal reserveFund, BigDecimal profitPoint, BigDecimal lossPoint, String stockCode, Boolean deferred) {
 		// TODO 以下代码需优化，放置到Service中处理
 
 		// TODO 检查参数是否合理
@@ -47,20 +46,19 @@ public class BuyRecordController {
 
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();
-		dto.setPositionType(InPositionTimeType.getByIndex(String.valueOf(positionType)));
+		dto.setStrategyTypeId(strategyTypeId);
 		dto.setApplyAmount(applyAmount);
 		dto.setServiceFee(serviceFee);
-		dto.setFrozenCapital(frozenCapital);
-		dto.setStopProfitPoint(stopProfitPoint);
-		dto.setStopLossPoint(stopLossPoint);
+		dto.setReserveFund(reserveFund);
+		dto.setProfitPoint(profitPoint);
+		dto.setLossPoint(lossPoint);
 		dto.setStockCode(stockCode);
-		// TODO 设置递延费的快照
-		dto.setDeferredCharges(new BigDecimal(18));
+		dto.setDeferred(deferred);
 		// TODO 计算止盈点位和止损点位
-		dto.setStopProfitPosition(applyAmount.multiply(stopProfitPoint));
-		dto.setStopProfitWarnPosition(applyAmount.multiply(stopProfitPoint).subtract(new BigDecimal(100)));
-		dto.setStopLossPosition(applyAmount.multiply(stopLossPoint));
-		dto.setStopLossWarnPosition(applyAmount.multiply(stopLossPoint).add(new BigDecimal(100)));
+		dto.setProfitPosition(applyAmount.multiply(profitPoint));
+		dto.setProfitWarnPosition(applyAmount.multiply(profitPoint).subtract(new BigDecimal(100)));
+		dto.setLossPosition(applyAmount.multiply(lossPoint));
+		dto.setLossWarnPosition(applyAmount.multiply(lossPoint).add(new BigDecimal(100)));
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());
 		dto.setPublisherSerialCode(SecurityUtil.getSerialCode());
@@ -68,7 +66,7 @@ public class BuyRecordController {
 		// 扣去金额、冻结保证金，增加流水记录
 		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
 				SecurityUtil.getUserId(), result.getResult().getId(), result.getResult().getSerialCode(), serviceFee,
-				frozenCapital);
+				reserveFund);
 		if (!"200".equals(accountOperationResp.getCode())) {
 			// TODO 扣款失败，删除点买记录
 			result.setResult(null);

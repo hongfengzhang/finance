@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.waben.stock.interfaces.enums.BuyRecordStatus;
-import com.waben.stock.interfaces.enums.InPositionTimeType;
 
 /**
  * 点买记录
@@ -28,41 +27,37 @@ public class BuyRecordDto {
 	 */
 	private BigDecimal serviceFee;
 	/**
-	 * 持仓时间类型
+	 * 保证金
 	 */
-	private InPositionTimeType positionType;
+	private BigDecimal reserveFund;
 	/**
-	 * 冻结资金
+	 * 是否递延费
 	 */
-	private BigDecimal frozenCapital;
-	/**
-	 * 递延费
-	 */
-	private BigDecimal deferredCharges;
+	private Boolean deferred;
 	/**
 	 * 止盈点
 	 */
-	private BigDecimal stopProfitPoint;
+	private BigDecimal profitPoint;
 	/**
 	 * 止盈预警点位
 	 */
-	private BigDecimal stopProfitWarnPosition;
+	private BigDecimal profitWarnPosition;
 	/**
 	 * 止盈点位
 	 */
-	private BigDecimal stopProfitPosition;
+	private BigDecimal profitPosition;
 	/**
 	 * 止损点
 	 */
-	private BigDecimal stopLossPoint;
+	private BigDecimal lossPoint;
 	/**
 	 * 止损预警点位
 	 */
-	private BigDecimal stopLossWarnPosition;
+	private BigDecimal lossWarnPosition;
 	/**
 	 * 止损点位
 	 */
-	private BigDecimal stopLossPosition;
+	private BigDecimal lossPosition;
 	/**
 	 * 状态
 	 */
@@ -104,6 +99,14 @@ public class BuyRecordDto {
 	 */
 	private String stockCode;
 	/**
+	 * 策略类型ID
+	 */
+	private Long strategyTypeId;
+	/**
+	 * 投资人ID
+	 */
+	private Long investorId;
+	/**
 	 * 发布人ID
 	 */
 	private Long publisherId;
@@ -118,6 +121,14 @@ public class BuyRecordDto {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getSerialCode() {
+		return serialCode;
+	}
+
+	public void setSerialCode(String serialCode) {
+		this.serialCode = serialCode;
 	}
 
 	public BigDecimal getApplyAmount() {
@@ -136,68 +147,68 @@ public class BuyRecordDto {
 		this.serviceFee = serviceFee;
 	}
 
-	public InPositionTimeType getPositionType() {
-		return positionType;
+	public BigDecimal getReserveFund() {
+		return reserveFund;
 	}
 
-	public void setPositionType(InPositionTimeType positionType) {
-		this.positionType = positionType;
+	public void setReserveFund(BigDecimal reserveFund) {
+		this.reserveFund = reserveFund;
 	}
 
-	public BigDecimal getFrozenCapital() {
-		return frozenCapital;
+	public Boolean getDeferred() {
+		return deferred;
 	}
 
-	public void setFrozenCapital(BigDecimal frozenCapital) {
-		this.frozenCapital = frozenCapital;
+	public void setDeferred(Boolean deferred) {
+		this.deferred = deferred;
 	}
 
-	public BigDecimal getStopProfitPoint() {
-		return stopProfitPoint;
+	public BigDecimal getProfitPoint() {
+		return profitPoint;
 	}
 
-	public void setStopProfitPoint(BigDecimal stopProfitPoint) {
-		this.stopProfitPoint = stopProfitPoint;
+	public void setProfitPoint(BigDecimal profitPoint) {
+		this.profitPoint = profitPoint;
 	}
 
-	public BigDecimal getStopProfitWarnPosition() {
-		return stopProfitWarnPosition;
+	public BigDecimal getProfitWarnPosition() {
+		return profitWarnPosition;
 	}
 
-	public void setStopProfitWarnPosition(BigDecimal stopProfitWarnPosition) {
-		this.stopProfitWarnPosition = stopProfitWarnPosition;
+	public void setProfitWarnPosition(BigDecimal profitWarnPosition) {
+		this.profitWarnPosition = profitWarnPosition;
 	}
 
-	public BigDecimal getStopProfitPosition() {
-		return stopProfitPosition;
+	public BigDecimal getProfitPosition() {
+		return profitPosition;
 	}
 
-	public void setStopProfitPosition(BigDecimal stopProfitPosition) {
-		this.stopProfitPosition = stopProfitPosition;
+	public void setProfitPosition(BigDecimal profitPosition) {
+		this.profitPosition = profitPosition;
 	}
 
-	public BigDecimal getStopLossPoint() {
-		return stopLossPoint;
+	public BigDecimal getLossPoint() {
+		return lossPoint;
 	}
 
-	public void setStopLossPoint(BigDecimal stopLossPoint) {
-		this.stopLossPoint = stopLossPoint;
+	public void setLossPoint(BigDecimal lossPoint) {
+		this.lossPoint = lossPoint;
 	}
 
-	public BigDecimal getStopLossWarnPosition() {
-		return stopLossWarnPosition;
+	public BigDecimal getLossWarnPosition() {
+		return lossWarnPosition;
 	}
 
-	public void setStopLossWarnPosition(BigDecimal stopLossWarnPosition) {
-		this.stopLossWarnPosition = stopLossWarnPosition;
+	public void setLossWarnPosition(BigDecimal lossWarnPosition) {
+		this.lossWarnPosition = lossWarnPosition;
 	}
 
-	public BigDecimal getStopLossPosition() {
-		return stopLossPosition;
+	public BigDecimal getLossPosition() {
+		return lossPosition;
 	}
 
-	public void setStopLossPosition(BigDecimal stopLossPosition) {
-		this.stopLossPosition = stopLossPosition;
+	public void setLossPosition(BigDecimal lossPosition) {
+		this.lossPosition = lossPosition;
 	}
 
 	public BuyRecordStatus getStatus() {
@@ -280,6 +291,22 @@ public class BuyRecordDto {
 		this.stockCode = stockCode;
 	}
 
+	public Long getStrategyTypeId() {
+		return strategyTypeId;
+	}
+
+	public void setStrategyTypeId(Long strategyTypeId) {
+		this.strategyTypeId = strategyTypeId;
+	}
+
+	public Long getInvestorId() {
+		return investorId;
+	}
+
+	public void setInvestorId(Long investorId) {
+		this.investorId = investorId;
+	}
+
 	public Long getPublisherId() {
 		return publisherId;
 	}
@@ -294,22 +321,6 @@ public class BuyRecordDto {
 
 	public void setPublisherSerialCode(String publisherSerialCode) {
 		this.publisherSerialCode = publisherSerialCode;
-	}
-
-	public BigDecimal getDeferredCharges() {
-		return deferredCharges;
-	}
-
-	public void setDeferredCharges(BigDecimal deferredCharges) {
-		this.deferredCharges = deferredCharges;
-	}
-
-	public String getSerialCode() {
-		return serialCode;
-	}
-
-	public void setSerialCode(String serialCode) {
-		this.serialCode = serialCode;
 	}
 
 }
