@@ -36,8 +36,8 @@ public interface BuyRecordInterface {
 	 *            持股数
 	 * @return 点买记录
 	 */
-	@RequestMapping(value = "/buyInto/{id}", method = RequestMethod.PUT)
-	Response<BuyRecordDto> buyStock(@PathVariable("id") Long id, String delegateNumber, BigDecimal buyingPrice,
+	@RequestMapping(value = "/buyinto/{id}", method = RequestMethod.PUT)
+	Response<BuyRecordDto> buyInto(@PathVariable("id") Long id, String delegateNumber, BigDecimal buyingPrice,
 			Integer numberOfStrand);
 
 }

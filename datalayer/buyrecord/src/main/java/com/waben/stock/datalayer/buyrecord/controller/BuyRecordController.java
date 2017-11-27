@@ -37,7 +37,7 @@ public class BuyRecordController implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<BuyRecordDto> buyStock(Long id, String delegateNumber, BigDecimal buyingPrice,
+	public Response<BuyRecordDto> buyInto(Long id, String delegateNumber, BigDecimal buyingPrice,
 			Integer numberOfStrand) {
 		// TODO Auto-generated method stub
 		return null;

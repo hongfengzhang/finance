@@ -25,7 +25,7 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<BuyRecordDto> buyStock(Long id, String delegateNumber, BigDecimal buyingPrice,
+	public Response<BuyRecordDto> buyInto(Long id, String delegateNumber, BigDecimal buyingPrice,
 			Integer numberOfStrand) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
