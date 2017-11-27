@@ -17,7 +17,13 @@ public class StockMonitor implements CommandLineRunner {
     Logger logger = LoggerFactory.getLogger(getClass());
 
 
-
+    /***
+    * @author yuyidi 2017-11-27 20:04:24
+    * @method run
+     * @param strings
+    * @return void
+    * @description 系统启动完成，初始化行情接口
+    */
     public void run(String... strings) throws Exception {
 
     }

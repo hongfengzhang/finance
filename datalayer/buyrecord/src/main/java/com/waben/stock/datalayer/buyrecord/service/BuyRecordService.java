@@ -7,6 +7,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -28,6 +30,8 @@ import com.waben.stock.interfaces.util.SerialCodeGenerator;
  */
 @Service
 public class BuyRecordService {
+
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private BuyRecordDao buyRecordDao;
@@ -52,6 +56,28 @@ public class BuyRecordService {
 			}
 		}, pageable);
 		return pages;
+	}
+
+	public BuyRecord changeState(BuyRecord record) {
+		BuyRecordState current = record.getState();
+		BuyRecordState next = BuyRecordState.UNKONWN;
+		if (BuyRecordState.POSTED.equals(current)) {
+			next = BuyRecordState.BUYLOCK;
+		} else if (BuyRecordState.BUYLOCK.equals(current)) {
+			next = BuyRecordState.HOLDPOSITION;
+		} else if (BuyRecordState.HOLDPOSITION.equals(current)) {
+			next = BuyRecordState.SELLLOCK;
+		}
+		record.setState(next);
+		BuyRecord result = buyRecordDao.update(record);
+		if (result.getState().equals(next)) {
+			logger.info("点买交易状态更新成功,id:{}", result.getSerialCode());
+			if (next.equals(BuyRecordState.HOLDPOSITION)) {
+				//若点买交易记录为持仓中，向消息队列中添加当前点买交易记录
+
+			}
+		}
+		return result;
 	}
 
 }
