@@ -20,6 +20,8 @@ public class ExceptionConstant {
 	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "4001";
 	// 员工服务异常
 	public static final String STAFF_NOT_FOUND_EXCEPTION = "5001";
+	//发布人服务异常
+
 
 	/* 业务异常--个人中心 */
 	// 发送短信失败

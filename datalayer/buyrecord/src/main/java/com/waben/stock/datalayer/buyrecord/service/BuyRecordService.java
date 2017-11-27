@@ -22,4 +22,6 @@ public class BuyRecordService {
 		return buyRecordDao.create(buyRecord);
 	}
 
+
+
 }
