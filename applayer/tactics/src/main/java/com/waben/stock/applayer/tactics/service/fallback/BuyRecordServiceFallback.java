@@ -8,6 +8,8 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 
 /**
@@ -27,6 +29,11 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 	@Override
 	public Response<BuyRecordDto> buyInto(Long id, String delegateNumber, BigDecimal buyingPrice,
 			Integer numberOfStrand) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery BuyRecordQuery) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

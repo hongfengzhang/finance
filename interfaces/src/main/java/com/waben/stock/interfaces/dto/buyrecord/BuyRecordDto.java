@@ -3,7 +3,7 @@ package com.waben.stock.interfaces.dto.buyrecord;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.waben.stock.interfaces.enums.BuyRecordStatus;
+import com.waben.stock.interfaces.enums.BuyRecordState;
 
 /**
  * 点买记录
@@ -61,7 +61,7 @@ public class BuyRecordDto {
 	/**
 	 * 状态
 	 */
-	private BuyRecordStatus status;
+	private BuyRecordState state;
 	/**
 	 * 持股数
 	 */
@@ -211,12 +211,12 @@ public class BuyRecordDto {
 		this.lossPosition = lossPosition;
 	}
 
-	public BuyRecordStatus getStatus() {
-		return status;
+	public BuyRecordState getState() {
+		return state;
 	}
 
-	public void setStatus(BuyRecordStatus status) {
-		this.status = status;
+	public void setState(BuyRecordState state) {
+		this.state = state;
 	}
 
 	public Integer getNumberOfStrand() {

@@ -9,7 +9,7 @@ import java.util.Map;
  * @author luomengan
  *
  */
-public enum BuyRecordStatus implements CommonalityEnum {
+public enum BuyRecordState implements CommonalityEnum {
 
 	POSTED("1", "发布"),
 
@@ -21,7 +21,7 @@ public enum BuyRecordStatus implements CommonalityEnum {
 
 	UNWIND("5", "已平仓");
 
-	private BuyRecordStatus(String index, String status) {
+	private BuyRecordState(String index, String status) {
 		this.index = index;
 		this.status = status;
 	}
@@ -30,16 +30,16 @@ public enum BuyRecordStatus implements CommonalityEnum {
 
 	private String status;
 
-	private static Map<String, BuyRecordStatus> valueMap = new HashMap<String, BuyRecordStatus>();
+	private static Map<String, BuyRecordState> valueMap = new HashMap<String, BuyRecordState>();
 
 	static {
-		for (BuyRecordStatus _enum : BuyRecordStatus.values()) {
+		for (BuyRecordState _enum : BuyRecordState.values()) {
 			valueMap.put(_enum.getIndex(), _enum);
 		}
 	}
 
-	public static BuyRecordStatus getByIndex(String index) {
-		BuyRecordStatus result = valueMap.get(index);
+	public static BuyRecordState getByIndex(String index) {
+		BuyRecordState result = valueMap.get(index);
 		if (result == null) {
 			throw new IllegalArgumentException("No element matches " + index);
 		}

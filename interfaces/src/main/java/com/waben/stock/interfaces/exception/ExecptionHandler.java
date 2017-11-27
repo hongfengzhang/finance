@@ -12,6 +12,7 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -41,6 +42,12 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
+		
+		Enumeration<String> names = request.getHeaderNames();
+		while(names.hasMoreElements()) {
+			String headerName = names.nextElement();
+			logger.info("{} = {}", headerName, request.getHeader(headerName));
+		}
 
 		ModelAndView mv = new ModelAndView();
 		Object message = "未知错误";
