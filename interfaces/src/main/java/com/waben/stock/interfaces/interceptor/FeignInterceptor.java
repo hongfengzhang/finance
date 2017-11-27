@@ -1,8 +1,9 @@
 package com.waben.stock.interfaces.interceptor;
 
+import org.springframework.context.annotation.Configuration;
+
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author Created by yuyidi on 2017/11/27.
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class FeignInterceptor implements RequestInterceptor {
+	
     @Override
     public void apply(RequestTemplate requestTemplate) {
         requestTemplate.header("feign", "true");
