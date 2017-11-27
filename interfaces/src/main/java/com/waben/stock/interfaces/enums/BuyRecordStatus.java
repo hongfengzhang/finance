@@ -11,13 +11,15 @@ import java.util.Map;
  */
 public enum BuyRecordStatus implements CommonalityEnum {
 
-	Issue("1", "发布"),
+	POSTED("1", "发布"),
 
-	InPosition("2", "持仓中"),
+	BUYLOCK("2", "买入锁定"),
 
-	OutingPosition("3", "正在平仓"),
+	HOLDPOSITION("3", "持仓中"),
 
-	OutOfPosition("4", "已平仓");
+	SELLLOCK("4", "卖出锁定"),
+
+	UNWIND("5", "已平仓");
 
 	private BuyRecordStatus(String index, String status) {
 		this.index = index;

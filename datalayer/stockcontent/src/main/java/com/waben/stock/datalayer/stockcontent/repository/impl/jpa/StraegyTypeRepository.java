@@ -1,6 +1,6 @@
 package com.waben.stock.datalayer.stockcontent.repository.impl.jpa;
 
-import com.waben.stock.datalayer.stockcontent.entity.StraegyType;
+import com.waben.stock.datalayer.stockcontent.entity.StrategyType;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import java.util.List;
  * @author Created by yuyidi on 2017/11/23.
  * @desc
  */
-public interface StraegyTypeRepository extends CustomJpaRepository<StraegyType, Long> {
+public interface StraegyTypeRepository extends CustomJpaRepository<StrategyType, Long> {
 
-    List<StraegyType> findAllByState(Boolean state);
+    List<StrategyType> findAllByState(Boolean state);
 
 }
