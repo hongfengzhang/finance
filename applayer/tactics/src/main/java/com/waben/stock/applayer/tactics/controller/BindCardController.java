@@ -46,16 +46,16 @@ public class BindCardController {
 		bindCardDto.setIdCard(idCard);
 		bindCardDto.setName(name);
 		bindCardDto.setPhone(phone);
-		bindCardDto.setPublisherSerialCode(SecurityUtil.getSerialCode());
+		bindCardDto.setPublisherId(SecurityUtil.getUserId());
 
-		Response<BindCardDto> result = bindCardService.bindBankCard(bindCardDto);
+		Response<BindCardDto> result = bindCardService.addBankCard(bindCardDto);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, result.getResult(), false));
 	}
 
 	@GetMapping("/myBankCardList")
 	@ApiOperation(value = "我的已绑定银行卡列表")
 	public Response<List<BindCardFullDto>> myBankCardList() {
-		Response<List<BindCardDto>> listResp = bindCardService.publisherBankCardList(SecurityUtil.getSerialCode());
+		Response<List<BindCardDto>> listResp = bindCardService.listsByPublisherId(SecurityUtil.getUserId());
 		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(listResp.getResult(), BindCardFullDto.class));
 	}
 

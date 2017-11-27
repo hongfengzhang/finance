@@ -37,9 +37,13 @@ public class BuyRecordController {
 	@ApiOperation(value = "点买")
 	public Response<BuyRecordDto> buy(Integer positionType, BigDecimal applyAmount, BigDecimal serviceFee,
 			BigDecimal frozenCapital, BigDecimal stopProfitPoint, BigDecimal stopLossPoint, String stockCode) {
+		// TODO 以下代码需优化，放置到Service中处理
+
 		// TODO 检查参数是否合理
 
 		// TODO 检查余额
+
+		// TODO 验证支付密码
 
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();
@@ -62,9 +66,9 @@ public class BuyRecordController {
 		dto.setPublisherSerialCode(SecurityUtil.getSerialCode());
 		Response<BuyRecordDto> result = buyRecordService.addBuyRecord(dto);
 		// 扣去金额、冻结保证金，增加流水记录
-		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndCompensateMoney(
-				SecurityUtil.getUserId(), SecurityUtil.getSerialCode(), result.getResult().getId(),
-				result.getResult().getSerialCode(), dto.getServiceFee(), dto.getFrozenCapital());
+		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
+				SecurityUtil.getUserId(), result.getResult().getId(), result.getResult().getSerialCode(), serviceFee,
+				frozenCapital);
 		if (!"200".equals(accountOperationResp.getCode())) {
 			// TODO 扣款失败，删除点买记录
 			result.setResult(null);

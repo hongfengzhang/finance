@@ -1,6 +1,5 @@
 package com.waben.stock.datalayer.publisher.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import com.waben.stock.datalayer.publisher.entity.FavoriteStock;
 import com.waben.stock.datalayer.publisher.repository.FavoriteStockDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 
 /**
@@ -27,47 +25,40 @@ public class FavoriteStockService {
 	@Autowired
 	private FavoriteStockDao favoriteStockDao;
 
-	public FavoriteStockDto addFavoriteStock(String serialCode, Long stockId, String stockName, String stockCode,
+	public FavoriteStock save(Long publisherId, Long stockId, String stockName, String stockCode,
 			String stockPinyinAbbr) {
-		FavoriteStock check = favoriteStockDao.findByPublisherSerialCodeAndStockId(serialCode, stockId);
-		if (check != null) {
+		FavoriteStock favorite = favoriteStockDao.retrive(publisherId, stockId);
+		if (favorite != null) {
 			throw new ServiceException(ExceptionConstant.STOCK_ALREADY_FAVORITE_EXCEPTION);
 		}
-		check = new FavoriteStock();
-		check.setCode(stockCode);
-		check.setFavoriteTime(new Date());
-		check.setName(stockName);
-		check.setPinyinAbbr(stockPinyinAbbr);
-		check.setPublisherSerialCode(serialCode);
-		check.setStockId(stockId);
-		Integer maxSort = favoriteStockDao.maxSort();
-		check.setSort(maxSort != null ? maxSort + 1 : 1);
-		favoriteStockDao.create(check);
-		return check.copy();
+		favorite = new FavoriteStock();
+		favorite.setCode(stockCode);
+		favorite.setFavoriteTime(new Date());
+		favorite.setName(stockName);
+		favorite.setPinyinAbbr(stockPinyinAbbr);
+		favorite.setPublisherId(publisherId);
+		favorite.setStockId(stockId);
+		Integer maxSort = favoriteStockDao.retriveMaxSort(publisherId);
+		favorite.setSort(maxSort != null ? maxSort + 1 : 1);
+		favoriteStockDao.create(favorite);
+		return favorite;
 	}
 
 	@Transactional
-	public void removeFavoriteStock(String serialCode, Long[] stockIds) {
-		favoriteStockDao.deleteBySerialCodeAndStockIdIn(serialCode, stockIds);
+	public void remove(Long publisherId, Long[] stockIds) {
+		favoriteStockDao.delete(publisherId, stockIds);
 	}
 
-	public List<FavoriteStockDto> favoriteStockList(String serialCode) {
-		List<FavoriteStockDto> result = new ArrayList<>();
-		List<FavoriteStock> entityList = favoriteStockDao.favoriteStockList(serialCode);
-		if (entityList != null && entityList.size() > 0) {
-			for (FavoriteStock stock : entityList) {
-				result.add(stock.copy());
-			}
-		}
-		return result;
+	public List<FavoriteStock> list(Long publisherId) {
+		return favoriteStockDao.list(publisherId);
 	}
 
-	public void topFavoriteStock(String serialCode, Long[] stockIds) {
+	public void top(Long publisherId, Long[] stockIds) {
 		if (stockIds != null && stockIds.length > 0) {
-			List<FavoriteStock> others = favoriteStockDao.findByStockIdNotIn(stockIds);
+			List<FavoriteStock> others = favoriteStockDao.listByStockIdNotIn(publisherId, stockIds);
 			int topSize = 0;
 			for (Long stockId : stockIds) {
-				FavoriteStock favoriteStock = favoriteStockDao.findByPublisherSerialCodeAndStockId(serialCode, stockId);
+				FavoriteStock favoriteStock = favoriteStockDao.retrive(publisherId, stockId);
 				if (favoriteStock != null) {
 					favoriteStock.setSort(topSize + 1);
 					favoriteStockDao.update(favoriteStock);
@@ -85,8 +76,8 @@ public class FavoriteStockService {
 		}
 	}
 
-	public List<Long> findStockIdByPublisherSerialCode(String serialCode) {
-		return favoriteStockDao.findStockIdByPublisherSerialCode(serialCode);
+	public List<Long> listStockIdByPublisherId(Long publisherId) {
+		return favoriteStockDao.listStockId(publisherId);
 	}
 
 }

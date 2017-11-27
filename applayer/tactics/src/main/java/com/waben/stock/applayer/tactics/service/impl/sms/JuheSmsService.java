@@ -47,7 +47,7 @@ public class JuheSmsService implements SmsService {
 
 	public void sendMessage(SmsType smsType, String phone, List<String> paramValues) {
 		// 检查手机号
-		Response<PublisherDto> publisherResp = publisherService.findByPhone(phone);
+		Response<PublisherDto> publisherResp = publisherService.fetchByPhone(phone);
 		if (!"200".equals(publisherResp.getCode())) {
 			throw new ServiceException(publisherResp.getCode());
 		}

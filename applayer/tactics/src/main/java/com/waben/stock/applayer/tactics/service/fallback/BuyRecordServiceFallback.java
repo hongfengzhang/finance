@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.service.fallback;
 
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -19,6 +21,12 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 
 	@Override
 	public Response<BuyRecordDto> addBuyRecord(BuyRecordDto bindCardDto) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<BuyRecordDto> buyStock(Long id, String delegateNumber, BigDecimal buyingPrice,
+			Integer numberOfStrand) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

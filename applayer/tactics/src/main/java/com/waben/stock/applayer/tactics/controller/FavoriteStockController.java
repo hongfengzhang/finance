@@ -42,14 +42,17 @@ public class FavoriteStockController {
 	@ApiOperation(value = "收藏股票")
 	public Response<FavoriteStockDto> addFavoriteStock(@RequestParam(required = true) Long stockId) {
 		FavoriteStockDto favoriteStockDto = new FavoriteStockDto();
-		Response<StockDto> stockResp = stockService.findById(stockId);
+		// Response<StockDto> stockResp = stockService.findById(stockId);
+
+		Response<StockDto> stockResp = null;
 		favoriteStockDto.setCode(stockResp.getResult().getCode());
 		favoriteStockDto.setStockId(stockId);
 
-//	TODO	favoriteStockDto.setPinyinAbbr(stockResp.getResult().getPinyinAbbr());
+		// TODO
+		// favoriteStockDto.setPinyinAbbr(stockResp.getResult().getPinyinAbbr());
 		favoriteStockDto.setName(stockResp.getResult().getName());
-		favoriteStockDto.setPublisherSerialCode(SecurityUtil.getSerialCode());
-		return favoriteStockService.addFavoriteStock(favoriteStockDto);
+		favoriteStockDto.setPublisherId(SecurityUtil.getUserId());
+		return favoriteStockService.add(favoriteStockDto);
 	}
 
 	@PostMapping("/removeFavoriteStock")
@@ -62,7 +65,7 @@ public class FavoriteStockController {
 				stockIdsStr.append("-");
 			}
 		}
-		return favoriteStockService.removeFavoriteStock(SecurityUtil.getSerialCode(), stockIdsStr.toString());
+		return favoriteStockService.drop(SecurityUtil.getUserId(), stockIdsStr.toString());
 	}
 
 	@PostMapping("/topFavoriteStock")
@@ -75,13 +78,13 @@ public class FavoriteStockController {
 				stockIdsStr.append("-");
 			}
 		}
-		return favoriteStockService.topFavoriteStock(SecurityUtil.getSerialCode(), stockIdsStr.toString());
+		return favoriteStockService.top(SecurityUtil.getUserId(), stockIdsStr.toString());
 	}
 
 	@GetMapping("/favoriteStockList")
 	@ApiOperation(value = "获取收藏股票")
 	public Response<List<FavoriteStockDto>> favoriteStockList() {
-		return favoriteStockService.favoriteStockList(SecurityUtil.getSerialCode());
+		return favoriteStockService.listsByPublisherId(SecurityUtil.getUserId());
 	}
 
 }

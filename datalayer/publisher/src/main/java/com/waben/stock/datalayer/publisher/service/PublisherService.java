@@ -2,7 +2,6 @@ package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,8 +12,8 @@ import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.util.SerialCodeGenerator;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
@@ -29,24 +28,24 @@ public class PublisherService {
 	@Autowired
 	private CapitalAccountDao capitalAccountDao;
 
-	public PublisherDto findById(Long id) {
+	public Publisher findById(Long id) {
 		Publisher publisher = publisherDao.retrieve(id);
 		if (publisher == null) {
-			throw new RuntimeException();
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
 		}
-		return publisher.copy();
+		return publisher;
 	}
 
 	@Transactional
-	public PublisherDto register(String phone, String password) {
+	public Publisher register(String phone, String password) {
 		// 检查手机号
-		Publisher check = publisherDao.findByPhone(phone);
+		Publisher check = publisherDao.retriveByPhone(phone);
 		if (check != null) {
 			throw new ServiceException(ExceptionConstant.PHONE_BEEN_REGISTERED_EXCEPTION);
 		}
 		// 保存发布策略人信息
 		Publisher publisher = new Publisher();
-		publisher.setSerialCode(UUID.randomUUID().toString());
+		publisher.setSerialCode(SerialCodeGenerator.generate());
 		publisher.setPhone(phone);
 		publisher.setPassword(password);
 		publisher.setCreateTime(new Date());
@@ -61,35 +60,35 @@ public class PublisherService {
 		account.setUpdateTime(new Date());
 		capitalAccountDao.create(account);
 		// 返回
-		return publisher.copy();
+		return publisher;
 	}
 
-	public PublisherDto findBySerialCode(String serialCode) {
-		Publisher publisher = publisherDao.findBySerialCode(serialCode);
-		return publisher.copy();
+	public Publisher findBySerialCode(String serialCode) {
+		Publisher publisher = publisherDao.retriveBySerialCode(serialCode);
+		if (publisher == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		return publisher;
 	}
 
-	public PublisherDto modifyPassword(String phone, String password) {
+	public Publisher modifyPassword(String phone, String password) {
 		// 检查手机号
-		Publisher publisher = publisherDao.findByPhone(phone);
+		Publisher publisher = publisherDao.retriveByPhone(phone);
 		if (publisher == null) {
 			throw new ServiceException(ExceptionConstant.PHONE_ISNOT_REGISTERED_EXCEPTION);
 		}
 		// 更新密码
 		publisher.setPassword(password);
 		publisherDao.update(publisher);
-		return publisher.copy();
+		return publisher;
 	}
 
-	public PublisherDto findByPhone(String phone) {
-		Publisher publisher = publisherDao.findByPhone(phone);
-		return publisher != null ? publisher.copy() : null;
-	}
-
-	public void modifyPaymentPassword(String serialCode, String paymentPassword) {
-		CapitalAccount account = capitalAccountDao.findByPublisherSerialCode(serialCode);
-		account.setPaymentPassword(paymentPassword);
-		capitalAccountDao.update(account);
+	public Publisher findByPhone(String phone) {
+		Publisher publisher = publisherDao.retriveByPhone(phone);
+		if (publisher == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		return publisher;
 	}
 
 }

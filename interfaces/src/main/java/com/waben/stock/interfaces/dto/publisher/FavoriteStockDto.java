@@ -6,10 +6,6 @@ public class FavoriteStockDto {
 
 	private Long id;
 	/**
-	 * 策略发布人序列号
-	 */
-	private String publisherSerialCode;
-	/**
 	 * 股票ID
 	 */
 	private Long stockId;
@@ -33,6 +29,10 @@ public class FavoriteStockDto {
 	 * 排序
 	 */
 	private Integer sort;
+	/**
+	 * 策略发布人ID
+	 */
+	private Long publisherId;
 
 	public Long getId() {
 		return id;
@@ -40,14 +40,6 @@ public class FavoriteStockDto {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
-
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
 	}
 
 	public Long getStockId() {
@@ -96,6 +88,14 @@ public class FavoriteStockDto {
 
 	public void setSort(Integer sort) {
 		this.sort = sort;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 }

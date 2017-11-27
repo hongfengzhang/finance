@@ -15,24 +15,17 @@ import com.waben.stock.interfaces.pojo.Response;
 public interface PublisherInterface {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	Response<PublisherDto> findById(@PathVariable("id") Long id);
+	Response<PublisherDto> fetchById(@PathVariable("id") Long id);
 
-	@RequestMapping(value = "/findByPhone", method = RequestMethod.GET)
-	Response<PublisherDto> findByPhone(@RequestParam(name = "phone") String phone);
-
-	@RequestMapping(value = "/findBySerialCode", method = RequestMethod.GET)
-	Response<PublisherDto> findBySerialCode(@RequestParam(name = "serialCode") String serialCode);
+	@RequestMapping(value = "/phone/{phone}", method = RequestMethod.GET)
+	Response<PublisherDto> fetchByPhone(@PathVariable(name = "phone") String phone);
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	Response<PublisherDto> register(@RequestParam(name = "phone") String phone,
 			@RequestParam(name = "password") String password);
 
-	@RequestMapping(value = "/modifyPassword", method = RequestMethod.PUT)
-	Response<PublisherDto> modifyPassword(@RequestParam(name = "phone") String phone,
+	@RequestMapping(value = "/{phone}/modifyPassword", method = RequestMethod.PUT)
+	Response<PublisherDto> modifyPassword(@PathVariable(name = "phone") String phone,
 			@RequestParam(name = "password") String password);
-
-	@RequestMapping(value = "/modifyPaymentPassword", method = RequestMethod.PUT)
-	Response<String> modifyPaymentPassword(@RequestParam(name = "serialCode") String serialCode,
-			@RequestParam(name = "paymentPassword") String paymentPassword);
 
 }

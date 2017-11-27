@@ -13,6 +13,8 @@ import com.waben.stock.applayer.tactics.service.StockService;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.StockQuery;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -35,19 +37,29 @@ public class StockController {
 	@GetMapping("/selectStock")
 	@ApiOperation(value = "查询股票，匹配股票名称/代码/简拼")
 	public Response<List<StockDto>> selectStock(String keyword) {
-		Response<List<StockDto>> result = stockService.selectStock(keyword, 20);
-		if ("200".equals(result.getCode()) && result.getResult() != null && result.getResult().size() > 0) {
+		Response<List<StockDto>> result = new Response<>();
+
+		StockQuery stockQuery = new StockQuery();
+		stockQuery.setKeyword(keyword);
+		stockQuery.setPage(0);
+		stockQuery.setSize(20);
+		Response<PageInfo<StockDto>> pages = stockService.pagesByQuery(stockQuery);
+		if ("200".equals(pages.getCode()) && pages.getResult() != null && pages.getResult().getContent().size() > 0) {
 			String serialCode = SecurityUtil.getSerialCode();
 			if (serialCode != null) {
-				Response<List<Long>> stockIds = favoriteStockService.findStockIdByPublisherSerialCode(serialCode);
+				Response<List<Long>> stockIds = favoriteStockService.listsStockId(SecurityUtil.getUserId());
 				if (stockIds.getResult() != null && stockIds.getResult().size() > 0) {
-					for (StockDto stockDto : result.getResult()) {
+					for (StockDto stockDto : pages.getResult().getContent()) {
 						if (stockIds.getResult().contains(stockDto.getId())) {
 							// stockDto.setFavorite(true);
 						}
 					}
 				}
 			}
+			result.setResult(pages.getResult().getContent());
+		} else {
+			result.setCode(pages.getCode());
+			result.setMessage(pages.getMessage());
 		}
 		return result;
 	}
@@ -55,7 +67,8 @@ public class StockController {
 	@GetMapping("/getStockRecommendList")
 	@ApiOperation(value = "获取股票推荐列表")
 	public Response<List<StockRecommendDto>> getStockRecommendList() {
-		return stockService.getStockRecommendList();
+		// return stockService.getStockRecommendList();
+		return new Response<>();
 	}
 
 }

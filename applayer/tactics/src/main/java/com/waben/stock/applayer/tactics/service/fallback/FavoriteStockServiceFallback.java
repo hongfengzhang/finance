@@ -14,27 +14,27 @@ import com.waben.stock.interfaces.pojo.Response;
 public class FavoriteStockServiceFallback implements FavoriteStockService {
 
 	@Override
-	public Response<FavoriteStockDto> addFavoriteStock(FavoriteStockDto favoriteStockDto) {
+	public Response<FavoriteStockDto> add(FavoriteStockDto favoriteStockDto) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<String> removeFavoriteStock(String serialCode, String stockIds) {
+	public Response<String> drop(Long publisherId, String stockIds) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<String> topFavoriteStock(String serialCode, String stockIds) {
+	public Response<String> top(Long publisherId, String stockIds) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<List<FavoriteStockDto>> favoriteStockList(String serialCode) {
+	public Response<List<FavoriteStockDto>> listsByPublisherId(Long publisherId) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<List<Long>> findStockIdByPublisherSerialCode(String serialCode) {
+	public Response<List<Long>> listsStockId(Long publisherId) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

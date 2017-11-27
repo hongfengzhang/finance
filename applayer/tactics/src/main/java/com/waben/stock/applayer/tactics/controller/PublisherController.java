@@ -55,7 +55,7 @@ public class PublisherController {
 
 	@GetMapping("/{id}")
 	public Response<PublisherDto> echo(@PathVariable Long id) {
-		return publisherService.findById(id);
+		return publisherService.fetchById(id);
 	}
 
 	@PostMapping("/sendSms")
@@ -80,8 +80,7 @@ public class PublisherController {
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
 		Response<PublisherDto> publisherResp = publisherService.register(phone, password);
-		Response<CapitalAccountDto> accountResp = accountService
-				.findByPublisherSerialCode(publisherResp.getResult().getSerialCode());
+		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {
@@ -96,9 +95,8 @@ public class PublisherController {
 	@GetMapping("/getCurrent")
 	@ApiOperation(value = "获取当前发布策略人信息")
 	public Response<PublisherCapitalAccountDto> getCurrent() {
-		Response<PublisherDto> publisherResp = publisherService.findBySerialCode(SecurityUtil.getSerialCode());
-		Response<CapitalAccountDto> accountResp = accountService
-				.findByPublisherSerialCode(SecurityUtil.getSerialCode());
+		Response<PublisherDto> publisherResp = publisherService.fetchById(SecurityUtil.getUserId());
+		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(SecurityUtil.getUserId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		return new Response<>(data);
@@ -110,8 +108,7 @@ public class PublisherController {
 		Response<SettingRemindDto> result = new Response<>(new SettingRemindDto());
 		result.getResult().setPhone(SecurityUtil.getUsername());
 		// 获取是否绑卡
-		Response<List<BindCardDto>> bindCardListResp = bindCardService
-				.publisherBankCardList(SecurityUtil.getSerialCode());
+		Response<List<BindCardDto>> bindCardListResp = bindCardService.listsByPublisherId(SecurityUtil.getUserId());
 		if ("200".equals(bindCardListResp.getCode())) {
 			if (bindCardListResp.getResult() != null && bindCardListResp.getResult().size() > 0) {
 				result.getResult().setSettingBindCard(true);
@@ -122,8 +119,7 @@ public class PublisherController {
 			return result;
 		}
 		// 获取是否设置过支付密码
-		Response<CapitalAccountDto> capitalAccountResp = accountService
-				.findByPublisherSerialCode(SecurityUtil.getSerialCode());
+		Response<CapitalAccountDto> capitalAccountResp = accountService.fetchByPublisherId(SecurityUtil.getUserId());
 		if ("200".equals(capitalAccountResp.getCode())) {
 			if (capitalAccountResp.getResult() != null && capitalAccountResp.getResult().getPaymentPassword() != null
 					&& !"".equals(capitalAccountResp.getResult().getPaymentPassword())) {
@@ -144,8 +140,7 @@ public class PublisherController {
 		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
 		// 修改密码
 		Response<PublisherDto> publisherResp = publisherService.modifyPassword(phone, password);
-		Response<CapitalAccountDto> accountResp = accountService
-				.findByPublisherSerialCode(publisherResp.getResult().getSerialCode());
+		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {
@@ -160,7 +155,7 @@ public class PublisherController {
 	@PostMapping("/modifyPaymentPassword")
 	@ApiOperation(value = "设置支付密码")
 	public Response<String> modifyPaymentPassword(String paymentPassword) {
-		publisherService.modifyPaymentPassword(SecurityUtil.getSerialCode(), paymentPassword);
+		accountService.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
 		return new Response<>("设置支付密码成功");
 	}
 

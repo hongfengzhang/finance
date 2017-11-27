@@ -14,11 +14,9 @@ import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.datalayer.publisher.repository.FrozenCapitalDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
 import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 @Service
 public class CapitalAccountService {
@@ -35,28 +33,36 @@ public class CapitalAccountService {
 	/**
 	 * 根据发布人系列号获取资金账户
 	 */
-	public CapitalAccountDto findByPublisherSerialCode(String publisherSerialCode) {
-		CapitalAccount account = capitalAccountDao.findByPublisherSerialCode(publisherSerialCode);
-		return CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, account, false);
+	public CapitalAccount findByPublisherSerialCode(String publisherSerialCode) {
+		return capitalAccountDao.retriveByPublisherSerialCode(publisherSerialCode);
 	}
 
 	/**
 	 * 根据发布人ID获取资金账户
 	 */
-	public CapitalAccountDto findByPublisherId(Long publisherId) {
-		CapitalAccount account = capitalAccountDao.findByPublisherId(publisherId);
-		return CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, account, false);
+	public CapitalAccount findByPublisherId(Long publisherId) {
+		return capitalAccountDao.retriveByPublisherId(publisherId);
+	}
+
+	/**
+	 * 修改支付密码
+	 */
+	public void modifyPaymentPassword(Long publisherId, String paymentPassword) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		account.setPaymentPassword(paymentPassword);
+		capitalAccountDao.update(account);
 	}
 
 	/**
 	 * 充值
 	 */
 	@Transactional
-	public CapitalAccountDto recharge(Long publisherId, String publisherSerialCode, BigDecimal amount) {
-		CapitalAccount account = capitalAccountDao.findByPublisherId(publisherId);
+	public CapitalAccount recharge(Long publisherId, BigDecimal amount) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		increaseAmount(account, amount, date);
-		capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.Recharge, amount.abs(), date);
+		capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Recharge, amount.abs(),
+				date);
 		return findByPublisherId(publisherId);
 	}
 
@@ -64,11 +70,11 @@ public class CapitalAccountService {
 	 * 提现
 	 */
 	@Transactional
-	public CapitalAccountDto withdrawals(Long publisherId, String publisherSerialCode, BigDecimal amount) {
-		CapitalAccount account = capitalAccountDao.findByPublisherId(publisherId);
+	public CapitalAccount withdrawals(Long publisherId, BigDecimal amount) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
-		capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.Recharge,
+		capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Recharge,
 				amount.abs().multiply(new BigDecimal(-1)), date);
 		return findByPublisherId(publisherId);
 	}
@@ -77,24 +83,23 @@ public class CapitalAccountService {
 	 * 信息服务费和赔付保证金
 	 */
 	@Transactional
-	public CapitalAccountDto serviceFeeAndCompensateMoney(Long publisherId, String publisherSerialCode,
-			Long buyRecordId, String buyRecordSerialCode, BigDecimal serviceFeeAmount,
-			BigDecimal compensateMoneyAmount) {
-		CapitalAccount account = capitalAccountDao.findByPublisherId(publisherId);
+	public CapitalAccount serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode,
+			BigDecimal serviceFee, BigDecimal reserveFund) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
-		reduceAmount(account, serviceFeeAmount, compensateMoneyAmount, date);
-		capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.ServiceFee,
-				serviceFeeAmount.abs().multiply(new BigDecimal(-1)), date);
-		capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.CompensateMoney,
-				compensateMoneyAmount.abs().multiply(new BigDecimal(-1)), date);
+		reduceAmount(account, serviceFee, reserveFund, date);
+		capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.ServiceFee,
+				serviceFee.abs().multiply(new BigDecimal(-1)), date);
+		capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.ReserveFund,
+				reserveFund.abs().multiply(new BigDecimal(-1)), date);
 		// 保存冻结资金记录
 		FrozenCapital frozen = new FrozenCapital();
-		frozen.setAmount(compensateMoneyAmount.abs());
+		frozen.setAmount(reserveFund.abs());
 		frozen.setBuyRecordId(buyRecordId);
 		frozen.setBuyRecordSerialCode(buyRecordSerialCode);
 		frozen.setFrozenTime(date);
 		frozen.setPublisherId(publisherId);
-		frozen.setPublisherSerialCode(publisherSerialCode);
+		frozen.setPublisherSerialCode(account.getPublisherSerialCode());
 		frozen.setStatus(FrozenCapitalStatus.Frozen);
 		frozenCapitalDao.create(frozen);
 		return findByPublisherId(publisherId);
@@ -104,11 +109,11 @@ public class CapitalAccountService {
 	 * 递延费
 	 */
 	@Transactional
-	public CapitalAccountDto deferredCharges(Long publisherId, String publisherSerialCode, BigDecimal amount) {
-		CapitalAccount account = capitalAccountDao.findByPublisherId(publisherId);
+	public CapitalAccount deferredCharges(Long publisherId, BigDecimal amount) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
-		capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.DeferredCharges,
+		capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.DeferredCharges,
 				amount.abs().multiply(new BigDecimal(-1)), date);
 		return findByPublisherId(publisherId);
 	}
@@ -117,25 +122,26 @@ public class CapitalAccountService {
 	 * 退回赔付保证金和盈亏
 	 */
 	@Transactional
-	public CapitalAccountDto returnCompensateAndLoss(Long publisherId, String publisherSerialCode, Long buyRecordId,
-			String buyRecordSerialCode, BigDecimal profitOrLoss) {
-		CapitalAccount account = capitalAccountDao.findByPublisherId(publisherId);
+	public CapitalAccount returnReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode,
+			BigDecimal profitOrLoss) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		// 获取冻结资金记录
-		FrozenCapital frozen = frozenCapitalDao.findByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
+		FrozenCapital frozen = frozenCapitalDao.retriveByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
 		BigDecimal frozenAmount = frozen.getAmount();
-		if (profitOrLoss.compareTo(new BigDecimal(0)) >= 0) { // 盈利
+		if (profitOrLoss.compareTo(new BigDecimal(0)) >= 0) {
 			// 退回全部冻结资金
 			increaseAmount(account, frozenAmount, date);
-			capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.ReturnCompensate,
+			capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.ReturnReserveFund,
 					frozenAmount.abs(), date);
 			// 盈利
 			if (profitOrLoss.compareTo(new BigDecimal(0)) > 0) {
 				increaseAmount(account, profitOrLoss, date);
-				capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.Profit,
+				capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Profit,
 						profitOrLoss.abs(), date);
 			}
-		} else { // 亏损
+		} else {
+			// 亏损
 			BigDecimal lossAmountAbs = profitOrLoss.abs();
 			if (lossAmountAbs.compareTo(frozenAmount) > 0) {
 				// 最多亏损保证金
@@ -145,10 +151,10 @@ public class CapitalAccountService {
 			if (returnFrozenAmount.compareTo(new BigDecimal(0)) > 0) {
 				// 退回部分保证金
 				increaseAmount(account, returnFrozenAmount, date);
-				capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.ReturnCompensate,
+				capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.ReturnReserveFund,
 						returnFrozenAmount.abs(), date);
 			}
-			capitalFlowDao.addCapitalFlow(publisherId, publisherSerialCode, CapitalFlowType.Loss,
+			capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Loss,
 					lossAmountAbs.abs().multiply(new BigDecimal(-1)), date);
 		}
 		return findByPublisherId(publisherId);

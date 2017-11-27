@@ -17,11 +17,11 @@ public enum CapitalFlowType implements CommonalityEnum {
 
 	ServiceFee("3", "信息服务费"),
 
-	CompensateMoney("4", "赔付保证金"),
+	ReserveFund("4", "赔付保证金"),
 
 	DeferredCharges("5", "递延费"),
 
-	ReturnCompensate("6", "退回赔付保证金"),
+	ReturnReserveFund("6", "退回赔付保证金"),
 
 	Loss("7", "亏损"),
 
