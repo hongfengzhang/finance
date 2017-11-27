@@ -1,8 +1,11 @@
 package com.waben.stock.applayer.tactics.controller;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +15,10 @@ import com.waben.stock.applayer.tactics.service.BuyRecordService;
 import com.waben.stock.applayer.tactics.service.CapitalAccountService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
+import com.waben.stock.interfaces.enums.BuyRecordStatus;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.SerialCodeGenerator;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -54,6 +60,9 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint);
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
+		dto.setSerialCode(SerialCodeGenerator.generate());
+		dto.setStatus(BuyRecordStatus.Issue);
+		dto.setCreateTime(new Date());
 		// TODO 计算止盈点位和止损点位
 		dto.setProfitPosition(applyAmount.multiply(profitPoint));
 		dto.setProfitWarnPosition(applyAmount.multiply(profitPoint).subtract(new BigDecimal(100)));
