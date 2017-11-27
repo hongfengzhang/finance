@@ -61,7 +61,7 @@ public class BuyRecordController {
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
 		dto.setSerialCode(SerialCodeGenerator.generate());
-		dto.setStatus(BuyRecordStatus.Issue);
+		dto.setStatus(BuyRecordStatus.POSTED);
 		dto.setCreateTime(new Date());
 		// TODO 计算止盈点位和止损点位
 		dto.setProfitPosition(applyAmount.multiply(profitPoint));
