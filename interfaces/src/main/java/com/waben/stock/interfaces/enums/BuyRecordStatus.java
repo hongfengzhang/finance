@@ -11,6 +11,8 @@ import java.util.Map;
  */
 public enum BuyRecordStatus implements CommonalityEnum {
 
+	UNKONWN("0","未知状态"),
+
 	POSTED("1", "发布"),
 
 	BUYLOCK("2", "买入锁定"),
