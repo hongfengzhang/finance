@@ -45,4 +45,22 @@ public class BuyRecordController implements BuyRecordInterface {
 		return null;
 	}
 
+	@RequestMapping("/direct")
+	public Response<Void> direct(String message) {
+		buyRecordService.queueDirect(message);
+		return new Response<>();
+	}
+
+	@RequestMapping("/topic")
+	public Response<Void> topicMessage(String message) {
+		buyRecordService.messageTopic(message);
+		return new Response<>();
+	}
+
+	@RequestMapping("/fanout")
+	public Response<Void> fanoutMessage(String message) {
+		buyRecordService.messageFanout(message);
+		return new Response<>();
+	}
+
 }

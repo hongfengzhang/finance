@@ -16,7 +16,6 @@ public class StockMonitor implements CommandLineRunner {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-
     /***
     * @author yuyidi 2017-11-27 20:04:24
     * @method run
