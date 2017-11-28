@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.waben.stock.datalayer.buyrecord.entity.enumconverter.BuyingRecordStatusConverter;
-import com.waben.stock.interfaces.enums.BuyRecordStatus;
+import com.waben.stock.interfaces.enums.BuyRecordState;
 
 /**
  * 点买记录
@@ -85,9 +85,9 @@ public class BuyRecord {
 	/**
 	 * 状态
 	 */
-	@Column(name = "status")
+	@Column(name = "state")
 	@Convert(converter = BuyingRecordStatusConverter.class)
-	private BuyRecordStatus status;
+	private BuyRecordState state;
 	/**
 	 * 持股数
 	 */
@@ -250,12 +250,12 @@ public class BuyRecord {
 		this.lossPosition = lossPosition;
 	}
 
-	public BuyRecordStatus getStatus() {
-		return status;
+	public BuyRecordState getState() {
+		return state;
 	}
 
-	public void setStatus(BuyRecordStatus status) {
-		this.status = status;
+	public void setState(BuyRecordState state) {
+		this.state = state;
 	}
 
 	public Integer getNumberOfStrand() {

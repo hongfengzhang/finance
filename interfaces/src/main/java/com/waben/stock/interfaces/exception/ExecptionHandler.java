@@ -1,6 +1,11 @@
 package com.waben.stock.interfaces.exception;
 
-import com.waben.stock.interfaces.pojo.ExceptionInformation;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -9,10 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import com.waben.stock.interfaces.pojo.ExceptionInformation;
 
 /**
  * @author yuyidi 2017-07-13 16:06:14
@@ -28,9 +30,9 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 
 	public ExecptionHandler() {
 		// this.exceptions.add(
-		//		new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "503"));
-		this.exceptions.add(
-				new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_OK, "200"));
+		// new ExceptionInformation(ServiceException.class,
+		// HttpServletResponse.SC_SERVICE_UNAVAILABLE, "503"));
+		this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_OK, "200"));
 		this.exceptions
 				.add(new ExceptionInformation(NoHandlerFoundException.class, HttpServletResponse.SC_NOT_FOUND, "404"));
 		this.exceptions.add(new ExceptionInformation(DataNotFoundException.class, HttpServletResponse.SC_OK, "205"));
@@ -62,8 +64,13 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 			mv.addObject("code", code);
 			logger.info("响应状态码:{}", response.getStatus());
 			String contentType = request.getContentType();
+			String isFeign = request.getHeader("feign");
 			if (contentType != null && (contentType.indexOf("application/json") > -1
 					|| contentType.indexOf("application/x-www-form-urlencoded") > -1)) {
+				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
+				response.setCharacterEncoding("UTF-8"); // 避免乱码
+				mv.setView(jsonView);
+			} else if (isFeign != null && "true".equals(isFeign)) {
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
 				response.setCharacterEncoding("UTF-8"); // 避免乱码
 				mv.setView(jsonView);

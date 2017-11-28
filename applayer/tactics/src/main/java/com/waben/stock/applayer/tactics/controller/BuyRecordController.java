@@ -1,8 +1,6 @@
 package com.waben.stock.applayer.tactics.controller;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,10 +13,10 @@ import com.waben.stock.applayer.tactics.service.BuyRecordService;
 import com.waben.stock.applayer.tactics.service.CapitalAccountService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
-import com.waben.stock.interfaces.enums.BuyRecordStatus;
+import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.util.SerialCodeGenerator;
+import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 
 import io.swagger.annotations.ApiOperation;
 
@@ -60,9 +58,6 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint);
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
-		dto.setSerialCode(SerialCodeGenerator.generate());
-		dto.setStatus(BuyRecordStatus.POSTED);
-		dto.setCreateTime(new Date());
 		// TODO 计算止盈点位和止损点位
 		dto.setProfitPosition(applyAmount.multiply(profitPoint));
 		dto.setProfitWarnPosition(applyAmount.multiply(profitPoint).subtract(new BigDecimal(100)));
@@ -84,6 +79,21 @@ public class BuyRecordController {
 		}
 		// TODO 触发监控点买记录
 		return result;
+	}
+
+	@GetMapping("/pagesHoldPosition")
+	@ApiOperation(value = "持仓中的点买记录列表")
+	public Response<PageInfo<BuyRecordDto>> pagesHoldPosition(int page, int size) {
+		BuyRecordQuery query = new BuyRecordQuery(page, size, new BuyRecordState[] { BuyRecordState.POSTED,
+				BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION, BuyRecordState.SELLLOCK });
+		return buyRecordService.pagesByQuery(query);
+	}
+
+	@GetMapping("/pagesUnwindList")
+	@ApiOperation(value = "结算的点买记录列表")
+	public Response<PageInfo<BuyRecordDto>> pagesUnwindList(int page, int size) {
+		BuyRecordQuery query = new BuyRecordQuery(page, size, new BuyRecordState[] { BuyRecordState.UNWIND });
+		return buyRecordService.pagesByQuery(query);
 	}
 
 }

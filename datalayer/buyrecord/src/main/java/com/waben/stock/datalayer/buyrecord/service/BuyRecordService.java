@@ -3,11 +3,23 @@ package com.waben.stock.datalayer.buyrecord.service;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.Producer;
-import com.waben.stock.interfaces.enums.BuyRecordStatus;
+import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.util.SerialCodeGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.Date;
 
 /**
  * 点买记录 Service
@@ -25,26 +37,44 @@ public class BuyRecordService {
     @Autowired
     private BuyRecordDao buyRecordDao;
 
+
     public BuyRecord save(BuyRecord buyRecord) {
+        buyRecord.setSerialCode(SerialCodeGenerator.generate());
+        buyRecord.setState(BuyRecordState.POSTED);
+        buyRecord.setCreateTime(new Date());
         return buyRecordDao.create(buyRecord);
     }
 
+    public Page<BuyRecord> pagesByQuery(final BuyRecordQuery buyRecordQuery) {
+        Pageable pageable = new PageRequest(buyRecordQuery.getPage(), buyRecordQuery.getSize());
+        Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+            @Override
+            public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
+                                         CriteriaBuilder criteriaBuilder) {
+                if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
+                    criteriaQuery.where(root.get("state").in(buyRecordQuery.getStates()));
+                }
+                return criteriaQuery.getRestriction();
+            }
+        }, pageable);
+        return pages;
+    }
 
     public BuyRecord changeState(BuyRecord record) {
-        BuyRecordStatus current = record.getStatus();
-        BuyRecordStatus next = BuyRecordStatus.UNKONWN;
-        if (BuyRecordStatus.POSTED.equals(current)) {
-            next = BuyRecordStatus.BUYLOCK;
-        } else if (BuyRecordStatus.BUYLOCK.equals(current)) {
-            next = BuyRecordStatus.HOLDPOSITION;
-        } else if (BuyRecordStatus.HOLDPOSITION.equals(current)) {
-            next = BuyRecordStatus.SELLLOCK;
+        BuyRecordState current = record.getState();
+        BuyRecordState next = BuyRecordState.UNKONWN;
+        if (BuyRecordState.POSTED.equals(current)) {
+            next = BuyRecordState.BUYLOCK;
+        } else if (BuyRecordState.BUYLOCK.equals(current)) {
+            next = BuyRecordState.HOLDPOSITION;
+        } else if (BuyRecordState.HOLDPOSITION.equals(current)) {
+            next = BuyRecordState.SELLLOCK;
         }
-        record.setStatus(next);
+        record.setState(next);
         BuyRecord result = buyRecordDao.update(record);
-        if (result.getStatus().equals(next)) {
+        if (result.getState().equals(next)) {
             logger.info("点买交易状态更新成功,id:{}", result.getSerialCode());
-            if (next.equals(BuyRecordStatus.HOLDPOSITION)) {
+            if (next.equals(BuyRecordState.HOLDPOSITION)) {
                 //若点买交易记录为持仓中，向消息队列中添加当前点买交易记录
 
             }
@@ -52,16 +82,11 @@ public class BuyRecordService {
         return result;
     }
 
-
     public void queueDirect(String message) {
         producer.direct("queue", message);
     }
 
     public void messageTopic(String message) {
-        producer.topic("exchange", "topic.message", message);
-    }
-
-    public void messagesTopic(String message) {
         producer.topic("exchange", "topic.messages", message);
     }
 
