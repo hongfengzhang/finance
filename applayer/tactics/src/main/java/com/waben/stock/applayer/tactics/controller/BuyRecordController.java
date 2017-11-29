@@ -42,8 +42,6 @@ public class BuyRecordController {
 	@ApiOperation(value = "点买")
 	public Response<BuyRecordWithMarketDto> buy(Long strategyTypeId, BigDecimal applyAmount, BigDecimal serviceFee,
 			BigDecimal reserveFund, BigDecimal profitPoint, BigDecimal lossPoint, String stockCode, Boolean deferred) {
-		// TODO 以下代码需优化，放置到Service中处理
-
 		// TODO 检查参数是否合理
 
 		// TODO 检查余额
