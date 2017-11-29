@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
+import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.Producer;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -29,17 +30,19 @@ import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
  * 点买记录 Service
- * 
- * @author luomengan
  *
+ * @author luomengan
  */
 @Service
 public class BuyRecordService {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private BuyRecordDao buyRecordDao;
+    @Autowired
+    private Producer producer;
+
+    @Autowired
+    private BuyRecordDao buyRecordDao;
 
 	@Transactional
 	public BuyRecord save(BuyRecord buyRecord) {
@@ -87,11 +90,18 @@ public class BuyRecordService {
 			logger.info("点买交易状态更新成功,id:{}", result.getSerialCode());
 			if (next.equals(BuyRecordState.HOLDPOSITION)) {
 				// 若点买交易记录为持仓中，向消息队列中添加当前点买交易记录
+            }
+        }
+        return result;
+    }
 
-			}
-		}
-		return result;
-	}
+    public void queueDirect(String message) {
+        producer.direct("queue", message);
+    }
+
+    public void messageTopic(String message) {
+        producer.topic("exchange", "topic.messages", message);
+    }
 
 	@Transactional
 	public void remove(Long buyRecordId) {
@@ -199,4 +209,8 @@ public class BuyRecordService {
 		return changeState(buyRecord);
 	}
 
+    public void messageFanout(String message) {
+        producer.fanout("fanoutExchange", message);
+    }
+    
 }

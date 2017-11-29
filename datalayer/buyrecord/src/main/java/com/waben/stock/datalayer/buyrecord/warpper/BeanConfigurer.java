@@ -4,9 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
@@ -53,6 +55,51 @@ public class BeanConfigurer {
         logger.info("host:{},username:{}", connectionFactory.getHost(),connectionFactory.getUsername());
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         return rabbitTemplate;
+    }
+
+    @Bean
+    public Queue queue() {
+        return new Queue("queue");
+    }
+
+    @Bean(name = "message")
+    public Queue message() {
+        return new Queue("topicMessage");
+    }
+
+    @Bean(name = "messages")
+    public Queue messages() {
+        return new Queue("topicMessages");
+    }
+
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange("exchange");
+    }
+
+    @Bean
+    public FanoutExchange fanoutExchange() {
+        return new FanoutExchange("fanoutExchange");
+    }
+
+    @Bean
+    public Binding bindingExchangeMessage(@Qualifier("message") Queue message,TopicExchange exchange) {
+        return BindingBuilder.bind(message).to(exchange).with("topic.message");
+    }
+
+    @Bean
+    public Binding bindingExchangeMessages(@Qualifier("messages") Queue messages, TopicExchange exchange) {
+        return BindingBuilder.bind(messages).to(exchange).with("topic.#");
+    }
+
+    @Bean
+    public Binding bindFanoutExchangeMessage(@Qualifier("message") Queue message, FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(message).to(fanoutExchange);
+    }
+
+    @Bean
+    public Binding bindFanoutExchangeMessages(@Qualifier("messages") Queue messages, FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(messages).to(fanoutExchange);
     }
 
 }

@@ -20,28 +20,44 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.math.BigDecimal;
 
 /**
  * 点买记录 Controller
- * 
- * @author luomengan
  *
+ * @author luomengan
  */
 @RestController
 @RequestMapping("/buyRecord")
 public class BuyRecordController implements BuyRecordInterface {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private BuyRecordService buyRecordService;
+    @Autowired
+    private BuyRecordService buyRecordService;
 
-	@Override
-	public Response<BuyRecordDto> addBuyRecord(@RequestBody BuyRecordDto buyRecordDto) {
-		BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
-		return new Response<>(
-				CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.save(buyRecord), false));
-	}
+    @Override
+    public Response<BuyRecordDto> addBuyRecord(@RequestBody BuyRecordDto buyRecordDto) {
+        BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
+        return new Response<>(
+                CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.save(buyRecord), false));
+    }
+
+    @Override
+    public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {
+        Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
+        PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+        return new Response<>(result);
+    }
+
 
 	@Override
 	public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id) {
@@ -70,16 +86,27 @@ public class BuyRecordController implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery) {
-		Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
-		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-		return new Response<>(result);
-	}
-
-	@Override
 	public Response<String> dropBuyRecord(@PathVariable Long id) {
 		buyRecordService.remove(id);
 		return new Response<>("successful");
 	}
 
+    @RequestMapping("/direct")
+    public Response<Void> direct(String message) {
+        buyRecordService.queueDirect(message);
+        return new Response<>();
+    }
+
+    @RequestMapping("/topic")
+    public Response<Void> topicMessage(String message) {
+        buyRecordService.messageTopic(message);
+        return new Response<>();
+    }
+
+    @RequestMapping("/fanout")
+    public Response<Void> fanoutMessage(String message) {
+        buyRecordService.messageFanout(message);
+        return new Response<>();
+    }
+    
 }
