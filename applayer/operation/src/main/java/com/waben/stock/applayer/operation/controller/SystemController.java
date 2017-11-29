@@ -43,7 +43,6 @@ public class SystemController {
 
     @GetMapping("/index")
     public String index() {
-        System.out.println(JacksonUtil.encode(systemManageBusiness.menus()));
         return "index";
     }
 

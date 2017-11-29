@@ -10,19 +10,22 @@ import org.springframework.stereotype.Component;
  * @desc
  */
 @Component
-public class RabbitMqConsumer implements Consumer {
+public class RabbitMqConsumer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Override
-    @RabbitListener(queues = {"queue"})
-    public void receiveDirect(String message) {
-        logger.info("Direct消息接收:{}", message);
+    @RabbitListener(queues = {"shangSecurity"})
+    public void shangSecurity(String message) {
+        logger.info("上海证券点买交易记录接收到消息:{}", message);
     }
 
-    @Override
-    @RabbitListener(queues = {"topicMessage"})
-    public void receiveTopic(String message) {
-        logger.info("Topic消息接收:{}", message);
+    @RabbitListener(queues = {"shenSecurity"})
+    public void shenSecurity(String message) {
+        logger.info("深证证券点买交易记录接收到消息:{}", message);
+    }
+
+    @RabbitListener(queues = {"developSecurity"})
+    public void developSecurity(String message) {
+        logger.info("创业板点买交易记录接收到消息:{}", message);
     }
 }

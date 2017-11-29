@@ -59,7 +59,7 @@ public class BuyRecordService {
 		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
 			@Override
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
-					CriteriaBuilder criteriaBuilder) {
+										 CriteriaBuilder criteriaBuilder) {
 				if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
 					criteriaQuery
 							.where(criteriaBuilder.and(root.get("state").in(buyRecordQuery.getStates()), criteriaBuilder
@@ -70,6 +70,7 @@ public class BuyRecordService {
 		}, pageable);
 		return pages;
 	}
+
 
 	@Transactional
 	public BuyRecord changeState(BuyRecord record) {
@@ -95,12 +96,8 @@ public class BuyRecordService {
         return result;
     }
 
-    public void queueDirect(String message) {
-        producer.direct("queue", message);
-    }
-
-    public void messageTopic(String message) {
-        producer.topic("exchange", "topic.messages", message);
+    public void messageTopic(String security,String message) {
+        producer.topic("buyRecord", security, message);
     }
 
 	@Transactional
@@ -208,9 +205,4 @@ public class BuyRecordService {
 		// 修改点买记录状态
 		return changeState(buyRecord);
 	}
-
-    public void messageFanout(String message) {
-        producer.fanout("fanoutExchange", message);
-    }
-    
 }

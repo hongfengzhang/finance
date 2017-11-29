@@ -17,7 +17,7 @@ public class BuyrecordApplicationTests {
 
 	@Test
 	public void testBuyRecordSend() throws InterruptedException {
-		buyRecordService.queueDirect("hello");
+//		buyRecordService.queueDirect("hello");
 		Thread.sleep(30*1000);
 	}
 

@@ -49,7 +49,6 @@ public class BuyRecordController implements BuyRecordInterface {
         return new Response<>(result);
     }
 
-
 	@Override
 	public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id) {
 		BuyRecord buyRecord = buyRecordService.buyLock(investorId, id);
@@ -82,22 +81,11 @@ public class BuyRecordController implements BuyRecordInterface {
 		return new Response<>("successful");
 	}
 
-    @RequestMapping("/direct")
-    public Response<Void> direct(String message) {
-        buyRecordService.queueDirect(message);
-        return new Response<>();
-    }
-
     @RequestMapping("/topic")
-    public Response<Void> topicMessage(String message) {
-        buyRecordService.messageTopic(message);
+    public Response<Void> topicMessage(String security ,String message) {
+        buyRecordService.messageTopic(security,message);
         return new Response<>();
     }
 
-    @RequestMapping("/fanout")
-    public Response<Void> fanoutMessage(String message) {
-        buyRecordService.messageFanout(message);
-        return new Response<>();
-    }
     
 }

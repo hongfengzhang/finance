@@ -15,6 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 public class RiskApplication {
 
     public static void main(String[] args) {
+        System.setProperty("org.terracotta.quartz.skipUpdateCheck","true");
         SpringApplication.run(RiskApplication.class);
     }
 }
