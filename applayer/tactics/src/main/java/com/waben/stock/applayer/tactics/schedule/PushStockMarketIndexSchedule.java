@@ -9,7 +9,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.tactics.dto.system.StockExponentDto;
+import com.waben.stock.applayer.tactics.dto.system.StockMarketExponentDto;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
 import com.waben.stock.applayer.tactics.websocket.StockMarketWebsocket;
 
@@ -44,7 +44,7 @@ public class PushStockMarketIndexSchedule {
 		@Override
 		public void run() {
 			try {
-				List<StockExponentDto> exponentList = stockMarketService.listStockExponent();
+				List<StockMarketExponentDto> exponentList = stockMarketService.listStockExponent();
 				socket.sendStockMarketIndex(exponentList);
 			} finally {
 				initTask();

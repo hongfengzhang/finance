@@ -19,6 +19,10 @@ public class BuyRecordDto {
 	 */
 	private String serialCode;
 	/**
+	 * 交易编号
+	 */
+	private String tradeNo;
+	/**
 	 * 申请资金
 	 */
 	private BigDecimal applyAmount;
@@ -83,6 +87,10 @@ public class BuyRecordDto {
 	 */
 	private BigDecimal buyingPrice;
 	/**
+	 * 是否发布人申请平仓
+	 */
+	private Boolean publisherSelling;
+	/**
 	 * 卖出时间
 	 */
 	private Date sellingTime;
@@ -94,6 +102,10 @@ public class BuyRecordDto {
 	 * 盈亏
 	 */
 	private BigDecimal profitOrLoss;
+	/**
+	 * 发布人盈亏
+	 */
+	private BigDecimal publisherProfitOrLoss;
 	/**
 	 * 股票代码
 	 */
@@ -129,6 +141,14 @@ public class BuyRecordDto {
 
 	public void setSerialCode(String serialCode) {
 		this.serialCode = serialCode;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
 
 	public BigDecimal getApplyAmount() {
@@ -259,6 +279,14 @@ public class BuyRecordDto {
 		this.buyingPrice = buyingPrice;
 	}
 
+	public Boolean getPublisherSelling() {
+		return publisherSelling;
+	}
+
+	public void setPublisherSelling(Boolean publisherSelling) {
+		this.publisherSelling = publisherSelling;
+	}
+
 	public Date getSellingTime() {
 		return sellingTime;
 	}
@@ -281,6 +309,14 @@ public class BuyRecordDto {
 
 	public void setProfitOrLoss(BigDecimal profitOrLoss) {
 		this.profitOrLoss = profitOrLoss;
+	}
+
+	public BigDecimal getPublisherProfitOrLoss() {
+		return publisherProfitOrLoss;
+	}
+
+	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
+		this.publisherProfitOrLoss = publisherProfitOrLoss;
 	}
 
 	public String getStockCode() {

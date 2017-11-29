@@ -33,6 +33,11 @@ public class BuyRecord {
 	@Column(name = "serial_code")
 	private String serialCode;
 	/**
+	 * 交易编号
+	 */
+	@Column(name = "trade_no")
+	private String tradeNo;
+	/**
 	 * 申请资金
 	 */
 	@Column(name = "apply_amount")
@@ -114,6 +119,11 @@ public class BuyRecord {
 	@Column(name = "buying_price")
 	private BigDecimal buyingPrice;
 	/**
+	 * 是否发布人申请平仓
+	 */
+	@Column(name = "publisher_selling")
+	private Boolean publisherSelling;
+	/**
 	 * 卖出时间
 	 */
 	@Column(name = "selling_time")
@@ -128,6 +138,11 @@ public class BuyRecord {
 	 */
 	@Column(name = "profit_or_loss")
 	private BigDecimal profitOrLoss;
+	/**
+	 * 发布人盈亏
+	 */
+	@Column(name = "publisher_profit_or_loss")
+	private BigDecimal publisherProfitOrLoss;
 	/**
 	 * 股票代码
 	 */
@@ -160,6 +175,14 @@ public class BuyRecord {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
 
 	public String getSerialCode() {
@@ -360,6 +383,22 @@ public class BuyRecord {
 
 	public void setPublisherSerialCode(String publisherSerialCode) {
 		this.publisherSerialCode = publisherSerialCode;
+	}
+
+	public Boolean getPublisherSelling() {
+		return publisherSelling;
+	}
+
+	public void setPublisherSelling(Boolean publisherSelling) {
+		this.publisherSelling = publisherSelling;
+	}
+
+	public BigDecimal getPublisherProfitOrLoss() {
+		return publisherProfitOrLoss;
+	}
+
+	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
+		this.publisherProfitOrLoss = publisherProfitOrLoss;
 	}
 
 }

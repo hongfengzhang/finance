@@ -19,8 +19,12 @@ public class StockServiceFallback implements StockInterface {
 
 	@Override
 	public Response<PageInfo<StockDto>> pagesByQuery(StockQuery stockQuery) {
-		// TODO Auto-generated method stub
-		return null;
+		return new Response<>("205", "暂无股票列表数据");
+	}
+
+	@Override
+	public Response<StockDto> fetchById(Long id) {
+		return new Response<>("205", "股票" + id + "信息不存在");
 	}
 
 }

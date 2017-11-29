@@ -13,7 +13,7 @@ import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.util.SerialCodeGenerator;
+import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
@@ -45,7 +45,7 @@ public class PublisherService {
 		}
 		// 保存发布策略人信息
 		Publisher publisher = new Publisher();
-		publisher.setSerialCode(SerialCodeGenerator.generate());
+		publisher.setSerialCode(UniqueCodeGenerator.generateSerialCode());
 		publisher.setPhone(phone);
 		publisher.setPassword(password);
 		publisher.setCreateTime(new Date());

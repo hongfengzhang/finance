@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.tactics.swagger;
+package com.waben.stock.datalayer.buyrecord.swagger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class Swagger2 {
 				.defaultValue(token).required(false).build();
 		pars.add(tokenPar.build());
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).globalOperationParameters(pars).select()
-				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.applayer.tactics.controller"))
+				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.datalayer.buyrecord.controller"))
 				.paths(PathSelectors.any()).build();
 	}
 

@@ -18,6 +18,7 @@ import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -28,6 +29,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/bindCard")
+@Api(description = "绑卡")
 public class BindCardController {
 
 	@Autowired
