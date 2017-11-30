@@ -10,6 +10,6 @@ import com.waben.stock.datalayer.publisher.entity.FrozenCapital;
  */
 public interface FrozenCapitalDao extends BaseDao<FrozenCapital, Long> {
 
-	FrozenCapital findByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
+	FrozenCapital retriveByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
 
 }

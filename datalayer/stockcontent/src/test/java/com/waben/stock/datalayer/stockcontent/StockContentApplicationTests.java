@@ -1,6 +1,5 @@
 package com.waben.stock.datalayer.stockcontent;
 
-import com.netflix.discovery.converters.Auto;
 import com.waben.stock.datalayer.stockcontent.entity.*;
 import com.waben.stock.datalayer.stockcontent.pojo.Resonse;
 import com.waben.stock.datalayer.stockcontent.pojo.StockVariety;
@@ -49,7 +48,7 @@ public class StockContentApplicationTests {
 
     @Test
     public void initStraegyType() {
-        StraegyType straegyType = new StraegyType();
+        StrategyType straegyType = new StrategyType();
         straegyType.setName("T+5");
         straegyType.setProfit(new BigDecimal(0.5));
         straegyType.setState(true);
@@ -57,7 +56,7 @@ public class StockContentApplicationTests {
         straegyType.setDeferred(18);
         List<AmountValue> amountValues = amountValueService.fetchAmountValues();
         List<Loss> losses = lossService.fetchLosses();
-        StraegyType result = straegyTypeService.save(straegyType, amountValues, losses);
+        StrategyType result = straegyTypeService.save(straegyType, amountValues, losses);
         System.out.println(JacksonUtil.encode(result));
     }
 

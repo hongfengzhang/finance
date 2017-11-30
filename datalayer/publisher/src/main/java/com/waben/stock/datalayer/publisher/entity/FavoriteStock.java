@@ -9,10 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
-
-import net.sf.cglib.beans.BeanCopier;
-
 /**
  * 收藏股票
  * 
@@ -26,11 +22,6 @@ public class FavoriteStock {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	/**
-	 * 策略发布人序列号
-	 */
-	@Column(name = "publisher_serial_code")
-	private String publisherSerialCode;
 	/**
 	 * 股票ID
 	 */
@@ -61,6 +52,11 @@ public class FavoriteStock {
 	 */
 	@Column(name = "sort")
 	private Integer sort;
+	/**
+	 * 策略发布人ID
+	 */
+	@Column(name = "publisher_id")
+	private Long publisherId;
 
 	public Long getId() {
 		return id;
@@ -68,14 +64,6 @@ public class FavoriteStock {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
-
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
 	}
 
 	public Long getStockId() {
@@ -126,11 +114,12 @@ public class FavoriteStock {
 		this.sort = sort;
 	}
 
-	public FavoriteStockDto copy() {
-		FavoriteStockDto result = new FavoriteStockDto();
-		BeanCopier copier = BeanCopier.create(FavoriteStock.class, FavoriteStockDto.class, false);
-		copier.copy(this, result, null);
-		return result;
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 }

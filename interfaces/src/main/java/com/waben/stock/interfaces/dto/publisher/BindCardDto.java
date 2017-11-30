@@ -28,9 +28,9 @@ public class BindCardDto {
 	 */
 	private String branchName;
 	/**
-	 * 策略发布人序列号
+	 * 策略发布人ID
 	 */
-	private String publisherSerialCode;
+	private Long publisherId;
 
 	public Long getId() {
 		return id;
@@ -72,14 +72,6 @@ public class BindCardDto {
 		this.bankCard = bankCard;
 	}
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
-
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
-	}
-
 	public String getBankName() {
 		return bankName;
 	}
@@ -94,6 +86,14 @@ public class BindCardDto {
 
 	public void setBranchName(String branchName) {
 		this.branchName = branchName;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 }

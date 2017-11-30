@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.dto.system.AppHomeTopDataDto;
+import com.waben.stock.applayer.tactics.dto.system.StockMarketExponentDto;
 import com.waben.stock.applayer.tactics.service.BannerService;
 import com.waben.stock.applayer.tactics.service.CircularsService;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
@@ -17,6 +18,7 @@ import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.pojo.Response;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -26,6 +28,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/system")
 @RefreshScope
+@Api(description = "系统")
 public class SystemController {
 
 	@Value("${spring.jpa.show-sql:error}")
@@ -41,7 +44,7 @@ public class SystemController {
 
 	@Autowired
 	private CircularsService circularsService;
-	
+
 	@Autowired
 	private StockMarketService stockMarketService;
 
@@ -55,6 +58,12 @@ public class SystemController {
 	@ApiOperation(value = "获取通告列表")
 	public Response<List<CircularsDto>> getCircularsList() {
 		return circularsService.fetchCirculars(true);
+	}
+
+	@GetMapping("/stockMarketExponent")
+	@ApiOperation(value = "获取大盘指数")
+	public Response<List<StockMarketExponentDto>> stockMarketExponent() {
+		return new Response<>(stockMarketService.listStockExponent());
 	}
 
 	@GetMapping("/getAppHomeTopData")

@@ -12,8 +12,8 @@ import com.waben.stock.datalayer.publisher.entity.BindCard;
  */
 public interface BindCardRepository extends CustomJpaRepository<BindCard, Long> {
 
-	BindCard findByPublisherSerialCodeAndBankCard(String publisherSerialCode, String bankCard);
+	List<BindCard> findByPublisherId(Long publisherId);
 
-	List<BindCard> findByPublisherSerialCode(String serialCode);
+	BindCard findByPublisherIdAndBankCard(Long publisherId, String bankCard);
 
 }

@@ -7,7 +7,7 @@ import java.util.Set;
  * @author Created by yuyidi on 2017/11/23.
  * @desc
  */
-public class StraegyTypeDto {
+public class StrategyTypeDto {
 
 
     private Long id;

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
@@ -54,12 +56,17 @@ public class CapitalAccountDaoImpl implements CapitalAccountDao {
 	}
 
 	@Override
-	public CapitalAccount findByPublisherSerialCode(String serialCode) {
+	public Page<CapitalAccount> page(Specification<CapitalAccount> specification, Pageable pageable) {
+		return repository.findAll(specification, pageable);
+	}
+
+	@Override
+	public CapitalAccount retriveByPublisherSerialCode(String serialCode) {
 		return repository.findByPublisherSerialCode(serialCode);
 	}
 
 	@Override
-	public CapitalAccount findByPublisherId(Long publisherId) {
+	public CapitalAccount retriveByPublisherId(Long publisherId) {
 		return repository.findByPublisherId(publisherId);
 	}
 

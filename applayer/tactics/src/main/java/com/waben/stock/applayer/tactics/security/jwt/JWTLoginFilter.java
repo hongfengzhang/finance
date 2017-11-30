@@ -55,9 +55,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		String token = JWTTokenUtil.generateToken(customUserDetails);
 		customUserDetails.setToken(token);
 		// step 2 : 返回用户信息和token到客户端
-		String serialCode = customUserDetails.getSerialCode();
-		Response<PublisherDto> publisherResp = publisherService.findBySerialCode(serialCode);
-		Response<CapitalAccountDto> accountResp = accountService.findByPublisherSerialCode(serialCode);
+		Long publisherId = customUserDetails.getUserId();
+		Response<PublisherDto> publisherResp = publisherService.fetchById(publisherId);
+		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherId);
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		data.setToken(token);

@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.publisher.entity.FavoriteStock;
@@ -56,39 +58,43 @@ public class FavoriteStockDaoImpl implements FavoriteStockDao {
 	}
 
 	@Override
-	public FavoriteStock findByPublisherSerialCodeAndStockId(String serialCode, Long stockId) {
-		return repository.findByPublisherSerialCodeAndStockId(serialCode, stockId);
+	public Page<FavoriteStock> page(Specification<FavoriteStock> specification, Pageable pageable) {
+		return repository.findAll(specification, pageable);
 	}
 
 	@Override
-	public Integer maxSort() {
-		return repository.maxSort();
+	public FavoriteStock retrive(Long publisherId, Long stockId) {
+		return repository.findByPublisherIdAndStockId(publisherId, stockId);
 	}
 
 	@Override
-	public List<FavoriteStock> favoriteStockList(String serialCode) {
+	public Integer retriveMaxSort(Long publisherId) {
+		return repository.retriveMaxSort(publisherId);
+	}
+
+	@Override
+	public List<FavoriteStock> list(Long publisherId) {
 		Sort sort = new Sort(new Sort.Order(Direction.ASC, "sort"), new Sort.Order(Direction.DESC, "favoriteTime"));
-		return repository.findByPublisherSerialCode(serialCode, sort);
+		return repository.findByPublisherId(publisherId, sort);
 	}
 
 	@Override
-	public List<FavoriteStock> findByStockIdNotIn(Long[] stockIds) {
-		return repository.findByStockIdNotIn(stockIds);
+	public List<FavoriteStock> listByStockIdNotIn(Long publisherId, Long[] stockIds) {
+		return repository.findByPublisherIdAndStockIdNotIn(publisherId, stockIds);
 	}
 
 	@Override
-	public void deleteBySerialCodeAndStockIdIn(String serialCode, Long[] stockIds) {
+	public void delete(Long publisherId, Long[] stockIds) {
 		if (stockIds != null && stockIds.length > 0) {
 			for (Long stockId : stockIds) {
-				repository.deleteByPublisherSerialCodeAndStockId(serialCode, stockId);
+				repository.deleteByPublisherIdAndStockId(publisherId, stockId);
 			}
 		}
-
 	}
 
 	@Override
-	public List<Long> findStockIdByPublisherSerialCode(String serialCode) {
-		return repository.findStockIdByPublisherSerialCode(serialCode);
+	public List<Long> listStockId(Long publisherId) {
+		return repository.findStockIdByPublisherId(publisherId);
 	}
 
 }

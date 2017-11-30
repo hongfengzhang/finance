@@ -33,7 +33,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 	protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
 			throws AuthenticationException {
 		// APP用户
-		Response<PublisherDto> publisherResp = publisherService.findByPhone(username);
+		Response<PublisherDto> publisherResp = publisherService.fetchByPhone(username);
 		if (!"200".equals(publisherResp.getCode())) {
 			throw new ServiceException(publisherResp.getCode());
 		}

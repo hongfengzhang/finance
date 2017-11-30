@@ -20,8 +20,8 @@ public class AmountValue {
     private Long value;
 
     @JsonBackReference
-    @ManyToMany(targetEntity = StraegyType.class, mappedBy = "amountValues")
-    private Set<StraegyType> straegyTypes;
+    @ManyToMany(targetEntity = StrategyType.class, mappedBy = "amountValues")
+    private Set<StrategyType> strategyTypes;
 
     public Long getId() {
         return id;
@@ -39,11 +39,11 @@ public class AmountValue {
         this.value = value;
     }
 
-    public Set<StraegyType> getStraegyTypes() {
-        return straegyTypes;
+    public Set<StrategyType> getStrategyTypes() {
+        return strategyTypes;
     }
 
-    public void setStraegyTypes(Set<StraegyType> straegyTypes) {
-        this.straegyTypes = straegyTypes;
+    public void setStrategyTypes(Set<StrategyType> strategyTypes) {
+        this.strategyTypes = strategyTypes;
     }
 }

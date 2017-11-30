@@ -8,8 +8,8 @@ import com.waben.stock.datalayer.publisher.entity.Publisher;
  */
 public interface PublisherDao extends BaseDao<Publisher, Long> {
 
-	Publisher findByPhone(String phone);
+	Publisher retriveByPhone(String phone);
 
-	Publisher findBySerialCode(String serialCode);
+	Publisher retriveBySerialCode(String serialCode);
 
 }

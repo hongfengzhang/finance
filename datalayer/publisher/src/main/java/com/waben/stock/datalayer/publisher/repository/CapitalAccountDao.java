@@ -10,8 +10,8 @@ import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
  */
 public interface CapitalAccountDao extends BaseDao<CapitalAccount, Long> {
 
-	CapitalAccount findByPublisherSerialCode(String publisherSerialCode);
+	CapitalAccount retriveByPublisherSerialCode(String publisherSerialCode);
 	
-	CapitalAccount findByPublisherId(Long publisherId);
+	CapitalAccount retriveByPublisherId(Long publisherId);
 
 }
