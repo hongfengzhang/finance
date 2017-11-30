@@ -1,6 +1,6 @@
 package com.waben.stock.datalayer.stockcontent.repository.impl;
 
-import com.waben.stock.datalayer.stockcontent.entity.StraegyType;
+import com.waben.stock.datalayer.stockcontent.entity.StrategyType;
 import com.waben.stock.datalayer.stockcontent.repository.StraegyTypeDao;
 import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StraegyTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class StraegyTypeDaoImpl implements StraegyTypeDao {
     private StraegyTypeRepository repository;
 
     @Override
-    public List<StraegyType> retrieveWithEnable() {
+    public List<StrategyType> retrieveWithEnable() {
         return repository.findAllByState(true);
     }
 
     @Override
-    public StraegyType create(StraegyType straegyType) {
+    public StrategyType create(StrategyType straegyType) {
         return repository.save(straegyType);
     }
 
@@ -37,27 +37,27 @@ public class StraegyTypeDaoImpl implements StraegyTypeDao {
     }
 
     @Override
-    public StraegyType update(StraegyType straegyType) {
+    public StrategyType update(StrategyType straegyType) {
         return null;
     }
 
     @Override
-    public StraegyType retrieve(Long id) {
+    public StrategyType retrieve(Long id) {
         return null;
     }
 
     @Override
-    public Page<StraegyType> page(int page, int limit) {
+    public Page<StrategyType> page(int page, int limit) {
         return null;
     }
 
     @Override
-    public Page<StraegyType> page(Specification<StraegyType> specification, Pageable pageable) {
+    public Page<StrategyType> page(Specification<StrategyType> specification, Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<StraegyType> list() {
+    public List<StrategyType> list() {
         return repository.findAll();
     }
 }

@@ -12,8 +12,8 @@ import com.waben.stock.datalayer.publisher.entity.BindCard;
  */
 public interface BindCardDao extends BaseDao<BindCard, Long> {
 
-	BindCard findByPublisherSerialCodeAndBankCard(String serialCode, String bankCard);
+	BindCard retriveByPublisherIdAndBankCard(Long publisherId, String bankCard);
 
-	List<BindCard> findByPublisherSerialCode(String serialCode);
+	List<BindCard> listByPublisherId(Long publisherId);
 
 }

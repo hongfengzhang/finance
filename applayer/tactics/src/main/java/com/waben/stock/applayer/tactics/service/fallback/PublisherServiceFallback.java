@@ -16,7 +16,12 @@ import com.waben.stock.interfaces.pojo.Response;
 public class PublisherServiceFallback implements PublisherService {
 
 	@Override
-	public Response<PublisherDto> findById(Long id) {
+	public Response<PublisherDto> fetchById(Long id) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<PublisherDto> fetchByPhone(String phone) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
@@ -26,22 +31,7 @@ public class PublisherServiceFallback implements PublisherService {
 	}
 
 	@Override
-	public Response<PublisherDto> findBySerialCode(String serialCode) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
-	}
-
-	@Override
 	public Response<PublisherDto> modifyPassword(String phone, String password) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
-	}
-
-	@Override
-	public Response<PublisherDto> findByPhone(String phone) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
-	}
-
-	@Override
-	public Response<String> modifyPaymentPassword(String serialCode, String paymentPassword) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

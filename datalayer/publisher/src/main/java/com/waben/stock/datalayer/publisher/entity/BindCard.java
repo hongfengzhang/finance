@@ -7,10 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.waben.stock.interfaces.dto.publisher.BindCardDto;
-
-import net.sf.cglib.beans.BeanCopier;
-
 /**
  * @author Created by yuyidi on 2017/11/10.
  * @desc
@@ -53,10 +49,10 @@ public class BindCard {
 	@Column(name = "branch_name")
 	private String branchName;
 	/**
-	 * 策略发布人序列号
+	 * 策略发布人ID
 	 */
-	@Column(name = "publisher_serial_code")
-	private String publisherSerialCode;
+	@Column(name = "publisher_id")
+	private Long publisherId;
 
 	public Long getId() {
 		return id;
@@ -98,14 +94,6 @@ public class BindCard {
 		this.bankCard = bankCard;
 	}
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
-
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
-	}
-
 	public String getBankName() {
 		return bankName;
 	}
@@ -122,11 +110,12 @@ public class BindCard {
 		this.branchName = branchName;
 	}
 
-	public BindCardDto copy() {
-		BindCardDto result = new BindCardDto();
-		BeanCopier copier = BeanCopier.create(BindCard.class, BindCardDto.class, false);
-		copier.copy(this, result, null);
-		return result;
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 }

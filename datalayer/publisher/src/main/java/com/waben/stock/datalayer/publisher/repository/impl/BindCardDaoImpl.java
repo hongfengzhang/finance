@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.publisher.entity.BindCard;
@@ -54,13 +56,18 @@ public class BindCardDaoImpl implements BindCardDao {
 	}
 
 	@Override
-	public BindCard findByPublisherSerialCodeAndBankCard(String serialCode, String bankCard) {
-		return repository.findByPublisherSerialCodeAndBankCard(serialCode, bankCard);
+	public Page<BindCard> page(Specification<BindCard> specification, Pageable pageable) {
+		return repository.findAll(specification, pageable);
 	}
 
 	@Override
-	public List<BindCard> findByPublisherSerialCode(String serialCode) {
-		return repository.findByPublisherSerialCode(serialCode);
+	public BindCard retriveByPublisherIdAndBankCard(Long publisherId, String bankCard) {
+		return repository.findByPublisherIdAndBankCard(publisherId, bankCard);
+	}
+
+	@Override
+	public List<BindCard> listByPublisherId(Long publisherId) {
+		return repository.findByPublisherId(publisherId);
 	}
 
 }

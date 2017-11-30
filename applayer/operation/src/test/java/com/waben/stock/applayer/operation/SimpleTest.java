@@ -13,6 +13,6 @@ public class SimpleTest {
     @Test
     public void testPasswordEncoder() {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-        System.out.println(passwordEncoder.encode("123456"));
+        System.out.println(passwordEncoder.encode("wangbei"));
     }
 }

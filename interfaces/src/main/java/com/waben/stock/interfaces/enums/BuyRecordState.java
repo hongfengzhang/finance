@@ -4,18 +4,26 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 持仓时间类型
+ * 点买状态
  * 
  * @author luomengan
  *
  */
-public enum InPositionTimeType implements CommonalityEnum {
+public enum BuyRecordState implements CommonalityEnum {
 
-	T1("1", "持仓T+1"),
+	UNKONWN("0","未知状态"),
 
-	T5("2", "持仓T+5");
+	POSTED("1", "发布"),
 
-	private InPositionTimeType(String index, String status) {
+	BUYLOCK("2", "买入锁定"),
+
+	HOLDPOSITION("3", "持仓中"),
+
+	SELLLOCK("4", "卖出锁定"),
+
+	UNWIND("5", "已平仓");
+
+	private BuyRecordState(String index, String status) {
 		this.index = index;
 		this.status = status;
 	}
@@ -24,16 +32,16 @@ public enum InPositionTimeType implements CommonalityEnum {
 
 	private String status;
 
-	private static Map<String, InPositionTimeType> valueMap = new HashMap<String, InPositionTimeType>();
+	private static Map<String, BuyRecordState> valueMap = new HashMap<String, BuyRecordState>();
 
 	static {
-		for (InPositionTimeType _enum : InPositionTimeType.values()) {
+		for (BuyRecordState _enum : BuyRecordState.values()) {
 			valueMap.put(_enum.getIndex(), _enum);
 		}
 	}
 
-	public static InPositionTimeType getByIndex(String index) {
-		InPositionTimeType result = valueMap.get(index);
+	public static BuyRecordState getByIndex(String index) {
+		BuyRecordState result = valueMap.get(index);
 		if (result == null) {
 			throw new IllegalArgumentException("No element matches " + index);
 		}

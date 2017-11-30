@@ -1,6 +1,6 @@
 spring:
   application:
-    name: publisher
+    name: risk
   profiles:
     active: @active@
   cloud:

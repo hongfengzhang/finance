@@ -21,7 +21,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	private PublisherService publisherService;
-	
+
 	@Autowired
 	private CapitalAccountService accountService;
 
@@ -52,7 +52,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.headers().frameOptions().disable();
 		// 静态页面
-		http.authorizeRequests().antMatchers("/receiveSocket.html", "/js/**", "/bankIcon/**", "/bannerPic/**").permitAll();
+		http.authorizeRequests().antMatchers("/receiveSocket.html", "/js/**", "/bankIcon/**", "/bannerPic/**")
+				.permitAll();
 		// websocket
 		http.authorizeRequests().antMatchers("/socket/**").permitAll();
 		// swagger页面
@@ -62,7 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/v2/api-docs").permitAll();
 		http.authorizeRequests().antMatchers("/configuration/**").permitAll();
 		// 开放接口
-		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register").permitAll();
+		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
+				.permitAll();
 		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/getEnabledCircularsList",
 				"/system/getAppHomeTopData").permitAll();
 		http.authorizeRequests().antMatchers("/stock/getStockRecommendList", "/stock/selectStock").permitAll();

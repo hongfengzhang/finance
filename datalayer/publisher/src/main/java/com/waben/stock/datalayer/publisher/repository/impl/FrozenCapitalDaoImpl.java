@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.publisher.entity.FrozenCapital;
@@ -54,7 +56,12 @@ public class FrozenCapitalDaoImpl implements FrozenCapitalDao {
 	}
 
 	@Override
-	public FrozenCapital findByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId) {
+	public Page<FrozenCapital> page(Specification<FrozenCapital> specification, Pageable pageable) {
+		return repository.findAll(specification, pageable);
+	}
+
+	@Override
+	public FrozenCapital retriveByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId) {
 		return repository.findByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
 	}
 

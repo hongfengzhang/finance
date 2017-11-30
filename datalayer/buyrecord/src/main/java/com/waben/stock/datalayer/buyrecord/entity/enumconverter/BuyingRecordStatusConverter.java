@@ -2,7 +2,7 @@ package com.waben.stock.datalayer.buyrecord.entity.enumconverter;
 
 import javax.persistence.AttributeConverter;
 
-import com.waben.stock.interfaces.enums.BuyRecordStatus;
+import com.waben.stock.interfaces.enums.BuyRecordState;
 
 /**
  * 点买记录状态 转换器
@@ -10,13 +10,13 @@ import com.waben.stock.interfaces.enums.BuyRecordStatus;
  * @author luomengan
  *
  */
-public class BuyingRecordStatusConverter implements AttributeConverter<BuyRecordStatus, Integer> {
+public class BuyingRecordStatusConverter implements AttributeConverter<BuyRecordState, Integer> {
 
 	/**
 	 * 将枚举类型转换成数据库字段值
 	 */
 	@Override
-	public Integer convertToDatabaseColumn(BuyRecordStatus attribute) {
+	public Integer convertToDatabaseColumn(BuyRecordState attribute) {
 		return Integer.parseInt(attribute.getIndex());
 	}
 
@@ -24,7 +24,7 @@ public class BuyingRecordStatusConverter implements AttributeConverter<BuyRecord
 	 * 将数据库字段值转换成枚举
 	 */
 	@Override
-	public BuyRecordStatus convertToEntityAttribute(Integer dbData) {
-		return BuyRecordStatus.getByIndex(String.valueOf(dbData));
+	public BuyRecordState convertToEntityAttribute(Integer dbData) {
+		return BuyRecordState.getByIndex(String.valueOf(dbData));
 	}
 }

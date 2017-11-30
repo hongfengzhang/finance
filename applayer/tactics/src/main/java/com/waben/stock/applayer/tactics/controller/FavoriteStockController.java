@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.tactics.business.FavoriteStockBusiness;
+import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
-import com.waben.stock.applayer.tactics.service.FavoriteStockService;
-import com.waben.stock.applayer.tactics.service.StockService;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.pojo.Response;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -28,28 +29,27 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/favoriteStock")
+@Api(description = "自选收藏股票")
 public class FavoriteStockController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private FavoriteStockService favoriteStockService;
+	private FavoriteStockBusiness favoriteBusiness;
 
 	@Autowired
-	private StockService stockService;
+	private StockBusiness stockBusiness;
 
 	@PostMapping("/addFavoriteStock")
 	@ApiOperation(value = "收藏股票")
 	public Response<FavoriteStockDto> addFavoriteStock(@RequestParam(required = true) Long stockId) {
-		FavoriteStockDto favoriteStockDto = new FavoriteStockDto();
-		Response<StockDto> stockResp = stockService.findById(stockId);
-		favoriteStockDto.setCode(stockResp.getResult().getCode());
-		favoriteStockDto.setStockId(stockId);
-
-//	TODO	favoriteStockDto.setPinyinAbbr(stockResp.getResult().getPinyinAbbr());
-		favoriteStockDto.setName(stockResp.getResult().getName());
-		favoriteStockDto.setPublisherSerialCode(SecurityUtil.getSerialCode());
-		return favoriteStockService.addFavoriteStock(favoriteStockDto);
+		StockDto stockDto = stockBusiness.findById(stockId);
+		FavoriteStockDto favorite = new FavoriteStockDto();
+		favorite.setCode(stockDto.getCode());
+		favorite.setStockId(stockId);
+		favorite.setName(stockDto.getName());
+		favorite.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(favoriteBusiness.save(favorite));
 	}
 
 	@PostMapping("/removeFavoriteStock")
@@ -62,7 +62,7 @@ public class FavoriteStockController {
 				stockIdsStr.append("-");
 			}
 		}
-		return favoriteStockService.removeFavoriteStock(SecurityUtil.getSerialCode(), stockIdsStr.toString());
+		return new Response<>(favoriteBusiness.remove(SecurityUtil.getUserId(), stockIdsStr.toString()));
 	}
 
 	@PostMapping("/topFavoriteStock")
@@ -75,13 +75,13 @@ public class FavoriteStockController {
 				stockIdsStr.append("-");
 			}
 		}
-		return favoriteStockService.topFavoriteStock(SecurityUtil.getSerialCode(), stockIdsStr.toString());
+		return new Response<>(favoriteBusiness.top(SecurityUtil.getUserId(), stockIdsStr.toString()));
 	}
 
 	@GetMapping("/favoriteStockList")
 	@ApiOperation(value = "获取收藏股票")
 	public Response<List<FavoriteStockDto>> favoriteStockList() {
-		return favoriteStockService.favoriteStockList(SecurityUtil.getSerialCode());
+		return new Response<>(favoriteBusiness.listsByPublisherId(SecurityUtil.getUserId()));
 	}
 
 }

@@ -11,6 +11,7 @@ import com.waben.stock.datalayer.publisher.service.PublisherService;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.publisher.PublisherInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
  * @author Created by yuyidi on 2017/11/5.
@@ -26,35 +27,28 @@ public class PublisherController implements PublisherInterface {
 	private PublisherService publisherService;
 
 	@Override
-	public Response<PublisherDto> findById(@PathVariable Long id) {
+	public Response<PublisherDto> fetchById(@PathVariable Long id) {
 		logger.info("获取发布策略人信息:{}", id);
-		return new Response<>(publisherService.findById(id));
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(PublisherDto.class, publisherService.findById(id), false));
+	}
+
+	@Override
+	public Response<PublisherDto> fetchByPhone(@PathVariable String phone) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(PublisherDto.class, publisherService.findByPhone(phone), false));
 	}
 
 	@Override
 	public Response<PublisherDto> register(String phone, String password) {
-		return new Response<>(publisherService.register(phone, password));
+		return new Response<>(CopyBeanUtils.copyBeanProperties(PublisherDto.class,
+				publisherService.register(phone, password), false));
 	}
 
 	@Override
-	public Response<PublisherDto> findBySerialCode(String serialCode) {
-		return new Response<>(publisherService.findBySerialCode(serialCode));
-	}
-
-	@Override
-	public Response<PublisherDto> modifyPassword(String phone, String password) {
-		return new Response<>(publisherService.modifyPassword(phone, password));
-	}
-
-	@Override
-	public Response<PublisherDto> findByPhone(String phone) {
-		return new Response<>(publisherService.findByPhone(phone));
-	}
-
-	@Override
-	public Response<String> modifyPaymentPassword(String serialCode, String paymentPassword) {
-		publisherService.modifyPaymentPassword(serialCode, paymentPassword);
-		return new Response<>("修改支付密码成功");
+	public Response<PublisherDto> modifyPassword(@PathVariable String phone, String password) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(PublisherDto.class,
+				publisherService.modifyPassword(phone, password), false));
 	}
 
 }

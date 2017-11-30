@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
  * @author Created by yuyidi on 2017/11/19.
  * @desc
  */
-public class PageAndSortQuery {
+public class  PageAndSortQuery {
 
     private Integer page=0;
     private Integer size=10;

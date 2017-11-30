@@ -21,8 +21,8 @@ public class Loss {
     private BigDecimal point;
 
     @JsonBackReference
-    @ManyToMany(targetEntity = StraegyType.class,mappedBy = "losses")
-    private Set<StraegyType> straegyTypes;
+    @ManyToMany(targetEntity = StrategyType.class,mappedBy = "losses")
+    private Set<StrategyType> straegyTypes;
 
     public Long getId() {
         return id;
@@ -40,11 +40,11 @@ public class Loss {
         this.point = point;
     }
 
-    public Set<StraegyType> getStraegyTypes() {
+    public Set<StrategyType> getStraegyTypes() {
         return straegyTypes;
     }
 
-    public void setStraegyTypes(Set<StraegyType> straegyTypes) {
+    public void setStraegyTypes(Set<StrategyType> straegyTypes) {
         this.straegyTypes = straegyTypes;
     }
 }

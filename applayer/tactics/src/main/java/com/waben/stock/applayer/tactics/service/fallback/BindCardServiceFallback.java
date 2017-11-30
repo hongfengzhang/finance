@@ -14,12 +14,12 @@ import com.waben.stock.interfaces.pojo.Response;
 public class BindCardServiceFallback implements BindCardService {
 
 	@Override
-	public Response<BindCardDto> bindBankCard(BindCardDto bindCardDto) {
+	public Response<BindCardDto> addBankCard(BindCardDto bindCardDto) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<List<BindCardDto>> publisherBankCardList(String serialCode) {
+	public Response<List<BindCardDto>> listsByPublisherId(Long publisherId) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
