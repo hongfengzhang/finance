@@ -41,7 +41,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/publisher")
 @Api(description = "策略发布人")
-public class PublisherController {
+public class  PublisherController {
 
 	@Autowired
 	private PublisherService publisherService;

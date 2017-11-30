@@ -1,16 +1,5 @@
 package com.waben.stock.datalayer.buyrecord.controller;
 
-import java.math.BigDecimal;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.service.BuyRecordService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
@@ -24,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,43 +48,35 @@ public class BuyRecordController implements BuyRecordInterface {
         return new Response<>(result);
     }
 
-	@Override
-	public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id) {
-		BuyRecord buyRecord = buyRecordService.buyLock(investorId, id);
-		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-	}
-
-	@Override
-	public Response<BuyRecordDto> buyInto(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber,
-			BigDecimal buyingPrice, Integer numberOfStrand) {
-		BuyRecord buyRecord = buyRecordService.buyInto(investorId, id, delegateNumber, buyingPrice, numberOfStrand);
-		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-	}
-
-	@Override
-	public Response<BuyRecordDto> sellLock(@PathVariable Long lockUserId, @PathVariable Long id, Boolean isPublisher) {
-		BuyRecord buyRecord = buyRecordService.sellLock(lockUserId, id, isPublisher);
-		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-	}
-
-	@Override
-	public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id, BigDecimal sellingPrice,
-			BigDecimal profitDistributionRatio) {
-		BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice, profitDistributionRatio);
-		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-	}
-
-	@Override
-	public Response<String> dropBuyRecord(@PathVariable Long id) {
-		buyRecordService.remove(id);
-		return new Response<>("successful");
-	}
-
-    @RequestMapping("/topic")
-    public Response<Void> topicMessage(String security ,String message) {
-        buyRecordService.messageTopic(security,message);
-        return new Response<>();
+    @Override
+    public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id) {
+        BuyRecord buyRecord = buyRecordService.buyLock(investorId, id);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
     }
 
-    
+    @Override
+    public Response<BuyRecordDto> buyInto(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber,
+                                          BigDecimal buyingPrice, Integer numberOfStrand) {
+        BuyRecord buyRecord = buyRecordService.buyInto(investorId, id, delegateNumber, buyingPrice, numberOfStrand);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+    }
+
+    @Override
+    public Response<BuyRecordDto> sellLock(@PathVariable Long lockUserId, @PathVariable Long id, Boolean isPublisher) {
+        BuyRecord buyRecord = buyRecordService.sellLock(lockUserId, id, isPublisher);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+    }
+
+    @Override
+    public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id, BigDecimal sellingPrice,
+                                          BigDecimal profitDistributionRatio) {
+        BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice, profitDistributionRatio);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+    }
+
+    @Override
+    public Response<String> dropBuyRecord(@PathVariable Long id) {
+        buyRecordService.remove(id);
+        return new Response<>("successful");
+    }
 }

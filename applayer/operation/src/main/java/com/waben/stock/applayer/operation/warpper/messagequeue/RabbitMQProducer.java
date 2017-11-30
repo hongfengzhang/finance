@@ -1,34 +1,30 @@
-package com.waben.stock.datalayer.buyrecord.warpper.messagequeue;
+package com.waben.stock.applayer.operation.warpper.messagequeue;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.support.CorrelationData;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * @author Created by yuyidi on 2017/11/27.
  * @desc
  */
-@Component
-public class RabbitMQProducer implements Producer, RabbitTemplate.ConfirmCallback {
+public abstract class RabbitMQProducer<T> implements Producer, RabbitTemplate.ConfirmCallback {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private RabbitTemplate template;
 
-    @Override
     public void direct(String routingKey, String message) {
         template.convertAndSend(routingKey, message);
     }
 
-    @Override
-    public void topic(String exchange, String routingKey, String message) {
+    public void topic(String exchange, String routingKey, T message) {
         template.convertAndSend(exchange, routingKey, message);
     }
 
-    @Override
     public void fanout(String exchange, String message) {
         template.convertAndSend(exchange, "", message);
     }

@@ -1,42 +1,22 @@
-package com.waben.stock.datalayer.investors.entity;
+package com.waben.stock.interfaces.dto.investor;
 
-import com.waben.stock.interfaces.util.UniqueCodeGenerator;
-
-import javax.persistence.*;
 import java.util.Date;
 
 /**
- * @author Created by yuyidi on 2017/11/13.
+ * @author Created by yuyidi on 2017/11/29.
  * @desc
  */
-@Entity
-@Table(name = "investor")
-public class Investor {
+public class InvestorDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    /**
-     * 序列码
-     */
-    @Column(name = "serial_code", nullable = false)
     private String serialCode;
-    @Column
-    private String userName;
-    @Column
+    private String name;
     private String password;
-    @Column
-    private Long role;
-    @Column
     private String salt;
-    @JoinColumn(name = "security_account", referencedColumnName = "id")
-    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
-    private SecurityAccount securityAccount;
-    @Column
+    private Long role;
+    private SecurityAccountDto securityAccountDto;
     private Boolean state;
-    @Column
-    private Date createTime = new Date();
-
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -54,13 +34,12 @@ public class Investor {
         this.serialCode = serialCode;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getName() {
+        return name;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
-        setSerialCode(UniqueCodeGenerator.generateSerialCode());
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPassword() {
@@ -87,12 +66,12 @@ public class Investor {
         this.role = role;
     }
 
-    public SecurityAccount getSecurityAccount() {
-        return securityAccount;
+    public SecurityAccountDto getSecurityAccountDto() {
+        return securityAccountDto;
     }
 
-    public void setSecurityAccount(SecurityAccount securityAccount) {
-        this.securityAccount = securityAccount;
+    public void setSecurityAccountDto(SecurityAccountDto securityAccountDto) {
+        this.securityAccountDto = securityAccountDto;
     }
 
     public Boolean getState() {

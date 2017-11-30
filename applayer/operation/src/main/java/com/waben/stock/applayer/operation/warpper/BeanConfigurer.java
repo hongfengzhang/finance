@@ -13,8 +13,11 @@ import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,6 +26,10 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
@@ -44,6 +51,9 @@ public class BeanConfigurer {
 
     @Autowired
     private ManagerUserDetailService managerUserDetailService;
+
+    @Autowired
+    private ConnectionFactory connectionFactory;
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
@@ -107,6 +117,55 @@ public class BeanConfigurer {
         execptionHandler.extendException(Arrays.asList(new ExceptionInformation(AuthMethodNotSupportedException.class,
                 HttpServletResponse.SC_FORBIDDEN,"403")));
         return execptionHandler;
+    }
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public RabbitTemplate rabbitTemplate() {
+        logger.info("host:{},username:{}", connectionFactory.getHost(),connectionFactory.getUsername());
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        return rabbitTemplate;
+    }
+
+
+
+
+    //创建上证 深证 创业板队列
+    @Bean(name = "shangSecurity")
+    public Queue shangSecurity() {
+        return new Queue("shangSecurity");
+    }
+
+    @Bean(name = "shenSecurity")
+    public Queue shenSecurity() {
+        return new Queue("shenSecurity");
+    }
+
+    @Bean(name="developSecurity")
+    public Queue developSecurity() {
+        return new Queue("developSecurity");
+    }
+
+    //创建点买交易交换机
+    @Bean
+    public TopicExchange exchange() {
+        return new TopicExchange("buyRecord");
+    }
+
+
+    @Bean
+    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue, TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("shang");
+    }
+
+    @Bean
+    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("shen");
+    }
+
+    @Bean
+    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("develop");
     }
 
 
