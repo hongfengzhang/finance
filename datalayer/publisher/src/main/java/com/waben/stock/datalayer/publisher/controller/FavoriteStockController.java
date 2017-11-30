@@ -33,14 +33,15 @@ public class FavoriteStockController implements FavoriteStockInterface {
 
 	@Override
 	public Response<FavoriteStockDto> add(@RequestBody FavoriteStockDto favoriteStockDto) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(FavoriteStockDto.class,
-				favoriteStockService.save(favoriteStockDto.getPublisherId(), favoriteStockDto.getStockId(),
-						favoriteStockDto.getName(), favoriteStockDto.getCode(), favoriteStockDto.getPinyinAbbr()),
-				false));
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(
+						FavoriteStockDto.class, favoriteStockService.save(favoriteStockDto.getPublisherId(),
+								favoriteStockDto.getStockId(), favoriteStockDto.getName(), favoriteStockDto.getCode()),
+						false));
 	}
 
 	@Override
-	public Response<String> drop(@PathVariable Long publisherId,  @PathVariable String stockIds) {
+	public Response<String> drop(@PathVariable Long publisherId, @PathVariable String stockIds) {
 		String[] stockIdStrArr = stockIds.split("-");
 		Long[] stockIdArr = new Long[stockIdStrArr.length];
 		for (int i = 0; i < stockIdStrArr.length; i++) {

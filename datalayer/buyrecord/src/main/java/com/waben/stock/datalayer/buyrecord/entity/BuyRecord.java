@@ -12,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.waben.stock.datalayer.buyrecord.entity.enumconverter.BuyingRecordStatusConverter;
+import com.waben.stock.datalayer.buyrecord.entity.enumconverter.WindControlTypeConverter;
 import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.WindControlType;
 
 /**
  * 点买记录
@@ -119,10 +121,11 @@ public class BuyRecord {
 	@Column(name = "buying_price")
 	private BigDecimal buyingPrice;
 	/**
-	 * 是否发布人申请平仓
+	 * 风控类型
 	 */
-	@Column(name = "publisher_selling")
-	private Boolean publisherSelling;
+	@Column(name = "wind_control_type")
+	@Convert(converter = WindControlTypeConverter.class)
+	private WindControlType windControlType;
 	/**
 	 * 卖出时间
 	 */
@@ -133,16 +136,6 @@ public class BuyRecord {
 	 */
 	@Column(name = "selling_price")
 	private BigDecimal sellingPrice;
-	/**
-	 * 盈亏
-	 */
-	@Column(name = "profit_or_loss")
-	private BigDecimal profitOrLoss;
-	/**
-	 * 发布人盈亏
-	 */
-	@Column(name = "publisher_profit_or_loss")
-	private BigDecimal publisherProfitOrLoss;
 	/**
 	 * 股票代码
 	 */
@@ -337,14 +330,6 @@ public class BuyRecord {
 		this.sellingPrice = sellingPrice;
 	}
 
-	public BigDecimal getProfitOrLoss() {
-		return profitOrLoss;
-	}
-
-	public void setProfitOrLoss(BigDecimal profitOrLoss) {
-		this.profitOrLoss = profitOrLoss;
-	}
-
 	public String getStockCode() {
 		return stockCode;
 	}
@@ -385,20 +370,12 @@ public class BuyRecord {
 		this.publisherSerialCode = publisherSerialCode;
 	}
 
-	public Boolean getPublisherSelling() {
-		return publisherSelling;
+	public WindControlType getWindControlType() {
+		return windControlType;
 	}
 
-	public void setPublisherSelling(Boolean publisherSelling) {
-		this.publisherSelling = publisherSelling;
-	}
-
-	public BigDecimal getPublisherProfitOrLoss() {
-		return publisherProfitOrLoss;
-	}
-
-	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
-		this.publisherProfitOrLoss = publisherProfitOrLoss;
+	public void setWindControlType(WindControlType windControlType) {
+		this.windControlType = windControlType;
 	}
 
 }

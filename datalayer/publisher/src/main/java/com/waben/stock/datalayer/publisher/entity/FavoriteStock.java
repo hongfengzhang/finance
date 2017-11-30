@@ -38,11 +38,6 @@ public class FavoriteStock {
 	@Column(name = "code")
 	private String code;
 	/**
-	 * 拼音缩写，股票名称的首字母
-	 */
-	@Column(name = "pinyin_abbr")
-	private String pinyinAbbr;
-	/**
 	 * 收藏时间
 	 */
 	@Column(name = "favorite_time")
@@ -88,14 +83,6 @@ public class FavoriteStock {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public String getPinyinAbbr() {
-		return pinyinAbbr;
-	}
-
-	public void setPinyinAbbr(String pinyinAbbr) {
-		this.pinyinAbbr = pinyinAbbr;
 	}
 
 	public Date getFavoriteTime() {

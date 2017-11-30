@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.FavoriteStockBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
+import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockWithFavoriteDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockRecommendDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
@@ -66,9 +66,8 @@ public class StockController {
 
 	@GetMapping("/stockRecommend")
 	@ApiOperation(value = "获取股票推荐列表")
-	public Response<PageInfo<StockRecommendDto>> stockRecommend(int page, int size) {
-		// return stockService.getStockRecommendList();
-		return new Response<>();
+	public Response<PageInfo<StockRecommendWithMarketDto>> stockRecommend(int page, int size) {
+		return new Response<>(stockBusiness.stockRecommend(page, size));
 	}
 
 }

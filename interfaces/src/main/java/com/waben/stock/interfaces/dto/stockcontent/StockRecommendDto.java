@@ -8,11 +8,10 @@ import java.util.Date;
  */
 public class StockRecommendDto {
 
-	private Long id;
 	/**
 	 * 股票ID
 	 */
-	private Long stockId;
+	private Long id;
 	/**
 	 * 股票名称
 	 */
@@ -21,10 +20,6 @@ public class StockRecommendDto {
 	 * 股票代码
 	 */
 	private String code;
-	/**
-	 * 拼音缩写，股票名称的首字母
-	 */
-	private String pinyinAbbr;
 	/**
 	 * 排序
 	 */
@@ -42,14 +37,6 @@ public class StockRecommendDto {
 		this.id = id;
 	}
 
-	public Long getStockId() {
-		return stockId;
-	}
-
-	public void setStockId(Long stockId) {
-		this.stockId = stockId;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -64,14 +51,6 @@ public class StockRecommendDto {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public String getPinyinAbbr() {
-		return pinyinAbbr;
-	}
-
-	public void setPinyinAbbr(String pinyinAbbr) {
-		this.pinyinAbbr = pinyinAbbr;
 	}
 
 	public Integer getSort() {

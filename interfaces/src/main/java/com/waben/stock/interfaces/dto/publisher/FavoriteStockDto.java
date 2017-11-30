@@ -18,10 +18,6 @@ public class FavoriteStockDto {
 	 */
 	private String code;
 	/**
-	 * 拼音缩写，股票名称的首字母
-	 */
-	private String pinyinAbbr;
-	/**
 	 * 收藏时间
 	 */
 	private Date favoriteTime;
@@ -64,14 +60,6 @@ public class FavoriteStockDto {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public String getPinyinAbbr() {
-		return pinyinAbbr;
-	}
-
-	public void setPinyinAbbr(String pinyinAbbr) {
-		this.pinyinAbbr = pinyinAbbr;
 	}
 
 	public Date getFavoriteTime() {

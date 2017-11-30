@@ -5,6 +5,7 @@ import java.util.Date;
 
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.WindControlType;
 
 /**
  * 点买记录
@@ -88,9 +89,9 @@ public class BuyRecordDto {
 	 */
 	private BigDecimal buyingPrice;
 	/**
-	 * 是否发布人申请平仓
+	 * 风控类型
 	 */
-	private Boolean publisherSelling;
+	private WindControlType windControlType;
 	/**
 	 * 卖出时间
 	 */
@@ -99,14 +100,6 @@ public class BuyRecordDto {
 	 * 卖出价格
 	 */
 	private BigDecimal sellingPrice;
-	/**
-	 * 盈亏
-	 */
-	private BigDecimal profitOrLoss;
-	/**
-	 * 发布人盈亏
-	 */
-	private BigDecimal publisherProfitOrLoss;
 	/**
 	 * 股票代码
 	 */
@@ -282,12 +275,12 @@ public class BuyRecordDto {
 		this.buyingPrice = buyingPrice;
 	}
 
-	public Boolean getPublisherSelling() {
-		return publisherSelling;
+	public WindControlType getWindControlType() {
+		return windControlType;
 	}
 
-	public void setPublisherSelling(Boolean publisherSelling) {
-		this.publisherSelling = publisherSelling;
+	public void setWindControlType(WindControlType windControlType) {
+		this.windControlType = windControlType;
 	}
 
 	public Date getSellingTime() {
@@ -304,22 +297,6 @@ public class BuyRecordDto {
 
 	public void setSellingPrice(BigDecimal sellingPrice) {
 		this.sellingPrice = sellingPrice;
-	}
-
-	public BigDecimal getProfitOrLoss() {
-		return profitOrLoss;
-	}
-
-	public void setProfitOrLoss(BigDecimal profitOrLoss) {
-		this.profitOrLoss = profitOrLoss;
-	}
-
-	public BigDecimal getPublisherProfitOrLoss() {
-		return publisherProfitOrLoss;
-	}
-
-	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
-		this.publisherProfitOrLoss = publisherProfitOrLoss;
 	}
 
 	public String getStockCode() {
