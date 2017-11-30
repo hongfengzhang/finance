@@ -15,6 +15,7 @@ public class MenuDto implements Serializable {
     private Long pid;
     private Boolean state;
     private Integer sort;
+    private String icon;
 
     private List<MenuDto> childs = new ArrayList<>();
 
@@ -64,5 +65,13 @@ public class MenuDto implements Serializable {
 
     public void setChilds(List<MenuDto> childs) {
         this.childs = childs;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }
