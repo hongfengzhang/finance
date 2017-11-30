@@ -4,9 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -31,9 +29,6 @@ public class BeanConfigurer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private ConnectionFactory connectionFactory;
-
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
@@ -47,55 +42,6 @@ public class BeanConfigurer {
         mediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         jackson2HttpMessageConverter.setSupportedMediaTypes(mediaTypes);
         return jackson2HttpMessageConverter;
-    }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public RabbitTemplate rabbitTemplate() {
-        logger.info("host:{},username:{}", connectionFactory.getHost(),connectionFactory.getUsername());
-        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        return rabbitTemplate;
-    }
-
-
-
-
-    //创建上证 深证 创业板队列
-    @Bean(name = "shangSecurity")
-    public Queue shangSecurity() {
-        return new Queue("shangSecurity");
-    }
-
-    @Bean(name = "shenSecurity")
-    public Queue shenSecurity() {
-        return new Queue("shenSecurity");
-    }
-
-    @Bean(name="developSecurity")
-    public Queue developSecurity() {
-        return new Queue("developSecurity");
-    }
-
-    //创建点买交易交换机
-    @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange("buyRecord");
-    }
-
-
-    @Bean
-    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("shang");
-    }
-
-    @Bean
-    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("shen");
-    }
-
-    @Bean
-    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("shen");
     }
 
 }

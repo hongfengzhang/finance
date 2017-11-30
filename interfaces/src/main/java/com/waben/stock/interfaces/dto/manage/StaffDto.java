@@ -38,7 +38,7 @@ public class StaffDto implements Serializable {
     /**
      * 登录时间
      */
-    private String loginTime;
+    private Date loginTime;
     /**
      * 登录IP
      */
@@ -102,11 +102,11 @@ public class StaffDto implements Serializable {
         this.updateTime = updateTime;
     }
 
-    public String getLoginTime() {
+    public Date getLoginTime() {
         return loginTime;
     }
 
-    public void setLoginTime(String loginTime) {
+    public void setLoginTime(Date loginTime) {
         this.loginTime = loginTime;
     }
 

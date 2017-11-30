@@ -31,6 +31,8 @@ public class Menu {
     private Integer sort;
     @Column
     private String url;
+    @Column
+    private String icon;
 
     @JsonIgnore
     @ManyToMany(targetEntity = Role.class,mappedBy = "menus",fetch = FetchType.LAZY)
@@ -90,5 +92,13 @@ public class Menu {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 }

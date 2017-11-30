@@ -23,9 +23,14 @@ public class StockController {
     @Autowired
     private StockBusiness stockBusiness;
 
-    @GetMapping("/index")
+    @RequestMapping("/index")
+    public String stock() {
+        return "manage/stock/stock";
+    }
+
+    @GetMapping("/pages")
     @ResponseBody
-    public Response<PageInfo<StockDto>> stock(StockQuery stockQuery) {
+    public Response<PageInfo<StockDto>> pages(StockQuery stockQuery) {
         PageInfo<StockDto> response = stockBusiness.pages(stockQuery);
         return new Response<>(response);
     }

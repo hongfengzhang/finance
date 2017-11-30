@@ -84,10 +84,4 @@ public class BuyRecordController implements BuyRecordInterface {
 		return new Response<>("successful");
 	}
 
-	@RequestMapping("/topic")
-	public Response<Void> topicMessage(String security, String message) {
-		buyRecordService.messageTopic(security, message);
-		return new Response<>();
-	}
-
 }

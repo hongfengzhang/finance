@@ -23,7 +23,6 @@ import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.entity.Settlement;
 import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
-import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.Producer;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
@@ -39,12 +38,9 @@ import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 @Service
 public class BuyRecordService {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-	@Autowired
-	private Producer producer;
-
-	@Autowired
+    @Autowired
 	private BuyRecordDao buyRecordDao;
 
 	@Autowired
@@ -76,35 +72,25 @@ public class BuyRecordService {
 		return pages;
 	}
 
-	@Transactional
-	public BuyRecord changeState(BuyRecord record) {
-		BuyRecordState current = record.getState();
-		BuyRecordState next = BuyRecordState.UNKONWN;
-		if (BuyRecordState.POSTED.equals(current)) {
-			next = BuyRecordState.BUYLOCK;
-		} else if (BuyRecordState.BUYLOCK.equals(current)) {
-			next = BuyRecordState.HOLDPOSITION;
-		} else if (BuyRecordState.HOLDPOSITION.equals(current)) {
-			next = BuyRecordState.SELLLOCK;
-		} else if (BuyRecordState.SELLLOCK.equals(current)) {
-			next = BuyRecordState.UNWIND;
-		}
-		record.setState(next);
-		BuyRecord result = buyRecordDao.update(record);
-		if (result.getState().equals(next)) {
-			logger.info("点买交易状态更新成功,id:{}", result.getSerialCode());
-			if (next.equals(BuyRecordState.HOLDPOSITION)) {
-				// 若点买交易记录为持仓中，向消息队列中添加当前点买交易记录
-			}
-		}
-		return result;
-	}
+    @Transactional
+    public BuyRecord changeState(BuyRecord record) {
+        BuyRecordState current = record.getState();
+        BuyRecordState next = BuyRecordState.UNKONWN;
+        if (BuyRecordState.POSTED.equals(current)) {
+            next = BuyRecordState.BUYLOCK;
+        } else if (BuyRecordState.BUYLOCK.equals(current)) {
+            next = BuyRecordState.HOLDPOSITION;
+        } else if (BuyRecordState.HOLDPOSITION.equals(current)) {
+            next = BuyRecordState.SELLLOCK;
+        } else if (BuyRecordState.SELLLOCK.equals(current)) {
+            next = BuyRecordState.UNWIND;
+        }
+        record.setState(next);
+        BuyRecord result = buyRecordDao.update(record);
+        return result;
+    }
 
-	public void messageTopic(String security, String message) {
-		producer.topic("buyRecord", security, message);
-	}
-
-	@Transactional
+    @Transactional
 	public void remove(Long buyRecordId) {
 		buyRecordDao.delete(buyRecordId);
 	}
@@ -199,8 +185,7 @@ public class BuyRecordService {
 		settlement.setSettlementTime(new Date());
 		if (profitOrLoss.compareTo(BigDecimal.ZERO) >= 0) {
 			settlement.setPublisherProfitOrLoss(profitOrLoss.multiply(profitDistributionRatio));
-			settlement.setInvestorProfitOrLoss(
-					profitOrLoss.multiply(new BigDecimal(1).subtract(profitDistributionRatio)));
+			settlement.setInvestorProfitOrLoss(profitOrLoss.multiply(new BigDecimal(1).subtract(profitDistributionRatio)));
 		} else {
 			if (profitOrLoss.abs().compareTo(buyRecord.getReserveFund()) > 0) {
 				settlement.setPublisherProfitOrLoss(buyRecord.getReserveFund().multiply(new BigDecimal(-1)));
@@ -213,4 +198,5 @@ public class BuyRecordService {
 		// 修改点买记录状态
 		return changeState(buyRecord);
 	}
+	
 }

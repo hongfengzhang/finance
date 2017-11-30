@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.investors.entity;
 
+import com.waben.stock.interfaces.util.UniqueCodeGenerator;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -17,24 +19,23 @@ public class Investor {
     /**
      * 序列码
      */
-    @Column(name = "serial_code",nullable = false)
+    @Column(name = "serial_code", nullable = false)
     private String serialCode;
     @Column
-    private String name;
+    private String userName;
     @Column
     private String password;
     @Column
-    private String stockNum;
-    @Column
-    private String salt;
-    @Column
     private Long role;
     @Column
-    private Long stockAccount;
+    private String salt;
+    @JoinColumn(name = "security_account", referencedColumnName = "id")
+    @OneToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.EAGER)
+    private SecurityAccount securityAccount;
     @Column
     private Boolean state;
     @Column
-    private Date createTime;
+    private Date createTime = new Date();
 
 
     public Long getId() {
@@ -53,12 +54,13 @@ public class Investor {
         this.serialCode = serialCode;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
+        setSerialCode(UniqueCodeGenerator.generateSerialCode());
     }
 
     public String getPassword() {
@@ -67,14 +69,6 @@ public class Investor {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getStockNum() {
-        return stockNum;
-    }
-
-    public void setStockNum(String stockNum) {
-        this.stockNum = stockNum;
     }
 
     public String getSalt() {
@@ -93,12 +87,12 @@ public class Investor {
         this.role = role;
     }
 
-    public Long getStockAccount() {
-        return stockAccount;
+    public SecurityAccount getSecurityAccount() {
+        return securityAccount;
     }
 
-    public void setStockAccount(Long stockAccount) {
-        this.stockAccount = stockAccount;
+    public void setSecurityAccount(SecurityAccount securityAccount) {
+        this.securityAccount = securityAccount;
     }
 
     public Boolean getState() {
