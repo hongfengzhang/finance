@@ -57,5 +57,6 @@ public class ExceptionConstant {
 
 	//投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
+	public static final String INVESTOR_SECURITIES_LOGIN_EXCEPTION = "7002";
 
 }

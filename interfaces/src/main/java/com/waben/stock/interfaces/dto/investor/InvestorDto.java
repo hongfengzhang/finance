@@ -17,7 +17,7 @@ public class InvestorDto {
     private SecurityAccountDto securityAccountDto;
     private Boolean state;
     private Date createTime;
-
+    private String securitiesSession;
     public Long getId() {
         return id;
     }
@@ -88,5 +88,13 @@ public class InvestorDto {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getSecuritiesSession() {
+        return securitiesSession;
+    }
+
+    public void setSecuritiesSession(String securitiesSession) {
+        this.securitiesSession = securitiesSession;
     }
 }

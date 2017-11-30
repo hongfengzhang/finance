@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.investors.controller;
 
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.service.InvestorService;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -32,7 +33,6 @@ public class InvestorController implements InvestorInterface {
     @Autowired
     private InvestorService investorService;
 
-
     /**
      * 投资人列表
      */
@@ -46,6 +46,11 @@ public class InvestorController implements InvestorInterface {
         Investor investor = investorService.findByUserName(userName);
         InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(investor, new InvestorDto(), false);
         return new Response<>(investorDto);
+    }
+
+    public Response<Void> stockBuyIn(@RequestBody BuyRecordDto buyRecordDto) {
+
+        return new Response<>();
     }
 
 }

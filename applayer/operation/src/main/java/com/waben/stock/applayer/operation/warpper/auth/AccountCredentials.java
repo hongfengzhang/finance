@@ -18,6 +18,7 @@ public class AccountCredentials extends User implements Serializable {
     private List<MenuDto> menus;
     private Long role;
     private Boolean isOperator;
+    private Object security;
 
     public AccountCredentials(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
@@ -65,5 +66,13 @@ public class AccountCredentials extends User implements Serializable {
 
     public void setOperator(Boolean operator) {
         isOperator = operator;
+    }
+
+    public Object getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(Object security) {
+        this.security = security;
     }
 }

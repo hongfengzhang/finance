@@ -64,6 +64,7 @@ public class InvestorUserDetailService implements UserDetailsService {
 //            accountCredentials.setMenus(menus);
             accountCredentials.setRole(role);
             accountCredentials.setOperator(false);
+            accountCredentials.setSecurity(investorDto);
             return accountCredentials;
         }
         throw new UsernameNotFoundException("当前用户找不到");

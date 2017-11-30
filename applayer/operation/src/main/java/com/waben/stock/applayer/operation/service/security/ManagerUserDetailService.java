@@ -57,6 +57,7 @@ public class ManagerUserDetailService implements UserDetailsService {
 //            accountCredentials.setMenus(menus);
             accountCredentials.setRole(roleDto.getId());
             accountCredentials.setOperator(true);
+            accountCredentials.setSecurity(staffDto);
             return accountCredentials;
         }
         throw new UsernameNotFoundException("当前用户找不到");
