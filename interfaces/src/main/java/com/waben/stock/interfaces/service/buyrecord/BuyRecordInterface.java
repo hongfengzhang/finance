@@ -79,7 +79,7 @@ public interface BuyRecordInterface {
 	 */
 	@RequestMapping(value = "/{lockUserId}/selllock/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> sellLock(@PathVariable("lockUserId") Long lockUserId, @PathVariable("id") Long id,
-			@RequestParam(name = "isPublisher") Boolean isPublisher);
+			@RequestParam(name = "windControlTypeIndex") String windControlTypeIndex);
 
 	/**
 	 * 投资人卖出股票，此时状态为“已平仓”

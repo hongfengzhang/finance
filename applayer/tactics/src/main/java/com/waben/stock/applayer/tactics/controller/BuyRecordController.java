@@ -20,6 +20,7 @@ import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.SettlementQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -79,17 +80,14 @@ public class BuyRecordController {
 	@GetMapping("/pagesUnwind")
 	@ApiOperation(value = "结算的点买记录列表")
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesUnwind(int page, int size) {
-		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
-				new BuyRecordState[] { BuyRecordState.UNWIND });
-		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
-		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
-		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
-				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
+		SettlementQuery query = new SettlementQuery(page, size);
+		query.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(buyRecordBusiness.pagesSettlement(query));
 	}
 
 	@RequestMapping(value = "/selllock/{id}", method = RequestMethod.POST)
 	Response<BuyRecordDto> sellLock(@PathVariable("id") Long id) {
-		return new Response<>(buyRecordBusiness.sellLock(SecurityUtil.getUserId(), id, true));
+		return new Response<>(buyRecordBusiness.sellLock(SecurityUtil.getUserId(), id));
 	}
 
 	// 该接口仅仅用来做测试，该接口应位于投资人服务中

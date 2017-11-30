@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.FavoriteStockBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
+import com.waben.stock.applayer.tactics.dto.publisher.FavoriteStockWithMarketDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -80,7 +81,7 @@ public class FavoriteStockController {
 
 	@GetMapping("/favoriteStockList")
 	@ApiOperation(value = "获取收藏股票")
-	public Response<List<FavoriteStockDto>> favoriteStockList() {
+	public Response<List<FavoriteStockWithMarketDto>> favoriteStockList() {
 		return new Response<>(favoriteBusiness.listsByPublisherId(SecurityUtil.getUserId()));
 	}
 

@@ -25,8 +25,7 @@ public class FavoriteStockService {
 	@Autowired
 	private FavoriteStockDao favoriteStockDao;
 
-	public FavoriteStock save(Long publisherId, Long stockId, String stockName, String stockCode,
-			String stockPinyinAbbr) {
+	public FavoriteStock save(Long publisherId, Long stockId, String stockName, String stockCode) {
 		FavoriteStock favorite = favoriteStockDao.retrive(publisherId, stockId);
 		if (favorite != null) {
 			throw new ServiceException(ExceptionConstant.STOCK_ALREADY_FAVORITE_EXCEPTION);
@@ -35,7 +34,6 @@ public class FavoriteStockService {
 		favorite.setCode(stockCode);
 		favorite.setFavoriteTime(new Date());
 		favorite.setName(stockName);
-		favorite.setPinyinAbbr(stockPinyinAbbr);
 		favorite.setPublisherId(publisherId);
 		favorite.setStockId(stockId);
 		Integer maxSort = favoriteStockDao.retriveMaxSort(publisherId);

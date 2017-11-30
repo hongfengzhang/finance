@@ -14,12 +14,16 @@ import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.service.BuyRecordService;
 import com.waben.stock.applayer.tactics.service.CapitalAccountService;
+import com.waben.stock.applayer.tactics.service.SettlementService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.SettlementQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 @Service
@@ -30,6 +34,9 @@ public class BuyRecordBusiness {
 
 	@Autowired
 	private BuyRecordService buyRecordService;
+
+	@Autowired
+	private SettlementService settlementService;
 
 	@Autowired
 	private CapitalAccountService accountService;
@@ -55,6 +62,26 @@ public class BuyRecordBusiness {
 		Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByQuery(buyRecordQuery);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<BuyRecordWithMarketDto> pagesSettlement(SettlementQuery query) {
+		Response<PageInfo<SettlementDto>> response = settlementService.pagesByQuery(query);
+		if (response.getCode().equals("200")) {
+			List<BuyRecordWithMarketDto> content = new ArrayList<>();
+			List<SettlementDto> settlementContent = response.getResult().getContent();
+			if (settlementContent != null && settlementContent.size() > 0) {
+				for (SettlementDto settlement : settlementContent) {
+					BuyRecordWithMarketDto buyRecord = wrapMarketInfo(settlement.getBuyRecord());
+					buyRecord.setProfitOrLoss(settlement.getProfitOrLoss());
+					buyRecord.setPublisherProfitOrLoss(settlement.getPublisherProfitOrLoss());
+					content.add(buyRecord);
+				}
+			}
+			return new PageInfo<>(content, response.getResult().getTotalPages(), response.getResult().getLast(),
+					response.getResult().getTotalElements(), response.getResult().getSize(),
+					response.getResult().getNumber(), response.getResult().getFrist());
 		}
 		throw new ServiceException(response.getCode());
 	}
@@ -89,8 +116,9 @@ public class BuyRecordBusiness {
 		return result;
 	}
 
-	public BuyRecordDto sellLock(Long lockUserId, Long id, Boolean isPublisher) {
-		Response<BuyRecordDto> response = buyRecordService.sellLock(lockUserId, id, isPublisher);
+	public BuyRecordDto sellLock(Long lockUserId, Long id) {
+		Response<BuyRecordDto> response = buyRecordService.sellLock(lockUserId, id,
+				WindControlType.PUBLISHERAPPLY.getIndex());
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
@@ -100,8 +128,12 @@ public class BuyRecordBusiness {
 	public BuyRecordDto sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
 		Response<BuyRecordDto> response = buyRecordService.sellOut(investorId, id, sellingPrice, new BigDecimal(0.9));
 		if (response.getCode().equals("200")) {
+			SettlementQuery query = new SettlementQuery(0, 1);
+			query.setBuyRecordId(id);
+			Response<PageInfo<SettlementDto>> settlement = settlementService.pagesByQuery(query);
 			accountService.returnReserveFund(response.getResult().getPublisherId(), response.getResult().getId(),
-					response.getResult().getSerialCode(), response.getResult().getPublisherProfitOrLoss());
+					response.getResult().getSerialCode(),
+					settlement.getResult().getContent().get(0).getPublisherProfitOrLoss());
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());

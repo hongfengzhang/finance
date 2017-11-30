@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.service.BuyRecordService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -30,24 +31,24 @@ import com.waben.stock.interfaces.util.PageToPageInfo;
 @RequestMapping("/buyRecord")
 public class BuyRecordController implements BuyRecordInterface {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private BuyRecordService buyRecordService;
+	@Autowired
+	private BuyRecordService buyRecordService;
 
-    @Override
-    public Response<BuyRecordDto> addBuyRecord(@RequestBody BuyRecordDto buyRecordDto) {
-        BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
-        return new Response<>(
-                CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.save(buyRecord), false));
-    }
+	@Override
+	public Response<BuyRecordDto> addBuyRecord(@RequestBody BuyRecordDto buyRecordDto) {
+		BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.save(buyRecord), false));
+	}
 
-    @Override
-    public Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery) {
-        Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
-        PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-        return new Response<>(result);
-    }
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		return new Response<>(result);
+	}
 
 	@Override
 	public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id) {
@@ -63,8 +64,10 @@ public class BuyRecordController implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<BuyRecordDto> sellLock(@PathVariable Long lockUserId, @PathVariable Long id, Boolean isPublisher) {
-		BuyRecord buyRecord = buyRecordService.sellLock(lockUserId, id, isPublisher);
+	public Response<BuyRecordDto> sellLock(@PathVariable Long lockUserId, @PathVariable Long id,
+			String windControlTypeIndex) {
+		BuyRecord buyRecord = buyRecordService.sellLock(lockUserId, id,
+				WindControlType.getByIndex(windControlTypeIndex));
 		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
 	}
 
@@ -81,11 +84,10 @@ public class BuyRecordController implements BuyRecordInterface {
 		return new Response<>("successful");
 	}
 
-    @RequestMapping("/topic")
-    public Response<Void> topicMessage(String security ,String message) {
-        buyRecordService.messageTopic(security,message);
-        return new Response<>();
-    }
+	@RequestMapping("/topic")
+	public Response<Void> topicMessage(String security, String message) {
+		buyRecordService.messageTopic(security, message);
+		return new Response<>();
+	}
 
-    
 }

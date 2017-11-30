@@ -46,4 +46,8 @@ public class StockMarketService {
 		return result;
 	}
 
+	public List<StockMarket> listStockMarket(List<String> codes) {
+		return RetriveStockOverHttp.listStockMarket(restTemplate, codes);
+	}
+
 }
