@@ -9,8 +9,8 @@ import org.springframework.data.domain.Sort;
  */
 public class PageAndSortQuery {
 
-    private Integer page;
-    private Integer size;
+    private Integer page=0;
+    private Integer size=10;
 
     public Integer getPage() {
         return page;

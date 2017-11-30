@@ -4,30 +4,20 @@ import com.waben.stock.applayer.operation.business.MenuBusiness;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
  * @author Created by yuyidi on 2017/11/6.
  * @desc
  */
+@SessionAttributes(value = {"menus"})
 @Controller
 public class SystemController {
 
-    @RequestMapping("/conform")
-    public String conform(){
-        return "conform";
-    }
-
-    @RequestMapping("/left")
-    public String left(){
-        return "aa/left";
-    }
-
-    @RequestMapping("/right")
-    public String right(){
-        return "aa/right";
-    }
     @Autowired
     private MenuBusiness systemManageBusiness;
 
@@ -38,12 +28,12 @@ public class SystemController {
 
     @GetMapping("/")
     public String root() {
-        return "aa";
+        return "decorator";
     }
 
     @GetMapping("/index")
-    public String index() {
-        System.out.println(JacksonUtil.encode(systemManageBusiness.menus()));
+    public String index(Model model) {
+        model.addAttribute("menus",systemManageBusiness.menus());
         return "index";
     }
 
