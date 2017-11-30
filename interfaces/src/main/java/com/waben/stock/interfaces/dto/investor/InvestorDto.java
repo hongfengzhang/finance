@@ -10,7 +10,7 @@ public class InvestorDto {
 
     private Long id;
     private String serialCode;
-    private String name;
+    private String userName;
     private String password;
     private String salt;
     private Long role;
@@ -34,12 +34,12 @@ public class InvestorDto {
         this.serialCode = serialCode;
     }
 
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getPassword() {

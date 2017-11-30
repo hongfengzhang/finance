@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.investors.service;
 
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.repository.InvestorDao;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,15 @@ public class InvestorService {
 
     @Autowired
     private InvestorDao investorDao;
+
+
+    public Investor findByUserName(String userName) {
+        Investor result = investorDao.retieveWithUserName(userName);
+        if (result == null) {
+            throw new ServiceException(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION);
+        }
+        return result;
+    }
 
     @Transactional
     public Investor save(Investor investor) {

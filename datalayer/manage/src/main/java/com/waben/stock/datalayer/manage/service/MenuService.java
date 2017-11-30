@@ -21,7 +21,5 @@ public class MenuService {
         return menuDao.retrieveByRole(role);
     }
 
-    public List<Menu> fetchMenusByStaff(Long staff) {
-        return menuDao.retrieveByStaff(staff);
-    }
+
 }

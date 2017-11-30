@@ -25,10 +25,6 @@ public class Role {
     private String describtion;
 
     @JsonIgnore
-    @ManyToMany(targetEntity = Staff.class, mappedBy = "roles", fetch = FetchType.LAZY)
-    private Set<Staff> staffs = new HashSet<>();
-
-    @JsonIgnore
     @ManyToMany(targetEntity = Menu.class, fetch = FetchType.LAZY)
     @JoinTable(name = "role_menu", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn
             (name = "menu_id")})
@@ -63,14 +59,6 @@ public class Role {
 
     public void setDescribtion(String describtion) {
         this.describtion = describtion;
-    }
-
-    public Set<Staff> getStaffs() {
-        return staffs;
-    }
-
-    public void setStaffs(Set<Staff> staffs) {
-        this.staffs = staffs;
     }
 
     public Set<Menu> getMenus() {

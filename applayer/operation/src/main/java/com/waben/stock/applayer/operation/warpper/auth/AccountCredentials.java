@@ -16,7 +16,8 @@ import java.util.List;
 public class AccountCredentials extends User implements Serializable {
 
     private List<MenuDto> menus;
-    private Long staff;
+    private Long role;
+    private Boolean isOperator;
 
     public AccountCredentials(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
@@ -50,11 +51,19 @@ public class AccountCredentials extends User implements Serializable {
         this.menus = menus;
     }
 
-    public Long getStaff() {
-        return staff;
+    public Long getRole() {
+        return role;
     }
 
-    public void setStaff(Long staff) {
-        this.staff = staff;
+    public void setRole(Long role) {
+        this.role = role;
+    }
+
+    public Boolean getOperator() {
+        return isOperator;
+    }
+
+    public void setOperator(Boolean operator) {
+        isOperator = operator;
     }
 }

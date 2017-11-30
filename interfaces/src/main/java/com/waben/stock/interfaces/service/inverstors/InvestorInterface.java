@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,5 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface InvestorInterface {
 
     @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public Response<PageInfo<InvestorDto>> pagesByQuery(@RequestBody InvestorQuery investorQuery);
+    Response<PageInfo<InvestorDto>> pagesByQuery(@RequestBody InvestorQuery investorQuery);
+
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    Response<InvestorDto> fetchByUserName(@PathVariable("username") String userName);
 }

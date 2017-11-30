@@ -18,8 +18,4 @@ public class MenuServiceFallback implements MenuService {
         return new Response<>("205","暂无菜单数据");
     }
 
-    @Override
-    public Response<List<MenuDto>> menusByStaff(Long staff) {
-        return new Response<>("205","暂无菜单数据");
-    }
 }

@@ -1,6 +1,16 @@
 package com.waben.stock.applayer.operation.service.security;
 
+import com.waben.stock.applayer.operation.service.investor.InvestorService;
+import com.waben.stock.applayer.operation.service.manage.RoleService;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
+import com.waben.stock.applayer.operation.warpper.auth.RolePermissionAuthority;
+import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.pojo.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -8,7 +18,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author yuyidi 2017-07-13 10:16:15
@@ -18,25 +30,42 @@ import java.util.List;
 @Component
 public class InvestorUserDetailService implements UserDetailsService {
 
-//    @Autowired
-//    private UserService userService;
+    Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private InvestorService investorService;
+    @Autowired
+    private RoleService roleService;
 
     @Override
-    public UserDetails loadUserByUsername(String phone) throws UsernameNotFoundException {
-//        User user = userService.getUserByPhone(phone);
-//        if (user != null) {
-//            //根据用户获取权限
-//            List<GrantedAuthority> authorization = new ArrayList<>();
-//            authorization.add(new RoleAuthority("ROLE_USER"));
-//            AccountCredentials accountCredentials = new AccountCredentials(user.getPhone(), user.getPassword(),
-// authorization);
-//            return accountCredentials;
-//        }
-        //        throw new UsernameNotFoundException("当前用户找不到");
-        List<GrantedAuthority> authorization = new ArrayList<>();
-//        authorization.add(new RoleAuthority("ROLE_USER"));
-        AccountCredentials accountCredentials = new AccountCredentials("user",
-                "$2a$10$KspDy5bHoUuuQ8setXjf9eqq4o/D567LUl77uwTQlD8N5G6ZGTgqu", authorization);
-        return accountCredentials;
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Response<InvestorDto> response = investorService.fetchByUserName(username);
+        if (response.getCode().equals("200")) {
+            InvestorDto investorDto = response.getResult();
+            logger.info("用户信息获取成功:{}",investorDto.getUserName());
+            //绑定角色权限
+            List<RolePermissionAuthority> authority = new ArrayList<>();
+            Response<RoleDto> roleResponse = roleService.fetchByRoleId(investorDto.getRole());
+            Long role = 0l;
+            if (roleResponse.getCode().equals("200")) {
+                RoleDto roleDto = roleResponse.getResult();
+                RolePermissionAuthority rolePermissionAuthority = new RolePermissionAuthority(roleDto.getCode());
+                authority.add(rolePermissionAuthority);
+                role = roleDto.getId();
+            }
+            AccountCredentials accountCredentials = new AccountCredentials(investorDto.getUserName(), investorDto
+                    .getPassword(), authority);
+            //获取员工权限
+//            Response<List<MenuDto>> menusResponse = menuService.menusByStaff(staffDto.getId());
+//            if (menusResponse.getCode() != "200") {
+//                throw new ServiceException(menusResponse.getCode());
+//            }
+//            List<MenuDto> menus = menusResponse.getResult();
+//            accountCredentials.setMenus(menus);
+            accountCredentials.setRole(role);
+            accountCredentials.setOperator(false);
+            return accountCredentials;
+        }
+        throw new UsernameNotFoundException("当前用户找不到");
     }
 }

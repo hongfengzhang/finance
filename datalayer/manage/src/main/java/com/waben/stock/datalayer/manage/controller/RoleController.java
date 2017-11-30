@@ -27,9 +27,10 @@ public class RoleController implements RoleInterface {
     private RoleService roleService;
 
     @Override
-    public Response<Set<RoleDto>> fetchAllByStaff(@PathVariable Long staff) {
-        List<Role> roles = roleService.fetchRoleByStaff(staff);
-        Set<RoleDto> result = new HashSet<>(CopyBeanUtils.copyListBeanPropertiesToList(roles, RoleDto.class));
+    public Response<RoleDto> fetchByRoleId(Long id) {
+        Role role = roleService.findById(id);
+        RoleDto result = CopyBeanUtils.copyBeanProperties(role, new RoleDto(), false);
         return new Response<>(result);
     }
+
 }

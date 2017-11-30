@@ -24,9 +24,7 @@ public class SimpleTest {
         Role role = new Role();
         role.setCode("admin");
         role.setName("管理员");
-        Set<Role> roles = new HashSet<>();
-        roles.add(role);
-        staff.setRoles(roles);
+        staff.setRole(role);
 //        StaffDto staffDto = staff.copy();
 //        System.out.println(JacksonUtil.encode(staffDto));
     }
