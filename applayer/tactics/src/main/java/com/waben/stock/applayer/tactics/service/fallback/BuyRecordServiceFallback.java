@@ -26,14 +26,45 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
-	@Override
-	public Response<BuyRecordDto> buyInto(Long id, String delegateNumber, BigDecimal buyingPrice,
+	/// @Override
+	public Response<BuyRecordDto> buyInto(Long investorId, Long id, String delegateNumber, BigDecimal buyingPrice,
 			Integer numberOfStrand) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery BuyRecordQuery) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<String> dropBuyRecord(Long buyRecordId) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	// @Override
+	public Response<BuyRecordDto> buyLock(Long investorId, Long id) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	// @Override
+	public Response<BuyRecordDto> sellLock(Long investorId, Long id) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	// @Override
+	public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, Boolean isPublisher) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice,
+			BigDecimal profitDistributionRatio) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

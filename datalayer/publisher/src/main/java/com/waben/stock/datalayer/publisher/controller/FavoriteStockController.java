@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +32,7 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	private FavoriteStockService favoriteStockService;
 
 	@Override
-	public Response<FavoriteStockDto> add(FavoriteStockDto favoriteStockDto) {
+	public Response<FavoriteStockDto> add(@RequestBody FavoriteStockDto favoriteStockDto) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FavoriteStockDto.class,
 				favoriteStockService.save(favoriteStockDto.getPublisherId(), favoriteStockDto.getStockId(),
 						favoriteStockDto.getName(), favoriteStockDto.getCode(), favoriteStockDto.getPinyinAbbr()),
@@ -38,7 +40,7 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	}
 
 	@Override
-	public Response<String> drop(Long publisherId, String stockIds) {
+	public Response<String> drop(@PathVariable Long publisherId,  @PathVariable String stockIds) {
 		String[] stockIdStrArr = stockIds.split("-");
 		Long[] stockIdArr = new Long[stockIdStrArr.length];
 		for (int i = 0; i < stockIdStrArr.length; i++) {
@@ -49,7 +51,7 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	}
 
 	@Override
-	public Response<String> top(Long publisherId, String stockIds) {
+	public Response<String> top(@PathVariable Long publisherId, @PathVariable String stockIds) {
 		String[] stockIdStrArr = stockIds.split("-");
 		Long[] stockIdArr = new Long[stockIdStrArr.length];
 		for (int i = 0; i < stockIdStrArr.length; i++) {
@@ -60,13 +62,13 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	}
 
 	@Override
-	public Response<List<FavoriteStockDto>> listsByPublisherId(Long publisherId) {
+	public Response<List<FavoriteStockDto>> listsByPublisherId(@PathVariable Long publisherId) {
 		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(favoriteStockService.list(publisherId),
 				FavoriteStockDto.class));
 	}
 
 	@Override
-	public Response<List<Long>> listsStockId(Long publisherId) {
+	public Response<List<Long>> listsStockId(@PathVariable Long publisherId) {
 		return new Response<>(favoriteStockService.listStockIdByPublisherId(publisherId));
 	}
 

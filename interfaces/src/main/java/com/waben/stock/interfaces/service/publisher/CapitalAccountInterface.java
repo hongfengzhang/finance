@@ -13,38 +13,37 @@ import com.waben.stock.interfaces.pojo.Response;
 public interface CapitalAccountInterface {
 
 	@RequestMapping(value = "/publisherSerialCode/{serialCode}", method = RequestMethod.GET)
-	Response<CapitalAccountDto> fetchByPublisherSerialCode(@PathVariable(name = "serialCode") String serialCode);
+	Response<CapitalAccountDto> fetchByPublisherSerialCode(@PathVariable("serialCode") String serialCode);
 
 	@RequestMapping(value = "/publisherId/{publisherId}", method = RequestMethod.GET)
-	Response<CapitalAccountDto> fetchByPublisherId(@PathVariable(name = "publisherId") Long publisherId);
+	Response<CapitalAccountDto> fetchByPublisherId(@PathVariable("publisherId") Long publisherId);
 
 	@RequestMapping(value = "/{publisherId}/recharge/{amount}", method = RequestMethod.POST)
-	Response<CapitalAccountDto> recharge(@PathVariable(name = "publisherId") Long publisherId,
-			@PathVariable(name = "amount") BigDecimal amount);
+	Response<CapitalAccountDto> recharge(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("amount") BigDecimal amount);
 
 	@RequestMapping(value = "/{publisherId}/withdrawals/{amount}", method = RequestMethod.POST)
-	Response<CapitalAccountDto> withdrawals(@PathVariable(name = "publisherId") Long publisherId,
-			@PathVariable(name = "amount") BigDecimal amount);
+	Response<CapitalAccountDto> withdrawals(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("amount") BigDecimal amount);
 
 	@RequestMapping(value = "/{publisherId}/{buyRecordId}/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
-	Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable(name = "publisherId") Long publisherId,
-			@PathVariable(name = "buyRecordId") Long buyRecordId,
+	Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("buyRecordId") Long buyRecordId,
 			@RequestParam(name = "buyRecordSerialCode") String buyRecordSerialCode,
-			@PathVariable(name = "serviceFee") BigDecimal serviceFee,
-			@PathVariable(name = "reserveFund") BigDecimal reserveFund);
+			@PathVariable("serviceFee") BigDecimal serviceFee, @PathVariable("reserveFund") BigDecimal reserveFund);
 
 	@RequestMapping(value = "/{publisherId}/deferredCharges/{deferredCharges}", method = RequestMethod.POST)
-	Response<CapitalAccountDto> deferredCharges(@PathVariable(name = "publisherId") Long publisherId,
-			@PathVariable(name = "deferredCharges") BigDecimal deferredCharges);
+	Response<CapitalAccountDto> deferredCharges(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("deferredCharges") BigDecimal deferredCharges);
 
 	@RequestMapping(value = "/{publisherId}/{buyRecordId}/returnCompensate/{profitOrLoss}", method = RequestMethod.POST)
-	Response<CapitalAccountDto> returnReserveFund(@PathVariable(name = "publisherId") Long publisherId,
-			@PathVariable(name = "buyRecordId") Long buyRecordId,
+	Response<CapitalAccountDto> returnReserveFund(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("buyRecordId") Long buyRecordId,
 			@RequestParam(name = "buyRecordSerialCode") String buyRecordSerialCode,
-			@PathVariable(name = "profitOrLoss") BigDecimal profitOrLoss);
+			@PathVariable("profitOrLoss") BigDecimal profitOrLoss);
 
 	@RequestMapping(value = "/{publisherId}/modifyPaymentPassword", method = RequestMethod.PUT)
-	Response<String> modifyPaymentPassword(@PathVariable(name = "publisherId") Long publisherId,
+	Response<String> modifyPaymentPassword(@PathVariable("publisherId") Long publisherId,
 			@RequestParam(name = "paymentPassword") String paymentPassword);
 
 }

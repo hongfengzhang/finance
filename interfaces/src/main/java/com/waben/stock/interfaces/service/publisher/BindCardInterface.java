@@ -31,6 +31,6 @@ public interface BindCardInterface {
 	 * @return 绑卡列表
 	 */
 	@RequestMapping(value = "/{publisherId}/lists", method = RequestMethod.GET)
-	Response<List<BindCardDto>> listsByPublisherId(@PathVariable(name = "publisherId") Long publisherId);
+	Response<List<BindCardDto>> listsByPublisherId(@PathVariable("publisherId") Long publisherId);
 
 }

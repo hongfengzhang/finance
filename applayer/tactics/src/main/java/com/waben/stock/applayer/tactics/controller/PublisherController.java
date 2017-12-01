@@ -31,6 +31,7 @@ import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.RandomUtil;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -39,6 +40,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/publisher")
+@Api(description = "策略发布人")
 public class PublisherController {
 
 	@Autowired

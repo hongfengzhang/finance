@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,53 +31,53 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	private CapitalAccountService capitalAccountService;
 
 	@Override
-	public Response<CapitalAccountDto> fetchByPublisherSerialCode(String publisherSerialCode) {
+	public Response<CapitalAccountDto> fetchByPublisherSerialCode(@PathVariable String publisherSerialCode) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.findByPublisherSerialCode(publisherSerialCode), false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> fetchByPublisherId(Long publisherId) {
+	public Response<CapitalAccountDto> fetchByPublisherId(@PathVariable Long publisherId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.findByPublisherId(publisherId), false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
-			String buyRecordSerialCode, BigDecimal serviceFee, BigDecimal reserveFund) {
+	public Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
+			String buyRecordSerialCode, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
 				.serviceFeeAndReserveFund(publisherId, buyRecordId, buyRecordSerialCode, serviceFee, reserveFund),
 				false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> returnReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode,
-			BigDecimal profitOrLoss) {
+	public Response<CapitalAccountDto> returnReserveFund(@PathVariable Long publisherId, @PathVariable Long buyRecordId, String buyRecordSerialCode,
+			@PathVariable BigDecimal profitOrLoss) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.returnReserveFund(publisherId, buyRecordId, buyRecordSerialCode, profitOrLoss),
 				false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount) {
+	public Response<CapitalAccountDto> recharge(@PathVariable Long publisherId, @PathVariable BigDecimal amount) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.recharge(publisherId, amount), false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> withdrawals(Long publisherId, BigDecimal amount) {
+	public Response<CapitalAccountDto> withdrawals(@PathVariable Long publisherId, @PathVariable BigDecimal amount) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.withdrawals(publisherId, amount), false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> deferredCharges(Long publisherId, BigDecimal deferredCharges) {
+	public Response<CapitalAccountDto> deferredCharges(@PathVariable Long publisherId, @PathVariable BigDecimal deferredCharges) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.deferredCharges(publisherId, deferredCharges), false));
 	}
 
 	@Override
-	public Response<String> modifyPaymentPassword(Long publisherId, String paymentPassword) {
+	public Response<String> modifyPaymentPassword(@PathVariable Long publisherId, String paymentPassword) {
 		capitalAccountService.modifyPaymentPassword(publisherId, paymentPassword);
 		return new Response<>("successful");
 	}

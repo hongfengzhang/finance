@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.publisher.controller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -26,14 +27,14 @@ public class PublisherController implements PublisherInterface {
 	private PublisherService publisherService;
 
 	@Override
-	public Response<PublisherDto> fetchById(Long id) {
+	public Response<PublisherDto> fetchById(@PathVariable Long id) {
 		logger.info("获取发布策略人信息:{}", id);
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(PublisherDto.class, publisherService.findById(id), false));
 	}
 
 	@Override
-	public Response<PublisherDto> fetchByPhone(String phone) {
+	public Response<PublisherDto> fetchByPhone(@PathVariable String phone) {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(PublisherDto.class, publisherService.findByPhone(phone), false));
 	}
@@ -45,7 +46,7 @@ public class PublisherController implements PublisherInterface {
 	}
 
 	@Override
-	public Response<PublisherDto> modifyPassword(String phone, String password) {
+	public Response<PublisherDto> modifyPassword(@PathVariable String phone, String password) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(PublisherDto.class,
 				publisherService.modifyPassword(phone, password), false));
 	}

@@ -10,13 +10,28 @@ import com.waben.stock.interfaces.enums.BuyRecordState;
  */
 public class BuyRecordQuery extends PageAndSortQuery {
 
+	private Long publisherId;
+
 	private BuyRecordState[] states;
 
-	public BuyRecordQuery(int page, int size, BuyRecordState[] states) {
+	public BuyRecordQuery() {
+		super();
+	}
+
+	public BuyRecordQuery(int page, int size, Long publisherId, BuyRecordState[] states) {
 		super();
 		super.setPage(page);
 		super.setSize(size);
+		this.publisherId = publisherId;
 		this.states = states;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 	public BuyRecordState[] getStates() {

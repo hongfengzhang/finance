@@ -5,6 +5,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,7 +32,7 @@ public class BindCardController implements BindCardInterface {
 	private BindCardService bindCardService;
 
 	@Override
-	public Response<BindCardDto> addBankCard(BindCardDto bindCardDto) {
+	public Response<BindCardDto> addBankCard(@RequestBody BindCardDto bindCardDto) {
 		return new Response<>(
 				CopyBeanUtils
 						.copyBeanProperties(BindCardDto.class,
@@ -40,7 +42,7 @@ public class BindCardController implements BindCardInterface {
 	}
 
 	@Override
-	public Response<List<BindCardDto>> listsByPublisherId(Long publisherId) {
+	public Response<List<BindCardDto>> listsByPublisherId(@PathVariable Long publisherId) {
 		return new Response<>(
 				CopyBeanUtils.copyListBeanPropertiesToList(bindCardService.list(publisherId), BindCardDto.class));
 	}

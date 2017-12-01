@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -18,17 +17,15 @@ public interface FavoriteStockInterface {
 	Response<FavoriteStockDto> add(@RequestBody FavoriteStockDto favoriteStockDto);
 
 	@RequestMapping(value = "/{publisherId}/{stockIds}", method = RequestMethod.DELETE)
-	Response<String> drop(@PathVariable(name = "publisherId") Long publisherId,
-			@RequestParam(name = "stockIds") String stockIds);
+	Response<String> drop(@PathVariable("publisherId") Long publisherId, @PathVariable("stockIds") String stockIds);
 
 	@RequestMapping(value = "/{publisherId}/top/{stockIds}", method = RequestMethod.PUT)
-	Response<String> top(@PathVariable(name = "publisherId") Long publisherId,
-			@RequestParam(name = "stockIds") String stockIds);
+	Response<String> top(@PathVariable("publisherId") Long publisherId, @PathVariable("stockIds") String stockIds);
 
 	@RequestMapping(value = "/{publisherId}/lists", method = RequestMethod.GET)
-	Response<List<FavoriteStockDto>> listsByPublisherId(@PathVariable(name = "publisherId") Long publisherId);
-	
+	Response<List<FavoriteStockDto>> listsByPublisherId(@PathVariable("publisherId") Long publisherId);
+
 	@RequestMapping(value = "/{publisherId}/listsStockId", method = RequestMethod.GET)
-	Response<List<Long>> listsStockId(@PathVariable(name = "publisherId") Long publisherId);
+	Response<List<Long>> listsStockId(@PathVariable("publisherId") Long publisherId);
 
 }

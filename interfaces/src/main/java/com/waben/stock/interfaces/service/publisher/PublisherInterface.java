@@ -18,14 +18,14 @@ public interface PublisherInterface {
 	Response<PublisherDto> fetchById(@PathVariable("id") Long id);
 
 	@RequestMapping(value = "/phone/{phone}", method = RequestMethod.GET)
-	Response<PublisherDto> fetchByPhone(@PathVariable(name = "phone") String phone);
+	Response<PublisherDto> fetchByPhone(@PathVariable("phone") String phone);
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	Response<PublisherDto> register(@RequestParam(name = "phone") String phone,
 			@RequestParam(name = "password") String password);
 
 	@RequestMapping(value = "/{phone}/modifyPassword", method = RequestMethod.PUT)
-	Response<PublisherDto> modifyPassword(@PathVariable(name = "phone") String phone,
+	Response<PublisherDto> modifyPassword(@PathVariable("phone") String phone,
 			@RequestParam(name = "password") String password);
 
 }

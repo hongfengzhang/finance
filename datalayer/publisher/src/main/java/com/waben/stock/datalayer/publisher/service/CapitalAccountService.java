@@ -57,7 +57,7 @@ public class CapitalAccountService {
 	 * 充值
 	 */
 	@Transactional
-	public CapitalAccount recharge(Long publisherId, BigDecimal amount) {
+	public synchronized CapitalAccount recharge(Long publisherId, BigDecimal amount) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		increaseAmount(account, amount, date);
@@ -70,7 +70,7 @@ public class CapitalAccountService {
 	 * 提现
 	 */
 	@Transactional
-	public CapitalAccount withdrawals(Long publisherId, BigDecimal amount) {
+	public synchronized CapitalAccount withdrawals(Long publisherId, BigDecimal amount) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
@@ -83,8 +83,8 @@ public class CapitalAccountService {
 	 * 信息服务费和赔付保证金
 	 */
 	@Transactional
-	public CapitalAccount serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode,
-			BigDecimal serviceFee, BigDecimal reserveFund) {
+	public synchronized CapitalAccount serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
+			String buyRecordSerialCode, BigDecimal serviceFee, BigDecimal reserveFund) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, serviceFee, reserveFund, date);
@@ -109,7 +109,7 @@ public class CapitalAccountService {
 	 * 递延费
 	 */
 	@Transactional
-	public CapitalAccount deferredCharges(Long publisherId, BigDecimal amount) {
+	public synchronized CapitalAccount deferredCharges(Long publisherId, BigDecimal amount) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
@@ -122,7 +122,7 @@ public class CapitalAccountService {
 	 * 退回赔付保证金和盈亏
 	 */
 	@Transactional
-	public CapitalAccount returnReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode,
+	public synchronized CapitalAccount returnReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode,
 			BigDecimal profitOrLoss) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
@@ -157,6 +157,13 @@ public class CapitalAccountService {
 			capitalFlowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Loss,
 					lossAmountAbs.abs().multiply(new BigDecimal(-1)), date);
 		}
+		// 修改冻结记录为解冻状态
+		frozen.setStatus(FrozenCapitalStatus.Thaw);
+		frozen.setThawTime(new Date());
+		frozenCapitalDao.update(frozen);
+		// 修改账户的冻结资金数
+		account.setFrozenCapital(account.getFrozenCapital().subtract(frozen.getAmount()));
+		capitalAccountDao.update(account);
 		return findByPublisherId(publisherId);
 	}
 

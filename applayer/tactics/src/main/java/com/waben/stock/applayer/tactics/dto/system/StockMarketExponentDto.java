@@ -8,7 +8,7 @@ import java.math.BigDecimal;
  * @author luomengan
  *
  */
-public class StockExponentDto {
+public class StockMarketExponentDto {
 
 	/**
 	 * 指数名称
@@ -31,7 +31,7 @@ public class StockExponentDto {
 	 */
 	private BigDecimal upDropSpeed;
 
-	public StockExponentDto(String name, String code, BigDecimal lastPrice, BigDecimal upDropPrice,
+	public StockMarketExponentDto(String name, String code, BigDecimal lastPrice, BigDecimal upDropPrice,
 			BigDecimal upDropSpeed) {
 		super();
 		this.name = name;
@@ -41,7 +41,7 @@ public class StockExponentDto {
 		this.upDropSpeed = upDropSpeed;
 	}
 
-	public StockExponentDto() {
+	public StockMarketExponentDto() {
 		super();
 	}
 
