@@ -36,12 +36,6 @@ public class MenuController implements MenuInterface {
         return new Response<>(result);
     }
 
-    @Override
-    public Response<List<MenuDto>> menusByStaff(@PathVariable Long staff) {
-        List<Menu> menus = menuService.fetchMenusByStaff(staff);
-        List<MenuDto> result = menus(CopyBeanUtils.copyListBeanPropertiesToList(menus, MenuDto.class), 0l);
-        return new Response<>(result);
-    }
 
     private List<MenuDto> menus(List<MenuDto> menuDtos, Long pid) {
         List<MenuDto> menus = new ArrayList<>();

@@ -54,7 +54,7 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
             }
             throw new AuthMethodNotSupportedException("Authentication method not supported");
         }
-        Boolean isOperater = Boolean.valueOf(request.getParameter("isOperater"));
+        Boolean isOperater = Boolean.valueOf(request.getParameter("operater"));
         LoginRequest loginRequest = new LoginRequest(request.getParameter("username"), request.getParameter("password"));
         loginRequest.setOperator(isOperater);
 //        LoginRequest loginRequest = objectMapper.readValue(request.getReader(), LoginRequest.class);

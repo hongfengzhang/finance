@@ -15,7 +15,9 @@ import java.util.Set;
 public class RoleServiceFallback implements RoleService {
 
     @Override
-    public Response<Set<RoleDto>> fetchAllByStaff(Long staff) {
-        return new Response<>("205","角色信息获取失败");
+    public Response<RoleDto> fetchByRoleId(Long id) {
+        return new Response<>("205","角色信息不存在");
     }
+
+
 }

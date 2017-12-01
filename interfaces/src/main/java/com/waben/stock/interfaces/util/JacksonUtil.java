@@ -3,8 +3,7 @@ package com.waben.stock.interfaces.util;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +15,7 @@ public class JacksonUtil {
 	private static final Logger logger = LoggerFactory
 			.getLogger(JacksonUtil.class);
 	public static final ObjectMapper objectMapper = new ObjectMapper();
-	{
+	static {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		objectMapper.setDateFormat(dateFormat);
 		// 是否使用parser是否允许使用java注释样式 / /**
@@ -27,6 +26,7 @@ public class JacksonUtil {
 		objectMapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,
 				true);
 		objectMapper.configure(JsonParser.Feature.IGNORE_UNDEFINED, true);
+		objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, true);
 //		SerializationConfig serConfig = objectMapper.getSerializationConfig();
 //		DeserializationConfig deserializationConfig = objectMapper
 //				.getDeserializationConfig();

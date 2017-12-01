@@ -37,6 +37,8 @@ public class Investor {
     @Column
     private Date createTime = new Date();
 
+    @Transient
+    private String securitiesSession;
 
     public Long getId() {
         return id;
@@ -109,5 +111,13 @@ public class Investor {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public String getSecuritiesSession() {
+        return securitiesSession;
+    }
+
+    public void setSecuritiesSession(String securitiesSession) {
+        this.securitiesSession = securitiesSession;
     }
 }

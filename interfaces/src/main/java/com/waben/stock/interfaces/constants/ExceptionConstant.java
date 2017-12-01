@@ -37,9 +37,11 @@ public class ExceptionConstant {
 	// 菜单服务异常
 	public static final String MENU_SERVICE_EXCEPTION = "3001";
 	// 权限服务异常
-	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "4001";
+	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "3002";
 	// 员工服务异常
-	public static final String STAFF_NOT_FOUND_EXCEPTION = "5001";
+	public static final String STAFF_NOT_FOUND_EXCEPTION = "3003";
+	//角色服务异常
+	public static final String ROLE_NOT_FOUND_EXCEPTION="3004";
 
 	// 点买服务异常
 	// 账户可用余额不足
@@ -51,6 +53,10 @@ public class ExceptionConstant {
 	// 点买记录状态不匹配，不支持该操作
 	public static final String BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "6004";
 	// 申请卖出发布人不匹配，不支持该操作
-	public static final String BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION = "6004";
+	public static final String BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION = "6005";
+
+	//投资人服务异常
+	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
+	public static final String INVESTOR_SECURITIES_LOGIN_EXCEPTION = "7002";
 
 }

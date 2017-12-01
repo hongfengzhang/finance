@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
 
 /***
  * @author yuyidi 2017-11-15 14:23:01
@@ -22,12 +21,10 @@ public class Staff {
     private String userName;
     @Column
     private String password;
-
     @JsonIgnore
-    @ManyToMany(targetEntity = Role.class, fetch = FetchType.LAZY)
-    @JoinTable(name = "staff_role", joinColumns = {@JoinColumn(name = "staff_id")}, inverseJoinColumns = {@JoinColumn
-            (name = "role_id")})
-    private Set<Role> roles;
+    @ManyToOne(targetEntity = Role.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "role")
+    private Role role;
     @Column
     private String salt;
     @Column
@@ -65,12 +62,12 @@ public class Staff {
         this.password = password;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
+    public Role getRole() {
+        return role;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getSalt() {
@@ -114,7 +111,6 @@ public class Staff {
     }
 
     public Date getUpdateTime() {
-
         return updateTime;
     }
 
@@ -122,7 +118,4 @@ public class Staff {
         this.updateTime = updateTime;
     }
 
-    public void addRole(Role role) {
-        getRoles().add(role);
-    }
 }

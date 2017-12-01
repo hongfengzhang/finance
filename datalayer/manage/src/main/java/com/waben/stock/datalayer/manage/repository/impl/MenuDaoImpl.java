@@ -28,11 +28,6 @@ public class MenuDaoImpl implements MenuDao {
     }
 
     @Override
-    public List<Menu> retrieveByStaff(Long staff) {
-        return repository.findAllByStaff(staff);
-    }
-
-    @Override
     public Menu create(Menu menu) {
         return null;
     }

@@ -34,7 +34,7 @@ public class StaffService {
     private StaffDao staffDao;
 
 
-    public Staff fetchByUserName(String username) {
+    public Staff findByUserName(String username) {
         Staff result = staffDao.findByUserName(username);
         if (result == null) {
             throw new DataNotFoundException(ExceptionConstant.STAFF_NOT_FOUND_EXCEPTION);

@@ -18,4 +18,9 @@ public class InvestorServiceFallback implements InvestorService {
     public Response<PageInfo<InvestorDto>> pagesByQuery(InvestorQuery investorQuery) {
         return new Response<>("205","暂无投资人列表数据");
     }
+
+    @Override
+    public Response<InvestorDto> fetchByUserName(String userName) {
+        return new Response<>("205", "投资人" + userName + "信息不存在");
+    }
 }

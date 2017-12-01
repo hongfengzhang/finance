@@ -32,8 +32,8 @@ public class MenuBusiness {
                 .getContext()
                 .getAuthentication();
         AccountCredentials accountCredentials = (AccountCredentials) token.getPrincipal();
-        Long staff = accountCredentials.getStaff();
-        Response<List<MenuDto>> menuResponse = menuService.menusByStaff(staff);
+        Long role = accountCredentials.getRole();
+        Response<List<MenuDto>> menuResponse = menuService.menusByRole(role);
         if (menuResponse.getCode().equals("200")) {
             return menuResponse.getResult();
         }

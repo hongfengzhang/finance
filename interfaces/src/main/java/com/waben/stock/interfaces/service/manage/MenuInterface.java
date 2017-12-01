@@ -17,6 +17,4 @@ public interface MenuInterface {
     @RequestMapping(value = "/role/{role}", method = RequestMethod.GET)
     Response<List<MenuDto>> menusByRole(@PathVariable("role") Long role);
 
-    @RequestMapping(value = "/staff/{staff}", method = RequestMethod.GET)
-    Response<List<MenuDto>> menusByStaff(@PathVariable("staff") Long staff);
 }

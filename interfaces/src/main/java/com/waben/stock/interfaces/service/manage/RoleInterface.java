@@ -14,6 +14,7 @@ import java.util.Set;
  */
 public interface RoleInterface {
 
-    @RequestMapping(value = "/staff/{staff}", method = RequestMethod.GET)
-    Response<Set<RoleDto>> fetchAllByStaff(@PathVariable("staff") Long staff);
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    Response<RoleDto> fetchByRoleId(@PathVariable("id") Long id);
+
 }
