@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.pojo.stock.stockjy;
+package com.waben.stock.interfaces.pojo.stock.stockjy.data;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -8,16 +8,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class StockLoginInfo {
 
-    String clientId;
-    String clientName;
-    String fundAccount;
-    String tradeSession;
+    @JsonProperty("client_id")
+    private String clientId;
+    @JsonProperty("client_name")
+    private String clientName;
+    @JsonProperty("fund_account")
+    private String fundAccount;
+    @JsonProperty("trade_session")
+    private String tradeSession;
 
     public String getClientId() {
         return clientId;
     }
 
-    @JsonProperty("client_id")
     public void setClientId(String clientId) {
         this.clientId = clientId;
     }
@@ -26,7 +29,6 @@ public class StockLoginInfo {
         return clientName;
     }
 
-    @JsonProperty("client_name")
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
@@ -34,8 +36,6 @@ public class StockLoginInfo {
     public String getFundAccount() {
         return fundAccount;
     }
-
-    @JsonProperty("fund_account")
     public void setFundAccount(String fundAccount) {
         this.fundAccount = fundAccount;
     }
@@ -43,8 +43,6 @@ public class StockLoginInfo {
     public String getTradeSession() {
         return tradeSession;
     }
-
-    @JsonProperty("trade_session")
     public void setTradeSession(String tradeSession) {
         this.tradeSession = tradeSession;
     }

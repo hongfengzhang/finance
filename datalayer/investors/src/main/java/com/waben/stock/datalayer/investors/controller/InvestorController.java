@@ -4,7 +4,6 @@ import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
-import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -15,10 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.annotation.PostConstruct;
 
 /**
  * @author Created by yuyidi on 2017/11/5.
@@ -48,9 +46,12 @@ public class InvestorController implements InvestorInterface {
         return new Response<>(investorDto);
     }
 
-    public Response<Void> stockBuyIn(@RequestBody BuyRecordDto buyRecordDto) {
-
-        return new Response<>();
+    @PostMapping("/{integer}/buyrecord/entrust")
+    public Response<String> stockBuyIn(@PathVariable Long integer, @RequestBody BuyRecordDto buyRecordDto, String
+            tradeSession) {
+        Investor result = investorService.findById(integer);
+        String entrustNo = investorService.buyRecordEntrust(result, buyRecordDto, tradeSession);
+        return new Response<>(entrustNo);
     }
 
 }

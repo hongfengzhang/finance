@@ -58,5 +58,9 @@ public class ExceptionConstant {
 	//投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
 	public static final String INVESTOR_SECURITIES_LOGIN_EXCEPTION = "7002";
-
+	public static final String INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH = "7003";
+	public static final String INVESTOR_EXCHANGE_TYPE_NOT_SUPPORT_EXCEPTION = "7004";
+	public static final String INVESTOR_STOCKACCOUNT_NOT_EXIST = "7005";
+	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
+	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
 }

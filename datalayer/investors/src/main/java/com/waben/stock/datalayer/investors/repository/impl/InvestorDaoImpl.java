@@ -43,7 +43,7 @@ public class InvestorDaoImpl implements InvestorDao {
 
     @Override
     public Investor retrieve(Long id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override
