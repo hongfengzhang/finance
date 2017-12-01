@@ -42,8 +42,9 @@
         <ul class="nav">
             <li th:each="menu : ${session.menus}">
                 <a data-toggle="collapse" th:href="'#'+${menu.id}" >
-                    <i class="pe-7s-display1"></i>
-                    <p th:text="${menu.name}">
+                    <i th:class="${menu.icon}"></i>
+                    <p><span th:text="${menu.name}"></span>
+                        <b th:class="caret" th:if="${#lists.size(menu.childs)}!='0'"></b>
                     </p>
                 </a>
                 <div  class="collapse" th:id="${menu.id}">
