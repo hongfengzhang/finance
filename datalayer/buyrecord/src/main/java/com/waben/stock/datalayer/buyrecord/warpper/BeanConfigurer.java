@@ -57,49 +57,45 @@ public class BeanConfigurer {
         return rabbitTemplate;
     }
 
-    @Bean
-    public Queue queue() {
-        return new Queue("queue");
+
+
+
+    //创建上证 深证 创业板队列
+    @Bean(name = "shangSecurity")
+    public Queue shangSecurity() {
+        return new Queue("shangSecurity");
     }
 
-    @Bean(name = "message")
-    public Queue message() {
-        return new Queue("topicMessage");
+    @Bean(name = "shenSecurity")
+    public Queue shenSecurity() {
+        return new Queue("shenSecurity");
     }
 
-    @Bean(name = "messages")
-    public Queue messages() {
-        return new Queue("topicMessages");
+    @Bean(name="developSecurity")
+    public Queue developSecurity() {
+        return new Queue("developSecurity");
     }
 
+    //创建点买交易交换机
     @Bean
     public TopicExchange exchange() {
-        return new TopicExchange("exchange");
+        return new TopicExchange("buyRecord");
+    }
+
+
+    @Bean
+    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("shang");
     }
 
     @Bean
-    public FanoutExchange fanoutExchange() {
-        return new FanoutExchange("fanoutExchange");
+    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("shen");
     }
 
     @Bean
-    public Binding bindingExchangeMessage(@Qualifier("message") Queue message,TopicExchange exchange) {
-        return BindingBuilder.bind(message).to(exchange).with("topic.message");
-    }
-
-    @Bean
-    public Binding bindingExchangeMessages(@Qualifier("messages") Queue messages, TopicExchange exchange) {
-        return BindingBuilder.bind(messages).to(exchange).with("topic.#");
-    }
-
-    @Bean
-    public Binding bindFanoutExchangeMessage(@Qualifier("message") Queue message, FanoutExchange fanoutExchange) {
-        return BindingBuilder.bind(message).to(fanoutExchange);
-    }
-
-    @Bean
-    public Binding bindFanoutExchangeMessages(@Qualifier("messages") Queue messages, FanoutExchange fanoutExchange) {
-        return BindingBuilder.bind(messages).to(fanoutExchange);
+    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,TopicExchange exchange) {
+        return BindingBuilder.bind(queue).to(exchange).with("shen");
     }
 
 }

@@ -51,9 +51,9 @@ public class BuyRecordService {
             @Override
             public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
                                          CriteriaBuilder criteriaBuilder) {
-                if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
-                    criteriaQuery.where(root.get("state").in(buyRecordQuery.getStates()));
-                }
+//                if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
+//                    criteriaQuery.where(root.get("state").in(buyRecordQuery.getStates()));
+//                }
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
@@ -82,16 +82,8 @@ public class BuyRecordService {
         return result;
     }
 
-    public void queueDirect(String message) {
-        producer.direct("queue", message);
+    public void messageTopic(String security,String message) {
+        producer.topic("buyRecord", security, message);
     }
 
-    public void messageTopic(String message) {
-        producer.topic("exchange", "topic.messages", message);
-    }
-
-
-    public void messageFanout(String message) {
-        producer.fanout("fanoutExchange", message);
-    }
 }
