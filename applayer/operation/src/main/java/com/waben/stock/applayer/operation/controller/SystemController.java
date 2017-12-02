@@ -34,7 +34,6 @@ public class SystemController {
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("menus",systemManageBusiness.menus());
-
         return "index";
     }
 

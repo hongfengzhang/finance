@@ -22,4 +22,7 @@ public interface StockInterface {
 
     @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
     Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery stockQuery);
+
+    @RequestMapping(value = "/code/{code}",method = RequestMethod.GET)
+    Response<StockDto> fetchWithExponentByCode(String code);
 }

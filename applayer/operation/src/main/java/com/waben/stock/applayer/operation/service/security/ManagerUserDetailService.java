@@ -30,10 +30,10 @@ public class ManagerUserDetailService implements UserDetailsService {
 
     @Autowired
     private StaffService staffService;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private MenuService menuService;
+//    @Autowired
+//    private RoleService roleService;
+//    @Autowired
+//    private MenuService menuService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

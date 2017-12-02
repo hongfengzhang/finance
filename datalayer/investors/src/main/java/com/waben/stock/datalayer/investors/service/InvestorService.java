@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.EntrustType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
+import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockHolder;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockMoney;
@@ -81,19 +82,19 @@ public class InvestorService {
      * @description 点买交易记录执行券商股票委托
      */
     @Transactional
-    public String buyRecordEntrust(Investor investor, BuyRecordDto buyRecordDto, String tradeSession) {
+    public String buyRecordEntrust(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
         //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
-         StockMoney stockMoney = stockJyRest.money(tradeSession);
+        StockMoney stockMoney = stockJyRest.money(tradeSession);
         //点买交易股票数量* 单价
-        Double realStockPrice = buyRecordDto.getNumberOfStrand() * buyRecordDto.getBuyingPrice().doubleValue();
+        Double realStockPrice = securitiesStockEntrust.getBuyingNumber() * securitiesStockEntrust.getBuyingPrice().doubleValue();
         //校检资金信息
         if (stockMoney.getEnableBalance() - realStockPrice < 0) {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH);
         }
         //查询当前资金账户的股东账户信息
         List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
-        String type = buyRecordDto.getStockDto().getStockExponentDto().getExponentCode();
+        String type = securitiesStockEntrust.getExponent();
         logger.info("股票账户类型:{}",type);
         if (type.equals("4353")) {
             //上证
@@ -115,9 +116,9 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
         //开始委托下单
-        String enturstNo = stockJyRest.buyRecordEntrust(buyRecordDto, tradeSession, stockAccount, type, EntrustType
+        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
                 .BUY);
-        System.out.println("委托单号：" + enturstNo);
+        //更新点买订单状态
         return enturstNo;
     }
 

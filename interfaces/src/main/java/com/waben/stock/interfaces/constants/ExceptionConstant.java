@@ -54,6 +54,8 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "6004";
 	// 申请卖出发布人不匹配，不支持该操作
 	public static final String BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION = "6005";
+	//点买记录不存在
+	public static final String BUYRECORD_NOT_FOUND_EXCEPTION = "6006";
 
 	//投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

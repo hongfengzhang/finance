@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.EntrustType;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResult;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.*;
@@ -38,7 +39,7 @@ public class StockJyRest implements SecuritiesInterface {
     private String moneyUrl = "http://106.15.37.226:8445/stockjy/money";
 
     public StockLoginInfo login(String account, String password) {
-        loginUrl.concat("?account_content={accountContent}&password={password}");
+        loginUrl += "?account_content={accountContent}&password={password}";
         Map<String, String> params = new HashMap<>();
         params.put("account_content", account);
         params.put("password", password);
@@ -82,14 +83,14 @@ public class StockJyRest implements SecuritiesInterface {
     /***
      * @author yuyidi 2017-12-01 11:03:26
      * @method buyRecordEntrust
-     * @param  buyRecordDto 点买交易记录
+     * @param  securitiesStockEntrust 点买交易记录
      * @param tradeSession 资金账户登录session
      * @param entrustType 委托下单买入卖出类型
      * @param stockAccount 股东账户
      * @return void
      * @description 点买交易记录下单
      */
-    public String buyRecordEntrust(BuyRecordDto buyRecordDto, String tradeSession, String stockAccount, String type,
+    public String buyRecordEntrust(SecuritiesStockEntrust securitiesStockEntrust, String tradeSession, String stockAccount, String type,
                                    EntrustType
                                            entrustType) {
         entrustUrl = entrustUrl + "?trade_session={trade_session}&" +
@@ -104,9 +105,9 @@ public class StockJyRest implements SecuritiesInterface {
         params.put("trade_session", tradeSession);
         params.put("exchange_type", type);
         params.put("stock_account", stockAccount);
-        params.put("stock_code", buyRecordDto.getStockCode());
-        params.put("entrust_amount", String.valueOf(buyRecordDto.getNumberOfStrand()));
-        params.put("entrust_price", String.valueOf(buyRecordDto.getBuyingPrice()));
+        params.put("stock_code", securitiesStockEntrust.getStockCode());
+        params.put("entrust_amount", String.valueOf(securitiesStockEntrust.getBuyingNumber()));
+        params.put("entrust_price", String.valueOf(securitiesStockEntrust.getBuyingPrice()));
         params.put("entrust_bs", entrustType.getType());
         String result = HttpRest.get(entrustUrl, String.class, params);
         logger.info("委托交易结果:{}", result);
@@ -127,13 +128,13 @@ public class StockJyRest implements SecuritiesInterface {
      * @description 查询股票委托情况
      */
     public List<StockEntrustQueryResult> queryStockByEntrust(String tradeSession, String entrust) {
-        queryEntrusUrl.concat("?trade_session={trade_session}&" +
+        queryEntrusUrl = queryEntrusUrl + "?trade_session={trade_session}&" +
                 "entrust_no={entrust_no}&" +
-                "request_num=50");
+                "request_num=50";
         Map<String, String> params = new HashMap<>();
         params.put("trade_session", tradeSession);
         params.put("entrust_no", entrust);
-        String result = HttpRest.get(moneyUrl, String.class, params);
+        String result = HttpRest.get(queryEntrusUrl, String.class, params);
         StockResponse<StockEntrustQueryResult> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockEntrustQueryResult>>() {
                 });
