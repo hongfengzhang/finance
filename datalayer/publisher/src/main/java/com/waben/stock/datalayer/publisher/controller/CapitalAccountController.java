@@ -43,16 +43,17 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
-			String buyRecordSerialCode, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund) {
+	public Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable Long publisherId,
+			@PathVariable Long buyRecordId, String buyRecordSerialCode, @PathVariable BigDecimal serviceFee,
+			@PathVariable BigDecimal reserveFund) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
 				.serviceFeeAndReserveFund(publisherId, buyRecordId, buyRecordSerialCode, serviceFee, reserveFund),
 				false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> returnReserveFund(@PathVariable Long publisherId, @PathVariable Long buyRecordId, String buyRecordSerialCode,
-			@PathVariable BigDecimal profitOrLoss) {
+	public Response<CapitalAccountDto> returnReserveFund(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
+			String buyRecordSerialCode, @PathVariable BigDecimal profitOrLoss) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.returnReserveFund(publisherId, buyRecordId, buyRecordSerialCode, profitOrLoss),
 				false));
@@ -71,9 +72,10 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> deferredCharges(@PathVariable Long publisherId, @PathVariable BigDecimal deferredCharges) {
+	public Response<CapitalAccountDto> deferredCharges(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
+			@PathVariable BigDecimal deferredCharges) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
-				capitalAccountService.deferredCharges(publisherId, deferredCharges), false));
+				capitalAccountService.deferredCharges(publisherId, buyRecordId, deferredCharges), false));
 	}
 
 	@Override

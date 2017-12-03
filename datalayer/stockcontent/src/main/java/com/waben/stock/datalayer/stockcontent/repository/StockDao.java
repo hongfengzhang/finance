@@ -4,4 +4,6 @@ import com.waben.stock.datalayer.stockcontent.entity.Stock;
 
 public interface StockDao extends BaseDao<Stock, Long> {
 
+	Stock retrieveByCode(String code);
+
 }

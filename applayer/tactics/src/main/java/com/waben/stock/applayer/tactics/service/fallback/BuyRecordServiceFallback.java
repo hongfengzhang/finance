@@ -26,7 +26,7 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
-	/// @Override
+	@Override
 	public Response<BuyRecordDto> buyInto(Long investorId, Long id, String delegateNumber, BigDecimal buyingPrice,
 			Integer numberOfStrand) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
@@ -65,6 +65,11 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 
 	@Override
 	public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<BuyRecordDto> fetchById(Long id) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

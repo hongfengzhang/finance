@@ -1,12 +1,11 @@
-package com.waben.stock.interfaces.dto.publisher;
+package com.waben.stock.applayer.tactics.dto.publisher;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
 
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 
-public class CapitalFlowDto {
+public class CapitalFlowWithExtendDto {
 
 	private Long id;
 	/**
@@ -17,10 +16,6 @@ public class CapitalFlowDto {
 	 * 流水类型
 	 */
 	private CapitalFlowType type;
-	/**
-	 * 备注
-	 */
-	private String remark;
 	/**
 	 * 产生时间
 	 */
@@ -34,9 +29,13 @@ public class CapitalFlowDto {
 	 */
 	private String publisherSerialCode;
 	/**
-	 * 流水扩展列表
+	 * 股票代码
 	 */
-	private Set<CapitalFlowExtendDto> extendList;
+	private String stockCode;
+	/**
+	 * 股票名称
+	 */
+	private String stockName;
 
 	public Long getId() {
 		return id;
@@ -62,12 +61,8 @@ public class CapitalFlowDto {
 		this.type = type;
 	}
 
-	public String getRemark() {
-		return remark;
-	}
-
-	public void setRemark(String remark) {
-		this.remark = remark;
+	public String getFlowText() {
+		return type.getType();
 	}
 
 	public Date getOccurrenceTime() {
@@ -94,12 +89,20 @@ public class CapitalFlowDto {
 		this.publisherSerialCode = publisherSerialCode;
 	}
 
-	public Set<CapitalFlowExtendDto> getExtendList() {
-		return extendList;
+	public String getStockCode() {
+		return stockCode;
 	}
 
-	public void setExtendList(Set<CapitalFlowExtendDto> extendList) {
-		this.extendList = extendList;
+	public void setStockCode(String stockCode) {
+		this.stockCode = stockCode;
+	}
+
+	public String getStockName() {
+		return stockName;
+	}
+
+	public void setStockName(String stockName) {
+		this.stockName = stockName;
 	}
 
 }

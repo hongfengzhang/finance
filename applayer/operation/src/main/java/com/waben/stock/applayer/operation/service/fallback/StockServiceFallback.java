@@ -23,4 +23,9 @@ public class StockServiceFallback implements StockService {
 	public Response<StockDto> fetchById(Long id) {
 		return new Response<>("205", "股票" + id + "信息不存在");
 	}
+
+	@Override
+	public Response<StockDto> fetchByCode(String code) {
+		return new Response<>("205", "股票" + code + "信息不存在");
+	}
 }

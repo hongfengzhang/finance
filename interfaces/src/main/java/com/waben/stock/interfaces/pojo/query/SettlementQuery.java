@@ -11,6 +11,10 @@ public class SettlementQuery extends PageAndSortQuery {
 	private Long publisherId;
 
 	private Long buyRecordId;
+	/**
+	 * 查询收益了的点买
+	 */
+	private boolean onlyProfit;
 
 	public SettlementQuery() {
 		super();
@@ -36,6 +40,14 @@ public class SettlementQuery extends PageAndSortQuery {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public boolean isOnlyProfit() {
+		return onlyProfit;
+	}
+
+	public void setOnlyProfit(boolean onlyProfit) {
+		this.onlyProfit = onlyProfit;
 	}
 
 }

@@ -11,6 +11,7 @@ import com.waben.stock.applayer.tactics.business.FavoriteStockBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockWithFavoriteDto;
+import com.waben.stock.applayer.tactics.retrivestock.bean.StockKLine;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -68,6 +69,12 @@ public class StockController {
 	@ApiOperation(value = "获取股票推荐列表")
 	public Response<PageInfo<StockRecommendWithMarketDto>> stockRecommend(int page, int size) {
 		return new Response<>(stockBusiness.stockRecommend(page, size));
+	}
+
+	@GetMapping("/kLine")
+	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
+	public Response<List<StockKLine>> listKLine(String stockCode, Integer type, String startTime, String endTime) {
+		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime));
 	}
 
 }

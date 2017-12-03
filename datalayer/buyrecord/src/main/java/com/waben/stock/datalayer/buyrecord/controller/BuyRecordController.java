@@ -84,4 +84,10 @@ public class BuyRecordController implements BuyRecordInterface {
 		return new Response<>("successful");
 	}
 
+	@Override
+	public Response<BuyRecordDto> fetchById(@PathVariable Long id) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.findById(id), false));
+	}
+
 }

@@ -62,7 +62,7 @@ public class BuyRecord {
 	/**
 	 * 止盈点
 	 */
-	@Column(name = "profit_point")
+	@Column(name = "profit_point", scale = 3)
 	private BigDecimal profitPoint;
 	/**
 	 * 止盈预警点位
@@ -77,7 +77,7 @@ public class BuyRecord {
 	/**
 	 * 止损点
 	 */
-	@Column(name = "loss_point")
+	@Column(name = "loss_point", scale = 3)
 	private BigDecimal lossPoint;
 	/**
 	 * 止损预警点位

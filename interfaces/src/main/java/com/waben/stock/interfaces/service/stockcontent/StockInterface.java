@@ -16,10 +16,13 @@ import com.waben.stock.interfaces.pojo.query.StockQuery;
  * @description
  */
 public interface StockInterface {
-	
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Response<StockDto> fetchById(@PathVariable("id") Long id);
 
-    @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
-    Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery stockQuery);
+	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
+	Response<StockDto> fetchByCode(@PathVariable("code") String code);
+
+	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
+	Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery stockQuery);
 }

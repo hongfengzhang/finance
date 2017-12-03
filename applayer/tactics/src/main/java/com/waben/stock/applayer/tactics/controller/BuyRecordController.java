@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.BuyRecordBusiness;
 import com.waben.stock.applayer.tactics.dto.buyrecord.BuyRecordWithMarketDto;
+import com.waben.stock.applayer.tactics.dto.buyrecord.TradeDynamicDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
@@ -85,13 +86,21 @@ public class BuyRecordController {
 		return new Response<>(buyRecordBusiness.pagesSettlement(query));
 	}
 
+	@GetMapping("/tradeDynamic")
+	@ApiOperation(value = "交易动态列表")
+	public Response<PageInfo<TradeDynamicDto>> tradeDynamic(int page, int size) {
+		return new Response<>(buyRecordBusiness.tradeDynamic(page, size));
+	}
+
 	@RequestMapping(value = "/selllock/{id}", method = RequestMethod.POST)
+	@ApiOperation(value = "用户申请卖出")
 	Response<BuyRecordDto> sellLock(@PathVariable("id") Long id) {
 		return new Response<>(buyRecordBusiness.sellLock(SecurityUtil.getUserId(), id));
 	}
 
 	// 该接口仅仅用来做测试，该接口应位于投资人服务中
 	@RequestMapping(value = "/{investorId}/sellout/{id}", method = RequestMethod.POST)
+	@ApiOperation(value = "测试使用，APP不要使用该接口，ignore it")
 	Response<BuyRecordDto> sellOut(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
 			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice) {
 		return new Response<>(buyRecordBusiness.sellOut(investorId, id, sellingPrice));

@@ -32,9 +32,9 @@ public interface CapitalAccountInterface {
 			@RequestParam(name = "buyRecordSerialCode") String buyRecordSerialCode,
 			@PathVariable("serviceFee") BigDecimal serviceFee, @PathVariable("reserveFund") BigDecimal reserveFund);
 
-	@RequestMapping(value = "/{publisherId}/deferredCharges/{deferredCharges}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{publisherId}/{buyRecordId}/deferredCharges/{deferredCharges}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> deferredCharges(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("deferredCharges") BigDecimal deferredCharges);
+			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("deferredCharges") BigDecimal deferredCharges);
 
 	@RequestMapping(value = "/{publisherId}/{buyRecordId}/returnCompensate/{profitOrLoss}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> returnReserveFund(@PathVariable("publisherId") Long publisherId,

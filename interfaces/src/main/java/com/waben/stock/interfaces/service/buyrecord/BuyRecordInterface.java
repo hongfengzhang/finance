@@ -17,6 +17,16 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public interface BuyRecordInterface {
 
 	/**
+	 * 根据ID获取点买记录
+	 * 
+	 * @param id
+	 *            点买记录ID
+	 * @return 点买记录
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	Response<BuyRecordDto> fetchById(@PathVariable("id") Long id);
+
+	/**
 	 * 添加点买记录，此时状态为“发布”
 	 * 
 	 * @param buyRecordDto

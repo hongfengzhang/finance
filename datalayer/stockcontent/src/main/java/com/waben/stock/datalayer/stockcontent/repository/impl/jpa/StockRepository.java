@@ -17,4 +17,6 @@ public interface StockRepository extends CustomJpaRepository<Stock, Long> {
 	@Query(value = "select t.* from stock t where t.name like ?1 or t.code like ?2 or t.pinyin_abbr like ?3 limit 0, ?4", nativeQuery = true)
 	List<Stock> findByNameLikeOrCodeLikeOrPinyinAbbrLike(String name, String code, String pinyinAbbr, Integer limit);
 
+	Stock findByCode(String code);
+
 }

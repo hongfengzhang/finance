@@ -2,7 +2,9 @@ package com.waben.stock.datalayer.buyrecord.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -38,9 +40,9 @@ import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 @Service
 public class BuyRecordService {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
+	@Autowired
 	private BuyRecordDao buyRecordDao;
 
 	@Autowired
@@ -61,10 +63,13 @@ public class BuyRecordService {
 			@Override
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<>();
 				if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
-					criteriaQuery
-							.where(criteriaBuilder.and(root.get("state").in(buyRecordQuery.getStates()), criteriaBuilder
-									.equal(root.get("publisherId").as(Long.class), buyRecordQuery.getPublisherId())));
+					predicateList.add(root.get("state").in(buyRecordQuery.getStates()));
+				}
+				if (buyRecordQuery.getPublisherId() != null && buyRecordQuery.getPublisherId() > 0) {
+					predicateList.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class),
+							buyRecordQuery.getPublisherId()));
 				}
 				return criteriaQuery.getRestriction();
 			}
@@ -72,25 +77,25 @@ public class BuyRecordService {
 		return pages;
 	}
 
-    @Transactional
-    public BuyRecord changeState(BuyRecord record) {
-        BuyRecordState current = record.getState();
-        BuyRecordState next = BuyRecordState.UNKONWN;
-        if (BuyRecordState.POSTED.equals(current)) {
-            next = BuyRecordState.BUYLOCK;
-        } else if (BuyRecordState.BUYLOCK.equals(current)) {
-            next = BuyRecordState.HOLDPOSITION;
-        } else if (BuyRecordState.HOLDPOSITION.equals(current)) {
-            next = BuyRecordState.SELLLOCK;
-        } else if (BuyRecordState.SELLLOCK.equals(current)) {
-            next = BuyRecordState.UNWIND;
-        }
-        record.setState(next);
-        BuyRecord result = buyRecordDao.update(record);
-        return result;
-    }
+	@Transactional
+	public BuyRecord changeState(BuyRecord record) {
+		BuyRecordState current = record.getState();
+		BuyRecordState next = BuyRecordState.UNKONWN;
+		if (BuyRecordState.POSTED.equals(current)) {
+			next = BuyRecordState.BUYLOCK;
+		} else if (BuyRecordState.BUYLOCK.equals(current)) {
+			next = BuyRecordState.HOLDPOSITION;
+		} else if (BuyRecordState.HOLDPOSITION.equals(current)) {
+			next = BuyRecordState.SELLLOCK;
+		} else if (BuyRecordState.SELLLOCK.equals(current)) {
+			next = BuyRecordState.UNWIND;
+		}
+		record.setState(next);
+		BuyRecord result = buyRecordDao.update(record);
+		return result;
+	}
 
-    @Transactional
+	@Transactional
 	public void remove(Long buyRecordId) {
 		buyRecordDao.delete(buyRecordId);
 	}
@@ -185,7 +190,8 @@ public class BuyRecordService {
 		settlement.setSettlementTime(new Date());
 		if (profitOrLoss.compareTo(BigDecimal.ZERO) >= 0) {
 			settlement.setPublisherProfitOrLoss(profitOrLoss.multiply(profitDistributionRatio));
-			settlement.setInvestorProfitOrLoss(profitOrLoss.multiply(new BigDecimal(1).subtract(profitDistributionRatio)));
+			settlement.setInvestorProfitOrLoss(
+					profitOrLoss.multiply(new BigDecimal(1).subtract(profitDistributionRatio)));
 		} else {
 			if (profitOrLoss.abs().compareTo(buyRecord.getReserveFund()) > 0) {
 				settlement.setPublisherProfitOrLoss(buyRecord.getReserveFund().multiply(new BigDecimal(-1)));
@@ -198,5 +204,9 @@ public class BuyRecordService {
 		// 修改点买记录状态
 		return changeState(buyRecord);
 	}
-	
+
+	public BuyRecord findById(Long id) {
+		return buyRecordDao.retrieve(id);
+	}
+
 }

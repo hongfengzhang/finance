@@ -9,6 +9,7 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockExponentVariety;
+import com.waben.stock.applayer.tactics.retrivestock.bean.StockKLine;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
@@ -40,6 +41,35 @@ public class RetriveStockOverHttp {
 			return list;
 		} catch (IOException e) {
 			throw new RuntimeException("http获取指数品种列表异常!", e);
+		}
+	}
+
+	public static List<StockKLine> listKLine(RestTemplate restTemplate, String stockCode, Integer type,
+			String startTime, String endTime) {
+		StringBuilder url = new StringBuilder("http://lemi.esongbai.com/stk/stk/kline.do?code=" + stockCode);
+		if (type == 1) {
+			url.append("&type=day");
+		} else if (type == 2) {
+			url.append("&type=week");
+		} else {
+			url.append("&type=day");
+		}
+		if (startTime != null && !"".equals(startTime)) {
+			url.append("&startTime=" + startTime);
+		}
+		if (endTime != null && !"".equals(endTime)) {
+			url.append("&endTime=" + endTime);
+		}
+
+		String response = restTemplate.getForObject(url.toString(), String.class);
+		try {
+			JsonNode dataNode = JacksonUtil.objectMapper.readValue(response, JsonNode.class).get("data");
+			JavaType javaType = JacksonUtil.objectMapper.getTypeFactory().constructParametricType(ArrayList.class,
+					StockKLine.class);
+			List<StockKLine> list = JacksonUtil.objectMapper.readValue(dataNode.toString(), javaType);
+			return list;
+		} catch (IOException e) {
+			throw new RuntimeException("http获取K线图数据异常!", e);
 		}
 	}
 

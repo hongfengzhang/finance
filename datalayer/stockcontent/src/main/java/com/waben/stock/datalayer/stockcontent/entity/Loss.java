@@ -14,37 +14,37 @@ import java.util.Set;
 @Table(name = "loss")
 public class Loss {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column
-    private BigDecimal point;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Column(scale = 3)
+	private BigDecimal point;
 
-    @JsonBackReference
-    @ManyToMany(targetEntity = StrategyType.class,mappedBy = "losses")
-    private Set<StrategyType> straegyTypes;
+	@JsonBackReference
+	@ManyToMany(targetEntity = StrategyType.class, mappedBy = "losses")
+	private Set<StrategyType> straegyTypes;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public BigDecimal getPoint() {
-        return point;
-    }
+	public BigDecimal getPoint() {
+		return point;
+	}
 
-    public void setPoint(BigDecimal point) {
-        this.point = point;
-    }
+	public void setPoint(BigDecimal point) {
+		this.point = point;
+	}
 
-    public Set<StrategyType> getStraegyTypes() {
-        return straegyTypes;
-    }
+	public Set<StrategyType> getStraegyTypes() {
+		return straegyTypes;
+	}
 
-    public void setStraegyTypes(Set<StrategyType> straegyTypes) {
-        this.straegyTypes = straegyTypes;
-    }
+	public void setStraegyTypes(Set<StrategyType> straegyTypes) {
+		this.straegyTypes = straegyTypes;
+	}
 }
