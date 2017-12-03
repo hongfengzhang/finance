@@ -55,7 +55,7 @@ public class StockBusiness {
 	}
 
 	public StockDto findByCode(String stockCode) {
-		Response<StockDto> response = stockService.fetchByCode(stockCode);
+		Response<StockDto> response = stockService.fetchWithExponentByCode(stockCode);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}

@@ -22,6 +22,11 @@ public class InvestorDaoImpl implements InvestorDao {
     private InvestorRepository repository;
 
     @Override
+    public Investor retieveWithUserName(String userName) {
+        return repository.findByUserName(userName);
+    }
+
+    @Override
     public Investor create(Investor investor) {
         return repository.save(investor);
     }
@@ -38,7 +43,7 @@ public class InvestorDaoImpl implements InvestorDao {
 
     @Override
     public Investor retrieve(Long id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override

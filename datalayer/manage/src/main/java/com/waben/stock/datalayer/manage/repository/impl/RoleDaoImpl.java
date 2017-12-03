@@ -23,11 +23,6 @@ public class RoleDaoImpl implements RoleDao {
     private RoleRepository repository;
 
     @Override
-    public List<Role> findByStaffId(Long staffId) {
-        return repository.findAllByStaffId(staffId);
-    }
-
-    @Override
     public Role create(Role role) {
         return null;
     }

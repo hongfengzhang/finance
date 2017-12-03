@@ -8,4 +8,6 @@ import com.waben.stock.datalayer.investors.entity.Investor;
  */
 public interface InvestorDao extends BaseDao<Investor,Long> {
 
+    Investor retieveWithUserName(String userName);
+
 }

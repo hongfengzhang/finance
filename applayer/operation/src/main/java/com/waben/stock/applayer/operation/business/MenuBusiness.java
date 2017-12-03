@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.manage.MenuService;
 import com.waben.stock.applayer.operation.service.manage.StaffService;
+import com.waben.stock.applayer.operation.warpper.SecurityAccount;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
@@ -28,12 +29,9 @@ public class MenuBusiness {
     private MenuService menuService;
 
     public List<MenuDto> menus() {
-        UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) SecurityContextHolder
-                .getContext()
-                .getAuthentication();
-        AccountCredentials accountCredentials = (AccountCredentials) token.getPrincipal();
-        Long staff = accountCredentials.getStaff();
-        Response<List<MenuDto>> menuResponse = menuService.menusByStaff(staff);
+        AccountCredentials current = SecurityAccount.current();
+        Long role = current.getRole();
+        Response<List<MenuDto>> menuResponse = menuService.menusByRole(role);
         if (menuResponse.getCode().equals("200")) {
             return menuResponse.getResult();
         }

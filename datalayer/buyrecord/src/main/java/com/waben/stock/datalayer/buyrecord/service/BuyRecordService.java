@@ -48,6 +48,14 @@ public class BuyRecordService {
 	@Autowired
 	private SettlementDao settlementDao;
 
+	public BuyRecord findBuyRecord(Long buyrecord) {
+		BuyRecord buyRecord = buyRecordDao.retrieve(buyrecord);
+		if (buyRecord == null) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_NOT_FOUND_EXCEPTION);
+		}
+		return buyRecord;
+	}
+
 	@Transactional
 	public BuyRecord save(BuyRecord buyRecord) {
 		buyRecord.setSerialCode(UniqueCodeGenerator.generateSerialCode());
@@ -203,10 +211,6 @@ public class BuyRecordService {
 		settlementDao.create(settlement);
 		// 修改点买记录状态
 		return changeState(buyRecord);
-	}
-
-	public BuyRecord findById(Long id) {
-		return buyRecordDao.retrieve(id);
 	}
 
 }

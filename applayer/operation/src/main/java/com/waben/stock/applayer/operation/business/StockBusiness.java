@@ -28,4 +28,13 @@ public class StockBusiness {
         throw new ServiceException(response.getCode());
     }
 
+    public StockDto fetchWithExponentByCode(String code) {
+        Response<StockDto> response = stockService.fetchWithExponentByCode(code);
+        if ("200".equals(response.getCode())) {
+            //股票信息存在
+            return response.getResult();
+        }
+        throw new ServiceException(response.getCode());
+    }
+
 }

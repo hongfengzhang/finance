@@ -54,7 +54,7 @@ public class BuyRecordBusiness {
 	private StockService stockService;
 
 	public BuyRecordDto findById(Long id) {
-		Response<BuyRecordDto> response = buyRecordService.fetchById(id);
+		Response<BuyRecordDto> response = buyRecordService.fetchBuyRecord(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -201,7 +201,7 @@ public class BuyRecordBusiness {
 				} else {
 					throw new ServiceException(pResponse.getCode());
 				}
-				Response<StockDto> stockResponse = stockService.fetchByCode(inner.getStockCode());
+				Response<StockDto> stockResponse = stockService.fetchWithExponentByCode(inner.getStockCode());
 				if ("200".equals(stockResponse.getCode())) {
 					if (stockResponse.getResult() != null) {
 						inner.setStockName(stockResponse.getResult().getName());

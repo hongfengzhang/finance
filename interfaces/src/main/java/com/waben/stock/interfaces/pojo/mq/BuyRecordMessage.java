@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.pojo.mq;
 
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.util.Date;
  */
 public class BuyRecordMessage implements Serializable{
 
-    private Long id;
+    private Long buyRecordId;
     /**
      * 系列号
      */
@@ -79,9 +80,9 @@ public class BuyRecordMessage implements Serializable{
      */
     private String stockCode;
     /**
-     * 策略类型ID
+     * 策略类型
      */
-    private Long strategyTypeId;
+    private StrategyTypeDto strategyTypeDto;
 
 
 }

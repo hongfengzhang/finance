@@ -16,7 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,43 +30,34 @@ public class ManagerUserDetailService implements UserDetailsService {
 
     @Autowired
     private StaffService staffService;
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private MenuService menuService;
+//    @Autowired
+//    private RoleService roleService;
+//    @Autowired
+//    private MenuService menuService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Response<StaffDto> response = staffService.fetchByUserName(username);
         if (response.getCode().equals("200")) {
             StaffDto staffDto = response.getResult();
-            logger.info("用户信息获取成功:{}",staffDto.getUserName());
+            logger.info("用户信息获取成功:{}", staffDto.getUserName());
             //绑定角色权限
             List<RolePermissionAuthority> authority = new ArrayList<>();
-            Response<Set<RoleDto>> roleResponse = roleService.fetchAllByStaff(staffDto.getId());
-            Iterator<RoleDto> it = roleResponse.getResult().iterator();
-            while (it.hasNext()) {
-                RoleDto roleDto = it.next();
-                RolePermissionAuthority rolePermissionAuthority = new RolePermissionAuthority(roleDto.getCode());
-//                Set<String> permissions = new HashSet<>();
-//                for (PermissionDto permissionDto : roleDto.getPermissions()) {
-//                    permissions.add(permissionDto.getExpression());
-//                    logger.info("权限:{}",permissionDto.getExpression());
-//                }
-//                rolePermissionAuthority.setPermissions(permissions);
-//                menus.addAll(roleDto.getMenus());
-                authority.add(rolePermissionAuthority);
-            }
+            RoleDto roleDto = staffDto.getRoleDto();
+            RolePermissionAuthority rolePermissionAuthority = new RolePermissionAuthority(roleDto.getCode());
+            authority.add(rolePermissionAuthority);
+            AccountCredentials accountCredentials = new AccountCredentials(staffDto.getUserName(), staffDto
+                    .getPassword(), authority);
             //获取员工权限
 //            Response<List<MenuDto>> menusResponse = menuService.menusByStaff(staffDto.getId());
 //            if (menusResponse.getCode() != "200") {
 //                throw new ServiceException(menusResponse.getCode());
 //            }
 //            List<MenuDto> menus = menusResponse.getResult();
-            AccountCredentials accountCredentials = new AccountCredentials(staffDto.getUserName(), staffDto
-                    .getPassword(), authority);
 //            accountCredentials.setMenus(menus);
-            accountCredentials.setStaff(staffDto.getId());
+            accountCredentials.setRole(roleDto.getId());
+            accountCredentials.setOperator(true);
+            accountCredentials.setSecurity(staffDto);
             return accountCredentials;
         }
         throw new UsernameNotFoundException("当前用户找不到");

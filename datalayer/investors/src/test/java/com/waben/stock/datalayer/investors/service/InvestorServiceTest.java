@@ -30,4 +30,5 @@ public class InvestorServiceTest extends InvestorsApplicationTests {
         Investor result = investorService.save(investor);
         System.out.println(JacksonUtil.encode(result));
     }
+
 }
