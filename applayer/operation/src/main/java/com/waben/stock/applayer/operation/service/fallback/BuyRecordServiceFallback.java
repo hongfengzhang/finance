@@ -51,4 +51,9 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {
         return null;
     }
+
+    @Override
+    public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
+        return null;
+    }
 }

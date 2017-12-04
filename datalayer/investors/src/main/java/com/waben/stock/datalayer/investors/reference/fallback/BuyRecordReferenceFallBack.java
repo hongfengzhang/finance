@@ -51,4 +51,9 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {
         return null;
     }
+
+    @Override
+    public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
+        return null;
+    }
 }

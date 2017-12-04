@@ -1,4 +1,4 @@
-package com.waben.stock.risk.dynamics;
+package com.waben.stock.risk.init;
 
 import com.waben.stock.risk.schedule.WorkCalendar;
 import com.waben.stock.risk.schedule.job.StockQuotationJob;

@@ -32,7 +32,7 @@ public class MenuController implements MenuInterface {
     @Override
     public Response<List<MenuDto>> menusByRole(@PathVariable Long role) {
         List<Menu> menus = menuService.fetchMenusByRole(role);
-        List<MenuDto> result = menus(CopyBeanUtils.copyListBeanPropertiesToList(menus, MenuDto.class), 0l);
+        List<MenuDto> result = menus(CopyBeanUtils.copyListBeanPropertiesToList(menus, MenuDto.class), 0L);
         return new Response<>(result);
     }
 

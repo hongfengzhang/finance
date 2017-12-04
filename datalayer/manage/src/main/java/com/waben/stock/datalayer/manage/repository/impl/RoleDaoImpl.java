@@ -39,7 +39,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public Role retrieve(Long id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override

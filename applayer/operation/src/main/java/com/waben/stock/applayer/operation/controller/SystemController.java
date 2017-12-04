@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.MenuBusiness;
+import com.waben.stock.applayer.operation.warpper.SecurityAccount;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +34,7 @@ public class SystemController {
 
     @GetMapping("/index")
     public String index(Model model) {
+        model.addAttribute("userName", SecurityAccount.current().getUsername());
         model.addAttribute("menus",systemManageBusiness.menus());
         return "index";
     }

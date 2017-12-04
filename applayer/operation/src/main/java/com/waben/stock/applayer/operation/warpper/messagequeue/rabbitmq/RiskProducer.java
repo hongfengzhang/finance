@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @desc
  */
 @Component
-public class BuyRecordProducer extends RabbitMQProducer<BuyRecordMessage> {
+public class RiskProducer extends RabbitMQProducer<BuyRecordMessage> {
 
     public void risk(BuyRecordDto buyRecord) {
         BuyRecordMessage buyRecordMessage = CopyBeanUtils.copyBeanProperties(buyRecord, new BuyRecordMessage(),

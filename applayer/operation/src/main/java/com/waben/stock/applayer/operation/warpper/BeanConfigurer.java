@@ -12,6 +12,12 @@ import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -21,15 +27,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.security.access.vote.RoleVoter;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
@@ -85,14 +84,17 @@ public class BeanConfigurer {
 
     @Bean
     public InvestorAuthenticationProvider investorAuthenticationProvider() {
-        InvestorAuthenticationProvider investorAuthenticationProvider = new InvestorAuthenticationProvider(passwordEncoder());
+        InvestorAuthenticationProvider investorAuthenticationProvider = new InvestorAuthenticationProvider
+                (passwordEncoder());
         investorAuthenticationProvider.setUserDetailsService(investorDetailService);
         return investorAuthenticationProvider;
     }
-//
+
+    //
     @Bean
     public ManagerAuthenticationProvider managerAuthenticationProvider() {
-        ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider(passwordEncoder());
+        ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider
+                (passwordEncoder());
         managerAuthenticationProvider.setUserDetailsService(managerUserDetailService);
         return managerAuthenticationProvider;
     }
@@ -115,19 +117,17 @@ public class BeanConfigurer {
     public ExecptionHandler execptionHandler() {
         ExecptionHandler execptionHandler = new ExecptionHandler();
         execptionHandler.extendException(Arrays.asList(new ExceptionInformation(AuthMethodNotSupportedException.class,
-                HttpServletResponse.SC_FORBIDDEN,"403")));
+                HttpServletResponse.SC_FORBIDDEN, "403")));
         return execptionHandler;
     }
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public RabbitTemplate rabbitTemplate() {
-        logger.info("host:{},username:{}", connectionFactory.getHost(),connectionFactory.getUsername());
+        logger.info("host:{},username:{}", connectionFactory.getHost(), connectionFactory.getUsername());
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         return rabbitTemplate;
     }
-
-
 
 
     //创建上证 深证 创业板队列
@@ -141,32 +141,56 @@ public class BeanConfigurer {
         return new Queue("shenSecurity");
     }
 
-    @Bean(name="developSecurity")
+    @Bean(name = "developSecurity")
     public Queue developSecurity() {
         return new Queue("developSecurity");
     }
 
-    //创建点买交易交换机
-    @Bean
-    public TopicExchange exchange() {
+    /**
+     * 创建 委托队列
+     *
+     * @return
+     */
+    @Bean(name = "entrustQueue")
+    public Queue entrustQueue() {
+        return new Queue("entrust");
+    }
+
+
+    //创建点买交易风控交换机
+    @Bean("risk")
+    public TopicExchange riskExchange() {
+        return new TopicExchange("risk");
+    }
+
+    @Bean("buyRecord")
+    public TopicExchange buyRecordExchange() {
         return new TopicExchange("buyRecord");
     }
 
 
     @Bean
-    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue, TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("shang");
+    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,
+                                                @Qualifier("risk")TopicExchange riskExchange) {
+        return BindingBuilder.bind(queue).to(riskExchange).with("shang");
     }
 
     @Bean
-    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("shen");
+    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,
+                                               @Qualifier("risk") TopicExchange riskExchange) {
+        return BindingBuilder.bind(queue).to(riskExchange).with("shen");
     }
 
     @Bean
-    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,TopicExchange exchange) {
-        return BindingBuilder.bind(queue).to(exchange).with("develop");
+    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,
+                                                  @Qualifier("risk") TopicExchange riskExchange) {
+        return BindingBuilder.bind(queue).to(riskExchange).with("develop");
     }
 
 
+    @Bean
+    public Binding bindingExchangEntrust(@Qualifier("entrustQueue") Queue queue,
+                                         @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
+        return BindingBuilder.bind(queue).to(buyRecordExchange).with("securities");
+    }
 }

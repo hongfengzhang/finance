@@ -4,9 +4,11 @@ import com.waben.stock.applayer.operation.service.investor.InvestorService;
 import com.waben.stock.applayer.operation.service.manage.RoleService;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
 import com.waben.stock.applayer.operation.warpper.auth.RolePermissionAuthority;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,12 +48,14 @@ public class InvestorUserDetailService implements UserDetailsService {
             //绑定角色权限
             List<RolePermissionAuthority> authority = new ArrayList<>();
             Response<RoleDto> roleResponse = roleService.fetchByRoleId(investorDto.getRole());
-            Long role = 0l;
+            Long role;
             if (roleResponse.getCode().equals("200")) {
                 RoleDto roleDto = roleResponse.getResult();
                 RolePermissionAuthority rolePermissionAuthority = new RolePermissionAuthority(roleDto.getCode());
                 authority.add(rolePermissionAuthority);
                 role = roleDto.getId();
+            }else{
+                throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
             }
             AccountCredentials accountCredentials = new AccountCredentials(investorDto.getUserName(), investorDto
                     .getPassword(), authority);

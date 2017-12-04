@@ -33,8 +33,6 @@ public class BuyRecordBusiness {
         if ("200".equals(response.getCode())) {
             BuyRecordDto result = response.getResult();
             if (result.getState().equals(BuyRecordState.BUYLOCK)) {
-                //点买交易买入成功，将当前已委托买入的点买订单放入内存中轮询
-
                 return response.getResult();
             }
         }

@@ -2,7 +2,6 @@ package com.waben.stock.datalayer.investors.repository.rest;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.EntrustType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
@@ -28,22 +27,23 @@ public class StockJyRest implements SecuritiesInterface {
 
     Logger logger = LoggerFactory.getLogger(getClass());
     //券商资金账户登录
-    private String loginUrl = "http://106.15.37.226:8445/stockjy/login";
+    private String loginPath = "http://106.15.37.226:8445/stockjy/login";
     //券商资金账户股东账户查询
-    private String holderUrl = "http://106.15.37.226:8445/stockjy/holder";
+    private String holderPath = "http://106.15.37.226:8445/stockjy/holder";
     //券商鼓动账户下单
-    private String entrustUrl = "http://106.15.37.226:8445/stockjy/entrust";
+    private String entrustPath = "http://106.15.37.226:8445/stockjy/entrust";
     //券商委托单查询
-    private String queryEntrusUrl = "http://106.15.37.226:8445/stockjy/qryentrust";
+    private String queryEntrusPath = "http://106.15.37.226:8445/stockjy/qryentrust";
     //资金信息
-    private String moneyUrl = "http://106.15.37.226:8445/stockjy/money";
+    private String moneyPath = "http://106.15.37.226:8445/stockjy/money";
 
     public StockLoginInfo login(String account, String password) {
-        loginUrl += "?account_content={accountContent}&password={password}";
+        String loginUrl = loginPath+"?account_content={account_content}&password={password}";
         Map<String, String> params = new HashMap<>();
         params.put("account_content", account);
         params.put("password", password);
-        String result = HttpRest.get(moneyUrl, String.class, params);
+        String result = HttpRest.get(loginUrl, String.class, params);
+        logger.info("券商资金账户登录,请求地址:{},请求结果:{}", loginUrl, result);
         StockResponse<StockLoginInfo> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockLoginInfo>>() {
                 });
@@ -51,7 +51,7 @@ public class StockJyRest implements SecuritiesInterface {
     }
 
     public StockMoney money(String tradeSession) {
-        moneyUrl = moneyUrl + "?trade_session={trade_session}";
+        String moneyUrl = moneyPath + "?trade_session={trade_session}";
         Map<String, String> params = new HashMap<>();
         params.put("trade_session", tradeSession);
         String result = HttpRest.get(moneyUrl, String.class, params);
@@ -69,7 +69,7 @@ public class StockJyRest implements SecuritiesInterface {
      * @description 获取资金账户的股东账户列表
      */
     public List<StockHolder> retrieveStockHolder(String tradeSession) {
-        holderUrl = holderUrl + "?trade_session={trade_session}";
+        String holderUrl = holderPath + "?trade_session={trade_session}";
         Map<String, String> params = new HashMap<>();
         params.put("trade_session", tradeSession);
         String result = HttpRest.get(holderUrl, String.class, params);
@@ -90,10 +90,11 @@ public class StockJyRest implements SecuritiesInterface {
      * @return void
      * @description 点买交易记录下单
      */
-    public String buyRecordEntrust(SecuritiesStockEntrust securitiesStockEntrust, String tradeSession, String stockAccount, String type,
+    public String buyRecordEntrust(SecuritiesStockEntrust securitiesStockEntrust, String tradeSession, String
+            stockAccount, String type,
                                    EntrustType
                                            entrustType) {
-        entrustUrl = entrustUrl + "?trade_session={trade_session}&" +
+        String entrustUrl = entrustPath + "?trade_session={trade_session}&" +
                 "exchange_type={exchange_type}&" +
                 "stock_account={stock_account}&" +
                 "stock_code={stock_code}&" +
@@ -128,7 +129,7 @@ public class StockJyRest implements SecuritiesInterface {
      * @description 查询股票委托情况
      */
     public List<StockEntrustQueryResult> queryStockByEntrust(String tradeSession, String entrust) {
-        queryEntrusUrl = queryEntrusUrl + "?trade_session={trade_session}&" +
+        String queryEntrusUrl = queryEntrusPath + "?trade_session={trade_session}&" +
                 "entrust_no={entrust_no}&" +
                 "request_num=50";
         Map<String, String> params = new HashMap<>();
