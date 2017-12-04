@@ -26,6 +26,6 @@ public class StockServiceFallback implements StockService {
 
 	@Override
 	public Response<StockDto> fetchWithExponentByCode(String code) {
-		return new Response<>("205","股票" + code + "信息不存在");
+		return new Response<>("205", "股票" + code + "信息不存在");
 	}
 }

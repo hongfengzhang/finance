@@ -64,4 +64,8 @@ public class StockService {
 		return stockDao.retrieve(id);
 	}
 
+	public Stock findByCode(String code) {
+		return stockDao.retrieveByCode(code);
+	}
+
 }

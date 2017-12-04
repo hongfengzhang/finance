@@ -22,13 +22,12 @@ import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 public class BuyRecordServiceFallback implements BuyRecordInterface {
 
 	@Override
-	public Response<BuyRecordDto> addBuyRecord(BuyRecordDto bindCardDto) {
+	public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
-	/// @Override
-	public Response<BuyRecordDto> buyInto(Long investorId, Long id, String delegateNumber, BigDecimal buyingPrice,
-			Integer numberOfStrand) {
+	@Override
+	public Response<BuyRecordDto> addBuyRecord(BuyRecordDto bindCardDto) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
@@ -42,29 +41,25 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
-	// @Override
+	@Override
 	public Response<BuyRecordDto> buyLock(Long investorId, Long id) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
-	// @Override
-	public Response<BuyRecordDto> sellLock(Long investorId, Long id) {
+	@Override
+	public Response<BuyRecordDto> buyInto(Long investorId, Long id, String delegateNumber, BigDecimal buyingPrice,
+			Integer numberOfStrand) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
-	// @Override
-	public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
+	@Override
+	public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice,
 			BigDecimal profitDistributionRatio) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
-	}
-
-	@Override
-	public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

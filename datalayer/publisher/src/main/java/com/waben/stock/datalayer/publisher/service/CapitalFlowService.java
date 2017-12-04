@@ -1,0 +1,56 @@
+package com.waben.stock.datalayer.publisher.service;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+
+import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
+import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
+import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
+
+/**
+ * 资金流水 Service
+ * 
+ * @author luomengan
+ *
+ */
+@Service
+public class CapitalFlowService {
+
+	@Autowired
+	private CapitalFlowDao capitalFlowDao;
+
+	public Page<CapitalFlow> pagesByQuery(final CapitalFlowQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<CapitalFlow> pages = capitalFlowDao.page(new Specification<CapitalFlow>() {
+			@Override
+			public Predicate toPredicate(Root<CapitalFlow> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<>();
+				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
+					predicateList
+							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
+				}
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("occurrenceTime").as(Date.class)));
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+	}
+
+}

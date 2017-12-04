@@ -53,5 +53,10 @@ public class StockDaoImpl implements StockDao {
 		return repository.findAll();
 	}
 
+	@Override
+	public Stock retrieveByCode(String code) {
+		return repository.findByCode(code);
+	}
+
 
 }

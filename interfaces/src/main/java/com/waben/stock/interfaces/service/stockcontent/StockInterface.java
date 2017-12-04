@@ -16,7 +16,7 @@ import com.waben.stock.interfaces.pojo.query.StockQuery;
  * @description
  */
 public interface StockInterface {
-	
+
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Response<StockDto> fetchById(@PathVariable("id") Long id);
 
@@ -24,5 +24,6 @@ public interface StockInterface {
     Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery stockQuery);
 
     @RequestMapping(value = "/code/{code}",method = RequestMethod.GET)
-    Response<StockDto> fetchWithExponentByCode(String code);
+    Response<StockDto> fetchWithExponentByCode(@PathVariable String code);
+
 }

@@ -12,6 +12,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 /**
  * 结算
  * 
@@ -28,6 +30,7 @@ public class Settlement {
 	/**
 	 * 对应的点买记录
 	 */
+	@JsonManagedReference
 	@OneToOne
 	@JoinColumn(name = "buy_record_id")
 	private BuyRecord buyRecord;

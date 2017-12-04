@@ -27,4 +27,9 @@ public class StockServiceFallback implements StockInterface {
 		return new Response<>("205", "股票" + id + "信息不存在");
 	}
 
+	@Override
+	public Response<StockDto> fetchWithExponentByCode(String code) {
+		return new Response<>("205", "股票" + code + "信息不存在");
+	}
+
 }

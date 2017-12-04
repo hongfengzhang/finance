@@ -21,7 +21,7 @@
 	</properties>
 
 	<dependencies>
-
+		<!-- 测试用，后续删除 -->
 		<dependency>
 			<groupId>io.springfox</groupId>
 			<artifactId>springfox-swagger2</artifactId>

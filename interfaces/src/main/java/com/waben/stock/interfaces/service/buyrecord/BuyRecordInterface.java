@@ -1,13 +1,18 @@
 package com.waben.stock.interfaces.service.buyrecord;
 
+import java.math.BigDecimal;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import java.math.BigDecimal;
 
 public interface BuyRecordInterface {
 

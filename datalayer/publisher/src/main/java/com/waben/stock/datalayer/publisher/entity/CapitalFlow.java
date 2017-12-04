@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.publisher.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -9,8 +11,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.waben.stock.datalayer.publisher.entity.enumconverter.CapitalFlowTypeConverter;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 
@@ -56,6 +60,12 @@ public class CapitalFlow {
 	 */
 	@Column(name = "publisher_serial_code")
 	private String publisherSerialCode;
+	/**
+	 * 流水扩展列表
+	 */
+	@JsonManagedReference
+	@OneToMany(mappedBy = "flow")
+	private Set<CapitalFlowExtend> extendList = new HashSet<>();
 
 	public Long getId() {
 		return id;
@@ -111,6 +121,14 @@ public class CapitalFlow {
 
 	public void setPublisherSerialCode(String publisherSerialCode) {
 		this.publisherSerialCode = publisherSerialCode;
+	}
+
+	public Set<CapitalFlowExtend> getExtendList() {
+		return extendList;
+	}
+
+	public void setExtendList(Set<CapitalFlowExtend> extendList) {
+		this.extendList = extendList;
 	}
 
 }

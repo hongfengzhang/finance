@@ -89,5 +89,5 @@ public class BuyRecordController implements BuyRecordInterface {
         buyRecordService.remove(id);
         return new Response<>("successful");
     }
-
+    
 }

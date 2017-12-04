@@ -40,4 +40,9 @@ public class StockController implements StockInterface {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockDto.class, stockService.findById(id), false));
 	}
 
+	@Override
+	public Response<StockDto> fetchWithExponentByCode(@PathVariable String code) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockDto.class, stockService.findByCode(code), false));
+	}
+
 }
