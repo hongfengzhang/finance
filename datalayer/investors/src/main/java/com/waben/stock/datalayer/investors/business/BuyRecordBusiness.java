@@ -29,7 +29,8 @@ public class BuyRecordBusiness {
      */
     public BuyRecordDto entrust(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String entrust) {
 //        securitiesStockEntrust.setEntrustNumber(entrust);
-        Response<BuyRecordDto> response = buyRecordReference.buyLock(investor.getId(), securitiesStockEntrust.getBuyRecordId());
+        Response<BuyRecordDto> response = buyRecordReference.buyLock(investor.getId(), securitiesStockEntrust
+                .getBuyRecordId(), entrust);
         if ("200".equals(response.getCode())) {
             BuyRecordDto result = response.getResult();
             result.setDelegateNumber(entrust);
