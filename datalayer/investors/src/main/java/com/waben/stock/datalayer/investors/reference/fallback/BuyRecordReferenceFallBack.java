@@ -27,17 +27,6 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     }
 
     @Override
-    public Response<BuyRecordDto> buyLock(Long investorId, Long id) {
-        return null;
-    }
-
-    @Override
-    public Response<BuyRecordDto> buyInto(Long investorId, Long id, String delegateNumber, BigDecimal buyingPrice,
-                                          Integer numberOfStrand) {
-        return null;
-    }
-
-    @Override
     public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
         return null;
     }
@@ -58,4 +47,13 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
         return null;
     }
 
+    @Override
+    public Response<BuyRecordDto> buyLock(Long investorId, Long id, String delegateNumber) {
+        return null;
+    }
+
+    @Override
+    public Response<BuyRecordDto> buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
+        return null;
+    }
 }
