@@ -15,7 +15,6 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableFeignClients
 //断路器
 @EnableHystrix
-//@EnableWebMvc
 //扫描包
 @ComponentScan(basePackages = { "com.waben.stock" })
 public class OperationApplication {

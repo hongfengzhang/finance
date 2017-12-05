@@ -124,7 +124,7 @@ public class BeanConfigurer {
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public RabbitTemplate rabbitTemplate() {
-        logger.info("host:{},username:{}", connectionFactory.getHost(), connectionFactory.getUsername());
+        logger.info("host,username:{}{}", connectionFactory.getHost(), connectionFactory.getUsername());
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         return rabbitTemplate;
     }
@@ -153,7 +153,7 @@ public class BeanConfigurer {
      */
     @Bean(name = "entrustQueue")
     public Queue entrustQueue() {
-        return new Queue("entrust");
+        return new Queue("entrustQueue");
     }
 
 

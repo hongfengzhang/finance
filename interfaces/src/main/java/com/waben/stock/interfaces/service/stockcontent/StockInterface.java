@@ -24,6 +24,6 @@ public interface StockInterface {
     Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery stockQuery);
 
     @RequestMapping(value = "/code/{code}",method = RequestMethod.GET)
-    Response<StockDto> fetchWithExponentByCode(@PathVariable String code);
+    Response<StockDto> fetchWithExponentByCode(@PathVariable("code") String code);
 
 }

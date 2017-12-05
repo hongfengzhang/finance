@@ -6,7 +6,7 @@ import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,6 +29,6 @@ public class InvestorServiceFallback implements InvestorService {
     @Override
     public Response<BuyRecordDto> stockBuyIn(Long investor, SecuritiesStockEntrust securitiesStockEntrust, String
             tradeSession) {
-        return null;
+        return new Response<>("205","买入失败");
     }
 }

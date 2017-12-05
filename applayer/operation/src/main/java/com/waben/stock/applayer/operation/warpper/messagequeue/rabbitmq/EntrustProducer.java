@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.warpper.messagequeue.rabbitmq;
 
 import com.waben.stock.applayer.operation.warpper.messagequeue.RabbitMQProducer;
-import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -11,7 +13,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class EntrustProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     public void entrust(SecuritiesStockEntrust securitiesStockEntrust) {
-        super.topic("entrust", "securities", securitiesStockEntrust);
+        logger.info("开始发送委托订单数据:{}",securitiesStockEntrust.getTradeNo());
+        super.topic("buyRecord", "securities", securitiesStockEntrust);
     }
 }

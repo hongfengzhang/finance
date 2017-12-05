@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.investor.InvestorService;
+import com.waben.stock.applayer.operation.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -9,7 +10,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ public class InvestorBusiness {
     private InvestorService investorService;
     @Autowired
     private StockBusiness stockBusiness;
+    @Autowired
+    private EntrustProducer entrustProducer;
 
     public PageInfo<InvestorDto> investors(InvestorQuery investorQuery) {
         Response<PageInfo<InvestorDto>> response = investorService.pagesByQuery(investorQuery);
@@ -38,7 +41,7 @@ public class InvestorBusiness {
     * @method buyRecordBuyIn
      * @param investorDto
      * @param buyRecordDto
-    * @return com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust
+    * @return com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust
     * @description 根据投资人及点买信息初始化券商股票委托信息并委托买入
     */
     public SecuritiesStockEntrust buyRecordBuyIn(InvestorDto investorDto, BuyRecordDto buyRecordDto) {
@@ -53,11 +56,14 @@ public class InvestorBusiness {
         securitiesStockEntrust.setBuyingPrice(buyRecordDto.getBuyingPrice());
         securitiesStockEntrust.setBuyRecordState(buyRecordDto.getState());
         Response<BuyRecordDto> response = investorService.stockBuyIn(investorDto.getId(), securitiesStockEntrust,
-                investorDto
-                .getSecuritiesSession());
+                investorDto.getSecuritiesSession());
         if ("200".equals(response.getCode())) {
+            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
+            securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
             securitiesStockEntrust.setEntrustNumber(response.getResult().getDelegateNumber());
+            securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             // TODO 券商股票委托订单放入集合中轮询
+            entrustProducer.entrust(securitiesStockEntrust);
             return securitiesStockEntrust;
         }
         throw new ServiceException(response.getCode());

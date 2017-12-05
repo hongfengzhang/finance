@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Primary;
  * @desc
  */
 @FeignClient(name = "manage/manage", path = "role", fallback = RoleServiceFallback.class)
-@Primary
 public interface RoleService extends RoleInterface {
 
 

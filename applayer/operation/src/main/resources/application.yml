@@ -9,3 +9,15 @@ spring:
     throw-exception-if-no-handler-found: true
   thymeleaf:
     cache: false
+  rabbitmq:
+    port: 5672
+    host: 10.0.0.38
+    username: yuyidi
+    password: yuyidi
+feign:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000

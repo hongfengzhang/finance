@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class InvestorUserDetailService implements UserDetailsService {
             //绑定角色权限
             List<RolePermissionAuthority> authority = new ArrayList<>();
             Response<RoleDto> roleResponse = roleService.fetchByRoleId(investorDto.getRole());
+            logger.info("获取角色信息:{}", JacksonUtil.encode(roleResponse));
             Long role;
             if (roleResponse.getCode().equals("200")) {
                 RoleDto roleDto = roleResponse.getResult();

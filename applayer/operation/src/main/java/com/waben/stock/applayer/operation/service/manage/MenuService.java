@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Primary;
  * @desc
  */
 @FeignClient(name = "manage/manage", path = "menu",fallback = MenuServiceFallback.class)
-@Primary
 public interface MenuService extends MenuInterface {
 
 

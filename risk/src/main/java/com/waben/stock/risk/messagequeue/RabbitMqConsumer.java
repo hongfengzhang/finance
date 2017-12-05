@@ -1,6 +1,6 @@
 package com.waben.stock.risk.messagequeue;
 
-import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.risk.container.SecuritiesStockEntrustContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +35,9 @@ public class RabbitMqConsumer {
         logger.info("创业板点买交易记录接收到消息:{}", message);
     }
 
-    @RabbitListener(queues = {"entrust"})
+    @RabbitListener(queues = {"entrustQueue"})
     public void entrust(SecuritiesStockEntrust securitiesStockEntrust) {
+        logger.info("消费券商股票委托消息:{}",securitiesStockEntrust.getTradeNo());
         securitiesStockEntrustContainer.add(securitiesStockEntrust);
     }
 }

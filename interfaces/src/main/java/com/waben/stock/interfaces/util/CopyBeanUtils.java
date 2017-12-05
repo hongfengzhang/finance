@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.util;
 
 import net.sf.cglib.beans.BeanCopier;
+import net.sf.cglib.core.Converter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.DigestUtils;
@@ -42,6 +43,26 @@ public class CopyBeanUtils {
             copier = createBeanCopier(sourceObj.getClass(), target, useConverter, key);
         }
         copier.copy(sourceObj, t, null);
+        return t;
+    }
+
+    public static <T> T copyBeanProperties(Class<T> target,
+                                           Object sourceObj, Converter converter) {
+        if (sourceObj == null)
+            return null;
+        T t;
+        try {
+            t = target.newInstance();
+        } catch (Exception e) {
+            logger.error("", e);
+            return null;
+        }
+        String key = sourceObj.getClass().getName() + target.getName();
+        BeanCopier copier = cache.get(key);
+        if (copier == null) {
+            copier = createBeanCopier(sourceObj.getClass(), target, true, key);
+        }
+        copier.copy(sourceObj, t,converter);
         return t;
     }
 

@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Primary;
  * @desc
  */
 @FeignClient(name = "investors/investors", path = "investor",fallback = InvestorServiceFallback.class)
-@Primary
 public interface InvestorService extends InvestorInterface {
 
 }

@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.pojo.stock.stockjy;
+package com.waben.stock.interfaces.pojo.stock;
 
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
@@ -61,6 +61,8 @@ public class SecuritiesStockEntrust implements Serializable{
      * 委托时间
      */
     private String entrustTime;
+
+    private String tradeSession;
 
 
     public Long getBuyRecordId() {
@@ -181,5 +183,13 @@ public class SecuritiesStockEntrust implements Serializable{
 
     public void setEntrustTime(String entrustTime) {
         this.entrustTime = entrustTime;
+    }
+
+    public String getTradeSession() {
+        return tradeSession;
+    }
+
+    public void setTradeSession(String tradeSession) {
+        this.tradeSession = tradeSession;
     }
 }

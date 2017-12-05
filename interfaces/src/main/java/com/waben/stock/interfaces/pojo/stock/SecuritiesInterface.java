@@ -1,4 +1,4 @@
-package com.waben.stock.datalayer.investors.repository.rest;
+package com.waben.stock.interfaces.pojo.stock;
 
 /**
  * @author Created by yuyidi on 2017/11/30.
