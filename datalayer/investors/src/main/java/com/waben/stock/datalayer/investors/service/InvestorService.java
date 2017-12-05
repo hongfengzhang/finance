@@ -59,6 +59,7 @@ public class InvestorService {
         //获取券商接口
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         SecurityAccount securityAccount = result.getSecurityAccount();
+        logger.info("券商资金账户:{},密码:{}",securityAccount.getAccount(),securityAccount.getPassword());
         //根据系统保存的券商账户用户信息登录实时券商账户
         StockLoginInfo stockLoginInfo = stockJyRest.login(securityAccount.getAccount(), securityAccount.getPassword());
         logger.info("登录成功，获取交易session:{}", stockLoginInfo.getTradeSession());
@@ -77,7 +78,7 @@ public class InvestorService {
     /***
      * @author yuyidi 2017-12-01 14:48:21
      * @method buyRecordEntrust
-     * @param buyRecordDto
+     * @param securitiesStockEntrust
      * @return java.lang.String
      * @description 点买交易记录执行券商股票委托
      */
@@ -118,7 +119,6 @@ public class InvestorService {
         //开始委托下单
         String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
                 .BUY);
-        //更新点买订单状态
         return enturstNo;
     }
 

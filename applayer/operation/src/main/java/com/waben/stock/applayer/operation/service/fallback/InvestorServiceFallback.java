@@ -1,10 +1,12 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.investor.InvestorService;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
 import org.springframework.stereotype.Component;
 
 /**
@@ -22,5 +24,11 @@ public class InvestorServiceFallback implements InvestorService {
     @Override
     public Response<InvestorDto> fetchByUserName(String userName) {
         return new Response<>("205", "投资人" + userName + "信息不存在");
+    }
+
+    @Override
+    public Response<BuyRecordDto> stockBuyIn(Long investor, SecuritiesStockEntrust securitiesStockEntrust, String
+            tradeSession) {
+        return null;
     }
 }

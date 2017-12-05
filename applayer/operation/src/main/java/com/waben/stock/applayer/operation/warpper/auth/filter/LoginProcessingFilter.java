@@ -2,7 +2,6 @@ package com.waben.stock.applayer.operation.warpper.auth.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waben.stock.applayer.operation.exception.AuthMethodNotSupportedException;
-import com.waben.stock.applayer.operation.util.WebUtil;
 import com.waben.stock.applayer.operation.warpper.auth.LoginRequest;
 import com.waben.stock.applayer.operation.warpper.auth.UPTypeAuthenticationToken;
 import org.apache.commons.lang3.StringUtils;
@@ -13,7 +12,6 @@ import org.springframework.security.authentication.AuthenticationServiceExceptio
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -30,14 +28,14 @@ import java.io.IOException;
  * @desc
  */
 public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
-    private Logger logger = LoggerFactory.getLogger(getClass());
     private final AuthenticationSuccessHandler successHandler;
     private final AuthenticationFailureHandler failureHandler;
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private ObjectMapper objectMapper;
 
     public LoginProcessingFilter(String defaultFilterProcessesUrl, AuthenticationSuccessHandler successHandler,
                                  AuthenticationFailureHandler failureHandler, ObjectMapper objectMapper) {
-        super(new AntPathRequestMatcher(defaultFilterProcessesUrl,"POST"));
+        super(new AntPathRequestMatcher(defaultFilterProcessesUrl, "POST"));
         this.successHandler = successHandler;
         this.failureHandler = failureHandler;
         this.objectMapper = objectMapper;
@@ -55,14 +53,16 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
             throw new AuthMethodNotSupportedException("Authentication method not supported");
         }
         Boolean isOperater = Boolean.valueOf(request.getParameter("operater"));
-        LoginRequest loginRequest = new LoginRequest(request.getParameter("username"), request.getParameter("password"));
+        logger.info("是否管理员登录:{}", isOperater);
+        LoginRequest loginRequest = new LoginRequest(request.getParameter("username"), request.getParameter
+                ("password"));
         loginRequest.setOperator(isOperater);
 //        LoginRequest loginRequest = objectMapper.readValue(request.getReader(), LoginRequest.class);
         if (StringUtils.isBlank(loginRequest.getUsername()) || StringUtils.isBlank(loginRequest.getPassword())) {
             throw new AuthenticationServiceException("用户名或密码未输入");
         }
         UsernamePasswordAuthenticationToken token = new UPTypeAuthenticationToken(loginRequest.getUsername
-                (), loginRequest.getPassword(),loginRequest.getOperator());
+                (), loginRequest.getPassword(), loginRequest.getOperator());
         return this.getAuthenticationManager().authenticate(token);
     }
 
@@ -70,7 +70,7 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain
             chain, Authentication authResult) throws IOException, ServletException {
         logger.info("认证成功");
-        super.successfulAuthentication(request,response,chain,authResult);
+        super.successfulAuthentication(request, response, chain, authResult);
 //        SecurityContextHolder.getContext().setAuthentication(authResult);
 //        successHandler.onAuthenticationSuccess(request, response, authResult);
     }
@@ -80,6 +80,6 @@ public class LoginProcessingFilter extends AbstractAuthenticationProcessingFilte
                                               AuthenticationException failed) throws IOException, ServletException {
 //        SecurityContextHolder.clearContext();
 //        failureHandler.onAuthenticationFailure(request, response, failed);
-        super.unsuccessfulAuthentication(request,response,failed);
+        super.unsuccessfulAuthentication(request, response, failed);
     }
 }

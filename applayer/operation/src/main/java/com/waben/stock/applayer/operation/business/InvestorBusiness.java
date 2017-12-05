@@ -57,6 +57,7 @@ public class InvestorBusiness {
                 .getSecuritiesSession());
         if ("200".equals(response.getCode())) {
             securitiesStockEntrust.setEntrustNumber(response.getResult().getDelegateNumber());
+            // TODO 券商股票委托订单放入集合中轮询
             return securitiesStockEntrust;
         }
         throw new ServiceException(response.getCode());

@@ -52,32 +52,26 @@
                                         <input type="password" name="password" placeholder="请输入您的密码" class="form-control"/>
                                     </div>
 
-                                    <div class="form-group col-sm-12">
+                                    <div class="form-group col-sm-12" id="operater">
                                         <div class="col-md-2">
+                                            <input id="hidenOperater" type="hidden" name="operater" value="true"/>
                                         </div>
-                                        <div class="col-md-4 form-group">
+                                        <div class="col-md-4">
                                             <label class="radio checked">
                                                 <span class="icons">
                                                     <span class="first-icon fa fa-circle-o"></span>
                                                     <span class="second-icon fa fa-dot-circle-o"></span>
                                                 </span>
-                                                <input type="radio" data-toggle="radio" name="operater" value="true"/>管理员
+                                                <input type="radio" data-toggle="radio" name="isOperater" value="true"/>管理员
                                             </label>
                                         </div>
                                         <div class="col-md-4">
                                             <label class="radio">
-<<<<<<< HEAD
-                                                <span class="icons"><span class="first-icon fa fa-circle-o"></span>
-                                                    <span class="second-icon fa fa-dot-circle-o"></span></span>
-                                                <input type="radio" data-toggle="radio" name="isOperater"
-                                                       value="false"/>投资人
-=======
                                                 <span class="icons">
                                                     <span class="first-icon fa fa-circle-o"></span>
                                                     <span class="second-icon fa fa-dot-circle-o"></span>
                                                 </span>
-                                                <input type="radio" data-toggle="radio" name="operater" value="false"/>投资人
->>>>>>> ac9dffeea4ae17f181d4b5ef1f76d0796d819581
+                                                <input type="radio" data-toggle="radio" name="isOperater" value="false"/>投资人
                                             </label>
                                         </div>
                                     </div>
@@ -195,6 +189,12 @@
 
 <script type="text/javascript">
     $().ready(function () {
+
+        $("#operater label").click(function(){
+            $("#hidenOperater").val($(this).children("input").val());
+        });
+
+
         lbd.checkFullPageBackgroundImage();
 
         setTimeout(function () {

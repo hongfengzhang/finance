@@ -27,7 +27,7 @@ public class RoleController implements RoleInterface {
     private RoleService roleService;
 
     @Override
-    public Response<RoleDto> fetchByRoleId(Long id) {
+    public Response<RoleDto> fetchByRoleId(@PathVariable Long id) {
         Role role = roleService.findById(id);
         RoleDto result = CopyBeanUtils.copyBeanProperties(role, new RoleDto(), false);
         return new Response<>(result);
