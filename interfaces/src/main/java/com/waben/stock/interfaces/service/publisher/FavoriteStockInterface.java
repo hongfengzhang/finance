@@ -16,16 +16,16 @@ public interface FavoriteStockInterface {
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<FavoriteStockDto> add(@RequestBody FavoriteStockDto favoriteStockDto);
 
-	@RequestMapping(value = "/{publisherId}/{stockIds}", method = RequestMethod.DELETE)
-	Response<String> drop(@PathVariable("publisherId") Long publisherId, @PathVariable("stockIds") String stockIds);
+	@RequestMapping(value = "/{publisherId}/{stockCodes}", method = RequestMethod.DELETE)
+	Response<String> drop(@PathVariable("publisherId") Long publisherId, @PathVariable("stockCodes") String stockCodes);
 
-	@RequestMapping(value = "/{publisherId}/top/{stockIds}", method = RequestMethod.PUT)
-	Response<String> top(@PathVariable("publisherId") Long publisherId, @PathVariable("stockIds") String stockIds);
+	@RequestMapping(value = "/{publisherId}/top/{stockCodes}", method = RequestMethod.PUT)
+	Response<String> top(@PathVariable("publisherId") Long publisherId, @PathVariable("stockCodes") String stockCodes);
 
 	@RequestMapping(value = "/{publisherId}/lists", method = RequestMethod.GET)
 	Response<List<FavoriteStockDto>> listsByPublisherId(@PathVariable("publisherId") Long publisherId);
 
-	@RequestMapping(value = "/{publisherId}/listsStockId", method = RequestMethod.GET)
-	Response<List<Long>> listsStockId(@PathVariable("publisherId") Long publisherId);
+	@RequestMapping(value = "/{publisherId}/listsStockCode", method = RequestMethod.GET)
+	Response<List<String>> listsStockCode(@PathVariable("publisherId") Long publisherId);
 
 }

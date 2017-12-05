@@ -15,18 +15,18 @@ import com.waben.stock.datalayer.publisher.entity.FavoriteStock;
  */
 public interface FavoriteStockRepository extends CustomJpaRepository<FavoriteStock, Long> {
 
-	FavoriteStock findByPublisherIdAndStockId(Long publisherId, Long stockId);
+	FavoriteStock findByPublisherIdAndCode(Long publisherId, String stockCode);
 
 	@Query("select max(sort) from FavoriteStock where publisherId=?1")
 	Integer retriveMaxSort(Long publisherId);
 
 	List<FavoriteStock> findByPublisherId(Long publisherId, Sort sort);
 
-	@Query("select stockId from FavoriteStock where publisherId=?1")
-	List<Long> findStockIdByPublisherId(Long publisherId);
+	@Query("select code from FavoriteStock where publisherId=?1")
+	List<String> findCodeByPublisherId(Long publisherId);
 
-	List<FavoriteStock> findByPublisherIdAndStockIdNotIn(Long publisherId, Long[] stockIds);
+	List<FavoriteStock> findByPublisherIdAndCodeNotIn(Long publisherId, String[] stockCodes);
 
-	void deleteByPublisherIdAndStockId(Long publisherId, Long stockId);
+	void deleteByPublisherIdAndCode(Long publisherId, String code);
 
 }

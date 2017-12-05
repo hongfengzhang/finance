@@ -26,7 +26,7 @@ public class FavoriteStockService {
 	private FavoriteStockDao favoriteStockDao;
 
 	public FavoriteStock save(Long publisherId, Long stockId, String stockName, String stockCode) {
-		FavoriteStock favorite = favoriteStockDao.retrive(publisherId, stockId);
+		FavoriteStock favorite = favoriteStockDao.retrive(publisherId, stockCode);
 		if (favorite != null) {
 			throw new ServiceException(ExceptionConstant.STOCK_ALREADY_FAVORITE_EXCEPTION);
 		}
@@ -43,20 +43,20 @@ public class FavoriteStockService {
 	}
 
 	@Transactional
-	public void remove(Long publisherId, Long[] stockIds) {
-		favoriteStockDao.delete(publisherId, stockIds);
+	public void remove(Long publisherId, String[] stockCodeArr) {
+		favoriteStockDao.delete(publisherId, stockCodeArr);
 	}
 
 	public List<FavoriteStock> list(Long publisherId) {
 		return favoriteStockDao.list(publisherId);
 	}
 
-	public void top(Long publisherId, Long[] stockIds) {
-		if (stockIds != null && stockIds.length > 0) {
-			List<FavoriteStock> others = favoriteStockDao.listByStockIdNotIn(publisherId, stockIds);
+	public void top(Long publisherId, String[] stockCodeArr) {
+		if (stockCodeArr != null && stockCodeArr.length > 0) {
+			List<FavoriteStock> others = favoriteStockDao.listByCodeNotIn(publisherId, stockCodeArr);
 			int topSize = 0;
-			for (Long stockId : stockIds) {
-				FavoriteStock favoriteStock = favoriteStockDao.retrive(publisherId, stockId);
+			for (String stockCode : stockCodeArr) {
+				FavoriteStock favoriteStock = favoriteStockDao.retrive(publisherId, stockCode);
 				if (favoriteStock != null) {
 					favoriteStock.setSort(topSize + 1);
 					favoriteStockDao.update(favoriteStock);
@@ -74,8 +74,8 @@ public class FavoriteStockService {
 		}
 	}
 
-	public List<Long> listStockIdByPublisherId(Long publisherId) {
-		return favoriteStockDao.listStockId(publisherId);
+	public List<String> listStockCodeByPublisherId(Long publisherId) {
+		return favoriteStockDao.listStockCode(publisherId);
 	}
 
 }

@@ -8,17 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.waben.stock.applayer.tactics.dto.stockcontent.StockMarketWithFavoriteDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockKLine;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
+import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.applayer.tactics.service.FavoriteStockService;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
 import com.waben.stock.applayer.tactics.service.StockService;
+import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
  * 股票 Business
@@ -37,6 +42,9 @@ public class StockBusiness {
 
 	@Autowired
 	private StockMarketService stockMarketService;
+
+	@Autowired
+	private FavoriteStockService favoriteStockService;
 
 	public PageInfo<StockDto> pages(StockQuery stockQuery) {
 		Response<PageInfo<StockDto>> response = stockService.pagesByQuery(stockQuery);
@@ -157,6 +165,29 @@ public class StockBusiness {
 
 	public List<StockKLine> listKLine(String stockCode, Integer type, String startTime, String endTime) {
 		return RetriveStockOverHttp.listKLine(restTemplate, stockCode, type, startTime, endTime);
+	}
+
+	public StockMarketWithFavoriteDto marketByCode(String code) {
+		if (code != null && !"".equals(code)) {
+			List<String> codes = new ArrayList<>();
+			codes.add(code);
+			StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+			StockMarketWithFavoriteDto result = CopyBeanUtils.copyBeanProperties(StockMarketWithFavoriteDto.class,
+					market, false);
+			Long publisherId = SecurityUtil.getUserId();
+			if (publisherId != null) {
+				Response<List<FavoriteStockDto>> response = favoriteStockService.listsByPublisherId(publisherId);
+				if (response.getCode().equals("200")) {
+					for (FavoriteStockDto favorite : response.getResult()) {
+						if (favorite.getCode().equals(code)) {
+							result.setFavorite(true);
+						}
+					}
+				}
+			}
+			return result;
+		}
+		return null;
 	}
 
 }

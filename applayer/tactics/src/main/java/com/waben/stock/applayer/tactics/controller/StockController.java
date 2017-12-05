@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.FavoriteStockBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
+import com.waben.stock.applayer.tactics.dto.stockcontent.StockMarketWithFavoriteDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockWithFavoriteDto;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockKLine;
@@ -52,10 +54,10 @@ public class StockController {
 		if (content != null && content.size() > 0) {
 			Long publisherId = SecurityUtil.getUserId();
 			if (publisherId != null) {
-				List<Long> stockIds = favoriteStockBusiness.listsStockId(publisherId);
-				if (stockIds != null && stockIds.size() > 0) {
+				List<String> stockCodes = favoriteStockBusiness.listsStockCode(publisherId);
+				if (stockCodes != null && stockCodes.size() > 0) {
 					for (StockWithFavoriteDto stockDto : content) {
-						if (stockIds.contains(stockDto.getId())) {
+						if (stockCodes.contains(stockDto.getCode())) {
 							stockDto.setFavorite(true);
 						}
 					}
@@ -69,6 +71,12 @@ public class StockController {
 	@ApiOperation(value = "获取股票推荐列表")
 	public Response<PageInfo<StockRecommendWithMarketDto>> stockRecommend(int page, int size) {
 		return new Response<>(stockBusiness.stockRecommend(page, size));
+	}
+
+	@GetMapping("/market/{code}")
+	@ApiOperation(value = "获取某支股票的最新行情")
+	public Response<StockMarketWithFavoriteDto> marketByCode(@PathVariable("code") String code) {
+		return new Response<>(stockBusiness.marketByCode(code));
 	}
 
 	@GetMapping("/kLine")

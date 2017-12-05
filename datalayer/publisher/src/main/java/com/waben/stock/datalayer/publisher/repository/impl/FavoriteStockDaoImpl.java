@@ -63,8 +63,8 @@ public class FavoriteStockDaoImpl implements FavoriteStockDao {
 	}
 
 	@Override
-	public FavoriteStock retrive(Long publisherId, Long stockId) {
-		return repository.findByPublisherIdAndStockId(publisherId, stockId);
+	public FavoriteStock retrive(Long publisherId, String stockCode) {
+		return repository.findByPublisherIdAndCode(publisherId, stockCode);
 	}
 
 	@Override
@@ -79,22 +79,22 @@ public class FavoriteStockDaoImpl implements FavoriteStockDao {
 	}
 
 	@Override
-	public List<FavoriteStock> listByStockIdNotIn(Long publisherId, Long[] stockIds) {
-		return repository.findByPublisherIdAndStockIdNotIn(publisherId, stockIds);
+	public List<FavoriteStock> listByCodeNotIn(Long publisherId, String[] stockCodes) {
+		return repository.findByPublisherIdAndCodeNotIn(publisherId, stockCodes);
 	}
 
 	@Override
-	public void delete(Long publisherId, Long[] stockIds) {
-		if (stockIds != null && stockIds.length > 0) {
-			for (Long stockId : stockIds) {
-				repository.deleteByPublisherIdAndStockId(publisherId, stockId);
+	public void delete(Long publisherId, String[] stockCodes) {
+		if (stockCodes != null && stockCodes.length > 0) {
+			for (String stockCode : stockCodes) {
+				repository.deleteByPublisherIdAndCode(publisherId, stockCode);
 			}
 		}
 	}
 
 	@Override
-	public List<Long> listStockId(Long publisherId) {
-		return repository.findStockIdByPublisherId(publisherId);
+	public List<String> listStockCode(Long publisherId) {
+		return repository.findCodeByPublisherId(publisherId);
 	}
 
 }

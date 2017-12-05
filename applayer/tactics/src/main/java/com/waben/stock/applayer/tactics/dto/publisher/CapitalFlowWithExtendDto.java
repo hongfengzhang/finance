@@ -36,6 +36,14 @@ public class CapitalFlowWithExtendDto {
 	 * 股票名称
 	 */
 	private String stockName;
+	/**
+	 * 策略类型ID
+	 */
+	private Long strategyTypeId;
+	/**
+	 * 策略类型名称
+	 */
+	private String strategyTypeName;
 
 	public Long getId() {
 		return id;
@@ -103,6 +111,22 @@ public class CapitalFlowWithExtendDto {
 
 	public void setStockName(String stockName) {
 		this.stockName = stockName;
+	}
+
+	public Long getStrategyTypeId() {
+		return strategyTypeId;
+	}
+
+	public void setStrategyTypeId(Long strategyTypeId) {
+		this.strategyTypeId = strategyTypeId;
+	}
+
+	public String getStrategyTypeName() {
+		return strategyTypeName;
+	}
+
+	public void setStrategyTypeName(String strategyTypeName) {
+		this.strategyTypeName = strategyTypeName;
 	}
 
 }

@@ -30,7 +30,7 @@ public class CapitalAccountService {
 
 	@Autowired
 	private CapitalFlowDao flowDao;
-	
+
 	@Autowired
 	private CapitalFlowExtendDao flowExtendDao;
 
@@ -151,7 +151,7 @@ public class CapitalAccountService {
 		BigDecimal frozenAmount = frozen.getAmount();
 		if (profitOrLoss.compareTo(new BigDecimal(0)) >= 0) {
 			// 退回全部冻结资金
-			increaseAmount(account, frozenAmount, date);
+			thawAmount(account, frozenAmount, frozenAmount, date);
 			CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
 					CapitalFlowType.ReturnReserveFund, frozenAmount.abs(), date);
 			CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
@@ -176,7 +176,7 @@ public class CapitalAccountService {
 			BigDecimal returnFrozenAmount = frozenAmount.subtract(lossAmountAbs);
 			if (returnFrozenAmount.compareTo(new BigDecimal(0)) > 0) {
 				// 退回部分保证金
-				increaseAmount(account, returnFrozenAmount, date);
+				thawAmount(account, returnFrozenAmount, frozenAmount, date);
 				CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
 						CapitalFlowType.ReturnReserveFund, returnFrozenAmount.abs(), date);
 				CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
@@ -197,6 +197,24 @@ public class CapitalAccountService {
 		account.setFrozenCapital(account.getFrozenCapital().subtract(frozen.getAmount()));
 		capitalAccountDao.update(account);
 		return findByPublisherId(publisherId);
+	}
+
+	/**
+	 * 解冻金额
+	 * 
+	 * @param account
+	 *            资金账户
+	 * @param amount
+	 *            退回金额
+	 * @param frozenCapital
+	 *            原先冻结资金
+	 * 
+	 */
+	private void thawAmount(CapitalAccount account, BigDecimal amount, BigDecimal frozenAmount, Date date) {
+		account.setBalance(account.getBalance().subtract(frozenAmount.subtract(amount)));
+		account.setAvailableBalance(account.getAvailableBalance().add(amount));
+		account.setUpdateTime(date);
+		capitalAccountDao.update(account);
 	}
 
 	/**

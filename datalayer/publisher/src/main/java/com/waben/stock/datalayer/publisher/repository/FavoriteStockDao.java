@@ -12,16 +12,16 @@ import com.waben.stock.datalayer.publisher.entity.FavoriteStock;
  */
 public interface FavoriteStockDao extends BaseDao<FavoriteStock, Long> {
 
-	FavoriteStock retrive(Long publisherId, Long stockId);
+	FavoriteStock retrive(Long publisherId, String stockCode);
 
 	Integer retriveMaxSort(Long publisherId);
 
 	List<FavoriteStock> list(Long publisherId);
 
-	List<FavoriteStock> listByStockIdNotIn(Long publisherId, Long[] stockIds);
+	List<FavoriteStock> listByCodeNotIn(Long publisherId, String[] stockCodes);
 
-	void delete(Long publisherId, Long[] stockIds);
+	void delete(Long publisherId, String[] stockCodeArr);
 
-	List<Long> listStockId(Long publisherId);
+	List<String> listStockCode(Long publisherId);
 
 }

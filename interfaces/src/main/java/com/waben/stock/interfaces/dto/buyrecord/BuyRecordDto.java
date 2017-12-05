@@ -73,6 +73,10 @@ public class BuyRecordDto {
 	 */
 	private Integer numberOfStrand;
 	/**
+	 * 委托价格
+	 */
+	private BigDecimal delegatePrice;
+	/**
 	 * 委托编号，证券账号购买股票后的交易编号
 	 */
 	private String delegateNumber;
@@ -346,4 +350,13 @@ public class BuyRecordDto {
 	public void setStockDto(StockDto stockDto) {
 		this.stockDto = stockDto;
 	}
+
+	public BigDecimal getDelegatePrice() {
+		return delegatePrice;
+	}
+
+	public void setDelegatePrice(BigDecimal delegatePrice) {
+		this.delegatePrice = delegatePrice;
+	}
+
 }
