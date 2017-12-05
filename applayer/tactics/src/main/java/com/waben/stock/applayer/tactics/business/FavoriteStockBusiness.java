@@ -30,8 +30,8 @@ public class FavoriteStockBusiness {
 	@Autowired
 	private StockMarketService stockMarketService;
 
-	public List<Long> listsStockId(Long publisherId) {
-		Response<List<Long>> response = favoriteStockService.listsStockId(publisherId);
+	public List<String> listsStockCode(Long publisherId) {
+		Response<List<String>> response = favoriteStockService.listsStockCode(publisherId);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
@@ -46,16 +46,16 @@ public class FavoriteStockBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public String remove(Long publisherId, String stockIds) {
-		Response<String> response = favoriteStockService.drop(publisherId, stockIds);
+	public String remove(Long publisherId, String stockCodes) {
+		Response<String> response = favoriteStockService.drop(publisherId, stockCodes);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
 
-	public String top(Long publisherId, String stockIds) {
-		Response<String> response = favoriteStockService.top(publisherId, stockIds);
+	public String top(Long publisherId, String stockCodes) {
+		Response<String> response = favoriteStockService.top(publisherId, stockCodes);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}

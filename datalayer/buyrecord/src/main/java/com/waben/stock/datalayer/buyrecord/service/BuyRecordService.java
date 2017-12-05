@@ -62,6 +62,11 @@ public class BuyRecordService {
 		buyRecord.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		buyRecord.setState(BuyRecordState.POSTED);
 		buyRecord.setCreateTime(new Date());
+		// 根据委托价格计算持股数
+		BigDecimal temp = buyRecord.getApplyAmount().divide(buyRecord.getDelegatePrice(), 2, RoundingMode.HALF_DOWN);
+		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].multiply(BigDecimal.valueOf(100))
+				.intValue();
+		buyRecord.setNumberOfStrand(numberOfStrand);
 		return buyRecordDao.create(buyRecord);
 	}
 
@@ -78,6 +83,9 @@ public class BuyRecordService {
 				if (buyRecordQuery.getPublisherId() != null && buyRecordQuery.getPublisherId() > 0) {
 					predicateList.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class),
 							buyRecordQuery.getPublisherId()));
+				}
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
 				return criteriaQuery.getRestriction();
 			}
@@ -109,7 +117,7 @@ public class BuyRecordService {
 	}
 
 	@Transactional
-	public BuyRecord buyLock(Long investorId, Long id) {
+	public BuyRecord buyLock(Long investorId, Long id, String delegateNumber) {
 		BuyRecord buyRecord = buyRecordDao.retrieve(id);
 		if (buyRecord == null) {
 			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
@@ -118,13 +126,13 @@ public class BuyRecordService {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
 		buyRecord.setInvestorId(investorId);
+		buyRecord.setDelegateNumber(delegateNumber);
 		// 修改点买记录状态
 		return changeState(buyRecord);
 	}
 
 	@Transactional
-	public BuyRecord buyInto(Long investorId, Long id, String delegateNumber, BigDecimal buyingPrice,
-			Integer numberOfStrand) {
+	public BuyRecord buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
 		BuyRecord buyRecord = buyRecordDao.retrieve(id);
 		if (buyRecord == null) {
 			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
@@ -135,25 +143,24 @@ public class BuyRecordService {
 		if (investorId != buyRecord.getInvestorId()) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 		}
-		buyRecord.setDelegateNumber(delegateNumber);
 		buyRecord.setBuyingPrice(buyingPrice);
 		buyRecord.setBuyingTime(new Date());
-		buyRecord.setNumberOfStrand(numberOfStrand);
+		buyRecord.setNumberOfStrand(buyRecord.getNumberOfStrand());
 		// 止盈点位价格 = 买入价格 + ((市值 * 止盈点)/股数)
 		buyRecord.setProfitPosition(buyingPrice.add(buyRecord.getApplyAmount().multiply(buyRecord.getProfitPoint())
-				.divide(new BigDecimal(numberOfStrand), 2, RoundingMode.HALF_UP)));
+				.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
 		// 止盈预警点位价格 = 买入价格 + ((市值 * (止盈点-0.05))/股数)
 		buyRecord.setProfitWarnPosition(buyingPrice
 				.add(buyRecord.getApplyAmount().multiply(buyRecord.getProfitPoint().subtract(new BigDecimal(0.05)))
-						.divide(new BigDecimal(numberOfStrand), 2, RoundingMode.HALF_UP)));
+						.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
 		// 止损点位价格 = 买入价格 - ((市值 * 止损点)/股数)
 		buyRecord.setLossPosition(
 				buyingPrice.subtract(buyRecord.getApplyAmount().multiply(buyRecord.getLossPoint().abs())
-						.divide(new BigDecimal(numberOfStrand), 2, RoundingMode.HALF_UP)));
+						.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
 		// 止损预警点位价格 = 买入价格 - ((市值 * (止损点+0.05))/股数)
 		buyRecord.setLossWarnPosition(buyingPrice.subtract(
 				buyRecord.getApplyAmount().multiply(buyRecord.getLossPoint().abs().subtract(new BigDecimal(0.05)))
-						.divide(new BigDecimal(numberOfStrand), 2, RoundingMode.HALF_UP)));
+						.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
 		// 修改点买记录状态
 		return changeState(buyRecord);
 	}

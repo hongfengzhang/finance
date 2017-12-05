@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "buyrecord/buyrecord", path = "buyRecord", configuration = FeignConfiguration.class)
+@FeignClient(name = "buyrecord/buyrecord", path = "buyrecord", configuration = FeignConfiguration.class)
 @Primary
 public interface BuyRecordService extends BuyRecordInterface {
 

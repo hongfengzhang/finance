@@ -34,7 +34,7 @@ public class FavoriteStockServiceFallback implements FavoriteStockService {
 	}
 
 	@Override
-	public Response<List<Long>> listsStockId(Long publisherId) {
+	public Response<List<String>> listsStockCode(Long publisherId) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

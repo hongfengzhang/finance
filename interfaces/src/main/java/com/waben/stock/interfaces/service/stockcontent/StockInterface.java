@@ -20,10 +20,10 @@ public interface StockInterface {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Response<StockDto> fetchById(@PathVariable("id") Long id);
 
-    @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
-    Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery stockQuery);
+	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
+	Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery stockQuery);
 
-    @RequestMapping(value = "/code/{code}",method = RequestMethod.GET)
-    Response<StockDto> fetchWithExponentByCode(@PathVariable String code);
+	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
+	Response<StockDto> fetchWithExponentByCode(@PathVariable("code") String code);
 
 }

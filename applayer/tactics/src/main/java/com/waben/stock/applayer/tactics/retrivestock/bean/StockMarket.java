@@ -20,6 +20,8 @@ public class StockMarket {
 	private BigDecimal upDropSpeed;
 	private long upTime;
 	private String upTimeFormat;
+	private BigDecimal highestPrice;
+	private BigDecimal lowestPrice;
 
 	public String getExchangeId() {
 		return exchangeId;
@@ -99,6 +101,22 @@ public class StockMarket {
 
 	public void setUpTimeFormat(String upTimeFormat) {
 		this.upTimeFormat = upTimeFormat;
+	}
+
+	public BigDecimal getHighestPrice() {
+		return highestPrice;
+	}
+
+	public void setHighestPrice(BigDecimal highestPrice) {
+		this.highestPrice = highestPrice;
+	}
+
+	public BigDecimal getLowestPrice() {
+		return lowestPrice;
+	}
+
+	public void setLowestPrice(BigDecimal lowestPrice) {
+		this.lowestPrice = lowestPrice;
 	}
 
 }

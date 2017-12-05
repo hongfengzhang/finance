@@ -66,8 +66,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/getEnabledCircularsList",
-				"/system/stockMarketExponent", "/system/getAppHomeTopData", "/strategytype/lists").permitAll();
-		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/buyRecord/tradeDynamic")
+				"/system/stockMarketExponent", "/system/getAppHomeTopData").permitAll();
+		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
+		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic").permitAll();
+		http.authorizeRequests()
+				.antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine", "/stock/market/{code}")
 				.permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();

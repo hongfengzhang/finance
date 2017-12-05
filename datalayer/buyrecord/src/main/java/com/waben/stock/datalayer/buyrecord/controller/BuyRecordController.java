@@ -30,64 +30,64 @@ import java.math.BigDecimal;
 @RequestMapping("/buyrecord")
 public class BuyRecordController implements BuyRecordInterface {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private BuyRecordService buyRecordService;
+	@Autowired
+	private BuyRecordService buyRecordService;
 
-    @Override
-    public Response<BuyRecordDto> fetchBuyRecord(@PathVariable Long buyrecord) {
-        BuyRecord buyRecord = buyRecordService.findBuyRecord(buyrecord);
-        BuyRecordDto buyRecordDto = CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false);
-        return new Response<>(buyRecordDto);
-    }
+	@Override
+	public Response<BuyRecordDto> fetchBuyRecord(@PathVariable Long buyrecord) {
+		BuyRecord buyRecord = buyRecordService.findBuyRecord(buyrecord);
+		BuyRecordDto buyRecordDto = CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false);
+		return new Response<>(buyRecordDto);
+	}
 
-    @Override
-    public Response<BuyRecordDto> addBuyRecord(@RequestBody BuyRecordDto buyRecordDto) {
-        BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
-        return new Response<>(
-                CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.save(buyRecord), false));
-    }
+	@Override
+	public Response<BuyRecordDto> addBuyRecord(@RequestBody BuyRecordDto buyRecordDto) {
+		BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.save(buyRecord), false));
+	}
 
-    @Override
-    public Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery) {
-        Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
-        PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-        return new Response<>(result);
-    }
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		return new Response<>(result);
+	}
 
-    @Override
-    public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id) {
-        BuyRecord buyRecord = buyRecordService.buyLock(investorId, id);
-        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-    }
+	@Override
+	public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber) {
+		BuyRecord buyRecord = buyRecordService.buyLock(investorId, id, delegateNumber);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+	}
 
-    @Override
-    public Response<BuyRecordDto> buyInto(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber,
-                                          BigDecimal buyingPrice, Integer numberOfStrand) {
-        BuyRecord buyRecord = buyRecordService.buyInto(investorId, id, delegateNumber, buyingPrice, numberOfStrand);
-        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-    }
+	@Override
+	public Response<BuyRecordDto> buyInto(@PathVariable Long investorId, @PathVariable Long id,
+			BigDecimal buyingPrice) {
+		BuyRecord buyRecord = buyRecordService.buyInto(investorId, id, buyingPrice);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+	}
 
-    @Override
-    public Response<BuyRecordDto> sellLock(@PathVariable Long lockUserId, @PathVariable Long id,
-                                           String windControlTypeIndex) {
-        BuyRecord buyRecord = buyRecordService.sellLock(lockUserId, id,
-                WindControlType.getByIndex(windControlTypeIndex));
-        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-    }
+	@Override
+	public Response<BuyRecordDto> sellLock(@PathVariable Long lockUserId, @PathVariable Long id,
+			String windControlTypeIndex) {
+		BuyRecord buyRecord = buyRecordService.sellLock(lockUserId, id,
+				WindControlType.getByIndex(windControlTypeIndex));
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+	}
 
-    @Override
-    public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id, BigDecimal sellingPrice,
-                                          BigDecimal profitDistributionRatio) {
-        BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice, profitDistributionRatio);
-        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
-    }
+	@Override
+	public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id, BigDecimal sellingPrice,
+			BigDecimal profitDistributionRatio) {
+		BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice, profitDistributionRatio);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+	}
 
-    @Override
-    public Response<String> dropBuyRecord(@PathVariable Long id) {
-        buyRecordService.remove(id);
-        return new Response<>("successful");
-    }
-    
+	@Override
+	public Response<String> dropBuyRecord(@PathVariable Long id) {
+		buyRecordService.remove(id);
+		return new Response<>("successful");
+	}
+
 }

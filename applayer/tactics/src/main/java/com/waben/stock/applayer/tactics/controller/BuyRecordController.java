@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,8 +43,12 @@ public class BuyRecordController {
 
 	@PostMapping("/buy")
 	@ApiOperation(value = "点买")
-	public Response<BuyRecordWithMarketDto> buy(Long strategyTypeId, BigDecimal applyAmount, BigDecimal serviceFee,
-			BigDecimal reserveFund, BigDecimal profitPoint, BigDecimal lossPoint, String stockCode, Boolean deferred) {
+	public Response<BuyRecordWithMarketDto> buy(@RequestParam(required = true) Long strategyTypeId,
+			@RequestParam(required = true) BigDecimal applyAmount, @RequestParam(required = true) BigDecimal serviceFee,
+			@RequestParam(required = true) BigDecimal reserveFund,
+			@RequestParam(required = true) BigDecimal delegatePrice,
+			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
+			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred) {
 		// TODO 检查参数是否合理
 
 		// TODO 检查余额

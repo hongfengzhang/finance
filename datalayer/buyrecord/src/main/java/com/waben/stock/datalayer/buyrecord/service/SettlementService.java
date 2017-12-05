@@ -54,6 +54,7 @@ public class SettlementService {
 					predicateList.add(criteriaBuilder.gt(root.get("publisherProfitOrLoss").as(BigDecimal.class),
 							new BigDecimal(0)));
 				}
+				
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}

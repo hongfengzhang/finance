@@ -101,6 +101,11 @@ public class BuyRecord {
 	@Column(name = "number_of_strand")
 	private Integer numberOfStrand;
 	/**
+	 * 委托价格
+	 */
+	@Column(name = "delegate_price")
+	private BigDecimal delegatePrice;
+	/**
 	 * 委托编号，证券账号购买股票后的交易编号
 	 */
 	@Column(name = "delegate_number")
@@ -376,6 +381,14 @@ public class BuyRecord {
 
 	public void setWindControlType(WindControlType windControlType) {
 		this.windControlType = windControlType;
+	}
+
+	public BigDecimal getDelegatePrice() {
+		return delegatePrice;
+	}
+
+	public void setDelegatePrice(BigDecimal delegatePrice) {
+		this.delegatePrice = delegatePrice;
 	}
 
 }

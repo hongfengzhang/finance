@@ -41,24 +41,16 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	}
 
 	@Override
-	public Response<String> drop(@PathVariable Long publisherId, @PathVariable String stockIds) {
-		String[] stockIdStrArr = stockIds.split("-");
-		Long[] stockIdArr = new Long[stockIdStrArr.length];
-		for (int i = 0; i < stockIdStrArr.length; i++) {
-			stockIdArr[i] = Long.parseLong(stockIdStrArr[i]);
-		}
-		favoriteStockService.remove(publisherId, stockIdArr);
+	public Response<String> drop(@PathVariable Long publisherId, @PathVariable String stockCodes) {
+		String[] stockCodeArr = stockCodes.split("-");
+		favoriteStockService.remove(publisherId, stockCodeArr);
 		return new Response<>("successful");
 	}
 
 	@Override
-	public Response<String> top(@PathVariable Long publisherId, @PathVariable String stockIds) {
-		String[] stockIdStrArr = stockIds.split("-");
-		Long[] stockIdArr = new Long[stockIdStrArr.length];
-		for (int i = 0; i < stockIdStrArr.length; i++) {
-			stockIdArr[i] = Long.parseLong(stockIdStrArr[i]);
-		}
-		favoriteStockService.top(publisherId, stockIdArr);
+	public Response<String> top(@PathVariable Long publisherId, @PathVariable String stockCodes) {
+		String[] stockCodeArr = stockCodes.split("-");
+		favoriteStockService.top(publisherId, stockCodeArr);
 		return new Response<>("successful");
 	}
 
@@ -69,8 +61,8 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	}
 
 	@Override
-	public Response<List<Long>> listsStockId(@PathVariable Long publisherId) {
-		return new Response<>(favoriteStockService.listStockIdByPublisherId(publisherId));
+	public Response<List<String>> listsStockCode(@PathVariable Long publisherId) {
+		return new Response<>(favoriteStockService.listStockCodeByPublisherId(publisherId));
 	}
 
 }

@@ -1,8 +1,14 @@
 package com.waben.stock.interfaces.pojo.query;
 
+import java.util.Date;
+
 public class CapitalFlowQuery extends PageAndSortQuery {
 
 	private Long publisherId;
+
+	private Date startTime;
+
+	private Date endTime;
 
 	public CapitalFlowQuery() {
 		super();
@@ -20,6 +26,22 @@ public class CapitalFlowQuery extends PageAndSortQuery {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 }

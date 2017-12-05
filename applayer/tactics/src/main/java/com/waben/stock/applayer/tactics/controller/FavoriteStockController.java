@@ -43,11 +43,11 @@ public class FavoriteStockController {
 
 	@PostMapping("/addFavoriteStock")
 	@ApiOperation(value = "收藏股票")
-	public Response<FavoriteStockDto> addFavoriteStock(@RequestParam(required = true) Long stockId) {
-		StockDto stockDto = stockBusiness.findById(stockId);
+	public Response<FavoriteStockDto> addFavoriteStock(@RequestParam(required = true) String stockCode) {
+		StockDto stockDto = stockBusiness.findByCode(stockCode);
 		FavoriteStockDto favorite = new FavoriteStockDto();
 		favorite.setCode(stockDto.getCode());
-		favorite.setStockId(stockId);
+		favorite.setStockId(stockDto.getId());
 		favorite.setName(stockDto.getName());
 		favorite.setPublisherId(SecurityUtil.getUserId());
 		return new Response<>(favoriteBusiness.save(favorite));
@@ -55,28 +55,28 @@ public class FavoriteStockController {
 
 	@PostMapping("/removeFavoriteStock")
 	@ApiOperation(value = "删除收藏股票")
-	public Response<String> removeFavoriteStock(@RequestParam(required = true) Long[] stockIds) {
-		StringBuilder stockIdsStr = new StringBuilder();
-		for (int i = 0; i < stockIds.length; i++) {
-			stockIdsStr.append(stockIds[i]);
-			if (i != stockIds.length - 1) {
-				stockIdsStr.append("-");
+	public Response<String> removeFavoriteStock(@RequestParam(required = true) String[] stockCodes) {
+		StringBuilder stockCodesStr = new StringBuilder();
+		for (int i = 0; i < stockCodes.length; i++) {
+			stockCodesStr.append(stockCodes[i]);
+			if (i != stockCodes.length - 1) {
+				stockCodesStr.append("-");
 			}
 		}
-		return new Response<>(favoriteBusiness.remove(SecurityUtil.getUserId(), stockIdsStr.toString()));
+		return new Response<>(favoriteBusiness.remove(SecurityUtil.getUserId(), stockCodesStr.toString()));
 	}
 
 	@PostMapping("/topFavoriteStock")
 	@ApiOperation(value = "置顶收藏股票")
-	public Response<String> topFavoriteStock(@RequestParam(required = true) Long[] stockIds) {
-		StringBuilder stockIdsStr = new StringBuilder();
-		for (int i = 0; i < stockIds.length; i++) {
-			stockIdsStr.append(stockIds[i]);
-			if (i != stockIds.length - 1) {
-				stockIdsStr.append("-");
+	public Response<String> topFavoriteStock(@RequestParam(required = true) String[] stockCodes) {
+		StringBuilder stockCodesStr = new StringBuilder();
+		for (int i = 0; i < stockCodes.length; i++) {
+			stockCodesStr.append(stockCodes[i]);
+			if (i != stockCodes.length - 1) {
+				stockCodesStr.append("-");
 			}
 		}
-		return new Response<>(favoriteBusiness.top(SecurityUtil.getUserId(), stockIdsStr.toString()));
+		return new Response<>(favoriteBusiness.top(SecurityUtil.getUserId(), stockCodesStr.toString()));
 	}
 
 	@GetMapping("/favoriteStockList")
