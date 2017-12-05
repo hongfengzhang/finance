@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Created by yuyidi on 2017/12/1.
  * @desc 资金账户资金信息
  */
-public class StockMoney {
+public class StockMoney extends CommonErrorInfo{
 
     @JsonProperty("asset_balance")
     private Double assetBalance;

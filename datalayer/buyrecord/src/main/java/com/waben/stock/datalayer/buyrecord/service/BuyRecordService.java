@@ -118,10 +118,7 @@ public class BuyRecordService {
 
 	@Transactional
 	public BuyRecord buyLock(Long investorId, Long id, String delegateNumber) {
-		BuyRecord buyRecord = buyRecordDao.retrieve(id);
-		if (buyRecord == null) {
-			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
-		}
+		BuyRecord buyRecord = findBuyRecord(id);
 		if (buyRecord.getState() != BuyRecordState.POSTED) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
@@ -133,10 +130,7 @@ public class BuyRecordService {
 
 	@Transactional
 	public BuyRecord buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
-		BuyRecord buyRecord = buyRecordDao.retrieve(id);
-		if (buyRecord == null) {
-			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
-		}
+		BuyRecord buyRecord = findBuyRecord(id);
 		if (buyRecord.getState() != BuyRecordState.BUYLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}
@@ -167,10 +161,7 @@ public class BuyRecordService {
 
 	@Transactional
 	public BuyRecord sellLock(Long lockUserId, Long id, WindControlType windControlType) {
-		BuyRecord buyRecord = buyRecordDao.retrieve(id);
-		if (buyRecord == null) {
-			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
-		}
+		BuyRecord buyRecord = findBuyRecord(id);
 		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
@@ -186,7 +177,7 @@ public class BuyRecordService {
 
 	@Transactional
 	public BuyRecord sellOut(Long investorId, Long id, BigDecimal sellingPrice, BigDecimal profitDistributionRatio) {
-		BuyRecord buyRecord = buyRecordDao.retrieve(id);
+		BuyRecord buyRecord = findBuyRecord(id);
 		if (buyRecord.getState() != BuyRecordState.SELLLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}

@@ -130,7 +130,9 @@ public class BeanConfigurer {
     }
 
 
-    //创建上证 深证 创业板队列
+    /**
+     * 创建上证 深证 创业板队列
+     */
     @Bean(name = "shangSecurity")
     public Queue shangSecurity() {
         return new Queue("shangSecurity");
@@ -147,17 +149,23 @@ public class BeanConfigurer {
     }
 
     /**
-     * 创建 委托队列
-     *
-     * @return
+     * 创建 委托申请买入队列
      */
-    @Bean(name = "entrustQueue")
-    public Queue entrustQueue() {
-        return new Queue("entrustQueue");
+    @Bean(name = "entrustApplyBuyIn")
+    public Queue entrustBuyInQueue() {
+        return new Queue("entrustApplyBuyIn");
+    }
+    /**
+     * 创建 委托申请卖出队列
+     */
+    @Bean(name = "entrustApplySellOut")
+    public Queue entrustSellOutQueue() {
+        return new Queue("entrustApplySellOut");
     }
 
-
-    //创建点买交易风控交换机
+    /**
+     * 点买交易风控交换机
+     */
     @Bean("risk")
     public TopicExchange riskExchange() {
         return new TopicExchange("risk");
@@ -174,13 +182,11 @@ public class BeanConfigurer {
                                                 @Qualifier("risk")TopicExchange riskExchange) {
         return BindingBuilder.bind(queue).to(riskExchange).with("shang");
     }
-
     @Bean
     public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,
                                                @Qualifier("risk") TopicExchange riskExchange) {
         return BindingBuilder.bind(queue).to(riskExchange).with("shen");
     }
-
     @Bean
     public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,
                                                   @Qualifier("risk") TopicExchange riskExchange) {
@@ -188,9 +194,15 @@ public class BeanConfigurer {
     }
 
 
+    /**绑定申请买入卖出路由与队列*/
     @Bean
-    public Binding bindingExchangEntrust(@Qualifier("entrustQueue") Queue queue,
+    public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustApplyBuyIn") Queue queue,
                                          @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
-        return BindingBuilder.bind(queue).to(buyRecordExchange).with("securities");
+        return BindingBuilder.bind(queue).to(buyRecordExchange).with("applyBuyIn");
+    }
+    @Bean
+    public Binding bindingExchangEntrust(@Qualifier("entrustApplySellOut") Queue queue,
+                                         @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
+        return BindingBuilder.bind(queue).to(buyRecordExchange).with("applySellOut");
     }
 }

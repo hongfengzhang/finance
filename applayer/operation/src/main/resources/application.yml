@@ -15,9 +15,14 @@ spring:
     username: yuyidi
     password: yuyidi
 feign:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          thread:
+#            timeoutInMilliseconds: 10000
   command:
     default:
       execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000
+        timeout:
+          enabled: false

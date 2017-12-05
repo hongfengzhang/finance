@@ -21,8 +21,14 @@ public interface InvestorInterface {
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     Response<InvestorDto> fetchByUserName(@PathVariable("username") String username);
 
-    @RequestMapping(value = "/{investor}/buyrecord/entrust", method = RequestMethod.POST, consumes = MediaType
+    @RequestMapping(value = "/{investor}/buyrecord/applybuyin", method = RequestMethod.POST, consumes = MediaType
             .APPLICATION_JSON_VALUE)
-    Response<BuyRecordDto> stockBuyIn(@PathVariable("investor") Long investor, @RequestBody SecuritiesStockEntrust
+    Response<BuyRecordDto> stockApplyBuyIn(@PathVariable("investor") Long investor, @RequestBody SecuritiesStockEntrust
+            securitiesStockEntrust, @RequestParam("tradeSession") String tradeSession);
+
+
+    @RequestMapping(value = "/{investor}/buyrecord/applysellout", method = RequestMethod.POST, consumes = MediaType
+            .APPLICATION_JSON_VALUE)
+    Response<BuyRecordDto> stockApplySellOut(@PathVariable("investor") Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, @RequestParam("tradeSession") String tradeSession);
 }
