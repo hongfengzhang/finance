@@ -25,21 +25,16 @@ public class FavoriteStockService {
 	@Autowired
 	private FavoriteStockDao favoriteStockDao;
 
-	public FavoriteStock save(Long publisherId, Long stockId, String stockName, String stockCode) {
-		FavoriteStock favorite = favoriteStockDao.retrive(publisherId, stockCode);
-		if (favorite != null) {
+	public FavoriteStock save(FavoriteStock favoriteStock) {
+		FavoriteStock checkFavorite = favoriteStockDao.retrive(favoriteStock.getPublisherId(), favoriteStock.getCode());
+		if (checkFavorite != null) {
 			throw new ServiceException(ExceptionConstant.STOCK_ALREADY_FAVORITE_EXCEPTION);
 		}
-		favorite = new FavoriteStock();
-		favorite.setCode(stockCode);
-		favorite.setFavoriteTime(new Date());
-		favorite.setName(stockName);
-		favorite.setPublisherId(publisherId);
-		favorite.setStockId(stockId);
-		Integer maxSort = favoriteStockDao.retriveMaxSort(publisherId);
-		favorite.setSort(maxSort != null ? maxSort + 1 : 1);
-		favoriteStockDao.create(favorite);
-		return favorite;
+		favoriteStock.setFavoriteTime(new Date());
+		Integer maxSort = favoriteStockDao.retriveMaxSort(favoriteStock.getPublisherId());
+		favoriteStock.setSort(maxSort != null ? maxSort + 1 : 1);
+		favoriteStockDao.create(favoriteStock);
+		return favoriteStock;
 	}
 
 	@Transactional

@@ -146,7 +146,7 @@ public class BuyRecordBusiness {
 	}
 
 	public BuyRecordDto sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
-		Response<BuyRecordDto> response = buyRecordService.sellOut(investorId, id, sellingPrice, new BigDecimal(0.9));
+		Response<BuyRecordDto> response = buyRecordService.sellOut(investorId, id, sellingPrice);
 		if ("200".equals(response.getCode())) {
 			SettlementQuery query = new SettlementQuery(0, 1);
 			query.setBuyRecordId(id);

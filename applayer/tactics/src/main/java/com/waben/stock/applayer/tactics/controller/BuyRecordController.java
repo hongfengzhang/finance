@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +64,7 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint);
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
+		dto.setDelegatePrice(delegatePrice);
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());
 		dto.setPublisherSerialCode(SecurityUtil.getSerialCode());

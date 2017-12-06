@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.datalayer.publisher.entity.BindCard;
 import com.waben.stock.datalayer.publisher.service.BindCardService;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -45,6 +46,17 @@ public class BindCardController implements BindCardInterface {
 	public Response<List<BindCardDto>> listsByPublisherId(@PathVariable Long publisherId) {
 		return new Response<>(
 				CopyBeanUtils.copyListBeanPropertiesToList(bindCardService.list(publisherId), BindCardDto.class));
+	}
+
+	@Override
+	public Response<BindCardDto> fetchById(@PathVariable Long id) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardDto.class, bindCardService.findById(id), false));
+	}
+
+	@Override
+	public Response<BindCardDto> modifyBankCard(@RequestBody BindCardDto bindCardDto) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardDto.class,
+				bindCardService.revision(CopyBeanUtils.copyBeanProperties(BindCard.class, bindCardDto, false)), false));
 	}
 
 }

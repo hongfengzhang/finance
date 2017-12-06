@@ -78,9 +78,9 @@ public class BuyRecordController implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id, BigDecimal sellingPrice,
-			BigDecimal profitDistributionRatio) {
-		BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice, profitDistributionRatio);
+	public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id,
+			BigDecimal sellingPrice) {
+		BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
 	}
 

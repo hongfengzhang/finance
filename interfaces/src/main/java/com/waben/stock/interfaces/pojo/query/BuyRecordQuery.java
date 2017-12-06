@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.pojo.query;
 
+import java.util.Date;
+
 import com.waben.stock.interfaces.enums.BuyRecordState;
 
 /**
@@ -13,6 +15,10 @@ public class BuyRecordQuery extends PageAndSortQuery {
 	private Long publisherId;
 
 	private BuyRecordState[] states;
+
+	private Date startCreateTime;
+
+	private Date endCreateTime;
 
 	public BuyRecordQuery() {
 		super();
@@ -40,6 +46,22 @@ public class BuyRecordQuery extends PageAndSortQuery {
 
 	public void setStates(BuyRecordState[] states) {
 		this.states = states;
+	}
+
+	public Date getStartCreateTime() {
+		return startCreateTime;
+	}
+
+	public void setStartCreateTime(Date startCreateTime) {
+		this.startCreateTime = startCreateTime;
+	}
+
+	public Date getEndCreateTime() {
+		return endCreateTime;
+	}
+
+	public void setEndCreateTime(Date endCreateTime) {
+		this.endCreateTime = endCreateTime;
 	}
 
 }

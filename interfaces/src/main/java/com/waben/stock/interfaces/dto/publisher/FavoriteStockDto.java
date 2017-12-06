@@ -6,10 +6,6 @@ public class FavoriteStockDto {
 
 	private Long id;
 	/**
-	 * 股票ID
-	 */
-	private Long stockId;
-	/**
 	 * 股票名称
 	 */
 	private String name;
@@ -17,6 +13,10 @@ public class FavoriteStockDto {
 	 * 股票代码
 	 */
 	private String code;
+	/**
+	 * 指数代码
+	 */
+	private String exponentCode;
 	/**
 	 * 收藏时间
 	 */
@@ -36,14 +36,6 @@ public class FavoriteStockDto {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getStockId() {
-		return stockId;
-	}
-
-	public void setStockId(Long stockId) {
-		this.stockId = stockId;
 	}
 
 	public String getName() {
@@ -84,6 +76,14 @@ public class FavoriteStockDto {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public String getExponentCode() {
+		return exponentCode;
+	}
+
+	public void setExponentCode(String exponentCode) {
+		this.exponentCode = exponentCode;
 	}
 
 }
