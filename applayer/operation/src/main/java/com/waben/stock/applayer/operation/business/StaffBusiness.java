@@ -9,6 +9,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import org.springframework.stereotype.Service;
 public class StaffBusiness {
 
     @Autowired
+    @Qualifier("staffFeignService")
     private StaffService staffService;
 
     public PageInfo<StaffDto> staffs(StaffQuery staffQuery) {

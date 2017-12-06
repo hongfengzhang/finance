@@ -1,7 +1,7 @@
 package com.waben.stock.datalayer.stockcontent.repository.impl;
 
 import com.waben.stock.datalayer.stockcontent.entity.StrategyType;
-import com.waben.stock.datalayer.stockcontent.repository.StraegyTypeDao;
+import com.waben.stock.datalayer.stockcontent.repository.StrategyTypeDao;
 import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StraegyTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +16,7 @@ import java.util.List;
  * @desc
  */
 @Repository
-public class StraegyTypeDaoImpl implements StraegyTypeDao {
+public class StraegyTypeDaoImpl implements StrategyTypeDao {
 
     @Autowired
     private StraegyTypeRepository repository;
@@ -53,7 +53,7 @@ public class StraegyTypeDaoImpl implements StraegyTypeDao {
 
     @Override
     public Page<StrategyType> page(Specification<StrategyType> specification, Pageable pageable) {
-        return null;
+        return repository.findAll(specification,pageable);
     }
 
     @Override

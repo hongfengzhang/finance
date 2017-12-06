@@ -30,7 +30,7 @@ public class StockContentApplicationTests {
     @Autowired
     private LossService lossService;
     @Autowired
-    private StraegyTypeService straegyTypeService;
+    private StrategyTypeService straegyTypeService;
 
     @Test
     public void initAmountValue() {

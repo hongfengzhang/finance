@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -65,6 +64,7 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint);
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
+		dto.setDelegatePrice(delegatePrice);
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());
 		dto.setPublisherSerialCode(SecurityUtil.getSerialCode());
@@ -101,14 +101,6 @@ public class BuyRecordController {
 	@ApiOperation(value = "用户申请卖出")
 	Response<BuyRecordDto> sellLock(@PathVariable("id") Long id) {
 		return new Response<>(buyRecordBusiness.sellLock(SecurityUtil.getUserId(), id));
-	}
-
-	// 该接口仅仅用来做测试，该接口应位于投资人服务中
-	@RequestMapping(value = "/{investorId}/sellout/{id}", method = RequestMethod.POST)
-	@ApiOperation(value = "测试使用，APP不要使用该接口，ignore it")
-	Response<BuyRecordDto> sellOut(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
-			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice) {
-		return new Response<>(buyRecordBusiness.sellOut(investorId, id, sellingPrice));
 	}
 
 }

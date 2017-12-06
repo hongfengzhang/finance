@@ -1,6 +1,5 @@
 package com.waben.stock.applayer.tactics.business;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,15 +11,12 @@ import com.waben.stock.applayer.tactics.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.buyrecord.TradeDynamicDto;
 import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
-import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.service.BuyRecordService;
-import com.waben.stock.applayer.tactics.service.CapitalAccountService;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SettlementService;
 import com.waben.stock.applayer.tactics.service.StockService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
@@ -45,9 +41,6 @@ public class BuyRecordBusiness {
 	private SettlementService settlementService;
 
 	@Autowired
-	private CapitalAccountService accountService;
-
-	@Autowired
 	private PublisherService publisherService;
 
 	@Autowired
@@ -64,15 +57,6 @@ public class BuyRecordBusiness {
 	public BuyRecordDto buy(BuyRecordDto buyRecordDto) {
 		Response<BuyRecordDto> response = buyRecordService.addBuyRecord(buyRecordDto);
 		if ("200".equals(response.getCode())) {
-			// 扣去金额、冻结保证金，增加流水记录
-			Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
-					SecurityUtil.getUserId(), response.getResult().getId(), response.getResult().getSerialCode(),
-					response.getResult().getServiceFee(), response.getResult().getReserveFund());
-			if (!"200".equals(accountOperationResp.getCode())) {
-				// 扣款失败，删除点买记录，TODO 删除失败，再处理
-				buyRecordService.dropBuyRecord(response.getResult().getId());
-				throw new ServiceException(accountOperationResp.getCode());
-			}
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
@@ -140,20 +124,6 @@ public class BuyRecordBusiness {
 		Response<BuyRecordDto> response = buyRecordService.sellLock(lockUserId, id,
 				WindControlType.PUBLISHERAPPLY.getIndex());
 		if ("200".equals(response.getCode())) {
-			return response.getResult();
-		}
-		throw new ServiceException(response.getCode());
-	}
-
-	public BuyRecordDto sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
-		Response<BuyRecordDto> response = buyRecordService.sellOut(investorId, id, sellingPrice, new BigDecimal(0.9));
-		if ("200".equals(response.getCode())) {
-			SettlementQuery query = new SettlementQuery(0, 1);
-			query.setBuyRecordId(id);
-			Response<PageInfo<SettlementDto>> settlement = settlementService.pagesByQuery(query);
-			accountService.returnReserveFund(response.getResult().getPublisherId(), response.getResult().getId(),
-					response.getResult().getSerialCode(),
-					settlement.getResult().getContent().get(0).getPublisherProfitOrLoss());
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());

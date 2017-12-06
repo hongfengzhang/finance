@@ -26,9 +26,11 @@ import com.waben.stock.datalayer.buyrecord.entity.Settlement;
 import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -47,6 +49,9 @@ public class BuyRecordService {
 
 	@Autowired
 	private SettlementDao settlementDao;
+
+	@Autowired
+	private CapitalAccountService accountService;
 
 	public BuyRecord findBuyRecord(Long buyrecord) {
 		BuyRecord buyRecord = buyRecordDao.retrieve(buyrecord);
@@ -67,7 +72,16 @@ public class BuyRecordService {
 		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].multiply(BigDecimal.valueOf(100))
 				.intValue();
 		buyRecord.setNumberOfStrand(numberOfStrand);
-		return buyRecordDao.create(buyRecord);
+		buyRecordDao.create(buyRecord);
+		// 扣去金额、冻结保证金
+		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
+				buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(), buyRecord.getServiceFee(),
+				buyRecord.getReserveFund());
+		if (!"200".equals(accountOperationResp.getCode())) {
+			// 扣款失败
+			throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
+		}
+		return buyRecord;
 	}
 
 	public Page<BuyRecord> pagesByQuery(final BuyRecordQuery buyRecordQuery) {
@@ -83,6 +97,14 @@ public class BuyRecordService {
 				if (buyRecordQuery.getPublisherId() != null && buyRecordQuery.getPublisherId() > 0) {
 					predicateList.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class),
 							buyRecordQuery.getPublisherId()));
+				}
+				if (buyRecordQuery.getStartCreateTime() != null) {
+					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class),
+							buyRecordQuery.getStartCreateTime()));
+				}
+				if (buyRecordQuery.getEndCreateTime() != null) {
+					predicateList.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class),
+							buyRecordQuery.getStartCreateTime()));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
@@ -134,7 +156,8 @@ public class BuyRecordService {
 		if (buyRecord.getState() != BuyRecordState.BUYLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}
-		if (investorId != buyRecord.getInvestorId()) {
+		logger.info("订单是否相等:{},{}", investorId, buyRecord.getInvestorId());
+		if (!investorId.equals(buyRecord.getInvestorId())) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 		}
 		buyRecord.setBuyingPrice(buyingPrice);
@@ -167,7 +190,7 @@ public class BuyRecordService {
 		}
 		buyRecord.setWindControlType(windControlType);
 		if (lockUserId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
-			if (lockUserId != buyRecord.getInvestorId()) {
+			if (!lockUserId.equals(buyRecord.getInvestorId())) {
 				throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 			}
 		}
@@ -176,12 +199,12 @@ public class BuyRecordService {
 	}
 
 	@Transactional
-	public BuyRecord sellOut(Long investorId, Long id, BigDecimal sellingPrice, BigDecimal profitDistributionRatio) {
-		BuyRecord buyRecord = findBuyRecord(id);
+	public BuyRecord sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
+		BuyRecord buyRecord = buyRecordDao.retrieve(id);
 		if (buyRecord.getState() != BuyRecordState.SELLLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}
-		if (investorId != buyRecord.getInvestorId()) {
+		if (!investorId.equals(buyRecord.getInvestorId())) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 		}
 		buyRecord.setSellingPrice(sellingPrice);
@@ -195,9 +218,8 @@ public class BuyRecordService {
 		settlement.setInvestorProfitOrLoss(new BigDecimal(0));
 		settlement.setSettlementTime(new Date());
 		if (profitOrLoss.compareTo(BigDecimal.ZERO) >= 0) {
-			settlement.setPublisherProfitOrLoss(profitOrLoss.multiply(profitDistributionRatio));
-			settlement.setInvestorProfitOrLoss(
-					profitOrLoss.multiply(new BigDecimal(1).subtract(profitDistributionRatio)));
+			settlement.setPublisherProfitOrLoss(profitOrLoss.multiply(new BigDecimal(0.9)));
+			settlement.setInvestorProfitOrLoss(profitOrLoss.multiply(new BigDecimal(1).subtract(new BigDecimal(0.9))));
 		} else {
 			if (profitOrLoss.abs().compareTo(buyRecord.getReserveFund()) > 0) {
 				settlement.setPublisherProfitOrLoss(buyRecord.getReserveFund().multiply(new BigDecimal(-1)));
@@ -207,6 +229,9 @@ public class BuyRecordService {
 			}
 		}
 		settlementDao.create(settlement);
+		// 退回保证金
+		accountService.returnReserveFund(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(),
+				settlement.getPublisherProfitOrLoss());
 		// 修改点买记录状态
 		return changeState(buyRecord);
 	}

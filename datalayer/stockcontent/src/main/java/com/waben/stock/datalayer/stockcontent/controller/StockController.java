@@ -25,29 +25,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/stock")
 public class StockController implements StockInterface {
 
-    @Autowired
-    private StockService stockService;
+	@Autowired
+	private StockService stockService;
 
-    @Override
-    public Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery staffQuery) {
-        Page<Stock> stocks = stockService.stocks(staffQuery);
-        PageInfo<StockDto> result = new PageInfo<>(stocks, StockDto.class);
-        return new Response<>(result);
-    }
+	@Override
+	public Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery staffQuery) {
+		Page<Stock> stocks = stockService.stocks(staffQuery);
+		PageInfo<StockDto> result = new PageInfo<>(stocks, StockDto.class);
+		return new Response<>(result);
+	}
 
-    @Override
-    public Response<StockDto> fetchById(@PathVariable Long id) {
-        return new Response<>(CopyBeanUtils.copyBeanProperties(StockDto.class, stockService.findById(id), false));
-    }
+	@Override
+	public Response<StockDto> fetchById(@PathVariable Long id) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockDto.class, stockService.findById(id), false));
+	}
 
-    @Override
-    public Response<StockDto> fetchWithExponentByCode(@PathVariable String code) {
-        Stock stok = stockService.findByCode(code);
-        StockExponentDto stockExponentDto = CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stok.getExponent
-                (), false);
-        StockDto stockDto = CopyBeanUtils.copyBeanProperties(StockDto.class, stok, false);
-        stockDto.setStockExponentDto(stockExponentDto);
-        return new Response<>(stockDto);
-    }
+	@Override
+	public Response<StockDto> fetchWithExponentByCode(@PathVariable String code) {
+		Stock stock = stockService.findByCode(code);
+		StockDto result = CopyBeanUtils.copyBeanProperties(StockDto.class, stock, false);
+		if (stock.getExponent() != null) {
+			result.setStockExponentDto(
+					CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stock.getExponent(), false));
+		}
+		return new Response<>(result);
+	}
 
 }

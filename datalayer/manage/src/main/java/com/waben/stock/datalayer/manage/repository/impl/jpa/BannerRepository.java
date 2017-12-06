@@ -2,8 +2,6 @@ package com.waben.stock.datalayer.manage.repository.impl.jpa;
 
 import java.util.List;
 
-import org.springframework.data.domain.Sort;
-
 import com.waben.stock.datalayer.manage.entity.Banner;
 
 /**

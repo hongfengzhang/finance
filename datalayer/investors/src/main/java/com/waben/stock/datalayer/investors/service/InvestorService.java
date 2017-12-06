@@ -123,9 +123,15 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
         //开始委托下单
+<<<<<<< HEAD
         String enturstNo = String.valueOf(new Random().nextInt(100));
 //                stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
 //                .BUY);
+=======
+//        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
+//                .BUY);
+        String enturstNo = String.valueOf(new Random().nextInt(10));
+>>>>>>> 1509c68aeece2fa60074217d4fbe1d5f3af5847b
         return enturstNo;
     }
 

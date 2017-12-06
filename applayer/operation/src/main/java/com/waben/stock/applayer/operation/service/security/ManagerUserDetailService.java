@@ -11,6 +11,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,6 +30,7 @@ public class ManagerUserDetailService implements UserDetailsService {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    @Qualifier("staffFeignService")
     private StaffService staffService;
 //    @Autowired
 //    private RoleService roleService;

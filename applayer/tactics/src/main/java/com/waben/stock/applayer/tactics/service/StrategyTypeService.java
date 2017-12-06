@@ -4,7 +4,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.context.annotation.Primary;
 
 import com.waben.stock.applayer.tactics.wrapper.FeignConfiguration;
-import com.waben.stock.interfaces.service.stockcontent.StraegyTypeInterface;
+import com.waben.stock.interfaces.service.stockcontent.StrategyTypeInterface;
 
 /**
  * 策略类型 reference服务接口
@@ -13,6 +13,6 @@ import com.waben.stock.interfaces.service.stockcontent.StraegyTypeInterface;
  */
 @FeignClient(name = "stockcontent/stockcontent", path = "straegytype", configuration = FeignConfiguration.class)
 @Primary
-public interface StrategyTypeService extends StraegyTypeInterface {
+public interface StrategyTypeService extends StrategyTypeInterface {
 
 }

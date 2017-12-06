@@ -23,4 +23,14 @@ public class BindCardServiceFallback implements BindCardService {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
+	@Override
+	public Response<BindCardDto> fetchById(Long id) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<BindCardDto> modifyBankCard(BindCardDto bindCardDto) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
 }

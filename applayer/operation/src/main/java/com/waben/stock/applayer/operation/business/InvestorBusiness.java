@@ -12,6 +12,7 @@ import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 public class InvestorBusiness {
 
     @Autowired
+    @Qualifier("investerFeignService")
     private InvestorService investorService;
     @Autowired
     private StockBusiness stockBusiness;

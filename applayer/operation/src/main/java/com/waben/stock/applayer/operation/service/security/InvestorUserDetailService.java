@@ -14,6 +14,7 @@ import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -36,8 +37,10 @@ public class InvestorUserDetailService implements UserDetailsService {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    @Qualifier("investerFeignService")
     private InvestorService investorService;
     @Autowired
+    @Qualifier("roleFeignService")
     private RoleService roleService;
 
     @Override
