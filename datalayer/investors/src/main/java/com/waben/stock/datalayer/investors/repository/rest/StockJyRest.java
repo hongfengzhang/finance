@@ -107,8 +107,8 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         params.put("exchange_type", type);
         params.put("stock_account", stockAccount);
         params.put("stock_code", securitiesStockEntrust.getStockCode());
-        params.put("entrust_amount", String.valueOf(securitiesStockEntrust.getBuyingNumber()));
-        params.put("entrust_price", String.valueOf(securitiesStockEntrust.getBuyingPrice()));
+        params.put("entrust_amount", String.valueOf(securitiesStockEntrust.getEntrustNumber()));
+        params.put("entrust_price", String.valueOf(securitiesStockEntrust.getEntrustPrice()));
         params.put("entrust_bs", entrustType.getType());
         String result = HttpRest.get(entrustUrl, String.class, params);
         logger.info("委托交易结果:{}", result);

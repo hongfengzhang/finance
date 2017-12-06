@@ -27,8 +27,13 @@ public class InvestorServiceFallback implements InvestorService {
     }
 
     @Override
-    public Response<BuyRecordDto> stockBuyIn(Long investor, SecuritiesStockEntrust securitiesStockEntrust, String
-            tradeSession) {
-        return new Response<>("205","买入失败");
+    public Response<BuyRecordDto> stockApplyBuyIn(Long investor, SecuritiesStockEntrust securitiesStockEntrust,
+                                                  String tradeSession) {
+        return null;
+    }
+
+    @Override
+    public Response<BuyRecordDto> stockApplySellOut(Long investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
+        return null;
     }
 }

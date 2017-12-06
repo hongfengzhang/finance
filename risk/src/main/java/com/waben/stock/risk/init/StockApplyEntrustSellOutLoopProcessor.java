@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * @author Created by yuyidi on 2017/12/4.
  * @desc
  */
-@Component
+//@Component
 public class StockApplyEntrustSellOutLoopProcessor implements CommandLineRunner {
     Logger logger = LoggerFactory.getLogger(getClass());
     Executor executor = Executors.newFixedThreadPool(2);
