@@ -2,7 +2,6 @@ package com.waben.stock.risk.init;
 
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
-import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrust;
@@ -12,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -20,7 +19,7 @@ import java.util.concurrent.Executors;
  * @author Created by yuyidi on 2017/12/4.
  * @desc
  */
-//@Component
+@Component
 public class StockApplyEntrustSellOutLoopProcessor implements CommandLineRunner {
     Logger logger = LoggerFactory.getLogger(getClass());
     Executor executor = Executors.newFixedThreadPool(2);
@@ -39,12 +38,18 @@ public class StockApplyEntrustSellOutLoopProcessor implements CommandLineRunner 
                 int i = 0;
                 while (true) {
                     i++;
-                    List<SecuritiesStockEntrust> stockEntrusts = stockApplyEntrustSellOutContainer.queryEntrust();
+                    Map<String, SecuritiesStockEntrust> stockEntrusts = stockApplyEntrustSellOutContainer
+                            .getSellOutContainer();
                     logger.info("券商委托股票容器内剩余:{}个委托卖出订单", stockEntrusts.size());
-                    for (SecuritiesStockEntrust securitiesStockEntrust : stockEntrusts) {
-                        logger.info("此处执行http，当前委托卖出订单为：{}", securitiesStockEntrust.getTradeNo());
+                    try {
+                        Thread.sleep(5 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
+                        logger.info("此处执行http，当前委托订单为：{}", entry.getKey());
                         try {
-                              Thread.sleep(1000);
+                            Thread.sleep(1000);
 //                            StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
 //                                    (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
 //                                            .getEntrustNo());
@@ -55,12 +60,12 @@ public class StockApplyEntrustSellOutLoopProcessor implements CommandLineRunner 
 //                                // 若执行结果为true 代表订单状态已成功，则  删除集合中的数据
 //                                //发送给队列处理，提高委托单轮询处理速度
 //                            }
-                            if (i % 5 == 0) {
-                                logger.info("委托卖出订单已完成:{}",securitiesStockEntrust.getTradeNo());
-                                entrustProducer.entrustSellOut(securitiesStockEntrust);
-                                stockApplyEntrustSellOutContainer.remove(securitiesStockEntrust);
+                            if (i % 3 == 0) {
+                                logger.info("委托订单卖出已完成:{}", entry.getKey());
+                                entrustProducer.entrustSellOut(entry.getValue());
+                                stockApplyEntrustSellOutContainer.remove(entry.getKey());
                             }
-                        }catch (InterruptedException e) {
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ServiceException ex) {
                             logger.error("券商委托单查询异常:{}", ex.getMessage());

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
  * @author Created by yuyidi on 2017/11/17.
  * @desc
  */
-@FeignClient(name = "manage/manage", path = "menu",fallback = MenuServiceFallback.class)
+@FeignClient(name = "manage/manage", path = "menu",fallback = MenuServiceFallback.class,qualifier = "menuFeignService")
 public interface MenuService extends MenuInterface {
 
 

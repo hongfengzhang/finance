@@ -57,7 +57,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 					error = exception.getError();
 				}
 			}
-			logger.warn("请求：{},异常：{}", request.getRequestURI(), message);
+			logger.error("请求：{},异常：{}", request.getRequestURI(), message);
 		} finally {
 			mv.addObject("message", message);
 			mv.addObject("code", code);

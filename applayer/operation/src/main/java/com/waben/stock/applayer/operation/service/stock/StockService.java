@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
  * @author Created by yuyidi on 2017/11/22.
  * @desc
  */
-@FeignClient(name = "stockcontent/stockcontent", path = "stock",fallback = StockServiceFallback.class)
+@FeignClient(name = "stockcontent/stockcontent", path = "stock",fallback = StockServiceFallback.class,qualifier = "stockFeignService")
 public interface StockService extends StockInterface {
 
 }

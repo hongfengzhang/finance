@@ -134,7 +134,8 @@ public class BuyRecordService {
 		if (buyRecord.getState() != BuyRecordState.BUYLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}
-		if (investorId != buyRecord.getInvestorId()) {
+		logger.info("订单是否相等:{},{}",investorId,buyRecord.getInvestorId());
+		if (!investorId.equals(buyRecord.getInvestorId())) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 		}
 		buyRecord.setBuyingPrice(buyingPrice);

@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.sql.rowset.serial.SerialException;
@@ -17,6 +18,7 @@ import javax.sql.rowset.serial.SerialException;
 public class BuyRecordBusiness {
 
     @Autowired
+    @Qualifier("buyRecordFeignService")
     private BuyRecordService buyRecordService;
 
 
