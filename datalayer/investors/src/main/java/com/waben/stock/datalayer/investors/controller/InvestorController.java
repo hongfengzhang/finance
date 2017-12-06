@@ -49,20 +49,36 @@ public class InvestorController implements InvestorInterface {
     }
 
     /**
-     * 投资人点买记录委托下单
+     * 投资人点买记录委托申请买入
      *
      * @param investor     投资人ID
      * @param securitiesStockEntrust 点买记录数据传输对象
      * @param tradeSession 投资人证券商户交易session
      * @return
-     * @despriction 券商股票委托买入，并
+     * @despriction 券商股票委托申请买入
      */
-    public Response<BuyRecordDto> stockBuyIn(@PathVariable Long investor, @RequestBody SecuritiesStockEntrust
+    public Response<BuyRecordDto> stockApplyBuyIn(@PathVariable Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, String tradeSession) {
         Investor result = investorService.findById(investor);
-        String entrustNo = investorService.buyRecordEntrust(result, securitiesStockEntrust, tradeSession);
-        BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.entrust(result, securitiesStockEntrust, entrustNo);
+        String entrustNo = investorService.entrustApplyBuyIn(result, securitiesStockEntrust, tradeSession);
+        BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.buyRecordApplyBuyIn(result, securitiesStockEntrust, entrustNo);
         return new Response<>(buyRecordDtoResponse);
     }
 
+    /**
+     * 投资人点买记录委托申请卖出
+     *
+     * @param investor     投资人ID
+     * @param securitiesStockEntrust 点买记录数据传输对象
+     * @param tradeSession 投资人证券商户交易session
+     * @return
+     * @despriction 券商股票委托申请卖出
+     */
+    public Response<BuyRecordDto> stockApplySellOut(@PathVariable Long investor, @RequestBody SecuritiesStockEntrust
+            securitiesStockEntrust, String tradeSession) {
+        Investor result = investorService.findById(investor);
+        String entrustNo = investorService.buyRecordApplySellOut(result, securitiesStockEntrust, tradeSession);
+        BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.entrustApplySellOut(result, securitiesStockEntrust, entrustNo);
+        return new Response<>(buyRecordDtoResponse);
+    }
 }

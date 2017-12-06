@@ -7,8 +7,11 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 
 /**
  * @author Created by yuyidi on 2017/11/22.
@@ -16,6 +19,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class StockBusiness {
+
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private StockService stockService;

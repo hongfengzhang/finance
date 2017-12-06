@@ -43,7 +43,7 @@ public class InvestorController {
 
     /***
     * @author yuyidi 2017-12-02 20:16:51
-    * @method buyRecordBuyIn
+    * @method buyRecordEntrust
      * @param investor
      * @param buyrecord
     * @return com.waben.stock.interfaces.pojo.Response<com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust>
@@ -59,7 +59,21 @@ public class InvestorController {
             throw new ServiceException(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION);
         }
         BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(buyrecord);
-        SecuritiesStockEntrust result = investorBusiness.buyRecordBuyIn(investorDto, buyRecordDto);
+        SecuritiesStockEntrust result = investorBusiness.buyIn(investorDto, buyRecordDto);
+        return new Response<>(result);
+    }
+
+    @PreAuthorize(value = "investor")
+    @RequestMapping("/{investor}/buyrecord/{buyrecord}/sellout")
+    @ResponseBody
+    public Response<SecuritiesStockEntrust> buyRecordSellOut(@PathVariable("investor") Long investor, @PathVariable
+            ("buyrecord") Long buyrecord) {
+        InvestorDto investorDto = (InvestorDto) SecurityAccount.current().getSecurity();
+        if (investor != investorDto.getId()) {
+            throw new ServiceException(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION);
+        }
+        BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(buyrecord);
+        SecuritiesStockEntrust result = investorBusiness.sellOut(investorDto, buyRecordDto);
         return new Response<>(result);
     }
 

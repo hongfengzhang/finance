@@ -74,6 +74,22 @@ public class InvestorService {
         return result;
     }
 
+
+    private String stockType(String exponent) {
+        String type;
+        logger.info("股票账户类型:{}",exponent);
+        if (exponent.equals("4353")) {
+            //上证
+            type = "1";
+        } else if (exponent.equals("4609")) {
+            //深证
+            type = "2";
+        } else {
+            throw new ServiceException(ExceptionConstant.INVESTOR_EXCHANGE_TYPE_NOT_SUPPORT_EXCEPTION);
+        }
+        return type;
+    }
+
     /***
      * @author yuyidi 2017-12-01 14:48:21
      * @method buyRecordEntrust
@@ -82,29 +98,19 @@ public class InvestorService {
      * @description 点买交易记录执行券商股票委托
      */
     @Transactional
-    public String buyRecordEntrust(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
+    public String entrustApplyBuyIn(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
         //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         StockMoney stockMoney = stockJyRest.money(tradeSession);
         //点买交易股票数量* 单价
-        Double realStockPrice = securitiesStockEntrust.getBuyingNumber() * securitiesStockEntrust.getBuyingPrice().doubleValue();
+        Double realStockPrice = securitiesStockEntrust.getEntrustNumber() * securitiesStockEntrust.getEntrustPrice().doubleValue();
         //校检资金信息
         if (stockMoney.getEnableBalance() - realStockPrice < 0) {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH);
         }
         //查询当前资金账户的股东账户信息
         List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
-        String type = securitiesStockEntrust.getExponent();
-        logger.info("股票账户类型:{}",type);
-        if (type.equals("4353")) {
-            //上证
-            type = "1";
-        } else if (type.equals("4609")) {
-            //深证
-            type = "2";
-        } else {
-            throw new ServiceException(ExceptionConstant.INVESTOR_EXCHANGE_TYPE_NOT_SUPPORT_EXCEPTION);
-        }
+        String type = stockType(securitiesStockEntrust.getExponent());
         String stockAccount = null;
         for (StockHolder stockHolder : stockHolders) {
             if (stockHolder.getExchangeType().equals(type)) {
@@ -118,6 +124,29 @@ public class InvestorService {
         //开始委托下单
         String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
                 .BUY);
+        return enturstNo;
+    }
+
+    @Transactional
+    public String buyRecordApplySellOut(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
+        //查询资金账户可用资金
+        StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
+        //查询当前资金账户的股东账户信息
+        List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
+        String type = stockType(securitiesStockEntrust.getExponent());
+        String stockAccount = null;
+        for (StockHolder stockHolder : stockHolders) {
+            if (stockHolder.getExchangeType().equals(type)) {
+                stockAccount = stockHolder.getStockAccount();
+                break;
+            }
+        }
+        if (stockAccount == null) {
+            throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
+        }
+        //开始委托下单卖出
+        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
+                .SELL);
         return enturstNo;
     }
 
