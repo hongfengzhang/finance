@@ -31,7 +31,7 @@ public class InvestorController {
 
     @RequestMapping("/index")
     public String index() {
-        return "manage/investor/investor";
+        return "investor/investor/investor";
     }
 
     @GetMapping("/pages")

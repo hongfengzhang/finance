@@ -25,7 +25,7 @@ public class StockController {
 
     @RequestMapping("/index")
     public String stock() {
-        return "manage/stock/stock";
+        return "stock/stock/stock";
     }
 
     @GetMapping("/pages")
