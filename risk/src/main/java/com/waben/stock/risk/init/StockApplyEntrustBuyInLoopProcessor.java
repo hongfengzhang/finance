@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -38,12 +38,13 @@ public class StockApplyEntrustBuyInLoopProcessor implements CommandLineRunner {
                 int i = 0;
                 while (true) {
                     i++;
-                    List<SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer.queryEntrust();
+                    Map<String, SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer
+                            .getBuyInContainer();
                     logger.info("券商委托股票容器内剩余:{}个委托订单", stockEntrusts.size());
-                    for (SecuritiesStockEntrust securitiesStockEntrust : stockEntrusts) {
-                        logger.info("此处执行http，当前委托订单为：{}", securitiesStockEntrust.getTradeNo());
+                    for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
+                        logger.info("此处执行http，当前委托订单为：{}", entry.getKey());
                         try {
-                              Thread.sleep(1000);
+                            Thread.sleep(1000);
 //                            StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
 //                                    (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
 //                                            .getEntrustNo());
@@ -55,11 +56,11 @@ public class StockApplyEntrustBuyInLoopProcessor implements CommandLineRunner {
 //                                //发送给队列处理，提高委托单轮询处理速度
 //                            }
                             if (i % 5 == 0) {
-                                logger.info("委托订单已完成:{}",securitiesStockEntrust.getTradeNo());
-                                entrustProducer.entrustBuyIn(securitiesStockEntrust);
-                                securitiesStockEntrustContainer.remove(securitiesStockEntrust);
+                                logger.info("委托订单已完成:{}", entry.getKey());
+                                entrustProducer.entrustBuyIn(entry.getValue());
+                                securitiesStockEntrustContainer.remove(entry.getKey());
                             }
-                        }catch (InterruptedException e) {
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ServiceException ex) {
                             logger.error("券商委托单查询异常:{}", ex.getMessage());

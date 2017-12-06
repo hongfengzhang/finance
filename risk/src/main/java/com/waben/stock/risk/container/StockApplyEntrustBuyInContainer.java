@@ -7,11 +7,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Created by yuyidi on 2017/12/3.
@@ -22,37 +19,18 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class StockApplyEntrustBuyInContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    private List<SecuritiesStockEntrust> container = new ArrayList<>(1000);
+    Map<String, SecuritiesStockEntrust> buyInContainer = new ConcurrentHashMap<>();
 
-    private ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    private Lock read = readWriteLock.readLock();
-    private Lock write = readWriteLock.writeLock();
-
-    public void add(SecuritiesStockEntrust securitiesStockEntrust) {
-        write.lock();
-        try {
-            container.add(securitiesStockEntrust);
-        } finally {
-            write.unlock();
-        }
+    public void add(SecuritiesStockEntrust stock) {
+        buyInContainer.put(stock.getTradeNo(), stock);
     }
 
-    public void remove(SecuritiesStockEntrust securitiesStockEntrust) {
-        write.lock();
-        try {
-            container.remove(securitiesStockEntrust);
-        } finally {
-            write.unlock();
-        }
+    public void remove(String code) {
+        buyInContainer.remove(code);
     }
 
-    public List<SecuritiesStockEntrust> queryEntrust() {
-        read.lock();
-        try {
-            return container;
-        } finally {
-            read.unlock();
-        }
+    public Map<String, SecuritiesStockEntrust> getBuyInContainer() {
+        return buyInContainer;
     }
 
 }
