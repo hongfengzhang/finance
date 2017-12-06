@@ -145,7 +145,7 @@ public class BuyRecordService {
 		if (buyRecord.getState() != BuyRecordState.BUYLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}
-		logger.info("订单是否相等:{},{}",investorId,buyRecord.getInvestorId());
+		logger.info("订单是否相等:{},{}", investorId, buyRecord.getInvestorId());
 		if (!investorId.equals(buyRecord.getInvestorId())) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 		}
@@ -179,7 +179,7 @@ public class BuyRecordService {
 		}
 		buyRecord.setWindControlType(windControlType);
 		if (lockUserId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
-			if (lockUserId != buyRecord.getInvestorId()) {
+			if (!lockUserId.equals(buyRecord.getInvestorId())) {
 				throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 			}
 		}
@@ -193,7 +193,7 @@ public class BuyRecordService {
 		if (buyRecord.getState() != BuyRecordState.SELLLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}
-		if (investorId != buyRecord.getInvestorId()) {
+		if (!investorId.equals(buyRecord.getInvestorId())) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 		}
 		buyRecord.setSellingPrice(sellingPrice);
