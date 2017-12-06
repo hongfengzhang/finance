@@ -26,9 +26,11 @@ import com.waben.stock.datalayer.buyrecord.entity.Settlement;
 import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -70,7 +72,16 @@ public class BuyRecordService {
 		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].multiply(BigDecimal.valueOf(100))
 				.intValue();
 		buyRecord.setNumberOfStrand(numberOfStrand);
-		return buyRecordDao.create(buyRecord);
+		buyRecordDao.create(buyRecord);
+		// 扣去金额、冻结保证金
+		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
+				buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(), buyRecord.getServiceFee(),
+				buyRecord.getReserveFund());
+		if (!"200".equals(accountOperationResp.getCode())) {
+			// 扣款失败
+			throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
+		}
+		return buyRecord;
 	}
 
 	public Page<BuyRecord> pagesByQuery(final BuyRecordQuery buyRecordQuery) {

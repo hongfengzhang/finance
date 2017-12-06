@@ -42,8 +42,8 @@ public class ExceptionConstant {
 	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "3002";
 	// 员工服务异常
 	public static final String STAFF_NOT_FOUND_EXCEPTION = "3003";
-	//角色服务异常
-	public static final String ROLE_NOT_FOUND_EXCEPTION="3004";
+	// 角色服务异常
+	public static final String ROLE_NOT_FOUND_EXCEPTION = "3004";
 
 	// 点买服务异常
 	// 账户可用余额不足
@@ -56,10 +56,12 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "6004";
 	// 申请卖出发布人不匹配，不支持该操作
 	public static final String BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION = "6005";
-	//点买记录不存在
+	// 点买记录不存在
 	public static final String BUYRECORD_NOT_FOUND_EXCEPTION = "6006";
+	// 点买发布扣款失败
+	public static final String BUYRECORD_POST_DEBITFAILED_EXCEPTION = "6007";
 
-	//投资人服务异常
+	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
 	public static final String INVESTOR_SECURITIES_LOGIN_EXCEPTION = "7002";
 	public static final String INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH = "7003";
