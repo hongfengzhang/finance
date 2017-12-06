@@ -27,7 +27,7 @@ public class SecurityAccountController {
 
     @RequestMapping("/index")
     public String index() {
-        return "investor/security/security";
+        return "investor/security/index";
     }
 
     @GetMapping("/pages")

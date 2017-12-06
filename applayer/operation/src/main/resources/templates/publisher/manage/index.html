@@ -122,11 +122,19 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
-                sidePagination: "client",
+                idePagination: "server",
+                queryParams:function (params) {
+                    return {
+                        page:params.offset,
+                        size:params.pageSize
+                    }
+                },
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        res = res.result.content;
-                        return res;
+                        return {
+                            total: res.result.totalPages,
+                            rows: res.result.content
+                        }
                     }
                 },
                 columns: [{
@@ -137,16 +145,24 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'name',
-                    title: '股票名称',
+                    field: 'serialCode',
+                    title: '序列码',
                     align: 'center'
                 }, {
-                    field: 'code',
-                    title: '股票代码',
+                    field: 'phone',
+                    title: '电话',
                     align: 'center'
-                },{
-                    field: 'status',
-                    title: '股票状态',
+                }, {
+                    field: 'password',
+                    title: '推广码',
+                    align: 'center'
+                }, {
+                    field: 'promoter',
+                    title: '推广人',
+                    align: 'center'
+                }, {
+                    field: 'createTime',
+                    title: '注册时间',
                     align: 'center'
                 }, {
                     title: '操作',

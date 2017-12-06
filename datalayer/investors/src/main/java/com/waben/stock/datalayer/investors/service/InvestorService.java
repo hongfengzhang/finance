@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Random;
 
 /**
  * @author Created by yuyidi on 2017/11/30.
@@ -122,8 +123,9 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
         //开始委托下单
-        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
-                .BUY);
+        String enturstNo = String.valueOf(new Random().nextInt(100));
+//                stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
+//                .BUY);
         return enturstNo;
     }
 

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
  * @author Created by yuyidi on 2017/11/30.
  * @desc
  */
-@FeignClient(name = "investors/investors", path = "investor",fallback = InvestorServiceFallback.class)
+@FeignClient(name = "investors/investors", path = "manage",fallback = InvestorServiceFallback.class)
 public interface InvestorService extends InvestorInterface {
 
 }
