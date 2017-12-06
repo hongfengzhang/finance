@@ -103,12 +103,4 @@ public class BuyRecordController {
 		return new Response<>(buyRecordBusiness.sellLock(SecurityUtil.getUserId(), id));
 	}
 
-	// 该接口仅仅用来做测试，该接口应位于投资人服务中
-	@RequestMapping(value = "/{investorId}/sellout/{id}", method = RequestMethod.POST)
-	@ApiOperation(value = "测试使用，APP不要使用该接口，ignore it")
-	Response<BuyRecordDto> sellOut(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
-			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice) {
-		return new Response<>(buyRecordBusiness.sellOut(investorId, id, sellingPrice));
-	}
-
 }

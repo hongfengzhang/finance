@@ -69,7 +69,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
 				response.setCharacterEncoding("UTF-8"); // 避免乱码
 				mv.setView(jsonView);
-			} else if (isFeign != null && "true".equals(isFeign)) {
+			} else if ("true".equals(isFeign) || ex instanceof ServiceException) {
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
 				response.setCharacterEncoding("UTF-8"); // 避免乱码
 				mv.setView(jsonView);
