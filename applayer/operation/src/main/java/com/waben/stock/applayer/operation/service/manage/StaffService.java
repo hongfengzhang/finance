@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Primary;
  * @desc
  */
 @FeignClient(name = "manage/manage", path = "staff",fallback = StaffServiceFallback.class)
-@Primary
 public interface StaffService extends StaffInterface {
 
 }

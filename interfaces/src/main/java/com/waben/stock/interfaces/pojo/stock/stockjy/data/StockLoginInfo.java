@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Created by yuyidi on 2017/11/30.
  * @desc
  */
-public class StockLoginInfo {
+public class StockLoginInfo extends CommonErrorInfo{
 
     @JsonProperty("client_id")
     private String clientId;

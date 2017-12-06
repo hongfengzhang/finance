@@ -3,10 +3,10 @@ package com.waben.stock.datalayer.investors.repository.rest;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.EntrustType;
-import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
-import com.waben.stock.interfaces.pojo.stock.stockjy.StockResult;
+import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponseHander;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.*;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.web.HttpRest;
@@ -23,7 +23,7 @@ import java.util.Map;
  * @desc
  */
 @Component
-public class StockJyRest implements SecuritiesInterface {
+public class StockJyRest extends StockResponseHander implements SecuritiesInterface {
 
     Logger logger = LoggerFactory.getLogger(getClass());
     //券商资金账户登录
@@ -107,8 +107,8 @@ public class StockJyRest implements SecuritiesInterface {
         params.put("exchange_type", type);
         params.put("stock_account", stockAccount);
         params.put("stock_code", securitiesStockEntrust.getStockCode());
-        params.put("entrust_amount", String.valueOf(securitiesStockEntrust.getBuyingNumber()));
-        params.put("entrust_price", String.valueOf(securitiesStockEntrust.getBuyingPrice()));
+        params.put("entrust_amount", String.valueOf(securitiesStockEntrust.getEntrustNumber()));
+        params.put("entrust_price", String.valueOf(securitiesStockEntrust.getEntrustPrice()));
         params.put("entrust_bs", entrustType.getType());
         String result = HttpRest.get(entrustUrl, String.class, params);
         logger.info("委托交易结果:{}", result);
@@ -142,20 +142,5 @@ public class StockJyRest implements SecuritiesInterface {
         return handlerResult(stockResponse, ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR);
     }
 
-    private <T> List<T> handlerResult(StockResponse<T> stockResponse, String code) {
-        List<StockResult<T>> stockDataResults = stockResponse.getResult();
-        if (stockDataResults != null) {
-            if (stockDataResults.size() > 0) {
-                StockResult stockMsgResult = stockDataResults.get(1);
-                if (stockMsgResult == null) {
-                    throw new ServiceException(code);
-                }
-                if ("OK".equals(stockMsgResult.getMsg().getErrorInfo())) {
-                    StockResult<T> stockDataResult = stockDataResults.get(0);
-                    return stockDataResult.getData();
-                }
-            }
-        }
-        throw new ServiceException(code);
-    }
+
 }

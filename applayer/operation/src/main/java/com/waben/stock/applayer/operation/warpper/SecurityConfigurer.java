@@ -18,19 +18,15 @@ package com.waben.stock.applayer.operation.warpper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.waben.stock.applayer.operation.warpper.auth.filter.LoginProcessingFilter;
 import com.waben.stock.applayer.operation.warpper.auth.handler.*;
-import com.waben.stock.applayer.operation.warpper.auth.provider.DaoAuthenticationProvider;
-import com.waben.stock.applayer.operation.warpper.auth.provider.InMemoryAuthenticationProvider;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
 import com.waben.stock.applayer.operation.warpper.auth.provider.ManagerAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
@@ -68,15 +64,16 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT,"/login-error","/staff/**","/stock/**","/investor/**","/securityaccount/**").permitAll()
+                .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT, "/login-error").permitAll()
+                .antMatchers(HttpMethod.GET, "/staff/**", "/stock/**", "/investor/**", "/securityaccount/**","/env").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
 //                    .successForwardUrl("/index")
                 .and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
                 .and().exceptionHandling()
-                                        .authenticationEntryPoint(new ForbiddenEntryPoint())
-                                        .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
+                .authenticationEntryPoint(new ForbiddenEntryPoint())
+                .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
 //                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .addFilterBefore(processingFilter(), UsernamePasswordAuthenticationFilter.class)

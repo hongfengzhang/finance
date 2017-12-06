@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Primary;
  * @desc
  */
 @FeignClient(name = "buyrecord/buyrecord", path = "buyrecord", fallback = BuyRecordServiceFallback.class)
-@Primary
 public interface BuyRecordService extends BuyRecordInterface {
 
 }

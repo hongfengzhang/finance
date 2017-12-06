@@ -1,9 +1,8 @@
 package com.waben.stock.risk.container;
 
-import com.waben.stock.interfaces.pojo.stock.stockjy.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -16,11 +15,11 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * @author Created by yuyidi on 2017/12/3.
- * @desc 券商委托股票容器
+ * @desc 券商股票申请委托卖出容器
  */
 @Component
 @Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class SecuritiesStockEntrustContainer {
+public class StockApplyEntrustSellOutContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
     private List<SecuritiesStockEntrust> container = new ArrayList<>(1000);

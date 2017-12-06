@@ -11,7 +11,6 @@ import org.springframework.context.annotation.Primary;
  * @desc
  */
 @FeignClient(name = "investors/investors", path = "securityaccount",fallback = SecurityAccountServiceFallback.class)
-@Primary
 public interface SecurityAccountService extends SecurityAccountInterface{
 
 

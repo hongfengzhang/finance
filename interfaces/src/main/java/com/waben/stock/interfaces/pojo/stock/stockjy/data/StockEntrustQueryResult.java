@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Created by yuyidi on 2017/12/1.
  * @desc  股票委托查询结果
  */
-public class StockEntrustQueryResult {
+public class StockEntrustQueryResult extends CommonErrorInfo{
     /**
      * 市场信息
      */

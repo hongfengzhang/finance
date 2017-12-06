@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.pojo.stock.stockjy;
+package com.waben.stock.interfaces.pojo.stock;
 
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
@@ -28,21 +28,14 @@ public class SecuritiesStockEntrust implements Serializable{
      */
     private BuyRecordState buyRecordState;
     /**
-     * 买入价格
+     * 委托价格
      */
-    private BigDecimal buyingPrice;
+    private BigDecimal entrustPrice;
     /**
-     * 买入数量
+     * 委托数量
      */
-    private Integer buyingNumber;
-    /**
-     * 成交价格
-     */
-    private BigDecimal dealPrice;
-    /**
-     * 成交数量
-     */
-    private Integer dealNumber;
+    private Integer entrustNumber;
+
     /**
      * 交易类型(买入或卖出)
      */
@@ -56,11 +49,15 @@ public class SecuritiesStockEntrust implements Serializable{
     /**
      * 委托编号，证券账号购买股票后的交易编号
      */
-    private String entrustNumber;
+    private String entrustNo;
     /**
      * 委托时间
      */
     private String entrustTime;
+
+    private Long investor;
+
+    private String tradeSession;
 
 
     public Long getBuyRecordId() {
@@ -119,36 +116,20 @@ public class SecuritiesStockEntrust implements Serializable{
         this.buyRecordState = buyRecordState;
     }
 
-    public BigDecimal getBuyingPrice() {
-        return buyingPrice;
+    public BigDecimal getEntrustPrice() {
+        return entrustPrice;
     }
 
-    public void setBuyingPrice(BigDecimal buyingPrice) {
-        this.buyingPrice = buyingPrice;
+    public void setEntrustPrice(BigDecimal entrustPrice) {
+        this.entrustPrice = entrustPrice;
     }
 
-    public Integer getBuyingNumber() {
-        return buyingNumber;
+    public Integer getEntrustNumber() {
+        return entrustNumber;
     }
 
-    public void setBuyingNumber(Integer buyingNumber) {
-        this.buyingNumber = buyingNumber;
-    }
-
-    public BigDecimal getDealPrice() {
-        return dealPrice;
-    }
-
-    public void setDealPrice(BigDecimal dealPrice) {
-        this.dealPrice = dealPrice;
-    }
-
-    public Integer getDealNumber() {
-        return dealNumber;
-    }
-
-    public void setDealNumber(Integer dealNumber) {
-        this.dealNumber = dealNumber;
+    public void setEntrustNumber(Integer entrustNumber) {
+        this.entrustNumber = entrustNumber;
     }
 
     public EntrustType getEntrustType() {
@@ -167,12 +148,12 @@ public class SecuritiesStockEntrust implements Serializable{
         this.entrustState = entrustState;
     }
 
-    public String getEntrustNumber() {
-        return entrustNumber;
+    public String getEntrustNo() {
+        return entrustNo;
     }
 
-    public void setEntrustNumber(String entrustNumber) {
-        this.entrustNumber = entrustNumber;
+    public void setEntrustNo(String entrustNo) {
+        this.entrustNo = entrustNo;
     }
 
     public String getEntrustTime() {
@@ -181,5 +162,21 @@ public class SecuritiesStockEntrust implements Serializable{
 
     public void setEntrustTime(String entrustTime) {
         this.entrustTime = entrustTime;
+    }
+
+    public String getTradeSession() {
+        return tradeSession;
+    }
+
+    public void setTradeSession(String tradeSession) {
+        this.tradeSession = tradeSession;
+    }
+
+    public Long getInvestor() {
+        return investor;
+    }
+
+    public void setInvestor(Long investor) {
+        this.investor = investor;
     }
 }

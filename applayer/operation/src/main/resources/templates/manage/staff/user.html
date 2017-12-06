@@ -137,10 +137,13 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
+                sidePagination: "server",
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        res = res.result.content;
-                        return res;
+                       return{
+                           total: res.result.totalPages,
+                           rows: res.result.contant
+                       }
                     }
                 },
                 columns: [{
