@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
 import com.waben.stock.datalayer.stockcontent.service.StockService;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
@@ -42,7 +43,13 @@ public class StockController implements StockInterface {
 
 	@Override
 	public Response<StockDto> fetchWithExponentByCode(@PathVariable String code) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(StockDto.class, stockService.findByCode(code), false));
+		Stock stock = stockService.findByCode(code);
+		StockDto result = CopyBeanUtils.copyBeanProperties(StockDto.class, stock, false);
+		if (stock.getExponent() != null) {
+			result.setStockExponentDto(
+					CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stock.getExponent(), false));
+		}
+		return new Response<>(result);
 	}
 
 }

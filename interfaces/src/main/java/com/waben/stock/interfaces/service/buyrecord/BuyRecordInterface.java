@@ -94,8 +94,7 @@ public interface BuyRecordInterface {
 	 */
 	@RequestMapping(value = "/{investorId}/sellout/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> sellOut(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
-			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice,
-			@RequestParam(name = "profitDistributionRatio") BigDecimal profitDistributionRatio);
+			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice);
 
 	/**
 	 * 分页查询点买记录

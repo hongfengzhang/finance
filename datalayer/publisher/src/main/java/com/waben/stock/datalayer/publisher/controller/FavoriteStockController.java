@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.datalayer.publisher.entity.FavoriteStock;
 import com.waben.stock.datalayer.publisher.service.FavoriteStockService;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -34,9 +35,9 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	@Override
 	public Response<FavoriteStockDto> add(@RequestBody FavoriteStockDto favoriteStockDto) {
 		return new Response<>(
-				CopyBeanUtils.copyBeanProperties(
-						FavoriteStockDto.class, favoriteStockService.save(favoriteStockDto.getPublisherId(),
-								favoriteStockDto.getStockId(), favoriteStockDto.getName(), favoriteStockDto.getCode()),
+				CopyBeanUtils.copyBeanProperties(FavoriteStockDto.class,
+						favoriteStockService
+								.save(CopyBeanUtils.copyBeanProperties(FavoriteStock.class, favoriteStockDto, false)),
 						false));
 	}
 

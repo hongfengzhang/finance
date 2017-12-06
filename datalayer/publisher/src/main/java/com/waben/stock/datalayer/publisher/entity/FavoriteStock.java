@@ -23,11 +23,6 @@ public class FavoriteStock {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 股票ID
-	 */
-	@Column(name = "stock_id")
-	private Long stockId;
-	/**
 	 * 股票名称
 	 */
 	@Column(name = "name")
@@ -37,6 +32,11 @@ public class FavoriteStock {
 	 */
 	@Column(name = "code")
 	private String code;
+	/**
+	 * 指数代码
+	 */
+	@Column(name = "exponent_code")
+	private String exponentCode;
 	/**
 	 * 收藏时间
 	 */
@@ -59,14 +59,6 @@ public class FavoriteStock {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getStockId() {
-		return stockId;
-	}
-
-	public void setStockId(Long stockId) {
-		this.stockId = stockId;
 	}
 
 	public String getName() {
@@ -107,6 +99,14 @@ public class FavoriteStock {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public String getExponentCode() {
+		return exponentCode;
+	}
+
+	public void setExponentCode(String exponentCode) {
+		this.exponentCode = exponentCode;
 	}
 
 }

@@ -42,4 +42,12 @@ public class BindCardService {
 		return bindCardDao.listByPublisherId(publisherId);
 	}
 
+	public BindCard findById(Long id) {
+		return bindCardDao.retrieve(id);
+	}
+
+	public BindCard revision(BindCard bindCard) {
+		return bindCardDao.update(bindCard);
+	}
+
 }

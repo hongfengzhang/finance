@@ -48,6 +48,9 @@ public class BuyRecordService {
 	@Autowired
 	private SettlementDao settlementDao;
 
+	@Autowired
+	private CapitalAccountService accountService;
+
 	public BuyRecord findBuyRecord(Long buyrecord) {
 		BuyRecord buyRecord = buyRecordDao.retrieve(buyrecord);
 		if (buyRecord == null) {
@@ -83,6 +86,14 @@ public class BuyRecordService {
 				if (buyRecordQuery.getPublisherId() != null && buyRecordQuery.getPublisherId() > 0) {
 					predicateList.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class),
 							buyRecordQuery.getPublisherId()));
+				}
+				if (buyRecordQuery.getStartCreateTime() != null) {
+					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class),
+							buyRecordQuery.getStartCreateTime()));
+				}
+				if (buyRecordQuery.getEndCreateTime() != null) {
+					predicateList.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class),
+							buyRecordQuery.getStartCreateTime()));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
@@ -185,7 +196,7 @@ public class BuyRecordService {
 	}
 
 	@Transactional
-	public BuyRecord sellOut(Long investorId, Long id, BigDecimal sellingPrice, BigDecimal profitDistributionRatio) {
+	public BuyRecord sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
 		BuyRecord buyRecord = buyRecordDao.retrieve(id);
 		if (buyRecord.getState() != BuyRecordState.SELLLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
@@ -204,9 +215,8 @@ public class BuyRecordService {
 		settlement.setInvestorProfitOrLoss(new BigDecimal(0));
 		settlement.setSettlementTime(new Date());
 		if (profitOrLoss.compareTo(BigDecimal.ZERO) >= 0) {
-			settlement.setPublisherProfitOrLoss(profitOrLoss.multiply(profitDistributionRatio));
-			settlement.setInvestorProfitOrLoss(
-					profitOrLoss.multiply(new BigDecimal(1).subtract(profitDistributionRatio)));
+			settlement.setPublisherProfitOrLoss(profitOrLoss.multiply(new BigDecimal(0.9)));
+			settlement.setInvestorProfitOrLoss(profitOrLoss.multiply(new BigDecimal(1).subtract(new BigDecimal(0.9))));
 		} else {
 			if (profitOrLoss.abs().compareTo(buyRecord.getReserveFund()) > 0) {
 				settlement.setPublisherProfitOrLoss(buyRecord.getReserveFund().multiply(new BigDecimal(-1)));
@@ -216,6 +226,9 @@ public class BuyRecordService {
 			}
 		}
 		settlementDao.create(settlement);
+		// 退回保证金
+		accountService.returnReserveFund(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(),
+				settlement.getPublisherProfitOrLoss());
 		// 修改点买记录状态
 		return changeState(buyRecord);
 	}

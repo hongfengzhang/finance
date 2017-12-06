@@ -47,8 +47,9 @@ public class FavoriteStockController {
 		StockDto stockDto = stockBusiness.findByCode(stockCode);
 		FavoriteStockDto favorite = new FavoriteStockDto();
 		favorite.setCode(stockDto.getCode());
-		favorite.setStockId(stockDto.getId());
 		favorite.setName(stockDto.getName());
+		favorite.setExponentCode(
+				stockDto.getStockExponentDto() != null ? stockDto.getStockExponentDto().getExponentCode() : null);
 		favorite.setPublisherId(SecurityUtil.getUserId());
 		return new Response<>(favoriteBusiness.save(favorite));
 	}

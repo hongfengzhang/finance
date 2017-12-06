@@ -14,6 +14,16 @@ import com.waben.stock.interfaces.pojo.Response;
 public interface BindCardInterface {
 
 	/**
+	 * 根据ID获取绑卡信息
+	 * 
+	 * @param bindCardDto
+	 *            绑卡信息
+	 * @return 绑卡信息
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	Response<BindCardDto> fetchById(@PathVariable("id") Long id);
+
+	/**
 	 * 绑卡
 	 * 
 	 * @param bindCardDto
@@ -22,6 +32,16 @@ public interface BindCardInterface {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<BindCardDto> addBankCard(@RequestBody BindCardDto bindCardDto);
+
+	/**
+	 * 更新绑卡
+	 * 
+	 * @param bindCardDto
+	 *            绑卡信息
+	 * @return 绑卡信息
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<BindCardDto> modifyBankCard(@RequestBody BindCardDto bindCardDto);
 
 	/**
 	 * 获取某个发布人的绑卡列表

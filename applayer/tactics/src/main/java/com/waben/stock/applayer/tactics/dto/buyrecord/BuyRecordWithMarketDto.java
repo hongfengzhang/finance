@@ -82,8 +82,9 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 	}
 
 	public BigDecimal getProfitOrLoss() {
-		if (profitOrLoss == null && getBuyingPrice() != null && getLastPrice() != null) {
-			return new BigDecimal(getNumberOfStrand()).multiply(getLastPrice().subtract(getBuyingPrice()));
+		if (profitOrLoss == null && getLastPrice() != null) {
+			BigDecimal price = getBuyingPrice() != null ? getBuyingPrice() : getDelegatePrice();
+			return new BigDecimal(getNumberOfStrand()).multiply(getLastPrice().subtract(price));
 		}
 		return profitOrLoss;
 	}
