@@ -61,6 +61,7 @@ public class ExceptionConstant {
 	// 点买发布扣款失败
 	public static final String BUYRECORD_POST_DEBITFAILED_EXCEPTION = "6007";
 
+
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
 	public static final String INVESTOR_SECURITIES_LOGIN_EXCEPTION = "7002";

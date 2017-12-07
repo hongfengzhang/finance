@@ -38,7 +38,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
                 new ExceptionInformation(IllegalArgumentException.class, HttpServletResponse.SC_BAD_REQUEST, "400"));
         this.exceptions.add(new ExceptionInformation(NetflixCircuitException.class, HttpServletResponse
                 .SC_SERVICE_UNAVAILABLE, "503"));
-        this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "503"));
+        this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_OK, "500"));
     }
 
     @Override

@@ -18,6 +18,7 @@ import java.io.IOException;
 */
 public class ForbiddenEntryPoint extends ResponseHandler implements AuthenticationEntryPoint {
     Logger logger = LoggerFactory.getLogger(getClass());
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException
             authException) throws IOException, ServletException {
@@ -25,7 +26,7 @@ public class ForbiddenEntryPoint extends ResponseHandler implements Authenticati
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         Response<Object> result = new Response<>();
         result.setMessage("未登陆，请先登陆");
-        result.setCode("200");
+        result.setCode("403");
         response(result,request,response,"/login");
     }
 }

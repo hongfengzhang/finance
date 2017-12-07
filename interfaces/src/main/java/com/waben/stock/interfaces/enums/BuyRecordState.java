@@ -23,7 +23,7 @@ public enum BuyRecordState implements CommonalityEnum {
 
 	UNWIND("5", "已平仓");
 
-	private BuyRecordState(String index, String status) {
+	BuyRecordState(String index, String status) {
 		this.index = index;
 		this.status = status;
 	}

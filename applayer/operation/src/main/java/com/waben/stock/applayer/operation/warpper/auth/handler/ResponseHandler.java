@@ -35,6 +35,7 @@ public abstract class ResponseHandler {
             writer.close();
         } else {
             try {
+                request.getSession().setAttribute("message",result.getMessage());
                 redirectStrategy.sendRedirect(request, response, view);
             } catch (IOException e) {
                 e.printStackTrace();

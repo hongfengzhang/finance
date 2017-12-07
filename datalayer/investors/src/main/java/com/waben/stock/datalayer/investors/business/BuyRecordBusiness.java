@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,6 +23,7 @@ public class BuyRecordBusiness {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    @Qualifier("buyRecordFeignReference")
     private BuyRecordReference buyRecordReference;
 
     /***
