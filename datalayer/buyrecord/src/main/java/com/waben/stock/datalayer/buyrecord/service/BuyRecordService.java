@@ -112,19 +112,19 @@ public class BuyRecordService {
 							buyRecordQuery.getPublisherId()));
 				}
 				if (buyRecordQuery.getStartCreateTime() != null) {
-					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class),
-							buyRecordQuery.getStartCreateTime()));
+					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Long.class),
+							buyRecordQuery.getStartCreateTime().getTime()));
 				}
 				if (buyRecordQuery.getEndCreateTime() != null) {
-					predicateList.add(criteriaBuilder.lessThan(root.get("createTime").as(Date.class),
-							buyRecordQuery.getStartCreateTime()));
+					predicateList.add(criteriaBuilder.lessThan(root.get("createTime").as(Long.class),
+							buyRecordQuery.getEndCreateTime().getTime()));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
-				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("sellingTime").as(Date.class)),
-						criteriaBuilder.desc(root.get("buyingTime").as(Date.class)),
-						criteriaBuilder.desc(root.get("createTime").as(Date.class)));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("sellingTime").as(Long.class)),
+						criteriaBuilder.desc(root.get("buyingTime").as(Long.class)),
+						criteriaBuilder.desc(root.get("createTime").as(Long.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

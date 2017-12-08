@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.enums;
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public enum BankType implements CommonalityEnum {
 
 	DEFAULT("1", "unknow_001", "默认银行", "/bankIcon/default@3x.png"),

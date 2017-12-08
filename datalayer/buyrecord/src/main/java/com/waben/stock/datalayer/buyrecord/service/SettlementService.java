@@ -58,7 +58,7 @@ public class SettlementService {
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
-				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("settlementTime").as(Date.class)));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("settlementTime").as(Long.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

@@ -22,17 +22,11 @@ public class BindCardService {
 	@Autowired
 	private BindCardDao bindCardDao;
 
-	public BindCard save(Long publisherId, String name, String idCard, String phone, String bankCard) {
-		BindCard bindCard = bindCardDao.retriveByPublisherIdAndBankCard(publisherId, bankCard);
-		if (bindCard != null) {
+	public BindCard save(BindCard bindCard) {
+		BindCard check = bindCardDao.retriveByPublisherIdAndBankCard(bindCard.getPublisherId(), bindCard.getBankCard());
+		if (check != null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_ALREADY_BIND_EXCEPTION);
 		} else {
-			bindCard = new BindCard();
-			bindCard.setName(name);
-			bindCard.setIdCard(idCard);
-			bindCard.setPhone(phone);
-			bindCard.setPublisherId(publisherId);
-			bindCard.setBankCard(bankCard);
 			bindCardDao.create(bindCard);
 		}
 		return bindCard;

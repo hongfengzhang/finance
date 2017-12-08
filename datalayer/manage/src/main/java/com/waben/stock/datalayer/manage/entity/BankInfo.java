@@ -30,6 +30,11 @@ public class BankInfo {
 	 */
 	@Column(name = "bank_name")
 	private String bankName;
+	/**
+	 * 图标链接
+	 */
+	@Column(name = "icon_link")
+	private String iconLink;
 
 	public Long getId() {
 		return id;
@@ -53,6 +58,14 @@ public class BankInfo {
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
+	}
+
+	public String getIconLink() {
+		return iconLink;
+	}
+
+	public void setIconLink(String iconLink) {
+		this.iconLink = iconLink;
 	}
 
 }

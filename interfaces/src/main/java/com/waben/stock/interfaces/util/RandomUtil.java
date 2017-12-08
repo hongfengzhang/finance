@@ -64,14 +64,4 @@ public class RandomUtil {
 		return result.toString();
 	}
 
-	public static void main(String[] args) {
-		// 生成15位的随机数
-		String first = RandomUtil.generateRandomCode(10);
-		String second = RandomUtil.generateRandomCode(5);
-		String result = first + second;
-
-		System.out.println("result:" + result);
-
-		System.out.println(RandomUtil.generateRandomStr(5));
-	}
 }

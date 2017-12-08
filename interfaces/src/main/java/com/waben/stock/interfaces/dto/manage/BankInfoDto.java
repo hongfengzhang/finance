@@ -17,6 +17,10 @@ public class BankInfoDto {
 	 * 银行名称
 	 */
 	private String bankName;
+	/**
+	 * 图标链接
+	 */
+	private String iconLink;
 
 	public Long getId() {
 		return id;
@@ -40,6 +44,14 @@ public class BankInfoDto {
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
+	}
+
+	public String getIconLink() {
+		return iconLink;
+	}
+
+	public void setIconLink(String iconLink) {
+		this.iconLink = iconLink;
 	}
 
 }

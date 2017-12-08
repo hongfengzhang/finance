@@ -44,4 +44,8 @@ public class CnapsService {
 		return bankInfoDao.retrieveByBankNameLike(cardBin.getBankName());
 	}
 
+	public List<BankInfo> listBankInfo() {
+		return bankInfoDao.list();
+	}
+
 }

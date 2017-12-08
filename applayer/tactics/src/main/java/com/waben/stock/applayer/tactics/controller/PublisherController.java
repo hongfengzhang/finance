@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
@@ -41,7 +42,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/publisher")
 @Api(description = "策略发布人")
-public class  PublisherController {
+public class PublisherController {
 
 	@Autowired
 	private PublisherService publisherService;
@@ -77,11 +78,13 @@ public class  PublisherController {
 
 	@PostMapping("/register")
 	@ApiOperation(value = "注册发布策略人")
-	public Response<PublisherCapitalAccountDto> register(String phone, String password, String verificationCode) {
+	public Response<PublisherCapitalAccountDto> register(@RequestParam(required = true) String phone,
+			@RequestParam(required = true) String password, @RequestParam(required = true) String verificationCode,
+			String promoter) {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
-		Response<PublisherDto> publisherResp = publisherService.register(phone, password);
+		Response<PublisherDto> publisherResp = publisherService.register(phone, password, promoter);
 		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());

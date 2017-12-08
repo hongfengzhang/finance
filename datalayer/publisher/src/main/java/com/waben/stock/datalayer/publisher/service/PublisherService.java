@@ -13,6 +13,7 @@ import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.util.ShareCodeUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
@@ -37,7 +38,7 @@ public class PublisherService {
 	}
 
 	@Transactional
-	public Publisher register(String phone, String password) {
+	public Publisher register(String phone, String password, String promoter) {
 		// 检查手机号
 		Publisher check = publisherDao.retriveByPhone(phone);
 		if (check != null) {
@@ -49,7 +50,10 @@ public class PublisherService {
 		publisher.setPhone(phone);
 		publisher.setPassword(password);
 		publisher.setCreateTime(new Date());
+		publisher.setPromoter(promoter);
 		publisherDao.create(publisher);
+		publisher.setPromotionCode(ShareCodeUtil.encode(publisher.getId().intValue()));
+		publisherDao.update(publisher);
 		// 保存资金账号信息
 		CapitalAccount account = new CapitalAccount();
 		account.setBalance(new BigDecimal(0.00));
