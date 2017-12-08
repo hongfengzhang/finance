@@ -47,11 +47,11 @@ public class JacksonUtil {
 		try {
 			return objectMapper.readValue(json, valueType);
 		} catch (JsonParseException e) {
-			logger.error("json decode 实体对象 解析异常", e.getMessage());
+			logger.error("json decode 实体对象 解析异常{}", e.getMessage());
 		} catch (JsonMappingException e) {
-			logger.error("json decode 实体对象  mapping 异常", e.getMessage());
+			logger.error("json decode 实体对象  mapping 异常{}", e.getMessage());
 		} catch (IOException e) {
-			logger.error("json decode 实体对象  io 异常", e.getMessage());
+			logger.error("json decode 实体对象  io 异常{}", e.getMessage());
 		}
 		return null;
 	}
@@ -71,11 +71,11 @@ public class JacksonUtil {
 		try {
 			return objectMapper.readValue(json, valueTypeRef);
 		} catch (JsonParseException e) {
-			logger.error("json decode 集合 解析异常", e.getMessage());
+			logger.error("json decode 集合 解析异常{}", e);
 		} catch (JsonMappingException e) {
-			logger.error("json decode 集合  mapping 异常", e.getMessage());
+			logger.error("json decode 集合  mapping 异常{}", e);
 		} catch (IOException e) {
-			logger.error("json decode 集合  io 异常", e.getMessage());
+			logger.error("json decode 集合  io 异常{}", e);
 		}
 		return null;
 	}
@@ -93,11 +93,11 @@ public class JacksonUtil {
 		try {
 			return objectMapper.writeValueAsString(object);
 		} catch (JsonParseException e) {
-			logger.error("json encode 实体对象 解析异常", e.getMessage());
+			logger.error("json encode 实体对象 解析异常{}", e.getMessage());
 		} catch (JsonMappingException e) {
-			logger.error("json encode 实体对象  mapping 异常", e.getMessage());
+			logger.error("json encode 实体对象  mapping 异常{}", e.getMessage());
 		} catch (IOException e) {
-			logger.error("json encode 实体对象  io 异常", e.getMessage());
+			logger.error("json encode 实体对象  io 异常{}", e.getMessage());
 		}
 		return null;
 	}

@@ -130,8 +130,6 @@ public class BuyRecordService {
 		} else if (BuyRecordState.BUYLOCK.equals(current)) {
 			next = BuyRecordState.HOLDPOSITION;
 		} else if (BuyRecordState.HOLDPOSITION.equals(current)) {
-			next = BuyRecordState.SELLAPPLY;
-		}  else if (BuyRecordState.SELLAPPLY.equals(current)) {
 			next = BuyRecordState.SELLLOCK;
 		} else if (BuyRecordState.SELLLOCK.equals(current)) {
 			next = BuyRecordState.UNWIND;

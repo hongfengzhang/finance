@@ -26,7 +26,7 @@ public class SecuritiesEntrust extends StockResponseHander implements Securities
     Logger logger = LoggerFactory.getLogger(getClass());
 
     //券商委托单查询
-    private String queryEntrustPath = "http://106.15.37.226:8445/stockjy/entrustqry";
+    private String queryEntrustPath = "http://106.15.37.226:8445/stockjy/qryentrust";
 
     public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo) {
         String loginUrl = queryEntrustPath + "?trade_session={trade_session}&entrust_no={entrust_no}";
