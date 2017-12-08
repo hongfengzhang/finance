@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -28,9 +30,10 @@ public class BuyRecordServiceFallback implements BuyRecordService {
 
 
     @Override
-    public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
-        return null;
-    }
+	public Response<BuyRecordDto> sellLock(Long investorId, Long id, String delegateNumber,
+			String windControlTypeIndex) {
+    	throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
     @Override
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {

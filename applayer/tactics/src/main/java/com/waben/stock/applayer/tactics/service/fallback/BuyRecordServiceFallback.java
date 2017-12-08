@@ -52,7 +52,8 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
+	public Response<BuyRecordDto> sellLock(Long investorId, Long id, String delegateNumber,
+			String windControlTypeIndex) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

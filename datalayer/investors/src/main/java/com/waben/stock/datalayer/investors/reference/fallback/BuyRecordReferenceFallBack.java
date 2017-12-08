@@ -27,11 +27,12 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     public Response<String> dropBuyRecord(Long id) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
-
+    
     @Override
-    public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	public Response<BuyRecordDto> sellLock(Long investorId, Long id, String delegateNumber,
+			String windControlTypeIndex) {
+    	throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
     @Override
     public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
@@ -62,4 +63,5 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
 	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 }

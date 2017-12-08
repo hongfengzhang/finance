@@ -76,9 +76,9 @@ public class BuyRecordController implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<BuyRecordDto> sellLock(@PathVariable Long investorId, @PathVariable Long id,
+	public Response<BuyRecordDto> sellLock(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber,
 			String windControlTypeIndex) {
-		BuyRecord buyRecord = buyRecordService.sellLock(investorId, id,
+		BuyRecord buyRecord = buyRecordService.sellLock(investorId, id, delegateNumber,
 				WindControlType.getByIndex(windControlTypeIndex));
 		return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
 	}

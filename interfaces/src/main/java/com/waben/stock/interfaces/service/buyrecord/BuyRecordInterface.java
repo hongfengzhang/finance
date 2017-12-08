@@ -85,10 +85,15 @@ public interface BuyRecordInterface {
 	 *            投资人ID
 	 * @param id
 	 *            点买记录id
+	 * @param delegateNumber
+	 *            卖出委托编号
+	 * @param windControlTypeIndex
+	 *            风控类型
 	 * @return 点买记录
 	 */
 	@RequestMapping(value = "/{investorId}/selllock/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> sellLock(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
+			@RequestParam(name = "delegateNumber") String delegateNumber,
 			@RequestParam(name = "windControlTypeIndex") String windControlTypeIndex);
 
 	/**

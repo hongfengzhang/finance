@@ -12,7 +12,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
-import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -222,12 +221,11 @@ public class BuyRecordService {
 	}
 
 	@Transactional
-	public BuyRecord sellLock(Long investorId, Long id, WindControlType windControlType) {
+	public BuyRecord sellLock(Long investorId, Long id, String delegateNumber, WindControlType windControlType) {
 		BuyRecord buyRecord = findBuyRecord(id);
 		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
-		buyRecord.setWindControlType(windControlType);
 		if (investorId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
 			if (!investorId.equals(buyRecord.getInvestorId())) {
 				throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
@@ -236,6 +234,7 @@ public class BuyRecordService {
 		if (buyRecord.getWindControlType() == null) {
 			buyRecord.setWindControlType(windControlType);
 		}
+		buyRecord.setDelegateNumber(delegateNumber);
 		// 修改点买记录状态
 		return changeState(buyRecord, true);
 	}
