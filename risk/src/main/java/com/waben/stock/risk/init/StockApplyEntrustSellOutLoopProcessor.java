@@ -38,6 +38,11 @@ public class StockApplyEntrustSellOutLoopProcessor implements CommandLineRunner 
                     Map<String, SecuritiesStockEntrust> stockEntrusts = stockApplyEntrustSellOutContainer
                             .getSellOutContainer();
                     logger.info("券商委托股票容器内剩余:{}个委托卖出订单", stockEntrusts.size());
+                    try {
+                        Thread.sleep(5 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
                         logger.info("此处执行http，当前委托订单为：{}", entry.getKey());
                         try {

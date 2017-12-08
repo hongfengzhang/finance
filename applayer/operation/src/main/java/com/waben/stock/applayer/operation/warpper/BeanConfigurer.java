@@ -201,7 +201,7 @@ public class BeanConfigurer {
         return BindingBuilder.bind(queue).to(buyRecordExchange).with("applyBuyIn");
     }
     @Bean
-    public Binding bindingExchangEntrust(@Qualifier("entrustApplySellOut") Queue queue,
+    public Binding bindingExchangEntrustSellOut(@Qualifier("entrustApplySellOut") Queue queue,
                                          @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
         return BindingBuilder.bind(queue).to(buyRecordExchange).with("applySellOut");
     }

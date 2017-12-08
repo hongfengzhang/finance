@@ -9,16 +9,16 @@ import java.util.Map;
  */
 public enum EntrustState implements CommonalityEnum {
 
-    UNREPORTING("1", "未报"),
-    TOBESUBMIT("2", "待报"),
-    HASBEENREPORTED("3", "已报"),
-    REPORTEDTOWITHDRAW("4", "已报待撤"),
-    PORTOKTOWITHDRAW("5", "部成待撤"),
-    PORTWITHDRAW("6", "部撤"),
-    HASBEENWITHDRAW("7", "已撤"),
-    PORTSUCCESS("8", "部成"),
-    HASBEENSUCCESS("9", "已成"),
-    WASTEORDER("10", "废单");
+    UNREPORTING("0", "未报"),
+    TOBESUBMIT("1", "待报"),
+    HASBEENREPORTED("2", "已报"),
+    REPORTEDTOWITHDRAW("3", "已报待撤"),
+    PORTOKTOWITHDRAW("4", "部成待撤"),
+    PORTWITHDRAW("5", "部撤"),
+    HASBEENWITHDRAW("6", "已撤"),
+    PORTSUCCESS("7", "部成"),
+    HASBEENSUCCESS("8", "已成"),
+    WASTEORDER("9", "废单");
 
     private static Map<String, EntrustState> valueMap = new HashMap();
 

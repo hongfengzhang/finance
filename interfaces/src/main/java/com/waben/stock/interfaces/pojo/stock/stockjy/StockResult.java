@@ -9,7 +9,7 @@ import java.util.List;
 public class StockResult<T> {
     private List<T> data;
     private StockMsg msg;
-//
+
     public List<T> getData() {
         return data;
     }
