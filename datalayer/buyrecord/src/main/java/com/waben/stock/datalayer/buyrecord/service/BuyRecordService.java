@@ -129,14 +129,17 @@ public class BuyRecordService {
 	}
 
 	@Transactional
-	public BuyRecord changeState(BuyRecord record) {
+	public BuyRecord changeState(BuyRecord record, boolean isSellLock) {
 		BuyRecordState current = record.getState();
 		BuyRecordState next = BuyRecordState.UNKONWN;
 		if (BuyRecordState.POSTED.equals(current)) {
 			next = BuyRecordState.BUYLOCK;
 		} else if (BuyRecordState.BUYLOCK.equals(current)) {
 			next = BuyRecordState.HOLDPOSITION;
-		} else if (BuyRecordState.HOLDPOSITION.equals(current)) {
+		} else if (BuyRecordState.HOLDPOSITION.equals(current) && isSellLock == false) {
+			next = BuyRecordState.SELLAPPLY;
+		} else if ((BuyRecordState.HOLDPOSITION.equals(current) || BuyRecordState.SELLAPPLY.equals(current))
+				&& isSellLock == true) {
 			next = BuyRecordState.SELLLOCK;
 		} else if (BuyRecordState.SELLLOCK.equals(current)) {
 			next = BuyRecordState.UNWIND;
@@ -160,7 +163,7 @@ public class BuyRecordService {
 		buyRecord.setInvestorId(investorId);
 		buyRecord.setDelegateNumber(delegateNumber);
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, false);
 	}
 
 	@Transactional
@@ -192,23 +195,40 @@ public class BuyRecordService {
 				buyRecord.getApplyAmount().multiply(buyRecord.getLossPoint().abs().subtract(new BigDecimal(0.05)))
 						.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, false);
 	}
 
 	@Transactional
-	public BuyRecord sellLock(Long lockUserId, Long id, WindControlType windControlType) {
+	public BuyRecord sellApply(Long publisherId, Long id) {
+		BuyRecord buyRecord = findBuyRecord(id);
+		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		if (!buyRecord.getPublisherId().equals(publisherId)) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		buyRecord.setWindControlType(WindControlType.PUBLISHERAPPLY);
+		// 修改点买记录状态
+		return changeState(buyRecord, false);
+	}
+
+	@Transactional
+	public BuyRecord sellLock(Long investorId, Long id, WindControlType windControlType) {
 		BuyRecord buyRecord = findBuyRecord(id);
 		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
 		buyRecord.setWindControlType(windControlType);
-		if (lockUserId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
-			if (!lockUserId.equals(buyRecord.getInvestorId())) {
+		if (investorId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
+			if (!investorId.equals(buyRecord.getInvestorId())) {
 				throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 			}
 		}
+		if (buyRecord.getWindControlType() == null) {
+			buyRecord.setWindControlType(windControlType);
+		}
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, true);
 	}
 
 	@Transactional
@@ -246,7 +266,7 @@ public class BuyRecordService {
 		accountService.returnReserveFund(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(),
 				settlement.getPublisherProfitOrLoss());
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, false);
 	}
 
 }

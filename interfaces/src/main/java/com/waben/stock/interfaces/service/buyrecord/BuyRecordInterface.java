@@ -67,16 +67,28 @@ public interface BuyRecordInterface {
 			@RequestParam(name = "buyingPrice") BigDecimal buyingPrice);
 
 	/**
-	 * 用户申请卖出或者投资人卖出股票锁定，此时状态为“卖出锁定”
+	 * 用户申请卖出，此时状态为“卖出申请”
 	 *
-	 * @param lockUserId
-	 *            发布人ID或者投资人ID
+	 * @param publisherId
+	 *            发布人ID
 	 * @param id
 	 *            点买记录id
 	 * @return 点买记录
 	 */
-	@RequestMapping(value = "/{lockUserId}/selllock/{id}", method = RequestMethod.PUT)
-	Response<BuyRecordDto> sellLock(@PathVariable("lockUserId") Long lockUserId, @PathVariable("id") Long id,
+	@RequestMapping(value = "/{publisherId}/sellapply/{id}", method = RequestMethod.PUT)
+	Response<BuyRecordDto> sellApply(@PathVariable("publisherId") Long publisherId, @PathVariable("id") Long id);
+
+	/**
+	 * 投资人卖出股票锁定，此时状态为“卖出锁定”
+	 *
+	 * @param investorId
+	 *            投资人ID
+	 * @param id
+	 *            点买记录id
+	 * @return 点买记录
+	 */
+	@RequestMapping(value = "/{investorId}/selllock/{id}", method = RequestMethod.PUT)
+	Response<BuyRecordDto> sellLock(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
 			@RequestParam(name = "windControlTypeIndex") String windControlTypeIndex);
 
 	/**

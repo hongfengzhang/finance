@@ -138,11 +138,17 @@
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination: "server",
+                queryParams:function (params) {
+                    return {
+                        page:params.offset,
+                        size:params.pageSize
+                    }
+                },
                 responseHandler: function (res) {
                     if (res.code == '200') {
                        return{
                            total: res.result.totalPages,
-                           rows: res.result.contant
+                           rows: res.result.content
                        }
                     }
                 },

@@ -11,6 +11,8 @@ public class ExceptionConstant {
 	public static final String DATETIME_ERROR = "1002";
 	public static final String DATANOTFOUND_EXCEPTION = "1003";
 	public static final String ARGUMENT_EXCEPTION = "1004";
+	public static final String NETFLIX_CIRCUIT_EXCEPTION = "1005";
+
 	// 发送短信失败
 	public static final String SENDMESSAGE_FAILED_EXCEPTION = "1005";
 	// 短信发送间隔时间太短
@@ -63,7 +65,9 @@ public class ExceptionConstant {
 	// 支付密码错误
 	public static final String PAYMENTPASSWORD_WRONG_EXCEPTION = "6009";
 	// 点买异常
-		public static final String BUYRECORD_Save_EXCEPTION = "6007";
+	public static final String BUYRECORD_SAVE_EXCEPTION = "6010";
+	// 申请卖出只能由发布人本人操作
+	public static final String BUYRECORD_SELLAPPLY_NOTMATCH_EXCEPTION = "6011";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

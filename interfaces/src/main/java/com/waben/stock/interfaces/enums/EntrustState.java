@@ -7,35 +7,18 @@ import java.util.Map;
  * @author Created by yuyidi on 2017/12/2.
  * @desc 委托状态
  */
-public enum  EntrustState implements CommonalityEnum{
+public enum EntrustState implements CommonalityEnum {
 
-    UNREPORTING("1","未报"),
-    TOBESUBMIT("2","待报"),
-    HASBEENREPORTED("3","已报"),
-    REPORTEDTOWITHDRAW("4","已报待撤"),
+    UNREPORTING("1", "未报"),
+    TOBESUBMIT("2", "待报"),
+    HASBEENREPORTED("3", "已报"),
+    REPORTEDTOWITHDRAW("4", "已报待撤"),
     PORTOKTOWITHDRAW("5", "部成待撤"),
-    PORTWITHDRAW("6","部撤"),
-    HASBEENWITHDRAW("7","已撤"),
-    PORTSUCCESS("8","部成"),
-    HASBEENSUCCESS("9","已成"),
+    PORTWITHDRAW("6", "部撤"),
+    HASBEENWITHDRAW("7", "已撤"),
+    PORTSUCCESS("8", "部成"),
+    HASBEENSUCCESS("9", "已成"),
     WASTEORDER("10", "废单");
-
-    private String index;
-    private String state;
-
-    EntrustState(String index, String state) {
-        this.index = index;
-        this.state = state;
-    }
-
-    @Override
-    public String getIndex() {
-        return index;
-    }
-
-    public String getState() {
-        return state;
-    }
 
     private static Map<String, EntrustState> valueMap = new HashMap();
 
@@ -45,11 +28,28 @@ public enum  EntrustState implements CommonalityEnum{
         }
     }
 
+    private String index;
+    private String state;
+
+    EntrustState(String index, String state) {
+        this.index = index;
+        this.state = state;
+    }
+
     public static EntrustState getByIndex(String index) {
         EntrustState result = valueMap.get(index);
         if (result == null) {
             throw new IllegalArgumentException("No element matches " + index);
         }
         return result;
+    }
+
+    @Override
+    public String getIndex() {
+        return index;
+    }
+
+    public String getState() {
+        return state;
     }
 }

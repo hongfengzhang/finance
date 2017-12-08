@@ -33,11 +33,6 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     }
 
     @Override
-    public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
-        return null;
-    }
-
-    @Override
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {
         return null;
     }
@@ -56,5 +51,14 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<BuyRecordDto> buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
         return null;
     }
-    
+
+    @Override
+    public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
+        return null;
+    }
+
+	@Override
+	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
+		return null;
+	}
 }

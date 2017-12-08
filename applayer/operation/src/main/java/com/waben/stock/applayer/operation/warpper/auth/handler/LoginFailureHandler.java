@@ -30,7 +30,7 @@ public class LoginFailureHandler extends ResponseHandler implements Authenticati
         response.setStatus(HttpServletResponse.SC_OK);
         Response<Object> result = new Response<>();
         result.setMessage(exception.getMessage());
-        result.setCode("200");
+        result.setCode("500");
         response(result,request,response,"/login-error");
     }
 

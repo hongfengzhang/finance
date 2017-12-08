@@ -5,6 +5,7 @@ import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.interfaces.util.ShareCodeUtil;
 import org.junit.Test;
 
 import java.util.*;
@@ -56,4 +57,17 @@ public class SimpleTest {
         }
         return menus;
     }
+
+    @Test
+    public void testCode() {
+        Set<String> sets = new HashSet<>();
+        for (int i= 1;i<1000000;i++) {
+            String result = ShareCodeUtil.encode(i);
+            System.out.println(result);
+            sets.add(result);
+        }
+        System.out.println(sets.size());
+    }
+
+
 }

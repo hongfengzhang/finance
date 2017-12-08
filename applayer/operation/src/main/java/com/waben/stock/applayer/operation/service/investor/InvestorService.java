@@ -13,3 +13,4 @@ import org.springframework.cloud.netflix.feign.FeignClient;
 public interface InvestorService extends InvestorInterface {
 
 }
+

@@ -1,11 +1,6 @@
 package com.waben.stock.interfaces.exception;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -14,7 +9,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import com.waben.stock.interfaces.pojo.ExceptionInformation;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author yuyidi 2017-07-13 16:06:14
@@ -32,33 +30,38 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 		// this.exceptions.add(
 		// new ExceptionInformation(ServiceException.class,
 		// HttpServletResponse.SC_SERVICE_UNAVAILABLE, "503"));
-		this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_OK, "200"));
 		this.exceptions
 				.add(new ExceptionInformation(NoHandlerFoundException.class, HttpServletResponse.SC_NOT_FOUND, "404"));
-		this.exceptions.add(new ExceptionInformation(DataNotFoundException.class, HttpServletResponse.SC_OK, "205"));
+		this.exceptions
+				.add(new ExceptionInformation(DataNotFoundException.class, HttpServletResponse.SC_NO_CONTENT, "204"));
 		this.exceptions.add(
 				new ExceptionInformation(IllegalArgumentException.class, HttpServletResponse.SC_BAD_REQUEST, "400"));
+		this.exceptions.add(new ExceptionInformation(NetflixCircuitException.class,
+				HttpServletResponse.SC_SERVICE_UNAVAILABLE, "503"));
+		this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_OK, "500"));
 	}
 
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
-		ex.printStackTrace();
 		ModelAndView mv = new ModelAndView();
 		Object message = "未知错误";
 		String code = "0000";
-		String error = "404";
+		String error = "503";
 		try {
+			Class exceptionClass = null;
+			logger.info("当前异常:{}", ex.getClass());
 			for (ExceptionInformation exception : exceptions) {
-				Class exceptionClass = exception.getException();
+				exceptionClass = exception.getException();
 				if (ex.getClass().equals(exceptionClass)) {
 					response.setStatus(exception.getHttpStatus());
 					code = ex.getMessage();
 					message = message(code);
 					error = exception.getError();
+					break;
 				}
 			}
-			logger.error("请求：{},异常：{}", request.getRequestURI(), message);
+			logger.error("请求：{},异常：{},{}", request.getRequestURI(), message, exceptionClass);
 		} finally {
 			mv.addObject("message", message);
 			mv.addObject("code", code);

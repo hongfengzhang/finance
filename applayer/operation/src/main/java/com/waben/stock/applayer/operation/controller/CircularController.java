@@ -16,7 +16,6 @@ public class CircularController {
     @GetMapping("/index")
     public String index(HttpSession httpSession) {
         List<MenuDto> menuDtos = (List<MenuDto>) httpSession.getAttribute("menus");
-        System.out.printf(JacksonUtil.encode(menuDtos));
         return "manage/circular/bulletin";
     }
 

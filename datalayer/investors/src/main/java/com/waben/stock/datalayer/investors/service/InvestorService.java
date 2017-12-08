@@ -3,12 +3,12 @@ package com.waben.stock.datalayer.investors.service;
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.entity.SecurityAccount;
 import com.waben.stock.datalayer.investors.repository.InvestorDao;
-import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
 import com.waben.stock.datalayer.investors.repository.rest.StockJyRest;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.EntrustType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockHolder;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
@@ -29,7 +29,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
-import java.util.Random;
 
 /**
  * @author Created by yuyidi on 2017/11/30.
@@ -59,7 +58,7 @@ public class InvestorService {
         //获取券商接口
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         SecurityAccount securityAccount = result.getSecurityAccount();
-        logger.info("券商资金账户:{},密码:{}",securityAccount.getAccount(),securityAccount.getPassword());
+        logger.info("券商资金账户:{},密码:{}", securityAccount.getAccount(), securityAccount.getPassword());
         //根据系统保存的券商账户用户信息登录实时券商账户
         StockLoginInfo stockLoginInfo = stockJyRest.login(securityAccount.getAccount(), securityAccount.getPassword());
         logger.info("登录成功，获取交易session:{}", stockLoginInfo.getTradeSession());
@@ -78,7 +77,7 @@ public class InvestorService {
 
     private String stockType(String exponent) {
         String type;
-        logger.info("股票账户类型:{}",exponent);
+        logger.info("股票账户类型:{}", exponent);
         if (exponent.equals("4353")) {
             //上证
             type = "1";
@@ -99,12 +98,14 @@ public class InvestorService {
      * @description 点买交易记录执行券商股票委托
      */
     @Transactional
-    public String entrustApplyBuyIn(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
+    public String entrustApplyBuyIn(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String
+            tradeSession) {
         //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         StockMoney stockMoney = stockJyRest.money(tradeSession);
         //点买交易股票数量* 单价
-        Double realStockPrice = securitiesStockEntrust.getEntrustNumber() * securitiesStockEntrust.getEntrustPrice().doubleValue();
+        Double realStockPrice = securitiesStockEntrust.getEntrustNumber() * securitiesStockEntrust.getEntrustPrice()
+                .doubleValue();
         //校检资金信息
         if (stockMoney.getEnableBalance() - realStockPrice < 0) {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH);
@@ -123,14 +124,14 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
         //开始委托下单
-//        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
-//                .BUY);
-        String enturstNo = String.valueOf(new Random().nextInt(10));
+        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
+                EntrustType.BUY);
         return enturstNo;
     }
 
     @Transactional
-    public String buyRecordApplySellOut(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
+    public String buyRecordApplySellOut(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String
+            tradeSession) {
         //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         //查询当前资金账户的股东账户信息
@@ -147,8 +148,9 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
         //开始委托下单卖出
-        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type, EntrustType
-                .SELL);
+        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
+                EntrustType
+                        .SELL);
         return enturstNo;
     }
 

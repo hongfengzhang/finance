@@ -14,14 +14,14 @@ public class ServiceException extends RuntimeException {
 		this.type = type;
 	}
 
-	//提示错误信息
-	public String message() {
-		if (ExceptionMap.exceptionMap.containsKey(type)) {
-			message = ExceptionMap.exceptionMap.get(type);
-		}
-		return message;
-	}
-
+//	//提示错误信息
+//	public String message() {
+//		if (ExceptionMap.exceptionMap.containsKey(type)) {
+//			message = ExceptionMap.exceptionMap.get(type);
+//		}
+//		return message;
+//	}
+//
 	public String getType() {
 		return type;
 	}

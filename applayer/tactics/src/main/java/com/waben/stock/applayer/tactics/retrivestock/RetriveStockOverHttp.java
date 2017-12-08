@@ -72,13 +72,4 @@ public class RetriveStockOverHttp {
 			throw new RuntimeException("http获取K线图数据异常!", e);
 		}
 	}
-
-	public static void main(String[] args) {
-		List<String> codes = new ArrayList<>();
-		codes.add("1A0001");
-		codes.add("2A01");
-		codes.add("399006");
-		System.out.println(listStockMarket(new RestTemplate(), codes));
-	}
-
 }

@@ -114,10 +114,10 @@ public class BuyRecordController {
 		return new Response<>(buyRecordBusiness.tradeDynamic(page, size));
 	}
 
-	@RequestMapping(value = "/selllock/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/sellapply/{id}", method = RequestMethod.POST)
 	@ApiOperation(value = "用户申请卖出")
-	Response<BuyRecordDto> sellLock(@PathVariable("id") Long id) {
-		return new Response<>(buyRecordBusiness.sellLock(SecurityUtil.getUserId(), id));
+	Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 
 }

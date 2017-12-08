@@ -12,43 +12,28 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">帐号</label>
+                            <label class="col-md-4 control-label">股票名称</label>
                             <div class="col-md-8">
-                                <input type="text" name="account" class="form-control" maxlength="11"
-                                       placeholder="帐号"/>
+                                <input type="text" name="userName" class="form-control" maxlength="11"
+                                       placeholder="股票名称"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">账户余额</label>
+                            <label class="col-md-4 control-label">股票代码</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="amount" maxlength="11" placeholder="用户状态"/>
+                                <input type="text" class="form-control" name="state" maxlength="11" placeholder="股票代码"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">备用</label>
+                            <label class="col-md-4 control-label">股票状态</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" maxlength="11" placeholder="手机号码"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label class="col-md-2 control-label">日期</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="开始日期"/>
-                            </div>
-                            <label></label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="结束日期"/>
+                                <input type="text" class="form-control" maxlength="11" placeholder="股票状态"/>
                             </div>
                         </div>
                     </div>
@@ -122,7 +107,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "../securityaccount/pages",
+                url: "pages",
                 dataType: "json",
                 cache: false, // 不缓存
                 striped: true, // 隔行加亮
@@ -137,10 +122,19 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
+                idePagination: "server",
+                queryParams:function (params) {
+                    return {
+                        page:params.offset,
+                        size:params.pageSize
+                    }
+                },
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        res = res.result.content;
-                        return res;
+                        return{
+                            total: res.result.totalPages,
+                            rows: res.result.content
+                        }
                     }
                 },
                 columns: [{
@@ -151,16 +145,16 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'account',
-                    title: '帐号',
+                    field: 'name',
+                    title: '股票名称',
                     align: 'center'
                 }, {
-                    field: 'amount',
-                    title: '账户余额',
+                    field: 'code',
+                    title: '股票代码',
                     align: 'center'
-                }, {
-                    field: 'availability',
-                    title: '可用余额',
+                },{
+                    field: 'status',
+                    title: '股票状态',
                     align: 'center'
                 }, {
                     title: '操作',

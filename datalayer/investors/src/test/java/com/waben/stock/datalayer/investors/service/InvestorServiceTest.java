@@ -19,7 +19,7 @@ public class InvestorServiceTest extends InvestorsApplicationTests {
     @Test
     public void save() {
         Investor investor = new Investor();
-        investor.setUserName("investor@waben.cn");
+        investor.setUserName("manage@waben.cn");
         investor.setPassword("$2a$10$9Khur/TK2mRh1AEoLSf92uDXxeFlq8CjmWqXc/DA6gFBWdYoY2gI6");
         investor.setRole(303L);
         investor.setState(true);
