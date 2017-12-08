@@ -2,12 +2,15 @@ package com.waben.stock.applayer.tactics.retrivestock.bean;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * 股票指数种类
  * 
  * @author luomengan
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockExponentVariety {
 
 	private String displayMarketTimes;

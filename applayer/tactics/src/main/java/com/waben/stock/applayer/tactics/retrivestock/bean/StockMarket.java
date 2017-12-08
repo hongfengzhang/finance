@@ -2,12 +2,15 @@ package com.waben.stock.applayer.tactics.retrivestock.bean;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * 股票行情
  * 
  * @author luomengan
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockMarket {
 
 	private String exchangeId;
@@ -22,6 +25,7 @@ public class StockMarket {
 	private String upTimeFormat;
 	private BigDecimal highestPrice;
 	private BigDecimal lowestPrice;
+	private BigDecimal askPrice;
 
 	public String getExchangeId() {
 		return exchangeId;
@@ -117,6 +121,14 @@ public class StockMarket {
 
 	public void setLowestPrice(BigDecimal lowestPrice) {
 		this.lowestPrice = lowestPrice;
+	}
+
+	public BigDecimal getAskPrice() {
+		return askPrice;
+	}
+
+	public void setAskPrice(BigDecimal askPrice) {
+		this.askPrice = askPrice;
 	}
 
 }

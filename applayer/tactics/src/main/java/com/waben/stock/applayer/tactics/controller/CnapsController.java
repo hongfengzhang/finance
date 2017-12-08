@@ -35,7 +35,7 @@ public class CnapsController {
 	private CnapsBusiness cnapsBusiness;
 
 	@GetMapping("/lists/{cityCode}")
-	@ApiOperation(value = "获取省份列表")
+	@ApiOperation(value = "获取支行列表")
 	public Response<List<CnapsDto>> fetchByCityCode(@PathVariable("cityCode") String cityCode, String bankCard) {
 		BankInfoDto bankInfo = cnapsBusiness.findBankInfo(bankCard);
 		return new Response<>(cnapsBusiness.findByCityCodeAndClsCode(cityCode, bankInfo.getBankCode()));

@@ -33,7 +33,7 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     }
 
     @Override
-    public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice, BigDecimal profitDistributionRatio) {
+    public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
         return null;
     }
 
@@ -56,4 +56,5 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<BuyRecordDto> buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
         return null;
     }
+    
 }

@@ -1,8 +1,24 @@
 package com.waben.stock.interfaces.util;
 
-import java.util.UUID;
-
 public class RandomUtil {
+
+	public static char[] randomCharArr = new char[62];
+
+	static {
+		int index = 0;
+		for (int i = 48; i <= 57; i++) {
+			randomCharArr[index] = (char) i;
+			index++;
+		}
+		for (int i = 65; i <= 90; i++) {
+			randomCharArr[index] = (char) i;
+			index++;
+		}
+		for (int i = 97; i <= 122; i++) {
+			randomCharArr[index] = (char) i;
+			index++;
+		}
+	}
 
 	/**
 	 * 获取[0, max)之前的整数，右开区间（即不包括最大数）
@@ -35,12 +51,17 @@ public class RandomUtil {
 	}
 
 	/**
-	 * 获取随机字符串 Nonce Str
+	 * 获取随机字符串
 	 *
-	 * @return String 随机字符串
+	 * @return 随机字符串
 	 */
-	public static String generateNonceStr() {
-		return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 32);
+	public static String generateRandomStr(int length) {
+		StringBuilder result = new StringBuilder();
+		for (int i = 0; i < length; i++) {
+			int randomIndex = (int) (Math.random() * randomCharArr.length);
+			result.append(randomCharArr[randomIndex]);
+		}
+		return result.toString();
 	}
 
 	public static void main(String[] args) {
@@ -51,6 +72,6 @@ public class RandomUtil {
 
 		System.out.println("result:" + result);
 
-		System.out.println(getRandomInt(10));
+		System.out.println(RandomUtil.generateRandomStr(5));
 	}
 }

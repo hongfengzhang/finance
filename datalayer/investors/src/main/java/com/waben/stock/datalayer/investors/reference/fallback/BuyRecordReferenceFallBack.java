@@ -32,8 +32,7 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     }
 
     @Override
-    public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice, BigDecimal
-            profitDistributionRatio) {
+    public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
         return null;
     }
 

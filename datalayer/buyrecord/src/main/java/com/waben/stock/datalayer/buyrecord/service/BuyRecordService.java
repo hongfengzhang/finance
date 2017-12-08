@@ -27,6 +27,7 @@ import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -78,8 +79,20 @@ public class BuyRecordService {
 				buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(), buyRecord.getServiceFee(),
 				buyRecord.getReserveFund());
 		if (!"200".equals(accountOperationResp.getCode())) {
-			// 扣款失败
-			throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
+			if (accountOperationResp == null
+					|| ExceptionConstant.UNKNOW_EXCEPTION.equals(accountOperationResp.getCode())) {
+				// 再一次确认是否已经扣款
+				Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
+						buyRecord.getId());
+				if (!(frozenResp != null && "200".equals(frozenResp.getCode()) && frozenResp.getResult() != null)) {
+					buyRecord.setState(BuyRecordState.UNKONWN);
+					buyRecordDao.update(buyRecord);
+					// 扣款异常
+					throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
+				}
+			} else {
+				throw new ServiceException(accountOperationResp.getCode());
+			}
 		}
 		return buyRecord;
 	}

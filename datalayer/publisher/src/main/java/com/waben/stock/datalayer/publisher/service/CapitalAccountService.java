@@ -199,6 +199,10 @@ public class CapitalAccountService {
 		return findByPublisherId(publisherId);
 	}
 
+	public FrozenCapital findFrozenCapital(Long publisherId, Long buyRecordId) {
+		return frozenCapitalDao.retriveByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
+	}
+
 	/**
 	 * 解冻金额
 	 * 
