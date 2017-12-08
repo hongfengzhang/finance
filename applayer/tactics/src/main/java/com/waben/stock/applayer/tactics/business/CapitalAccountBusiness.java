@@ -44,8 +44,9 @@ public class CapitalAccountBusiness {
 	public BigDecimal getHoldProfitOrLoss(Long publisherId) {
 		BigDecimal result = BigDecimal.valueOf(0);
 
-		BuyRecordQuery query = new BuyRecordQuery(0, Integer.MAX_VALUE, SecurityUtil.getUserId(), new BuyRecordState[] {
-				BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION, BuyRecordState.SELLLOCK });
+		BuyRecordQuery query = new BuyRecordQuery(0, Integer.MAX_VALUE, SecurityUtil.getUserId(),
+				new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
+						BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
 		PageInfo<BuyRecordDto> response = buyRecordBusiness.pages(query);
 		List<BuyRecordDto> content = response.getContent();
 		if (content != null && content.size() > 0) {
@@ -63,7 +64,7 @@ public class CapitalAccountBusiness {
 
 		BuyRecordQuery query = new BuyRecordQuery(0, Integer.MAX_VALUE, SecurityUtil.getUserId(),
 				new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
-						BuyRecordState.SELLLOCK, BuyRecordState.UNWIND });
+						BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK, BuyRecordState.UNWIND });
 		PageInfo<BuyRecordDto> response = buyRecordBusiness.pages(query);
 		List<BuyRecordDto> content = response.getContent();
 		if (content != null && content.size() > 0) {
@@ -80,7 +81,7 @@ public class CapitalAccountBusiness {
 
 		BuyRecordQuery query = new BuyRecordQuery(0, Integer.MAX_VALUE, SecurityUtil.getUserId(),
 				new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
-						BuyRecordState.SELLLOCK, BuyRecordState.UNWIND });
+						BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK, BuyRecordState.UNWIND });
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);

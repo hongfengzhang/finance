@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.pojo.Response;
 
 public interface CapitalAccountInterface {
@@ -34,6 +35,10 @@ public interface CapitalAccountInterface {
 			@PathVariable("buyRecordId") Long buyRecordId,
 			@RequestParam(name = "buyRecordSerialCode") String buyRecordSerialCode,
 			@PathVariable("serviceFee") BigDecimal serviceFee, @PathVariable("reserveFund") BigDecimal reserveFund);
+
+	@RequestMapping(value = "/frozenCapital/{publisherId}/{buyRecordId}/", method = RequestMethod.GET)
+	Response<FrozenCapitalDto> fetchFrozenCapital(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("buyRecordId") Long buyRecordId);
 
 	@RequestMapping(value = "/{publisherId}/{buyRecordId}/deferredCharges/{deferredCharges}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> deferredCharges(@PathVariable("publisherId") Long publisherId,

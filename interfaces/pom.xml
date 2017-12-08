@@ -25,4 +25,10 @@
             <version>1.12.11.RELEASE</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+
+        </plugins>
+    </build>
 </project>

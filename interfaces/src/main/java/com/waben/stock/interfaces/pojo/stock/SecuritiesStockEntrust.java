@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  * @author Created by yuyidi on 2017/12/2.
  * @desc 券商股票委托买入卖出传输对象
  */
-public class SecuritiesStockEntrust implements Serializable{
+public class SecuritiesStockEntrust implements Serializable {
 
     private Long buyRecordId;
     private String serialCode;

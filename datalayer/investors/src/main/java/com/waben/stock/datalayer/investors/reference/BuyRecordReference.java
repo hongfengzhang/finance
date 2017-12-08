@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Primary;
  * @author Created by yuyidi on 2017/12/2.
  * @desc 投资人服务依赖点买服务
  */
-@FeignClient(name = "buyrecord/buyrecord", path = "buyrecord", fallback = BuyRecordReferenceFallBack.class)
+@FeignClient(name = "buyrecord/buyrecord", path = "buyrecord", fallback = BuyRecordReferenceFallBack.class,qualifier = "buyRecordFeignReference")
 public interface BuyRecordReference extends BuyRecordInterface {
 
 }

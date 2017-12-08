@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.publisher.service.CapitalAccountService;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
@@ -94,6 +95,13 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	public Response<String> modifyPaymentPassword(@PathVariable Long publisherId, String paymentPassword) {
 		capitalAccountService.modifyPaymentPassword(publisherId, paymentPassword);
 		return new Response<>("successful");
+	}
+
+	@Override
+	public Response<FrozenCapitalDto> fetchFrozenCapital(@PathVariable Long publisherId,
+			@PathVariable Long buyRecordId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FrozenCapitalDto.class,
+				capitalAccountService.findFrozenCapital(publisherId, buyRecordId), false));
 	}
 
 }

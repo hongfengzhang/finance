@@ -34,12 +34,8 @@ public class BindCardController implements BindCardInterface {
 
 	@Override
 	public Response<BindCardDto> addBankCard(@RequestBody BindCardDto bindCardDto) {
-		return new Response<>(
-				CopyBeanUtils
-						.copyBeanProperties(BindCardDto.class,
-								bindCardService.save(bindCardDto.getPublisherId(), bindCardDto.getName(),
-										bindCardDto.getIdCard(), bindCardDto.getPhone(), bindCardDto.getBankCard()),
-								false));
+		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardDto.class,
+				bindCardService.save(CopyBeanUtils.copyBeanProperties(BindCard.class, bindCardDto, false)), false));
 	}
 
 	@Override

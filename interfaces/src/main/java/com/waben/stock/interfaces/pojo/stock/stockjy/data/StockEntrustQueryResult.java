@@ -46,22 +46,22 @@ public class StockEntrustQueryResult extends CommonErrorInfo{
      *价格
      */
     @JsonProperty("entrust_price")
-    private Double entrustPrice;
+    private String entrustPrice;
     /**
      * 数量
      */
     @JsonProperty("entrust_amount")
-    private Integer entrustAmount;
+    private String entrustAmount;
     /**
      * 成交数量
      */
     @JsonProperty("business_amount")
-    private Integer businessAmount;
+    private String businessAmount;
     /**
      * 成交价格
      */
     @JsonProperty("business_price")
-    private Double businessPrice;
+    private String businessPrice;
 
     /**
      * 委托状态
@@ -140,19 +140,35 @@ public class StockEntrustQueryResult extends CommonErrorInfo{
         this.entrustBs = entrustBs;
     }
 
-    public Double getEntrustPrice() {
+    public String getEntrustPrice() {
         return entrustPrice;
     }
 
-    public void setEntrustPrice(Double entrustPrice) {
+    public void setEntrustPrice(String entrustPrice) {
         this.entrustPrice = entrustPrice;
     }
 
-    public Integer getBusinessAmount() {
+    public String getEntrustAmount() {
+        return entrustAmount;
+    }
+
+    public void setEntrustAmount(String entrustAmount) {
+        this.entrustAmount = entrustAmount;
+    }
+
+    public String getBusinessPrice() {
+        return businessPrice;
+    }
+
+    public void setBusinessPrice(String businessPrice) {
+        this.businessPrice = businessPrice;
+    }
+
+    public String getBusinessAmount() {
         return businessAmount;
     }
 
-    public void setBusinessAmount(Integer businessAmount) {
+    public void setBusinessAmount(String businessAmount) {
         this.businessAmount = businessAmount;
     }
 
@@ -180,10 +196,12 @@ public class StockEntrustQueryResult extends CommonErrorInfo{
         this.entrustDate = entrustDate;
     }
 
+    @Override
     public String getPositionStr() {
         return positionStr;
     }
 
+    @Override
     public void setPositionStr(String positionStr) {
         this.positionStr = positionStr;
     }

@@ -30,9 +30,11 @@ public class BuyRecordServiceFallback implements BuyRecordService {
 
 
     @Override
-    public Response<BuyRecordDto> sellLock(Long lockUserId, Long id, String windControlTypeIndex) {
+    public Response<BuyRecordDto> sellLock(Long investorId, Long id, String delegateNumber,
+                                           String windControlTypeIndex) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
 
     @Override
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {
@@ -57,5 +59,10 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     @Override
     public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
+        return null;
     }
 }

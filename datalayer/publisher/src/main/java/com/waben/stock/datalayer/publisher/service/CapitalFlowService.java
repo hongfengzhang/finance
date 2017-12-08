@@ -44,17 +44,17 @@ public class CapitalFlowService {
 							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
 				}
 				if (query.getStartTime() != null) {
-					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("occurrenceTime").as(Date.class),
-							query.getStartTime()));
+					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("occurrenceTime").as(Long.class),
+							query.getStartTime().getTime()));
 				}
 				if (query.getEndTime() != null) {
-					predicateList.add(
-							criteriaBuilder.lessThan(root.get("occurrenceTime").as(Date.class), query.getEndTime()));
+					predicateList.add(criteriaBuilder.lessThan(root.get("occurrenceTime").as(Long.class),
+							query.getEndTime().getTime()));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
-				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("occurrenceTime").as(Date.class)));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("occurrenceTime").as(Long.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

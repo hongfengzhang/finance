@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.stockcontent.StrategyTypeInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "stockcontent/stockcontent", path = "straegytype", configuration = FeignConfiguration.class)
+@FeignClient(name = "stockcontent/stockcontent", path = "strategytype", configuration = FeignConfiguration.class)
 @Primary
 public interface StrategyTypeService extends StrategyTypeInterface {
 

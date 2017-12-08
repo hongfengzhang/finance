@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class SettlementBusiness {
 
     @Autowired
-    @Qualifier("SettlementFeignService")
+    @Qualifier("settlementFeignService")
     private SettlementService settlementService;
 
     public PageInfo<SettlementDto> pages(SettlementQuery settlementQuery) {

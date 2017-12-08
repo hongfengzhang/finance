@@ -52,9 +52,9 @@ public class PublisherController implements PublisherInterface {
 	}
 
 	@Override
-	public Response<PublisherDto> register(String phone, String password) {
+	public Response<PublisherDto> register(String phone, String password, String promoter) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(PublisherDto.class,
-				publisherService.register(phone, password), false));
+				publisherService.register(phone, password, promoter), false));
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package com.waben.stock.applayer.operation.service.fallback;
 import com.waben.stock.applayer.operation.service.publisher.CapitalAccountService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
@@ -41,6 +42,11 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
     @Override
     public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode, BigDecimal serviceFee, BigDecimal reserveFund) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+
+    @Override
+    public Response<FrozenCapitalDto> fetchFrozenCapital(Long publisherId, Long buyRecordId) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
     @Override
     public Response<CapitalAccountDto> deferredCharges(Long publisherId, Long buyRecordId, BigDecimal deferredCharges) {

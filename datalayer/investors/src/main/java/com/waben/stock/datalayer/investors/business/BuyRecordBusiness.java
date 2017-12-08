@@ -4,12 +4,14 @@ import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -22,6 +24,7 @@ public class BuyRecordBusiness {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
+    @Qualifier("buyRecordFeignReference")
     private BuyRecordReference buyRecordReference;
 
     /***
@@ -51,7 +54,7 @@ public class BuyRecordBusiness {
             entrust) {
 //        securitiesStockEntrust.setEntrustNumber(entrust);
         Response<BuyRecordDto> response = buyRecordReference.sellLock(investor.getId(), securitiesStockEntrust
-                .getBuyRecordId(), entrust);
+                .getBuyRecordId(), entrust, WindControlType.PUBLISHERAPPLY.getIndex());
         if ("200".equals(response.getCode())) {
             BuyRecordDto result = response.getResult();
             result.setDelegateNumber(entrust);

@@ -33,7 +33,8 @@ public class CnapsController implements CnapsInterface {
 	private CnapsService cnapsService;
 
 	@Override
-	public Response<List<CnapsDto>> fetchByCityCodeAndClsCode(@PathVariable String cityCode, @PathVariable String clsCode) {
+	public Response<List<CnapsDto>> fetchByCityCodeAndClsCode(@PathVariable String cityCode,
+			@PathVariable String clsCode) {
 		List<Cnaps> cnapss = cnapsService.findByCityCodeAndClsCode(cityCode, clsCode);
 		List<CnapsDto> cnapsDtoDtos = CopyBeanUtils.copyListBeanPropertiesToList(cnapss, CnapsDto.class);
 		return new Response<>(cnapsDtoDtos);
@@ -43,6 +44,12 @@ public class CnapsController implements CnapsInterface {
 	public Response<BankInfoDto> fetchBankInfo(@PathVariable String bankCard) {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(BankInfoDto.class, cnapsService.findBankInfo(bankCard), false));
+	}
+
+	@Override
+	public Response<List<BankInfoDto>> listBankInfo() {
+		return new Response<>(
+				CopyBeanUtils.copyListBeanPropertiesToList(cnapsService.listBankInfo(), BankInfoDto.class));
 	}
 
 }

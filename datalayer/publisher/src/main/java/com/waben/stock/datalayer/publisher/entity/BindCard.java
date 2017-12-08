@@ -49,6 +49,11 @@ public class BindCard {
 	@Column(name = "branch_name")
 	private String branchName;
 	/**
+	 * 支行cnaps code
+	 */
+	@Column(name = "branch_code")
+	private String branchCode;
+	/**
 	 * 策略发布人ID
 	 */
 	@Column(name = "publisher_id")
@@ -116,6 +121,14 @@ public class BindCard {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public String getBranchCode() {
+		return branchCode;
+	}
+
+	public void setBranchCode(String branchCode) {
+		this.branchCode = branchCode;
 	}
 
 }
