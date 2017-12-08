@@ -10,7 +10,7 @@ import java.util.Date;
  * @desc
  */
 @Entity
-@Table(name = "manage")
+@Table(name = "investor")
 public class Investor {
 
     @Id

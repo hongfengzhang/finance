@@ -19,9 +19,11 @@ public enum BuyRecordState implements CommonalityEnum {
 
 	HOLDPOSITION("3", "持仓中"),
 
-	SELLLOCK("4", "卖出锁定"),
+	SELLAPPLY("4","卖出申请"),
 
-	UNWIND("5", "已平仓");
+	SELLLOCK("5", "卖出锁定"),
+
+	UNWIND("6", "已平仓");
 
 	BuyRecordState(String index, String status) {
 		this.index = index;

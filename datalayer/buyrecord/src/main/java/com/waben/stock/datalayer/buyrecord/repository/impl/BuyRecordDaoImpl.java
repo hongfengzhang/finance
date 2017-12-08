@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.buyrecord.repository.impl;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.enums.BuyRecordState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -60,4 +61,8 @@ public class BuyRecordDaoImpl implements BuyRecordDao {
 		return repository.findAll();
 	}
 
+	@Override
+	public List<BuyRecord> retieveByStateAndOrderByCreateTime(BuyRecordState state) {
+		return repository.findAllByStateAndOrderByCreateTime(state);
+	}
 }

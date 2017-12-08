@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -35,14 +36,34 @@ public class StockApplyEntrustBuyInLoopProcessor implements CommandLineRunner {
         Thread task = new Thread(new Runnable() {
             @Override
             public void run() {
+                Map<Long, String> investorTradeSession = new HashMap();
                 while (true) {
                     Map<String, SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer
                             .getBuyInContainer();
                     logger.info("券商委托股票容器内剩余:{}个委托订单", stockEntrusts.size());
+                    try {
+                        Thread.sleep(5 * 1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
                         logger.info("此处执行http，当前委托订单为：{}", entry.getKey());
                         try {
                             SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
+                            if (investorTradeSession.get(securitiesStockEntrust.getInvestor()) == null) {
+                                investorTradeSession.put(securitiesStockEntrust.getInvestor(), securitiesStockEntrust
+                                        .getTradeSession());
+                            }
+                            if (securitiesStockEntrust.getTradeSession() == null) {
+                                //从数据库中恢复的点买订单
+                                String tradeSession = investorTradeSession.get
+                                        (securitiesStockEntrust.getInvestor());
+                                if (tradeSession == null) {
+                                    continue;
+                                }
+                                securitiesStockEntrust.setTradeSession(tradeSession);
+                            }
+                            logger.info("开始执行委托查询,委托编号:{}", securitiesStockEntrust.getEntrustNo());
                             StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                     (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                             .getEntrustNo());

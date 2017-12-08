@@ -5,6 +5,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -29,6 +35,9 @@ public class BeanConfigurer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
+    @Autowired
+    private ConnectionFactory connectionFactory;
+
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
         MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = new MappingJackson2HttpMessageConverter();
@@ -44,4 +53,31 @@ public class BeanConfigurer {
         return jackson2HttpMessageConverter;
     }
 
+
+    @Bean
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public RabbitTemplate rabbitTemplate() {
+        logger.info("host,username:{}{}", connectionFactory.getHost(), connectionFactory.getUsername());
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        return rabbitTemplate;
+    }
+
+    /**
+     * 创建 委托申请买入队列
+     */
+    @Bean(name = "entrustApplyBuyIn")
+    public Queue entrustBuyInQueue() {
+        return new Queue("entrustApplyBuyIn");
+    }
+
+    @Bean("buyRecord")
+    public TopicExchange buyRecordExchange() {
+        return new TopicExchange("buyRecord");
+    }
+
+    @Bean
+    public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustApplyBuyIn") Queue queue,
+                                              @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
+        return BindingBuilder.bind(queue).to(buyRecordExchange).with("applyBuyIn");
+    }
 }

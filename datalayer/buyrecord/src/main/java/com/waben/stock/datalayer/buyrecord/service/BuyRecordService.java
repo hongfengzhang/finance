@@ -12,6 +12,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,6 +116,11 @@ public class BuyRecordService {
 		return pages;
 	}
 
+	public List<BuyRecord> fetchByStateAndOrderByCreateTime(BuyRecordState buyRecordState) {
+		List<BuyRecord> result = buyRecordDao.retieveByStateAndOrderByCreateTime(buyRecordState);
+		return result;
+	}
+
 	@Transactional
 	public BuyRecord changeState(BuyRecord record) {
 		BuyRecordState current = record.getState();
@@ -124,6 +130,8 @@ public class BuyRecordService {
 		} else if (BuyRecordState.BUYLOCK.equals(current)) {
 			next = BuyRecordState.HOLDPOSITION;
 		} else if (BuyRecordState.HOLDPOSITION.equals(current)) {
+			next = BuyRecordState.SELLAPPLY;
+		}  else if (BuyRecordState.SELLAPPLY.equals(current)) {
 			next = BuyRecordState.SELLLOCK;
 		} else if (BuyRecordState.SELLLOCK.equals(current)) {
 			next = BuyRecordState.UNWIND;
