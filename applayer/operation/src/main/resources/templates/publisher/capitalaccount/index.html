@@ -107,7 +107,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "pages",
+                url: "../capitalaccount/pages",
                 dataType: "json",
                 cache: false, // 不缓存
                 striped: true, // 隔行加亮
@@ -145,18 +145,30 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'name',
-                    title: '股票名称',
+                    field: 'availableBalance',
+                    title: '账户可用余额',
                     align: 'center'
                 }, {
-                    field: 'code',
-                    title: '股票代码',
+                    field: 'frozenCapital',
+                    title: '冻结资金',
                     align: 'center'
                 },{
-                    field: 'status',
-                    title: '股票状态',
+                    field: 'updateTime',
+                    title: '更新时间',
                     align: 'center'
-                }, {
+                },{
+                    field: 'updateTime',
+                    title: '更新时间',
+                    align: 'center'
+                },{
+                    field: 'publisherId',
+                    title: '发布人ID',
+                    align: 'center'
+                },{
+                    field: 'publisherSerialCode',
+                    title: '发布人序列号',
+                    align: 'center'
+                },{
                     title: '操作',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {

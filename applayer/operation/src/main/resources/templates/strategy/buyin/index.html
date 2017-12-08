@@ -107,7 +107,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "pages",
+                url: "../buyrecord/pages",
                 dataType: "json",
                 cache: false, // 不缓存
                 striped: true, // 隔行加亮
@@ -145,16 +145,24 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'name',
-                    title: '股票名称',
+                    field: 'serialCode',
+                    title: '交易编号',
                     align: 'center'
                 }, {
-                    field: 'code',
-                    title: '股票代码',
+                    field: 'applyAmount',
+                    title: '申请资金',
                     align: 'center'
                 },{
-                    field: 'status',
-                    title: '股票状态',
+                    field: 'serviceFee',
+                    title: '服务费',
+                    align: 'center'
+                }, {
+                    field: 'reserveFund',
+                    title: '保证金',
+                    align: 'center'
+                }, {
+                    field: 'deferred',
+                    title: '是否递延',
                     align: 'center'
                 }, {
                     title: '操作',

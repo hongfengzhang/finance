@@ -54,6 +54,11 @@ public class SystemController {
         return "500";
     }
 
+    @GetMapping("/503")
+    public String serviceerror() {
+        return "503";
+    }
+
     @GetMapping("/login-error")
     public String loginerror() {
         return "login";

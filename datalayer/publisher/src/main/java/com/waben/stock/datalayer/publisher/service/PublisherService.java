@@ -3,7 +3,12 @@ package com.waben.stock.datalayer.publisher.service;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +19,12 @@ import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
@@ -91,4 +102,20 @@ public class PublisherService {
 		return publisher;
 	}
 
+	//分页查询
+	public Page<Publisher> pages(final PublisherQuery query){
+        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<Publisher> pages = publisherDao.page(new Specification<Publisher>() {
+			@Override
+			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				if (!StringUtils.isEmpty(query.getPhone())) {
+					Predicate typeQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query
+							.getPhone());
+					criteriaQuery.where(criteriaBuilder.and(typeQuery));
+				}
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+	    return pages;
+	}
 }

@@ -14,4 +14,5 @@ public interface CapitalAccountDao extends BaseDao<CapitalAccount, Long> {
 	
 	CapitalAccount retriveByPublisherId(Long publisherId);
 
+
 }

@@ -2,9 +2,14 @@ package com.waben.stock.datalayer.publisher.controller;
 
 import java.math.BigDecimal;
 
+import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,6 +34,13 @@ public class CapitalAccountController implements CapitalAccountInterface {
 
 	@Autowired
 	private CapitalAccountService capitalAccountService;
+
+	@Override
+	public Response<PageInfo<CapitalAccountDto>> pages(CapitalAccountQuery capitalAccountQuery) {
+		Page<CapitalAccount> pages = capitalAccountService.pages(capitalAccountQuery);
+		PageInfo<CapitalAccountDto> result = new PageInfo<>(pages, CapitalAccountDto.class);
+		return new Response<>(result);
+	}
 
 	@Override
 	public Response<CapitalAccountDto> fetchByPublisherSerialCode(@PathVariable String publisherSerialCode) {

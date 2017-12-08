@@ -2,8 +2,11 @@ package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -24,6 +27,14 @@ public class BuyRecordBusiness {
 
     public BuyRecordDto fetchBuyRecord(Long buyRecord) {
         Response<BuyRecordDto> response = buyRecordService.fetchBuyRecord(buyRecord);
+        if ("200".equals(response.getCode())) {
+            return response.getResult();
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public PageInfo<BuyRecordDto> pages(BuyRecordQuery buyRecordQuery) {
+        Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByQuery(buyRecordQuery);
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }
