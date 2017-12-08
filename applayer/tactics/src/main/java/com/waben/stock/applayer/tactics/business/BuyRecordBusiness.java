@@ -134,7 +134,7 @@ public class BuyRecordBusiness {
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
 					new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
-							BuyRecordState.SELLLOCK });
+							BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
 
 			int total = sResponse.getResult().getContent().size() + pageInfo.getContent().size();

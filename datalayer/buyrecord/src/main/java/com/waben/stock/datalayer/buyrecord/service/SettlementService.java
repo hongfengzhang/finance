@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.buyrecord.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -54,10 +55,10 @@ public class SettlementService {
 					predicateList.add(criteriaBuilder.gt(root.get("publisherProfitOrLoss").as(BigDecimal.class),
 							new BigDecimal(0)));
 				}
-				
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("settlementTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

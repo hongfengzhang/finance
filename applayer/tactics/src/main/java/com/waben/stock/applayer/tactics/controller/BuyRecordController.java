@@ -92,8 +92,9 @@ public class BuyRecordController {
 	@GetMapping("/pagesHoldPosition")
 	@ApiOperation(value = "持仓中的点买记录列表")
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesHoldPosition(int page, int size) {
-		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(), new BuyRecordState[] {
-				BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION, BuyRecordState.SELLLOCK });
+		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
+				new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
+						BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
 		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
 		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
 		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
