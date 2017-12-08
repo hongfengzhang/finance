@@ -2,12 +2,15 @@ package com.waben.stock.applayer.tactics.retrivestock.bean;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * 股票K线图数据
  * 
  * @author luomengan
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockKLine {
 
 	private BigDecimal openPrice;
@@ -20,6 +23,7 @@ public class StockKLine {
 	private long timeStamp;
 	private BigDecimal nowVolume;
 	private BigDecimal turnover;
+	private BigDecimal askPrice;
 
 	public BigDecimal getOpenPrice() {
 		return openPrice;
@@ -99,6 +103,14 @@ public class StockKLine {
 
 	public void setTurnover(BigDecimal turnover) {
 		this.turnover = turnover;
+	}
+
+	public BigDecimal getAskPrice() {
+		return askPrice;
+	}
+
+	public void setAskPrice(BigDecimal askPrice) {
+		this.askPrice = askPrice;
 	}
 
 }

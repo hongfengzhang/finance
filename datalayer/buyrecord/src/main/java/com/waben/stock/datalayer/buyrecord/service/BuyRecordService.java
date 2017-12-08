@@ -28,6 +28,7 @@ import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -79,8 +80,20 @@ public class BuyRecordService {
 				buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(), buyRecord.getServiceFee(),
 				buyRecord.getReserveFund());
 		if (!"200".equals(accountOperationResp.getCode())) {
-			// 扣款失败
-			throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
+			if (accountOperationResp == null
+					|| ExceptionConstant.UNKNOW_EXCEPTION.equals(accountOperationResp.getCode())) {
+				// 再一次确认是否已经扣款
+				Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
+						buyRecord.getId());
+				if (!(frozenResp != null && "200".equals(frozenResp.getCode()) && frozenResp.getResult() != null)) {
+					buyRecord.setState(BuyRecordState.UNKONWN);
+					buyRecordDao.update(buyRecord);
+					// 扣款异常
+					throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
+				}
+			} else {
+				throw new ServiceException(accountOperationResp.getCode());
+			}
 		}
 		return buyRecord;
 	}
@@ -122,14 +135,17 @@ public class BuyRecordService {
 	}
 
 	@Transactional
-	public BuyRecord changeState(BuyRecord record) {
+	public BuyRecord changeState(BuyRecord record, boolean isSellLock) {
 		BuyRecordState current = record.getState();
 		BuyRecordState next = BuyRecordState.UNKONWN;
 		if (BuyRecordState.POSTED.equals(current)) {
 			next = BuyRecordState.BUYLOCK;
 		} else if (BuyRecordState.BUYLOCK.equals(current)) {
 			next = BuyRecordState.HOLDPOSITION;
-		} else if (BuyRecordState.HOLDPOSITION.equals(current)) {
+		} else if (BuyRecordState.HOLDPOSITION.equals(current) && isSellLock == false) {
+			next = BuyRecordState.SELLAPPLY;
+		} else if ((BuyRecordState.HOLDPOSITION.equals(current) || BuyRecordState.SELLAPPLY.equals(current))
+				&& isSellLock == true) {
 			next = BuyRecordState.SELLLOCK;
 		} else if (BuyRecordState.SELLLOCK.equals(current)) {
 			next = BuyRecordState.UNWIND;
@@ -153,7 +169,7 @@ public class BuyRecordService {
 		buyRecord.setInvestorId(investorId);
 		buyRecord.setDelegateNumber(delegateNumber);
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, false);
 	}
 
 	@Transactional
@@ -185,23 +201,40 @@ public class BuyRecordService {
 				buyRecord.getApplyAmount().multiply(buyRecord.getLossPoint().abs().subtract(new BigDecimal(0.05)))
 						.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, false);
 	}
 
 	@Transactional
-	public BuyRecord sellLock(Long lockUserId, Long id, WindControlType windControlType) {
+	public BuyRecord sellApply(Long publisherId, Long id) {
+		BuyRecord buyRecord = findBuyRecord(id);
+		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		if (!buyRecord.getPublisherId().equals(publisherId)) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		buyRecord.setWindControlType(WindControlType.PUBLISHERAPPLY);
+		// 修改点买记录状态
+		return changeState(buyRecord, false);
+	}
+
+	@Transactional
+	public BuyRecord sellLock(Long investorId, Long id, WindControlType windControlType) {
 		BuyRecord buyRecord = findBuyRecord(id);
 		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
 		buyRecord.setWindControlType(windControlType);
-		if (lockUserId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
-			if (!lockUserId.equals(buyRecord.getInvestorId())) {
+		if (investorId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
+			if (!investorId.equals(buyRecord.getInvestorId())) {
 				throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 			}
 		}
+		if (buyRecord.getWindControlType() == null) {
+			buyRecord.setWindControlType(windControlType);
+		}
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, true);
 	}
 
 	@Transactional
@@ -239,7 +272,7 @@ public class BuyRecordService {
 		accountService.returnReserveFund(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(),
 				settlement.getPublisherProfitOrLoss());
 		// 修改点买记录状态
-		return changeState(buyRecord);
+		return changeState(buyRecord, false);
 	}
 
 }

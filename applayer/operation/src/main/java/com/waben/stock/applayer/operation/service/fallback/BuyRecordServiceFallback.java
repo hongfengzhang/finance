@@ -56,4 +56,9 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
         return null;
     }
+
+	@Override
+	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
+		return null;
+	}
 }

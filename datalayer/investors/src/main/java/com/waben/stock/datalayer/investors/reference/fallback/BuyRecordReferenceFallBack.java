@@ -57,4 +57,9 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     public Response<BuyRecordDto> buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

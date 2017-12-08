@@ -58,9 +58,16 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION = "6005";
 	// 点买记录不存在
 	public static final String BUYRECORD_NOT_FOUND_EXCEPTION = "6006";
-	// 点买发布扣款失败
+	// 点买发布扣款发生异常，如账户已扣款，请联系客服人员
 	public static final String BUYRECORD_POST_DEBITFAILED_EXCEPTION = "6007";
-
+	// 支付密码未设置
+	public static final String PAYMENTPASSWORD_NOTSET_EXCEPTION = "6008";
+	// 支付密码错误
+	public static final String PAYMENTPASSWORD_WRONG_EXCEPTION = "6009";
+	// 点买异常
+	public static final String BUYRECORD_SAVE_EXCEPTION = "6010";
+	// 申请卖出只能由发布人本人操作
+	public static final String BUYRECORD_SELLAPPLY_NOTMATCH_EXCEPTION = "6011";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

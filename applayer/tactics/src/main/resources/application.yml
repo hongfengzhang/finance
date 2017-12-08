@@ -10,6 +10,8 @@ spring:
 hystrix:
   command:
     default:
+      timeout:
+        enabled: false 
       execution:
         isolation:
           thread:

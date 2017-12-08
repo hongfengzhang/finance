@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.tactics.business.BindCardBusiness;
 import com.waben.stock.applayer.tactics.dto.publisher.BindCardFullDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
-import com.waben.stock.applayer.tactics.service.BindCardService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.enums.SmsType;
@@ -35,9 +34,6 @@ import io.swagger.annotations.ApiOperation;
 public class BindCardController {
 
 	@Autowired
-	private BindCardService bindCardService;
-
-	@Autowired
 	private BindCardBusiness bindCardBusiness;
 
 	@PostMapping("/bindBankCard")
@@ -54,16 +50,17 @@ public class BindCardController {
 		bindCardDto.setName(name);
 		bindCardDto.setPhone(phone);
 		bindCardDto.setPublisherId(SecurityUtil.getUserId());
-
-		Response<BindCardDto> result = bindCardService.addBankCard(bindCardDto);
-		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, result.getResult(), false));
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, bindCardBusiness.save(bindCardDto), false));
 	}
 
 	@PostMapping("/fillBranch/{id}")
 	@ApiOperation(value = "完善支行信息")
-	public Response<BindCardFullDto> fillBranch(@PathVariable("id") Long id, String branchName) {
+	public Response<BindCardFullDto> fillBranch(@PathVariable("id") Long id,
+			@RequestParam(required = true) String branchName, String branchCode) {
 		BindCardDto bindCard = bindCardBusiness.findById(id);
 		bindCard.setBranchName(branchName);
+		bindCard.setBranchCode(branchCode);
 		BindCardDto result = bindCardBusiness.revision(bindCard);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, result, false));
 	}
@@ -71,8 +68,8 @@ public class BindCardController {
 	@GetMapping("/myBankCardList")
 	@ApiOperation(value = "我的已绑定银行卡列表")
 	public Response<List<BindCardFullDto>> myBankCardList() {
-		Response<List<BindCardDto>> listResp = bindCardService.listsByPublisherId(SecurityUtil.getUserId());
-		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(listResp.getResult(), BindCardFullDto.class));
+		List<BindCardDto> list = bindCardBusiness.listsByPublisherId(SecurityUtil.getUserId());
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(list, BindCardFullDto.class));
 	}
 
 }

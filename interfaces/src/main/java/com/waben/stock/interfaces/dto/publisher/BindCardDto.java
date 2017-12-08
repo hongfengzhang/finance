@@ -24,6 +24,10 @@ public class BindCardDto {
 	 */
 	private String bankName;
 	/**
+	 * 支行cnaps code
+	 */
+	private String branchCode;
+	/**
 	 * 支行名称
 	 */
 	private String branchName;
@@ -94,6 +98,14 @@ public class BindCardDto {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public String getBranchCode() {
+		return branchCode;
+	}
+
+	public void setBranchCode(String branchCode) {
+		this.branchCode = branchCode;
 	}
 
 }

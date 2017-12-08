@@ -61,4 +61,9 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
+	@Override
+	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
 }

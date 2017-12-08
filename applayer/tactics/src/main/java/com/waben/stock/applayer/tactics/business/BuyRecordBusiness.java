@@ -20,7 +20,6 @@ import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
-import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
@@ -120,9 +119,8 @@ public class BuyRecordBusiness {
 		return result;
 	}
 
-	public BuyRecordDto sellLock(Long lockUserId, Long id) {
-		Response<BuyRecordDto> response = buyRecordService.sellLock(lockUserId, id,
-				WindControlType.PUBLISHERAPPLY.getIndex());
+	public BuyRecordDto sellApply(Long userId, Long id) {
+		Response<BuyRecordDto> response = buyRecordService.sellApply(userId, id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

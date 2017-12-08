@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.BuyRecordBusiness;
+import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.buyrecord.TradeDynamicDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -40,6 +44,9 @@ public class BuyRecordController {
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
 
+	@Autowired
+	private CapitalAccountBusiness capitalAccountBusiness;
+
 	@PostMapping("/buy")
 	@ApiOperation(value = "点买")
 	public Response<BuyRecordWithMarketDto> buy(@RequestParam(required = true) Long strategyTypeId,
@@ -47,13 +54,23 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal reserveFund,
 			@RequestParam(required = true) BigDecimal delegatePrice,
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
-			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred) {
+			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
+			@RequestParam(required = true) String paymentPassword) {
 		// TODO 检查参数是否合理
 
-		// TODO 检查余额
-
-		// TODO 验证支付密码
-
+		// 检查余额
+		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
+		if (serviceFee.add(reserveFund).compareTo(capitalAccount.getAvailableBalance()) > 0) {
+			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+		}
+		// 验证支付密码
+		String storePaymentPassword = capitalAccount.getPaymentPassword();
+		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
+			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
+		}
+		if (!storePaymentPassword.equals(paymentPassword)) {
+			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
+		}
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();
 		dto.setStrategyTypeId(strategyTypeId);
@@ -97,10 +114,10 @@ public class BuyRecordController {
 		return new Response<>(buyRecordBusiness.tradeDynamic(page, size));
 	}
 
-	@RequestMapping(value = "/selllock/{id}", method = RequestMethod.POST)
+	@RequestMapping(value = "/sellapply/{id}", method = RequestMethod.POST)
 	@ApiOperation(value = "用户申请卖出")
-	Response<BuyRecordDto> sellLock(@PathVariable("id") Long id) {
-		return new Response<>(buyRecordBusiness.sellLock(SecurityUtil.getUserId(), id));
+	Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 
 }
