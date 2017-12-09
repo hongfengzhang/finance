@@ -3,11 +3,19 @@ package com.waben.stock.datalayer.publisher.service;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
@@ -24,6 +32,7 @@ import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowExtendQuery;
 
 @Service
@@ -254,7 +263,7 @@ public class CapitalAccountService {
 	 *            资金账户
 	 * @param amount
 	 *            退回金额
-	 * @param frozenCapital
+	 * @param frozenAmount
 	 *            原先冻结资金
 	 * 
 	 */
@@ -323,4 +332,19 @@ public class CapitalAccountService {
 		capitalAccountDao.update(account);
 	}
 
+	public Page<CapitalAccount> pages(final CapitalAccountQuery query){
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<CapitalAccount> pages = capitalAccountDao.page(new Specification<CapitalAccount>() {
+			@Override
+			public Predicate toPredicate(Root<CapitalAccount> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				if (!StringUtils.isEmpty(query.getId())) {
+					Predicate typeQuery = criteriaBuilder.equal(root.get("id").as(String.class), query
+							.getId());
+					criteriaQuery.where(criteriaBuilder.and(typeQuery));
+				}
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+		return pages;
+	}
 }

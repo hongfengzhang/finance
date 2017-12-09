@@ -107,7 +107,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "pages",
+                url: "../strategytype/pages",
                 dataType: "json",
                 cache: false, // 不缓存
                 striped: true, // 隔行加亮
@@ -146,15 +146,27 @@
                     align: 'center'
                 }, {
                     field: 'name',
-                    title: '股票名称',
+                    title: '策略名称',
                     align: 'center'
                 }, {
-                    field: 'code',
-                    title: '股票代码',
+                    field: 'serviceFeePerWan',
+                    title: '服务费/万元',
                     align: 'center'
                 },{
-                    field: 'status',
-                    title: '股票状态',
+                    field: 'wearingPoint',
+                    title: '穿仓点',
+                    align: 'center'
+                },{
+                    field: 'profit',
+                    title: '止盈点',
+                    align: 'center'
+                },{
+                    field: 'deferred',
+                    title: '周期',
+                    align: 'center'
+                },{
+                    field: 'state',
+                    title: '状态',
                     align: 'center'
                 }, {
                     title: '操作',

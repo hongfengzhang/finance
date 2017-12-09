@@ -1,10 +1,14 @@
 package com.waben.stock.datalayer.publisher.controller;
 
+import com.waben.stock.datalayer.publisher.entity.Publisher;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,6 +33,13 @@ public class PublisherController implements PublisherInterface {
 
 	@Autowired
 	private PublisherService publisherService;
+
+	@Override
+	public Response<PageInfo<PublisherDto>> pages(@RequestBody PublisherQuery publisherQuery) {
+		Page<Publisher> pages = publisherService.pages(publisherQuery);
+		PageInfo<PublisherDto> result = new PageInfo<>(pages, PublisherDto.class);
+		return new Response<>(result);
+	}
 
 	@Override
 	public Response<PublisherDto> fetchById(@PathVariable Long id) {

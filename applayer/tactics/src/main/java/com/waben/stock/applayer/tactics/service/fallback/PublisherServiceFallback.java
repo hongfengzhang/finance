@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.service.fallback;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.service.PublisherService;
@@ -15,6 +17,11 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
  */
 @Component
 public class PublisherServiceFallback implements PublisherService {
+
+	@Override
+	public Response<PageInfo<PublisherDto>> pages(PublisherQuery publisherQuery) {
+		return null;
+	}
 
 	@Override
 	public Response<PublisherDto> fetchById(Long id) {

@@ -20,48 +20,49 @@ public class BuyRecordServiceFallback implements BuyRecordService {
 
     @Override
     public Response<BuyRecordDto> addBuyRecord(BuyRecordDto buyRecordDto) {
-        return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<String> dropBuyRecord(Long id) {
-        return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 
     @Override
-	public Response<BuyRecordDto> sellLock(Long investorId, Long id, String delegateNumber,
-			String windControlTypeIndex) {
-    	throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    public Response<BuyRecordDto> sellLock(Long investorId, Long id, String delegateNumber,
+                                           String windControlTypeIndex) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 
     @Override
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {
-        return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
-        return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<BuyRecordDto> buyLock(Long investorId, Long id, String delegateNumber) {
-        return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<BuyRecordDto> buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
-        return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
-        return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
-	@Override
-	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
-		return null;
-	}
+    @Override
+    public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
+        return null;
+    }
 }

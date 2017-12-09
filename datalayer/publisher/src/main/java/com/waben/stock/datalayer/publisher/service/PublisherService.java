@@ -3,10 +3,19 @@ package com.waben.stock.datalayer.publisher.service;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
@@ -14,6 +23,7 @@ import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import com.waben.stock.interfaces.util.ShareCodeUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -111,6 +121,23 @@ public class PublisherService {
 			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
 		}
 		return publisherDao.pageByPromoter(publisher.getPromotionCode(), page, size);
+	}
+
+	//分页查询
+	public Page<Publisher> pages(final PublisherQuery query){
+        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<Publisher> pages = publisherDao.page(new Specification<Publisher>() {
+			@Override
+			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				if (!StringUtils.isEmpty(query.getPhone())) {
+					Predicate typeQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query
+							.getPhone());
+					criteriaQuery.where(criteriaBuilder.and(typeQuery));
+				}
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+	    return pages;
 	}
 
 }
