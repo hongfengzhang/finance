@@ -76,4 +76,14 @@ public class CapitalFlowDaoImpl implements CapitalFlowDao {
 		return repository.save(t);
 	}
 
+	@Override
+	public List<CapitalFlow> retriveByPublisherIdAndType(Long publisherId, CapitalFlowType type) {
+		return repository.findByPublisherIdAndType(publisherId, type);
+	}
+
+	@Override
+	public BigDecimal promotionTotalAmount(Long publisherId) {
+		return repository.promotionTotalAmount(publisherId, CapitalFlowType.Promotion);
+	}
+
 }

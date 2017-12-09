@@ -1,6 +1,6 @@
 package com.waben.stock.datalayer.publisher.service;
 
-import java.sql.Date;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +59,10 @@ public class CapitalFlowService {
 			}
 		}, pageable);
 		return pages;
+	}
+
+	public BigDecimal promotionTotalAmount(Long publisherId) {
+		return capitalFlowDao.promotionTotalAmount(publisherId);
 	}
 
 }

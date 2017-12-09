@@ -25,7 +25,9 @@ public enum CapitalFlowType implements CommonalityEnum {
 
 	Loss("7", "亏损"),
 
-	Profit("8", "盈利");
+	Profit("8", "盈利"),
+	
+	Promotion("9", "推广佣金");
 
 	private String index;
 

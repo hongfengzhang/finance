@@ -1,6 +1,9 @@
 package com.waben.stock.interfaces.service.publisher;
 
+import java.math.BigDecimal;
+
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,5 +24,15 @@ public interface CapitalFlowInterface {
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<CapitalFlowDto>> pagesByQuery(@RequestBody CapitalFlowQuery query);
+	
+	/**
+	 * 获取推广赚取的总佣金
+	 * 
+	 * @param publisherId
+	 *            发布人ID
+	 * @return 推广赚取的总佣金
+	 */
+	@RequestMapping(value = "/{publisherId}/promotion/amount", method = RequestMethod.GET)
+	Response<BigDecimal> promotionTotalAmount(@PathVariable("publisherId") Long publisherId);
 
 }

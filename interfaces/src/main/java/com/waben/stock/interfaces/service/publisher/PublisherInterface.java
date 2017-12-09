@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
@@ -27,5 +28,12 @@ public interface PublisherInterface {
 	@RequestMapping(value = "/{phone}/modifyPassword", method = RequestMethod.PUT)
 	Response<PublisherDto> modifyPassword(@PathVariable("phone") String phone,
 			@RequestParam(name = "password") String password);
+
+	@RequestMapping(value = "/{id}/promotion/count", method = RequestMethod.GET)
+	Response<Integer> promotionCount(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/{id}/promotion/userpages", method = RequestMethod.GET)
+	Response<PageInfo<PublisherDto>> pagePromotionUser(@PathVariable("id") Long id,
+			@RequestParam(name = "page") int page, @RequestParam(name = "size") int size);
 
 }

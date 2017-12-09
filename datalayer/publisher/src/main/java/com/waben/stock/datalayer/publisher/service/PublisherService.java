@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,6 +94,23 @@ public class PublisherService {
 			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
 		}
 		return publisher;
+	}
+
+	public Integer promotionCount(Long id) {
+		Publisher publisher = publisherDao.retrieve(id);
+		if (publisher == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+
+		return publisherDao.promotionCount(publisher.getPromotionCode());
+	}
+
+	public Page<Publisher> pagePromotionUser(Long id, int page, int size) {
+		Publisher publisher = publisherDao.retrieve(id);
+		if (publisher == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		return publisherDao.pageByPromoter(publisher.getPromotionCode(), page, size);
 	}
 
 }
