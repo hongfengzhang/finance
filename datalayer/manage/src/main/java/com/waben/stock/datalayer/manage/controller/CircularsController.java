@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,7 +42,7 @@ public class CircularsController implements CircularsInterface {
     }
 
     @Override
-    public Response<PageInfo<CircularsDto>> pages(CircularsQuery query) {
+    public Response<PageInfo<CircularsDto>> pages(@RequestBody CircularsQuery query) {
         Page<Circulars> page = circularsService.pagesByQuery(query);
         PageInfo<CircularsDto> result = PageToPageInfo.pageToPageInfo(page, CircularsDto.class);
         return new Response<>(result);

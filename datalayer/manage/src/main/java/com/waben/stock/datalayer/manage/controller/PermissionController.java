@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PermissionQuery;
 import com.waben.stock.interfaces.service.manage.PermissionInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,12 +18,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Created by yuyidi on 2017/12/11.
  * @desc
  */
-@Controller
+@RestController
 @RequestMapping("/permission")
 public class PermissionController implements PermissionInterface {
 

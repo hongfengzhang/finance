@@ -93,16 +93,16 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
-                idePagination: "server",
-                queryParams:function () {
+                sidePagination: "server",
+                queryParams: function () {
                     return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
+                        page: this.pageNumber - 1,
+                        size: this.pageSize
                     }
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        return{
+                        return {
                             total: res.result.totalElements,
                             rows: res.result.content
                         }
@@ -123,7 +123,7 @@
                     field: 'applyAmount',
                     title: '申请资金',
                     align: 'center'
-                },{
+                }, {
                     field: 'serviceFee',
                     title: '服务费',
                     align: 'center'

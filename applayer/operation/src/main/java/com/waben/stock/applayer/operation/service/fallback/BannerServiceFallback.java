@@ -1,31 +1,27 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
-import com.waben.stock.applayer.operation.service.manage.RoleService;
+import com.waben.stock.applayer.operation.service.manage.BannerService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.BannerQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.RoleQuery;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.List;
 
-/**
- * @author Created by yuyidi on 2017/11/16.
- * @desc
- */
-@Component
-public class RoleServiceFallback implements RoleService {
+
+@Service
+public class BannerServiceFallback implements BannerService {
 
     @Override
-    public Response<RoleDto> role(Long id) {
+    public Response<List<BannerDto>> fetchBanners(Boolean enable) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
-
     @Override
-    public Response<PageInfo<RoleDto>> pages(RoleQuery query) {
+    public Response<PageInfo<BannerDto>> pages(BannerQuery query) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

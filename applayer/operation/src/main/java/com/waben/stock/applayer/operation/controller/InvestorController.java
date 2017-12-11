@@ -49,7 +49,6 @@ public class InvestorController {
     * @return com.waben.stock.interfaces.pojo.Response<com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust>
     * @description 投资点买记录买入
     */
-    @PreAuthorize(value = "investor")
     @RequestMapping("/{investor}/buyrecord/{buyrecord}/buyin")
     @ResponseBody
     public Response<SecuritiesStockEntrust> buyRecordBuyIn(@PathVariable("investor") Long investor, @PathVariable
@@ -63,7 +62,6 @@ public class InvestorController {
         return new Response<>(result);
     }
 
-    @PreAuthorize(value = "investor")
     @RequestMapping("/{investor}/buyrecord/{buyrecord}/sellout")
     @ResponseBody
     public Response<SecuritiesStockEntrust> buyRecordSellOut(@PathVariable("investor") Long investor, @PathVariable

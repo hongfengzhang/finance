@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -23,6 +24,7 @@ import javax.persistence.criteria.Root;
  * @author Created by yuyidi on 2017/12/11.
  * @desc
  */
+@Service
 public class PermissionService {
 
 

@@ -20,9 +20,9 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="col-md-4">
                         <div class="form-group">
-                            <label class="col-md-2 control-label">注册日期</label>
+                            <label class="col-md-2 control-label">日期</label>
                             <div class="col-md-5">
                                 <input type="text" class="form-control datetimepicker" maxlength="11"
                                        placeholder="开始日期"/>
@@ -98,7 +98,7 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
-                idePagination: "server",
+                sidePagination:"server",
                 queryParams:function () {
                     return {
                         page:this.pageNumber-1,
@@ -121,16 +121,16 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'name',
-                    title: '用户名',
-                    align: 'center'
-                }, {
-                    field: 'createTime',
-                    title: '注册日期',
+                    field: 'userName',
+                    title: '投资人',
                     align: 'center'
                 },{
                     field: 'state',
                     title: '用户状态',
+                    align: 'center'
+                }, {
+                    field: 'createTime',
+                    title: '注册日期',
                     align: 'center'
                 }, {
                     title: '操作',

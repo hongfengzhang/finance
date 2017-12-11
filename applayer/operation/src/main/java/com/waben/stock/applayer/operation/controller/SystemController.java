@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  * @author Created by yuyidi on 2017/11/6.
  * @desc
  */
-@SessionAttributes(value = {"menus"})
+@SessionAttributes(value = {"menus","userName"})
 @Controller
 public class SystemController {
 
@@ -27,10 +27,10 @@ public class SystemController {
         return "login";
     }
 
-    @GetMapping("/")
-    public String root() {
-        return "decorator";
-    }
+//    @GetMapping("/")
+//    public String root() {
+//        return "decorator";
+//    }
 
     @GetMapping("/index")
     public String index(Model model) {

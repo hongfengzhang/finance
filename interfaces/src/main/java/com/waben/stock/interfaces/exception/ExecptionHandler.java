@@ -49,11 +49,8 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 		String code = "0000";
 		String error = "503";
 		try {
-			Class exceptionClass = null;
-			logger.info("当前异常:{}", ex.getClass());
 			for (ExceptionInformation exception : exceptions) {
-				exceptionClass = exception.getException();
-				if (ex.getClass().equals(exceptionClass)) {
+				if (ex.getClass().equals(exception.getException())) {
 					response.setStatus(exception.getHttpStatus());
 					code = ex.getMessage();
 					message = message(code);
@@ -61,7 +58,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 					break;
 				}
 			}
-			logger.error("请求：{},异常：{},{}", request.getRequestURI(), message, exceptionClass);
+			logger.error("请求：{},异常：{},{}", request.getRequestURI(), message, ex.getClass());
 		} finally {
 			mv.addObject("message", message);
 			mv.addObject("code", code);

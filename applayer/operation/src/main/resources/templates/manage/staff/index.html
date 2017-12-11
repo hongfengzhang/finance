@@ -95,7 +95,7 @@
             $table.bootstrapTable({
                 url: "../staff/pages",
                 dataType: "json",
-                cache: true, // 不缓存
+                cache: false, // 不缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
                 search: true, // 开启搜索功能
@@ -108,15 +108,16 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
-                queryParams:function () {
+                sidePagination: "server",
+                queryParams: function () {
                     return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
+                        page: this.pageNumber - 1,
+                        size: this.pageSize
                     }
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        return{
+                        return {
                             total: res.result.totalElements,
                             rows: res.result.content
                         }

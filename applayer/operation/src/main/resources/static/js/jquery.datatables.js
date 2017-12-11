@@ -15096,7 +15096,7 @@
 	// jQuery access
 	$.fn.dataTable = DataTable;
 
-	// Provide access to the host jQuery object (circular reference)
+	// Provide access to the host jQuery object (circulars reference)
 	DataTable.$ = $;
 
 	// Legacy aliases

@@ -65,7 +65,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT, "/login-error").permitAll()
-                .antMatchers(HttpMethod.GET, "/staff/**", "/stock/**","/strategytype/**","/investor/**", "/securityaccount/**","/env").permitAll()
+                .antMatchers(HttpMethod.GET, "/staff/**", "/stock/**","/strategytype/**", "/securityaccount/**","/env").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)

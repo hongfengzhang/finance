@@ -2,6 +2,8 @@ package com.waben.stock.applayer.tactics.service.fallback;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.CircularsQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.service.CircularsService;
@@ -24,4 +26,9 @@ public class CircularsServiceFallback implements CircularsService {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
+
+	@Override
+	public Response<PageInfo<CircularsDto>> pages(CircularsQuery query) {
+		return null;
+	}
 }
