@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.manage.StaffService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -18,17 +20,16 @@ import org.springframework.stereotype.Component;
 public class StaffServiceFallback implements StaffService {
 
     public Response<StaffDto> fetchByUserName(String username) {
-        return new Response<>("205", "用户" + username + "信息不存在");
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PageInfo<StaffDto>> pagesByQuery(StaffQuery staffQuery) {
-        return new Response<>("205","用户列表服务异常");
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 	@Override
 	public Response<StaffDto> saveStaff(StaffDto staffDto) {
-		// TODO Auto-generated method stub
-		return null;
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }
