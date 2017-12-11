@@ -22,7 +22,7 @@ public class Role {
     @Column
     private String code;
     @Column(length = 30)
-    private String describtion;
+    private String description;
 
     @JsonIgnore
     @ManyToMany(targetEntity = Menu.class, fetch = FetchType.LAZY)
@@ -53,12 +53,12 @@ public class Role {
         this.name = name;
     }
 
-    public String getDescribtion() {
-        return describtion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribtion(String describtion) {
-        this.describtion = describtion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set<Menu> getMenus() {

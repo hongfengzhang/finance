@@ -12,7 +12,7 @@ public class RoleDto implements Serializable{
     private Long id;
     private String name;
     private String code;
-    private String describtion;
+    private String description;
     private Set<PermissionDto> permissionDtos;
     private Set<MenuDto> menusDtos;
 
@@ -40,12 +40,12 @@ public class RoleDto implements Serializable{
         this.code = code;
     }
 
-    public String getDescribtion() {
-        return describtion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribtion(String describtion) {
-        this.describtion = describtion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Set<PermissionDto> getPermissionDtos() {
