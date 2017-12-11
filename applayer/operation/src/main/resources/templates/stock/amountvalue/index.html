@@ -12,28 +12,10 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票名称</label>
+                            <label class="col-md-4 control-label">市值</label>
                             <div class="col-md-8">
-                                <input type="text" name="userName" class="form-control" maxlength="11"
-                                       placeholder="股票名称"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">股票代码</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="state" maxlength="11" placeholder="股票代码"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">股票状态</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" maxlength="11" placeholder="股票状态"/>
+                                <input type="text" name="value" class="form-control" maxlength="11"
+                                       placeholder="市值"/>
                             </div>
                         </div>
                     </div>
@@ -78,7 +60,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "../strategytype/pages",
+                url: "../amountvalue/pages",
                 dataType: "json",
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
@@ -93,7 +75,7 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
-                sidePagination:"server",
+                sidePagination: "server",
                 queryParams:function () {
                     return {
                         page:this.pageNumber-1,
@@ -116,28 +98,8 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'name',
-                    title: '策略名称',
-                    align: 'center'
-                }, {
-                    field: 'serviceFeePerWan',
-                    title: '服务费/万元',
-                    align: 'center'
-                },{
-                    field: 'wearingPoint',
-                    title: '穿仓点',
-                    align: 'center'
-                },{
-                    field: 'profit',
-                    title: '止盈点',
-                    align: 'center'
-                },{
-                    field: 'deferred',
-                    title: '周期',
-                    align: 'center'
-                },{
-                    field: 'state',
-                    title: '状态',
+                    field: 'value',
+                    title: '市值',
                     align: 'center'
                 }, {
                     title: '操作',
@@ -168,7 +130,9 @@
                             console.log(info);
                         },
                         'click .remove': function (e, value, row, index) {
+
                             demo.showSwal('warning-message-and-cancel', row);
+
                         }
                     }
                 }]

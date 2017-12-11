@@ -19,17 +19,17 @@ public class StrategyController {
 
     @RequestMapping("/posted/index")
     public String strategyPosted() {
-        return "strategy/posted/index";
+        return "strategytype/posted/index";
     }
 
     @RequestMapping("/holding/index")
     public String strategyHolding() {
-        return "strategy/holding/index";
+        return "strategytype/holding/index";
     }
 
     @RequestMapping("/unwind/index")
     public String strategyUnwind() {
-        return "strategy/unwind/index";
+        return "strategytype/unwind/index";
     }
 
 

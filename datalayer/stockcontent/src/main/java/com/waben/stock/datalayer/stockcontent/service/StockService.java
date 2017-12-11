@@ -34,7 +34,7 @@ public class StockService {
 		return stockDao.create(stock);
 	}
 
-	public Page<Stock> stocks(final StockQuery stockQuery) {
+	public Page<Stock> pages(final StockQuery stockQuery) {
 		Pageable pageable = new PageRequest(stockQuery.getPage(), stockQuery.getSize());
 		Page<Stock> result = stockDao.page(new Specification<Stock>() {
 			@Override

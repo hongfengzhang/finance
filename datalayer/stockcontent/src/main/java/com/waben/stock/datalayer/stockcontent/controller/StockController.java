@@ -30,7 +30,7 @@ public class StockController implements StockInterface {
 
 	@Override
 	public Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery staffQuery) {
-		Page<Stock> stocks = stockService.stocks(staffQuery);
+		Page<Stock> stocks = stockService.pages(staffQuery);
 		PageInfo<StockDto> result = new PageInfo<>(stocks, StockDto.class);
 		return new Response<>(result);
 	}
