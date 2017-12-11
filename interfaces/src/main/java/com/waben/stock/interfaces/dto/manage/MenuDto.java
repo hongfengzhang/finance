@@ -15,7 +15,9 @@ public class MenuDto implements Serializable {
     private Long pid;
     private Boolean state;
     private Integer sort;
+    private String url;
     private String icon;
+
 
     private List<MenuDto> childs = new ArrayList<>();
 
@@ -73,5 +75,13 @@ public class MenuDto implements Serializable {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 }

@@ -20,7 +20,7 @@ public class SettlementController {
 
     @GetMapping("/index")
     public String index() {
-        return "strategy/sellout/index";
+        return "strategy/holding/index";
     }
 
     @GetMapping("/pages")

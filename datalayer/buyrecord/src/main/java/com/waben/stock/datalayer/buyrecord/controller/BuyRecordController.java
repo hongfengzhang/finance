@@ -5,8 +5,7 @@ import com.waben.stock.datalayer.buyrecord.service.BuyRecordService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.*;
 import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -52,6 +51,27 @@ public class BuyRecordController implements BuyRecordInterface {
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery) {
 		Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByPostedQuery(strategyPostedQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByHoldingQuery(StrategyHoldingQuery strategyHoldingQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByHoldingQuery(strategyHoldingQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery strategyUnwindQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByUnwindQuery(strategyUnwindQuery);
 		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
 		return new Response<>(result);
 	}

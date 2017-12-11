@@ -50,7 +50,7 @@
                 <div  class="collapse" th:id="${menu.id}">
                     <ul class="nav">
                         <li th:each ="list : ${menu.childs}">
-                            <a th:href="@{/staff/index}" th:text="${list.name}"></a>
+                            <a th:href="@{${list.url}}" th:text="${list.name}"></a>
                         </li>
                     </ul>
                 </div>

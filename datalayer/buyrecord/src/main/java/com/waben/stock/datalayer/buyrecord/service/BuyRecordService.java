@@ -12,6 +12,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +105,7 @@ public class BuyRecordService {
 		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
 			@Override
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
-					CriteriaBuilder criteriaBuilder) {
+										 CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
 				if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
 					predicateList.add(root.get("state").in(buyRecordQuery.getStates()));
@@ -277,4 +280,39 @@ public class BuyRecordService {
 		return changeState(buyRecord, false);
 	}
 
+	public Page<BuyRecord> pagesByPostedQuery(StrategyPostedQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+			@Override
+			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+		return pages;
+	}
+
+	public Page<BuyRecord> pagesByHoldingQuery(StrategyHoldingQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+			@Override
+			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+		return pages;
+	}
+
+	public Page<BuyRecord> pagesByUnwindQuery(StrategyUnwindQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+			@Override
+			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+		return pages;
+	}
 }
