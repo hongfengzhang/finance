@@ -9,9 +9,3 @@ spring:
       profile: @active@
       name: ${spring.application.name}
       uri: @config.server@
-management:
-  port: 8081
-eureka:
-  instance:
-    metadata-map:
-      management.port: ${management.port:8081}

@@ -2,9 +2,18 @@ package com.waben.stock.datalayer.manage.service;
 
 import com.waben.stock.datalayer.manage.entity.Circulars;
 import com.waben.stock.datalayer.manage.repository.CircularsDao;
+import com.waben.stock.interfaces.pojo.query.CircularsQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Date;
 import java.util.List;
 
@@ -31,6 +40,19 @@ public class CircularsService {
             return circularsDao.retrieveCirculars(enable);
         }
         return circularsDao.retrieveCircularsWithInExpireTime(new Date());
+    }
+
+    public Page<Circulars> pagesByQuery(final CircularsQuery query) {
+        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+        Page<Circulars> pages = circularsDao.page(new Specification<Circulars>() {
+            @Override
+            public Predicate toPredicate(Root<Circulars> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
+                    criteriaBuilder) {
+
+                return criteriaQuery.getRestriction();
+            }
+        }, pageable);
+        return pages;
     }
 
 }

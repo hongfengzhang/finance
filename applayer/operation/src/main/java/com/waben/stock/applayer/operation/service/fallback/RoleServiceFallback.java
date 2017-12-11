@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.manage.RoleService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +17,8 @@ import java.util.Set;
 public class RoleServiceFallback implements RoleService {
 
     @Override
-    public Response<RoleDto> fetchByRoleId(Long id) {
-        return new Response<>("205","角色信息不存在");
+    public Response<RoleDto> role(Long id) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 
