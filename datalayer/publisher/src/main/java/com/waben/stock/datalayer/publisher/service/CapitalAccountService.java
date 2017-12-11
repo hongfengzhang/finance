@@ -9,28 +9,31 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
-import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlowExtend;
 import com.waben.stock.datalayer.publisher.entity.FrozenCapital;
+import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowExtendDao;
 import com.waben.stock.datalayer.publisher.repository.FrozenCapitalDao;
+import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
 import com.waben.stock.interfaces.exception.ServiceException;
-import org.springframework.util.StringUtils;
+import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
+import com.waben.stock.interfaces.pojo.query.CapitalFlowExtendQuery;
 
 @Service
 public class CapitalAccountService {
@@ -46,6 +49,12 @@ public class CapitalAccountService {
 
 	@Autowired
 	private FrozenCapitalDao frozenCapitalDao;
+
+	@Autowired
+	private PublisherDao publisherDao;
+
+	@Autowired
+	private CapitalFlowExtendService extendService;
 
 	/**
 	 * 根据发布人系列号获取资金账户
@@ -206,6 +215,40 @@ public class CapitalAccountService {
 		// 修改账户的冻结资金数
 		account.setFrozenCapital(account.getFrozenCapital().subtract(frozen.getAmount()));
 		capitalAccountDao.update(account);
+		// 是否为被推广人的第一笔单，如果是，推广人赚取10%的服务费
+		Publisher publisher = publisherDao.retrieve(publisherId);
+		if (publisher.getPromoter() != null && !"".equals(publisher.getPromoter().trim())) {
+			Publisher promoter = publisherDao.retrieveByPromotionCode(publisher.getPromoter().trim());
+			if (promoter != null) {
+				CapitalFlowExtendQuery query = new CapitalFlowExtendQuery();
+				query.setPage(0);
+				query.setSize(10);
+				query.setType(CapitalFlowType.Promotion);
+				query.setPublisherId(promoter.getId());
+				query.setExtendType(CapitalFlowExtendType.PUBLISHER);
+				query.setExtendId(publisher.getId());
+				Page<CapitalFlowExtend> flowPage = extendService.pagesByQuery(query);
+				if (flowPage.getContent().size() == 0) {
+					// 获取当前点买记录的服务费
+					query.setPage(0);
+					query.setSize(10);
+					query.setType(CapitalFlowType.ServiceFee);
+					query.setPublisherId(publisherId);
+					query.setExtendType(CapitalFlowExtendType.BUYRECORD);
+					query.setExtendId(buyRecordId);
+					Page<CapitalFlowExtend> serviceFee = extendService.pagesByQuery(query);
+					BigDecimal promotionAmount = serviceFee.getContent().get(0).getFlow().getAmount().abs()
+							.multiply(new BigDecimal(0.1));
+					CapitalAccount promoterAccount = capitalAccountDao.retriveByPublisherId(promoter.getId());
+					increaseAmount(promoterAccount, promotionAmount, date);
+					CapitalFlow promotionFlow = flowDao.create(promoter.getId(), promoter.getSerialCode(),
+							CapitalFlowType.Promotion, promotionAmount, date);
+					CapitalFlowExtend promotionExtend = new CapitalFlowExtend(promotionFlow,
+							CapitalFlowExtendType.PUBLISHER, publisherId);
+					flowExtendDao.create(promotionExtend);
+				}
+			}
+		}
 		return findByPublisherId(publisherId);
 	}
 

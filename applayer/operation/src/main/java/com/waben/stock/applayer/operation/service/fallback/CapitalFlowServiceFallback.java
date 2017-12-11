@@ -7,6 +7,9 @@ import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+
+import java.math.BigDecimal;
+
 import org.springframework.stereotype.Component;
 
 @Component
@@ -15,4 +18,9 @@ public class CapitalFlowServiceFallback implements CapitalFlowService{
     public Response<PageInfo<CapitalFlowDto>> pagesByQuery(CapitalFlowQuery query) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<BigDecimal> promotionTotalAmount(Long publisherId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

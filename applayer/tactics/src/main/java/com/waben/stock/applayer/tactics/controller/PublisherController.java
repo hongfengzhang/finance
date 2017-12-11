@@ -1,8 +1,6 @@
 package com.waben.stock.applayer.tactics.controller;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
-import com.waben.stock.applayer.tactics.dto.publisher.PublisherExtensionDto;
-import com.waben.stock.applayer.tactics.dto.publisher.PublisherExtensionDto.PublisherExtensionUserDto;
 import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
@@ -162,26 +158,6 @@ public class PublisherController {
 	public Response<String> modifyPaymentPassword(String paymentPassword) {
 		accountService.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
 		return new Response<>("设置支付密码成功");
-	}
-
-	@SuppressWarnings("unused")
-	@GetMapping("/myExtension")
-	@ApiOperation(value = "我的推广")
-	public Response<PublisherExtensionDto> myExtension() {
-		String serialCode = SecurityUtil.getSerialCode();
-		// TODO 获取当前用户的推广详情，此处先模拟假数据
-		PublisherExtensionDto result = new PublisherExtensionDto();
-		result.setExtensionLink("http://www.baidu.com");
-		result.setExtensionTotalProfit(new BigDecimal(100));
-		result.setExtensionUserCount(5);
-		List<PublisherExtensionUserDto> extensionUserList = new ArrayList<>();
-		extensionUserList.add(new PublisherExtensionUserDto("12345678911", new BigDecimal(20), new Date()));
-		extensionUserList.add(new PublisherExtensionUserDto("12345678912", new BigDecimal(20), new Date()));
-		extensionUserList.add(new PublisherExtensionUserDto("12345678913", new BigDecimal(20), new Date()));
-		extensionUserList.add(new PublisherExtensionUserDto("12345678914", new BigDecimal(20), new Date()));
-		extensionUserList.add(new PublisherExtensionUserDto("12345678915", new BigDecimal(20), new Date()));
-		result.setExtensionUserList(extensionUserList);
-		return new Response<>(result);
 	}
 
 }

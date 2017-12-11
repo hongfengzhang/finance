@@ -86,6 +86,9 @@ public class BindCardBusiness {
 	}
 
 	public List<BindCardDto> listsByPublisherId(Long publisherId) {
+		if (bankIconMap.size() == 0) {
+			init();
+		}
 		Response<List<BindCardDto>> response = service.listsByPublisherId(publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();

@@ -36,4 +36,14 @@ public class PublisherServiceFallback implements PublisherService{
     public Response<PublisherDto> modifyPassword(String phone, String password) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<Integer> promotionCount(Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<PublisherDto>> pagePromotionUser(Long id, int page, int size) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

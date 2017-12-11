@@ -11,7 +11,9 @@ import java.util.Map;
  */
 public enum CapitalFlowExtendType implements CommonalityEnum {
 
-	BUYRECORD("1", "点买记录");
+	BUYRECORD("1", "点买记录"),
+	
+	PUBLISHER("2", "发布人");
 
 	private String index;
 	private String type;

@@ -3,7 +3,11 @@ package com.waben.stock.datalayer.publisher.service;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.waben.stock.interfaces.pojo.query.PublisherQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -11,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
@@ -18,14 +23,9 @@ import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import com.waben.stock.interfaces.util.ShareCodeUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
-import org.springframework.util.StringUtils;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
@@ -106,6 +106,23 @@ public class PublisherService {
 		return publisher;
 	}
 
+	public Integer promotionCount(Long id) {
+		Publisher publisher = publisherDao.retrieve(id);
+		if (publisher == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+
+		return publisherDao.promotionCount(publisher.getPromotionCode());
+	}
+
+	public Page<Publisher> pagePromotionUser(Long id, int page, int size) {
+		Publisher publisher = publisherDao.retrieve(id);
+		if (publisher == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		return publisherDao.pageByPromoter(publisher.getPromotionCode(), page, size);
+	}
+
 	//分页查询
 	public Page<Publisher> pages(final PublisherQuery query){
         Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -122,4 +139,5 @@ public class PublisherService {
 		},pageable);
 	    return pages;
 	}
+
 }

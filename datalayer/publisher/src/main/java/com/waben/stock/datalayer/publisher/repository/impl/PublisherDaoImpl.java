@@ -61,4 +61,19 @@ public class PublisherDaoImpl implements PublisherDao {
 	public Publisher retriveBySerialCode(String serialCode) {
 		return repository.findBySerialCode(serialCode);
 	}
+
+	@Override
+	public Publisher retrieveByPromotionCode(String promotionCode) {
+		return repository.findByPromotionCode(promotionCode);
+	}
+
+	@Override
+	public Integer promotionCount(String promotionCode) {
+		return repository.promotionCount(promotionCode);
+	}
+
+	@Override
+	public Page<Publisher> pageByPromoter(String promotionCode, int page, int size) {
+		return repository.findByPromoter(promotionCode, new PageRequest(page, size));
+	}
 }
