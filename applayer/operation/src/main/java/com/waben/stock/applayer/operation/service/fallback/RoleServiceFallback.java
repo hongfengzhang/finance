@@ -17,7 +17,7 @@ import java.util.Set;
 public class RoleServiceFallback implements RoleService {
 
     @Override
-    public Response<RoleDto> fetchByRoleId(Long id) {
+    public Response<RoleDto> role(Long id) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

@@ -44,6 +44,7 @@ public class ExceptionConstant {
 	public static final String STAFF_NOT_FOUND_EXCEPTION = "3003";
 	// 角色服务异常
 	public static final String ROLE_NOT_FOUND_EXCEPTION = "3004";
+	public static final String PERMISSION_NOT_FOUND_EXCEPTION = "3005";
 
 	// 点买服务异常
 	// 账户可用余额不足

@@ -4,16 +4,17 @@ import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.service.RoleService;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.RoleQuery;
 import com.waben.stock.interfaces.service.manage.RoleInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/16.
@@ -27,10 +28,16 @@ public class RoleController implements RoleInterface {
     private RoleService roleService;
 
     @Override
-    public Response<RoleDto> fetchByRoleId(@PathVariable Long id) {
+    public Response<RoleDto> role(@PathVariable Long id) {
         Role role = roleService.findById(id);
         RoleDto result = CopyBeanUtils.copyBeanProperties(role, new RoleDto(), false);
         return new Response<>(result);
     }
 
+    @Override
+    public Response<PageInfo<RoleDto>> pages(@RequestBody RoleQuery query) {
+        Page<Role> page = roleService.pagesByQuery(query);
+        PageInfo<RoleDto> result = PageToPageInfo.pageToPageInfo(page, RoleDto.class);
+        return new Response<>(result);
+    }
 }
