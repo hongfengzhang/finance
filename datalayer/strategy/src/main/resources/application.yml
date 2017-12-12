@@ -2,9 +2,6 @@ server:
   port: 8003
   context-path: /strategy
 spring:
-  devtools:
-    restart:
-      additional-paths: datalayer/strategy/src/main/java
   mvc:
     throw-exception-if-no-handler-found: true
   datasource:
