@@ -2,9 +2,6 @@ server:
   port: 8004
   context-path: /manage
 spring:
-  devtools:
-    restart:
-      additional-paths: datalayer/manage/src/main/java
   mvc:
     throw-exception-if-no-handler-found: true
   datasource:
