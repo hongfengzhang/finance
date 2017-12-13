@@ -117,6 +117,8 @@ public class BuyRecordDto {
 	 * 投资人ID
 	 */
 	private Long investorId;
+
+	private String investorName;
 	/**
 	 * 发布人ID
 	 */
@@ -389,5 +391,13 @@ public class BuyRecordDto {
 
 	public void setPublisherDto(PublisherDto publisherDto) {
 		this.publisherDto = publisherDto;
+	}
+
+	public String getInvestorName() {
+		return investorName;
+	}
+
+	public void setInvestorName(String investorName) {
+		this.investorName = investorName;
 	}
 }

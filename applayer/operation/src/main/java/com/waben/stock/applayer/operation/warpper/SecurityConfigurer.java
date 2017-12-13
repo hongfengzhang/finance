@@ -16,6 +16,7 @@
 package com.waben.stock.applayer.operation.warpper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waben.stock.applayer.operation.warpper.auth.filter.CustomCorsFilter;
 import com.waben.stock.applayer.operation.warpper.auth.filter.LoginProcessingFilter;
 import com.waben.stock.applayer.operation.warpper.auth.handler.*;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
@@ -76,6 +77,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
 //                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
+                .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(processingFilter(), UsernamePasswordAuthenticationFilter.class)
         ;
 

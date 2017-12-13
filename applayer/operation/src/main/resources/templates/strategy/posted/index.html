@@ -73,7 +73,7 @@
     <script th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap-table.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap-table-zh-CN.js}" type="text/javascript"></script>
-
+    <script th:src="@{/static/js/http.js}" type="text/javascript"></script>
     <script type="text/javascript">
         var $table = $('#bootstrap-table');
         $(function () {
@@ -106,7 +106,7 @@
                             total: res.result.totalElements,
                             rows: res.result.content
                         }
-                    }else{
+                    } else {
                         return {
                             total: 0,
                             rows: []
@@ -114,31 +114,28 @@
                     }
                 },
                 columns: [{
-                    checkbox: true,
-                    align: 'center'
-                }, {
                     field: 'id',
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'publisherDto[phone]',
+                    field: 'publisherPhone',
                     title: '发布人',
                     align: 'center'
                 }, {
                     field: 'stockName',
                     title: '股票名称',
                     align: 'center'
-                },{
+                }, {
                     field: 'stockCode',
                     title: '股票代码',
                     align: 'center'
-                },  {
+                }, {
                     field: 'numberOfStrand',
                     title: '数量',
                     align: 'center'
                 }, {
-                    field: 'applyAmount',
-                    title: '买入金额',
+                    field: 'delegatePrice',
+                    title: '委托金额',
                     align: 'center'
                 }, {
                     field: 'createTime',
@@ -170,15 +167,41 @@
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
+//                            swal('You click view icon, row: ', info);
+//                            get("../../buyrecord/" + row.id, function () {
+//
+//                            }, true);
 
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
                         },
                         'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-                            swal('You click edit icon, row: ', info);
-                            console.log(info);
+                            if(row.state=='BUYLOCK'){
+                                swal("警告", "买入锁定中！", "warning");
+                                return false;
+                            }
+                            swal({
+                                title: "买入!",
+                                text: "确认买入当前股票信息?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 买入!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function (isConfirm) {
+                                if (isConfirm) {
+                                    post("../../investor/buyrecord/" + row.id + "/buyin", null,function (data) {
+                                        if(data.code == '200') {
+                                            swal("Succsess!", "买入成功.", "success");
+                                            //当前一行禁用
+                                        }else{
+                                            swal("Failed", "买入失败", "error");
+                                        }
+                                    }, true);
+
+                                } else {
+                                    swal("Cancelled", "取消买入 :)", "error");
+                                }
+                            });
                         },
                         'click .remove': function (e, value, row, index) {
 

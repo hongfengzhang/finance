@@ -293,12 +293,13 @@ public class BuyRecordService {
         return pages;
     }
 
-    public Page<BuyRecord> pagesByHoldingQuery(StrategyHoldingQuery query) {
+    public Page<BuyRecord> pagesByHoldingQuery(final StrategyHoldingQuery query) {
         Pageable pageable = new PageRequest(query.getPage(), query.getSize());
         Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
             @Override
             public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-
+                Predicate state =criteriaBuilder.in(root.get("state")).value(BuyRecordState.SELLAPPLY).value(BuyRecordState.SELLLOCK);
+                criteriaQuery.where(state);
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
@@ -310,7 +311,8 @@ public class BuyRecordService {
         Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
             @Override
             public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-
+                Predicate state = criteriaBuilder.equal(root.get("state").as(BuyRecordState.class), BuyRecordState.UNWIND);
+                criteriaQuery.where(state);
                 return criteriaQuery.getRestriction();
             }
         }, pageable);

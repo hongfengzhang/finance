@@ -9,6 +9,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,5 +25,12 @@ public class BuyRecordController {
     public Response<PageInfo<BuyRecordDto>> pages(BuyRecordQuery buyRecordQuery) {
         PageInfo<BuyRecordDto> response = buyRecordBusiness.pages(buyRecordQuery);
         return new Response<>(response);
+    }
+
+    @GetMapping("/{buyrecord}")
+    @ResponseBody
+    public Response<BuyRecordDto> buyRecord(@PathVariable Long buyrecord) {
+        BuyRecordDto result = buyRecordBusiness.fetchBuyRecord(buyrecord);
+        return new Response<>(result);
     }
 }

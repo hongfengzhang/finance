@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.operation.warpper;
+package com.waben.stock.applayer.operation.util;
 
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

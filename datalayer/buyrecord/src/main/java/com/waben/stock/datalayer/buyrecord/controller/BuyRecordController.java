@@ -104,11 +104,6 @@ public class BuyRecordController implements BuyRecordInterface {
 	public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
 		Page<BuyRecord> page = buyRecordService.pagesByPostedQuery(strategyPostedQuery);
 		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-		for (BuyRecordDto buyRecordDto : result.getContent()) {
-			PublisherDto publisherDto = publisherBusiness.findById(buyRecordDto.getPublisherId());
-			publisherDto.setPassword(null);
-			buyRecordDto.setPublisherDto(publisherDto);
-		}
 		return new Response<>(result);
 	}
 

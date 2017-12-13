@@ -157,6 +157,11 @@ public class BuyRecord {
 	@Column(name = "investor_id")
 	private Long investorId;
 	/**
+	 * 投资人名称
+	 */
+	@Column(name="investor_name")
+	private String investorName;
+	/**
 	 * 发布人ID
 	 */
 	@Column(name = "publisher_id")
@@ -428,5 +433,13 @@ public class BuyRecord {
 
 	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
+	}
+
+	public String getInvestorName() {
+		return investorName;
+	}
+
+	public void setInvestorName(String investorName) {
+		this.investorName = investorName;
 	}
 }
