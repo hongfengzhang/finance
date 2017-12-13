@@ -1,8 +1,11 @@
 package com.waben.stock.datalayer.buyrecord.controller;
 
+import com.netflix.discovery.converters.Auto;
+import com.waben.stock.datalayer.buyrecord.business.PublisherBusiness;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.service.BuyRecordService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.*;
@@ -33,6 +36,8 @@ public class BuyRecordController implements BuyRecordInterface {
 
 	@Autowired
 	private BuyRecordService buyRecordService;
+	@Autowired
+	private PublisherBusiness publisherBusiness;
 
 	@Override
 	public Response<BuyRecordDto> fetchBuyRecord(@PathVariable Long buyrecord) {
@@ -51,27 +56,6 @@ public class BuyRecordController implements BuyRecordInterface {
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery) {
 		Page<BuyRecord> page = buyRecordService.pagesByQuery(buyRecordQuery);
-		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-		return new Response<>(result);
-	}
-
-	@Override
-	public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
-		Page<BuyRecord> page = buyRecordService.pagesByPostedQuery(strategyPostedQuery);
-		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-		return new Response<>(result);
-	}
-
-	@Override
-	public Response<PageInfo<BuyRecordDto>> pagesByHoldingQuery(StrategyHoldingQuery strategyHoldingQuery) {
-		Page<BuyRecord> page = buyRecordService.pagesByHoldingQuery(strategyHoldingQuery);
-		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-		return new Response<>(result);
-	}
-
-	@Override
-	public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery strategyUnwindQuery) {
-		Page<BuyRecord> page = buyRecordService.pagesByUnwindQuery(strategyUnwindQuery);
 		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
 		return new Response<>(result);
 	}
@@ -114,6 +98,32 @@ public class BuyRecordController implements BuyRecordInterface {
 	public Response<String> dropBuyRecord(@PathVariable Long id) {
 		buyRecordService.remove(id);
 		return new Response<>("successful");
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByPostedQuery(strategyPostedQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		for (BuyRecordDto buyRecordDto : result.getContent()) {
+			PublisherDto publisherDto = publisherBusiness.findById(buyRecordDto.getPublisherId());
+			publisherDto.setPassword(null);
+			buyRecordDto.setPublisherDto(publisherDto);
+		}
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByHoldingQuery(StrategyHoldingQuery strategyHoldingQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByHoldingQuery(strategyHoldingQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery strategyUnwindQuery) {
+		Page<BuyRecord> page = buyRecordService.pagesByUnwindQuery(strategyUnwindQuery);
+		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+		return new Response<>(result);
 	}
 
 }
