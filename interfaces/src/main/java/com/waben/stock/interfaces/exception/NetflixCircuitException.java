@@ -11,4 +11,9 @@ public class NetflixCircuitException extends RuntimeException  {
     public NetflixCircuitException(String code) {
         this.code = code;
     }
+
+    public String getCode() {
+        return code;
+    }
+
 }
