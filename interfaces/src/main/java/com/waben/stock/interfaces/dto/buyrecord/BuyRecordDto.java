@@ -125,6 +125,10 @@ public class BuyRecordDto {
 	 */
 	private String publisherSerialCode;
 
+	private String stockName;
+
+	private String publisherPhone;
+
 	private StockDto stockDto;
 
 	public Long getId() {
@@ -359,4 +363,19 @@ public class BuyRecordDto {
 		this.delegatePrice = delegatePrice;
 	}
 
+	public String getStockName() {
+		return stockName;
+	}
+
+	public void setStockName(String stockName) {
+		this.stockName = stockName;
+	}
+
+	public String getPublisherPhone() {
+		return publisherPhone;
+	}
+
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
+	}
 }
