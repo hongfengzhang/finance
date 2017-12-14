@@ -7,6 +7,9 @@ import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.junit.Test;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * @author Created by yuyidi on 2017/12/8.
  * @desc
@@ -35,5 +38,12 @@ public class SimpleTest {
         StockResponse<StockLoginInfo> stockResponse = JacksonUtil.decode(json, new
                 TypeReference<StockResponse<StockLoginInfo>>() {});
         System.out.println(JacksonUtil.encode(stockResponse));
+    }
+
+    @Test
+    public void testBigDecimal() {
+        BigDecimal amountValue = new BigDecimal(10000);
+        BigDecimal price = new BigDecimal(13.45);
+        System.out.println(amountValue.divide(price,2, RoundingMode.HALF_UP).intValue());
     }
 }

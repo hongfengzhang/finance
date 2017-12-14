@@ -19,7 +19,7 @@ import net.sf.cglib.beans.BeanCopier;
 * @description 通告
 */
 @Entity
-@Table(name = "circular")
+@Table(name = "circulars")
 public class Circulars {
 
     @Id

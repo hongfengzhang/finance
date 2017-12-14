@@ -49,7 +49,7 @@ public class AmountValueDaoImpl implements AmountValueDao {
 
     @Override
     public Page<AmountValue> page(Specification<AmountValue> specification, Pageable pageable) {
-        return null;
+        return repository.findAll(specification, pageable);
     }
 
     @Override

@@ -111,11 +111,6 @@ public class BuyRecord {
 	@Column(name = "delegate_number")
 	private String delegateNumber;
 	/**
-	 * 点买记录创建时间
-	 */
-	@Column(name = "create_time")
-	private Date createTime;
-	/**
 	 * 点买时间
 	 */
 	@Column(name = "buying_time")
@@ -147,6 +142,11 @@ public class BuyRecord {
 	@Column(name = "stock_code")
 	private String stockCode;
 	/**
+	 * 股票名称
+	 */
+	@Column(name = "stock_name")
+	private String stockName;
+	/**
 	 * 策略类型ID
 	 */
 	@Column(name = "strategy_type_id")
@@ -157,6 +157,11 @@ public class BuyRecord {
 	@Column(name = "investor_id")
 	private Long investorId;
 	/**
+	 * 投资人名称
+	 */
+	@Column(name="investor_name")
+	private String investorName;
+	/**
 	 * 发布人ID
 	 */
 	@Column(name = "publisher_id")
@@ -166,6 +171,21 @@ public class BuyRecord {
 	 */
 	@Column(name = "publisher_serial_code")
 	private String publisherSerialCode;
+	/**
+	 * 发布人手机号
+	 */
+	@Column(name = "publisher_phone")
+	private String publisherPhone;
+	/**
+	 * 点买记录创建时间
+	 */
+	@Column(name = "create_time")
+	private Date createTime;
+	/**
+	 * 点买记录更新时间
+	 */
+	@Column(name = "update_time")
+	private Date updateTime;
 
 	public Long getId() {
 		return id;
@@ -391,4 +411,35 @@ public class BuyRecord {
 		this.delegatePrice = delegatePrice;
 	}
 
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getStockName() {
+		return stockName;
+	}
+
+	public void setStockName(String stockName) {
+		this.stockName = stockName;
+	}
+
+	public String getPublisherPhone() {
+		return publisherPhone;
+	}
+
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
+	}
+
+	public String getInvestorName() {
+		return investorName;
+	}
+
+	public void setInvestorName(String investorName) {
+		this.investorName = investorName;
+	}
 }

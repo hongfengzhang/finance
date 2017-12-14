@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.operation.service.stock.StockService;
@@ -16,16 +18,16 @@ import com.waben.stock.interfaces.pojo.query.StockQuery;
 public class StockServiceFallback implements StockService {
 	@Override
 	public Response<PageInfo<StockDto>> pagesByQuery(StockQuery stockQuery) {
-		return new Response<>("205", "暂无股票列表数据");
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<StockDto> fetchById(Long id) {
-		return new Response<>("205", "股票" + id + "信息不存在");
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<StockDto> fetchWithExponentByCode(String code) {
-		return new Response<>("205", "股票" + code + "信息不存在");
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }

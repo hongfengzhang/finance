@@ -29,7 +29,7 @@ public class StaffController {
 
     @RequestMapping("/index")
     public String user() {
-        return "manage/staff/user";
+        return "manage/staff/index";
     }
 
     @RequestMapping("/pages")

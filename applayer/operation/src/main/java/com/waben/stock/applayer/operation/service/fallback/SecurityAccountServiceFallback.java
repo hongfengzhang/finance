@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.investor.SecurityAccountService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.investor.SecurityAccountDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.SecurityAccountQuery;
@@ -15,6 +17,6 @@ import org.springframework.stereotype.Component;
 public class SecurityAccountServiceFallback implements SecurityAccountService {
     @Override
     public Response<PageInfo<SecurityAccountDto>> pagesByQuery(SecurityAccountQuery securityAccountQuery) {
-        return new Response<>("205","暂无券商账户列表数据");
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

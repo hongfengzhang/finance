@@ -10,6 +10,9 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
 import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 
 /**
@@ -64,6 +67,21 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 
 	@Override
 	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByHoldingQuery(StrategyHoldingQuery strategyHoldingQuery) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery trategyUnwindQuery) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

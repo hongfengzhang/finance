@@ -19,8 +19,8 @@
                 <img th:src="@{/static/img/default-avatar.png}"/>
             </div>
             <div class="info">
-                <a data-toggle="collapse" href="#collapseExample" class="collapsed"  th:text="${userName}">
-
+                <a data-toggle="collapse" href="#collapseExample" class="collapsed" >
+                    <span th:text="${session.userName}"></span>
                     <b class="caret"></b>
                 </a>
                 <div class="collapse" id="collapseExample">
@@ -50,7 +50,7 @@
                 <div  class="collapse" th:id="${menu.id}">
                     <ul class="nav">
                         <li th:each ="list : ${menu.childs}">
-                            <a th:href="@{/staff/index}" th:text="${list.name}"></a>
+                            <a th:href="@{${list.url}}" th:text="${list.name}"></a>
                         </li>
                     </ul>
                 </div>

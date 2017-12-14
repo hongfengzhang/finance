@@ -16,6 +16,7 @@
 package com.waben.stock.applayer.operation.warpper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.waben.stock.applayer.operation.warpper.auth.filter.CustomCorsFilter;
 import com.waben.stock.applayer.operation.warpper.auth.filter.LoginProcessingFilter;
 import com.waben.stock.applayer.operation.warpper.auth.handler.*;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
@@ -65,7 +66,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT, "/login-error").permitAll()
-                .antMatchers(HttpMethod.GET, "/staff/**", "/stock/**","/strategytype/**","/investor/**", "/securityaccount/**","/env").permitAll()
+                .antMatchers(HttpMethod.GET, "/staff/**", "/stock/**","/strategytype/**", "/securityaccount/**","/env").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .anyRequest().authenticated()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
@@ -76,6 +77,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
 //                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
+                .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(processingFilter(), UsernamePasswordAuthenticationFilter.class)
         ;
 

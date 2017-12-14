@@ -1,21 +1,18 @@
 package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.MenuBusiness;
-import com.waben.stock.applayer.operation.warpper.SecurityAccount;
-import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.applayer.operation.util.SecurityAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
  * @author Created by yuyidi on 2017/11/6.
  * @desc
  */
-@SessionAttributes(value = {"menus"})
+@SessionAttributes(value = {"menus","userName"})
 @Controller
 public class SystemController {
 
@@ -27,10 +24,10 @@ public class SystemController {
         return "login";
     }
 
-    @GetMapping("/")
-    public String root() {
-        return "decorator";
-    }
+//    @GetMapping("/")
+//    public String root() {
+//        return "decorator";
+//    }
 
     @GetMapping("/index")
     public String index(Model model) {

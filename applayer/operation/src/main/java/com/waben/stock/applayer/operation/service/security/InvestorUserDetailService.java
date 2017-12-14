@@ -7,7 +7,6 @@ import com.waben.stock.applayer.operation.warpper.auth.RolePermissionAuthority;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
-import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -15,16 +14,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author yuyidi 2017-07-13 10:16:15
@@ -51,7 +47,7 @@ public class InvestorUserDetailService implements UserDetailsService {
             logger.info("用户信息获取成功:{}",investorDto.getUserName());
             //绑定角色权限
             List<RolePermissionAuthority> authority = new ArrayList<>();
-            Response<RoleDto> roleResponse = roleService.fetchByRoleId(investorDto.getRole());
+            Response<RoleDto> roleResponse = roleService.role(investorDto.getRole());
             logger.info("获取角色信息:{}", JacksonUtil.encode(roleResponse));
             Long role;
             if (roleResponse.getCode().equals("200")) {

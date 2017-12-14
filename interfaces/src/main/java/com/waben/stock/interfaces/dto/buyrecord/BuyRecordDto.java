@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.dto.buyrecord;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
@@ -116,6 +117,8 @@ public class BuyRecordDto {
 	 * 投资人ID
 	 */
 	private Long investorId;
+
+	private String investorName;
 	/**
 	 * 发布人ID
 	 */
@@ -124,6 +127,12 @@ public class BuyRecordDto {
 	 * 发布人序列号
 	 */
 	private String publisherSerialCode;
+
+	private String stockName;
+
+	private String publisherPhone;
+
+	private PublisherDto publisherDto;
 
 	private StockDto stockDto;
 
@@ -359,4 +368,36 @@ public class BuyRecordDto {
 		this.delegatePrice = delegatePrice;
 	}
 
+	public String getStockName() {
+		return stockName;
+	}
+
+	public void setStockName(String stockName) {
+		this.stockName = stockName;
+	}
+
+	public String getPublisherPhone() {
+		return publisherPhone;
+	}
+
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
+
+	}
+
+	public PublisherDto getPublisherDto() {
+		return publisherDto;
+	}
+
+	public void setPublisherDto(PublisherDto publisherDto) {
+		this.publisherDto = publisherDto;
+	}
+
+	public String getInvestorName() {
+		return investorName;
+	}
+
+	public void setInvestorName(String investorName) {
+		this.investorName = investorName;
+	}
 }

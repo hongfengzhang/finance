@@ -2,6 +2,8 @@ package com.waben.stock.applayer.tactics.service.fallback;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.BannerQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.service.BannerService;
@@ -24,4 +26,9 @@ public class BannerServiceFallback implements BannerService {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
+
+	@Override
+	public Response<PageInfo<BannerDto>> pages(BannerQuery query) {
+		return null;
+	}
 }

@@ -48,7 +48,7 @@ public class LossDaoImpl implements LossDao {
 
     @Override
     public Page<Loss> page(Specification<Loss> specification, Pageable pageable) {
-        return null;
+        return repository.findAll(specification, pageable);
     }
 
     @Override

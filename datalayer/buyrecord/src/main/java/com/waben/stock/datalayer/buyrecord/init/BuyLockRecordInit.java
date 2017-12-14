@@ -47,7 +47,7 @@ public class BuyLockRecordInit implements CommandLineRunner {
             securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
             securitiesStockEntrust.setEntrustNo(buyRecord.getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
-            entrustApplyProducer.entrustApplyBuyIn(securitiesStockEntrust);
+//            entrustApplyProducer.entrustApplyBuyIn(securitiesStockEntrust);
         }
     }
 }

@@ -56,7 +56,7 @@ public class InvestorBusiness {
         securitiesStockEntrust.setStockCode(stockDto.getCode());
         securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
         securitiesStockEntrust.setEntrustNumber(buyRecordDto.getNumberOfStrand());
-        securitiesStockEntrust.setEntrustPrice(buyRecordDto.getBuyingPrice());
+        securitiesStockEntrust.setEntrustPrice(buyRecordDto.getDelegatePrice());
         securitiesStockEntrust.setBuyRecordState(buyRecordDto.getState());
         return securitiesStockEntrust;
     }

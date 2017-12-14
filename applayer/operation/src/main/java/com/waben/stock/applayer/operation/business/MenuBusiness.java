@@ -1,7 +1,7 @@
 package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.manage.MenuService;
-import com.waben.stock.applayer.operation.warpper.SecurityAccount;
+import com.waben.stock.applayer.operation.util.SecurityAccount;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.exception.ServiceException;

@@ -34,6 +34,9 @@ import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
@@ -79,7 +82,7 @@ public class BuyRecordService {
 		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
 				buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(), buyRecord.getServiceFee(),
 				buyRecord.getReserveFund());
-		if (accountOperationResp == null || !"200".equals(accountOperationResp.getCode())) {
+		if (!"200".equals(accountOperationResp.getCode())) {
 			// 再一次确认是否已经扣款
 			Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
 					buyRecord.getId());
@@ -281,5 +284,44 @@ public class BuyRecordService {
 		// 修改点买记录状态
 		return changeState(buyRecord, false);
 	}
+	
+	public Page<BuyRecord> pagesByPostedQuery(final StrategyPostedQuery query) {
+        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+        Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+            @Override
+            public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate state = criteriaBuilder.in(root.get("state")).value(BuyRecordState.POSTED).value(BuyRecordState.BUYLOCK);
+                criteriaQuery.where(criteriaBuilder.and(state));
+                return criteriaQuery.getRestriction();
+            }
+        }, pageable);
+        return pages;
+    }
+
+    public Page<BuyRecord> pagesByHoldingQuery(final StrategyHoldingQuery query) {
+        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+        Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+            @Override
+            public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate state =criteriaBuilder.in(root.get("state")).value(BuyRecordState.SELLAPPLY).value(BuyRecordState.SELLLOCK);
+                criteriaQuery.where(state);
+                return criteriaQuery.getRestriction();
+            }
+        }, pageable);
+        return pages;
+    }
+
+    public Page<BuyRecord> pagesByUnwindQuery(StrategyUnwindQuery query) {
+        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+        Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+            @Override
+            public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                Predicate state = criteriaBuilder.equal(root.get("state").as(BuyRecordState.class), BuyRecordState.UNWIND);
+                criteriaQuery.where(state);
+                return criteriaQuery.getRestriction();
+            }
+        }, pageable);
+        return pages;
+    }
 
 }

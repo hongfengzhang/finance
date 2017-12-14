@@ -25,6 +25,7 @@ public class CustomCorsFilter extends CorsFilter {
         config.addAllowedOrigin("*");
         config.addAllowedHeader("*");
         config.setMaxAge(36000L);
+        config.setExposedHeaders(Arrays.asList("Access-Control-Allow-Origin"));
         config.setAllowedMethods(Arrays.asList("GET", "HEAD", "POST", "PUT", "DELETE", "OPTIONS"));
 //        config.setAllowedOrigins(Arrays.asList("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
