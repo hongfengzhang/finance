@@ -80,9 +80,9 @@
     <script type="text/javascript">
         var $table = $('#bootstrap-table');
         var stompClient = null;
-        function send(code) {
+        function send(codes) {
             console.log("开始发送消息")
-            stompClient.send("/stock/send", {}, JSON.stringify({'code': code}));
+            stompClient.send("/stock/send", {}, JSON.stringify(codes));
         }
         function setConnected(connected) {
             console.log("是否已经连接成功"+connected);
@@ -214,6 +214,7 @@
                                         if(data.code == '200') {
                                             swal("Succsess!", "卖出成功.", "success");
                                             //当前一行禁用
+
                                         }else{
                                             swal("Failed", "卖出失败", "error");
                                         }
@@ -232,10 +233,12 @@
                     }
                 }],
                 onLoadSuccess: function(data){  //加载成功时执行
+                    var arrayCode = new Array();
                     for(var stock in data.rows){
                         var code = data.rows[stock].stockCode;
-                        send(code);
+                        arrayCode.push(code);
                     }
+                    send(arrayCode);
                 },
             });
         }

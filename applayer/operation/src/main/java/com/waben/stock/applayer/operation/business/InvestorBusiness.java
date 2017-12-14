@@ -2,10 +2,12 @@ package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.investor.InvestorService;
 import com.waben.stock.applayer.operation.warpper.messagequeue.rabbitmq.EntrustApplyProducer;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.EntrustState;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
@@ -32,8 +34,11 @@ public class InvestorBusiness {
 
     public PageInfo<InvestorDto> investors(InvestorQuery investorQuery) {
         Response<PageInfo<InvestorDto>> response = investorService.pagesByQuery(investorQuery);
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
@@ -65,13 +70,16 @@ public class InvestorBusiness {
         SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto);
         Response<BuyRecordDto> response = investorService.stockApplyBuyIn(investorDto.getId(), securitiesStockEntrust,
                 investorDto.getSecuritiesSession());
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
             securitiesStockEntrust.setEntrustNo(response.getResult().getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             entrustProducer.entrustApplyBuyIn(securitiesStockEntrust);
             return securitiesStockEntrust;
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
@@ -81,13 +89,16 @@ public class InvestorBusiness {
         //申请卖出，更新数据库
         Response<BuyRecordDto> response = investorService.stockApplySellOut(investorDto.getId(), securitiesStockEntrust,
                 investorDto.getSecuritiesSession());
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
             securitiesStockEntrust.setEntrustNo(response.getResult().getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENSUCCESS);
             entrustProducer.entrustApplySellOut(securitiesStockEntrust);
             return securitiesStockEntrust;
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }

@@ -36,7 +36,7 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<String> dropBuyRecord(Long buyRecordId) {
+	public Response<Void> dropBuyRecord(Long buyRecordId) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

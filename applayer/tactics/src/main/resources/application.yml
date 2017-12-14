@@ -2,17 +2,14 @@ server:
   port: 8083
   context-path: /tactics
 spring:
-  devtools:
-    restart:
-      additional-paths: tactics/src/main/java
   mvc:
     throw-exception-if-no-handler-found: true
 hystrix:
   command:
     default:
-      timeout:
-        enabled: false 
-      execution:
+     execution:
         isolation:
           thread:
-            timeoutInMilliseconds: 5000
+            timeoutInMilliseconds: 10000
+        timeout:
+            enabled: false

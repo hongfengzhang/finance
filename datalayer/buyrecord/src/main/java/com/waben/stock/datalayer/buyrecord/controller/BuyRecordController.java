@@ -95,9 +95,9 @@ public class BuyRecordController implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<String> dropBuyRecord(@PathVariable Long id) {
+	public Response<Void> dropBuyRecord(@PathVariable Long id) {
 		buyRecordService.remove(id);
-		return new Response<>("successful");
+		return new Response<>();
 	}
 
 	@Override

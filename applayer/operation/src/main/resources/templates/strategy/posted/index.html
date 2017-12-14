@@ -174,7 +174,7 @@
 
                         },
                         'click .edit': function (e, value, row, index) {
-                            if(row.state=='BUYLOCK'){
+                            if (row.state == 'BUYLOCK') {
                                 swal("警告", "买入锁定中！", "warning");
                                 return false;
                             }
@@ -189,12 +189,11 @@
                                 closeOnCancel: false
                             }, function (isConfirm) {
                                 if (isConfirm) {
-                                    post("../../investor/buyrecord/" + row.id + "/buyin", null,function (data) {
-                                        if(data.code == '200') {
+                                    post("../../investor/buyrecord/" + row.id + "/buyin", null, function (data) {
+                                        if (data.code == '200') {
                                             swal("Succsess!", "买入成功.", "success");
-                                            //当前一行禁用
-                                        }else{
-                                            swal("Failed", "买入失败", "error");
+                                        } else {
+                                            swal("Failed", "买入失败.", "error");
                                         }
                                     }, true);
 
@@ -209,7 +208,12 @@
 
                         }
                     }
-                }]
+                }],
+                onLoadError: function (status) {
+                    if (status == 403) {
+                        window.location.href = "../login";
+                    }
+                }
             });
 
 

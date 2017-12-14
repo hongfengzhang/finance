@@ -35,7 +35,7 @@ public interface BuyRecordInterface {
 	 *            点买记录ID
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	Response<String> dropBuyRecord(@PathVariable("id") Long id);
+	Response<Void> dropBuyRecord(@PathVariable("id") Long id);
 
 	/**
 	 * 投资人买入股票锁定，此时状态为“买入锁定”

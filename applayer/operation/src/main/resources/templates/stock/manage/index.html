@@ -171,7 +171,15 @@
                             demo.showSwal('warning-message-and-cancel', row);
                         }
                     }
-                }]
+                }],
+                onLoadError:function (status) {
+                    swal({
+                        title: "数据加载异常.",
+                        text: status+"",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
             });
 
 

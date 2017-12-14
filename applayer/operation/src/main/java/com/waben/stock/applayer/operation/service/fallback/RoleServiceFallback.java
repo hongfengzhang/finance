@@ -20,12 +20,12 @@ public class RoleServiceFallback implements RoleService {
 
     @Override
     public Response<RoleDto> role(Long id) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 
     @Override
     public Response<PageInfo<RoleDto>> pages(RoleQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

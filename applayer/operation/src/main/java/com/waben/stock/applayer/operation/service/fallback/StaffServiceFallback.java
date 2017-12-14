@@ -20,16 +20,16 @@ import org.springframework.stereotype.Component;
 public class StaffServiceFallback implements StaffService {
 
     public Response<StaffDto> fetchByUserName(String username) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PageInfo<StaffDto>> pagesByQuery(StaffQuery staffQuery) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 	@Override
 	public Response<StaffDto> saveStaff(StaffDto staffDto) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }
