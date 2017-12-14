@@ -1,0 +1,18 @@
+server:
+  port: 8084
+  context-path: /strategist
+spring:
+  devtools:
+    restart:
+      additional-paths: strategist/src/main/java
+  mvc:
+    throw-exception-if-no-handler-found: true
+hystrix:
+  command:
+    default:
+      timeout:
+        enabled: false 
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000

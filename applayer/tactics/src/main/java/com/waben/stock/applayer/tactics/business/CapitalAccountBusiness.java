@@ -41,6 +41,22 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public CapitalAccountDto recharge(Long publisherId, BigDecimal amount) {
+		Response<CapitalAccountDto> response = service.recharge(publisherId, amount);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
+	public CapitalAccountDto withdrawals(Long publisherId, BigDecimal amount) {
+		Response<CapitalAccountDto> response = service.withdrawals(publisherId, amount);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 	public BigDecimal getHoldProfitOrLoss(Long publisherId) {
 		BigDecimal result = BigDecimal.valueOf(0);
 

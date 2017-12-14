@@ -2,6 +2,12 @@ package com.waben.stock.interfaces.exception;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.waben.stock.interfaces.pojo.ExceptionInformation;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
@@ -10,10 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
+import com.waben.stock.interfaces.pojo.ExceptionInformation;
 
 /**
  * @author yuyidi 2017-07-13 16:06:14
@@ -87,6 +90,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
         }
         return mv;
     }
+
 
     public void extendException(List<ExceptionInformation> exceptions) {
         this.exceptions.addAll(exceptions);

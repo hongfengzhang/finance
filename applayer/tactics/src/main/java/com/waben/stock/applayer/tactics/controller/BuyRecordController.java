@@ -56,7 +56,17 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
 			@RequestParam(required = true) String paymentPassword) {
-		// TODO 检查参数是否合理
+		// 检查参数是否合理
+		if (delegatePrice.compareTo(new BigDecimal(0)) <= 0) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+		}
+		if (!(profitPoint.abs().compareTo(new BigDecimal(0)) > 0
+				&& profitPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+		}
+		if (!(lossPoint.abs().compareTo(new BigDecimal(0)) > 0 && lossPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+		}
 
 		// 检查余额
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
@@ -78,7 +88,7 @@ public class BuyRecordController {
 		dto.setServiceFee(serviceFee);
 		dto.setReserveFund(reserveFund);
 		dto.setProfitPoint(profitPoint);
-		dto.setLossPoint(lossPoint);
+		dto.setLossPoint(lossPoint.abs().multiply(new BigDecimal(-1)));
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
 		dto.setDelegatePrice(delegatePrice);

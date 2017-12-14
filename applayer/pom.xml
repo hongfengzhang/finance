@@ -21,6 +21,7 @@
         <module>invest</module><!--8081-->
         <module>operation</module><!--8082-->
         <module>tactics</module><!--8083-->
+        <module>strategist</module><!--8084-->
     </modules>
 
     <dependencies>

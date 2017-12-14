@@ -15,7 +15,7 @@
         <module>interfaces</module>
         <module>risk</module><!--8080-->
         <module>datalayer</module><!--8001-8006-->
-        <module>applayer</module><!--8081-8083-->
+        <module>applayer</module><!--8081-8084-->
     </modules>
 
     <name>finance</name>

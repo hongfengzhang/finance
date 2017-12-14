@@ -4,6 +4,10 @@ server:
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/
+    suffix: .html
 hystrix:
   command:
     default:
