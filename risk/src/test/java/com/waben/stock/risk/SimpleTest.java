@@ -46,4 +46,19 @@ public class SimpleTest {
         BigDecimal price = new BigDecimal(13.45);
         System.out.println(amountValue.divide(price,2, RoundingMode.HALF_UP).intValue());
     }
+
+    @Test
+    public void testCard() {
+        System.out.println(ChickID("421126199206302514"));
+    }
+
+    public boolean ChickID(String text) {
+        if (text != null) {
+            int correct = new IdCardUtil(text).isCorrect();
+            if (0 == correct) {// 符合规范
+                return true;
+            }
+        }
+        return false;
+    }
 }
