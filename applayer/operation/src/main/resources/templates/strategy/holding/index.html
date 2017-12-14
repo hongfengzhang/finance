@@ -4,7 +4,7 @@
       layout:decorator="decorator/layout">
 
 <body>
-<div class="content" layout:fragment="content">
+<div class="content" layout:fragment="content" >
     <div class="card">
         <div class="content">
             <div class="row">
@@ -42,6 +42,7 @@
                         <div class="form-group">
                             <label class="col-md-5"></label>
                             <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+
                         </div>
                     </div>
                 </form>
@@ -73,12 +74,20 @@
     <script th:src="@{/static/js/jquery.min.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap-table.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap-table-zh-CN.js}" type="text/javascript"></script>
-
+    <script th:src="@{/static/js/http.js}" type="text/javascript"></script>
+    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
     <script type="text/javascript">
         var $table = $('#bootstrap-table');
-        $(function () {
+        var stompClient = null;
+        function send(codes) {
+            console.log("开始发送消息")
+            stompClient.send("/stock/send", {}, JSON.stringify(codes));
+        }
+        function setConnected(connected) {
+            console.log("是否已经连接成功"+connected);
             $table.bootstrapTable({
-                url: "../settlement/pages",
+                url: "../holding/pages",
                 dataType: "json",
                 cache: false, // 不缓存
                 striped: true, // 隔行加亮
@@ -109,27 +118,64 @@
                     }
                 },
                 columns: [{
-                    checkbox: true,
-                    align: 'center'
-                }, {
                     field: 'id',
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'profitOrLoss',
-                    title: '盈亏',
+                    field: 'publisherPhone',
+                    title: '发布人',
                     align: 'center'
                 }, {
-                    field: 'publisherProfitOrLoss',
-                    title: '发布人盈亏',
+                    field: 'stockName',
+                    title: '股票名称',
                     align: 'center'
                 },{
-                    field: 'investorProfitOrLoss',
-                    title: '投资人盈亏',
+                    field: 'stockCode',
+                    title: '股票代码',
+                    align: 'center'
+                }, {
+                    field: 'investorName',
+                    title: '投资人',
+                    align: 'center'
+                },  {
+                    field: 'buyingPrice',
+                    title: '买入金额',
+                    align: 'center'
+                },  {
+                    field: 'numberOfStrand',
+                    title: '数量',
+                    align: 'center'
+                }, {
+                    field: 'currentAmount',
+                    title: '当前价位',
                     align: 'center'
                 },{
-                    field: 'settlementTime',
-                    title: '结算时间',
+                    field: 'profitWarnPosition',
+                    title: '止盈预警点位',
+                    align: 'center'
+                },{
+                    field: 'lossWarnPosition',
+                    title: '止损预警点位',
+                    align: 'center'
+                },{
+                    field: 'profitPosition',
+                    title: '止盈点位',
+                    align: 'center'
+                },{
+                    field: 'lossPosition',
+                    title: '止损点位',
+                    align: 'center'
+                },{
+                    field: 'createTime',
+                    title: '买入时间',
+                    align: 'center'
+                }, {
+                    field: 'state',
+                    title: '策略状态',
+                    align: 'center'
+                },{
+                    field: 'deferred',
+                    title: '是否递延',
                     align: 'center'
                 }, {
                     title: '操作',
@@ -139,25 +185,45 @@
                             '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
                             '<i class="fa fa-eye"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-                            '<i class="fa fa-edit"></i>',
+                            '<a rel="tooltip" title="卖出" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
+                            '<i class="fa fa-dollar"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                            '<i class="fa fa-trash"></i>',
-                            '</a>'
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
+                            swal('You click view icon, row: ', row);
                         },
                         'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-                            swal('You click edit icon, row: ', info);
-                            console.log(info);
+                            if(row.state=='SELLLOCK'){
+                                swal("警告", "买入锁定中！", "warning");
+                                return false;
+                            }
+                            swal({
+                                title: "卖出!",
+                                text: "确认卖出当前股票信息?",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 卖出!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function (isConfirm) {
+                                if (isConfirm) {
+                                    post("../../investor/buyrecord/" + row.id + "/sellout", null,function (data) {
+                                        if(data.code == '200') {
+                                            swal("Succsess!", "卖出成功.", "success");
+                                            //当前一行禁用
+
+                                        }else{
+                                            swal("Failed", "卖出失败", "error");
+                                        }
+                                    }, true);
+
+                                } else {
+                                    swal("Cancelled", "取消卖出 :)", "error");
+                                }
+                            });
                         },
                         'click .remove': function (e, value, row, index) {
 
@@ -165,10 +231,31 @@
 
                         }
                     }
-                }]
+                }],
+                onLoadSuccess: function(data){  //加载成功时执行
+                    var arrayCode = new Array();
+                    for(var stock in data.rows){
+                        var code = data.rows[stock].stockCode;
+                        arrayCode.push(code);
+                    }
+                    send(arrayCode);
+                },
             });
+        }
+        function connect() {
+            var socket = new SockJS("/operation/websocket");
+            stompClient = Stomp.over(socket);
+            stompClient.connect({},function (frame) {
+                console.log("Connected：" + frame);
+                setConnected(true);
+                stompClient.subscribe("/topic/callback",function(response) {
+                    console.log(JSON.stringify(JSON.parse(response.body)));
+                })
+            })
 
-
+        }
+        $(function () {
+            connect()
             //activate the tooltips after the data table is initialized
             $('[rel="tooltip"]').tooltip();
 

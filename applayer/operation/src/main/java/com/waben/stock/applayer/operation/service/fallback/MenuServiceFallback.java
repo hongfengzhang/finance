@@ -17,7 +17,7 @@ import java.util.List;
 public class MenuServiceFallback implements MenuService {
     @Override
     public Response<List<MenuDto>> menusByRole(Long role) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 }

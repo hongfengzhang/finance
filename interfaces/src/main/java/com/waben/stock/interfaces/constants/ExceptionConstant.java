@@ -7,11 +7,11 @@ package com.waben.stock.interfaces.constants;
 public class ExceptionConstant {
 
 	// 系统内部异常
+	public static final String NETFLIX_CIRCUIT_EXCEPTION = "1000";
 	public static final String UNKNOW_EXCEPTION = "1001";
 	public static final String DATETIME_ERROR = "1002";
 	public static final String DATANOTFOUND_EXCEPTION = "1003";
 	public static final String ARGUMENT_EXCEPTION = "1004";
-	public static final String NETFLIX_CIRCUIT_EXCEPTION = "1005";
 
 	// 发送短信失败
 	public static final String SENDMESSAGE_FAILED_EXCEPTION = "1005";
@@ -69,6 +69,8 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_SAVE_EXCEPTION = "6010";
 	// 申请卖出只能由发布人本人操作
 	public static final String BUYRECORD_SELLAPPLY_NOTMATCH_EXCEPTION = "6011";
+	// 退回保证金发生异常
+	public static final String BUYRECORD_RETURNRESERVEFUND_EXCEPTION = "6012";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

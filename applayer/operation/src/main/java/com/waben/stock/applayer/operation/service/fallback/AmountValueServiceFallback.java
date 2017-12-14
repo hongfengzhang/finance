@@ -14,6 +14,6 @@ public class AmountValueServiceFallback implements AmountValueService {
 
     @Override
     public Response<PageInfo<AmountValueDto>> pagesByQuery(AmountValueQuery amountValueQuery) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.manage.PermissionService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -23,8 +25,11 @@ public class PermissionBusiness {
 
     public PageInfo<PermissionDto> pages(PermissionQuery query) {
         Response<PageInfo<PermissionDto>> response = permissionService.pages(query);
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }

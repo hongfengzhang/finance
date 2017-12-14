@@ -23,7 +23,7 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     }
 
     @Override
-    public Response<String> dropBuyRecord(Long id) {
+    public Response<Void> dropBuyRecord(Long id) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
     

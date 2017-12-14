@@ -16,11 +16,11 @@ import org.springframework.stereotype.Component;
 public class CapitalFlowServiceFallback implements CapitalFlowService{
     @Override
     public Response<PageInfo<CapitalFlowDto>> pagesByQuery(CapitalFlowQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 	@Override
 	public Response<BigDecimal> promotionTotalAmount(Long publisherId) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }

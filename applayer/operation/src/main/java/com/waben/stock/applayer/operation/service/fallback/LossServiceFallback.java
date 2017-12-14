@@ -14,6 +14,6 @@ public class LossServiceFallback implements LossService {
 
     @Override
     public Response<PageInfo<LossDto>> pagesByQuery(LossQuery lossQuery) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

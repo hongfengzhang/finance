@@ -63,6 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/v2/api-docs").permitAll();
 		http.authorizeRequests().antMatchers("/configuration/**").permitAll();
 		http.authorizeRequests().antMatchers("/guide/**").permitAll();
+		http.authorizeRequests().antMatchers("/buy/**").permitAll();
+		http.authorizeRequests().antMatchers("/returnUrl.html").permitAll();
 		// 开放接口
 		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
 				.permitAll();
@@ -73,6 +75,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				.antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine", "/stock/market/{code}")
 				.permitAll();
+		http.authorizeRequests().antMatchers("/payment/tbfPaycallback", "/payment/tbfpayreturn", "/payment/recharge").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

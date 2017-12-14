@@ -95,20 +95,15 @@ public class BuyRecordController implements BuyRecordInterface {
 	}
 
 	@Override
-	public Response<String> dropBuyRecord(@PathVariable Long id) {
+	public Response<Void> dropBuyRecord(@PathVariable Long id) {
 		buyRecordService.remove(id);
-		return new Response<>("successful");
+		return new Response<>();
 	}
 
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
 		Page<BuyRecord> page = buyRecordService.pagesByPostedQuery(strategyPostedQuery);
 		PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
-		for (BuyRecordDto buyRecordDto : result.getContent()) {
-			PublisherDto publisherDto = publisherBusiness.findById(buyRecordDto.getPublisherId());
-			publisherDto.setPassword(null);
-			buyRecordDto.setPublisherDto(publisherDto);
-		}
 		return new Response<>(result);
 	}
 

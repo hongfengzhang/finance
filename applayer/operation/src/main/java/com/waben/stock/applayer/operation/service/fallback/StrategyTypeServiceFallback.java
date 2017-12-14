@@ -19,11 +19,11 @@ import java.util.List;
 public class StrategyTypeServiceFallback implements StrategyTypeService {
     @Override
     public Response<List<StrategyTypeDto>> lists(Boolean enable) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PageInfo<StrategyTypeDto>> pages(StrategyTypeQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }
