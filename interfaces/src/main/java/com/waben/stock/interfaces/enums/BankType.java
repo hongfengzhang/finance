@@ -3,46 +3,55 @@ package com.waben.stock.interfaces.enums;
 import java.util.HashMap;
 import java.util.Map;
 
-@Deprecated
 public enum BankType implements CommonalityEnum {
 
-	DEFAULT("1", "unknow_001", "默认银行", "/bankIcon/default@3x.png"),
+	RMYH("1", "001", "中国人民银行"),
 
-	BJYH("2", "unknow_002", "北京银行", "/bankIcon/bjyh@3x.png"),
+	GSYH("2", "102", "工商银行"),
 
-	GSYH("3", "102", "工商银行", "/bankIcon/gsyh@3x.png"),
+	NYYH("3", "103", "农业银行"),
 
-	GDYH("4", "303", "光大银行", "/bankIcon/gdyh@3x.png"),
+	ZGYH("4", "104", "中国银行"),
 
-	GFYH("5", "306", "广发银行", "/bankIcon/gfyh@3x.png"),
+	JSYH("5", "105", "建设银行"),
 
-	HXYH("6", "304", "华夏银行", "/bankIcon/hxyh@3x.png"),
+	NYFZYH("6", "203", "中国农业发展银行"),
 
-	JSYH("7", "105", "建设银行", "/bankIcon/jsyh@3x.png"),
+	JTYH("7", "301", "交通银行"),
 
-	JTYH("8", "301", "交通银行", "/bankIcon/jtyh@3x.png"),
+	ZXYH("8", "302", "中信银行"),
 
-	MSYH("9", "305", "民生银行", "/bankIcon/msyh@3x.png"),
+	GDYH("9", "303", "光大银行"),
 
-	NYYH("10", "103", "农业银行", "/bankIcon/nyyh@3x.png"),
+	HXYH("10", "304", "华夏银行"),
 
-	PAYH("11", "783", "平安银行", "/bankIcon/payh@3x.png"),
+	MSYH("11", "305", "民生银行"),
 
-	PFYH("12", "310", "浦发银行", "/bankIcon/pfyh@3x.png"),
+	GFYH("12", "306", "广发银行"),
 
-	XYYH("13", "309", "兴业银行", "/bankIcon/xyyh@3x.png"),
+	SZFZYH("13", "307", "深圳发展银行"),
 
-	YZCX("14", "403", "邮政储蓄", "/bankIcon/yzcx@3x.png"),
+	ZSYH("14", "308", "招商银行"),
 
-	ZSYH("15", "308", "招商银行", "/bankIcon/zsyh@3x.png"),
+	XYYH("13", "309", "兴业银行"),
 
-	ZGXH("16", "unknow_003", "中国信合@", "/bankIcon/zgxh@3x.png"),
+	PFYH("12", "310", "浦发银行"),
 
-	ZGYH("17", "104", "中国银行", "/bankIcon/zgyh@3x.png"),
+	CSSYYH("12", "313", "城市商业银行"),
 
-	ZXYH("18", "302", "中信银行", "/bankIcon/zxyh@3x.png");
+	NCSYYH("12", "314", "农村商业银行"),
 
-	public static final String bankIconBaseLink = "http://10.0.0.99:8083/tactics";
+	HFYH("12", "315", "恒丰银行"),
+
+	NCHZYH("12", "317", "农村合作银行"),
+
+	BHYH("12", "318", "渤海银行"),
+
+	YZCX("14", "403", "邮政储蓄"),
+
+	PAYH("11", "783", "平安银行"),
+
+	QDGJYH("11", "786", "青岛国际银行");
 
 	private String index;
 
@@ -50,13 +59,10 @@ public enum BankType implements CommonalityEnum {
 
 	private String code;
 
-	private String iconLink;
-
-	private BankType(String index, String code, String bank, String iconLink) {
+	private BankType(String index, String code, String bank) {
 		this.index = index;
 		this.code = code;
 		this.bank = bank;
-		this.iconLink = iconLink;
 	}
 
 	private static Map<String, BankType> nameMap = new HashMap<String, BankType>();
@@ -71,13 +77,11 @@ public enum BankType implements CommonalityEnum {
 	}
 
 	public static BankType getByBank(String bank) {
-		BankType result = nameMap.get(bank);
-		return result != null ? result : DEFAULT;
+		return nameMap.get(bank);
 	}
 
 	public static BankType getByCode(String code) {
-		BankType result = codeMap.get(code);
-		return result != null ? result : DEFAULT;
+		return codeMap.get(code);
 	}
 
 	/*********************** setter and getter **************************/
@@ -88,10 +92,6 @@ public enum BankType implements CommonalityEnum {
 
 	public String getBank() {
 		return bank;
-	}
-
-	public String getIconLink() {
-		return bankIconBaseLink + iconLink;
 	}
 
 	public String getCode() {

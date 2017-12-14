@@ -29,7 +29,16 @@ public class UniqueCodeGenerator {
 	 * @return 交易单号
 	 */
 	public static String generateTradeNo() {
-		return String.valueOf(System.currentTimeMillis());
+		return IdGenerator.INSTANCE.nextId();
+	}
+
+	/**
+	 * 生成支付单号
+	 * 
+	 * @return 支付单号
+	 */
+	public static String generatePaymentNo() {
+		return IdGenerator.INSTANCE.nextId();
 	}
 
 }

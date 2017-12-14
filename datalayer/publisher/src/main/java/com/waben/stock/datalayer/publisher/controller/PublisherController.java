@@ -1,8 +1,5 @@
 package com.waben.stock.datalayer.publisher.controller;
 
-import com.waben.stock.datalayer.publisher.entity.Publisher;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,7 @@ import com.waben.stock.datalayer.publisher.service.PublisherService;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;

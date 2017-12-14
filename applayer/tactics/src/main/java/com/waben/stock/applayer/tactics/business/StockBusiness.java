@@ -1,13 +1,17 @@
 package com.waben.stock.applayer.tactics.business;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.waben.stock.applayer.tactics.dto.stockcontent.StockDiscDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockMarketWithFavoriteDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
@@ -46,6 +50,10 @@ public class StockBusiness {
 	@Autowired
 	private FavoriteStockService favoriteStockService;
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	public PageInfo<StockDto> pages(StockQuery stockQuery) {
 		Response<PageInfo<StockDto>> response = stockService.pagesByQuery(stockQuery);
 		if (response.getCode().equals("200")) {
@@ -70,6 +78,24 @@ public class StockBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	private List<StockRecommendWithMarketDto> convertStockRecommend(List<StockMarket> marketList) {
+		List<StockRecommendWithMarketDto> result = new ArrayList<>();
+		for (int i = 0; i < marketList.size(); i++) {
+			StockMarket market = marketList.get(i);
+			StockRecommendWithMarketDto inner = new StockRecommendWithMarketDto();
+			inner.setId(new Long(i + 1));
+			inner.setCode(market.getInstrumentId());
+			inner.setName(market.getName());
+			inner.setSort(i + 1);
+			inner.setRecommendTime(new Date());
+			inner.setLastPrice(market.getLastPrice());
+			inner.setUpDropPrice(market.getUpDropPrice());
+			inner.setUpDropSpeed(market.getUpDropSpeed());
+			result.add(inner);
+		}
+		return result;
+	}
+
 	public PageInfo<StockRecommendWithMarketDto> stockRecommend(int page, int size) {
 		// TODO 此处模拟返回假数据
 		List<StockRecommendWithMarketDto> content = new ArrayList<>();
@@ -78,87 +104,15 @@ public class StockBusiness {
 			codes.add("000001");
 			codes.add("000002");
 			codes.add("000004");
+			codes.add("000005");
+			codes.add("000006");
+			codes.add("000007");
+			codes.add("000008");
+			codes.add("000009");
+			codes.add("000010");
+
 			List<StockMarket> list = stockMarketService.listStockMarket(codes);
-
-			StockRecommendWithMarketDto dto1 = new StockRecommendWithMarketDto();
-			dto1.setId(1L);
-			dto1.setCode("000001");
-			dto1.setName("平安银行");
-			dto1.setSort(1);
-			dto1.setRecommendTime(new Date());
-			dto1.setLastPrice(list.get(0).getLastPrice());
-			dto1.setUpDropPrice(list.get(0).getUpDropPrice());
-			dto1.setUpDropSpeed(list.get(0).getUpDropSpeed());
-			StockRecommendWithMarketDto dto2 = new StockRecommendWithMarketDto();
-			dto2.setId(2L);
-			dto2.setCode("000002");
-			dto2.setName("万科A");
-			dto2.setSort(2);
-			dto2.setRecommendTime(new Date());
-			dto2.setLastPrice(list.get(1).getLastPrice());
-			dto2.setUpDropPrice(list.get(1).getUpDropPrice());
-			dto2.setUpDropSpeed(list.get(1).getUpDropSpeed());
-			StockRecommendWithMarketDto dto3 = new StockRecommendWithMarketDto();
-			dto3.setId(3L);
-			dto3.setCode("000004");
-			dto3.setName("国农科技");
-			dto3.setSort(3);
-			dto3.setRecommendTime(new Date());
-			dto3.setLastPrice(list.get(2).getLastPrice());
-			dto3.setUpDropPrice(list.get(2).getUpDropPrice());
-			dto3.setUpDropSpeed(list.get(2).getUpDropSpeed());
-
-			content.add(dto1);
-			content.add(dto2);
-			content.add(dto3);
-
-			content.add(dto1);
-			content.add(dto2);
-			content.add(dto3);
-
-			content.add(dto1);
-			content.add(dto2);
-			content.add(dto3);
-			content.add(dto3);
-		}
-		if (page == 1) {
-			List<String> codes = new ArrayList<>();
-			codes.add("000001");
-			codes.add("000002");
-			codes.add("000004");
-			List<StockMarket> list = stockMarketService.listStockMarket(codes);
-
-			StockRecommendWithMarketDto dto1 = new StockRecommendWithMarketDto();
-			dto1.setId(1L);
-			dto1.setCode("000001");
-			dto1.setName("平安银行");
-			dto1.setSort(1);
-			dto1.setRecommendTime(new Date());
-			dto1.setLastPrice(list.get(0).getLastPrice());
-			dto1.setUpDropPrice(list.get(0).getUpDropPrice());
-			dto1.setUpDropSpeed(list.get(0).getUpDropSpeed());
-			StockRecommendWithMarketDto dto2 = new StockRecommendWithMarketDto();
-			dto2.setId(2L);
-			dto2.setCode("000002");
-			dto2.setName("万科A");
-			dto2.setSort(2);
-			dto2.setRecommendTime(new Date());
-			dto2.setLastPrice(list.get(1).getLastPrice());
-			dto2.setUpDropPrice(list.get(1).getUpDropPrice());
-			dto2.setUpDropSpeed(list.get(1).getUpDropSpeed());
-			StockRecommendWithMarketDto dto3 = new StockRecommendWithMarketDto();
-			dto3.setId(3L);
-			dto3.setCode("000004");
-			dto3.setName("国农科技");
-			dto3.setSort(3);
-			dto3.setRecommendTime(new Date());
-			dto3.setLastPrice(list.get(2).getLastPrice());
-			dto3.setUpDropPrice(list.get(2).getUpDropPrice());
-			dto3.setUpDropSpeed(list.get(2).getUpDropSpeed());
-
-			content.add(dto1);
-			content.add(dto2);
-			content.add(dto3);
+			content = convertStockRecommend(list);
 		}
 		return new PageInfo<>(content, 1, true, 3L, size, page, true);
 	}
@@ -188,6 +142,33 @@ public class StockBusiness {
 			return result;
 		}
 		return null;
+	}
+
+	public StockDiscDto disc(String code) {
+		StockDiscDto result = new StockDiscDto();
+
+		List<String> codes = new ArrayList<>();
+		codes.add(code);
+		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+		result.setCode(market.getInstrumentId());
+		result.setHighestPrice(market.getHighestPrice());
+		result.setLowestPrice(market.getLowestPrice());
+		result.setName(market.getName());
+		result.setUpDropPrice(market.getUpDropPrice());
+		result.setUpDropSpeed(market.getUpDropSpeed());
+
+		try {
+			Date today = fullSdf.parse(sdf.format(new Date()) + " 00:00:00");
+			Date yesterday = new DateTime(today).minusHours(24).toDate();
+			List<StockKLine> kLine = listKLine(code, 1, fullSdf.format(yesterday), fullSdf.format(today));
+			if (kLine != null && kLine.size() > 0) {
+				result.setYesterdayClosePrice(kLine.get(0).getClosePrice());
+			}
+		} catch (ParseException e) {
+			throw new RuntimeException("解析时间异常");
+		}
+
+		return result;
 	}
 
 }

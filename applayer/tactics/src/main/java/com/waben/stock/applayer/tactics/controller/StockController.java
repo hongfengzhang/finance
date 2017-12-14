@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.FavoriteStockBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
+import com.waben.stock.applayer.tactics.dto.stockcontent.StockDiscDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockMarketWithFavoriteDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockWithFavoriteDto;
@@ -83,6 +84,12 @@ public class StockController {
 	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
 	public Response<List<StockKLine>> listKLine(String stockCode, Integer type, String startTime, String endTime) {
 		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime));
+	}
+
+	@GetMapping("/disc/{code}")
+	@ApiOperation(value = "盘口")
+	public Response<StockDiscDto> disc(@PathVariable("code") String code) {
+		return new Response<>(stockBusiness.disc(code));
 	}
 
 }

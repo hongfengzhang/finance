@@ -41,6 +41,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION, "支付密码错误");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_SAVE_EXCEPTION, "点买异常");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_SELLAPPLY_NOTMATCH_EXCEPTION, "申请卖出只能由发布人本人操作");
+		exceptionMap.put(ExceptionConstant.BUYRECORD_RETURNRESERVEFUND_EXCEPTION, "退回保证金发生异常");
 
 		exceptionMap.put(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION, "投资人信息未找到");
 		exceptionMap.put(ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION, "投资人券商账户登陆异常");

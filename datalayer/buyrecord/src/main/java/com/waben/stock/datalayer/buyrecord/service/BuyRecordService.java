@@ -29,6 +29,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -78,20 +79,15 @@ public class BuyRecordService {
 		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
 				buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(), buyRecord.getServiceFee(),
 				buyRecord.getReserveFund());
-		if (!"200".equals(accountOperationResp.getCode())) {
-			if (accountOperationResp == null
-					|| ExceptionConstant.UNKNOW_EXCEPTION.equals(accountOperationResp.getCode())) {
-				// 再一次确认是否已经扣款
-				Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
-						buyRecord.getId());
-				if (!(frozenResp != null && "200".equals(frozenResp.getCode()) && frozenResp.getResult() != null)) {
-					buyRecord.setState(BuyRecordState.UNKONWN);
-					buyRecordDao.update(buyRecord);
-					// 扣款异常
-					throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
-				}
-			} else {
-				throw new ServiceException(accountOperationResp.getCode());
+		if (accountOperationResp == null || !"200".equals(accountOperationResp.getCode())) {
+			// 再一次确认是否已经扣款
+			Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
+					buyRecord.getId());
+			if (!(frozenResp != null && "200".equals(frozenResp.getCode()) && frozenResp.getResult() != null)) {
+				buyRecord.setState(BuyRecordState.UNKONWN);
+				buyRecordDao.update(buyRecord);
+				// 扣款异常
+				throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
 			}
 		}
 		return buyRecord;
@@ -186,7 +182,6 @@ public class BuyRecordService {
 		}
 		buyRecord.setBuyingPrice(buyingPrice);
 		buyRecord.setBuyingTime(new Date());
-		buyRecord.setNumberOfStrand(buyRecord.getNumberOfStrand());
 		// 止盈点位价格 = 买入价格 + ((市值 * 止盈点)/股数)
 		buyRecord.setProfitPosition(buyingPrice.add(buyRecord.getApplyAmount().multiply(buyRecord.getProfitPoint())
 				.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
@@ -271,8 +266,18 @@ public class BuyRecordService {
 		}
 		settlementDao.create(settlement);
 		// 退回保证金
-		accountService.returnReserveFund(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(),
-				settlement.getPublisherProfitOrLoss());
+		Response<CapitalAccountDto> accountOperationResp = accountService.returnReserveFund(buyRecord.getPublisherId(),
+				buyRecord.getId(), buyRecord.getSerialCode(), settlement.getPublisherProfitOrLoss());
+		if (accountOperationResp == null || !"200".equals(accountOperationResp.getCode())) {
+			// 再一次确认是否已经退回保证金
+			Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
+					buyRecord.getId());
+			if (!(frozenResp != null && "200".equals(frozenResp.getCode()) && frozenResp.getResult() != null
+					&& frozenResp.getResult().getStatus() == FrozenCapitalStatus.Thaw)) {
+				// 退回保证金异常
+				throw new ServiceException(ExceptionConstant.BUYRECORD_RETURNRESERVEFUND_EXCEPTION);
+			}
+		}
 		// 修改点买记录状态
 		return changeState(buyRecord, false);
 	}
