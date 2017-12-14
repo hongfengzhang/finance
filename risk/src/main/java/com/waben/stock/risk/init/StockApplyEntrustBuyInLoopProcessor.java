@@ -33,7 +33,7 @@ public class StockApplyEntrustBuyInLoopProcessor implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Thread task = new Thread(new Runnable() {
+        Thread task = new Thread( new Runnable() {
             @Override
             public void run() {
                 Map<Long, String> investorTradeSession = new HashMap();

@@ -55,6 +55,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         Map<String, String> params = new HashMap<>();
         params.put("trade_session", tradeSession);
         String result = HttpRest.get(moneyUrl, String.class, params);
+        logger.info("券商资金查询,请求地址:{},请求结果:{}", moneyUrl, result);
         StockResponse<StockMoney> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockMoney>>() {
                 });
@@ -91,9 +92,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
      * @description 点买交易记录下单
      */
     public String buyRecordEntrust(SecuritiesStockEntrust securitiesStockEntrust, String tradeSession, String
-            stockAccount, String type,
-                                   EntrustType
-                                           entrustType) {
+            stockAccount, String type,EntrustType entrustType) {
         String entrustUrl = entrustPath + "?trade_session={trade_session}&" +
                 "exchange_type={exchange_type}&" +
                 "stock_account={stock_account}&" +
@@ -111,7 +110,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         params.put("entrust_price", String.valueOf(securitiesStockEntrust.getEntrustPrice()));
         params.put("entrust_bs", entrustType.getType());
         String result = HttpRest.get(entrustUrl, String.class, params);
-        logger.info("委托交易结果:{}", result);
+        logger.info("券商资金查询,请求地址:{},请求结果:{}", entrustUrl, result);
         StockResponse<StockEntrustResult> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockEntrustResult>>() {
                 });
