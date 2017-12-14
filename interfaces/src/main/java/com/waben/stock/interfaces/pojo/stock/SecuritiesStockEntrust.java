@@ -19,6 +19,14 @@ public class SecuritiesStockEntrust implements Serializable {
     private String stockName;
     private String stockCode;
 
+    public SecuritiesStockEntrust() {
+    }
+
+    public SecuritiesStockEntrust(String tradeNo, String tradeSession) {
+        this.tradeNo = tradeNo;
+        this.tradeSession = tradeSession;
+    }
+
     /**
      * 证券股票类型(上证|深证|创业板)
      */

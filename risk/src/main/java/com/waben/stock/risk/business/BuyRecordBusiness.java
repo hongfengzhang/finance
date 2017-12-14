@@ -1,32 +1,31 @@
-package com.waben.stock.datalayer.buyrecord.business;
+package com.waben.stock.risk.business;
 
-import com.waben.stock.datalayer.buyrecord.reference.StockReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.waben.stock.risk.service.BuyRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
- * @author Created by yuyidi on 2017/12/2.
+ * @author Created by yuyidi on 2017/12/14.
  * @desc
  */
 @Service
-public class StockBusiness {
-
-    Logger logger = LoggerFactory.getLogger(getClass());
+public class BuyRecordBusiness {
 
     @Autowired
-    @Qualifier("stockFeignReference")
-    private StockReference stockReference;
+    @Qualifier("buyRecordFeignService")
+    private BuyRecordService buyRecordService;
 
-    public StockDto fetchWithExponentByCode(String stockCode) {
-        Response<StockDto> response = stockReference.fetchWithExponentByCode(stockCode);
+    public List<BuyRecordDto> buyRecordsWithBuyLock() {
+        Response<List<BuyRecordDto>> response = buyRecordService.buyRecordsWithStatus(2);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
@@ -35,6 +34,4 @@ public class StockBusiness {
         }
         throw new ServiceException(response.getCode());
     }
-
-
 }
