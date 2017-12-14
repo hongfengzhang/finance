@@ -1,9 +1,12 @@
 package com.waben.stock.interfaces.exception;
 
 import com.netflix.hystrix.exception.HystrixRuntimeException;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.pojo.ExceptionInformation;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,8 +30,12 @@ import com.waben.stock.interfaces.pojo.ExceptionInformation;
 public class ExecptionHandler implements HandlerExceptionResolver {
     Logger logger = LoggerFactory.getLogger(getClass());
     MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
-
+    Map<String,String> exceptionMap;
     private List<ExceptionInformation> exceptions = new ArrayList<>();
+
+    {
+        exceptionMap = ExceptionMap.exceptionMap;
+    }
 
     public ExecptionHandler() {
         this.exceptions
@@ -56,7 +63,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
                     logger.info("匹配到异常信息:{}", exception.getException());
                     response.setStatus(exception.getHttpStatus());
                     code = ex.getMessage();
-                    message = message(code);
+                    message = message(code, ex);
                     error = exception.getError();
                     break;
                 }
@@ -96,10 +103,12 @@ public class ExecptionHandler implements HandlerExceptionResolver {
         this.exceptions.addAll(exceptions);
     }
 
-    private String message(String type) {
+    private String message(String type, Exception ex) {
         String message = null;
-        if (ExceptionMap.exceptionMap.containsKey(type)) {
-            message = ExceptionMap.exceptionMap.get(type);
+        if (exceptionMap.containsKey(type)) {
+            message = exceptionMap.get(type);
+        } else {
+            message = type;
         }
         return message;
     }

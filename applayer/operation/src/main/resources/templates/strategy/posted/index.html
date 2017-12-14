@@ -171,7 +171,6 @@
 //                            get("../../buyrecord/" + row.id, function () {
 //
 //                            }, true);
-
                         },
                         'click .edit': function (e, value, row, index) {
                             if (row.state == 'BUYLOCK') {
@@ -189,7 +188,7 @@
                                 closeOnCancel: false
                             }, function (isConfirm) {
                                 if (isConfirm) {
-                                    post("../../investor/buyrecord/" + row.id + "/buyin", null, function (data) {
+                                    post("../../investor/buyrecord/" + row.id + "/buyin", true, function (data) {
                                         if (data.code == '200') {
                                             swal("Succsess!", "买入成功.", "success");
                                         } else {
@@ -203,9 +202,7 @@
                             });
                         },
                         'click .remove': function (e, value, row, index) {
-
                             demo.showSwal('warning-message-and-cancel', row);
-
                         }
                     }
                 }],
@@ -215,7 +212,6 @@
                     }
                 }
             });
-
 
             //activate the tooltips after the data table is initialized
             $('[rel="tooltip"]').tooltip();

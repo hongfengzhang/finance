@@ -3,6 +3,9 @@ package com.waben.stock.datalayer.investors.warpper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.waben.stock.interfaces.exception.SecuritiesStockException;
+import com.waben.stock.interfaces.exception.ExecptionHandler;
+import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -10,8 +13,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,6 +41,14 @@ public class BeanConfigurer {
         mediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
         jackson2HttpMessageConverter.setSupportedMediaTypes(mediaTypes);
         return jackson2HttpMessageConverter;
+    }
+
+    @Bean
+    public ExecptionHandler execptionHandler() {
+        ExecptionHandler execptionHandler = new ExecptionHandler();
+        execptionHandler.extendException(Arrays.asList(new ExceptionInformation(SecuritiesStockException.class,
+                HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "500")));
+        return execptionHandler;
     }
 
 }

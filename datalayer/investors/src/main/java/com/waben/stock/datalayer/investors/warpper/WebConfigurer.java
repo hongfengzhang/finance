@@ -1,10 +1,15 @@
 package com.waben.stock.datalayer.investors.warpper;
 
+import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.warpper.converter.DateConverter;
 import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/6/27.
@@ -13,6 +18,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @Configuration
 public class WebConfigurer extends WebMvcConfigurerAdapter {
 
+    @Autowired
+    ExecptionHandler execptionHandler;
+
     @Override
     public void addFormatters(FormatterRegistry registry) {
         super.addFormatters(registry);
@@ -20,6 +28,12 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
         registry.addConverter(new DateConverter());
     }
 
+
+    @Override
+    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        exceptionResolvers.add(execptionHandler);
+        super.configureHandlerExceptionResolvers(exceptionResolvers);
+    }
 
 
 }
