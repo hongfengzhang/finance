@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.strategist.service.fallback;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import com.waben.stock.interfaces.enums.BuyRecordState;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -26,63 +28,68 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 
 	@Override
 	public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> addBuyRecord(BuyRecordDto bindCardDto) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery BuyRecordQuery) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<Void> dropBuyRecord(Long buyRecordId) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> buyLock(Long investorId, Long id, String delegateNumber) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> buyInto(Long investorId, Long id, BigDecimal buyingPrice) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> sellLock(Long investorId, Long id, String delegateNumber,
 			String windControlTypeIndex) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> sellApply(Long publisherId, Long id) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<List<BuyRecordDto>> buyRecordsWithStatus(Integer buyRecordState) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByHoldingQuery(StrategyHoldingQuery strategyHoldingQuery) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery trategyUnwindQuery) {
-		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 }

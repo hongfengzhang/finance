@@ -71,11 +71,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/getEnabledCircularsList",
 				"/system/stockMarketExponent", "/system/getAppHomeTopData").permitAll();
 		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
-		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic").permitAll();
-		http.authorizeRequests()
-				.antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine", "/stock/market/{code}")
+		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
+		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
+				"/stock/market/{code}", "/stock/disc/{code}").permitAll();
+		http.authorizeRequests().antMatchers("/payment/tbfPaycallback", "/payment/tbfpayreturn", "/payment/recharge")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/payment/tbfPaycallback", "/payment/tbfpayreturn", "/payment/recharge").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

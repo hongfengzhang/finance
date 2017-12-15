@@ -71,6 +71,8 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_SELLAPPLY_NOTMATCH_EXCEPTION = "6011";
 	// 退回保证金发生异常
 	public static final String BUYRECORD_RETURNRESERVEFUND_EXCEPTION = "6012";
+	// 非交易时间段
+	public static final String BUYRECORD_NONTRADINGPERIOD_EXCEPTION = "6013";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

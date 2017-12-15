@@ -136,30 +136,30 @@ public class BuyRecordService {
     }
 
     @Transactional
-    public BuyRecord changeState(BuyRecord record, boolean isSellLock) {
-        BuyRecordState current = record.getState();
-        BuyRecordState next = BuyRecordState.UNKONWN;
-        if (BuyRecordState.POSTED.equals(current)) {
-            next = BuyRecordState.BUYLOCK;
-        } else if (BuyRecordState.BUYLOCK.equals(current)) {
-            next = BuyRecordState.HOLDPOSITION;
-        } else if (BuyRecordState.HOLDPOSITION.equals(current) && isSellLock == false) {
-            next = BuyRecordState.SELLAPPLY;
-        } else if ((BuyRecordState.HOLDPOSITION.equals(current) || BuyRecordState.SELLAPPLY.equals(current))
-                && isSellLock == true) {
-            next = BuyRecordState.SELLLOCK;
-        } else if (BuyRecordState.SELLLOCK.equals(current)) {
-            next = BuyRecordState.UNWIND;
-        }
-        record.setState(next);
-        BuyRecord result = buyRecordDao.update(record);
-        return result;
-    }
-
-    @Transactional
     public void remove(Long buyRecordId) {
         buyRecordDao.delete(buyRecordId);
     }
+	@Transactional
+	public BuyRecord changeState(BuyRecord record, boolean isSellLock) {
+		BuyRecordState current = record.getState();
+		BuyRecordState next = BuyRecordState.UNKONWN;
+		if (BuyRecordState.POSTED.equals(current)) {
+			next = BuyRecordState.BUYLOCK;
+		} else if (BuyRecordState.BUYLOCK.equals(current)) {
+			next = BuyRecordState.HOLDPOSITION;
+		} else if (BuyRecordState.HOLDPOSITION.equals(current) && isSellLock == false) {
+			next = BuyRecordState.SELLAPPLY;
+		} else if ((BuyRecordState.HOLDPOSITION.equals(current) || BuyRecordState.SELLAPPLY.equals(current))
+				&& isSellLock == true) {
+			next = BuyRecordState.SELLLOCK;
+		} else if (BuyRecordState.SELLLOCK.equals(current)) {
+			next = BuyRecordState.UNWIND;
+		}
+		record.setState(next);
+		record.setUpdateTime(new Date());
+		BuyRecord result = buyRecordDao.update(record);
+		return result;
+	}
 
     @Transactional
     public BuyRecord buyLock(Long investorId, Long id, String delegateNumber) {

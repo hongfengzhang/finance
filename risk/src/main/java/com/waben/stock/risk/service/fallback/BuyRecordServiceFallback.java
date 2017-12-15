@@ -1,12 +1,11 @@
-package com.waben.stock.applayer.operation.service.fallback;
+package com.waben.stock.risk.service.fallback;
 
-import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
-import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.*;
+import com.waben.stock.risk.service.BuyRecordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
