@@ -188,14 +188,18 @@
                                 closeOnCancel: false
                             }, function (isConfirm) {
                                 if (isConfirm) {
-                                    post("../../investor/buyrecord/" + row.id + "/buyin", true, function (data) {
+                                    post("../../investor/buyrecord/" + row.id + "/buyin", null, function (data) {
                                         if (data.code == '200') {
                                             swal("Succsess!", "买入成功.", "success");
+                                            $table.bootstrapTable('updateCell', {
+                                                rowIndex: index,
+                                                fieldName: 'state',
+                                                fieldValue: 'BUYLOCK'
+                                            });
                                         } else {
                                             swal("Failed", "买入失败.", "error");
                                         }
                                     }, true);
-
                                 } else {
                                     swal("Cancelled", "取消买入 :)", "error");
                                 }
