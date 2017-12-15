@@ -49,8 +49,7 @@ public class InvestorController {
      */
     @RequestMapping("/buyrecord/{buyrecord}/buyin")
     @ResponseBody
-    public Response<SecuritiesStockEntrust> buyRecordBuyIn(@PathVariable
-                                                                   ("buyrecord") Long buyrecord) {
+    public Response<SecuritiesStockEntrust> buyRecordBuyIn(@PathVariable("buyrecord") Long buyrecord) {
         InvestorDto investorDto = (InvestorDto) SecurityAccount.current().getSecurity();
         BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(buyrecord);
         SecuritiesStockEntrust result = investorBusiness.buyIn(investorDto, buyRecordDto);

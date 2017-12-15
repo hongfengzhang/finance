@@ -41,11 +41,6 @@ public class StockApplyEntrustBuyInLoopProcessor implements CommandLineRunner {
                     Map<String, SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer
                             .getBuyInContainer();
                     logger.info("券商委托股票容器内剩余:{}个委托订单", stockEntrusts.size());
-                    try {
-                        Thread.sleep(5 * 1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
                     for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
                         logger.info("此处执行HTTP，当前委托订单为：{}", entry.getKey());
                         try {
@@ -61,6 +56,9 @@ public class StockApplyEntrustBuyInLoopProcessor implements CommandLineRunner {
                             StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                     (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                             .getEntrustNo());
+                            if (stockEntrustQueryResult == null) {
+                                continue;
+                            }
                             if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                     .getIndex())) {
                                 logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托单号为:{}", securitiesStockEntrust.getTradeNo(),
@@ -69,12 +67,11 @@ public class StockApplyEntrustBuyInLoopProcessor implements CommandLineRunner {
                                 //发送给队列处理，提高委托单轮询处理速度
                                 logger.info("委托订单已完成:{}", entry.getKey());
                                 entrustProducer.entrustBuyIn(entry.getValue());
-                                securitiesStockEntrustContainer.remove(entry.getKey());
+                                stockEntrusts.remove(entry.getKey());
                             }
                         } catch (ServiceException ex) {
                             logger.error("券商委托单查询异常:{}", ex.getMessage());
                         }
-
                     }
                 }
             }

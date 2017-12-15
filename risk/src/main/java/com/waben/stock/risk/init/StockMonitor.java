@@ -41,10 +41,9 @@ public class StockMonitor implements CommandLineRunner {
         WeeklyCalendar workDay = new WeeklyCalendar();
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, "2018-01-01");
-        DailyCalendar quotationAM = new DailyCalendar(workCalendar, "15:30", "15:32");
+        DailyCalendar quotationAM = new DailyCalendar(workCalendar, "9:30", "11:30");
         quotationAM.setInvertTimeRange(true);
-
-        DailyCalendar quotationPM = new DailyCalendar(workCalendar, "15:33", "15:35");
+        DailyCalendar quotationPM = new DailyCalendar(workCalendar, "13:30", "15:45");
         quotationPM.setInvertTimeRange(true);
         //向scheduler 中注册日历
         JobDetail stockMontorJob = newJob(StockQuotationJob.class)

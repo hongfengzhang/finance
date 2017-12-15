@@ -2,6 +2,7 @@ package com.waben.stock.risk.web;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.exception.SecuritiesStockException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponseHander;
@@ -13,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /***
@@ -44,7 +46,13 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
         StockResponse<StockEntrustQueryResult> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockEntrustQueryResult>>() {
                 });
-        return handlerResult(stockResponse, ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION).get(0);
+        List<StockEntrustQueryResult> stockEntrustQueryResult = handlerResult(stockResponse, ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION);
+        if (stockEntrustQueryResult.size() == 0) {
+//            throw new SecuritiesStockException("点买记录暂未委托下单");
+            logger.info("点买记录暂未委托下单。");
+            return null;
+        }
+        return stockEntrustQueryResult.get(0);
     }
 
 }

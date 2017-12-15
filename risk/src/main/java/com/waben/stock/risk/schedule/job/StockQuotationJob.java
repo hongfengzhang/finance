@@ -18,6 +18,6 @@ public class StockQuotationJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        //从消息队列中获取需要监控的股票代码
+
     }
 }

@@ -19,7 +19,7 @@ import java.util.Map;
  * @author Created by yuyidi on 2017/12/4.
  * @desc
  */
-@Component
+//@Component
 public class StockApplyEntrustSellOutLoopProcessor implements CommandLineRunner {
     Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
