@@ -64,7 +64,8 @@ public class FavoriteStockController {
 				stockCodesStr.append("-");
 			}
 		}
-		return new Response<>(favoriteBusiness.remove(SecurityUtil.getUserId(), stockCodesStr.toString()));
+		favoriteBusiness.remove(SecurityUtil.getUserId(), stockCodesStr.toString());
+		return new Response<>();
 	}
 
 	@PostMapping("/topFavoriteStock")
@@ -77,7 +78,8 @@ public class FavoriteStockController {
 				stockCodesStr.append("-");
 			}
 		}
-		return new Response<>(favoriteBusiness.top(SecurityUtil.getUserId(), stockCodesStr.toString()));
+		favoriteBusiness.top(SecurityUtil.getUserId(), stockCodesStr.toString());
+		return new Response<>();
 	}
 
 	@GetMapping("/favoriteStockList")

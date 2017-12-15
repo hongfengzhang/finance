@@ -1,10 +1,6 @@
 server:
   port: 8882
   context-path: /discovery
-spring:
-  devtools:
-    restart:
-      additional-paths: discovery/src/main/java
 logging:
   config: classpath:log/logback.xml
 eureka:

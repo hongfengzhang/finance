@@ -13,17 +13,17 @@ import org.springframework.stereotype.Component;
 public class PublisherServiceFallback implements PublisherService{
     @Override
     public Response<PageInfo<PublisherDto>> pages(PublisherQuery publisherQuery) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PublisherDto> fetchById(Long id) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PublisherDto> fetchByPhone(String phone) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
@@ -34,16 +34,16 @@ public class PublisherServiceFallback implements PublisherService{
 
     @Override
     public Response<PublisherDto> modifyPassword(String phone, String password) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 	@Override
 	public Response<Integer> promotionCount(Long id) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<PageInfo<PublisherDto>> pagePromotionUser(Long id, int page, int size) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }

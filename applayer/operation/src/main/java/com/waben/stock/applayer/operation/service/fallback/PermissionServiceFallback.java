@@ -18,11 +18,11 @@ public class PermissionServiceFallback implements PermissionService {
 
     @Override
     public Response<PermissionDto> permission(Long id) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PageInfo<PermissionDto>> pages(PermissionQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

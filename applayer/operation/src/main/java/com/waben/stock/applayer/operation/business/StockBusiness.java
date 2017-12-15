@@ -1,8 +1,10 @@
 package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.stock.StockService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -29,17 +31,22 @@ public class StockBusiness {
 
     public PageInfo<StockDto> pages(StockQuery stockQuery) {
         Response<PageInfo<StockDto>> response = stockService.pagesByQuery(stockQuery);
-        if (response.getCode().equals("200")) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
 
-    public StockDto fetchWithExponentByCode(String code) {
-        Response<StockDto> response = stockService.fetchWithExponentByCode(code);
-        if ("200".equals(response.getCode())) {
-            //股票信息存在
+    public StockDto fetchWithExponentByCode(String stockCode) {
+        Response<StockDto> response = stockService.fetchWithExponentByCode(stockCode);
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }

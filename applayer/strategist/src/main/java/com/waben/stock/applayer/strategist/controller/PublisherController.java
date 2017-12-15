@@ -69,7 +69,7 @@ public class PublisherController {
 			paramValues.add("020-888888");
 		}
 		smsService.sendMessage(smsType, phone, paramValues);
-		return new Response<>("发送成功");
+		return new Response<>();
 	}
 
 	@PostMapping("/register")
@@ -157,7 +157,7 @@ public class PublisherController {
 	@ApiOperation(value = "设置支付密码")
 	public Response<String> modifyPaymentPassword(String paymentPassword) {
 		accountService.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
-		return new Response<>("设置支付密码成功");
+		return new Response<>();
 	}
 
 }

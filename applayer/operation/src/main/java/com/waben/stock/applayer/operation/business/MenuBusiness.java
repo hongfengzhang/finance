@@ -3,7 +3,9 @@ package com.waben.stock.applayer.operation.business;
 import com.waben.stock.applayer.operation.service.manage.MenuService;
 import com.waben.stock.applayer.operation.util.SecurityAccount;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -31,12 +33,15 @@ public class MenuBusiness {
     public List<MenuDto> menus() {
         AccountCredentials current = SecurityAccount.current();
         Long role = current.getRole();
-        Response<List<MenuDto>> menuResponse = menuService.menusByRole(role);
-        logger.info("获取菜单信息:{}", JacksonUtil.encode(menuResponse));
-        if (menuResponse.getCode().equals("200")) {
-            return menuResponse.getResult();
+        Response<List<MenuDto>> response = menuService.menusByRole(role);
+        logger.info("获取菜单信息:{}", JacksonUtil.encode(response));
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
-        throw new ServiceException(menuResponse.getCode());
+        throw new ServiceException(response.getCode());
     }
 
 

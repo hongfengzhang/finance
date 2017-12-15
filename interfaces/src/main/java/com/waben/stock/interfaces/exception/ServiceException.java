@@ -9,6 +9,12 @@ public class ServiceException extends RuntimeException {
 		this.type = type;
 	}
 
+	public ServiceException(String type, String message) {
+		super(type);
+		this.type= type;
+		this.message = message;
+	}
+
 	public ServiceException(String type, Throwable cause) {
 		super(type, cause);
 		this.type = type;

@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -20,16 +22,22 @@ public class StrategyBusiness {
 
     public PageInfo<BuyRecordDto> postedPages(StrategyPostedQuery strategyPostedQuery) {
         Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByPostedQuery(strategyPostedQuery);
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
 
     public PageInfo<BuyRecordDto> holdingPages(StrategyHoldingQuery strategyHoldingQuery) {
         Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByHoldingQuery(strategyHoldingQuery);
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
@@ -37,8 +45,11 @@ public class StrategyBusiness {
 
     public PageInfo<BuyRecordDto> unwindPages(StrategyUnwindQuery strategyUnwindQuery) {
         Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByUnwindQuery(strategyUnwindQuery);
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }

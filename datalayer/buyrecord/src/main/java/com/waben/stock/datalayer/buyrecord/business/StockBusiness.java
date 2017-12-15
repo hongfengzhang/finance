@@ -1,7 +1,9 @@
 package com.waben.stock.datalayer.buyrecord.business;
 
 import com.waben.stock.datalayer.buyrecord.reference.StockReference;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import org.slf4j.Logger;
@@ -23,11 +25,13 @@ public class StockBusiness {
     @Qualifier("stockFeignReference")
     private StockReference stockReference;
 
-    public StockDto fetchWithExponentByCode(String code) {
-        Response<StockDto> response = stockReference.fetchWithExponentByCode(code);
-        if ("200".equals(response.getCode())) {
-            //股票信息存在
+    public StockDto fetchWithExponentByCode(String stockCode) {
+        Response<StockDto> response = stockReference.fetchWithExponentByCode(stockCode);
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }

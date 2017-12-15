@@ -31,7 +31,7 @@ function ajax(url, data, success, cache, alone, async, type, dataType, error) {
     var error = error || function (data) {
         /*console.error('请求成功失败');*/
         /*data.status;//错误状态吗*/
-        swal("Failed", data.message || "系统繁忙,请重试", "error");
+        swal("Failed", data.responseJSON.message || "系统繁忙,请重试", "error");
         // layer.closeAll('loading');
         // setTimeout(function () {
         //     if (data.status == 404) {

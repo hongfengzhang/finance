@@ -10,11 +10,11 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
+import java.util.*;
 
 @Controller
 public class WebSocketController {
@@ -26,11 +26,16 @@ public class WebSocketController {
 
     @MessageMapping("/send")
     @SendTo("/topic/callback")
-    public StockResponseMessage send(StockRequestMessage stockWebSocketMessage) {
+    public Map<String, StockResponseMessage> send(@RequestBody List<String> codes) {
         logger.info("接收客户端发送的消息");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String time =  df.format(new Date());
-        return new StockResponseMessage(stockWebSocketMessage.getCode(), "13.15", time);
+        String time = df.format(new Date());
+        Map<String, StockResponseMessage> responseMessage = new HashMap<>();
+        for (String code : codes) {
+            StockResponseMessage stockResponseMessage = new StockResponseMessage(code, "13.15", time);
+            responseMessage.put(code, stockResponseMessage);
+        }
+        return responseMessage;
     }
 
 //    @Scheduled(fixedRate = 5000)

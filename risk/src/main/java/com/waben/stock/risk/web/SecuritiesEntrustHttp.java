@@ -21,20 +21,26 @@ import java.util.Map;
  * @description 券商委托单http请求
  */
 @Component
-public class SecuritiesEntrust extends StockResponseHander implements SecuritiesInterface {
+public class SecuritiesEntrustHttp extends StockResponseHander implements SecuritiesInterface {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
+    String context = "http://106.15.37.226:8445/stockjy";
     //券商委托单查询
-    private String queryEntrustPath = "http://106.15.37.226:8445/stockjy/qryentrust";
+    private String queryEntrustPath = context+"/qryentrust";
 
     public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo) {
-        String loginUrl = queryEntrustPath + "?trade_session={trade_session}&entrust_no={entrust_no}";
+        String queryEntrusUrl = queryEntrustPath + "?trade_session={trade_session}&entrust_no={entrust_no}";
         Map<String, String> params = new HashMap<>();
         params.put("trade_session", tradeSession);
         params.put("entrust_no", entrustNo);
-        String result = HttpRest.get(loginUrl, String.class, params);
-        logger.info("券商委托单查询,请求地址:{},请求结果:{}", loginUrl, result);
+        String result = null;
+        try {
+            result = HttpRest.get(queryEntrusUrl, String.class, params);
+        } catch (Exception ex) {
+            logger.info("委托单查询异常:{}", ex.getMessage());
+        }
+        logger.info("券商委托单查询,请求地址:{},请求结果:{}", queryEntrusUrl, result);
         StockResponse<StockEntrustQueryResult> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockEntrustQueryResult>>() {
                 });

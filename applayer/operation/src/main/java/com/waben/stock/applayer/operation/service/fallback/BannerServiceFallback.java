@@ -17,11 +17,11 @@ public class BannerServiceFallback implements BannerService {
 
     @Override
     public Response<List<BannerDto>> fetchBanners(Boolean enable) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PageInfo<BannerDto>> pages(BannerQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

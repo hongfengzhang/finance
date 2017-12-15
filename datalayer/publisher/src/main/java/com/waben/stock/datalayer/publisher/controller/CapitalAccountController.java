@@ -91,9 +91,9 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<String> modifyPaymentPassword(@PathVariable Long publisherId, String paymentPassword) {
+	public Response<Void> modifyPaymentPassword(@PathVariable Long publisherId, String paymentPassword) {
 		capitalAccountService.modifyPaymentPassword(publisherId, paymentPassword);
-		return new Response<>("successful");
+		return new Response<>();
 	}
 
 	@Override

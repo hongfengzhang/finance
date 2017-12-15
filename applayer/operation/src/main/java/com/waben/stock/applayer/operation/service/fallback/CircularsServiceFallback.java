@@ -20,11 +20,11 @@ public class CircularsServiceFallback implements CircularsService {
 
     @Override
     public Response<List<CircularsDto>> fetchCirculars(Boolean enable) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PageInfo<CircularsDto>> pages(CircularsQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

@@ -1,7 +1,9 @@
 package com.waben.stock.interfaces.service.buyrecord;
 
 import java.math.BigDecimal;
+import java.util.List;
 
+import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.pojo.query.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +37,7 @@ public interface BuyRecordInterface {
 	 *            点买记录ID
 	 */
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-	Response<String> dropBuyRecord(@PathVariable("id") Long id);
+	Response<Void> dropBuyRecord(@PathVariable("id") Long id);
 
 	/**
 	 * 投资人买入股票锁定，此时状态为“买入锁定”
@@ -110,6 +112,8 @@ public interface BuyRecordInterface {
 	Response<BuyRecordDto> sellOut(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
 			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice);
 
+	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
+	Response<List<BuyRecordDto>> buyRecordsWithStatus(@PathVariable("state") Integer state);
 	/**
 	 * 分页查询点买记录
 	 *

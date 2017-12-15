@@ -1,8 +1,10 @@
 package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
@@ -27,8 +29,11 @@ public class BuyRecordBusiness {
 
     public BuyRecordDto fetchBuyRecord(Long buyRecord) {
         Response<BuyRecordDto> response = buyRecordService.fetchBuyRecord(buyRecord);
-        if ("200".equals(response.getCode())) {
+        String code = response.getCode();
+        if ("200".equals(code)) {
             return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }

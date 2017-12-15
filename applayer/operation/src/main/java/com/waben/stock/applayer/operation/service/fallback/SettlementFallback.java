@@ -13,6 +13,6 @@ import org.springframework.stereotype.Component;
 public class SettlementFallback implements SettlementService{
     @Override
     public Response<PageInfo<SettlementDto>> pagesByQuery(SettlementQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

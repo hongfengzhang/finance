@@ -6,7 +6,7 @@ import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
-import com.waben.stock.risk.web.SecuritiesEntrust;
+import com.waben.stock.risk.web.SecuritiesEntrustHttp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class StockApplyEntrustSellOutLoopProcessor implements CommandLineRunner 
     @Autowired
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
     @Autowired
-    private SecuritiesEntrust securitiesEntrust;
+    private SecuritiesEntrustHttp securitiesEntrust;
     @Autowired
     private EntrustProducer entrustProducer;
 

@@ -51,7 +51,7 @@ public interface CapitalAccountInterface {
 			@PathVariable("profitOrLoss") BigDecimal profitOrLoss);
 
 	@RequestMapping(value = "/{publisherId}/modifyPaymentPassword", method = RequestMethod.PUT)
-	Response<String> modifyPaymentPassword(@PathVariable("publisherId") Long publisherId,
+	Response<Void> modifyPaymentPassword(@PathVariable("publisherId") Long publisherId,
 			@RequestParam(name = "paymentPassword") String paymentPassword);
 
 }
