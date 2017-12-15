@@ -54,6 +54,21 @@ public class BuyRecordBusiness {
 	}
 
 	public BuyRecordDto buy(BuyRecordDto buyRecordDto) {
+		// 获取股票名称
+		Response<StockDto> stock = stockService.fetchWithExponentByCode(buyRecordDto.getStockCode());
+		if ("200".equals(stock.getCode())) {
+			buyRecordDto.setStockName(stock.getResult().getName());
+		} else {
+			throw new ServiceException(stock.getCode());
+		}
+		// 获取策略发布人
+		Response<PublisherDto> publisher = publisherService.fetchById(buyRecordDto.getPublisherId());
+		if ("200".equals(publisher.getCode())) {
+			buyRecordDto.setPublisherPhone(publisher.getResult().getPhone());
+		} else {
+			throw new ServiceException(stock.getCode());
+		}
+		// 请求点买
 		Response<BuyRecordDto> response = buyRecordService.addBuyRecord(buyRecordDto);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -62,6 +77,7 @@ public class BuyRecordBusiness {
 	}
 
 	public PageInfo<BuyRecordDto> pages(BuyRecordQuery buyRecordQuery) {
+
 		Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByQuery(buyRecordQuery);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -151,6 +167,8 @@ public class BuyRecordBusiness {
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
 					inner.setStockCode(settlement.getBuyRecord().getStockCode());
+					inner.setStockName(settlement.getBuyRecord().getStockName());
+					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
 					i--;
 				} else {
@@ -158,24 +176,9 @@ public class BuyRecordBusiness {
 					inner.setTradeType(1);
 					inner.setPublisherId(buyRecord.getPublisherId());
 					inner.setStockCode(buyRecord.getStockCode());
+					inner.setStockName(buyRecord.getStockName());
+					inner.setPhone(buyRecord.getPublisherPhone());
 					j--;
-				}
-				// TODO 获取Phone 和 StockName，下面的实现效率太低，要优化，使用sql查询？
-				Response<PublisherDto> pResponse = publisherService.fetchById(inner.getPublisherId());
-				if ("200".equals(pResponse.getCode())) {
-					if (pResponse.getResult() != null) {
-						inner.setPhone(pResponse.getResult().getPhone());
-					}
-				} else {
-					throw new ServiceException(pResponse.getCode());
-				}
-				Response<StockDto> stockResponse = stockService.fetchWithExponentByCode(inner.getStockCode());
-				if ("200".equals(stockResponse.getCode())) {
-					if (stockResponse.getResult() != null) {
-						inner.setStockName(stockResponse.getResult().getName());
-					}
-				} else {
-					throw new ServiceException(stockResponse.getCode());
 				}
 				content.add(inner);
 			}

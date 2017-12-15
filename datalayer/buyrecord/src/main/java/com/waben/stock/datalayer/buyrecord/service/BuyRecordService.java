@@ -61,7 +61,7 @@ public class BuyRecordService {
 	public BuyRecord findBuyRecord(Long buyrecord) {
 		BuyRecord buyRecord = buyRecordDao.retrieve(buyrecord);
 		if (buyRecord == null) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NOT_FOUND_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
 		}
 		return buyRecord;
 	}
@@ -152,6 +152,7 @@ public class BuyRecordService {
 			next = BuyRecordState.UNWIND;
 		}
 		record.setState(next);
+		record.setUpdateTime(new Date());
 		BuyRecord result = buyRecordDao.update(record);
 		return result;
 	}

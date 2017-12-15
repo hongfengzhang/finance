@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.tactics.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +46,10 @@ public class StockController {
 	@GetMapping("/selectStock")
 	@ApiOperation(value = "查询股票，匹配股票名称/代码/简拼")
 	public Response<List<StockWithFavoriteDto>> selectStock(String keyword) {
+		if(keyword == null || "".equals(keyword.trim())) {
+			List<StockWithFavoriteDto> content = new ArrayList<>();
+			return new Response<>(content);
+		}
 		StockQuery stockQuery = new StockQuery();
 		stockQuery.setKeyword(keyword);
 		stockQuery.setPage(0);
