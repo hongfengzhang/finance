@@ -13,7 +13,7 @@ public enum BuyRecordState implements CommonalityEnum {
 
 	UNKONWN("0","未知状态"),
 
-	POSTED("1", "发布"),
+	POSTED("1", "买入中"),
 
 	BUYLOCK("2", "买入锁定"),
 

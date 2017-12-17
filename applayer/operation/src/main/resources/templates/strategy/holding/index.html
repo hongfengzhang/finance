@@ -195,8 +195,8 @@
                             swal('You click view icon, row: ', row);
                         },
                         'click .edit': function (e, value, row, index) {
-                            if(row.state=='SELLLOCK'){
-                                swal("警告", "买入锁定中！", "warning");
+                            if(row.state!='HOLDPOSITION'){
+                                swal("警告", "持仓中才能卖出", "warning");
                                 return false;
                             }
                             swal({
@@ -214,7 +214,11 @@
                                         if(data.code == '200') {
                                             swal("Succsess!", "卖出成功.", "success");
                                             //当前一行禁用
-
+                                            $table.bootstrapTable('updateCell', {
+                                                rowIndex: index,
+                                                fieldName: 'state',
+                                                fieldValue: 'SELLAPPLY'
+                                            });
                                         }else{
                                             swal("Failed", "卖出失败", "error");
                                         }
@@ -224,11 +228,6 @@
                                     swal("Cancelled", "取消卖出 :)", "error");
                                 }
                             });
-                        },
-                        'click .remove': function (e, value, row, index) {
-
-                            demo.showSwal('warning-message-and-cancel', row);
-
                         }
                     }
                 }],
