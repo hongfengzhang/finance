@@ -21,8 +21,8 @@ import java.util.List;
  * @author Created by yuyidi on 2017/12/14.
  * @desc
  */
-@Component
-@Order(Ordered.LOWEST_PRECEDENCE+100)
+//@Component
+//@Order(Ordered.LOWEST_PRECEDENCE+100)
 public class StockBuyLockInitialize implements CommandLineRunner {
 
     @Autowired

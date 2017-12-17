@@ -73,9 +73,4 @@ public class TfbPayOverHttp {
 		String url = "http://apitest.tfb8.com/cgi-bin/v2.0/api_pay_single.cgi";
 		return restTemplate.postForObject(url, "cipher_data=" + cipherData, String.class);
 	}
-	
-	public static void main(String[] args) throws UnsupportedEncodingException {
-		System.out.println(withhold("123456789928728", new BigDecimal(100)));
-	}
-
 }
