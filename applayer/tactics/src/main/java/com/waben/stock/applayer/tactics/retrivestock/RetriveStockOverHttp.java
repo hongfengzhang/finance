@@ -45,7 +45,7 @@ public class RetriveStockOverHttp {
 	}
 
 	public static List<StockKLine> listKLine(RestTemplate restTemplate, String stockCode, Integer type,
-			String startTime, String endTime) {
+			String startTime, String endTime, Integer limit) {
 		StringBuilder url = new StringBuilder("http://lemi.esongbai.com/stk/stk/kline.do?code=" + stockCode);
 		if (type == 1) {
 			url.append("&type=day");
@@ -59,6 +59,9 @@ public class RetriveStockOverHttp {
 		}
 		if (endTime != null && !"".equals(endTime)) {
 			url.append("&endTime=" + endTime);
+		}
+		if (limit != null && limit > 0) {
+			url.append("&limit=" + limit);
 		}
 
 		String response = restTemplate.getForObject(url.toString(), String.class);

@@ -46,7 +46,7 @@ public class StockController {
 	@GetMapping("/selectStock")
 	@ApiOperation(value = "查询股票，匹配股票名称/代码/简拼")
 	public Response<List<StockWithFavoriteDto>> selectStock(String keyword) {
-		if(keyword == null || "".equals(keyword.trim())) {
+		if (keyword == null || "".equals(keyword.trim())) {
 			List<StockWithFavoriteDto> content = new ArrayList<>();
 			return new Response<>(content);
 		}
@@ -88,7 +88,7 @@ public class StockController {
 	@GetMapping("/kLine")
 	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
 	public Response<List<StockKLine>> listKLine(String stockCode, Integer type, String startTime, String endTime) {
-		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime));
+		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime, -1));
 	}
 
 	@GetMapping("/disc/{code}")
