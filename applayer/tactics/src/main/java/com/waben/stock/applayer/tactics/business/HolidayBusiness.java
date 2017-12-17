@@ -48,6 +48,11 @@ public class HolidayBusiness {
 		Date now = cal.getTime();
 		String nowStr = sdf.format(now);
 		String dayStr = daySdf.format(now);
+		// 判断是否为周六日
+		int weekDay = cal.get(Calendar.DAY_OF_WEEK);
+		if (weekDay == 7 || weekDay == 1) {
+			return false;
+		}
 		// 判断是否是节假日
 		String holiday = prop.getProperty(String.valueOf(year));
 		if (holiday != null) {

@@ -1,12 +1,9 @@
 package com.waben.stock.applayer.tactics.business;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -49,10 +46,6 @@ public class StockBusiness {
 
 	@Autowired
 	private FavoriteStockService favoriteStockService;
-
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public PageInfo<StockDto> pages(StockQuery stockQuery) {
 		Response<PageInfo<StockDto>> response = stockService.pagesByQuery(stockQuery);
@@ -117,8 +110,8 @@ public class StockBusiness {
 		return new PageInfo<>(content, 1, true, 3L, size, page, true);
 	}
 
-	public List<StockKLine> listKLine(String stockCode, Integer type, String startTime, String endTime) {
-		return RetriveStockOverHttp.listKLine(restTemplate, stockCode, type, startTime, endTime);
+	public List<StockKLine> listKLine(String stockCode, Integer type, String startTime, String endTime, Integer limit) {
+		return RetriveStockOverHttp.listKLine(restTemplate, stockCode, type, startTime, endTime, limit);
 	}
 
 	public StockMarketWithFavoriteDto marketByCode(String code) {
@@ -157,17 +150,10 @@ public class StockBusiness {
 		result.setUpDropPrice(market.getUpDropPrice());
 		result.setUpDropSpeed(market.getUpDropSpeed());
 
-		try {
-			Date today = fullSdf.parse(sdf.format(new Date()) + " 00:00:00");
-			Date yesterday = new DateTime(today).minusHours(24).toDate();
-			List<StockKLine> kLine = listKLine(code, 1, fullSdf.format(yesterday), fullSdf.format(today));
-			if (kLine != null && kLine.size() > 0) {
-				result.setYesterdayClosePrice(kLine.get(0).getClosePrice());
-			}
-		} catch (ParseException e) {
-			throw new RuntimeException("解析时间异常");
+		List<StockKLine> kLine = listKLine(code, 1, null, null, 1);
+		if (kLine != null && kLine.size() > 0) {
+			result.setYesterdayClosePrice(kLine.get(0).getClosePrice());
 		}
-
 		return result;
 	}
 
