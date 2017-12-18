@@ -7,8 +7,6 @@ import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboar
 import org.springframework.cloud.netflix.turbine.EnableTurbine;
 
 @SpringBootApplication
-//断路器监控
-@EnableHystrix
 @EnableHystrixDashboard
 @EnableTurbine
 public class MonitorApplication {

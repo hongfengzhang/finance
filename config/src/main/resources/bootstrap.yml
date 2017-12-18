@@ -9,7 +9,7 @@ spring:
         git:
           uri: https://github.com/yuyidi/config-repo
       discovery:
-        enabled: false
+        enabled: true
 #security:
 #  basic:
 #    enabled: true
