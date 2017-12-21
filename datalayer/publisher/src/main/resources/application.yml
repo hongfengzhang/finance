@@ -1,6 +1,8 @@
 server:
   port: 8001
-  context-path: /publisher
+management:
+  port: 3001
+  context-path: /turbine
 spring:
   mvc:
     throw-exception-if-no-handler-found: true

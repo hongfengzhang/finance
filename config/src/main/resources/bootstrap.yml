@@ -8,11 +8,21 @@ spring:
       server:
         git:
           uri: https://github.com/yuyidi/config-repo
-      discovery:
-        enabled: false
-#security:
-#  basic:
-#    enabled: true
-#  user:
-#    name: wabenkeji
-#    password: waben0605
+          clone-on-start: true
+        encrypt:
+          enabled: true
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discoverymaster:8882/eureka,http://discoveryback:8883/eureka
+  instance:
+      metadata-map:
+        cluster: prontera
+        management:
+          port: ${management.port}
+          context-path: ${management.context-path}
+        health:
+          path: ${management.context-path}/health
+      status-page-url-path: ${management.context-path}/info
+      health-check-url-path: ${management.context-path}/health
+      prefer-ip-address: false

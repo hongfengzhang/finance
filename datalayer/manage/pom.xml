@@ -16,6 +16,9 @@
 	<name>manage</name>
 	<description>系统管理服务</description>
 
+    <properties>
+	</properties>
+
 	<dependencies>
 
 	</dependencies>

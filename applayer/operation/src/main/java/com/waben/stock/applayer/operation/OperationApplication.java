@@ -18,9 +18,9 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 //断路器
 @EnableHystrix
 //扫描包
-@ComponentScan(basePackages = { "com.waben.stock" })
 @EnableScheduling
 @EnableWebSocket
+@ComponentScan(basePackages = { "com.waben.stock" })
 public class OperationApplication {
 
 	public static void main(String[] args) {

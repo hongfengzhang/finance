@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Primary;
  * @author Created by yuyidi on 2017/11/16.
  * @desc
  */
-@FeignClient(name = "manage/manage", path = "role", fallback = RoleServiceFallback.class,qualifier = "roleFeignService")
+@FeignClient(name = "manage", path = "role", fallback = RoleServiceFallback.class,qualifier = "roleFeignService")
 public interface RoleService extends RoleInterface {
 
 

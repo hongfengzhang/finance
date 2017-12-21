@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Primary;
  * @author Created by yuyidi on 2017/11/15.
  * @desc
  */
-@FeignClient(name = "manage/manage", path = "staff",fallback = StaffServiceFallback.class,qualifier = "staffFeignService")
+@FeignClient(name = "manage", path = "staff",fallback = StaffServiceFallback.class,qualifier = "staffFeignService")
 public interface StaffService extends StaffInterface {
 
 }

@@ -45,14 +45,14 @@ public class FavoriteStockController implements FavoriteStockInterface {
 	public Response<String> drop(@PathVariable Long publisherId, @PathVariable String stockCodes) {
 		String[] stockCodeArr = stockCodes.split("-");
 		favoriteStockService.remove(publisherId, stockCodeArr);
-		return new Response<>("successful");
+		return new Response<>();
 	}
 
 	@Override
 	public Response<String> top(@PathVariable Long publisherId, @PathVariable String stockCodes) {
 		String[] stockCodeArr = stockCodes.split("-");
 		favoriteStockService.top(publisherId, stockCodeArr);
-		return new Response<>("successful");
+		return new Response<>();
 	}
 
 	@Override

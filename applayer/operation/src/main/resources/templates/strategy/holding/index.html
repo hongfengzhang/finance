@@ -237,18 +237,20 @@
                         var code = data.rows[stock].stockCode;
                         arrayCode.push(code);
                     }
-                    send(arrayCode);
+//                    send(arrayCode);
                 },
             });
         }
         function connect() {
-            var socket = new SockJS("/operation/websocket");
+            var socket = new SockJS("/websocket");
             stompClient = Stomp.over(socket);
             stompClient.connect({},function (frame) {
                 console.log("Connected：" + frame);
                 setConnected(true);
                 stompClient.subscribe("/topic/callback",function(response) {
-                    console.log(JSON.stringify(JSON.parse(response.body)));
+                    console.log("订阅消息:")
+//                    console.log(response.body)
+                    console.log(JSON.stringify(response.body));
                 })
             })
 

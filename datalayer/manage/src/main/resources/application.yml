@@ -1,6 +1,8 @@
 server:
   port: 8004
-  context-path: /manage
+management:
+  port: 3004
+  context-path: /turbine
 spring:
   mvc:
     throw-exception-if-no-handler-found: true

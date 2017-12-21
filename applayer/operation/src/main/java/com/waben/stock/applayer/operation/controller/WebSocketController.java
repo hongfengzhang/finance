@@ -1,6 +1,5 @@
 package com.waben.stock.applayer.operation.controller;
 
-import com.waben.stock.applayer.operation.dto.websocket.StockRequestMessage;
 import com.waben.stock.applayer.operation.dto.websocket.StockResponseMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 public class WebSocketController {
@@ -38,13 +40,13 @@ public class WebSocketController {
         return responseMessage;
     }
 
-//    @Scheduled(fixedRate = 5000)
-//    @SendTo("/topic/callback")
-//    public StockResponseMessage callback() {
-//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//        String time =  df.format(new Date());
-//        simpMessagingTemplate.convertAndSend("/topic/callback",time);
-//        logger.info("响应请求消息,{}", time);
-//        return new StockResponseMessage("000001", "13.15", time);
-//    }
+    @Scheduled(fixedRate = 5000)
+    @SendTo("/topic/callback")
+    public void callback() {
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = df.format(new Date());
+        StockResponseMessage responseMessage = new StockResponseMessage("000001", "13.15", time);
+        simpMessagingTemplate.convertAndSend("/topic/callback", responseMessage);
+        logger.info("响应请求消息,{}", time);
+    }
 }
