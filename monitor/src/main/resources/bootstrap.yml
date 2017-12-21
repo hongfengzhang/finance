@@ -4,13 +4,23 @@ spring:
   profiles:
     active: @active@
   cloud:
-    config:
-      enabled: true
-      profile: @active@
-      name: ${spring.application.name}
-      uri: @config.server@
+      loadbalancer:
+        retry:
+          enabled: true
+      config:
+        discovery:
+          enabled: true
+          service-id: 'config'
+        fail-fast: true
+        label: @config.branch@
 turbine:
-  app-config: tactics
+  app-config: operation
   aggregator:
-    cluster-config: default
-  cluster-name-expression:  new String("default")
+    clusterConfig: finance
+  cluster-name-expression: metadata['cluster']
+  instanceUrlSuffix:
+    finance: '/turbine/hystrix.stream'
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://discoverymaster:8882/eureka

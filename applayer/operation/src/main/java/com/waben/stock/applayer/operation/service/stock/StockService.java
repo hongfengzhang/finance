@@ -9,7 +9,7 @@ import com.waben.stock.interfaces.service.stockcontent.StockInterface;
  * @author Created by yuyidi on 2017/11/22.
  * @desc
  */
-@FeignClient(name = "stockcontent/stockcontent", path = "stock",fallback = StockServiceFallback.class,qualifier = "stockFeignService")
+@FeignClient(name = "stockcontent", path = "stock",fallback = StockServiceFallback.class,qualifier = "stockFeignService")
 public interface StockService extends StockInterface {
 
 }

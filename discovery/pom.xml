@@ -8,16 +8,11 @@
         <groupId>com.waben.stock</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>discovery</artifactId>
+    <artifactId>discoverymaster</artifactId>
     <packaging>jar</packaging>
 
-    <name>discovery</name>
+    <name>discoverymaster</name>
     <description>配资平台服务发现</description>
-
-    <properties>
-        <start.class>com.waben.stock.discovery.DiscoveryApplication</start.class>
-    </properties>
-
 
     <dependencies>
         <dependency>

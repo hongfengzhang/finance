@@ -9,13 +9,13 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>config</module> <!--8881-->
-        <module>discovery</module><!--8882-->
-        <module>monitor</module><!--8883-->
+        <module>config</module> <!--8881|3331-->
+        <module>discovery</module><!--8882|3332(8883|3333)-->
+        <module>monitor</module><!--8884|3334-->
         <module>interfaces</module>
-        <module>risk</module><!--8080-->
-        <module>datalayer</module><!--8001-8006-->
-        <module>applayer</module><!--8081-8084-->
+        <module>risk</module><!--8080|3030-->
+        <module>applayer</module><!--8081-8084 | 3031-3034 -->
+        <module>datalayer</module><!--8001-8006 | 3001-3006 -->
     </modules>
 
     <name>finance</name>
@@ -107,6 +107,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-feign</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-hystrix</artifactId>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -222,6 +226,9 @@
                 <filtering>false</filtering>
                 <includes>
                     <include>static/**</include>
+                    <include>**/*.woff</include>
+                    <include>**/*.woff2</include>
+                    <!--<include>static/fonts/**</include>-->
                 </includes>
             </resource>
             <resource>
@@ -237,13 +244,10 @@
             </resource>
             <resource>
                 <directory>src/main/resources</directory>
-                <filtering>false</filtering>
+                <filtering>true</filtering>
                 <includes>
-                    <include>**/*.woff</include>
-                    <include>**/*.woff2</include>
                     <include>templates/**</include>
                     <include>log/**</include>
-                    <include>static/fonts/**</include>
                     <include>application-${active}.properties</include>
                     <include>application.properties</include>
                     <include>bootstrap.yml</include>
@@ -301,7 +305,7 @@
                     </executions>
                     <configuration>
                         <fork>true</fork>
-                        <mainClass>${start.class}</mainClass>
+                        <!--<mainClass>${start.class}</mainClass>-->
                         <layout>ZIP</layout>
                         <includes>
                             <include>

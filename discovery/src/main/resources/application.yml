@@ -1,15 +1,21 @@
-server:
-  port: 8882
-  context-path: /discovery
 logging:
   config: classpath:log/logback.xml
 eureka:
   instance:
-#      healthCheckUrlPath: ${server.context-path}/health
-#      statusPageUrlPath: ${server.context-path}/info
-      hostname: localhost
+      prefer-ip-address: false
+      metadata-map:
+        cluser: prontera
+        management:
+          port: ${management.port}
+          context-path: ${management.context-path}
+        health:
+          path: ${management.context-path}/health
+      healthCheckUrlPath: ${management.context-path}/health
+      statusPageUrlPath: ${management.context-path}/info
+#      instance-id: ${eureka.instance.hostname}:${server.port}
   client:
-    register-with-eureka: false
+    register-with-eureka: true
     fetch-registry: false
-    serviceUrl:
-           defaultZone: http://${eureka.instance.hostname}:${server.port}/discovery/eureka/
+spring:
+  application:
+    name: discovery
