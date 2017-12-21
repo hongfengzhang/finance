@@ -2,9 +2,9 @@ logging:
   config: classpath:log/logback.xml
 eureka:
   instance:
-      prefer-ip-address: false
+      prefer-ip-address: true
       metadata-map:
-        cluser: prontera
+        cluser: finance
         management:
           port: ${management.port}
           context-path: ${management.context-path}
@@ -12,10 +12,9 @@ eureka:
           path: ${management.context-path}/health
       healthCheckUrlPath: ${management.context-path}/health
       statusPageUrlPath: ${management.context-path}/info
-#      instance-id: ${eureka.instance.hostname}:${server.port}
+      hostname: ${spring.cloud.client.ipAddress}
   client:
     register-with-eureka: true
-    fetch-registry: false
-spring:
-  application:
-    name: discovery
+    fetch-registry: true
+  server:
+    renewal-percent-threshold: '0.8'
