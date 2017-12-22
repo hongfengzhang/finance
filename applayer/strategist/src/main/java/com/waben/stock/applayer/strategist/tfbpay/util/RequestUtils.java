@@ -19,6 +19,20 @@ import com.waben.stock.applayer.strategist.tfbpay.config.TFBPayConfig;
 
 public class RequestUtils {
 
+	public static void test(String[] args) {
+		System.out.println("java.nio.charset.Charset.defaultCharset():" + java.nio.charset.Charset.defaultCharset());
+        String s = "中文";
+        try {
+            System.out.println("GBK:" + new String(s.getBytes(), "GBK"));
+            System.out.println("UTF-8:" + new String(s.getBytes(), "UTF-8"));
+            System.out.println("ISO8859-1:" + new String(s.getBytes(), "ISO-8859-1"));
+        } catch (UnsupportedEncodingException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        System.out.println("java.nio.charset.Charset.defaultCharset():" + java.nio.charset.Charset.defaultCharset());
+    }
+
     /**
      * 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
      */

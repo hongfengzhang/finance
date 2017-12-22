@@ -68,6 +68,7 @@ public class InvestorBusiness {
 
     public SecuritiesStockEntrust buyIn(InvestorDto investorDto,BuyRecordDto buyRecordDto) {
         SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto);
+        //TODO 若没有接收到响应请求， 则回滚服务业务
         Response<BuyRecordDto> response = investorService.stockApplyBuyIn(investorDto.getId(), securitiesStockEntrust,
                 investorDto.getSecuritiesSession());
         String code = response.getCode();

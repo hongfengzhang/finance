@@ -20,7 +20,7 @@ public class EntrustProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
      * @param securitiesStockEntrust
      */
     public void entrustBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
-        logger.info("开始发送委托买入订单数据:{}",securitiesStockEntrust.getTradeNo());
+        logger.info("开始发送委托买入成功订单数据:{}",securitiesStockEntrust.getTradeNo());
         super.topic("buyRecord", "buyIn", securitiesStockEntrust);
     }
 

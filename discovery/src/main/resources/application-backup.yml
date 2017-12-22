@@ -1,0 +1,25 @@
+server:
+  port: 8883
+management:
+  port: 3333
+  context-path: /backup
+eureka:
+  instance:
+    hostname: discoverybackup
+    prefer-ip-address: false
+    metadata-map:
+      cluster: finance
+      management:
+        port: ${management.port}
+        context-path: ${management.context-path}
+      health:
+        path: ${management.context-path}/health
+    status-page-url-path: ${management.context-path}/info
+    health-check-url-path: ${management.context-path}/health
+  client:
+    service-url:
+      defaultZone: 'http://discoverymaster:8882/eureka/'
+    fetch-registry: true
+    register-with-eureka: true
+  server:
+    renewal-percent-threshold: '0.8'

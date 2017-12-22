@@ -1,17 +1,10 @@
 server:
   port: 8082
-  context-path: /operation
+management:
+  port: 3032
+  context-path: /turbine
 spring:
   mvc:
     throw-exception-if-no-handler-found: true
   thymeleaf:
     cache: false
-hystrix:
-  command:
-    default:
-     execution:
-        isolation:
-          thread:
-            timeoutInMilliseconds: 10000
-        timeout:
-            enabled: false

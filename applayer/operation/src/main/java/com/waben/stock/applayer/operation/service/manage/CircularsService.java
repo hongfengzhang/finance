@@ -8,7 +8,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
  * @author Created by yuyidi on 2017/12/11.
  * @desc
  */
-@FeignClient(name = "manage/manage", path = "circulars", fallback = CircularsServiceFallback.class, qualifier =
+@FeignClient(name = "manage", path = "circulars", fallback = CircularsServiceFallback.class, qualifier =
         "circularsFeignService")
 public interface CircularsService extends CircularsInterface {
 

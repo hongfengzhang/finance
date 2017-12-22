@@ -11,6 +11,7 @@ import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.service.BuyRecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +21,8 @@ import java.util.List;
  * @author Created by yuyidi on 2017/12/14.
  * @desc
  */
-@Component
+//@Component
+//@Order(Ordered.LOWEST_PRECEDENCE+100)
 public class StockBuyLockInitialize implements CommandLineRunner {
 
     @Autowired
@@ -32,22 +34,16 @@ public class StockBuyLockInitialize implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }).start();
         List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithBuyLock();
         for (BuyRecordDto buyRecord : buyRecords) {
             SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
             securitiesStockEntrust.setSerialCode(buyRecord.getSerialCode());
             securitiesStockEntrust.setInvestor(buyRecord.getInvestorId());
-            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
-            securitiesStockEntrust.setStockName(stockDto.getName());
-            securitiesStockEntrust.setStockCode(stockDto.getCode());
-            securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
+//            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
+//            securitiesStockEntrust.setStockName(stockDto.getName());
+//            securitiesStockEntrust.setStockCode(stockDto.getCode());
+//            securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
             securitiesStockEntrust.setEntrustNumber(buyRecord.getNumberOfStrand());
             securitiesStockEntrust.setEntrustPrice(buyRecord.getBuyingPrice());
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());

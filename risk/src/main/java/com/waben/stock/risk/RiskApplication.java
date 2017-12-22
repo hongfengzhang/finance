@@ -2,7 +2,9 @@ package com.waben.stock.risk;
 
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.risk.business.BuyRecordBusiness;
+import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -25,22 +27,30 @@ import java.util.List;
 //服务调用
 @EnableFeignClients
 
-@ComponentScan(basePackages = { "com.waben.stock" })
+@ComponentScan(basePackages = {"com.waben.stock"})
 @Controller
 public class RiskApplication {
-
-    public static void main(String[] args) {
-        System.setProperty("org.terracotta.quartz.skipUpdateCheck","true");
-        SpringApplication.run(RiskApplication.class);
-    }
 
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
 
+    public static void main(String[] args) {
+        System.setProperty("org.terracotta.quartz.skipUpdateCheck", "true");
+        SpringApplication.run(RiskApplication.class);
+    }
+
+    @Autowired
+    public StockApplyEntrustBuyInContainer buyInContainer;
+
     @RequestMapping("/buyrecords")
     @ResponseBody
-    public Response<List<BuyRecordDto>> buyrecords() {
-        return new Response<>(buyRecordBusiness.buyRecordsWithBuyLock());
+    public Response<Void> buyrecords(String code) {
+        SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
+        securitiesStockEntrust.setTradeNo(code);
+        securitiesStockEntrust.setEntrustNo("112");
+        securitiesStockEntrust.setTradeSession("c445ac76489dd9b5026772e98b3cc4ab011513322080");
+        buyInContainer.add(securitiesStockEntrust);
+        return new Response<>();
     }
 
 
