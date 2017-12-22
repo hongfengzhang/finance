@@ -13,6 +13,7 @@ import com.waben.stock.applayer.strategist.service.CapitalAccountService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
@@ -49,8 +50,8 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
-	public CapitalAccountDto withdrawals(Long publisherId, BigDecimal amount) {
-		Response<CapitalAccountDto> response = service.withdrawals(publisherId, amount);
+	public CapitalAccountDto withdrawals(Long publisherId, String withdrawalsNo, WithdrawalsState state) {
+		Response<CapitalAccountDto> response = service.withdrawals(publisherId, withdrawalsNo, state.getIndex());
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

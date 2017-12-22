@@ -20,6 +20,10 @@ public class StockDiscDto {
 	 */
 	private String name;
 	/**
+	 * 今开
+	 */
+	private BigDecimal todayOpenPrice;
+	/**
 	 * 昨收
 	 */
 	private BigDecimal yesterdayClosePrice;
@@ -100,6 +104,14 @@ public class StockDiscDto {
 
 	public void setUpDropSpeed(BigDecimal upDropSpeed) {
 		this.upDropSpeed = upDropSpeed;
+	}
+
+	public BigDecimal getTodayOpenPrice() {
+		return todayOpenPrice;
+	}
+
+	public void setTodayOpenPrice(BigDecimal todayOpenPrice) {
+		this.todayOpenPrice = todayOpenPrice;
 	}
 
 	public BigDecimal getRiseStopPrice() {

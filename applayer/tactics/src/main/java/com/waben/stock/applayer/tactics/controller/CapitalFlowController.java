@@ -44,11 +44,11 @@ public class CapitalFlowController {
 		CapitalFlowQuery query = new CapitalFlowQuery(page, size);
 		Date startTime = null;
 		if (range == 1) {
-			startTime = new DateTime(new Date()).plusHours(7 * 24).toDate();
+			startTime = new DateTime(new Date()).minusHours(7 * 24).toDate();
 		} else if (range == 2) {
-			startTime = new DateTime(new Date()).plusHours(30 * 24).toDate();
+			startTime = new DateTime(new Date()).minusHours(30 * 24).toDate();
 		} else if (range == 3) {
-			startTime = new DateTime(new Date()).plusHours(180 * 24).toDate();
+			startTime = new DateTime(new Date()).minusHours(180 * 24).toDate();
 		}
 		query.setStartTime(startTime);
 		query.setPublisherId(SecurityUtil.getUserId());

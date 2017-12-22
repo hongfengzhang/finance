@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
+import com.waben.stock.interfaces.enums.FrozenCapitalType;
 
 public class FrozenCapitalDto {
 
@@ -17,6 +18,10 @@ public class FrozenCapitalDto {
 	 */
 	private FrozenCapitalStatus status;
 	/**
+	 * 类型
+	 */
+	private FrozenCapitalType type;
+	/**
 	 * 冻结时间
 	 */
 	private Date frozenTime;
@@ -29,17 +34,13 @@ public class FrozenCapitalDto {
 	 */
 	private Long buyRecordId;
 	/**
-	 * 点买记录系列号
+	 * 提现单号
 	 */
-	private String buyRecordSerialCode;
+	private String withdrawalsNo;
 	/**
 	 * 发布人ID
 	 */
 	private Long publisherId;
-	/**
-	 * 发布人序列号
-	 */
-	private String publisherSerialCode;
 
 	public Long getId() {
 		return id;
@@ -89,14 +90,6 @@ public class FrozenCapitalDto {
 		this.buyRecordId = buyRecordId;
 	}
 
-	public String getBuyRecordSerialCode() {
-		return buyRecordSerialCode;
-	}
-
-	public void setBuyRecordSerialCode(String buyRecordSerialCode) {
-		this.buyRecordSerialCode = buyRecordSerialCode;
-	}
-
 	public Long getPublisherId() {
 		return publisherId;
 	}
@@ -105,12 +98,20 @@ public class FrozenCapitalDto {
 		this.publisherId = publisherId;
 	}
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
+	public FrozenCapitalType getType() {
+		return type;
 	}
 
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
+	public void setType(FrozenCapitalType type) {
+		this.type = type;
+	}
+
+	public String getWithdrawalsNo() {
+		return withdrawalsNo;
+	}
+
+	public void setWithdrawalsNo(String withdrawalsNo) {
+		this.withdrawalsNo = withdrawalsNo;
 	}
 
 }

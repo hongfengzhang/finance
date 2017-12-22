@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.publisher.service;
 
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +22,14 @@ public class PaymentOrderService {
 	private PaymentOrderDao paymentOrderDao;
 
 	public PaymentOrder save(PaymentOrder paymentOrder) {
+		paymentOrder.setCreateTime(new Date());
 		return paymentOrderDao.create(paymentOrder);
 	}
 
 	public PaymentOrder changeState(String paymentNo, PaymentState state) {
 		PaymentOrder paymentOrder = paymentOrderDao.retrieveByPaymentNo(paymentNo);
 		paymentOrder.setState(state);
+		paymentOrder.setUpdateTime(new Date());
 		return paymentOrderDao.update(paymentOrder);
 	}
 

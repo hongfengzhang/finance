@@ -69,4 +69,8 @@ public class StrategyTypeService {
         }, pageable);
         return pages;
     }
+
+	public StrategyType findById(Long id) {
+		return strategyTypeDao.retrieve(id);
+	}
 }

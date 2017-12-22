@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.publisher.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -60,6 +61,16 @@ public class PaymentOrder {
 	 */
 	@Column(name = "publisher_id")
 	private Long publisherId;
+	/**
+	 * 创建时间
+	 */
+	@Column(name = "create_time")
+	private Date createTime;
+	/**
+	 * 更新时间
+	 */
+	@Column(name = "update_time")
+	private Date updateTime;
 
 	public Long getId() {
 		return id;
@@ -115,6 +126,22 @@ public class PaymentOrder {
 
 	public void setType(PaymentType type) {
 		this.type = type;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 }

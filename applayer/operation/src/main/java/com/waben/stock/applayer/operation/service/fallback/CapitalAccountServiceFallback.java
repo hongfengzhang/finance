@@ -1,16 +1,16 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
+import java.math.BigDecimal;
+
+import org.springframework.stereotype.Component;
+
 import com.waben.stock.applayer.operation.service.publisher.CapitalAccountService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
-import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 
 @Component
 public class CapitalAccountServiceFallback implements CapitalAccountService {
@@ -35,12 +35,12 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
     }
 
     @Override
-    public Response<CapitalAccountDto> withdrawals(Long publisherId, BigDecimal amount) {
+    public Response<CapitalAccountDto> withdrawals(Long publisherId, String withdrawalsNo, String withdrawalsStateIndex) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
-    public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode, BigDecimal serviceFee, BigDecimal reserveFund) {
+    public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, BigDecimal serviceFee, BigDecimal reserveFund) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

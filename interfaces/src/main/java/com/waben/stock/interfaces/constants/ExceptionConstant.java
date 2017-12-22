@@ -46,7 +46,7 @@ public class ExceptionConstant {
 	public static final String ROLE_NOT_FOUND_EXCEPTION = "3004";
 	public static final String PERMISSION_NOT_FOUND_EXCEPTION = "3005";
 
-	// 点买服务异常
+	// 点买服务、股票异常
 	// 账户可用余额不足
 	public static final String AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION = "6001";
 	// 买入或者卖出前需进行锁定操作
@@ -73,6 +73,16 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_RETURNRESERVEFUND_EXCEPTION = "6012";
 	// 非交易时间段
 	public static final String BUYRECORD_NONTRADINGPERIOD_EXCEPTION = "6013";
+	// 该股票已停牌
+	public static final String STOCK_SUSPENSION_EXCEPTION = "6014";
+	// 提现异常
+	public static final String WITHDRAWALS_EXCEPTION = "6015";
+	// 充值异常
+	public static final String RECHARGE_EXCEPTION = "6016";
+	// 用户选择不递延，不能进行递延操作
+	public static final String BUYRECORD_USERNOTDEFERRED_EXCEPTION = "6017";
+	// 该点买记录已经递延过了，不能重复递延
+	public static final String BUYRECORD_ALREADY_DEFERRED_EXCEPTION = "6018";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

@@ -87,4 +87,9 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<List<BuyRecordDto>> buyRecordsWithStatus(Integer buyRecordState) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<BuyRecordDto> deferred(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

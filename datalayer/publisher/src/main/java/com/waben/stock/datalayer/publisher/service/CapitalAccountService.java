@@ -22,15 +22,19 @@ import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlowExtend;
 import com.waben.stock.datalayer.publisher.entity.FrozenCapital;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
+import com.waben.stock.datalayer.publisher.entity.WithdrawalsOrder;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowExtendDao;
 import com.waben.stock.datalayer.publisher.repository.FrozenCapitalDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
+import com.waben.stock.datalayer.publisher.repository.WithdrawalsOrderDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
+import com.waben.stock.interfaces.enums.FrozenCapitalType;
+import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowExtendQuery;
@@ -55,6 +59,9 @@ public class CapitalAccountService {
 
 	@Autowired
 	private CapitalFlowExtendService extendService;
+
+	@Autowired
+	private WithdrawalsOrderDao withdrawalsOrderDao;
 
 	/**
 	 * 根据发布人系列号获取资金账户
@@ -95,13 +102,51 @@ public class CapitalAccountService {
 	 * 提现
 	 */
 	@Transactional
-	public synchronized CapitalAccount withdrawals(Long publisherId, BigDecimal amount) {
+	public synchronized CapitalAccount withdrawals(Long publisherId, String withdrawalsNo,
+			WithdrawalsState withdrawalsState) {
+		WithdrawalsOrder withdrawalsOrder = withdrawalsOrderDao.retrieveByWithdrawalsNo(withdrawalsNo);
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
-		Date date = new Date();
-		reduceAmount(account, amount, date);
-		flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Recharge,
-				amount.abs().multiply(new BigDecimal(-1)), date);
-		return findByPublisherId(publisherId);
+		if (withdrawalsOrder.getState() == WithdrawalsState.PROCESSING
+				&& withdrawalsState != WithdrawalsState.PROCESSING) {
+			BigDecimal amount = withdrawalsOrder.getAmount();
+			Date date = new Date();
+			if (withdrawalsState == WithdrawalsState.PROCESSED) {
+				// 修改提现订单的状态
+				withdrawalsOrder.setState(withdrawalsState);
+				withdrawalsOrder.setUpdateTime(new Date());
+				withdrawalsOrderDao.update(withdrawalsOrder);
+				// 解冻
+				FrozenCapital frozen = frozenCapitalDao.retriveByPublisherIdAndWithdrawalsNo(publisherId,
+						withdrawalsNo);
+				frozen.setStatus(FrozenCapitalStatus.Thaw);
+				frozen.setThawTime(date);
+				frozenCapitalDao.update(frozen);
+				// 修改账户的总金额、冻结金额
+				account.setBalance(account.getBalance().subtract(amount));
+				account.setFrozenCapital(account.getFrozenCapital().subtract(amount));
+				capitalAccountDao.update(account);
+				// 产生资金流水
+				flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Withdrawals,
+						amount.abs().multiply(new BigDecimal(-1)), date);
+				return findByPublisherId(publisherId);
+			} else if (withdrawalsState == WithdrawalsState.FAILURE) {
+				// 修改提现订单的状态
+				withdrawalsOrder.setState(WithdrawalsState.RETREAT);
+				withdrawalsOrder.setUpdateTime(new Date());
+				withdrawalsOrderDao.update(withdrawalsOrder);
+				// 解冻
+				FrozenCapital frozen = frozenCapitalDao.retriveByPublisherIdAndWithdrawalsNo(publisherId,
+						withdrawalsNo);
+				frozen.setStatus(FrozenCapitalStatus.Thaw);
+				frozen.setThawTime(date);
+				frozenCapitalDao.update(frozen);
+				// 修改账户的总金额、冻结金额
+				account.setFrozenCapital(account.getFrozenCapital().subtract(amount));
+				account.setAvailableBalance(account.getAvailableBalance().add(amount));
+				capitalAccountDao.update(account);
+			}
+		}
+		return account;
 	}
 
 	/**
@@ -109,7 +154,7 @@ public class CapitalAccountService {
 	 */
 	@Transactional
 	public synchronized CapitalAccount serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
-			String buyRecordSerialCode, BigDecimal serviceFee, BigDecimal reserveFund) {
+			BigDecimal serviceFee, BigDecimal reserveFund) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, serviceFee, reserveFund, date);
@@ -129,11 +174,10 @@ public class CapitalAccountService {
 		FrozenCapital frozen = new FrozenCapital();
 		frozen.setAmount(reserveFund.abs());
 		frozen.setBuyRecordId(buyRecordId);
-		frozen.setBuyRecordSerialCode(buyRecordSerialCode);
 		frozen.setFrozenTime(date);
 		frozen.setPublisherId(publisherId);
-		frozen.setPublisherSerialCode(account.getPublisherSerialCode());
 		frozen.setStatus(FrozenCapitalStatus.Frozen);
+		frozen.setType(FrozenCapitalType.ReserveFund);
 		frozenCapitalDao.create(frozen);
 		return findByPublisherId(publisherId);
 	}
@@ -332,19 +376,19 @@ public class CapitalAccountService {
 		capitalAccountDao.update(account);
 	}
 
-	public Page<CapitalAccount> pages(final CapitalAccountQuery query){
+	public Page<CapitalAccount> pages(final CapitalAccountQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<CapitalAccount> pages = capitalAccountDao.page(new Specification<CapitalAccount>() {
 			@Override
-			public Predicate toPredicate(Root<CapitalAccount> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<CapitalAccount> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
 				if (!StringUtils.isEmpty(query.getId())) {
-					Predicate typeQuery = criteriaBuilder.equal(root.get("id").as(String.class), query
-							.getId());
+					Predicate typeQuery = criteriaBuilder.equal(root.get("id").as(String.class), query.getId());
 					criteriaQuery.where(criteriaBuilder.and(typeQuery));
 				}
 				return criteriaQuery.getRestriction();
 			}
-		},pageable);
+		}, pageable);
 		return pages;
 	}
 }

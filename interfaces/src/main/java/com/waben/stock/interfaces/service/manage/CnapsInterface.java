@@ -24,8 +24,14 @@ public interface CnapsInterface {
 
 	@RequestMapping(value = "/bankcard/{bankCard}", method = RequestMethod.GET)
 	public Response<BankInfoDto> fetchBankInfo(@PathVariable("bankCard") String bankCard);
-	
+
 	@RequestMapping(value = "/bankinfo/lists", method = RequestMethod.GET)
 	public Response<List<BankInfoDto>> listBankInfo();
+
+	@RequestMapping(value = "/bankinfo/applists", method = RequestMethod.GET)
+	public Response<List<BankInfoDto>> listAppBankInfo();
+
+	@RequestMapping(value = "/bankinfo/pclists", method = RequestMethod.GET)
+	public Response<List<BankInfoDto>> listPcBankInfo();
 
 }

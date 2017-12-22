@@ -66,7 +66,6 @@ public class PublisherController {
 		if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
 				|| smsType == SmsType.BindCardCode) {
 			paramValues.add(RandomUtil.generateRandomCode(4));
-			paramValues.add("020-888888");
 		}
 		smsService.sendMessage(smsType, phone, paramValues);
 		return new Response<>();

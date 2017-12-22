@@ -11,14 +11,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 点买递延费
+ * 递延记录
  * 
  * @author luomengan
  *
  */
 @Entity
-@Table(name = "deferred_charges")
-public class DeferredCharges {
+@Table(name = "deferred_record")
+public class DeferredRecord {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,35 +29,35 @@ public class DeferredCharges {
 	@Column(name = "fee")
 	private BigDecimal fee;
 	/**
-	 * 递延的交易日
+	 * 递延时间
 	 */
 	@Column(name = "deferred_time")
 	private Date deferredTime;
 	/**
-	 * 扣费时间
+	 * 策略类型ID
 	 */
-	@Column(name = "deduction_time")
-	private Date deductionTime;
+	@Column(name = "strategy_type_id")
+	private Long strategyTypeId;
+	/**
+	 * 策略类型名称
+	 */
+	@Column(name = "strategy_type_name")
+	private String strategyTypeName;
+	/**
+	 * 周期
+	 */
+	@Column(name = "cycle")
+	private Integer cycle;
 	/**
 	 * 点买记录ID
 	 */
 	@Column(name = "buy_record_id")
 	private Long buyRecordId;
 	/**
-	 * 点买记录系列号
-	 */
-	@Column(name = "buy_record_serial_code")
-	private String buyRecordSerialCode;
-	/**
 	 * 发布人ID
 	 */
 	@Column(name = "publisher_id")
 	private Long publisherId;
-	/**
-	 * 发布人序列号
-	 */
-	@Column(name = "publisher_serial_code")
-	private String publisherSerialCode;
 
 	public Long getId() {
 		return id;
@@ -83,28 +83,12 @@ public class DeferredCharges {
 		this.deferredTime = deferredTime;
 	}
 
-	public Date getDeductionTime() {
-		return deductionTime;
-	}
-
-	public void setDeductionTime(Date deductionTime) {
-		this.deductionTime = deductionTime;
-	}
-
 	public Long getBuyRecordId() {
 		return buyRecordId;
 	}
 
 	public void setBuyRecordId(Long buyRecordId) {
 		this.buyRecordId = buyRecordId;
-	}
-
-	public String getBuyRecordSerialCode() {
-		return buyRecordSerialCode;
-	}
-
-	public void setBuyRecordSerialCode(String buyRecordSerialCode) {
-		this.buyRecordSerialCode = buyRecordSerialCode;
 	}
 
 	public Long getPublisherId() {
@@ -115,12 +99,28 @@ public class DeferredCharges {
 		this.publisherId = publisherId;
 	}
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
+	public Long getStrategyTypeId() {
+		return strategyTypeId;
 	}
 
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
+	public void setStrategyTypeId(Long strategyTypeId) {
+		this.strategyTypeId = strategyTypeId;
+	}
+
+	public String getStrategyTypeName() {
+		return strategyTypeName;
+	}
+
+	public void setStrategyTypeName(String strategyTypeName) {
+		this.strategyTypeName = strategyTypeName;
+	}
+
+	public Integer getCycle() {
+		return cycle;
+	}
+
+	public void setCycle(Integer cycle) {
+		this.cycle = cycle;
 	}
 
 }

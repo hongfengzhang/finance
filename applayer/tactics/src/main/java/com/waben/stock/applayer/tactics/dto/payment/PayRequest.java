@@ -22,6 +22,10 @@ public class PayRequest {
 	 * 金额
 	 */
 	private BigDecimal amount;
+	/**
+	 * 第三方银行银行代码
+	 */
+	private String bankCode;
 
 	public PaymentType getPaymentType() {
 		return paymentType;
@@ -53,6 +57,14 @@ public class PayRequest {
 
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount;
+	}
+
+	public String getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
 	}
 
 }
