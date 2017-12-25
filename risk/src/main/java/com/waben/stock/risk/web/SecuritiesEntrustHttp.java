@@ -11,6 +11,8 @@ import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.web.HttpRest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -27,14 +29,20 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    String context = "http://106.15.37.226:8445/stockjy";
+    @Value("${securities.context")
+    private String context;
     //券商委托单查询
     private String queryEntrustPath = context+"/qryentrust";
 
+    private HttpHeaders headers = new HttpHeaders();
+    {
+        headers.add("broker_id","1001");
+    }
+
     public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo) {
-        String queryEntrusUrl = queryEntrustPath + "?trade_session={trade_session}&entrust_no={entrust_no}";
+        String queryEntrusUrl = queryEntrustPath + "?token={token}&entrust_no={entrust_no}";
         Map<String, String> params = new HashMap<>();
-        params.put("trade_session", tradeSession);
+        params.put("token", tradeSession);
         params.put("entrust_no", entrustNo);
         String result = null;
         try {

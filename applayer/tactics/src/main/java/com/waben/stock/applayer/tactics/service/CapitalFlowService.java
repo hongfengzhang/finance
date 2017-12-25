@@ -12,7 +12,7 @@ import com.waben.stock.interfaces.service.publisher.CapitalFlowInterface;
  * @author luomengan
  *
  */
-@FeignClient(name = "publisher/publisher", path = "capitalFlow", configuration = FeignConfiguration.class)
+@FeignClient(name = "publisher", path = "capitalFlow", configuration = FeignConfiguration.class)
 @Primary
 public interface CapitalFlowService extends CapitalFlowInterface {
 

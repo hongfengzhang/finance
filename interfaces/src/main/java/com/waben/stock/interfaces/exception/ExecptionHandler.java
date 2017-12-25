@@ -1,9 +1,5 @@
 package com.waben.stock.interfaces.exception;
 
-import com.netflix.hystrix.exception.HystrixRuntimeException;
-import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.pojo.ExceptionInformation;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import com.netflix.hystrix.exception.HystrixRuntimeException;
 import com.waben.stock.interfaces.pojo.ExceptionInformation;
 
 /**
@@ -104,6 +101,12 @@ public class ExecptionHandler implements HandlerExceptionResolver {
     }
 
     private String message(String type, Exception ex) {
+    	if(ex instanceof ServiceException) {
+    		ServiceException serviceException = (ServiceException) ex;
+    		if(serviceException.getCustomMessage() != null) {
+    			return serviceException.getCustomMessage();
+    		}
+    	}
         String message = null;
         if (exceptionMap.containsKey(type)) {
             message = exceptionMap.get(type);

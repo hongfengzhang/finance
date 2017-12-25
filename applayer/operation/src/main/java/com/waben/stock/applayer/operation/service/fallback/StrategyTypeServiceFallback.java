@@ -17,13 +17,18 @@ import java.util.List;
  */
 @Component
 public class StrategyTypeServiceFallback implements StrategyTypeService {
-    @Override
-    public Response<List<StrategyTypeDto>> lists(Boolean enable) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	@Override
+	public Response<List<StrategyTypeDto>> lists(Boolean enable) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
-    @Override
-    public Response<PageInfo<StrategyTypeDto>> pages(StrategyTypeQuery query) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	@Override
+	public Response<PageInfo<StrategyTypeDto>> pages(StrategyTypeQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StrategyTypeDto> fetchById(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

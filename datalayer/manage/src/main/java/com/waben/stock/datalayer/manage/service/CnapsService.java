@@ -48,4 +48,12 @@ public class CnapsService {
 		return bankInfoDao.list();
 	}
 
+	public List<BankInfo> listAppBankInfo() {
+		return bankInfoDao.retrieveByAppSupport(true);
+	}
+
+	public List<BankInfo> listPcBankInfo() {
+		return bankInfoDao.retrieveByPcSupport(true);
+	}
+
 }

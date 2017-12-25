@@ -52,4 +52,16 @@ public class CnapsController implements CnapsInterface {
 				CopyBeanUtils.copyListBeanPropertiesToList(cnapsService.listBankInfo(), BankInfoDto.class));
 	}
 
+	@Override
+	public Response<List<BankInfoDto>> listAppBankInfo() {
+		return new Response<>(
+				CopyBeanUtils.copyListBeanPropertiesToList(cnapsService.listAppBankInfo(), BankInfoDto.class));
+	}
+
+	@Override
+	public Response<List<BankInfoDto>> listPcBankInfo() {
+		return new Response<>(
+				CopyBeanUtils.copyListBeanPropertiesToList(cnapsService.listPcBankInfo(), BankInfoDto.class));
+	}
+
 }

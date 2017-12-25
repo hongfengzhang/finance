@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.manage.AreaInfoInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "manage/manage", path = "areainfo", configuration = FeignConfiguration.class)
+@FeignClient(name = "manage", path = "areainfo", configuration = FeignConfiguration.class)
 @Primary
 public interface AreaInfoService extends AreaInfoInterface {
 

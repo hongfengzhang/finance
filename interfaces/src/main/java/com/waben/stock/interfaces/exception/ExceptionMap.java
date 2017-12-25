@@ -44,6 +44,11 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.BUYRECORD_SELLAPPLY_NOTMATCH_EXCEPTION, "申请卖出只能由发布人本人操作");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_RETURNRESERVEFUND_EXCEPTION, "退回保证金发生异常");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION, "非交易时间段");
+		exceptionMap.put(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION, "该股票已停牌");
+		exceptionMap.put(ExceptionConstant.WITHDRAWALS_EXCEPTION, "提现异常");
+		exceptionMap.put(ExceptionConstant.RECHARGE_EXCEPTION, "充值异常");
+		exceptionMap.put(ExceptionConstant.BUYRECORD_USERNOTDEFERRED_EXCEPTION, "用户选择不递延，不能进行递延操作");
+		exceptionMap.put(ExceptionConstant.BUYRECORD_ALREADY_DEFERRED_EXCEPTION, "该点买记录已经递延过了，不能重复递延");
 
 		exceptionMap.put(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION, "投资人信息未找到");
 		exceptionMap.put(ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION, "投资人券商账户登陆异常");

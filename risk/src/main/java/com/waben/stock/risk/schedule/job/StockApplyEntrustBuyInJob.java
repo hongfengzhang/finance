@@ -39,6 +39,13 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob{
     public void execute(JobExecutionContext context) throws JobExecutionException {
         String tradeSession = null;
         while (!interrupted) {
+            try {
+                logger.info("3秒后开始轮询");
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                logger.info("中断异常:{}",e);
+                e.printStackTrace();
+            }
 //          容器中委托数据可能包含来自数据库或者消息队列
             Map<String, SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer
                     .getBuyInContainer();

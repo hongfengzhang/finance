@@ -3,10 +3,7 @@ package com.waben.stock.interfaces.web;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -64,9 +61,23 @@ public class HttpRest {
         return body;
     }
 
-    public static <T> T get(String url,  Class<T> entityClass, Map<String,String> params) {
+    public static <T> T get(String url, Class<T> entityClass, Map<String, String> params) {
         RestTemplate restTemplate = getInstance();
-        ResponseEntity<T> response = restTemplate.getForEntity(url, entityClass,params);
+        ResponseEntity<T> response = restTemplate.getForEntity(url, entityClass, params);
+        return response.getBody();
+    }
+
+    public static <T> T get(String url, Class<T> entityClass, Map<String, String> params, HttpHeaders headers) {
+        RestTemplate restTemplate = getInstance();
+//        ResponseEntity<T> response = restTemplate.getForEntity(url, entityClass,params);
+        ResponseEntity<T> response = restTemplate.exchange(url, HttpMethod.GET, new HttpEntity(headers),
+                entityClass, params);
+        return response.getBody();
+    }
+
+    public static <T> T  get(String url, Class<T> entityClass) {
+        RestTemplate restTemplate = getInstance();
+        ResponseEntity<T> response = restTemplate.getForEntity(url, entityClass);
         return response.getBody();
     }
 

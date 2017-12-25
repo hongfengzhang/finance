@@ -5,7 +5,12 @@ public enum WebsocketDestination {
 	/**
 	 * 股票大盘指数
 	 */
-	StockMarketIndex(1, "/topic/stockMarketIndex");
+	StockMarketIndex(1, "/topic/stockMarketIndex"),
+
+	/**
+	 * 股票分时数据
+	 */
+	StockTimeLine(2, "/stockTimeLine");
 
 	private int index;
 

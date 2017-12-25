@@ -12,7 +12,7 @@ import com.waben.stock.interfaces.service.stockcontent.StockInterface;
  * @author luomengan
  *
  */
-@FeignClient(name = "stockcontent/stockcontent", path = "stock", configuration = FeignConfiguration.class)
+@FeignClient(name = "stockcontent", path = "stock", configuration = FeignConfiguration.class)
 @Primary
 public interface StockService extends StockInterface {
 

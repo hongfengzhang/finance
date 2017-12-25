@@ -12,7 +12,7 @@ import com.waben.stock.interfaces.service.manage.CircularsInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "manage/manage", path = "circulars", fallback = CircularsServiceFallback.class, configuration =
+@FeignClient(name = "manage", path = "circulars", fallback = CircularsServiceFallback.class, configuration =
         FeignConfiguration.class)
 @Primary
 public interface CircularsService extends CircularsInterface {
