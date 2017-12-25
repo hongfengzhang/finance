@@ -8,7 +8,6 @@ import org.springframework.cloud.netflix.feign.FeignClient;
  * @author Created by yuyidi on 2017/12/8.
  * @desc
  */
-@FeignClient(name = "stockcontent/stockcontent", path = "stock", fallback = StockReferenceFallback.class, qualifier =
-        "stockFeignReference")
+@FeignClient(name = "stockcontent", path = "stock", fallback = StockReferenceFallback.class, qualifier = "stockFeignReference")
 public interface StockReference extends StockInterface {
 }

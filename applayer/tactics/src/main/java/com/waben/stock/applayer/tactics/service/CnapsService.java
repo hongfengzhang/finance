@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.manage.CnapsInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "manage/manage", path = "cnaps", configuration = FeignConfiguration.class)
+@FeignClient(name = "manage", path = "cnaps", configuration = FeignConfiguration.class)
 @Primary
 public interface CnapsService extends CnapsInterface {
 

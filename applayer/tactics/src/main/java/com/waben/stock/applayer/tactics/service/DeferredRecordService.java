@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.buyrecord.DeferredRecordInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "buyrecord/buyrecord", path = "deferredrecord", configuration = FeignConfiguration.class)
+@FeignClient(name = "buyrecord", path = "deferredrecord", configuration = FeignConfiguration.class)
 @Primary
 public interface DeferredRecordService extends DeferredRecordInterface {
 

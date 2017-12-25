@@ -30,8 +30,12 @@ public class StockMarketWebsocket {
 	 * 推送股票分时数据
 	 */
 	public void sendStockTimeLine(List<StockTimeLine> stockTimeLineList) {
+		/*
 		template.convertAndSend("/user/" + stockTimeLineList.get(0).getInstrumentID()
 				+ WebsocketDestination.StockTimeLine.getDestination(), stockTimeLineList);
+		*/
+		template.convertAndSendToUser(stockTimeLineList.get(0).getInstrumentID(),
+				WebsocketDestination.StockTimeLine.getDestination(), stockTimeLineList);
 	}
 
 }
