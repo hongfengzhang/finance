@@ -49,6 +49,7 @@ public class MakeMacUtil {
 					}
 				}
 			}
+		 System.out.println("值："+macStr);
 			String rMac = MD5Util.mac(macStr, macKey);
 			return rMac;
 	    }

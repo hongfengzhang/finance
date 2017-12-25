@@ -15,7 +15,6 @@ public class MD5Util {
         String result = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            System.out.println("getBytes:"+sourceStr.getBytes("UTF-8"));
 			md.update(sourceStr.getBytes("UTF-8"));
             byte b[] = md.digest();
             int i;
@@ -34,14 +33,15 @@ public class MD5Util {
         } catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-        System.out.println("result==="+result);
         return result;
     }
 	
 	public static String mac(String macStr, String mackey) throws Exception {
 		String s = MD5Encode(macStr+mackey);
+		System.out.println("MD5Encode:"+s);
 		BASE64Encoder base64en = new BASE64Encoder();
         String newstr=base64en.encode(s.getBytes("utf-8"));
+        System.out.println("BASE64Encoder:"+newstr);
         return newstr;
 	}
 	

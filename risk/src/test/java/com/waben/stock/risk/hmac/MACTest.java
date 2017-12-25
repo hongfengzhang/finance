@@ -231,8 +231,8 @@ public class MACTest {
         pay.put("notifyUrl", "http://localhost:29173/Trade/DepositAsyncCallback");
         pay.put("organizationId", "243463836");
         pay.put("payType", "T1");
-        pay.put("sendSeqId", "1223chzzhif96801983");
-        pay.put("sendTime", "20171223151033");
+        pay.put("sendSeqId", "1225chzzhif74523451");
+        pay.put("sendTime", "20171225103736");
         pay.put("transAmt", "11100");
         pay.put("transType", "BP02");
         pay.put("subject", "MD5");
