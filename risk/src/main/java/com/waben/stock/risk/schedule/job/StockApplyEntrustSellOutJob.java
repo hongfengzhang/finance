@@ -40,6 +40,13 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         String tradeSession = null;
         while (!interrupted) {
+            try {
+                logger.info("3秒后开始轮询");
+                Thread.sleep(3 * 1000);
+            } catch (InterruptedException e) {
+                logger.info("中断异常:{}",e);
+                e.printStackTrace();
+            }
             Map<String, SecuritiesStockEntrust> stockEntrusts = stockApplyEntrustSellOutContainer
                     .getSellOutContainer();
             logger.info("券商委托股票容器内剩余:{}个委托卖出订单", stockEntrusts.size());
