@@ -65,4 +65,9 @@ public class FrozenCapitalDaoImpl implements FrozenCapitalDao {
 		return repository.findByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
 	}
 
+	@Override
+	public FrozenCapital retriveByPublisherIdAndWithdrawalsNo(Long publisherId, String withdrawalsNo) {
+		return repository.findByPublisherIdAndWithdrawalsNo(publisherId, withdrawalsNo);
+	}
+
 }

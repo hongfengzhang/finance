@@ -74,5 +74,4 @@ public class TfbPayOverHttp {
 		return restTemplate.postForObject(url, "cipher_data=" + cipherData, String.class);
 	}
 
-
 }

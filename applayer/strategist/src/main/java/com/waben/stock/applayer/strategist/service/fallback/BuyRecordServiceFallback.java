@@ -92,4 +92,9 @@ public class BuyRecordServiceFallback implements BuyRecordInterface {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<BuyRecordDto> deferred(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

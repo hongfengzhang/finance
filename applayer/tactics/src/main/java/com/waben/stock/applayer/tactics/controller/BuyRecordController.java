@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.tactics.business.BuyRecordBusiness;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.business.HolidayBusiness;
+import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.buyrecord.TradeDynamicDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
@@ -50,7 +51,10 @@ public class BuyRecordController {
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
-	
+
+	@Autowired
+	private StockBusiness stockBusiness;
+
 	@GetMapping("/isTradeTime")
 	@ApiOperation(value = "是否为交易时间段")
 	public Response<Boolean> isTradeTime() {
@@ -71,6 +75,11 @@ public class BuyRecordController {
 		if (!isTradeTime) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
 		}
+		// 判断该股票是否已经停牌
+		boolean isSuspension = stockBusiness.isSuspension(stockCode);
+		if (isSuspension) {
+			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		}
 		// 检查参数是否合理
 		if (delegatePrice.compareTo(new BigDecimal(0)) <= 0) {
 			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
@@ -82,7 +91,6 @@ public class BuyRecordController {
 		if (!(lossPoint.abs().compareTo(new BigDecimal(0)) > 0 && lossPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
 			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
 		}
-
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();

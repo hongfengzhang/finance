@@ -26,15 +26,15 @@ public interface CapitalAccountInterface {
 	Response<CapitalAccountDto> recharge(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("amount") BigDecimal amount);
 
-	@RequestMapping(value = "/{publisherId}/withdrawals/{amount}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{publisherId}/withdrawals/{withdrawalsNo}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> withdrawals(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("amount") BigDecimal amount);
+			@PathVariable("withdrawalsNo") String withdrawalsNo,
+			@RequestParam(name = "withdrawalsStateIndex") String withdrawalsStateIndex);
 
 	@RequestMapping(value = "/{publisherId}/{buyRecordId}/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("buyRecordId") Long buyRecordId,
-			@RequestParam(name = "buyRecordSerialCode") String buyRecordSerialCode,
-			@PathVariable("serviceFee") BigDecimal serviceFee, @PathVariable("reserveFund") BigDecimal reserveFund);
+			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("serviceFee") BigDecimal serviceFee,
+			@PathVariable("reserveFund") BigDecimal reserveFund);
 
 	@RequestMapping(value = "/frozenCapital/{publisherId}/{buyRecordId}/", method = RequestMethod.GET)
 	Response<FrozenCapitalDto> fetchFrozenCapital(@PathVariable("publisherId") Long publisherId,

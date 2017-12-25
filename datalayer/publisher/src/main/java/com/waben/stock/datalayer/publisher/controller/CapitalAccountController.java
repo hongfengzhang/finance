@@ -14,6 +14,7 @@ import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.service.CapitalAccountService;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
+import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -56,10 +57,9 @@ public class CapitalAccountController implements CapitalAccountInterface {
 
 	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable Long publisherId,
-			@PathVariable Long buyRecordId, String buyRecordSerialCode, @PathVariable BigDecimal serviceFee,
-			@PathVariable BigDecimal reserveFund) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
-				.serviceFeeAndReserveFund(publisherId, buyRecordId, buyRecordSerialCode, serviceFee, reserveFund),
+			@PathVariable Long buyRecordId, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.serviceFeeAndReserveFund(publisherId, buyRecordId, serviceFee, reserveFund),
 				false));
 	}
 
@@ -78,9 +78,10 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> withdrawals(@PathVariable Long publisherId, @PathVariable BigDecimal amount) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
-				capitalAccountService.withdrawals(publisherId, amount), false));
+	public Response<CapitalAccountDto> withdrawals(@PathVariable Long publisherId, @PathVariable String withdrawalsNo,
+			String withdrawalsStateIndex) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
+				.withdrawals(publisherId, withdrawalsNo, WithdrawalsState.getByIndex(withdrawalsStateIndex)), false));
 	}
 
 	@Override

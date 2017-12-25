@@ -26,6 +26,8 @@ public class StockMarket {
 	private BigDecimal highestPrice;
 	private BigDecimal lowestPrice;
 	private BigDecimal askPrice;
+	private BigDecimal upLimitPrice;
+	private BigDecimal downLimitPrice;
 
 	public String getExchangeId() {
 		return exchangeId;
@@ -129,6 +131,22 @@ public class StockMarket {
 
 	public void setAskPrice(BigDecimal askPrice) {
 		this.askPrice = askPrice;
+	}
+
+	public BigDecimal getUpLimitPrice() {
+		return upLimitPrice;
+	}
+
+	public void setUpLimitPrice(BigDecimal upLimitPrice) {
+		this.upLimitPrice = upLimitPrice;
+	}
+
+	public BigDecimal getDownLimitPrice() {
+		return downLimitPrice;
+	}
+
+	public void setDownLimitPrice(BigDecimal downLimitPrice) {
+		this.downLimitPrice = downLimitPrice;
 	}
 
 }

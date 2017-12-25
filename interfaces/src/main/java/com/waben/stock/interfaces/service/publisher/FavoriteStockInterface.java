@@ -17,10 +17,10 @@ public interface FavoriteStockInterface {
 	Response<FavoriteStockDto> add(@RequestBody FavoriteStockDto favoriteStockDto);
 
 	@RequestMapping(value = "/{publisherId}/{stockCodes}", method = RequestMethod.DELETE)
-	Response<String> drop(@PathVariable("publisherId") Long publisherId, @PathVariable("stockCodes") String stockCodes);
+	Response<Void> drop(@PathVariable("publisherId") Long publisherId, @PathVariable("stockCodes") String stockCodes);
 
 	@RequestMapping(value = "/{publisherId}/top/{stockCodes}", method = RequestMethod.PUT)
-	Response<String> top(@PathVariable("publisherId") Long publisherId, @PathVariable("stockCodes") String stockCodes);
+	Response<Void> top(@PathVariable("publisherId") Long publisherId, @PathVariable("stockCodes") String stockCodes);
 
 	@RequestMapping(value = "/{publisherId}/lists", method = RequestMethod.GET)
 	Response<List<FavoriteStockDto>> listsByPublisherId(@PathVariable("publisherId") Long publisherId);

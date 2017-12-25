@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.datalayer.buyrecord.business.PublisherBusiness;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.service.BuyRecordService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
@@ -41,9 +40,7 @@ public class BuyRecordController implements BuyRecordInterface {
 
     @Autowired
     private BuyRecordService buyRecordService;
-    @Autowired
-    private PublisherBusiness publisherBusiness;
-
+    
     @Override
     public Response<BuyRecordDto> fetchBuyRecord(@PathVariable Long buyrecord) {
         BuyRecord buyRecord = buyRecordService.findBuyRecord(buyrecord);
@@ -98,6 +95,12 @@ public class BuyRecordController implements BuyRecordInterface {
         BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
     }
+    
+    @Override
+	public Response<BuyRecordDto> deferred(@PathVariable Long id) {
+    	BuyRecord buyRecord = buyRecordService.deferred(id);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+	}
 
     @Override
     public Response<Void> dropBuyRecord(@PathVariable Long id) {

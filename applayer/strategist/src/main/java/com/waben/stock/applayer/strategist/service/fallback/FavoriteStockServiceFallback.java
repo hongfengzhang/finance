@@ -19,12 +19,12 @@ public class FavoriteStockServiceFallback implements FavoriteStockService {
 	}
 
 	@Override
-	public Response<String> drop(Long publisherId, String stockIds) {
+	public Response<Void> drop(Long publisherId, String stockIds) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
 	@Override
-	public Response<String> top(Long publisherId, String stockIds) {
+	public Response<Void> top(Long publisherId, String stockIds) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

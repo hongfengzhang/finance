@@ -31,4 +31,9 @@ public class ServiceException extends RuntimeException {
 	public String getType() {
 		return type;
 	}
+
+	public String getCustomMessage() {
+		return message;
+	}
+	
 }

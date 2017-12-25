@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactor
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
@@ -29,5 +30,10 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 		exceptionResolvers.add(new ExecptionHandler());
 		super.configureHandlerExceptionResolvers(exceptionResolvers);
 	}
+	
+	@Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+    	configurer.setUseSuffixPatternMatch(false);
+    }
 
 }
