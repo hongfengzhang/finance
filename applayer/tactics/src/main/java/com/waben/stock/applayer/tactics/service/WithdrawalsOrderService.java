@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.publisher.WithdrawalsOrderInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "publisher/publisher", path = "withdrawalsorder", configuration = FeignConfiguration.class)
+@FeignClient(name = "publisher", path = "withdrawalsorder", configuration = FeignConfiguration.class)
 @Primary
 public interface WithdrawalsOrderService extends WithdrawalsOrderInterface {
 

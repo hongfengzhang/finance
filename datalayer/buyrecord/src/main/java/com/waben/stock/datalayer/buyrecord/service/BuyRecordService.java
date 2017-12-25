@@ -235,7 +235,7 @@ public class BuyRecordService {
 	@Transactional
 	public BuyRecord sellLock(Long investorId, Long id, String delegateNumber, WindControlType windControlType) {
 		BuyRecord buyRecord = findBuyRecord(id);
-		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION) {
+		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION && buyRecord.getState() != BuyRecordState.SELLAPPLY) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
 		if (investorId != null && windControlType != WindControlType.PUBLISHERAPPLY) {

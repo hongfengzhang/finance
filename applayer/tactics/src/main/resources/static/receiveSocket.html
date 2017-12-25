@@ -7,7 +7,7 @@
 <script src="js/stomp.js"></script>
 <script type="text/javascript" src="js/jquery.min.js"></script>
 <script>    
-var s = new SockJS('/tactics/socket');    
+var s = new SockJS('/socket');    
 var stompClient = Stomp.over(s);    
 stompClient.connect({}, function () {
 	console.log('notice socket connected!');

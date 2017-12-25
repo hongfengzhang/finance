@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "publisher/publisher", path = "paymentorder", configuration = FeignConfiguration.class)
+@FeignClient(name = "publisher", path = "paymentorder", configuration = FeignConfiguration.class)
 @Primary
 public interface PaymentOrderService extends PaymentOrderInterface {
 

@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.publisher.PublisherInterface;
  * @author Created by yuyidi on 2017/11/3.
  * @desc
  */
-@FeignClient(name = "publisher/publisher", path = "publisher", fallback = PublisherServiceFallback.class,
+@FeignClient(name = "publisher", path = "publisher", fallback = PublisherServiceFallback.class,
         configuration = FeignConfiguration.class)
 @Primary
 public interface PublisherService extends PublisherInterface {

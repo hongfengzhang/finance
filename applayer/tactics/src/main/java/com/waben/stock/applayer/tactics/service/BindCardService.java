@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Primary;
  *
  * @author luomengan
  */
-@FeignClient(name = "publisher/publisher", path = "bindCard", fallback = BindCardServiceFallback.class, configuration
+@FeignClient(name = "publisher", path = "bindCard", fallback = BindCardServiceFallback.class, configuration
         = FeignConfiguration.class)
 @Primary
 public interface BindCardService extends BindCardInterface {
