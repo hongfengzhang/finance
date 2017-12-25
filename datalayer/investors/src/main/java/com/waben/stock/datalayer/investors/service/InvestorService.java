@@ -20,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -41,7 +42,6 @@ public class InvestorService {
     private InvestorDao investorDao;
     @Autowired
     private SecuritiesInterface securitiesInterface;
-
 
     /***
      * @author yuyidi 2017-11-30 19:37:27

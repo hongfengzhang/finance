@@ -80,6 +80,19 @@ public class JacksonUtil {
 		return null;
 	}
 
+	public static <T> T decode(String json, Class<?> collectionClass, Class<?>... elementClasses) {
+		try {
+			return objectMapper.readValue(json, objectMapper.getTypeFactory().constructParametricType(collectionClass, elementClasses));
+		} catch (JsonParseException e) {
+			logger.error("json decode 集合 解析异常{}", e);
+		} catch (JsonMappingException e) {
+			logger.error("json decode 集合  mapping 异常{}", e);
+		} catch (IOException e) {
+			logger.error("json decode 集合  io 异常{}", e);
+		}
+		return null;
+	}
+
 	/**
 	 *
 	 * @Title: encode
