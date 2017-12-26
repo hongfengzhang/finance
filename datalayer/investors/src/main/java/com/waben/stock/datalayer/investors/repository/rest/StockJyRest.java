@@ -29,30 +29,27 @@ import java.util.Map;
 public class StockJyRest extends StockResponseHander implements SecuritiesInterface {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    @Value("${securities.context")
+    @Value("${securities.context}")
     private String context;
 
     //券商资金账户登录
-    private String loginPath = context+"/login";
+    private String loginPath = "/login";
     //券商资金账户股东账户查询
-    private String holderPath = context+"/holder";
+    private String holderPath = "/holder";
     //券商鼓动账户下单
-    private String entrustPath = context+"/entrust";
+    private String entrustPath ="/entrust";
     //券商委托单查询
-    private String queryEntrusPath = context+"/qryentrust";
+    private String queryEntrusPath = "/qryentrust";
     //资金信息
-    private String moneyPath = context+"/money";
+    private String moneyPath = "/money";
 
     private HttpHeaders headers = new HttpHeaders();
     {
-        if (StringUtils.isEmpty(context)) {
-            logger.error("券商账户地址为空");
-        }
         headers.add("broker_id","1001");
     }
 
     public StockLoginInfo login(String account, String password) {
-        String loginUrl = loginPath+"?account_content={account_content}&password={password}";
+        String loginUrl =context+ loginPath+"?account_content={account_content}&password={password}";
         Map<String, String> params = new HashMap<>();
         params.put("account_content", account);
         params.put("password", password);
@@ -65,7 +62,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
     }
 
     public StockMoney money(String token) {
-        String moneyUrl = moneyPath + "?token={token}";
+        String moneyUrl =context+ moneyPath + "?token={token}";
         Map<String, String> params = new HashMap<>();
         params.put("token", token);
         String result = HttpRest.get(moneyUrl, String.class, params);
@@ -84,7 +81,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
      * @description 获取资金账户的股东账户列表
      */
     public List<StockHolder> retrieveStockHolder(String token) {
-        String holderUrl = holderPath + "?token={token}";
+        String holderUrl = context+ holderPath + "?token={token}";
         Map<String, String> params = new HashMap<>();
         params.put("token", token);
         String result = HttpRest.get(holderUrl, String.class, params);
@@ -107,7 +104,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
      */
     public String buyRecordEntrust(SecuritiesStockEntrust securitiesStockEntrust, String token, String
             stockAccount, String type,EntrustType entrustType) {
-        String entrustUrl = entrustPath + "?token={token}&" +
+        String entrustUrl =context+ entrustPath + "?token={token}&" +
                 "exchange_type={exchange_type}&" +
                 "stock_account={stock_account}&" +
                 "stock_code={stock_code}&" +
@@ -142,7 +139,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
      * @description 查询股票委托情况
      */
     public List<StockEntrustQueryResult> queryStockByEntrust(String token, String entrust) {
-        String queryEntrusUrl = queryEntrusPath + "?token={token}&" +
+        String queryEntrusUrl =context+ queryEntrusPath + "?token={token}&" +
                 "entrust_no={entrust_no}&" +
                 "request_num=50";
         Map<String, String> params = new HashMap<>();
