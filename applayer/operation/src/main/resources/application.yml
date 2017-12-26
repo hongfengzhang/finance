@@ -1,5 +1,6 @@
 server:
   port: 8082
+  context-path: /operation
 management:
   port: 3032
   context-path: /turbine
