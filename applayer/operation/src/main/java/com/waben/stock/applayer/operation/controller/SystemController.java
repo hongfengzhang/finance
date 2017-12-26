@@ -19,6 +19,10 @@ public class SystemController {
     @Autowired
     private MenuBusiness systemManageBusiness;
 
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
 
     @GetMapping("/index")
     public String index(Model model) {
