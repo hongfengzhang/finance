@@ -29,10 +29,10 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${securities.context")
+    @Value("${securities.context}")
     private String context;
     //券商委托单查询
-    private String queryEntrustPath = context+"/qryentrust";
+    private String queryEntrustPath = "/qryentrust";
 
     private HttpHeaders headers = new HttpHeaders();
     {
@@ -40,7 +40,7 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
     }
 
     public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo) {
-        String queryEntrusUrl = queryEntrustPath + "?token={token}&entrust_no={entrust_no}";
+        String queryEntrusUrl = context+ queryEntrustPath + "?token={token}&entrust_no={entrust_no}";
         Map<String, String> params = new HashMap<>();
         params.put("token", tradeSession);
         params.put("entrust_no", entrustNo);
