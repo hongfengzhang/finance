@@ -30,4 +30,9 @@ public class PublisherController {
         PageInfo<PublisherDto> response = publisherBusiness.pages(publisherQuery);
         return new Response<>(response);
     }
+    
+    @RequestMapping("/view")
+    public String view(){
+    	return "publisher/manage/view";
+    }
 }
