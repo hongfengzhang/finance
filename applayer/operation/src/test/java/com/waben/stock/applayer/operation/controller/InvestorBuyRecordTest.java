@@ -19,7 +19,7 @@ public class InvestorBuyRecordTest extends OperationApplicationTests {
 //    @Test
     public void investorBuyBuyrecordEntrust() throws Exception {
         MvcResult result = mvc.perform(MockMvcRequestBuilders.post
-                ("/manage/{manage}/buyrecord/{buyrecord}/entrustApplyBuyIn", "1", "1")).andExpect(status().isOk()).andReturn();
+                ("/buyrecord/{buyrecord}/buyIn", "1", "1")).andExpect(status().isOk()).andReturn();
         System.out.println(result.getResponse().getContentAsString());
     }
 

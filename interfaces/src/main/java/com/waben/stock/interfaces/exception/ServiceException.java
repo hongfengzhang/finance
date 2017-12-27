@@ -32,7 +32,7 @@ public class ServiceException extends RuntimeException {
 		return type;
 	}
 
-	public String getCustomMessage() {
+	public String getMessage() {
 		return message;
 	}
 	
