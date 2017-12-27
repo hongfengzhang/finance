@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.tactics.business.BindCardBusiness;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.business.PaymentBusiness;
+import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.czpay.config.CzBankType;
 import com.waben.stock.applayer.tactics.dto.payment.PayRequest;
 import com.waben.stock.applayer.tactics.dto.payment.UnionPayRequest;
@@ -27,6 +28,7 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.BankType;
 import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
@@ -57,6 +59,9 @@ public class PaymentController {
 
 	@Autowired
 	private CapitalAccountBusiness capitalAccountBusiness;
+	
+	@Autowired
+	private PublisherBusiness publisherBusiness;
 
 	@GetMapping("/recharge")
 	@ApiOperation(value = "充值", notes = "paymentType:1银联支付,2扫码支付")
@@ -91,6 +96,11 @@ public class PaymentController {
 	@ApiOperation(value = "提现", notes = "paymentType:1银联支付")
 	public Response<String> withdrawals(@RequestParam(required = true) BigDecimal amount,
 			@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
+		// 判断是否为测试用户，测试用户不能提现
+		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+		if(publisher.getIsTest() != null && publisher.getIsTest()) {
+			throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
+		}
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();
@@ -134,6 +144,7 @@ public class PaymentController {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	@PostMapping("/czwithholdcallback")
 	@ApiOperation(value = "橙子代扣后台回调")
 	public void czWithholdCallback(HttpServletRequest request, HttpServletResponse httpResp) throws IOException {

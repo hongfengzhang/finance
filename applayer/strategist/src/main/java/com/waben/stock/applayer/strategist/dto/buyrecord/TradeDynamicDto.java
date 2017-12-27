@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.strategist.dto.buyrecord;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class TradeDynamicDto {
 
@@ -28,6 +29,14 @@ public class TradeDynamicDto {
 	 * 盈利
 	 */
 	private BigDecimal profit;
+	/**
+	 * 买入时间或者卖出时间
+	 */
+	private Date tradeTime;
+	/**
+	 * 买入价格或者卖出价格
+	 */
+	private BigDecimal tradePrice;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -78,6 +87,22 @@ public class TradeDynamicDto {
 
 	public void setProfit(BigDecimal profit) {
 		this.profit = profit;
+	}
+
+	public Date getTradeTime() {
+		return tradeTime;
+	}
+
+	public void setTradeTime(Date tradeTime) {
+		this.tradeTime = tradeTime;
+	}
+
+	public BigDecimal getTradePrice() {
+		return tradePrice;
+	}
+
+	public void setTradePrice(BigDecimal tradePrice) {
+		this.tradePrice = tradePrice;
 	}
 
 }

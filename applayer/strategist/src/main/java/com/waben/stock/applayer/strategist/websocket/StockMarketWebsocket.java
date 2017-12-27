@@ -7,6 +7,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.strategist.dto.system.StockMarketExponentDto;
+import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 
 @Component
 public class StockMarketWebsocket {
@@ -23,6 +24,18 @@ public class StockMarketWebsocket {
 	 */
 	public void sendStockMarketIndex(List<StockMarketExponentDto> stockMarketIndexList) {
 		template.convertAndSend(WebsocketDestination.StockMarketIndex.getDestination(), stockMarketIndexList);
+	}
+
+	/**
+	 * 推送股票分时数据
+	 */
+	public void sendStockTimeLine(List<StockTimeLine> stockTimeLineList) {
+		/*
+		template.convertAndSend("/user/" + stockTimeLineList.get(0).getInstrumentID()
+				+ WebsocketDestination.StockTimeLine.getDestination(), stockTimeLineList);
+		*/
+		template.convertAndSendToUser(stockTimeLineList.get(0).getInstrumentID(),
+				WebsocketDestination.StockTimeLine.getDestination(), stockTimeLineList);
 	}
 
 }

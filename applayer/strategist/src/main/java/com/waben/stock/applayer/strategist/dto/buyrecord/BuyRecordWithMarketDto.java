@@ -36,6 +36,14 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 	 * 涨跌幅度
 	 */
 	private BigDecimal upDropSpeed;
+	/**
+	 * 递延天数
+	 */
+	private Integer deferredDays;
+	/**
+	 * 递延费
+	 */
+	private BigDecimal deferredCharges;
 
 	public String getStockName() {
 		return stockName;
@@ -82,11 +90,32 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 	}
 
 	public BigDecimal getProfitOrLoss() {
-		if (profitOrLoss == null && getLastPrice() != null) {
-			BigDecimal price = getBuyingPrice() != null ? getBuyingPrice() : getDelegatePrice();
-			return new BigDecimal(getNumberOfStrand()).multiply(getLastPrice().subtract(price));
+		if (profitOrLoss == null && getLastPrice() != null && getBuyingPrice() != null) {
+			return new BigDecimal(getNumberOfStrand()).multiply(getLastPrice().subtract(getBuyingPrice()));
 		}
-		return profitOrLoss;
+		return profitOrLoss != null ? profitOrLoss : new BigDecimal(0);
+	}
+
+	public Integer getDeferredDays() {
+		if (deferredDays == null) {
+			return 0;
+		}
+		return deferredDays;
+	}
+
+	public void setDeferredDays(Integer deferredDays) {
+		this.deferredDays = deferredDays;
+	}
+
+	public BigDecimal getDeferredCharges() {
+		if (deferredCharges == null) {
+			return new BigDecimal(0);
+		}
+		return deferredCharges;
+	}
+
+	public void setDeferredCharges(BigDecimal deferredCharges) {
+		this.deferredCharges = deferredCharges;
 	}
 
 }

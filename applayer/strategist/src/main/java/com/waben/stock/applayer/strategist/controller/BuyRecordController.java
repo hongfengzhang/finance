@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.strategist.business.BuyRecordBusiness;
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.strategist.business.HolidayBusiness;
+import com.waben.stock.applayer.strategist.business.StockBusiness;
 import com.waben.stock.applayer.strategist.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.strategist.dto.buyrecord.TradeDynamicDto;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
@@ -47,6 +49,18 @@ public class BuyRecordController {
 	@Autowired
 	private CapitalAccountBusiness capitalAccountBusiness;
 
+	@Autowired
+	private HolidayBusiness holidayBusiness;
+
+	@Autowired
+	private StockBusiness stockBusiness;
+
+	@GetMapping("/isTradeTime")
+	@ApiOperation(value = "是否为交易时间段")
+	public Response<Boolean> isTradeTime() {
+		return new Response<>(holidayBusiness.isTradeTime());
+	}
+
 	@PostMapping("/buy")
 	@ApiOperation(value = "点买")
 	public Response<BuyRecordWithMarketDto> buy(@RequestParam(required = true) Long strategyTypeId,
@@ -56,20 +70,39 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
 			@RequestParam(required = true) String paymentPassword) {
-		// TODO 检查参数是否合理
-
-		// 检查余额
-		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
-		if (serviceFee.add(reserveFund).compareTo(capitalAccount.getAvailableBalance()) > 0) {
-			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+		// 检查交易时间段
+		boolean isTradeTime = holidayBusiness.isTradeTime();
+		if (!isTradeTime) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+		}
+		// 判断该股票是否已经停牌
+		boolean isSuspension = stockBusiness.isSuspension(stockCode);
+		if (isSuspension) {
+			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		}
+		// 检查参数是否合理
+		if (delegatePrice.compareTo(new BigDecimal(0)) <= 0) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+		}
+		if (!(profitPoint.abs().compareTo(new BigDecimal(0)) > 0
+				&& profitPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+		}
+		if (!(lossPoint.abs().compareTo(new BigDecimal(0)) > 0 && lossPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
 		}
 		// 验证支付密码
+		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();
 		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
 		}
 		if (!storePaymentPassword.equals(paymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
+		}
+		// 检查余额
+		if (serviceFee.add(reserveFund).compareTo(capitalAccount.getAvailableBalance()) > 0) {
+			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();

@@ -33,6 +33,10 @@ public class ExceptionConstant {
 	public static final String BANKCARD_ALREADY_BIND_EXCEPTION = "2005";
 	// 该股票已收藏，不能重复收藏
 	public static final String STOCK_ALREADY_FAVORITE_EXCEPTION = "2006";
+	// 原始密码不匹配
+	public static final String ORIGINAL_PASSWORD_MISMATCH_EXCEPTION = "2007";
+	// 手机号不匹配
+	public static final String PHONE_MISMATCH_EXCEPTION = "2008";
 
 	/* 业务异常 */
 	// 系统管理业务异常
@@ -83,6 +87,8 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_USERNOTDEFERRED_EXCEPTION = "6017";
 	// 该点买记录已经递延过了，不能重复递延
 	public static final String BUYRECORD_ALREADY_DEFERRED_EXCEPTION = "6018";
+	// 当前用户为测试用户，不能进行提现操作
+	public static final String TESTUSER_NOWITHDRAWALS_EXCEPTION = "6019";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

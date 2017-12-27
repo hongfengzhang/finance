@@ -69,7 +69,7 @@ public class CapitalAccountBusiness {
 		if (content != null && content.size() > 0) {
 			List<BuyRecordWithMarketDto> marketContent = buyRecordBusiness.wrapMarketInfo(content);
 			for (BuyRecordWithMarketDto market : marketContent) {
-				result.add(market.getProfitOrLoss());
+				result = result.add(market.getProfitOrLoss());
 			}
 		}
 
@@ -86,7 +86,7 @@ public class CapitalAccountBusiness {
 		List<BuyRecordDto> content = response.getContent();
 		if (content != null && content.size() > 0) {
 			for (BuyRecordDto buyRecord : content) {
-				result.add(buyRecord.getApplyAmount());
+				result = result.add(buyRecord.getApplyAmount());
 			}
 		}
 
@@ -109,7 +109,7 @@ public class CapitalAccountBusiness {
 		List<BuyRecordDto> content = response.getContent();
 		if (content != null && content.size() > 0) {
 			for (BuyRecordDto buyRecord : content) {
-				result.add(buyRecord.getApplyAmount());
+				result = result.add(buyRecord.getApplyAmount());
 			}
 		}
 

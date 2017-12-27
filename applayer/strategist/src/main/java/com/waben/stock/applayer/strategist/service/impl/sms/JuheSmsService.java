@@ -97,7 +97,7 @@ public class JuheSmsService implements SmsService {
 			JuheResponseBean responseBean = objectMapper.readValue(response, JuheResponseBean.class);
 			if (responseBean.getError_code() == 0) {
 				if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
-						|| smsType == SmsType.BindCardCode) {
+						|| smsType == SmsType.BindCardCode || smsType == SmsType.ModifyPaymentPwdCode) {
 					SmsCache.cache(smsType, phone, paramValues.get(0));
 				}
 			} else if (responseBean.getError_code() == 205401) {

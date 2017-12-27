@@ -2,9 +2,13 @@ package com.waben.stock.interfaces.pojo.query;
 
 import java.util.Date;
 
+import com.waben.stock.interfaces.enums.CapitalFlowType;
+
 public class CapitalFlowQuery extends PageAndSortQuery {
 
 	private Long publisherId;
+
+	private CapitalFlowType[] types;
 
 	private Date startTime;
 
@@ -42,6 +46,14 @@ public class CapitalFlowQuery extends PageAndSortQuery {
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public CapitalFlowType[] getTypes() {
+		return types;
+	}
+
+	public void setTypes(CapitalFlowType[] types) {
+		this.types = types;
 	}
 
 }

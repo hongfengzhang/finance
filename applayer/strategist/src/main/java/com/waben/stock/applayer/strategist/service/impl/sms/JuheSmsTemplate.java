@@ -8,13 +8,15 @@ import com.waben.stock.interfaces.enums.SmsType;
 
 public enum JuheSmsTemplate implements CommonalityEnum {
 
-	RegistVerificationCode("1", "56142", "注册验证码", new String[] { "code" }),
+	RegistVerificationCode("1", "57093", "注册验证码", new String[] { "code" }),
 
-	ModifyPasswordCode("2", "56142", "修改密码验证码", new String[] { "code" }),
+	ModifyPasswordCode("2", "57093", "修改密码验证码", new String[] { "code" }),
 
-	BindCardCode("3", "56142", "绑定银行卡验证码", new String[] { "code" }),
+	BindCardCode("3", "57093", "绑定银行卡验证码", new String[] { "code" }),
 
-	StrategyWarning("4", "50597", "点买持仓提醒", new String[] { "stgyName", "delayDay" });
+	StrategyWarning("4", "50597", "点买持仓提醒", new String[] { "stgyName", "delayDay" }),
+	
+	ModifyPaymentPwdCode("5", "57093", "修改支付密码验证码", new String[] { "code" });
 
 	private String index;
 

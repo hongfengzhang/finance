@@ -12,10 +12,12 @@ import com.waben.stock.applayer.strategist.dto.buyrecord.TradeDynamicDto;
 import com.waben.stock.applayer.strategist.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.strategist.service.BuyRecordService;
+import com.waben.stock.applayer.strategist.service.DeferredRecordService;
 import com.waben.stock.applayer.strategist.service.PublisherService;
 import com.waben.stock.applayer.strategist.service.SettlementService;
 import com.waben.stock.applayer.strategist.service.StockService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -45,6 +47,9 @@ public class BuyRecordBusiness {
 	@Autowired
 	private StockService stockService;
 
+	@Autowired
+	private DeferredRecordService deferredRecordService;
+
 	public BuyRecordDto findById(Long id) {
 		Response<BuyRecordDto> response = buyRecordService.fetchBuyRecord(id);
 		if ("200".equals(response.getCode())) {
@@ -54,6 +59,21 @@ public class BuyRecordBusiness {
 	}
 
 	public BuyRecordDto buy(BuyRecordDto buyRecordDto) {
+		// 获取股票名称
+		Response<StockDto> stock = stockService.fetchWithExponentByCode(buyRecordDto.getStockCode());
+		if ("200".equals(stock.getCode())) {
+			buyRecordDto.setStockName(stock.getResult().getName());
+		} else {
+			throw new ServiceException(stock.getCode());
+		}
+		// 获取策略发布人
+		Response<PublisherDto> publisher = publisherService.fetchById(buyRecordDto.getPublisherId());
+		if ("200".equals(publisher.getCode())) {
+			buyRecordDto.setPublisherPhone(publisher.getResult().getPhone());
+		} else {
+			throw new ServiceException(stock.getCode());
+		}
+		// 请求点买
 		Response<BuyRecordDto> response = buyRecordService.addBuyRecord(buyRecordDto);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -62,6 +82,7 @@ public class BuyRecordBusiness {
 	}
 
 	public PageInfo<BuyRecordDto> pages(BuyRecordQuery buyRecordQuery) {
+
 		Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByQuery(buyRecordQuery);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -79,6 +100,13 @@ public class BuyRecordBusiness {
 					BuyRecordWithMarketDto buyRecord = wrapMarketInfo(settlement.getBuyRecord());
 					buyRecord.setProfitOrLoss(settlement.getProfitOrLoss());
 					buyRecord.setPublisherProfitOrLoss(settlement.getPublisherProfitOrLoss());
+					DeferredRecordDto deferredRecordDto = deferredRecordService
+							.fetchByPublisherIdAndBuyRecordId(buyRecord.getPublisherId(), buyRecord.getId())
+							.getResult();
+					if (deferredRecordDto != null) {
+						buyRecord.setDeferredDays(deferredRecordDto.getCycle());
+						buyRecord.setDeferredCharges(deferredRecordDto.getFee());
+					}
 					content.add(buyRecord);
 				}
 			}
@@ -133,8 +161,8 @@ public class BuyRecordBusiness {
 		Response<PageInfo<SettlementDto>> sResponse = settlementService.pagesByQuery(sQuery);
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
-					new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
-							BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
+					new BuyRecordState[] { BuyRecordState.HOLDPOSITION, BuyRecordState.SELLAPPLY,
+							BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
 
 			int total = sResponse.getResult().getContent().size() + pageInfo.getContent().size();
@@ -151,31 +179,22 @@ public class BuyRecordBusiness {
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
 					inner.setStockCode(settlement.getBuyRecord().getStockCode());
+					inner.setStockName(settlement.getBuyRecord().getStockName());
+					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
+					inner.setTradePrice(settlement.getBuyRecord().getSellingPrice());
+					inner.setTradeTime(settlement.getBuyRecord().getSellingTime());
 					i--;
 				} else {
 					BuyRecordDto buyRecord = pageInfo.getContent().get(bSize - j);
 					inner.setTradeType(1);
 					inner.setPublisherId(buyRecord.getPublisherId());
 					inner.setStockCode(buyRecord.getStockCode());
+					inner.setStockName(buyRecord.getStockName());
+					inner.setPhone(buyRecord.getPublisherPhone());
+					inner.setTradePrice(buyRecord.getBuyingPrice());
+					inner.setTradeTime(buyRecord.getBuyingTime());
 					j--;
-				}
-				// TODO 获取Phone 和 StockName，下面的实现效率太低，要优化，使用sql查询？
-				Response<PublisherDto> pResponse = publisherService.fetchById(inner.getPublisherId());
-				if ("200".equals(pResponse.getCode())) {
-					if (pResponse.getResult() != null) {
-						inner.setPhone(pResponse.getResult().getPhone());
-					}
-				} else {
-					throw new ServiceException(pResponse.getCode());
-				}
-				Response<StockDto> stockResponse = stockService.fetchWithExponentByCode(inner.getStockCode());
-				if ("200".equals(stockResponse.getCode())) {
-					if (stockResponse.getResult() != null) {
-						inner.setStockName(stockResponse.getResult().getName());
-					}
-				} else {
-					throw new ServiceException(stockResponse.getCode());
 				}
 				content.add(inner);
 			}
