@@ -106,8 +106,6 @@ public class StockBusiness {
 			codes.add("000004");
 			codes.add("000005");
 			codes.add("000008");
-			codes.add("000009");
-			codes.add("000010");
 
 			List<StockMarket> list = stockMarketService.listStockMarket(codes);
 			content = convertStockRecommend(list);

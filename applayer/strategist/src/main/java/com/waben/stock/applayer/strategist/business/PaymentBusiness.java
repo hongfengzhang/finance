@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 import org.slf4j.Logger;
@@ -243,7 +245,11 @@ public class PaymentBusiness {
 		} catch (Exception ex) {
 			stateStr = "支付异常";
 		}
-		return CzPayConfig.webReturnUrl + "?paymentNo" + paymentNo + "&code=" + code + "&message=" + stateStr;
+		try {
+			return CzPayConfig.webReturnUrl + "?paymentNo" + paymentNo + "&code=" + code + "&message=" + URLEncoder.encode(stateStr, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("utf-8 not supported?");
+		}
 	}
 
 	public void czWithholdCallback(String withdrawalsNo, WithdrawalsState withdrawalsState, String thirdRespCode,

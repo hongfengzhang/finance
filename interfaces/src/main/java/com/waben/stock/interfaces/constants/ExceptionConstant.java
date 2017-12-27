@@ -33,6 +33,10 @@ public class ExceptionConstant {
 	public static final String BANKCARD_ALREADY_BIND_EXCEPTION = "2005";
 	// 该股票已收藏，不能重复收藏
 	public static final String STOCK_ALREADY_FAVORITE_EXCEPTION = "2006";
+	// 原始密码不匹配
+	public static final String ORIGINAL_PASSWORD_MISMATCH_EXCEPTION = "2007";
+	// 手机号不匹配
+	public static final String PHONE_MISMATCH_EXCEPTION = "2008";
 
 	/* 业务异常 */
 	// 系统管理业务异常

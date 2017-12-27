@@ -44,6 +44,9 @@ public class CapitalFlowService {
 					predicateList
 							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
 				}
+				if (query.getTypes() != null && query.getTypes().length > 0) {
+					predicateList.add(root.get("type").in(query.getTypes()));
+				}
 				if (query.getStartTime() != null) {
 					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("occurrenceTime").as(Date.class),
 							query.getStartTime()));

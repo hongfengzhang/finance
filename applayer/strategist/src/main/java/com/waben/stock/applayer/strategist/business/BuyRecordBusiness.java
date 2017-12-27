@@ -161,8 +161,8 @@ public class BuyRecordBusiness {
 		Response<PageInfo<SettlementDto>> sResponse = settlementService.pagesByQuery(sQuery);
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
-					new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
-							BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
+					new BuyRecordState[] { BuyRecordState.HOLDPOSITION, BuyRecordState.SELLAPPLY,
+							BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
 
 			int total = sResponse.getResult().getContent().size() + pageInfo.getContent().size();
@@ -182,6 +182,8 @@ public class BuyRecordBusiness {
 					inner.setStockName(settlement.getBuyRecord().getStockName());
 					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
+					inner.setTradePrice(settlement.getBuyRecord().getSellingPrice());
+					inner.setTradeTime(settlement.getBuyRecord().getSellingTime());
 					i--;
 				} else {
 					BuyRecordDto buyRecord = pageInfo.getContent().get(bSize - j);
@@ -190,6 +192,8 @@ public class BuyRecordBusiness {
 					inner.setStockCode(buyRecord.getStockCode());
 					inner.setStockName(buyRecord.getStockName());
 					inner.setPhone(buyRecord.getPublisherPhone());
+					inner.setTradePrice(buyRecord.getBuyingPrice());
+					inner.setTradeTime(buyRecord.getBuyingTime());
 					j--;
 				}
 				content.add(inner);
