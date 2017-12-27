@@ -24,11 +24,6 @@ public class SystemController {
         return "login";
     }
 
-//    @GetMapping("/")
-//    public String root() {
-//        return "decorator";
-//    }
-
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("userName", SecurityAccount.current().getUsername());
