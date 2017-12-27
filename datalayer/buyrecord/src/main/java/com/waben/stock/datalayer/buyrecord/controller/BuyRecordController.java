@@ -125,21 +125,21 @@ public class BuyRecordController implements BuyRecordInterface {
     }
 
     @Override
-    public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(StrategyPostedQuery strategyPostedQuery) {
+    public Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(@RequestBody StrategyPostedQuery strategyPostedQuery) {
         Page<BuyRecord> page = buyRecordService.pagesByPostedQuery(strategyPostedQuery);
         PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
         return new Response<>(result);
     }
 
     @Override
-    public Response<PageInfo<BuyRecordDto>> pagesByHoldingQuery(StrategyHoldingQuery strategyHoldingQuery) {
+    public Response<PageInfo<BuyRecordDto>> pagesByHoldingQuery(@RequestBody StrategyHoldingQuery strategyHoldingQuery) {
         Page<BuyRecord> page = buyRecordService.pagesByHoldingQuery(strategyHoldingQuery);
         PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
         return new Response<>(result);
     }
 
     @Override
-    public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery strategyUnwindQuery) {
+    public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(@RequestBody StrategyUnwindQuery strategyUnwindQuery) {
         Page<BuyRecord> page = buyRecordService.pagesByUnwindQuery(strategyUnwindQuery);
         PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
         return new Response<>(result);

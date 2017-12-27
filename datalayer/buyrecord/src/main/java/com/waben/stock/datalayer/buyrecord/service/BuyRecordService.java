@@ -333,7 +333,7 @@ public class BuyRecordService {
 
 	public Page<BuyRecord> pagesByPostedQuery(final StrategyPostedQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
-		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+		Page<BuyRecord> pages = buyRecordDao.page(	new Specification<BuyRecord>() {
 			@Override
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {

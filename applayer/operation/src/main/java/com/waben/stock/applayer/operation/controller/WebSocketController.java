@@ -59,6 +59,7 @@ public class WebSocketController {
                 StockResponseMessage stockResponseMessage = new StockResponseMessage();
                 stockResponseMessage.setCode(stockMarket.getInstrumentId());
                 stockResponseMessage.setPrice(String.valueOf(stockMarket.getLastPrice()));
+                stockResponseMessage.setEntrustPrice(String.valueOf(stockMarket.getUpLimitPrice()));
                 stockMarkets.add(stockResponseMessage);
             }
             messagingTemplate.convertAndSendToUser(entry.getKey(), "/callback", stockMarkets);
