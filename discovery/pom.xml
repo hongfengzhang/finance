@@ -8,10 +8,10 @@
         <groupId>com.waben.stock</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>discoverymaster</artifactId>
+    <artifactId>discovery</artifactId>
     <packaging>jar</packaging>
 
-    <name>discoverymaster</name>
+    <name>discovery</name>
     <description>配资平台服务发现</description>
 
     <dependencies>
