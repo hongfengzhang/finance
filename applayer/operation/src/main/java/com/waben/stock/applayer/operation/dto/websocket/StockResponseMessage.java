@@ -4,6 +4,7 @@ public class StockResponseMessage {
     private String code;
     private String price;
     private String time;
+    private String entrustPrice;
 
     public StockResponseMessage() {
     }
@@ -36,5 +37,13 @@ public class StockResponseMessage {
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public String getEntrustPrice() {
+        return entrustPrice;
+    }
+
+    public void setEntrustPrice(String entrustPrice) {
+        this.entrustPrice = entrustPrice;
     }
 }
