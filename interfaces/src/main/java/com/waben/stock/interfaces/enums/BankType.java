@@ -35,7 +35,7 @@ public enum BankType implements CommonalityEnum {
 
 	XYYH("15", "309", "兴业银行"),
 
-	PFYH("16", "310", "上海浦东发展银行"),
+	PFYH("16", "310", "浦发银行"),
 
 	CSSYYH("17", "313", "城市商业银行"),
 
@@ -47,7 +47,7 @@ public enum BankType implements CommonalityEnum {
 
 	BHYH("21", "318", "渤海银行"),
 
-	YZCX("22", "403", "中国邮政储蓄银行"),
+	YZCX("22", "403", "邮政储蓄银行"),
 
 	PAYH("23", "783", "平安银行"),
 

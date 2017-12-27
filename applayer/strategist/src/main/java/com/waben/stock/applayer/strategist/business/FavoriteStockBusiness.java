@@ -56,10 +56,9 @@ public class FavoriteStockBusiness {
 
 	public void top(Long publisherId, String stockCodes) {
 		Response<Void> response = favoriteStockService.top(publisherId, stockCodes);
-		if (response.getCode().equals("200")) {
+		if (!response.getCode().equals("200")) {
 			throw new ServiceException(response.getCode());
 		}
-
 	}
 
 	public List<FavoriteStockWithMarketDto> listsByPublisherId(Long publisherId) {

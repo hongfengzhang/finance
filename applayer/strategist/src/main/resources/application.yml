@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: 8083
 management:
   port: 3034
   context-path: /turbine

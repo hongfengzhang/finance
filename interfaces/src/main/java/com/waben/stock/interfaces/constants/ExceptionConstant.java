@@ -83,6 +83,8 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_USERNOTDEFERRED_EXCEPTION = "6017";
 	// 该点买记录已经递延过了，不能重复递延
 	public static final String BUYRECORD_ALREADY_DEFERRED_EXCEPTION = "6018";
+	// 当前用户为测试用户，不能进行提现操作
+	public static final String TESTUSER_NOWITHDRAWALS_EXCEPTION = "6019";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
