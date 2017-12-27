@@ -40,5 +40,11 @@ public class CnapsController {
 		BankInfoDto bankInfo = cnapsBusiness.findBankInfo(bankCard);
 		return new Response<>(cnapsBusiness.findByCityCodeAndClsCode(cityCode, bankInfo.getBankCode()));
 	}
+	
+	@GetMapping("/bankinfo/pclists")
+	@ApiOperation(value = "获取PC端银联支付支持的银行列表")
+	public Response<List<BankInfoDto>> pcBankinfo() {
+		return new Response<>(cnapsBusiness.pcBankinfo());
+	}
 
 }

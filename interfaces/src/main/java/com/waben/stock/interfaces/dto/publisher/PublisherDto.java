@@ -34,6 +34,10 @@ public class PublisherDto {
 	 */
 	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
+	/**
+	 * 是否为测试用户
+	 */
+	private Boolean isTest;
 
 	public Long getId() {
 		return id;
@@ -89,6 +93,14 @@ public class PublisherDto {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

@@ -16,7 +16,11 @@ import com.waben.stock.applayer.strategist.service.CircularsService;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
+import com.waben.stock.interfaces.enums.BannerForwardCategory;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.BannerQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -51,7 +55,16 @@ public class SystemController {
 	@GetMapping("/getEnabledBannerList")
 	@ApiOperation(value = "获取轮播图列表")
 	public Response<List<BannerDto>> getBannerList() {
-		return bannerService.fetchBanners(true);
+		BannerQuery query = new BannerQuery();
+		query.setPage(0);
+		query.setSize(10);
+		query.setCategory(BannerForwardCategory.PC);
+		Response<PageInfo<BannerDto>> pages = bannerService.pages(query);
+		if ("200".equals(pages.getCode())) {
+			return new Response<>(pages.getResult().getContent());
+		} else {
+			throw new ServiceException(pages.getCode());
+		}
 	}
 
 	@GetMapping("/getEnabledCircularsList")
