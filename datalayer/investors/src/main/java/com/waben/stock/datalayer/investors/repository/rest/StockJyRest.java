@@ -65,7 +65,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         String moneyUrl =context+ moneyPath + "?token={token}";
         Map<String, String> params = new HashMap<>();
         params.put("token", token);
-        String result = HttpRest.get(moneyUrl, String.class, params);
+        String result = HttpRest.get(moneyUrl, String.class, params,headers);
         logger.info("券商资金查询,请求地址:{},请求结果:{}", moneyUrl, result);
         StockResponse<StockMoney> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockMoney>>() {
@@ -120,7 +120,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         params.put("entrust_amount", String.valueOf(securitiesStockEntrust.getEntrustNumber()));
         params.put("entrust_price", String.valueOf(securitiesStockEntrust.getEntrustPrice()));
         params.put("entrust_bs", entrustType.getType());
-        String result = HttpRest.get(entrustUrl, String.class, params);
+        String result = HttpRest.get(entrustUrl, String.class, params,headers);
         logger.info("券商委托下单,请求地址:{},请求结果:{}", entrustUrl, result);
         StockResponse<StockEntrustResult> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockEntrustResult>>() {
@@ -145,7 +145,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         Map<String, String> params = new HashMap<>();
         params.put("token", token);
         params.put("entrust_no", entrust);
-        String result = HttpRest.get(queryEntrusUrl, String.class, params);
+        String result = HttpRest.get(queryEntrusUrl, String.class, params,headers);
         StockResponse<StockEntrustQueryResult> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockEntrustQueryResult>>() {
                 });

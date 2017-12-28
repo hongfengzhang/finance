@@ -19,8 +19,8 @@ turbine:
     clusterConfig: finance
   cluster-name-expression: metadata['cluster']
   instanceUrlSuffix:
-    finance: '/turbine/hystrix.stream'
+    finance: 'turbine/hystrix.stream'
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://discoverymaster:8882/eureka
+      defaultZone: @discovery.server@

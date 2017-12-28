@@ -46,7 +46,7 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
         params.put("entrust_no", entrustNo);
         String result = null;
         try {
-            result = HttpRest.get(queryEntrusUrl, String.class, params);
+            result = HttpRest.get(queryEntrusUrl, String.class, params,headers);
         } catch (Exception ex) {
             logger.info("委托单查询异常:{}", ex.getMessage());
         }
