@@ -1,20 +1,16 @@
 package com.waben.stock.risk.init;
 
-import com.netflix.discovery.converters.Auto;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.risk.business.BuyRecordBusiness;
 import com.waben.stock.risk.business.StockBusiness;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
-import com.waben.stock.risk.service.BuyRecordService;
+import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,19 +21,19 @@ import java.util.List;
  */
 @Component
 //@Order(Ordered.LOWEST_PRECEDENCE+100)
-public class StockBuyLockInitialize implements CommandLineRunner {
+public class StockSellOutInitialize implements CommandLineRunner {
 
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
     @Autowired
     private StockBusiness stockBusiness;
     @Autowired
-    private StockApplyEntrustBuyInContainer stockApplyEntrustBuyInContainer;
+    private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
     Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void run(String... args) throws Exception {
-        List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithBuyInLock();
-        logger.info("获取买入锁定的点买交易记录个数：{}", buyRecords.size());
+        List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithSellOutLock();
+        logger.info("获取卖出锁定的点买交易记录个数：{}", buyRecords.size());
         for (BuyRecordDto buyRecord : buyRecords) {
             SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
@@ -54,7 +50,7 @@ public class StockBuyLockInitialize implements CommandLineRunner {
             securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
             securitiesStockEntrust.setEntrustNo(buyRecord.getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
-            stockApplyEntrustBuyInContainer.add(securitiesStockEntrust);
+            stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
         }
     }
 }

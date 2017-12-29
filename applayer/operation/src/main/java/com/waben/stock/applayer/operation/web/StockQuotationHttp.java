@@ -32,7 +32,7 @@ public class StockQuotationHttp {
         String params = codes.toString().substring(0, codes.toString().length() - 1);
         String url = context + "/list.do?codes=" + params;
         String resonse = HttpRest.get(url, String.class);
-        Resonse<StockMarket> result = JacksonUtil.decode(resonse, List.class, StockMarket.class);
+        Resonse<StockMarket> result = JacksonUtil.decode(resonse, Resonse.class, StockMarket.class);
         List<StockMarket> list = null;
         if ("200".equals(result.getCode())) {
             list = result.getData();

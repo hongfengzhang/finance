@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
@@ -106,6 +107,12 @@ public class SimpleTest {
 
             }
         }
-
     }
+
+    @Test
+    public void test() {
+        String amount = "21.030";
+        System.out.println(Float.valueOf(amount).intValue());
+    }
+
 }

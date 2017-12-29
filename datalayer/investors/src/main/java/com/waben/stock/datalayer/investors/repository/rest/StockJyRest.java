@@ -29,8 +29,8 @@ import java.util.Map;
 public class StockJyRest extends StockResponseHander implements SecuritiesInterface {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    @Value("${securities.context}")
-    private String context;
+//    @Value("${securities.context}")
+    private String context="http://118.31.134.169:8000/stockjy";
 
     //券商资金账户登录
     private String loginPath = "/login";
@@ -84,11 +84,11 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         String holderUrl = context+ holderPath + "?token={token}";
         Map<String, String> params = new HashMap<>();
         params.put("token", token);
-        String result = HttpRest.get(holderUrl, String.class, params);
+        String result = HttpRest.get(holderUrl, String.class, params,headers);
         StockResponse<StockHolder> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockHolder>>() {
                 });
-        logger.info("获取资金账户股东账户列表:{}", result);
+        logger.info("获取资金账户股东账户列表,请求地址:{},请求结果:{}", result);
         return handlerResult(stockResponse, ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
     }
 

@@ -29,8 +29,8 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${securities.context}")
-    private String context;
+//    @Value("${securities.context}")
+    private String context="http://118.31.134.169:8000/stockjy";
     //券商委托单查询
     private String queryEntrustPath = "/qryentrust";
 
@@ -57,7 +57,7 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
         List<StockEntrustQueryResult> stockEntrustQueryResult = handlerResult(stockResponse, ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION);
         if (stockEntrustQueryResult.size() == 0) {
 //            throw new SecuritiesStockException("点买记录暂未委托下单");
-            logger.info("点买记录暂未委托下单。");
+            logger.info("点买记录暂未委托下单。{}",entrustNo);
             return null;
         }
         return stockEntrustQueryResult.get(0);

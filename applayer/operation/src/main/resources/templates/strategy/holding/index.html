@@ -97,7 +97,7 @@
                 search: true, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
-                pageSize: 1, //每页的记录行数（*）
+                pageSize: 10, //每页的记录行数（*）
                 minimumCountColumns: 1, // 设置最少显示列个数
                 clickToSelect: true, // 单击行即可以选中
                 uniqueId: "id", //每一行的唯一标识，一般为主键列
@@ -251,7 +251,7 @@
             });
         }
         function connect() {
-            var socket = new SockJS("/websocket");
+            var socket = new SockJS("/operation/websocket");
             stompClient = Stomp.over(socket);
             stompClient.connect({},function (frame) {
                 setConnected(true);
@@ -271,7 +271,7 @@
                     $table.bootstrapTable('updateCell', {
                         rowIndex: dataMap[stock],
                         fieldName: 'currentAmount',
-                        fieldValue: result[index].price
+                        fieldValue: result[index].entrustPrice
                     });
                 }
             }
