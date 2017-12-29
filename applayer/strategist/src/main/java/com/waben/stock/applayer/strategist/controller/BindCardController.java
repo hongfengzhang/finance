@@ -40,15 +40,15 @@ public class BindCardController {
 	@ApiOperation(value = "绑定银行卡")
 	public Response<BindCardFullDto> bindBankCard(@RequestParam(required = true) String name,
 			@RequestParam(required = true) String idCard, @RequestParam(required = true) String phone,
-			@RequestParam(required = true) String bankCard, @RequestParam(required = true) String verificationCode) {
-		// 检查验证码
-		SmsCache.matchVerificationCode(SmsType.BindCardCode, phone, verificationCode);
+			@RequestParam(required = true) String bankCard, String branchName, String branchCode) {
 		// 绑定银行卡
 		BindCardDto bindCardDto = new BindCardDto();
 		bindCardDto.setBankCard(bankCard);
 		bindCardDto.setIdCard(idCard);
 		bindCardDto.setName(name);
 		bindCardDto.setPhone(phone);
+		bindCardDto.setBranchCode(branchCode);
+		bindCardDto.setBranchName(branchName);
 		bindCardDto.setPublisherId(SecurityUtil.getUserId());
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, bindCardBusiness.save(bindCardDto), false));

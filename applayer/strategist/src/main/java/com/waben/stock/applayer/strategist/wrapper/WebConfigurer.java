@@ -9,7 +9,6 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.warpper.converter.DateConverter;
 import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactory;
 
@@ -29,7 +28,7 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add(new ExecptionHandler());
+		exceptionResolvers.add(new StrategistExecptionHandler());
 		super.configureHandlerExceptionResolvers(exceptionResolvers);
 	}
 

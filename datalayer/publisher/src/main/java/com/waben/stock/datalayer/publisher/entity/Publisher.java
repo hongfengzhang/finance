@@ -61,6 +61,11 @@ public class Publisher {
 	 */
 	@Column(name = "is_test")
 	private Boolean isTest;
+	/**
+	 * 用户使用的终端类型，I表示IOS，A表示Android，H表示PC
+	 */
+	@Column(name = "end_type")
+	private String endType;
 
 	public Long getId() {
 		return id;
@@ -132,6 +137,14 @@ public class Publisher {
 
 	public void setIsTest(Boolean isTest) {
 		this.isTest = isTest;
+	}
+
+	public String getEndType() {
+		return endType;
+	}
+
+	public void setEndType(String endType) {
+		this.endType = endType;
 	}
 
 }

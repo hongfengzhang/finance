@@ -49,7 +49,7 @@ public class PublisherService {
 	}
 
 	@Transactional
-	public Publisher register(String phone, String password, String promoter) {
+	public Publisher register(String phone, String password, String promoter, String endType) {
 		// 检查手机号
 		Publisher check = publisherDao.retriveByPhone(phone);
 		if (check != null) {
@@ -62,6 +62,7 @@ public class PublisherService {
 		publisher.setPassword(password);
 		publisher.setCreateTime(new Date());
 		publisher.setPromoter(promoter);
+		publisher.setEndType(endType);
 		publisherDao.create(publisher);
 		publisher.setPromotionCode(ShareCodeUtil.encode(publisher.getId().intValue()));
 		publisherDao.update(publisher);

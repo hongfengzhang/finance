@@ -28,7 +28,7 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add(new ExecptionHandler());
+		exceptionResolvers.add(new TacticsExecptionHandler());
 		super.configureHandlerExceptionResolvers(exceptionResolvers);
 	}
 
