@@ -18,22 +18,23 @@ import com.waben.stock.interfaces.pojo.query.PublisherQuery;
  */
 public interface PublisherInterface {
 
-    @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-    Response<PageInfo<PublisherDto>> pages(@RequestBody PublisherQuery publisherQuery);
+	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<PublisherDto>> pages(@RequestBody PublisherQuery publisherQuery);
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    Response<PublisherDto> fetchById(@PathVariable("id") Long id);
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	Response<PublisherDto> fetchById(@PathVariable("id") Long id);
 
-    @RequestMapping(value = "/phone/{phone}", method = RequestMethod.GET)
-    Response<PublisherDto> fetchByPhone(@PathVariable("phone") String phone);
+	@RequestMapping(value = "/phone/{phone}", method = RequestMethod.GET)
+	Response<PublisherDto> fetchByPhone(@PathVariable("phone") String phone);
 
 	@RequestMapping(value = "/register", method = RequestMethod.POST)
 	Response<PublisherDto> register(@RequestParam(name = "phone") String phone,
-			@RequestParam(name = "password") String password, @RequestParam(name = "promoter") String promoter);
+			@RequestParam(name = "password") String password, @RequestParam(name = "promoter") String promoter,
+			@RequestParam(name = "endType", required = false) String endType);
 
-    @RequestMapping(value = "/{phone}/modifyPassword", method = RequestMethod.PUT)
-    Response<PublisherDto> modifyPassword(@PathVariable("phone") String phone,
-                                          @RequestParam(name = "password") String password);
+	@RequestMapping(value = "/{phone}/modifyPassword", method = RequestMethod.PUT)
+	Response<PublisherDto> modifyPassword(@PathVariable("phone") String phone,
+			@RequestParam(name = "password") String password);
 
 	@RequestMapping(value = "/{id}/promotion/count", method = RequestMethod.GET)
 	Response<Integer> promotionCount(@PathVariable("id") Long id);

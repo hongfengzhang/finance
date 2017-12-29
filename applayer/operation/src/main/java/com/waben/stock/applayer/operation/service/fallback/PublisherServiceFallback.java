@@ -27,7 +27,7 @@ public class PublisherServiceFallback implements PublisherService{
     }
 
     @Override
-    public Response<PublisherDto> register(String phone, String password, String promoter) {
+    public Response<PublisherDto> register(String phone, String password, String promoter, String endType) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

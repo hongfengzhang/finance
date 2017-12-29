@@ -38,6 +38,10 @@ public class PublisherDto {
 	 * 是否为测试用户
 	 */
 	private Boolean isTest;
+	/**
+	 * 用户使用的终端类型，I表示IOS，A表示Android，H表示PC
+	 */
+	private String endType;
 
 	public Long getId() {
 		return id;
@@ -101,6 +105,14 @@ public class PublisherDto {
 
 	public void setIsTest(Boolean isTest) {
 		this.isTest = isTest;
+	}
+
+	public String getEndType() {
+		return endType;
+	}
+
+	public void setEndType(String endType) {
+		this.endType = endType;
 	}
 
 }

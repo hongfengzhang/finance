@@ -33,7 +33,7 @@ public class PublisherReferenceFallback implements PublisherReference {
 	}
 
 	@Override
-	public Response<PublisherDto> register(String phone, String password, String promoter) {
+	public Response<PublisherDto> register(String phone, String password, String promoter, String endType) {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 

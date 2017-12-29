@@ -87,6 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 添加一个过滤器验证其他请求的Token是否合法
 		http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
 	}
 
 	@Override
