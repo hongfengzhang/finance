@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.service.buyrecord.SettlementInterface;
  *
  * @author luomengan
  */
-@FeignClient(name = "buyrecord/buyrecord", path = "settlement", configuration = FeignConfiguration.class)
+@FeignClient(name = "buyrecord", path = "settlement", configuration = FeignConfiguration.class)
 @Primary
 public interface SettlementService extends SettlementInterface {
 

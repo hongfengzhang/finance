@@ -88,7 +88,7 @@ public class InvestorController implements InvestorInterface {
             logger.info("委托卖出成功:{}",entrustNo);
         }
         BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.entrustApplySellOut(result, securitiesStockEntrust,
-                WindControlType.PUBLISHERAPPLY.getIndex());
+                entrustNo);
         return new Response<>(buyRecordDtoResponse);
     }
 }

@@ -1,29 +1,48 @@
 package com.waben.stock.applayer.strategist.business;
 
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.applayer.strategist.czpay.CzPayOverHttp;
+import com.waben.stock.applayer.strategist.czpay.CzWithholdOverSocket;
+import com.waben.stock.applayer.strategist.czpay.bean.CzPayCallback;
+import com.waben.stock.applayer.strategist.czpay.bean.CzPayResponse;
+import com.waben.stock.applayer.strategist.czpay.bean.CzPayReturn;
+import com.waben.stock.applayer.strategist.czpay.bean.CzWithholdResponse;
+import com.waben.stock.applayer.strategist.czpay.config.CzPayConfig;
 import com.waben.stock.applayer.strategist.dto.payment.PayRequest;
-import com.waben.stock.applayer.strategist.dto.payment.PayResponse;
 import com.waben.stock.applayer.strategist.service.PaymentOrderService;
-import com.waben.stock.applayer.strategist.tfbpay.TfbPayOverHttp;
+import com.waben.stock.applayer.strategist.service.WithdrawalsOrderService;
 import com.waben.stock.applayer.strategist.tfbpay.util.RSAUtils;
 import com.waben.stock.applayer.strategist.tfbpay.util.RequestUtils;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
+import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
+import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
 public class PaymentBusiness {
 
+	Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private PaymentOrderService paymentOrderService;
+
+	@Autowired
+	private WithdrawalsOrderService withdrawalsOrderService;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
@@ -39,17 +58,51 @@ public class PaymentBusiness {
 		paymentOrder.setPublisherId(publisherId);
 		paymentOrder.setType(payReq.getPaymentType());
 		paymentOrder.setState(PaymentState.Unpaid);
-		this.save(paymentOrder);
+		this.savePaymentOrder(paymentOrder);
 		return result;
 	}
 
-	public PayResponse withdrawals(Long publisherId, String publisherSerialCode, PayRequest payReq) {
-		// TODO
-		return null;
+	public void withdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
+			String bankCard, String bankCode) {
+		// 请求提现
+		String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+		CzWithholdResponse resp = CzWithholdOverSocket.withhold(withdrawalsNo, name, bankCard, phone, bankCode, amount);
+		// 保存提现记录
+		WithdrawalsOrderDto order = new WithdrawalsOrderDto();
+		order.setAmount(amount);
+		order.setBankCard(bankCard);
+		order.setIdCard(idCard);
+		order.setName(name);
+		order.setPublisherId(publisherId);
+		order.setThirdRespCode(resp.getRespCode());
+		order.setThirdRespMsg(resp.getRespMsg());
+		order.setWithdrawalsNo(withdrawalsNo);
+		order.setState(resp.successful() ? WithdrawalsState.PROCESSING : WithdrawalsState.FAILURE);
+		this.saveWithdrawalsOrder(order);
+		// 提现异常
+		if (!resp.successful()) {
+			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, resp.getRespMsg());
+		}
 	}
 
-	public PaymentOrderDto save(PaymentOrderDto paymentOrder) {
+	public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
 		Response<PaymentOrderDto> orderResp = paymentOrderService.addPaymentOrder(paymentOrder);
+		if ("200".equals(orderResp.getCode())) {
+			return orderResp.getResult();
+		}
+		throw new ServiceException(orderResp.getCode());
+	}
+
+	public WithdrawalsOrderDto saveWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
+		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderService.addWithdrawalsOrder(withdrawalsOrderDto);
+		if ("200".equals(orderResp.getCode())) {
+			return orderResp.getResult();
+		}
+		throw new ServiceException(orderResp.getCode());
+	}
+
+	public WithdrawalsOrderDto revisionWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
+		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderService.modifyWithdrawalsOrder(withdrawalsOrderDto);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -58,6 +111,14 @@ public class PaymentBusiness {
 
 	public PaymentOrderDto findByPaymentNo(String paymentNo) {
 		Response<PaymentOrderDto> orderResp = paymentOrderService.fetchByPaymentNo(paymentNo);
+		if ("200".equals(orderResp.getCode())) {
+			return orderResp.getResult();
+		}
+		throw new ServiceException(orderResp.getCode());
+	}
+
+	public WithdrawalsOrderDto findByWithdrawalsNo(String withdrawalsNo) {
+		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderService.fetchByWithdrawalsNo(withdrawalsNo);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -74,11 +135,17 @@ public class PaymentBusiness {
 
 	private String payment(PayRequest payReq) {
 		if (payReq.getPaymentType() == PaymentType.UnionPay) {
-			try {
-				// 请求第三方支付
-				return TfbPayOverHttp.payment(payReq.getPaymentNo(), payReq.getAmount());
-			} catch (UnsupportedEncodingException e) {
-				throw new RuntimeException("not supported ecodeding?");
+			// 请求第三方支付
+			CzPayResponse resp = CzPayOverHttp.payment(payReq.getPaymentNo(), payReq.getAmount(), payReq.getBankCode());
+			if ("00".equals(resp.getRespCode())) {
+				StringBuilder htmlBuiler = new StringBuilder();
+				htmlBuiler.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>支付页面</title><script>");
+				htmlBuiler.append("var url = \"" + resp.getHtml() + "\";window.location.href = url;");
+				htmlBuiler.append("</script></head><body></body></html>");
+				return htmlBuiler.toString();
+			} else {
+				logger.error("请求第三方支付异常：{}，{}", resp.getRespCode(), resp.getRespDesc());
+				throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, resp.getRespDesc());
 			}
 		} else {
 			return null;
@@ -113,7 +180,7 @@ public class PaymentBusiness {
 		result.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>回调页面</title></head><body>");
 		String paymentNo = "";
 		String stateStr = "";
-		String scriptContent = "<script>function call() {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}</script>";
+		String scriptContent = "<script>function call() {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});} call();</script>";
 		String bodyContent = "<p>%s!</p>";
 		try {
 			// 解码
@@ -147,6 +214,52 @@ public class PaymentBusiness {
 			if (state == PaymentState.Paid) {
 				accountBusiness.recharge(origin.getPublisherId(), origin.getAmount());
 			}
+		}
+	}
+
+	public String czPaycallback(String data) {
+		CzPayCallback callback = JacksonUtil.decode(data, CzPayCallback.class);
+		String paymentNo = callback.getOrgSendSeqId();
+		if ("00".equals(callback.getPayResult())) {
+			// 支付成功
+			payCallback(paymentNo, PaymentState.Paid);
+			return "success";
+		} else {
+			return "fail";
+		}
+	}
+
+	public String czPayReturn(String data) {
+		String paymentNo = "";
+		String stateStr = "";
+		String code = "";
+		try {
+			CzPayReturn returnObj = JacksonUtil.decode(data, CzPayReturn.class);
+			paymentNo = returnObj.getSendSeqId();
+			code = returnObj.getRespCode();
+			if ("00".equals(code)) {
+				stateStr = "支付成功";
+			} else {
+				stateStr = returnObj.getRespDesc();
+			}
+		} catch (Exception ex) {
+			stateStr = "支付异常";
+		}
+		try {
+			return CzPayConfig.webReturnUrl + "?paymentNo" + paymentNo + "&code=" + code + "&message=" + URLEncoder.encode(stateStr, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw new RuntimeException("utf-8 not supported?");
+		}
+	}
+
+	public void czWithholdCallback(String withdrawalsNo, WithdrawalsState withdrawalsState, String thirdRespCode,
+			String thirdRespMsg) {
+		WithdrawalsOrderDto order = this.findByWithdrawalsNo(withdrawalsNo);
+		order.setThirdRespCode(thirdRespCode);
+		order.setThirdRespMsg(thirdRespMsg);
+		this.revisionWithdrawalsOrder(order);
+		if (order.getState() == WithdrawalsState.PROCESSING) {
+			accountBusiness.withdrawals(order.getPublisherId(), withdrawalsNo, withdrawalsState);
 		}
 	}
 

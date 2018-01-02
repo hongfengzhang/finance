@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Primary;
  * @author Created by yuyidi on 2017/11/30.
  * @desc
  */
-@FeignClient(name = "investors/investors", path = "securityaccount",fallback = SecurityAccountServiceFallback.class,qualifier = "securityAccountFeignService")
+@FeignClient(name = "investors", path = "securityaccount",fallback = SecurityAccountServiceFallback.class,qualifier = "securityAccountFeignService")
 public interface SecurityAccountService extends SecurityAccountInterface{
 
 

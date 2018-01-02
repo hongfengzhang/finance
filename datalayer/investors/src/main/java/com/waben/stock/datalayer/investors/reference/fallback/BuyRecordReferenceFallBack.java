@@ -1,16 +1,20 @@
 package com.waben.stock.datalayer.investors.reference.fallback;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.pojo.query.*;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.List;
+import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
 
 /**
  * @author Created by yuyidi on 2017/12/2.
@@ -84,4 +88,9 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     public Response<List<BuyRecordDto>> buyRecordsWithStatus(Integer buyRecordState) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<BuyRecordDto> deferred(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

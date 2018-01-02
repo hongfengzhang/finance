@@ -3,6 +3,8 @@ package com.waben.stock.applayer.tactics.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,7 +68,6 @@ public class PublisherController {
 		if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
 				|| smsType == SmsType.BindCardCode) {
 			paramValues.add(RandomUtil.generateRandomCode(4));
-			paramValues.add("020-888888");
 		}
 		smsService.sendMessage(smsType, phone, paramValues);
 		return new Response<>();
@@ -76,11 +77,12 @@ public class PublisherController {
 	@ApiOperation(value = "注册发布策略人")
 	public Response<PublisherCapitalAccountDto> register(@RequestParam(required = true) String phone,
 			@RequestParam(required = true) String password, @RequestParam(required = true) String verificationCode,
-			String promoter) {
+			String promoter, HttpServletRequest request) {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
-		Response<PublisherDto> publisherResp = publisherService.register(phone, password, promoter);
+		Response<PublisherDto> publisherResp = publisherService.register(phone, password, promoter,
+				request.getHeader("endType"));
 		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());

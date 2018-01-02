@@ -1,11 +1,8 @@
 package com.waben.stock.risk.init;
 
 import com.waben.stock.risk.schedule.WorkCalendar;
-import com.waben.stock.risk.schedule.job.StockQuotationJob;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerFactory;
-import org.quartz.SimpleTrigger;
+import com.waben.stock.risk.schedule.job.*;
+import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.calendar.DailyCalendar;
 import org.quartz.impl.calendar.WeeklyCalendar;
@@ -14,7 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import static org.quartz.JobBuilder.newJob;
+import java.util.Date;
+
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
@@ -35,40 +33,118 @@ public class StockMonitor implements CommandLineRunner {
      * @description 系统启动完成，启动任务调度器
      */
     public void run(String... strings) throws Exception {
-        //系统启动成功，加载所有需要监控的股票代码行情。
-        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-        Scheduler scheduler = schedulerFactory.getScheduler();
+        SchedulerFactory sf = new StdSchedulerFactory();
+        Scheduler scheduler = sf.getScheduler();
+        // 3、org.quartz.DateBuilder.evenMinuteDate <下一分钟>  -- 通过DateBuilder构建Date
+        Date runTime = DateBuilder.evenMinuteDate(new Date());
         WeeklyCalendar workDay = new WeeklyCalendar();
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, "2018-01-01");
-        DailyCalendar quotationAM = new DailyCalendar(workCalendar, "15:30", "15:32");
-        quotationAM.setInvertTimeRange(true);
+        //排除在外的时间  通过使用invertTimeRange=true  表示倒置
+        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:30");
+        am.setInvertTimeRange(true);
+        DailyCalendar pm = new DailyCalendar(workCalendar, "13:30", "14:55");
+        pm.setInvertTimeRange(true);
+        scheduler.addCalendar("calendarAM", am, false, false);
+        scheduler.addCalendar("calendarPM", pm, false, false);
+        scheduler.addCalendar("workCalendar",workCalendar,false,false);
 
-        DailyCalendar quotationPM = new DailyCalendar(workCalendar, "15:33", "15:35");
-        quotationPM.setInvertTimeRange(true);
-        //向scheduler 中注册日历
-        JobDetail stockMontorJob = newJob(StockQuotationJob.class)
-                .withIdentity("quotationJob", "stock")
-                .storeDurably()
-//                .requestRecovery(false)
+        JobDetail jobQuotation = JobBuilder.newJob(StockQuotationJob.class).withIdentity("jobQuotation",
+                "groupQuotation")
+                .storeDurably(true)
                 .build();
-        scheduler.addCalendar("quotationAM", quotationAM, false, false);
-        SimpleTrigger triggerAM = newTrigger().withIdentity("quotationAMTrigger", "stock").startNow()
+        SimpleTrigger stockQuotationAM = newTrigger().withIdentity("quotationAMTrigger", "groupQuotation").startAt(runTime)
                 .withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever())
-                .forJob(stockMontorJob)
-                .modifiedByCalendar("quotationAM")
+                .forJob(jobQuotation)
+                .modifiedByCalendar("calendarAM")
                 .build();
-        scheduler.addCalendar("quotationPM", quotationPM, false, false);
-        SimpleTrigger triggerPM = newTrigger().withIdentity("quotationPMTrigger", "stock").startNow()
+        SimpleTrigger stockQuotationPM = newTrigger().withIdentity("quotationPMTrigger", "groupQuotation").startAt(runTime)
                 .withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever())
-                .forJob(stockMontorJob)
-                .modifiedByCalendar("quotationPM")
+                .forJob(jobQuotation)
+                .modifiedByCalendar("calendarPM")
                 .build();
-        scheduler.addJob(stockMontorJob, true);
-        scheduler.scheduleJob(triggerAM);
-        scheduler.scheduleJob(triggerPM);
-        //10秒后启动任务调度器
-        scheduler.startDelayed(10 * 1000);
+
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 30 9,13 * * ?");
+        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
+        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 55 14 * * ?");
+
+        JobDetail jobBuyIn = JobBuilder.newJob(StockApplyEntrustBuyInJob.class).withIdentity("jobBuyIn", "groupBuyIn")
+                .storeDurably(true)
+                .build();
+        JobDetail jobBuyInStop = JobBuilder.newJob(BuyInStopJob.class).withIdentity("jobBuyInStop", "groupBuyIn")
+                .storeDurably(true)
+                .build();
+
+        Trigger buyInTriggerBegin = newTrigger().withIdentity("buyInTriggerBegin", "groupBuyIn").startAt(runTime)
+                .withSchedule(scheduleEntrustBuilder)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobBuyIn)
+                .build();
+
+        Trigger buyInTriggerAMStop = newTrigger().withIdentity("buyInTriggerAMStop", "groupBuyIn").startAt(runTime)
+                .withSchedule(scheduleBuilderAMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobBuyInStop)
+                .build();
+        Trigger buyInTriggerPMStop = newTrigger().withIdentity("buyInTriggerPMStop", "groupBuyIn").startAt(runTime)
+                .withSchedule(scheduleBuilderPMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobBuyInStop)
+                .build();
+
+        JobDetail jobSellOut = JobBuilder.newJob(StockApplyEntrustSellOutJob.class).withIdentity("jobSellOut", "groupSellOut")
+                .storeDurably(true)
+                .build();
+        JobDetail jobSellOutStop = JobBuilder.newJob(SellOutStopJob.class).withIdentity("jobSellOutStop", "groupSellOut")
+                .storeDurably(true)
+                .build();
+        Trigger sellOutTriggerBegin = newTrigger().withIdentity("sellOutTriggerBegin", "groupSellOut").startAt(runTime)
+                .withSchedule(scheduleEntrustBuilder)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobSellOut)
+                .build();
+        Trigger sellOutTriggerAMStop = newTrigger().withIdentity("sellOutTriggerAMStop", "groupSellOut").startAt(runTime)
+                .withSchedule(scheduleBuilderAMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobBuyInStop)
+                .build();
+        Trigger sellOutTriggerPMStop = newTrigger().withIdentity("sellOutTriggerPMStop", "groupSellOut").startAt(runTime)
+                .withSchedule(scheduleBuilderPMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobBuyInStop)
+                .build();
+//        ListenerManager listenerManager = scheduler.getListenerManager();
+//        JobListener listener = new BuyInJobListener();
+//        Matcher<JobKey> matcher = KeyMatcher.keyEquals(job.getKey());
+//        listenerManager.addJobListener(listener, matcher);
+//        TriggerListener triggerListener = new BuyInTriggerListener();
+//        Matcher<TriggerKey> triggerAMKeyMatcher = KeyMatcher.keyEquals(triggerAMStop.getKey());
+//        Matcher<TriggerKey> triggerPMKeyMatcher = KeyMatcher.keyEquals(triggerPMStop.getKey());
+//        listenerManager.addTriggerListener(triggerListener,triggerAMKeyMatcher);
+//        listenerManager.addTriggerListener(triggerListener,triggerPMKeyMatcher);
+//        Set<Trigger> triggers = new HashSet<>();
+//        triggers.add(trigger);
+//        triggers.add(triggerAMStop);
+//        triggers.add(triggerPMStop);
+//        sched.scheduleJob(job,triggers,true);
+//        sched.scheduleJob(job2, triggers,true);
+
+//        scheduler.addJob(jobQuotation, true);
+//        scheduler.scheduleJob(stockQuotationAM);
+//        scheduler.scheduleJob(stockQuotationPM);
+
+        scheduler.addJob(jobBuyIn, true);
+        scheduler.scheduleJob(buyInTriggerBegin);
+        scheduler.addJob(jobBuyInStop,true);
+        scheduler.scheduleJob(buyInTriggerAMStop);
+        scheduler.scheduleJob(buyInTriggerPMStop);
+
+//
+        scheduler.addJob(jobSellOut, true);
+        scheduler.scheduleJob(sellOutTriggerBegin);
+        scheduler.addJob(jobSellOutStop,true);
+        scheduler.scheduleJob(sellOutTriggerAMStop);
+        scheduler.scheduleJob(sellOutTriggerPMStop);
         scheduler.start();
     }
 }

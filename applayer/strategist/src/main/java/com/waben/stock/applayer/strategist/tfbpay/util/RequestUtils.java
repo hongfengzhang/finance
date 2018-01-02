@@ -1,5 +1,4 @@
 package com.waben.stock.applayer.strategist.tfbpay.util;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,8 +18,7 @@ import com.waben.stock.applayer.strategist.tfbpay.config.TFBPayConfig;
 
 public class RequestUtils {
 
-	
-	public static void main(String[] args) {
+	public static void test(String[] args) {
 		System.out.println("java.nio.charset.Charset.defaultCharset():" + java.nio.charset.Charset.defaultCharset());
         String s = "中文";
         try {

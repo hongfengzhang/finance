@@ -40,5 +40,14 @@ public class UniqueCodeGenerator {
 	public static String generatePaymentNo() {
 		return IdGenerator.INSTANCE.nextId();
 	}
+	
+	/**
+	 * 生成提现单号
+	 * 
+	 * @return 提现单号
+	 */
+	public static String generateWithdrawalsNo() {
+		return IdGenerator.INSTANCE.nextId();
+	}
 
 }

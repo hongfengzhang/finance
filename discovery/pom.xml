@@ -14,11 +14,6 @@
     <name>discovery</name>
     <description>配资平台服务发现</description>
 
-    <properties>
-        <start.class>com.waben.stock.discovery.DiscoveryApplication</start.class>
-    </properties>
-
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>

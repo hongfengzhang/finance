@@ -35,6 +35,13 @@ public class WithdrawalsOrderController implements WithdrawalsOrderInterface {
 	}
 
 	@Override
+	public Response<WithdrawalsOrderDto> modifyWithdrawalsOrder(@RequestBody WithdrawalsOrderDto withdrawalsOrderDto) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsOrderDto.class,
+				service.revision(CopyBeanUtils.copyBeanProperties(WithdrawalsOrder.class, withdrawalsOrderDto, false)),
+				false));
+	}
+
+	@Override
 	public Response<WithdrawalsOrderDto> changeState(@PathVariable String withdrawalsNo, String stateIndex) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsOrderDto.class,
 				service.changeState(withdrawalsNo, WithdrawalsState.getByIndex(stateIndex)), false));

@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -43,13 +44,16 @@ public class CapitalFlowService {
 					predicateList
 							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
 				}
+				if (query.getTypes() != null && query.getTypes().length > 0) {
+					predicateList.add(root.get("type").in(query.getTypes()));
+				}
 				if (query.getStartTime() != null) {
-					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("occurrenceTime").as(Long.class),
-							query.getStartTime().getTime()));
+					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("occurrenceTime").as(Date.class),
+							query.getStartTime()));
 				}
 				if (query.getEndTime() != null) {
-					predicateList.add(criteriaBuilder.lessThan(root.get("occurrenceTime").as(Long.class),
-							query.getEndTime().getTime()));
+					predicateList.add(criteriaBuilder.lessThan(root.get("occurrenceTime").as(Date.class),
+							query.getEndTime()));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));

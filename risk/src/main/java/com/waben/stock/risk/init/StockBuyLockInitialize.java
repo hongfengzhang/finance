@@ -9,8 +9,11 @@ import com.waben.stock.risk.business.BuyRecordBusiness;
 import com.waben.stock.risk.business.StockBusiness;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.service.BuyRecordService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +24,7 @@ import java.util.List;
  * @desc
  */
 @Component
+//@Order(Ordered.LOWEST_PRECEDENCE+100)
 public class StockBuyLockInitialize implements CommandLineRunner {
 
     @Autowired
@@ -29,27 +33,22 @@ public class StockBuyLockInitialize implements CommandLineRunner {
     private StockBusiness stockBusiness;
     @Autowired
     private StockApplyEntrustBuyInContainer stockApplyEntrustBuyInContainer;
-
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void run(String... args) throws Exception {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//            }
-//        }).start();
-        List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithBuyLock();
+        List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithBuyInLock();
+        logger.info("获取买入锁定的点买交易记录个数：{}", buyRecords.size());
         for (BuyRecordDto buyRecord : buyRecords) {
             SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
             securitiesStockEntrust.setSerialCode(buyRecord.getSerialCode());
             securitiesStockEntrust.setInvestor(buyRecord.getInvestorId());
-            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
-            securitiesStockEntrust.setStockName(stockDto.getName());
-            securitiesStockEntrust.setStockCode(stockDto.getCode());
-            securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
+//            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
+//            securitiesStockEntrust.setStockName(stockDto.getName());
+//            securitiesStockEntrust.setStockCode(stockDto.getCode());
+//            securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
             securitiesStockEntrust.setEntrustNumber(buyRecord.getNumberOfStrand());
-            securitiesStockEntrust.setEntrustPrice(buyRecord.getBuyingPrice());
+            securitiesStockEntrust.setEntrustPrice(buyRecord.getDelegatePrice());
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
 //            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());

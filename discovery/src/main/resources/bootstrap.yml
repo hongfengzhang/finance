@@ -1,8 +1,8 @@
 spring:
   application:
     name: discovery
-  profiles:
-    active: @active@
+#  profiles:
+#    active: @active@
   cloud:
     config:
       enabled: false

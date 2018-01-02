@@ -1,6 +1,8 @@
 server:
   port: 8005
-  context-path: /stockcontent
+management:
+  port: 3005
+  context-path: /turbine
 spring:
   mvc:
     throw-exception-if-no-handler-found: true

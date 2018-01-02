@@ -66,19 +66,21 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT, "/login-error").permitAll()
-                .antMatchers(HttpMethod.GET, "/staff/**", "/stock/**","/strategytype/**", "/securityaccount/**","/env").permitAll()
+                .antMatchers(HttpMethod.GET, "/turbine/**", "/turbine/hystrix.stream", "/hystrix.stream").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .anyRequest().authenticated()
+//                .anyRequest().permitAll()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
 //                    .successForwardUrl("/index")
-                .and().logout().logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
+                .and().logout().invalidateHttpSession(false).logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
+                .and().rememberMe()
                 .and().exceptionHandling()
                 .authenticationEntryPoint(new ForbiddenEntryPoint())
                 .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
-//                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                 .and()
                 .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(processingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .httpBasic().and().sessionManagement().maximumSessions(1).expiredUrl(LOGIN_ENTRY_POINT)
         ;
 
     }
@@ -105,7 +107,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(investorAuthenticationProvider)
                 .authenticationProvider(managerAuthenticationProvider);
-
+        auth.eraseCredentials(false);
     }
 
 }

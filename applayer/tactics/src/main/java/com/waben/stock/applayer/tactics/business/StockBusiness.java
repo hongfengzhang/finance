@@ -1,12 +1,10 @@
 package com.waben.stock.applayer.tactics.business;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -17,6 +15,7 @@ import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarke
 import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockKLine;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
+import com.waben.stock.applayer.tactics.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.service.FavoriteStockService;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
@@ -50,9 +49,10 @@ public class StockBusiness {
 	@Autowired
 	private FavoriteStockService favoriteStockService;
 
+	@Autowired
+	private HolidayBusiness holidayBusiness;
+	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public PageInfo<StockDto> pages(StockQuery stockQuery) {
 		Response<PageInfo<StockDto>> response = stockService.pagesByQuery(stockQuery);
@@ -105,8 +105,6 @@ public class StockBusiness {
 			codes.add("000002");
 			codes.add("000004");
 			codes.add("000005");
-			codes.add("000006");
-			codes.add("000007");
 			codes.add("000008");
 			codes.add("000009");
 			codes.add("000010");
@@ -117,8 +115,12 @@ public class StockBusiness {
 		return new PageInfo<>(content, 1, true, 3L, size, page, true);
 	}
 
-	public List<StockKLine> listKLine(String stockCode, Integer type, String startTime, String endTime) {
-		return RetriveStockOverHttp.listKLine(restTemplate, stockCode, type, startTime, endTime);
+	public List<StockKLine> listKLine(String stockCode, Integer type, String startTime, String endTime, Integer limit) {
+		return RetriveStockOverHttp.listKLine(restTemplate, stockCode, type, startTime, endTime, limit);
+	}
+
+	public List<StockTimeLine> listTimeLine(String stockCode) {
+		return RetriveStockOverHttp.listTimeLine(restTemplate, stockCode);
 	}
 
 	public StockMarketWithFavoriteDto marketByCode(String code) {
@@ -157,18 +159,24 @@ public class StockBusiness {
 		result.setUpDropPrice(market.getUpDropPrice());
 		result.setUpDropSpeed(market.getUpDropSpeed());
 
-		try {
-			Date today = fullSdf.parse(sdf.format(new Date()) + " 00:00:00");
-			Date yesterday = new DateTime(today).minusHours(24).toDate();
-			List<StockKLine> kLine = listKLine(code, 1, fullSdf.format(yesterday), fullSdf.format(today));
-			if (kLine != null && kLine.size() > 0) {
-				result.setYesterdayClosePrice(kLine.get(0).getClosePrice());
-			}
-		} catch (ParseException e) {
-			throw new RuntimeException("解析时间异常");
+		List<StockKLine> kLine = listKLine(code, 1, null, null, 1);
+		if (kLine != null && kLine.size() > 0) {
+			result.setYesterdayClosePrice(kLine.get(0).getClosePrice());
 		}
-
+		if (holidayBusiness.isTradeDay()) {
+			List<StockTimeLine> timeLine = listTimeLine(code);
+			if (timeLine != null && timeLine.size() > 0 && sdf.format(new Date()).equals(timeLine.get(0).getDay())) {
+				result.setTodayOpenPrice(timeLine.get(0).getOpenPrice());
+			}
+		}
 		return result;
+	}
+
+	public boolean isSuspension(String stockCode) {
+		List<String> codes = new ArrayList<>();
+		codes.add(stockCode);
+		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+		return market.getStatus() == 0;
 	}
 
 }

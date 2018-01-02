@@ -3,8 +3,6 @@ package com.waben.stock.interfaces.service.buyrecord;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.waben.stock.interfaces.enums.BuyRecordState;
-import com.waben.stock.interfaces.pojo.query.*;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
 
 public interface BuyRecordInterface {
 
@@ -111,6 +114,16 @@ public interface BuyRecordInterface {
 	@RequestMapping(value = "/{investorId}/sellout/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> sellOut(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
 			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice);
+	
+	/**
+	 * 递延
+	 *
+	 * @param id
+	 *            点买记录id
+	 * @return 点买记录
+	 */
+	@RequestMapping(value = "/deferred/{id}", method = RequestMethod.PUT)
+	Response<BuyRecordDto> deferred(@PathVariable("id") Long id);
 
 	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
 	Response<List<BuyRecordDto>> buyRecordsWithStatus(@PathVariable("state") Integer state);

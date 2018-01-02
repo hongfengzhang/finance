@@ -11,18 +11,37 @@ import java.math.RoundingMode;
  */
 public class StockDiscDto {
 
+	/**
+	 * 股票代码
+	 */
 	private String code;
-
+	/**
+	 * 股票民称
+	 */
 	private String name;
-
+	/**
+	 * 今开
+	 */
+	private BigDecimal todayOpenPrice;
+	/**
+	 * 昨收
+	 */
 	private BigDecimal yesterdayClosePrice;
-
+	/**
+	 * 最高价
+	 */
 	private BigDecimal highestPrice;
-
+	/**
+	 * 最低价
+	 */
 	private BigDecimal lowestPrice;
-
+	/**
+	 * 跌涨价
+	 */
 	private BigDecimal upDropPrice;
-
+	/**
+	 * 跌涨幅
+	 */
 	private BigDecimal upDropSpeed;
 
 	@SuppressWarnings("unused")
@@ -85,6 +104,14 @@ public class StockDiscDto {
 
 	public void setUpDropSpeed(BigDecimal upDropSpeed) {
 		this.upDropSpeed = upDropSpeed;
+	}
+
+	public BigDecimal getTodayOpenPrice() {
+		return todayOpenPrice;
+	}
+
+	public void setTodayOpenPrice(BigDecimal todayOpenPrice) {
+		this.todayOpenPrice = todayOpenPrice;
 	}
 
 	public BigDecimal getRiseStopPrice() {

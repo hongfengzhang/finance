@@ -24,8 +24,19 @@ public class BuyRecordBusiness {
     @Qualifier("buyRecordFeignService")
     private BuyRecordService buyRecordService;
 
-    public List<BuyRecordDto> buyRecordsWithBuyLock() {
+    public List<BuyRecordDto> buyRecordsWithBuyInLock() {
         Response<List<BuyRecordDto>> response = buyRecordService.buyRecordsWithStatus(2);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public List<BuyRecordDto> buyRecordsWithSellOutLock() {
+        Response<List<BuyRecordDto>> response = buyRecordService.buyRecordsWithStatus(5);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

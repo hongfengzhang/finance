@@ -9,7 +9,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
  * @author Created by yuyidi on 2017/12/6.
  * @desc
  */
-@FeignClient(name = "stockcontent/stockcontent", path = "strategytype",fallback = StrategyTypeServiceFallback.class,qualifier = "strategyTypeFeignService")
+@FeignClient(name = "stockcontent", path = "strategytype",fallback = StrategyTypeServiceFallback.class,qualifier = "strategyTypeFeignService")
 public interface StrategyTypeService extends StrategyTypeInterface {
 
 }

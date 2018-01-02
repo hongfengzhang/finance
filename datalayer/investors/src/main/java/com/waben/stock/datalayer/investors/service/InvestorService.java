@@ -6,6 +6,7 @@ import com.waben.stock.datalayer.investors.repository.InvestorDao;
 import com.waben.stock.datalayer.investors.repository.rest.StockJyRest;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.EntrustType;
+import com.waben.stock.interfaces.exception.SecuritiesStockException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
@@ -42,7 +43,6 @@ public class InvestorService {
     @Autowired
     private SecuritiesInterface securitiesInterface;
 
-
     /***
      * @author yuyidi 2017-11-30 19:37:27
      * @method findByUserName
@@ -60,9 +60,15 @@ public class InvestorService {
         SecurityAccount securityAccount = result.getSecurityAccount();
         logger.info("券商资金账户:{},密码:{}", securityAccount.getAccount(), securityAccount.getPassword());
         //根据系统保存的券商账户用户信息登录实时券商账户
-        StockLoginInfo stockLoginInfo = stockJyRest.login(securityAccount.getAccount(), securityAccount.getPassword());
-        logger.info("登录成功，获取交易session:{}", stockLoginInfo.getTradeSession());
-        result.setSecuritiesSession(stockLoginInfo.getTradeSession());
+        StockLoginInfo stockLoginInfo = null;
+        try {
+            stockLoginInfo = stockJyRest.login(securityAccount.getAccount(), securityAccount.getPassword());
+            logger.info("登录成功，获取交易session:{}", stockLoginInfo.getTradeSession());
+            result.setSecuritiesSession(stockLoginInfo.getTradeSession());
+        } catch (SecuritiesStockException e) {
+            logger.error("证券商户登录失败{}", e.getMessage());
+//            e.printStackTrace();
+        }
         return result;
     }
 

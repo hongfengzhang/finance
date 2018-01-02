@@ -16,6 +16,7 @@ import com.waben.stock.applayer.tactics.dto.stockcontent.StockMarketWithFavorite
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockWithFavoriteDto;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockKLine;
+import com.waben.stock.applayer.tactics.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -46,7 +47,7 @@ public class StockController {
 	@GetMapping("/selectStock")
 	@ApiOperation(value = "查询股票，匹配股票名称/代码/简拼")
 	public Response<List<StockWithFavoriteDto>> selectStock(String keyword) {
-		if(keyword == null || "".equals(keyword.trim())) {
+		if (keyword == null || "".equals(keyword.trim())) {
 			List<StockWithFavoriteDto> content = new ArrayList<>();
 			return new Response<>(content);
 		}
@@ -88,7 +89,13 @@ public class StockController {
 	@GetMapping("/kLine")
 	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
 	public Response<List<StockKLine>> listKLine(String stockCode, Integer type, String startTime, String endTime) {
-		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime));
+		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime, -1));
+	}
+	
+	@GetMapping("/timeLine/{code}")
+	@ApiOperation(value = "获取分时图数据")
+	public Response<List<StockTimeLine>> listTimeLine(@PathVariable("code") String code) {
+		return new Response<>(stockBusiness.listTimeLine(code));
 	}
 
 	@GetMapping("/disc/{code}")

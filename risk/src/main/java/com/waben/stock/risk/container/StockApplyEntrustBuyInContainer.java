@@ -15,7 +15,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @desc 券商股票申请委托买入容器
  */
 @Component
-@Scope(ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class StockApplyEntrustBuyInContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());

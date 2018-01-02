@@ -71,11 +71,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/getEnabledCircularsList",
 				"/system/stockMarketExponent", "/system/getAppHomeTopData").permitAll();
 		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
-		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic").permitAll();
+		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
 		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
-				"/stock/market/{code}", "/stock/disc/{code}").permitAll();
-		http.authorizeRequests().antMatchers("/payment/tbfPaycallback", "/payment/tbfpayreturn", "/payment/recharge")
+				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}").permitAll();
+		http.authorizeRequests().antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn",
+				"/payment/czpaycallback", "/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge")
 				.permitAll();
+		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
+		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/pclists").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
@@ -84,6 +87,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 添加一个过滤器验证其他请求的Token是否合法
 		http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
 	}
 
 	@Override

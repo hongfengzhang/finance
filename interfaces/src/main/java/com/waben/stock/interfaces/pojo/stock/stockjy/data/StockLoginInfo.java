@@ -14,7 +14,7 @@ public class StockLoginInfo extends CommonErrorInfo{
     private String clientName;
     @JsonProperty("fund_account")
     private String fundAccount;
-    @JsonProperty("trade_session")
+    @JsonProperty("token")
     private String tradeSession;
 
     public String getClientId() {

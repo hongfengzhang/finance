@@ -31,6 +31,10 @@ public class PublisherCapitalAccountDto {
 	 */
 	private BigDecimal balance;
 	/**
+	 * 账户可用余额
+	 */
+	private BigDecimal availableBalance;
+	/**
 	 * 令牌
 	 */
 	private String token;
@@ -40,6 +44,7 @@ public class PublisherCapitalAccountDto {
 
 	public PublisherCapitalAccountDto(PublisherDto publisher, CapitalAccountDto capitalAccount) {
 		this.setBalance(capitalAccount.getBalance());
+		this.setAvailableBalance(capitalAccount.getAvailableBalance());
 		this.setId(publisher.getId());
 		this.setPhone(publisher.getPhone());
 		this.setPromotionCode(publisher.getPromotionCode());
@@ -92,6 +97,14 @@ public class PublisherCapitalAccountDto {
 
 	public void setToken(String token) {
 		this.token = token;
+	}
+
+	public BigDecimal getAvailableBalance() {
+		return availableBalance;
+	}
+
+	public void setAvailableBalance(BigDecimal availableBalance) {
+		this.availableBalance = availableBalance;
 	}
 
 }

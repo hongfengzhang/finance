@@ -65,4 +65,14 @@ public class BankInfoDaoImpl implements BankInfoDao {
 		return repository.findByBankNameLike("%" + bankName + "%");
 	}
 
+	@Override
+	public List<BankInfo> retrieveByAppSupport(boolean appSupport) {
+		return repository.findByAppSupportAndEnable(appSupport, true);
+	}
+
+	@Override
+	public List<BankInfo> retrieveByPcSupport(boolean pcSupport) {
+		return repository.findByPcSupportAndEnable(pcSupport, true);
+	}
+
 }

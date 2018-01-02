@@ -12,10 +12,12 @@ import com.waben.stock.applayer.tactics.dto.buyrecord.TradeDynamicDto;
 import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.tactics.service.BuyRecordService;
+import com.waben.stock.applayer.tactics.service.DeferredRecordService;
 import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SettlementService;
 import com.waben.stock.applayer.tactics.service.StockService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -44,6 +46,9 @@ public class BuyRecordBusiness {
 
 	@Autowired
 	private StockService stockService;
+
+	@Autowired
+	private DeferredRecordService deferredRecordService;
 
 	public BuyRecordDto findById(Long id) {
 		Response<BuyRecordDto> response = buyRecordService.fetchBuyRecord(id);
@@ -95,6 +100,13 @@ public class BuyRecordBusiness {
 					BuyRecordWithMarketDto buyRecord = wrapMarketInfo(settlement.getBuyRecord());
 					buyRecord.setProfitOrLoss(settlement.getProfitOrLoss());
 					buyRecord.setPublisherProfitOrLoss(settlement.getPublisherProfitOrLoss());
+					DeferredRecordDto deferredRecordDto = deferredRecordService
+							.fetchByPublisherIdAndBuyRecordId(buyRecord.getPublisherId(), buyRecord.getId())
+							.getResult();
+					if (deferredRecordDto != null) {
+						buyRecord.setDeferredDays(deferredRecordDto.getCycle());
+						buyRecord.setDeferredCharges(deferredRecordDto.getFee());
+					}
 					content.add(buyRecord);
 				}
 			}

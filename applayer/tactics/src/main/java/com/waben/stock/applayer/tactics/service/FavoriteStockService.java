@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Primary;
  *
  * @author luomengan
  */
-@FeignClient(name = "publisher/publisher", path = "favoriteStock", fallback = FavoriteStockServiceFallback.class,
+@FeignClient(name = "publisher", path = "favoriteStock", fallback = FavoriteStockServiceFallback.class,
         configuration = FeignConfiguration.class)
 @Primary
 public interface FavoriteStockService extends FavoriteStockInterface {

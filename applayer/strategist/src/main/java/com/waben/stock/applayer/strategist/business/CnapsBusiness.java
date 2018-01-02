@@ -51,4 +51,12 @@ public class CnapsBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public List<BankInfoDto> pcBankinfo() {
+		Response<List<BankInfoDto>> response = cnapsService.listPcBankInfo();
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

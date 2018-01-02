@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
@@ -73,11 +74,11 @@ public class SimpleTest {
     @Test
     public void testBack() {
         Map<String, SecuritiesStockEntrust> init = new ConcurrentHashMap<>();
-        init.put("12345678", new SecuritiesStockEntrust("12345678", "abcdef1"));
-        init.put("12345681", new SecuritiesStockEntrust("12345681", "abcdef1"));
-        init.put("12345680", new SecuritiesStockEntrust("12345680", "abcdef1"));
-        init.put("12345689", new SecuritiesStockEntrust("12345689", null));
-        init.put("12345608", new SecuritiesStockEntrust("12345608", null));
+//        init.put("12345678", new SecuritiesStockEntrust("12345678", "abcdef1"));
+//        init.put("12345681", new SecuritiesStockEntrust("12345681", "abcdef1"));
+//        init.put("12345680", new SecuritiesStockEntrust("12345680", "abcdef1"));
+//        init.put("12345689", new SecuritiesStockEntrust("12345689", null));
+//        init.put("12345608", new SecuritiesStockEntrust("12345608", null));
         String tradeSession = null;
         while (true) {
             //容器中委托数据可能包含来自数据库或者消息队列
@@ -106,6 +107,12 @@ public class SimpleTest {
 
             }
         }
-
     }
+
+    @Test
+    public void test() {
+        String amount = "21.030";
+        System.out.println(Float.valueOf(amount).intValue());
+    }
+
 }

@@ -5,7 +5,7 @@ import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 import com.waben.stock.risk.service.fallback.BuyRecordServiceFallback;
 import org.springframework.cloud.netflix.feign.FeignClient;
 
-@FeignClient(name = "buyrecord/buyrecord", path = "buyrecord", fallback = BuyRecordServiceFallback.class, qualifier =
+@FeignClient(name = "buyrecord", path = "buyrecord", fallback = BuyRecordServiceFallback.class, qualifier =
 		"buyRecordFeignService")
 public interface BuyRecordService extends BuyRecordInterface{
 

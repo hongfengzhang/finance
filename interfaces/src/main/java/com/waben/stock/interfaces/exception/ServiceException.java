@@ -4,6 +4,7 @@ public class ServiceException extends RuntimeException {
 
 	private String type;
 	private String message;
+
 	public ServiceException(String type) {
 		super(type);
 		this.type = type;
@@ -11,7 +12,7 @@ public class ServiceException extends RuntimeException {
 
 	public ServiceException(String type, String message) {
 		super(type);
-		this.type= type;
+		this.type = type;
 		this.message = message;
 	}
 
@@ -20,15 +21,12 @@ public class ServiceException extends RuntimeException {
 		this.type = type;
 	}
 
-//	//提示错误信息
-//	public String message() {
-//		if (ExceptionMap.exceptionMap.containsKey(type)) {
-//			message = ExceptionMap.exceptionMap.get(type);
-//		}
-//		return message;
-//	}
-//
 	public String getType() {
 		return type;
 	}
+
+	public String getCustomMessage() {
+		return message;
+	}
+
 }

@@ -12,7 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import com.waben.stock.datalayer.publisher.entity.enumconverter.FrozenCapitalStatusConverter;
+import com.waben.stock.datalayer.publisher.entity.enumconverter.FrozenCapitalTypeConverter;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
+import com.waben.stock.interfaces.enums.FrozenCapitalType;
 
 /**
  * 冻结资金
@@ -39,6 +41,12 @@ public class FrozenCapital {
 	@Convert(converter = FrozenCapitalStatusConverter.class)
 	private FrozenCapitalStatus status;
 	/**
+	 * 类型
+	 */
+	@Column(name = "type")
+	@Convert(converter = FrozenCapitalTypeConverter.class)
+	private FrozenCapitalType type;
+	/**
 	 * 冻结时间
 	 */
 	@Column(name = "frozen_time")
@@ -54,20 +62,15 @@ public class FrozenCapital {
 	@Column(name = "buy_record_id")
 	private Long buyRecordId;
 	/**
-	 * 点买记录系列号
+	 * 提现单号
 	 */
-	@Column(name = "buy_record_serial_code")
-	private String buyRecordSerialCode;
+	@Column(name = "withdrawals_no")
+	private String withdrawalsNo;
 	/**
 	 * 发布人ID
 	 */
 	@Column(name = "publisher_id")
 	private Long publisherId;
-	/**
-	 * 发布人序列号
-	 */
-	@Column(name = "publisher_serial_code")
-	private String publisherSerialCode;
 
 	public Long getId() {
 		return id;
@@ -117,14 +120,6 @@ public class FrozenCapital {
 		this.buyRecordId = buyRecordId;
 	}
 
-	public String getBuyRecordSerialCode() {
-		return buyRecordSerialCode;
-	}
-
-	public void setBuyRecordSerialCode(String buyRecordSerialCode) {
-		this.buyRecordSerialCode = buyRecordSerialCode;
-	}
-
 	public Long getPublisherId() {
 		return publisherId;
 	}
@@ -133,12 +128,20 @@ public class FrozenCapital {
 		this.publisherId = publisherId;
 	}
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
+	public FrozenCapitalType getType() {
+		return type;
 	}
 
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
+	public void setType(FrozenCapitalType type) {
+		this.type = type;
+	}
+
+	public String getWithdrawalsNo() {
+		return withdrawalsNo;
+	}
+
+	public void setWithdrawalsNo(String withdrawalsNo) {
+		this.withdrawalsNo = withdrawalsNo;
 	}
 
 }

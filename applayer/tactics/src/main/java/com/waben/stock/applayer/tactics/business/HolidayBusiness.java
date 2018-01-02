@@ -48,6 +48,11 @@ public class HolidayBusiness {
 		Date now = cal.getTime();
 		String nowStr = sdf.format(now);
 		String dayStr = daySdf.format(now);
+		// 判断是否为周六日
+		int weekDay = cal.get(Calendar.DAY_OF_WEEK);
+		if (weekDay == 7 || weekDay == 1) {
+			return false;
+		}
 		// 判断是否是节假日
 		String holiday = prop.getProperty(String.valueOf(year));
 		if (holiday != null) {
@@ -66,6 +71,26 @@ public class HolidayBusiness {
 			}
 		} catch (ParseException e) {
 			logger.error("解析时间格式错误!");
+		}
+		return true;
+	}
+
+	public boolean isTradeDay() {
+		Calendar cal = Calendar.getInstance();
+		int year = cal.get(Calendar.YEAR);
+		Date now = cal.getTime();
+		String dayStr = daySdf.format(now);
+		// 判断是否为周六日
+		int weekDay = cal.get(Calendar.DAY_OF_WEEK);
+		if (weekDay == 7 || weekDay == 1) {
+			return false;
+		}
+		// 判断是否是节假日
+		String holiday = prop.getProperty(String.valueOf(year));
+		if (holiday != null) {
+			if (holiday.indexOf(dayStr) >= 0) {
+				return false;
+			}
 		}
 		return true;
 	}

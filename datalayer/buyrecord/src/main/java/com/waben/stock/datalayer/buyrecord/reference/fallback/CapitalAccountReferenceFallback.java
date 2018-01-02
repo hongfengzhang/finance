@@ -36,13 +36,13 @@ public class CapitalAccountReferenceFallback implements CapitalAccountInterface 
 	}
 
 	@Override
-	public Response<CapitalAccountDto> withdrawals(Long publisherId, BigDecimal amount) {
+	public Response<CapitalAccountDto> withdrawals(Long publisherId, String withdrawalsNo, String withdrawalsStateIndex) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
-			String buyRecordSerialCode, BigDecimal serviceFee, BigDecimal reserveFund) {
+			BigDecimal serviceFee, BigDecimal reserveFund) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

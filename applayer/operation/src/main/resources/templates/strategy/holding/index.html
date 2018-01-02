@@ -80,9 +80,11 @@
     <script type="text/javascript">
         var $table = $('#bootstrap-table');
         var stompClient = null;
+        var dataRows;
+        var dataMap = {};
         function send(codes) {
             console.log("开始发送消息")
-            stompClient.send("/stock/send", {}, JSON.stringify(codes));
+            stompClient.send("/publish", {}, JSON.stringify(codes));
         }
         function setConnected(connected) {
             console.log("是否已经连接成功"+connected);
@@ -95,7 +97,7 @@
                 search: true, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
-                pageSize: 1, //每页的记录行数（*）
+                pageSize: 10, //每页的记录行数（*）
                 minimumCountColumns: 1, // 设置最少显示列个数
                 clickToSelect: true, // 单击行即可以选中
                 uniqueId: "id", //每一行的唯一标识，一般为主键列
@@ -232,10 +234,17 @@
                     }
                 }],
                 onLoadSuccess: function(data){  //加载成功时执行
+                    dataRows = data.rows;
                     var arrayCode = new Array();
-                    for(var stock in data.rows){
-                        var code = data.rows[stock].stockCode;
-                        arrayCode.push(code);
+                    for(var index in dataRows){
+                        var stock = new Object();
+                        var record = dataRows[index];
+                        var code =record.stockCode;
+                        var time = record.createTime;
+                        stock.code = code;
+                        stock.time = time;
+                        arrayCode.push(stock);
+                        dataMap[code] = index;
                     }
                     send(arrayCode);
                 },
@@ -245,14 +254,30 @@
             var socket = new SockJS("/operation/websocket");
             stompClient = Stomp.over(socket);
             stompClient.connect({},function (frame) {
-                console.log("Connected：" + frame);
                 setConnected(true);
-                stompClient.subscribe("/topic/callback",function(response) {
-                    console.log(JSON.stringify(JSON.parse(response.body)));
+                var subcribe = "/quotation/investor/callback";
+                stompClient.subscribe(subcribe,function(response) {
+                    var result = JSON.parse(response.body);
+                    handlerSubscribe(result);
                 })
             })
 
         }
+
+        function handlerSubscribe(result) {
+            for(var index in result) {
+                var stock = result[index].code;
+                if(dataMap[stock]){
+                    $table.bootstrapTable('updateCell', {
+                        rowIndex: dataMap[stock],
+                        fieldName: 'currentAmount',
+                        fieldValue: result[index].entrustPrice
+                    });
+                }
+            }
+
+        }
+
         $(function () {
             connect()
             //activate the tooltips after the data table is initialized

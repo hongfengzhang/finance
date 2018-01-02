@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.dto.publisher;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
@@ -32,6 +33,14 @@ public class PaymentOrderDto {
 	 * 发布人ID
 	 */
 	private Long publisherId;
+	/**
+	 * 创建时间
+	 */
+	private Date createTime;
+	/**
+	 * 更新时间
+	 */
+	private Date updateTime;
 
 	public Long getId() {
 		return id;
@@ -87,6 +96,22 @@ public class PaymentOrderDto {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 }
