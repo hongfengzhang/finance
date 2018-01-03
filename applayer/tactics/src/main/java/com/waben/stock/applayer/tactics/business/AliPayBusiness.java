@@ -9,6 +9,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.alipay.api.AlipayApiException;
@@ -20,7 +21,7 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.waben.stock.applayer.tactics.service.PaymentOrderService;
+import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
@@ -41,13 +42,14 @@ public class AliPayBusiness {
 			AliPayConfigConstant.ALIPAY_PUBLIC_KEY, AliPayConfigConstant.SIGNTYPE);
 
 	@Autowired
-	private PaymentOrderService paymentOrderService;
+	@Qualifier("paymentOrderReference")
+	private PaymentOrderReference paymentOrderReference;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
 
 	public PaymentOrderDto save(PaymentOrderDto paymentOrder) {
-		Response<PaymentOrderDto> orderResp = paymentOrderService.addPaymentOrder(paymentOrder);
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -55,7 +57,7 @@ public class AliPayBusiness {
 	}
 
 	public PaymentOrderDto findByPaymentNo(String paymentNo) {
-		Response<PaymentOrderDto> orderResp = paymentOrderService.fetchByPaymentNo(paymentNo);
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.fetchByPaymentNo(paymentNo);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -63,7 +65,7 @@ public class AliPayBusiness {
 	}
 
 	public PaymentOrderDto changeState(String paymentNo, PaymentState state) {
-		Response<PaymentOrderDto> orderResp = paymentOrderService.changeState(paymentNo, state.getIndex());
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.changeState(paymentNo, state.getIndex());
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}

@@ -3,9 +3,10 @@ package com.waben.stock.applayer.tactics.business;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.service.StrategyTypeService;
+import com.waben.stock.applayer.tactics.reference.StrategyTypeReference;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -20,7 +21,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class StrategyTypeBusiness {
 
 	@Autowired
-	private StrategyTypeService service;
+	@Qualifier("strategyTypeReference")
+	private StrategyTypeReference service;
 
 	public List<StrategyTypeDto> lists() {
 		Response<List<StrategyTypeDto>> response = service.lists(true);
