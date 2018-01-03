@@ -8,15 +8,15 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
-import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 
 public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
 	@Autowired
-	private PublisherService publisherService;
+	private PublisherReference publisherReference;
 
 	@Override
 	protected void additionalAuthenticationChecks(UserDetails userDetails,
@@ -32,7 +32,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 	protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication)
 			throws AuthenticationException {
 		// APP用户
-		Response<PublisherDto> publisherResp = publisherService.fetchByPhone(username);
+		Response<PublisherDto> publisherResp = publisherReference.fetchByPhone(username);
 		if (!"200".equals(publisherResp.getCode())) {
 			throw new UsernameNotFoundException("用户名不存在");
 		}

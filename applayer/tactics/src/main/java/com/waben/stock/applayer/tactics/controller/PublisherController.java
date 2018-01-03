@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,12 +16,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
+import com.waben.stock.applayer.tactics.reference.BindCardReference;
+import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
+import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
-import com.waben.stock.applayer.tactics.service.BindCardService;
-import com.waben.stock.applayer.tactics.service.CapitalAccountService;
-import com.waben.stock.applayer.tactics.service.PublisherService;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
@@ -43,30 +44,33 @@ import io.swagger.annotations.ApiOperation;
 public class PublisherController {
 
 	@Autowired
-	private PublisherService publisherService;
+	@Qualifier("publisherReference")
+	private PublisherReference publisherReference;
 
 	@Autowired
-	private CapitalAccountService accountService;
+	@Qualifier("capitalAccountReference")
+	private CapitalAccountReference accountService;
 
 	@Autowired
-	private BindCardService bindCardService;
+	@Qualifier("bindCardReference")
+	private BindCardReference bindCardReference;
 
 	@Autowired
 	private SmsService smsService;
 
 	@GetMapping("/{id}")
 	public Response<PublisherDto> echo(@PathVariable Long id) {
-		return publisherService.fetchById(id);
+		return publisherReference.fetchById(id);
 	}
 
 	@PostMapping("/sendSms")
-	@ApiOperation(value = "发送短信", notes = "type(1:注册,2:修改密码,3:绑定银行卡)")
+	@ApiOperation(value = "发送短信", notes = "type(1:注册,2:修改密码,3:绑定银行卡,5:修改支付密码)")
 	public Response<String> sendAuthCode(String phone, int type) {
 		SmsType smsType = SmsType.getByIndex(String.valueOf(type));
 		List<String> paramValues = new ArrayList<>();
 		// 发送注册短信
 		if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
-				|| smsType == SmsType.BindCardCode) {
+				|| smsType == SmsType.BindCardCode || smsType == SmsType.ModifyPaymentPwdCode) {
 			paramValues.add(RandomUtil.generateRandomCode(4));
 		}
 		smsService.sendMessage(smsType, phone, paramValues);
@@ -81,7 +85,7 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
-		Response<PublisherDto> publisherResp = publisherService.register(phone, password, promoter,
+		Response<PublisherDto> publisherResp = publisherReference.register(phone, password, promoter,
 				request.getHeader("endType"));
 		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
@@ -98,7 +102,7 @@ public class PublisherController {
 	@GetMapping("/getCurrent")
 	@ApiOperation(value = "获取当前发布策略人信息")
 	public Response<PublisherCapitalAccountDto> getCurrent() {
-		Response<PublisherDto> publisherResp = publisherService.fetchById(SecurityUtil.getUserId());
+		Response<PublisherDto> publisherResp = publisherReference.fetchById(SecurityUtil.getUserId());
 		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(SecurityUtil.getUserId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
@@ -111,10 +115,11 @@ public class PublisherController {
 		Response<SettingRemindDto> result = new Response<>(new SettingRemindDto());
 		result.getResult().setPhone(SecurityUtil.getUsername());
 		// 获取是否绑卡
-		Response<List<BindCardDto>> bindCardListResp = bindCardService.listsByPublisherId(SecurityUtil.getUserId());
+		Response<List<BindCardDto>> bindCardListResp = bindCardReference.listsByPublisherId(SecurityUtil.getUserId());
 		if ("200".equals(bindCardListResp.getCode())) {
 			if (bindCardListResp.getResult() != null && bindCardListResp.getResult().size() > 0) {
 				result.getResult().setSettingBindCard(true);
+				result.getResult().setBindCardCount(bindCardListResp.getResult().size());
 			}
 		} else {
 			result.setCode(bindCardListResp.getCode());
@@ -142,7 +147,7 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
 		// 修改密码
-		Response<PublisherDto> publisherResp = publisherService.modifyPassword(phone, password);
+		Response<PublisherDto> publisherResp = publisherReference.modifyPassword(phone, password);
 		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());

@@ -154,14 +154,15 @@
                     events: {
                         'click .view': function (e, value, row, index) {
                             info = JSON.stringify(row);
-
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../publisher/view/"+row.id);
+                            //swal('You click view icon, row: ', info);
+                            //console.log(info);
                         },
                         'click .edit': function (e, value, row, index) {
                             info = JSON.stringify(row);
-                            swal('You click edit icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../publisher/edit/"+row.id);
+                            //swal('You click edit icon, row: ', info);
+                            //console.log(info);
                         },
                         'click .remove': function (e, value, row, index) {
 

@@ -44,6 +44,15 @@ public interface BindCardInterface {
 	Response<BindCardDto> modifyBankCard(@RequestBody BindCardDto bindCardDto);
 
 	/**
+	 * 删除绑卡
+	 * 
+	 * @param id
+	 *            绑卡ID
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
+	Response<Long> dropBankCard(@PathVariable("id") Long id);
+
+	/**
 	 * 获取某个发布人的绑卡列表
 	 * 
 	 * @param publisherId

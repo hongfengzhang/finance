@@ -55,4 +55,9 @@ public class BindCardController implements BindCardInterface {
 				bindCardService.revision(CopyBeanUtils.copyBeanProperties(BindCard.class, bindCardDto, false)), false));
 	}
 
+	@Override
+	public Response<Long> dropBankCard(@PathVariable Long id) {
+		return new Response<>(bindCardService.remove(id));
+	}
+
 }

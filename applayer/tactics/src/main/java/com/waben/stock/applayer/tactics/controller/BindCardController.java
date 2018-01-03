@@ -53,6 +53,12 @@ public class BindCardController {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, bindCardBusiness.save(bindCardDto), false));
 	}
+	
+	@PostMapping("/unbundling/{id}")
+	@ApiOperation(value = "解绑支行信息")
+	public Response<Long> unbundling(@PathVariable("id") Long id) {
+		return new Response<>(bindCardBusiness.remove(id));
+	}
 
 	@PostMapping("/fillBranch/{id}")
 	@ApiOperation(value = "完善支行信息")

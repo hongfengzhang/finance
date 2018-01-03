@@ -44,4 +44,9 @@ public class BindCardService {
 		return bindCardDao.update(bindCard);
 	}
 
+	public Long remove(Long id) {
+		bindCardDao.delete(id);
+		return id;
+	}
+
 }
