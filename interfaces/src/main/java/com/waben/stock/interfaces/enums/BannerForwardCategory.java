@@ -19,7 +19,7 @@ public enum BannerForwardCategory implements CommonalityEnum {
 
 	private String category;
 
-	private BannerForwardCategory(String index, String category) {
+	BannerForwardCategory(String index, String category) {
 		this.index = index;
 		this.category = category;
 	}
