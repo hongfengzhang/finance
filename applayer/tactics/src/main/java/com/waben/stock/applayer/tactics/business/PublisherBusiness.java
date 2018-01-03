@@ -1,9 +1,10 @@
 package com.waben.stock.applayer.tactics.business;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.service.PublisherService;
+import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -18,7 +19,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class PublisherBusiness {
 
 	@Autowired
-	private PublisherService service;
+	@Qualifier("publisherReference")
+	private PublisherReference service;
 
 	public PublisherDto findById(Long publisherId) {
 		Response<PublisherDto> response = service.fetchById(publisherId);

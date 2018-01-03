@@ -21,23 +21,21 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.datalayer.buyrecord.business.CapitalAccountBusiness;
+import com.waben.stock.datalayer.buyrecord.business.StrategyTypeBusiness;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.entity.DeferredRecord;
 import com.waben.stock.datalayer.buyrecord.entity.Settlement;
-import com.waben.stock.datalayer.buyrecord.reference.CapitalAccountService;
-import com.waben.stock.datalayer.buyrecord.reference.StrategyTypeService;
 import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.DeferredRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
@@ -61,10 +59,10 @@ public class BuyRecordService {
 	private SettlementDao settlementDao;
 
 	@Autowired
-	private CapitalAccountService accountService;
+	private CapitalAccountBusiness accountBusiness;
 
 	@Autowired
-	private StrategyTypeService strategyTypeService;
+	private StrategyTypeBusiness strategyTypeBusiness;
 
 	@Autowired
 	private DeferredRecordDao deferredRecordDao;
@@ -90,20 +88,21 @@ public class BuyRecordService {
 		buyRecord.setNumberOfStrand(numberOfStrand);
 		buyRecordDao.create(buyRecord);
 		// 扣去金额、冻结保证金
-		Response<CapitalAccountDto> accountOperationResp = accountService.serviceFeeAndReserveFund(
-				buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getServiceFee(), buyRecord.getReserveFund());
-		if (!"200".equals(accountOperationResp.getCode())) {
-			if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(accountOperationResp.getCode())) {
-				throw new ServiceException(accountOperationResp.getCode());
-			}
-			// 再一次确认是否已经扣款
-			Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
-					buyRecord.getId());
-			if (!(frozenResp != null && "200".equals(frozenResp.getCode()) && frozenResp.getResult() != null)) {
-				buyRecord.setState(BuyRecordState.UNKONWN);
-				buyRecordDao.update(buyRecord);
-				// 扣款异常
-				throw new ServiceException(ExceptionConstant.BUYRECORD_POST_DEBITFAILED_EXCEPTION);
+		try {
+			accountBusiness.serviceFeeAndReserveFund(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getServiceFee(), buyRecord.getReserveFund());
+		} catch(ServiceException ex) {
+			if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
+				throw ex;
+			} else {
+				// 再一次确认是否已经扣款
+				try {
+					FrozenCapitalDto frozen = accountBusiness.fetchFrozenCapital(buyRecord.getPublisherId(), buyRecord.getId());
+					if(frozen == null) {
+						throw ex;
+					}
+				} catch(ServiceException frozenEx) {
+					throw ex;
+				}
 			}
 		}
 		return buyRecord;
@@ -283,16 +282,18 @@ public class BuyRecordService {
 		}
 		settlementDao.create(settlement);
 		// 退回保证金
-		Response<CapitalAccountDto> accountOperationResp = accountService.returnReserveFund(buyRecord.getPublisherId(),
-				buyRecord.getId(), buyRecord.getSerialCode(), settlement.getPublisherProfitOrLoss());
-		if (accountOperationResp == null || !"200".equals(accountOperationResp.getCode())) {
+		try {
+			accountBusiness.returnReserveFund(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getSerialCode(), settlement.getPublisherProfitOrLoss());
+		} catch(ServiceException ex) {
 			// 再一次确认是否已经退回保证金
-			Response<FrozenCapitalDto> frozenResp = accountService.fetchFrozenCapital(buyRecord.getPublisherId(),
-					buyRecord.getId());
-			if (!(frozenResp != null && "200".equals(frozenResp.getCode()) && frozenResp.getResult() != null
-					&& frozenResp.getResult().getStatus() == FrozenCapitalStatus.Thaw)) {
-				// 退回保证金异常
-				throw new ServiceException(ExceptionConstant.BUYRECORD_RETURNRESERVEFUND_EXCEPTION);
+			try {
+				FrozenCapitalDto frozen = accountBusiness.fetchFrozenCapital(buyRecord.getPublisherId(), buyRecord.getId());
+				if(frozen == null || frozen.getStatus() != FrozenCapitalStatus.Thaw) {
+					// 退回保证金异常
+					throw new ServiceException(ExceptionConstant.BUYRECORD_RETURNRESERVEFUND_EXCEPTION);
+				}
+			} catch(ServiceException frozenEx) {
+				throw ex;
 			}
 		}
 		// 修改点买记录状态
@@ -313,7 +314,7 @@ public class BuyRecordService {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ALREADY_DEFERRED_EXCEPTION);
 		}
 		// 获取策略类型
-		StrategyTypeDto strategyType = strategyTypeService.fetchById(buyRecord.getStrategyTypeId()).getResult();
+		StrategyTypeDto strategyType = strategyTypeBusiness.fetchById(buyRecord.getStrategyTypeId());
 		deferredRecord = new DeferredRecord();
 		deferredRecord.setBuyRecordId(id);
 		deferredRecord.setCycle(strategyType.getCycle());
@@ -323,11 +324,7 @@ public class BuyRecordService {
 		deferredRecord.setStrategyTypeId(strategyType.getId());
 		deferredRecord.setStrategyTypeName(strategyType.getName());
 		// 扣递延费
-		Response<CapitalAccountDto> accountResp = accountService.deferredCharges(buyRecord.getPublisherId(), id,
-				deferredRecord.getFee());
-		if (!"200".equals(accountResp.getCode())) {
-			throw new ServiceException(accountResp.getCode());
-		}
+		accountBusiness.deferredCharges(buyRecord.getPublisherId(), id, deferredRecord.getFee());
 		return buyRecord;
 	}
 

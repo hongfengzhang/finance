@@ -9,9 +9,10 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.service.BindCardService;
+import com.waben.stock.applayer.tactics.reference.BindCardReference;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -31,7 +32,8 @@ public class BindCardBusiness {
 	public static Map<String, String> bankIconMap = new HashMap<>();
 
 	@Autowired
-	private BindCardService service;
+	@Qualifier("bindCardReference")
+	private BindCardReference service;
 
 	@Autowired
 	private CnapsBusiness cnapsBusiness;
@@ -71,6 +73,14 @@ public class BindCardBusiness {
 		}
 		bindCard.setBankName(bankInfoDto != null ? bankInfoDto.getBankName() : null);
 		Response<BindCardDto> response = service.addBankCard(bindCard);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
+	public Long remove(Long id) {
+		Response<Long> response = service.dropBankCard(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

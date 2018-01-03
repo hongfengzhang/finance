@@ -33,4 +33,9 @@ public class BindCardServiceFallback implements BindCardService {
 		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 	}
 
+	@Override
+	public Response<Long> dropBankCard(Long id) {
+		throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+	}
+
 }

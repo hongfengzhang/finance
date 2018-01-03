@@ -3,11 +3,12 @@ package com.waben.stock.applayer.tactics.business;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.publisher.CapitalFlowWithExtendDto;
-import com.waben.stock.applayer.tactics.service.CapitalFlowService;
-import com.waben.stock.applayer.tactics.service.StrategyTypeService;
+import com.waben.stock.applayer.tactics.reference.CapitalFlowReference;
+import com.waben.stock.applayer.tactics.reference.StrategyTypeReference;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowExtendDto;
@@ -30,7 +31,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 public class CapitalFlowBusiness {
 
 	@Autowired
-	private CapitalFlowService service;
+	@Qualifier("capitalFlowReference")
+	private CapitalFlowReference service;
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
@@ -39,7 +41,8 @@ public class CapitalFlowBusiness {
 	private StockBusiness stockBusiness;
 
 	@Autowired
-	private StrategyTypeService strategyTypeService;
+	@Qualifier("strategyTypeReference")
+	private StrategyTypeReference strategyTypeReference;
 
 	public PageInfo<CapitalFlowWithExtendDto> pages(CapitalFlowQuery query) {
 		Response<PageInfo<CapitalFlowDto>> response = service.pagesByQuery(query);
@@ -50,7 +53,7 @@ public class CapitalFlowBusiness {
 					response.getResult().getLast(), response.getResult().getTotalElements(),
 					response.getResult().getSize(), response.getResult().getNumber(), response.getResult().getFrist());
 			// 获取策略类型列表
-			Response<List<StrategyTypeDto>> strategyTypeResponse = strategyTypeService.lists(true);
+			Response<List<StrategyTypeDto>> strategyTypeResponse = strategyTypeReference.lists(true);
 			if (!"200".equals(strategyTypeResponse.getCode())) {
 				throw new ServiceException(strategyTypeResponse.getCode());
 			}

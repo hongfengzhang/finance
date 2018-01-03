@@ -6,6 +6,7 @@ import java.util.HashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.czpay.CzPayOverHttp;
@@ -15,8 +16,8 @@ import com.waben.stock.applayer.tactics.czpay.bean.CzPayResponse;
 import com.waben.stock.applayer.tactics.czpay.bean.CzPayReturn;
 import com.waben.stock.applayer.tactics.czpay.bean.CzWithholdResponse;
 import com.waben.stock.applayer.tactics.dto.payment.PayRequest;
-import com.waben.stock.applayer.tactics.service.PaymentOrderService;
-import com.waben.stock.applayer.tactics.service.WithdrawalsOrderService;
+import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
+import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
 import com.waben.stock.applayer.tactics.tfbpay.util.RSAUtils;
 import com.waben.stock.applayer.tactics.tfbpay.util.RequestUtils;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -36,10 +37,12 @@ public class PaymentBusiness {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private PaymentOrderService paymentOrderService;
+	@Qualifier("paymentOrderReference")
+	private PaymentOrderReference paymentOrderReference;
 
 	@Autowired
-	private WithdrawalsOrderService withdrawalsOrderService;
+	@Qualifier("withdrawalsOrderReference")
+	private WithdrawalsOrderReference withdrawalsOrderReference;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
@@ -83,7 +86,7 @@ public class PaymentBusiness {
 	}
 
 	public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
-		Response<PaymentOrderDto> orderResp = paymentOrderService.addPaymentOrder(paymentOrder);
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -91,7 +94,7 @@ public class PaymentBusiness {
 	}
 
 	public WithdrawalsOrderDto saveWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
-		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderService.addWithdrawalsOrder(withdrawalsOrderDto);
+		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.addWithdrawalsOrder(withdrawalsOrderDto);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -99,7 +102,7 @@ public class PaymentBusiness {
 	}
 	
 	public WithdrawalsOrderDto revisionWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
-		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderService.modifyWithdrawalsOrder(withdrawalsOrderDto);
+		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.modifyWithdrawalsOrder(withdrawalsOrderDto);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -107,7 +110,7 @@ public class PaymentBusiness {
 	}
 	
 	public PaymentOrderDto findByPaymentNo(String paymentNo) {
-		Response<PaymentOrderDto> orderResp = paymentOrderService.fetchByPaymentNo(paymentNo);
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.fetchByPaymentNo(paymentNo);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -115,7 +118,7 @@ public class PaymentBusiness {
 	}
 
 	public WithdrawalsOrderDto findByWithdrawalsNo(String withdrawalsNo) {
-		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderService.fetchByWithdrawalsNo(withdrawalsNo);
+		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.fetchByWithdrawalsNo(withdrawalsNo);
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
@@ -123,7 +126,7 @@ public class PaymentBusiness {
 	}
 
 	public PaymentOrderDto changeState(String paymentNo, PaymentState state) {
-		Response<PaymentOrderDto> orderResp = paymentOrderService.changeState(paymentNo, state.getIndex());
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.changeState(paymentNo, state.getIndex());
 		if ("200".equals(orderResp.getCode())) {
 			return orderResp.getResult();
 		}
