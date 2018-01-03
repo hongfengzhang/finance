@@ -10,26 +10,26 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
+import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
-import com.waben.stock.applayer.tactics.service.CapitalAccountService;
-import com.waben.stock.applayer.tactics.service.PublisherService;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private PublisherService publisherService;
+	private PublisherReference publisherReference;
 
 	@Autowired
-	private CapitalAccountService accountService;
+	private CapitalAccountReference accountService;
 
 	@Bean
 	public JWTLoginFilter jwtLoginFilter() {
 		try {
 			JWTLoginFilter result = new JWTLoginFilter(authenticationManager());
-			result.setPublisherService(publisherService);
+			result.setPublisherService(publisherReference);
 			result.setAccountService(accountService);
 			return result;
 		} catch (Exception e) {

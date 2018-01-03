@@ -4,11 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.publisher.FavoriteStockWithMarketDto;
+import com.waben.stock.applayer.tactics.reference.FavoriteStockReference;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
-import com.waben.stock.applayer.tactics.service.FavoriteStockService;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -25,13 +26,14 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 public class FavoriteStockBusiness {
 
 	@Autowired
-	private FavoriteStockService favoriteStockService;
+	@Qualifier("favoriteStockReference")
+	private FavoriteStockReference favoriteStockReference;
 
 	@Autowired
 	private StockMarketService stockMarketService;
 
 	public List<String> listsStockCode(Long publisherId) {
-		Response<List<String>> response = favoriteStockService.listsStockCode(publisherId);
+		Response<List<String>> response = favoriteStockReference.listsStockCode(publisherId);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
@@ -39,7 +41,7 @@ public class FavoriteStockBusiness {
 	}
 
 	public FavoriteStockDto save(FavoriteStockDto favoriteStockDto) {
-		Response<FavoriteStockDto> response = favoriteStockService.add(favoriteStockDto);
+		Response<FavoriteStockDto> response = favoriteStockReference.add(favoriteStockDto);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
@@ -47,7 +49,7 @@ public class FavoriteStockBusiness {
 	}
 
 	public void remove(Long publisherId, String stockCodes) {
-		Response<Void> response = favoriteStockService.drop(publisherId, stockCodes);
+		Response<Void> response = favoriteStockReference.drop(publisherId, stockCodes);
 		if (!response.getCode().equals("200")) {
 			throw new ServiceException(response.getCode());
 		}
@@ -55,14 +57,14 @@ public class FavoriteStockBusiness {
 	}
 
 	public void top(Long publisherId, String stockCodes) {
-		Response<Void> response = favoriteStockService.top(publisherId, stockCodes);
+		Response<Void> response = favoriteStockReference.top(publisherId, stockCodes);
 		if (!response.getCode().equals("200")) {
 			throw new ServiceException(response.getCode());
 		}
 	}
 
 	public List<FavoriteStockWithMarketDto> listsByPublisherId(Long publisherId) {
-		Response<List<FavoriteStockDto>> response = favoriteStockService.listsByPublisherId(publisherId);
+		Response<List<FavoriteStockDto>> response = favoriteStockReference.listsByPublisherId(publisherId);
 		if (response.getCode().equals("200")) {
 			if (response.getResult() != null && response.getResult().size() > 0) {
 				List<FavoriteStockWithMarketDto> result = CopyBeanUtils

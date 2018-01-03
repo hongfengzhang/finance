@@ -3,6 +3,7 @@ package com.waben.stock.applayer.tactics.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.dto.system.AppHomeTopDataDto;
 import com.waben.stock.applayer.tactics.dto.system.StockMarketExponentDto;
-import com.waben.stock.applayer.tactics.service.BannerService;
-import com.waben.stock.applayer.tactics.service.CircularsService;
+import com.waben.stock.applayer.tactics.reference.BannerReference;
+import com.waben.stock.applayer.tactics.reference.CircularsReference;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
@@ -44,10 +45,12 @@ public class SystemController {
 	}
 
 	@Autowired
-	private BannerService bannerService;
+	@Qualifier("bannerReference")
+	private BannerReference bannerReference;
 
 	@Autowired
-	private CircularsService circularsService;
+	@Qualifier("circularsReference")
+	private CircularsReference circularsReference;
 
 	@Autowired
 	private StockMarketService stockMarketService;
@@ -59,7 +62,7 @@ public class SystemController {
 		query.setPage(0);
 		query.setSize(10);
 		query.setCategory(BannerForwardCategory.APP);
-		Response<PageInfo<BannerDto>> pages = bannerService.pages(query);
+		Response<PageInfo<BannerDto>> pages = bannerReference.pages(query);
 		if ("200".equals(pages.getCode())) {
 			return new Response<>(pages.getResult().getContent());
 		} else {
@@ -70,7 +73,7 @@ public class SystemController {
 	@GetMapping("/getEnabledCircularsList")
 	@ApiOperation(value = "获取通告列表")
 	public Response<List<CircularsDto>> getCircularsList() {
-		return circularsService.fetchCirculars(true);
+		return circularsReference.fetchCirculars(true);
 	}
 
 	@GetMapping("/stockMarketExponent")
@@ -84,7 +87,7 @@ public class SystemController {
 	public Response<AppHomeTopDataDto> getAppHomeTopData() {
 		Response<AppHomeTopDataDto> result = new Response<>(new AppHomeTopDataDto());
 		// 获取轮播图
-		Response<List<BannerDto>> bannerListResp = bannerService.fetchBanners(true);
+		Response<List<BannerDto>> bannerListResp = bannerReference.fetchBanners(true);
 		if ("200".equals(bannerListResp.getCode())) {
 			result.getResult().setBannerList(bannerListResp.getResult());
 		} else {
@@ -93,7 +96,7 @@ public class SystemController {
 			return result;
 		}
 		// 获取公告
-		Response<List<CircularsDto>> capitalAccountResp = circularsService.fetchCirculars(true);
+		Response<List<CircularsDto>> capitalAccountResp = circularsReference.fetchCirculars(true);
 		if ("200".equals(capitalAccountResp.getCode())) {
 			result.getResult().setCircularsList(capitalAccountResp.getResult());
 		} else {
