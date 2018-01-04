@@ -46,4 +46,9 @@ public class PublisherServiceFallback implements PublisherService{
 	public Response<PageInfo<PublisherDto>> pagePromotionUser(Long id, int page, int size) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<PublisherDto> modiyHeadportrait(Long id, String headPortrait) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

@@ -3,11 +3,12 @@ package com.waben.stock.applayer.strategist.business;
 import java.math.BigDecimal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.strategist.dto.publisher.PromotionBaseDto;
-import com.waben.stock.applayer.strategist.service.CapitalFlowService;
-import com.waben.stock.applayer.strategist.service.PublisherService;
+import com.waben.stock.applayer.strategist.reference.CapitalFlowReference;
+import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -23,10 +24,12 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class PromotionBusiness {
 
 	@Autowired
-	private PublisherService publisherService;
+	@Qualifier("publisherReference")
+	private PublisherReference publisherReference;
 
 	@Autowired
-	private CapitalFlowService capitalFlowService;
+	@Qualifier("capitalFlowReference")
+	private CapitalFlowReference capitalFlowReference;
 
 	public PromotionBaseDto getPromotionBase(Long publisherId) {
 		PromotionBaseDto result = new PromotionBaseDto();
@@ -37,7 +40,7 @@ public class PromotionBusiness {
 	}
 
 	public PublisherDto findById(Long publisherId) {
-		Response<PublisherDto> publisherResp = publisherService.fetchById(publisherId);
+		Response<PublisherDto> publisherResp = publisherReference.fetchById(publisherId);
 		if ("200".equals(publisherResp.getCode())) {
 			return publisherResp.getResult();
 		}
@@ -45,7 +48,7 @@ public class PromotionBusiness {
 	}
 
 	public Integer promotionCount(Long publisherId) {
-		Response<Integer> promotionCountResp = publisherService.promotionCount(publisherId);
+		Response<Integer> promotionCountResp = publisherReference.promotionCount(publisherId);
 		if ("200".equals(promotionCountResp.getCode())) {
 			return promotionCountResp.getResult();
 		}
@@ -53,7 +56,7 @@ public class PromotionBusiness {
 	}
 
 	public BigDecimal promotionTotalAmount(Long publisherId) {
-		Response<BigDecimal> promotionTotalAmountResp = capitalFlowService.promotionTotalAmount(publisherId);
+		Response<BigDecimal> promotionTotalAmountResp = capitalFlowReference.promotionTotalAmount(publisherId);
 		if ("200".equals(promotionTotalAmountResp.getCode())) {
 			return promotionTotalAmountResp.getResult();
 		}
@@ -61,7 +64,7 @@ public class PromotionBusiness {
 	}
 
 	public PageInfo<PublisherDto> pagePromotionUser(Long publisherId, int page, int size) {
-		Response<PageInfo<PublisherDto>> pagePromotionUserResp = publisherService.pagePromotionUser(publisherId, page,
+		Response<PageInfo<PublisherDto>> pagePromotionUserResp = publisherReference.pagePromotionUser(publisherId, page,
 				size);
 		if ("200".equals(pagePromotionUserResp.getCode())) {
 			return pagePromotionUserResp.getResult();

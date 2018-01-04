@@ -12,7 +12,6 @@ import com.waben.stock.applayer.strategist.business.CapitalFlowBusiness;
 import com.waben.stock.applayer.strategist.dto.publisher.CapitalAccountWithPaymentDto;
 import com.waben.stock.applayer.strategist.dto.publisher.CapitalStatisticDto;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.pojo.Response;
 
 import io.swagger.annotations.Api;

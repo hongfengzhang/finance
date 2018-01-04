@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.strategist.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,27 +11,29 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.waben.stock.applayer.strategist.reference.CapitalAccountReference;
+import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.strategist.security.jwt.JWTLoginFilter;
-import com.waben.stock.applayer.strategist.service.CapitalAccountService;
-import com.waben.stock.applayer.strategist.service.PublisherService;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private PublisherService publisherService;
+	@Qualifier("publisherReference")
+	private PublisherReference publisherReference;
 
 	@Autowired
-	private CapitalAccountService accountService;
+	@Qualifier("capitalAccountReference")
+	private CapitalAccountReference capitalAccountReference;
 
 	@Bean
 	public JWTLoginFilter jwtLoginFilter() {
 		try {
 			JWTLoginFilter result = new JWTLoginFilter(authenticationManager());
-			result.setPublisherService(publisherService);
-			result.setAccountService(accountService);
+			result.setPublisherReference(publisherReference);
+			result.setAccountReference(capitalAccountReference);
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("get AuthenticationManager exception!", e);

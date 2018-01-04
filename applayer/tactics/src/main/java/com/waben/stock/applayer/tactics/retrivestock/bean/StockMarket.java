@@ -25,9 +25,24 @@ public class StockMarket {
 	private String upTimeFormat;
 	private BigDecimal highestPrice;
 	private BigDecimal lowestPrice;
-	private BigDecimal askPrice;
 	private BigDecimal upLimitPrice;
 	private BigDecimal downLimitPrice;
+	/**
+	 * 卖1~卖5
+	 */
+	private BigDecimal askPrice;
+	private BigDecimal askPrice2;
+	private BigDecimal askPrice3;
+	private BigDecimal askPrice4;
+	private BigDecimal askPrice5;
+	/**
+	 * 买1~买5
+	 */
+	private BigDecimal bidPrice;
+	private BigDecimal bidPrice2;
+	private BigDecimal bidPrice3;
+	private BigDecimal bidPrice4;
+	private BigDecimal bidPrice5;
 
 	public String getExchangeId() {
 		return exchangeId;
@@ -147,6 +162,78 @@ public class StockMarket {
 
 	public void setDownLimitPrice(BigDecimal downLimitPrice) {
 		this.downLimitPrice = downLimitPrice;
+	}
+
+	public BigDecimal getAskPrice2() {
+		return askPrice2;
+	}
+
+	public void setAskPrice2(BigDecimal askPrice2) {
+		this.askPrice2 = askPrice2;
+	}
+
+	public BigDecimal getAskPrice3() {
+		return askPrice3;
+	}
+
+	public void setAskPrice3(BigDecimal askPrice3) {
+		this.askPrice3 = askPrice3;
+	}
+
+	public BigDecimal getAskPrice4() {
+		return askPrice4;
+	}
+
+	public void setAskPrice4(BigDecimal askPrice4) {
+		this.askPrice4 = askPrice4;
+	}
+
+	public BigDecimal getAskPrice5() {
+		return askPrice5;
+	}
+
+	public void setAskPrice5(BigDecimal askPrice5) {
+		this.askPrice5 = askPrice5;
+	}
+
+	public BigDecimal getBidPrice() {
+		return bidPrice;
+	}
+
+	public void setBidPrice(BigDecimal bidPrice) {
+		this.bidPrice = bidPrice;
+	}
+
+	public BigDecimal getBidPrice2() {
+		return bidPrice2;
+	}
+
+	public void setBidPrice2(BigDecimal bidPrice2) {
+		this.bidPrice2 = bidPrice2;
+	}
+
+	public BigDecimal getBidPrice3() {
+		return bidPrice3;
+	}
+
+	public void setBidPrice3(BigDecimal bidPrice3) {
+		this.bidPrice3 = bidPrice3;
+	}
+
+	public BigDecimal getBidPrice4() {
+		return bidPrice4;
+	}
+
+	public void setBidPrice4(BigDecimal bidPrice4) {
+		this.bidPrice4 = bidPrice4;
+	}
+
+	public BigDecimal getBidPrice5() {
+		return bidPrice5;
+	}
+
+	public void setBidPrice5(BigDecimal bidPrice5) {
+		this.bidPrice5 = bidPrice5;
 	}
 
 }

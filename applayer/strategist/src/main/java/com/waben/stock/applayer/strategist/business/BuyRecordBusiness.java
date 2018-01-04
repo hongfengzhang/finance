@@ -4,18 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.strategist.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.strategist.dto.buyrecord.TradeDynamicDto;
+import com.waben.stock.applayer.strategist.reference.BuyRecordReference;
+import com.waben.stock.applayer.strategist.reference.DeferredRecordReference;
+import com.waben.stock.applayer.strategist.reference.PublisherReference;
+import com.waben.stock.applayer.strategist.reference.SettlementReference;
+import com.waben.stock.applayer.strategist.reference.StockReference;
 import com.waben.stock.applayer.strategist.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
-import com.waben.stock.applayer.strategist.service.BuyRecordService;
-import com.waben.stock.applayer.strategist.service.DeferredRecordService;
-import com.waben.stock.applayer.strategist.service.PublisherService;
-import com.waben.stock.applayer.strategist.service.SettlementService;
-import com.waben.stock.applayer.strategist.service.StockService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
@@ -36,22 +37,27 @@ public class BuyRecordBusiness {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	private BuyRecordService buyRecordService;
+	@Qualifier("buyRecordReference")
+	private BuyRecordReference buyRecordReference;
 
 	@Autowired
-	private SettlementService settlementService;
+	@Qualifier("settlementReference")
+	private SettlementReference settlementReference;
 
 	@Autowired
-	private PublisherService publisherService;
+	@Qualifier("publisherReference")
+	private PublisherReference publisherReference;
 
 	@Autowired
-	private StockService stockService;
+	@Qualifier("stockReference")
+	private StockReference stockReference;
 
 	@Autowired
-	private DeferredRecordService deferredRecordService;
+	@Qualifier("deferredRecordReference")
+	private DeferredRecordReference deferredRecordReference;
 
 	public BuyRecordDto findById(Long id) {
-		Response<BuyRecordDto> response = buyRecordService.fetchBuyRecord(id);
+		Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -60,21 +66,21 @@ public class BuyRecordBusiness {
 
 	public BuyRecordDto buy(BuyRecordDto buyRecordDto) {
 		// 获取股票名称
-		Response<StockDto> stock = stockService.fetchWithExponentByCode(buyRecordDto.getStockCode());
+		Response<StockDto> stock = stockReference.fetchWithExponentByCode(buyRecordDto.getStockCode());
 		if ("200".equals(stock.getCode())) {
 			buyRecordDto.setStockName(stock.getResult().getName());
 		} else {
 			throw new ServiceException(stock.getCode());
 		}
 		// 获取策略发布人
-		Response<PublisherDto> publisher = publisherService.fetchById(buyRecordDto.getPublisherId());
+		Response<PublisherDto> publisher = publisherReference.fetchById(buyRecordDto.getPublisherId());
 		if ("200".equals(publisher.getCode())) {
 			buyRecordDto.setPublisherPhone(publisher.getResult().getPhone());
 		} else {
 			throw new ServiceException(stock.getCode());
 		}
 		// 请求点买
-		Response<BuyRecordDto> response = buyRecordService.addBuyRecord(buyRecordDto);
+		Response<BuyRecordDto> response = buyRecordReference.addBuyRecord(buyRecordDto);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -83,7 +89,7 @@ public class BuyRecordBusiness {
 
 	public PageInfo<BuyRecordDto> pages(BuyRecordQuery buyRecordQuery) {
 
-		Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByQuery(buyRecordQuery);
+		Response<PageInfo<BuyRecordDto>> response = buyRecordReference.pagesByQuery(buyRecordQuery);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -91,7 +97,7 @@ public class BuyRecordBusiness {
 	}
 
 	public PageInfo<BuyRecordWithMarketDto> pagesSettlement(SettlementQuery query) {
-		Response<PageInfo<SettlementDto>> response = settlementService.pagesByQuery(query);
+		Response<PageInfo<SettlementDto>> response = settlementReference.pagesByQuery(query);
 		if ("200".equals(response.getCode())) {
 			List<BuyRecordWithMarketDto> content = new ArrayList<>();
 			List<SettlementDto> settlementContent = response.getResult().getContent();
@@ -100,7 +106,7 @@ public class BuyRecordBusiness {
 					BuyRecordWithMarketDto buyRecord = wrapMarketInfo(settlement.getBuyRecord());
 					buyRecord.setProfitOrLoss(settlement.getProfitOrLoss());
 					buyRecord.setPublisherProfitOrLoss(settlement.getPublisherProfitOrLoss());
-					DeferredRecordDto deferredRecordDto = deferredRecordService
+					DeferredRecordDto deferredRecordDto = deferredRecordReference
 							.fetchByPublisherIdAndBuyRecordId(buyRecord.getPublisherId(), buyRecord.getId())
 							.getResult();
 					if (deferredRecordDto != null) {
@@ -148,7 +154,7 @@ public class BuyRecordBusiness {
 	}
 
 	public BuyRecordDto sellApply(Long userId, Long id) {
-		Response<BuyRecordDto> response = buyRecordService.sellApply(userId, id);
+		Response<BuyRecordDto> response = buyRecordReference.sellApply(userId, id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -158,7 +164,7 @@ public class BuyRecordBusiness {
 	public PageInfo<TradeDynamicDto> tradeDynamic(int page, int size) {
 		SettlementQuery sQuery = new SettlementQuery(page, size / 2);
 		sQuery.setOnlyProfit(true);
-		Response<PageInfo<SettlementDto>> sResponse = settlementService.pagesByQuery(sQuery);
+		Response<PageInfo<SettlementDto>> sResponse = settlementReference.pagesByQuery(sQuery);
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
 					new BuyRecordState[] { BuyRecordState.HOLDPOSITION, BuyRecordState.SELLAPPLY,

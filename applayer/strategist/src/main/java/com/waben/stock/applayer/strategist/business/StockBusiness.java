@@ -6,20 +6,21 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockDiscDto;
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockMarketWithFavoriteDto;
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockRecommendWithMarketDto;
+import com.waben.stock.applayer.strategist.reference.FavoriteStockReference;
+import com.waben.stock.applayer.strategist.reference.StockReference;
 import com.waben.stock.applayer.strategist.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockKLine;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
-import com.waben.stock.applayer.strategist.service.FavoriteStockService;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
-import com.waben.stock.applayer.strategist.service.StockService;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -41,21 +42,23 @@ public class StockBusiness {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	private StockService stockService;
+	@Qualifier("stockReference")
+	private StockReference stockReference;
 
 	@Autowired
 	private StockMarketService stockMarketService;
 
 	@Autowired
-	private FavoriteStockService favoriteStockService;
+	@Qualifier("favoriteStockReference")
+	private FavoriteStockReference favoriteStockReference;
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
-	
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	public PageInfo<StockDto> pages(StockQuery stockQuery) {
-		Response<PageInfo<StockDto>> response = stockService.pagesByQuery(stockQuery);
+		Response<PageInfo<StockDto>> response = stockReference.pagesByQuery(stockQuery);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
@@ -63,7 +66,7 @@ public class StockBusiness {
 	}
 
 	public StockDto findById(Long stockId) {
-		Response<StockDto> response = stockService.fetchById(stockId);
+		Response<StockDto> response = stockReference.fetchById(stockId);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
@@ -71,7 +74,7 @@ public class StockBusiness {
 	}
 
 	public StockDto findByCode(String stockCode) {
-		Response<StockDto> response = stockService.fetchWithExponentByCode(stockCode);
+		Response<StockDto> response = stockReference.fetchWithExponentByCode(stockCode);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
@@ -130,7 +133,7 @@ public class StockBusiness {
 					market, false);
 			Long publisherId = SecurityUtil.getUserId();
 			if (publisherId != null) {
-				Response<List<FavoriteStockDto>> response = favoriteStockService.listsByPublisherId(publisherId);
+				Response<List<FavoriteStockDto>> response = favoriteStockReference.listsByPublisherId(publisherId);
 				if (response.getCode().equals("200")) {
 					for (FavoriteStockDto favorite : response.getResult()) {
 						if (favorite.getCode().equals(code)) {

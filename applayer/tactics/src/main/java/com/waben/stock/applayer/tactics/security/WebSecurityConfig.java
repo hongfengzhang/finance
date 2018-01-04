@@ -88,8 +88,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
+		http.sessionManagement().maximumSessions(1);
 	}
-
+ 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
