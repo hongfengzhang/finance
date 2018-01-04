@@ -15,3 +15,6 @@ hystrix:
             timeoutInMilliseconds: 10000
         timeout:
             enabled: false
+custom:
+  operation:
+    server: ${operation.server}

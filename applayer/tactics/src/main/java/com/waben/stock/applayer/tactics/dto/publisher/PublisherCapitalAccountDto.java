@@ -35,6 +35,10 @@ public class PublisherCapitalAccountDto {
 	 */
 	private BigDecimal availableBalance;
 	/**
+	 * 头像
+	 */
+	private String headPortrait;
+	/**
 	 * 令牌
 	 */
 	private String token;
@@ -48,6 +52,7 @@ public class PublisherCapitalAccountDto {
 		this.setId(publisher.getId());
 		this.setPhone(publisher.getPhone());
 		this.setPromotionCode(publisher.getPromotionCode());
+		this.setHeadPortrait(publisher.getHeadPortrait());
 		this.setSerialCode(publisher.getSerialCode());
 	}
 
@@ -105,6 +110,14 @@ public class PublisherCapitalAccountDto {
 
 	public void setAvailableBalance(BigDecimal availableBalance) {
 		this.availableBalance = availableBalance;
+	}
+
+	public String getHeadPortrait() {
+		return headPortrait;
+	}
+
+	public void setHeadPortrait(String headPortrait) {
+		this.headPortrait = headPortrait;
 	}
 
 }

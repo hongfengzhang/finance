@@ -124,21 +124,33 @@ public class PublisherService {
 		return publisherDao.pageByPromoter(publisher.getPromotionCode(), page, size);
 	}
 
-	//分页查询
-	public Page<Publisher> pages(final PublisherQuery query){
-        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+	// 分页查询
+	public Page<Publisher> pages(final PublisherQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<Publisher> pages = publisherDao.page(new Specification<Publisher>() {
 			@Override
-			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
 				if (!StringUtils.isEmpty(query.getPhone())) {
-					Predicate typeQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query
-							.getPhone());
+					Predicate typeQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query.getPhone());
 					criteriaQuery.where(criteriaBuilder.and(typeQuery));
 				}
 				return criteriaQuery.getRestriction();
 			}
-		},pageable);
-	    return pages;
+		}, pageable);
+		return pages;
+	}
+
+	public Publisher modiyHeadportrait(Long id, String headPortrait) {
+		Publisher publisher = publisherDao.retrieve(id);
+		if (publisher == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		if (headPortrait != null && !"".equals(headPortrait)) {
+			publisher.setHeadPortrait(headPortrait);
+			publisherDao.update(publisher);
+		}
+		return publisher;
 	}
 
 }

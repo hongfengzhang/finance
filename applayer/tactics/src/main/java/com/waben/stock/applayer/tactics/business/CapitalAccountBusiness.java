@@ -43,6 +43,13 @@ public class CapitalAccountBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	
+	public void modifyPaymentPassword(Long publisherId, String paymentPassword) {
+		Response<Void> response = service.modifyPaymentPassword(publisherId, paymentPassword);
+		if (!"200".equals(response.getCode())) {
+			throw new ServiceException(response.getCode());
+		}
+	}
 
 	public CapitalAccountDto recharge(Long publisherId, BigDecimal amount) {
 		Response<CapitalAccountDto> response = service.recharge(publisherId, amount);

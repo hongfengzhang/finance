@@ -9,9 +9,10 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.strategist.service.BindCardService;
+import com.waben.stock.applayer.strategist.reference.BindCardReference;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -31,7 +32,8 @@ public class BindCardBusiness {
 	public static Map<String, String> bankIconMap = new HashMap<>();
 
 	@Autowired
-	private BindCardService service;
+	@Qualifier("bindCardReference")
+	private BindCardReference bindCardReference;
 
 	@Autowired
 	private CnapsBusiness cnapsBusiness;
@@ -49,7 +51,7 @@ public class BindCardBusiness {
 	}
 
 	public BindCardDto findById(Long id) {
-		Response<BindCardDto> response = service.fetchById(id);
+		Response<BindCardDto> response = bindCardReference.fetchById(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -70,7 +72,7 @@ public class BindCardBusiness {
 			logger.error("未识别的银行卡号:{}", bindCard.getBankCard());
 		}
 		bindCard.setBankName(bankInfoDto != null ? bankInfoDto.getBankName() : null);
-		Response<BindCardDto> response = service.addBankCard(bindCard);
+		Response<BindCardDto> response = bindCardReference.addBankCard(bindCard);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -78,7 +80,7 @@ public class BindCardBusiness {
 	}
 
 	public BindCardDto revision(BindCardDto bindCard) {
-		Response<BindCardDto> response = service.modifyBankCard(bindCard);
+		Response<BindCardDto> response = bindCardReference.modifyBankCard(bindCard);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -89,7 +91,7 @@ public class BindCardBusiness {
 		if (bankIconMap.size() == 0) {
 			init();
 		}
-		Response<List<BindCardDto>> response = service.listsByPublisherId(publisherId);
+		Response<List<BindCardDto>> response = bindCardReference.listsByPublisherId(publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

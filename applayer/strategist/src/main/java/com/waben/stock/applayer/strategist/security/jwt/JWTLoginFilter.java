@@ -14,10 +14,10 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.waben.stock.applayer.strategist.dto.publisher.PublisherCapitalAccountDto;
+import com.waben.stock.applayer.strategist.reference.CapitalAccountReference;
+import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.security.CustomUserDetails;
 import com.waben.stock.applayer.strategist.security.CustomUsernamePasswordAuthenticationToken;
-import com.waben.stock.applayer.strategist.service.CapitalAccountService;
-import com.waben.stock.applayer.strategist.service.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
@@ -31,9 +31,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	private static final String loginUrl = "/login";
 
-	private PublisherService publisherService;
+	private PublisherReference publisherReference;
 
-	private CapitalAccountService accountService;
+	private CapitalAccountReference accountReference;
 
 	public JWTLoginFilter(AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(loginUrl, HttpMethod.POST.name()));
@@ -56,8 +56,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		customUserDetails.setToken(token);
 		// step 2 : 返回用户信息和token到客户端
 		Long publisherId = customUserDetails.getUserId();
-		Response<PublisherDto> publisherResp = publisherService.fetchById(publisherId);
-		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherId);
+		Response<PublisherDto> publisherResp = publisherReference.fetchById(publisherId);
+		Response<CapitalAccountDto> accountResp = accountReference.fetchByPublisherId(publisherId);
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
 				accountResp.getResult());
 		data.setToken(token);
@@ -77,12 +77,12 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		response.getWriter().println(JacksonUtil.encode(result));
 	}
 
-	public void setPublisherService(PublisherService publisherService) {
-		this.publisherService = publisherService;
+	public void setPublisherReference(PublisherReference publisherReference) {
+		this.publisherReference = publisherReference;
 	}
 
-	public void setAccountService(CapitalAccountService accountService) {
-		this.accountService = accountService;
+	public void setAccountReference(CapitalAccountReference accountReference) {
+		this.accountReference = accountReference;
 	}
 
 }
