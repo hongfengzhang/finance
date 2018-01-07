@@ -9,3 +9,5 @@ spring:
     throw-exception-if-no-handler-found: true
   thymeleaf:
     cache: false
+fileSystem : http://10.0.0.31/
+uploadFilePath : E:/upload/file/

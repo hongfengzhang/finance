@@ -3,9 +3,10 @@ package com.waben.stock.applayer.strategist.business;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.strategist.service.CnapsService;
+import com.waben.stock.applayer.strategist.reference.CnapsReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.manage.CnapsDto;
@@ -22,10 +23,11 @@ import com.waben.stock.interfaces.pojo.Response;
 public class CnapsBusiness {
 
 	@Autowired
-	private CnapsService cnapsService;
+	@Qualifier("cnapsReference")
+	private CnapsReference cnapsReference;
 
 	public List<CnapsDto> findByCityCodeAndClsCode(String cityCode, String clsCode) {
-		Response<List<CnapsDto>> response = cnapsService.fetchByCityCodeAndClsCode(cityCode, clsCode);
+		Response<List<CnapsDto>> response = cnapsReference.fetchByCityCodeAndClsCode(cityCode, clsCode);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -33,7 +35,7 @@ public class CnapsBusiness {
 	}
 
 	public BankInfoDto findBankInfo(String bankCard) {
-		Response<BankInfoDto> response = cnapsService.fetchBankInfo(bankCard);
+		Response<BankInfoDto> response = cnapsReference.fetchBankInfo(bankCard);
 		if ("200".equals(response.getCode())) {
 			if (response.getResult() == null) {
 				throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
@@ -44,7 +46,7 @@ public class CnapsBusiness {
 	}
 
 	public List<BankInfoDto> listBankInfo() {
-		Response<List<BankInfoDto>> response = cnapsService.listBankInfo();
+		Response<List<BankInfoDto>> response = cnapsReference.listBankInfo();
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -52,7 +54,7 @@ public class CnapsBusiness {
 	}
 
 	public List<BankInfoDto> pcBankinfo() {
-		Response<List<BankInfoDto>> response = cnapsService.listPcBankInfo();
+		Response<List<BankInfoDto>> response = cnapsReference.listPcBankInfo();
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

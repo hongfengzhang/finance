@@ -10,13 +10,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.waben.stock.applayer.strategist.service.PublisherService;
+import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.service.SmsCache;
 import com.waben.stock.applayer.strategist.service.SmsService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -43,11 +44,12 @@ public class JuheSmsService implements SmsService {
 	private ObjectMapper objectMapper;
 
 	@Autowired
-	private PublisherService publisherService;
+	@Qualifier("publisherReference")
+	private PublisherReference publisherReference;
 
 	public void sendMessage(SmsType smsType, String phone, List<String> paramValues) {
 		// 检查手机号
-		Response<PublisherDto> publisherResp = publisherService.fetchByPhone(phone);
+		Response<PublisherDto> publisherResp = publisherReference.fetchByPhone(phone);
 		if (!"200".equals(publisherResp.getCode())
 				&& !ExceptionConstant.DATANOTFOUND_EXCEPTION.equals(publisherResp.getCode())) {
 			throw new ServiceException(publisherResp.getCode());

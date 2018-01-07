@@ -5,11 +5,12 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.strategist.dto.buyrecord.BuyRecordWithMarketDto;
+import com.waben.stock.applayer.strategist.reference.CapitalAccountReference;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
-import com.waben.stock.applayer.strategist.service.CapitalAccountService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
@@ -29,29 +30,38 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class CapitalAccountBusiness {
 
 	@Autowired
-	private CapitalAccountService service;
+	@Qualifier("capitalAccountReference")
+	private CapitalAccountReference capitalAccountReference;
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
 
 	public CapitalAccountDto findByPublisherId(Long publisherId) {
-		Response<CapitalAccountDto> response = service.fetchByPublisherId(publisherId);
+		Response<CapitalAccountDto> response = capitalAccountReference.fetchByPublisherId(publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
 
+	public void modifyPaymentPassword(Long publisherId, String paymentPassword) {
+		Response<Void> response = capitalAccountReference.modifyPaymentPassword(publisherId, paymentPassword);
+		if (!"200".equals(response.getCode())) {
+			throw new ServiceException(response.getCode());
+		}
+	}
+
 	public CapitalAccountDto recharge(Long publisherId, BigDecimal amount) {
-		Response<CapitalAccountDto> response = service.recharge(publisherId, amount);
+		Response<CapitalAccountDto> response = capitalAccountReference.recharge(publisherId, amount);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
+
 	public CapitalAccountDto withdrawals(Long publisherId, String withdrawalsNo, WithdrawalsState state) {
-		Response<CapitalAccountDto> response = service.withdrawals(publisherId, withdrawalsNo, state.getIndex());
+		Response<CapitalAccountDto> response = capitalAccountReference.withdrawals(publisherId, withdrawalsNo,
+				state.getIndex());
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

@@ -42,6 +42,10 @@ public class PublisherDto {
 	 * 用户使用的终端类型，I表示IOS，A表示Android，H表示PC
 	 */
 	private String endType;
+	/**
+	 * 头像
+	 */
+	private String headPortrait;
 
 	public Long getId() {
 		return id;
@@ -113,6 +117,14 @@ public class PublisherDto {
 
 	public void setEndType(String endType) {
 		this.endType = endType;
+	}
+
+	public String getHeadPortrait() {
+		return headPortrait;
+	}
+
+	public void setHeadPortrait(String headPortrait) {
+		this.headPortrait = headPortrait;
 	}
 
 }
