@@ -17,4 +17,8 @@ public interface BuyRecordRepository extends CustomJpaRepository<BuyRecord, Long
 
     @Query("select b from BuyRecord b where b.state = :buyRecordState order by b.createTime desc ")
     List<BuyRecord> findAllByStateAndOrderByCreateTime(@Param("buyRecordState") BuyRecordState buyRecordState);
+    
+    @Query("select count(id) from BuyRecord where publisherId=?1 and strategyTypeId=?2")
+	Integer strategyJoinCount(Long publisherId, Long strategyTypeId);
+    
 }

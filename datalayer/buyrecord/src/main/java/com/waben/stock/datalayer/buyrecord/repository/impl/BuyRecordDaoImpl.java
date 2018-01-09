@@ -65,4 +65,9 @@ public class BuyRecordDaoImpl implements BuyRecordDao {
 	public List<BuyRecord> retieveByStateAndOrderByCreateTime(BuyRecordState state) {
 		return repository.findAllByStateAndOrderByCreateTime(state);
 	}
+
+	@Override
+	public Integer strategyJoinCount(Long publisherId, Long strategyTypeId) {
+		return repository.strategyJoinCount(publisherId, strategyTypeId);
+	}
 }

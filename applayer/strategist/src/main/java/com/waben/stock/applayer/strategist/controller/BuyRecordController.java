@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.strategist.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,18 @@ public class BuyRecordController {
 		boolean isSuspension = stockBusiness.isSuspension(stockCode);
 		if (isSuspension) {
 			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		}
+		// 判断是否有资格参与该策略
+		boolean qualify = buyRecordBusiness.hasStrategyQualify(SecurityUtil.getUserId(), strategyTypeId);
+		if (!qualify) {
+			throw new ServiceException(ExceptionConstant.STRATEGYQUALIFY_NOTENOUGH_EXCEPTION);
+		}
+		// 判断该市值是否足够购买一手股票
+		BigDecimal temp = applyAmount.divide(delegatePrice, 2, RoundingMode.HALF_DOWN);
+		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].multiply(BigDecimal.valueOf(100))
+				.intValue();
+		if (numberOfStrand < 100) {
+			throw new ServiceException(ExceptionConstant.APPLYAMOUNT_NOTENOUGH_BUYSTOCK_EXCEPTION);
 		}
 		// 检查参数是否合理
 		if (delegatePrice.compareTo(new BigDecimal(0)) <= 0) {

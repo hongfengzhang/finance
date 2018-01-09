@@ -101,6 +101,11 @@ public class BuyRecordController implements BuyRecordInterface {
     	BuyRecord buyRecord = buyRecordService.deferred(id);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
 	}
+    
+    @Override
+    public Response<Integer> strategyJoinCount(@PathVariable Long publisherId, @PathVariable Long strategyTypeId) {
+    	return new Response<>(buyRecordService.strategyJoinCount(publisherId, strategyTypeId));
+    }
 
     @Override
     public Response<Void> dropBuyRecord(@PathVariable Long id) {
