@@ -51,7 +51,7 @@ public class WebSocketController {
 
     @Scheduled(fixedRate = 6*1000)
     public void callback() {
-        logger.info("推送股票最新行情");
+        //logger.info("推送股票最新行情");
         for (Map.Entry<String, List<StockRequestMessage>> entry : stocks.entrySet()) {
             List<StockMarket> result = stockQuotationHttp.fetQuotationByCode(entry.getValue());
             List<StockResponseMessage> stockMarkets = new ArrayList<>();

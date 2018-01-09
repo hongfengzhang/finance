@@ -1,7 +1,9 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -130,11 +132,26 @@ public class PublisherService {
 		Page<Publisher> pages = publisherDao.page(new Specification<Publisher>() {
 			@Override
 			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-				if (!StringUtils.isEmpty(query.getPhone())) {
-					Predicate typeQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query
-							.getPhone());
-					criteriaQuery.where(criteriaBuilder.and(typeQuery));
+				if(StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPhone())){
+					return criteriaQuery.getRestriction();
 				}
+				List<Predicate> predicatesList = new ArrayList<Predicate>();
+				if (!StringUtils.isEmpty(query.getPhone())) {
+					Predicate phoneQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query
+							.getPhone());
+					predicatesList.add(phoneQuery);
+				}
+				if (!StringUtils.isEmpty(query.getPhone())) {
+					Predicate promoterQuery = criteriaBuilder.equal(root.get("promoter").as(String.class), query
+							.getPromoter());
+					predicatesList.add(promoterQuery);
+				}
+				if (!StringUtils.isEmpty(query.getPhone())) {
+					Predicate createTimeQuery = criteriaBuilder.equal(root.get("createTime").as(String.class), query
+							.getCreateTime());
+					predicatesList.add(createTimeQuery);
+				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
 				return criteriaQuery.getRestriction();
 			}
 		},pageable);
