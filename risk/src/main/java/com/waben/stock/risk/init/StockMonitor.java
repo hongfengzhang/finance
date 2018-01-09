@@ -106,12 +106,12 @@ public class StockMonitor implements CommandLineRunner {
         Trigger sellOutTriggerAMStop = newTrigger().withIdentity("sellOutTriggerAMStop", "groupSellOut").startAt(runTime)
                 .withSchedule(scheduleBuilderAMStop)
                 .modifiedByCalendar("workCalendar")
-                .forJob(jobBuyInStop)
+                .forJob(jobSellOutStop)
                 .build();
         Trigger sellOutTriggerPMStop = newTrigger().withIdentity("sellOutTriggerPMStop", "groupSellOut").startAt(runTime)
                 .withSchedule(scheduleBuilderPMStop)
                 .modifiedByCalendar("workCalendar")
-                .forJob(jobBuyInStop)
+                .forJob(jobSellOutStop)
                 .build();
 //        ListenerManager listenerManager = scheduler.getListenerManager();
 //        JobListener listener = new BuyInJobListener();

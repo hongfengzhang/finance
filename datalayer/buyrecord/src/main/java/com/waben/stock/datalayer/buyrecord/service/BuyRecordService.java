@@ -327,6 +327,10 @@ public class BuyRecordService {
 		accountBusiness.deferredCharges(buyRecord.getPublisherId(), id, deferredRecord.getFee());
 		return buyRecord;
 	}
+	
+	public Integer strategyJoinCount(Long publisherId, Long strategyTypeId) {
+		return buyRecordDao.strategyJoinCount(publisherId, strategyTypeId);
+	}
 
 	public Page<BuyRecord> pagesByPostedQuery(final StrategyPostedQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());

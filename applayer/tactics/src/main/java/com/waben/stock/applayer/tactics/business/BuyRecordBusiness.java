@@ -205,4 +205,23 @@ public class BuyRecordBusiness {
 		throw new ServiceException(sResponse.getCode());
 	}
 
+	public Integer strategyJoinCount(Long publisherId, Long strategyTypeId) {
+		Response<Integer> response = buyRecordReference.strategyJoinCount(publisherId, strategyTypeId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public boolean hasStrategyQualify(Long publisherId, Long strategyTypeId) {
+		if (new Long(3).equals(strategyTypeId)) {
+			// 策略类型为3，表示2000元体验金活动
+			Integer count = this.strategyJoinCount(publisherId, strategyTypeId);
+			if (count != null && count > 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 }

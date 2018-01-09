@@ -101,7 +101,7 @@ public class RetriveStockOverHttp {
 			}
 			return list;
 		} catch (IOException e) {
-			throw new RuntimeException("http获取K线图数据异常!", e);
+			throw new RuntimeException("http获取分时图数据异常!", e);
 		}
 	}
 

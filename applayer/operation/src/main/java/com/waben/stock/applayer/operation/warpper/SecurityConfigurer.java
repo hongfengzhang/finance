@@ -78,7 +78,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT, "/login-error").permitAll()
-                .antMatchers(HttpMethod.GET, "/turbine/**", "/turbine/hystrix.stream", "/hystrix.stream").permitAll()
+                .antMatchers(HttpMethod.GET, "/turbine/**", "/turbine/hystrix.stream", "/hystrix.stream", "/file/upload").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .antMatchers(HttpMethod.POST,"/file/**").permitAll()
                 .anyRequest().authenticated()

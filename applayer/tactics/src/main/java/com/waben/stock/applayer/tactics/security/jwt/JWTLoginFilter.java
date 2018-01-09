@@ -18,6 +18,7 @@ import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.CustomUsernamePasswordAuthenticationToken;
+import com.waben.stock.applayer.tactics.service.JedisCache;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
@@ -34,6 +35,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	private PublisherReference publisherReference;
 
 	private CapitalAccountReference accountService;
+
+	private JedisCache jedisCache;
 
 	public JWTLoginFilter(AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(loginUrl, HttpMethod.POST.name()));
@@ -53,8 +56,10 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		// step 1 : 生成token
 		CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 		String token = JWTTokenUtil.generateToken(customUserDetails);
+		// step 2 : 缓存token到redis
+		jedisCache.setToken(customUserDetails.getUsername(), token);
 		customUserDetails.setToken(token);
-		// step 2 : 返回用户信息和token到客户端
+		// step 3 : 返回用户信息和token到客户端
 		Long publisherId = customUserDetails.getUserId();
 		Response<PublisherDto> publisherResp = publisherReference.fetchById(publisherId);
 		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherId);
@@ -83,6 +88,10 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	public void setAccountService(CapitalAccountReference accountService) {
 		this.accountService = accountService;
+	}
+
+	public void setJedisCache(JedisCache jedisCache) {
+		this.jedisCache = jedisCache;
 	}
 
 }

@@ -33,5 +33,11 @@ public class StrategyTypeController {
 	public Response<List<StrategyTypeDto>> lists() {
 		return new Response<>(service.lists());
 	}
+	
+	@GetMapping("/experience")
+	@ApiOperation(value = "获取2000元体验活动的策略")
+	public Response<StrategyTypeDto> retriveExperienceStrategyType() {
+		return new Response<>(service.retriveExperienceStrategyType());
+	}
 
 }

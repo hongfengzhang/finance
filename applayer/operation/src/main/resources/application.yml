@@ -9,5 +9,9 @@ spring:
     throw-exception-if-no-handler-found: true
   thymeleaf:
     cache: false
-fileSystem : http://10.0.0.31/
-uploadFilePath : E:/upload/file/
+  http:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+fileSystem : ${fs.path}
+uploadFilePath : ${fs.uploaddir}
