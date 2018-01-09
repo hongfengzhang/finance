@@ -6,28 +6,30 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.waben.stock.applayer.tactics.business.BindCardBusiness;
+import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
-import com.waben.stock.applayer.tactics.reference.BindCardReference;
-import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
-import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.SmsType;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.RandomUtil;
 
@@ -44,23 +46,20 @@ import io.swagger.annotations.ApiOperation;
 public class PublisherController {
 
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference publisherReference;
+	private PublisherBusiness publisherBusiness;
 
 	@Autowired
-	@Qualifier("capitalAccountReference")
-	private CapitalAccountReference accountService;
+	private CapitalAccountBusiness accountBusiness;
 
 	@Autowired
-	@Qualifier("bindCardReference")
-	private BindCardReference bindCardReference;
+	private BindCardBusiness bindCardBusiness;
 
 	@Autowired
 	private SmsService smsService;
 
 	@GetMapping("/{id}")
 	public Response<PublisherDto> echo(@PathVariable Long id) {
-		return publisherReference.fetchById(id);
+		return new Response<>(publisherBusiness.findById(id));
 	}
 
 	@PostMapping("/sendSms")
@@ -77,6 +76,14 @@ public class PublisherController {
 		return new Response<>();
 	}
 
+	@GetMapping("/paymentPwdCode/validation/{verificationCode}")
+	@ApiOperation(value = "验证修改支付密码的验证码是否正确")
+	public Response<Boolean> validatePaymentPwdCode(@PathVariable("verificationCode") String verificationCode) {
+		// 检查验证码
+		SmsCache.matchVerificationCode(SmsType.ModifyPaymentPwdCode, SecurityUtil.getUsername(), verificationCode);
+		return new Response<>(true);
+	}
+
 	@PostMapping("/register")
 	@ApiOperation(value = "注册发布策略人")
 	public Response<PublisherCapitalAccountDto> register(@RequestParam(required = true) String phone,
@@ -85,28 +92,21 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
 		// 注册
-		Response<PublisherDto> publisherResp = publisherReference.register(phone, password, promoter,
-				request.getHeader("endType"));
-		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
-		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
-				accountResp.getResult());
-		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {
-			String token = JWTTokenUtil.generateToken(
-					new CustomUserDetails(publisherResp.getResult().getId(), publisherResp.getResult().getSerialCode(),
-							publisherResp.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
-			data.setToken(token);
-		}
+		PublisherDto publisher = publisherBusiness.register(phone, password, promoter, request.getHeader("endType"));
+		CapitalAccountDto account = accountBusiness.findByPublisherId(publisher.getId());
+		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisher, account);
+		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
+				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+		data.setToken(token);
 		return new Response<>(data);
 	}
 
 	@GetMapping("/getCurrent")
 	@ApiOperation(value = "获取当前发布策略人信息")
 	public Response<PublisherCapitalAccountDto> getCurrent() {
-		Response<PublisherDto> publisherResp = publisherReference.fetchById(SecurityUtil.getUserId());
-		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(SecurityUtil.getUserId());
-		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
-				accountResp.getResult());
-		return new Response<>(data);
+		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());
+		return new Response<>(new PublisherCapitalAccountDto(publisher, account));
 	}
 
 	@GetMapping("/getSettingRemind")
@@ -115,28 +115,15 @@ public class PublisherController {
 		Response<SettingRemindDto> result = new Response<>(new SettingRemindDto());
 		result.getResult().setPhone(SecurityUtil.getUsername());
 		// 获取是否绑卡
-		Response<List<BindCardDto>> bindCardListResp = bindCardReference.listsByPublisherId(SecurityUtil.getUserId());
-		if ("200".equals(bindCardListResp.getCode())) {
-			if (bindCardListResp.getResult() != null && bindCardListResp.getResult().size() > 0) {
-				result.getResult().setSettingBindCard(true);
-				result.getResult().setBindCardCount(bindCardListResp.getResult().size());
-			}
-		} else {
-			result.setCode(bindCardListResp.getCode());
-			result.setMessage(bindCardListResp.getMessage());
-			return result;
+		List<BindCardDto> bindCardList = bindCardBusiness.listsByPublisherId(SecurityUtil.getUserId());
+		if (bindCardList != null && bindCardList.size() > 0) {
+			result.getResult().setSettingBindCard(true);
+			result.getResult().setBindCardCount(bindCardList.size());
 		}
 		// 获取是否设置过支付密码
-		Response<CapitalAccountDto> capitalAccountResp = accountService.fetchByPublisherId(SecurityUtil.getUserId());
-		if ("200".equals(capitalAccountResp.getCode())) {
-			if (capitalAccountResp.getResult() != null && capitalAccountResp.getResult().getPaymentPassword() != null
-					&& !"".equals(capitalAccountResp.getResult().getPaymentPassword())) {
-				result.getResult().setSettingPaymentPassword(true);
-			}
-		} else {
-			result.setCode(capitalAccountResp.getCode());
-			result.setMessage(capitalAccountResp.getMessage());
-			return result;
+		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());
+		if (account != null && account.getPaymentPassword() != null && !"".equals(account.getPaymentPassword())) {
+			result.getResult().setSettingPaymentPassword(true);
 		}
 		return result;
 	}
@@ -147,24 +134,51 @@ public class PublisherController {
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
 		// 修改密码
-		Response<PublisherDto> publisherResp = publisherReference.modifyPassword(phone, password);
-		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherResp.getResult().getId());
-		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisherResp.getResult(),
-				accountResp.getResult());
-		if ("200".equals(publisherResp.getCode()) && publisherResp.getResult() != null) {
-			String token = JWTTokenUtil.generateToken(
-					new CustomUserDetails(publisherResp.getResult().getId(), publisherResp.getResult().getSerialCode(),
-							publisherResp.getResult().getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
-			data.setToken(token);
-		}
+		PublisherDto publisher = publisherBusiness.modifyPassword(phone, password);
+		CapitalAccountDto account = accountBusiness.findByPublisherId(publisher.getId());
+		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisher, account);
+		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
+				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+		data.setToken(token);
 		return new Response<>(data);
 	}
 
+	@PostMapping("/resetPassword")
+	@ApiOperation(value = "根据原密码重设密码")
+	public Response<PublisherCapitalAccountDto> resetPassword(String oldPassword, String newPassword) {
+		// 验证原始密码是否正确
+		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+		if (!oldPassword.equals(publisher.getPassword())) {
+			throw new ServiceException(ExceptionConstant.ORIGINAL_PASSWORD_MISMATCH_EXCEPTION);
+		}
+		// 修改密码
+		publisherBusiness.modifyPassword(publisher.getPhone(), newPassword);
+		CapitalAccountDto account = accountBusiness.findByPublisherId(publisher.getId());
+		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisher, account);
+		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
+				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+		data.setToken(token);
+		return new Response<>(data);
+	}
+	
 	@PostMapping("/modifyPaymentPassword")
 	@ApiOperation(value = "设置支付密码")
-	public Response<String> modifyPaymentPassword(String paymentPassword) {
-		accountService.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
+	public Response<String> modifyPaymentPassword(String phone, String paymentPassword, String verificationCode) {
+		if (!SecurityUtil.getUsername().equals(phone)) {
+			throw new ServiceException(ExceptionConstant.PHONE_MISMATCH_EXCEPTION);
+		}
+		// 检查验证码
+		SmsCache.matchVerificationCode(SmsType.ModifyPaymentPwdCode, phone, verificationCode);
+		accountBusiness.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
 		return new Response<>();
+	}
+	
+	@ApiOperation(value = "上传用户头像")
+	@PostMapping("/headPortrait")
+	public Response<String> uploadHeadPortrait(@RequestParam("file") MultipartFile file, HttpServletRequest request) {
+		Response<String> response = new Response<String>();
+		response.setResult(publisherBusiness.uploadHeadPortrait(SecurityUtil.getUserId(), file));
+		return response;
 	}
 
 }

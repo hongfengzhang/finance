@@ -244,7 +244,7 @@
                         stock.code = code;
                         stock.time = time;
                         arrayCode.push(stock);
-                        dataMap[code] = index;
+                        dataMap[code+":"+index] = index;
                     }
                     send(arrayCode);
                 },
@@ -267,11 +267,12 @@
         function handlerSubscribe(result) {
             for(var index in result) {
                 var stock = result[index].code;
-                if(dataMap[stock]){
+                var row = stock+":"+index;
+                if(dataMap[row]){
                     $table.bootstrapTable('updateCell', {
-                        rowIndex: dataMap[stock],
+                        rowIndex: dataMap[row],
                         fieldName: 'currentAmount',
-                        fieldValue: result[index].entrustPrice
+                        fieldValue: result[index].price
                     });
                 }
             }

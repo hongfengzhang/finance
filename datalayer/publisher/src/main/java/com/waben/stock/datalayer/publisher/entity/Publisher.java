@@ -66,6 +66,11 @@ public class Publisher {
 	 */
 	@Column(name = "end_type")
 	private String endType;
+	/**
+	 * 头像
+	 */
+	@Column(name = "head_portrait")
+	private String headPortrait;
 
 	public Long getId() {
 		return id;
@@ -145,6 +150,14 @@ public class Publisher {
 
 	public void setEndType(String endType) {
 		this.endType = endType;
+	}
+
+	public String getHeadPortrait() {
+		return headPortrait;
+	}
+
+	public void setHeadPortrait(String headPortrait) {
+		this.headPortrait = headPortrait;
 	}
 
 }

@@ -28,7 +28,7 @@ public class PublisherServiceFallback implements PublisherService{
 
     @Override
     public Response<PublisherDto> register(String phone, String password, String promoter, String endType) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 
@@ -45,5 +45,10 @@ public class PublisherServiceFallback implements PublisherService{
 	@Override
 	public Response<PageInfo<PublisherDto>> pagePromotionUser(Long id, int page, int size) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PublisherDto> modiyHeadportrait(Long id, String headPortrait) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }

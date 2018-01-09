@@ -52,6 +52,8 @@ public class RetriveStockOverHttp {
 			url.append("&type=day");
 		} else if (type == 2) {
 			url.append("&type=week");
+		} else if (type == 3) {
+			url.append("&type=month");
 		} else {
 			url.append("&type=day");
 		}
@@ -99,7 +101,7 @@ public class RetriveStockOverHttp {
 			}
 			return list;
 		} catch (IOException e) {
-			throw new RuntimeException("http获取K线图数据异常!", e);
+			throw new RuntimeException("http获取分时图数据异常!", e);
 		}
 	}
 

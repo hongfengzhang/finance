@@ -76,4 +76,10 @@ public class PublisherController implements PublisherInterface {
 		return new Response<>(result);
 	}
 
+	@Override
+	public Response<PublisherDto> modiyHeadportrait(@PathVariable Long id, String headPortrait) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(PublisherDto.class,
+				publisherService.modiyHeadportrait(id, headPortrait), false));
+	}
+
 }

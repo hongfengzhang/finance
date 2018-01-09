@@ -52,6 +52,8 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.BUYRECORD_USERNOTDEFERRED_EXCEPTION, "用户选择不递延，不能进行递延操作");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_ALREADY_DEFERRED_EXCEPTION, "该点买记录已经递延过了，不能重复递延");
 		exceptionMap.put(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION, "当前用户为测试用户，不能进行提现操作");
+		exceptionMap.put(ExceptionConstant.STRATEGYQUALIFY_NOTENOUGH_EXCEPTION, "当前用户不能参与该策略，或该策略为一次性参与活动且当前用户已经参与");
+		exceptionMap.put(ExceptionConstant.APPLYAMOUNT_NOTENOUGH_BUYSTOCK_EXCEPTION, "申请市值不足购买一手");
 
 		exceptionMap.put(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION, "投资人信息未找到");
 		exceptionMap.put(ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION, "投资人券商账户登陆异常");

@@ -35,6 +35,10 @@ public interface PublisherInterface {
 	@RequestMapping(value = "/{phone}/modifyPassword", method = RequestMethod.PUT)
 	Response<PublisherDto> modifyPassword(@PathVariable("phone") String phone,
 			@RequestParam(name = "password") String password);
+	
+	@RequestMapping(value = "/{id}/headportrait", method = RequestMethod.PUT)
+	Response<PublisherDto> modiyHeadportrait(@PathVariable("id") Long id,
+			@RequestParam(name = "headPortrait") String headPortrait);
 
 	@RequestMapping(value = "/{id}/promotion/count", method = RequestMethod.GET)
 	Response<Integer> promotionCount(@PathVariable("id") Long id);
