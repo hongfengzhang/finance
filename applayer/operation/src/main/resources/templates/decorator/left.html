@@ -39,7 +39,7 @@
             </div>
         </div>
 
-        <ul class="nav">
+        <ul class="nav" id="menu">
             <li th:each="menu : ${session.menus}">
                 <a data-toggle="collapse" th:href="'#'+${menu.id}" >
                     <i th:class="${menu.icon}"></i>
