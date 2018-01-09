@@ -14,6 +14,7 @@ import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
+import com.waben.stock.applayer.tactics.service.JedisCache;
 
 @Configuration
 @EnableWebSecurity
@@ -25,12 +26,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private CapitalAccountReference accountService;
 
+	@Autowired
+	private JedisCache jedisCache;
+
+	@Autowired
+	private JWTAuthenticationFilter authFilter;
+
 	@Bean
 	public JWTLoginFilter jwtLoginFilter() {
 		try {
 			JWTLoginFilter result = new JWTLoginFilter(authenticationManager());
 			result.setPublisherService(publisherReference);
 			result.setAccountService(accountService);
+			result.setJedisCache(jedisCache);
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("get AuthenticationManager exception!", e);
@@ -79,18 +87,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll();
 		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
 		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/applists").permitAll();
+		http.authorizeRequests()
+				.antMatchers("/jsonp/experienceSta", "/jsonp/{publisherId}/strategyqualify/{strategyTypeId}")
+				.permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
 		// 添加一个过滤器 所有访问 /login 的请求交给 JWTLoginFilter 来处理 这个类处理所有的JWT相关内容
 		http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
 		// 添加一个过滤器验证其他请求的Token是否合法
-		http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
 		http.sessionManagement().maximumSessions(1);
 	}
- 
+
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);

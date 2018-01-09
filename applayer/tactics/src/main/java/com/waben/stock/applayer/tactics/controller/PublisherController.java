@@ -118,6 +118,7 @@ public class PublisherController {
 		List<BindCardDto> bindCardList = bindCardBusiness.listsByPublisherId(SecurityUtil.getUserId());
 		if (bindCardList != null && bindCardList.size() > 0) {
 			result.getResult().setSettingBindCard(true);
+			result.getResult().setBindCardCount(bindCardList.size());
 		}
 		// 获取是否设置过支付密码
 		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());

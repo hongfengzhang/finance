@@ -89,6 +89,10 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_ALREADY_DEFERRED_EXCEPTION = "6018";
 	// 当前用户为测试用户，不能进行提现操作
 	public static final String TESTUSER_NOWITHDRAWALS_EXCEPTION = "6019";
+	// 当前用户不能参与该策略，或该策略为一次性参与活动且当前用户已经参与
+	public static final String STRATEGYQUALIFY_NOTENOUGH_EXCEPTION = "6020";
+	// 申请市值不足购买一手
+	public static final String APPLYAMOUNT_NOTENOUGH_BUYSTOCK_EXCEPTION = "6021";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
