@@ -1,0 +1,34 @@
+package com.waben.stock.applayer.strategist.reference.fallback;
+
+import org.springframework.stereotype.Component;
+
+import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
+import com.waben.stock.interfaces.pojo.Response;
+
+/**
+ * 支付订单 reference服务接口fallback
+ *
+ * @author luomengan
+ */
+@Component
+public class PaymentOrderReferenceFallback implements PaymentOrderReference {
+
+	@Override
+	public Response<PaymentOrderDto> fetchByPaymentNo(String paymentNo) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PaymentOrderDto> addPaymentOrder(PaymentOrderDto paymentOrderDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PaymentOrderDto> changeState(String paymentNo, String stateIndex) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+}
