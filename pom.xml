@@ -209,6 +209,20 @@
             </dependencies>
         </profile>
         <profile>
+            <id>test</id>
+            <properties>
+                <active>test</active>
+            </properties>
+            <dependencies>
+                <dependency>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-devtools</artifactId>
+                    <optional>true</optional>
+                    <!--依赖不会传递-->
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
             <id>prod</id>
             <properties>
                 <active>prod</active>
