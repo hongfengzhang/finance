@@ -1,6 +1,7 @@
-package com.waben.stock.applayer.tactics.security;
+package com.waben.stock.applayer.strategist.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -8,24 +9,22 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import com.waben.stock.applayer.tactics.reference.PublisherReference;
-import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
+import com.waben.stock.applayer.strategist.reference.PublisherReference;
+import com.waben.stock.applayer.strategist.security.jwt.JWTTokenUtil;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 
 public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
 	@Autowired
+	@Qualifier("publisherReference")
 	private PublisherReference publisherReference;
 
 	@Override
 	protected void additionalAuthenticationChecks(UserDetails userDetails,
 			UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
 		CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
-		String password = null;
-		if(authentication != null && authentication.getCredentials() != null) {
-			password = authentication.getCredentials().toString();
-		}
+		String password = authentication.getCredentials().toString();
 		if (!(password != null && password.equals(customUserDetails.getPassword()))) {
 			throw new BadCredentialsException("密码错误");
 		}
