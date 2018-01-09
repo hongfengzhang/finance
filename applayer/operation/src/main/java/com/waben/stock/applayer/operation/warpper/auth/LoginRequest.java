@@ -35,4 +35,16 @@ public class LoginRequest {
     public String getPassword() {
         return password;
     }
+
+    @Override
+    public boolean equals(Object o){
+        if(o.toString().equals(this.username))
+            return true;
+        return false;
+    }
+
+    @Override
+    public int hashCode(){
+        return username.hashCode();
+    }
 }

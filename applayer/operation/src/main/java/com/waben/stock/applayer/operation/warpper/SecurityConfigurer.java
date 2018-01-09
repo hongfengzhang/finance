@@ -28,7 +28,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy;
+import org.springframework.security.web.session.ConcurrentSessionFilter;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.annotation.Resource;
 
 /**
  * @author Joe Grandja
@@ -48,10 +54,16 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Resource
+    private SessionRegistry sessionRegistry;
+
     protected LoginProcessingFilter processingFilter() throws Exception {
         LoginProcessingFilter filter = new LoginProcessingFilter(LOGIN_ENTRY_POINT, successHandler, failureHandler,
-                objectMapper);
+                objectMapper, sessionRegistry);
+        filter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(LOGIN_ENTRY_POINT, "POST"));
+        filter.setPostOnly(true);
         filter.setAuthenticationManager(authenticationManager());
+        filter.setSessionAuthenticationStrategy(new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry));
         return filter;
     }
 
@@ -73,15 +85,18 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 //                .anyRequest().permitAll()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
 //                    .successForwardUrl("/index")
-                .and().logout().invalidateHttpSession(false).logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
+                .and().logout().invalidateHttpSession(false).logoutUrl("/logout").logoutSuccessHandler(new
+                LogoutSuccessHandler())
                 .and().rememberMe()
                 .and().exceptionHandling()
                 .authenticationEntryPoint(new ForbiddenEntryPoint())
                 .accessDeniedHandler(new ForbiddenAccessDeniedHandler())
                 .and()
-                .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(processingFilter(), UsernamePasswordAuthenticationFilter.class)
-                .httpBasic().and().sessionManagement().maximumSessions(1).expiredUrl(LOGIN_ENTRY_POINT)
+                .addFilterAt(processingFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterAt(new ConcurrentSessionFilter(sessionRegistry, LOGIN_ENTRY_POINT),
+                        ConcurrentSessionFilter.class)
+//                .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
+//                .httpBasic().and().sessionManagement().maximumSessions(1).expiredUrl(LOGIN_ENTRY_POINT)
         ;
 
     }
@@ -110,5 +125,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .authenticationProvider(managerAuthenticationProvider);
         auth.eraseCredentials(false);
     }
+
 
 }

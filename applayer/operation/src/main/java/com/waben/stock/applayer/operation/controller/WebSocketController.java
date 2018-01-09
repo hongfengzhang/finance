@@ -44,8 +44,7 @@ public class WebSocketController {
     @MessageMapping("/publish")
     public void publish(String codes) {
         List<StockRequestMessage> stockRequestMessages = JacksonUtil.decode(codes, new TypeReference<List
-                <StockRequestMessage>>() {
-        });
+                <StockRequestMessage>>() {});
         stocks.put("investor", stockRequestMessages);
     }
 
