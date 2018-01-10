@@ -6,6 +6,4 @@ package com.waben.stock.datalayer.buyrecord.warpper.messagequeue;
  */
 public interface Producer {
 
-
-
 }

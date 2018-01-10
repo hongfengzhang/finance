@@ -24,20 +24,20 @@ public class RabbitMqConsumer {
     @Autowired
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
 
-    @RabbitListener(queues = {"shangSecurity"})
-    public void shangSecurity(String message) {
-        logger.info("上海证券点买交易记录接收到消息:{}", message);
-    }
-
-    @RabbitListener(queues = {"shenSecurity"})
-    public void shenSecurity(String message) {
-        logger.info("深证证券点买交易记录接收到消息:{}", message);
-    }
-
-    @RabbitListener(queues = {"developSecurity"})
-    public void developSecurity(String message) {
-        logger.info("创业板点买交易记录接收到消息:{}", message);
-    }
+//    @RabbitListener(queues = {"shangSecurity"})
+//    public void shangSecurity(String message) {
+//        logger.info("上海证券点买交易记录接收到消息:{}", message);
+//    }
+//
+//    @RabbitListener(queues = {"shenSecurity"})
+//    public void shenSecurity(String message) {
+//        logger.info("深证证券点买交易记录接收到消息:{}", message);
+//    }
+//
+//    @RabbitListener(queues = {"developSecurity"})
+//    public void developSecurity(String message) {
+//        logger.info("创业板点买交易记录接收到消息:{}", message);
+//    }
 
     @RabbitListener(queues = {"entrustApplyBuyIn"})
     public void entrustApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
@@ -50,4 +50,5 @@ public class RabbitMqConsumer {
         logger.info("消费券商股票申请委托卖出消息:{}",securitiesStockEntrust.getTradeNo());
         stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
     }
+
 }
