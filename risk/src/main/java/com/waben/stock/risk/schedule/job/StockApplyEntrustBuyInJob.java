@@ -85,8 +85,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
                             Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
                             securitiesStockEntrust.setEntrustNumber(amount.intValue());
-                            securitiesStockEntrust.setEntrustPrice(BigDecimal.valueOf(Integer.valueOf
-                                    (stockEntrustQueryResult.getBusinessPrice())));
+                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult.getBusinessPrice()));
                             entrustProducer.entrustBuyIn(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                         }

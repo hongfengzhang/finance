@@ -37,6 +37,8 @@ public class ExceptionConstant {
 	public static final String ORIGINAL_PASSWORD_MISMATCH_EXCEPTION = "2007";
 	// 手机号不匹配
 	public static final String PHONE_MISMATCH_EXCEPTION = "2008";
+	// 已经设置过支付密码，修改支付密码需要验证码
+	public static final String MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION = "2009";
 
 	/* 业务异常 */
 	// 系统管理业务异常
@@ -93,6 +95,8 @@ public class ExceptionConstant {
 	public static final String STRATEGYQUALIFY_NOTENOUGH_EXCEPTION = "6020";
 	// 申请市值不足购买一手
 	public static final String APPLYAMOUNT_NOTENOUGH_BUYSTOCK_EXCEPTION = "6021";
+	// 持仓第二天之后才能申请卖出
+	public static final String USERSELLAPPLY_NOTMATCH_EXCEPTION = "6022";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

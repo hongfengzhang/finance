@@ -52,6 +52,8 @@ public class RetriveStockOverHttp {
 			url.append("&type=day");
 		} else if (type == 2) {
 			url.append("&type=week");
+		} else if (type == 3) {
+			url.append("&type=month");
 		} else {
 			url.append("&type=day");
 		}
