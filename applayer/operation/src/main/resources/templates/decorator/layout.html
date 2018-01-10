@@ -122,6 +122,46 @@
 
 <script type="text/javascript">
 
+	var children =  sessionStorage.getItem('children');
+	var parent   =  sessionStorage.getItem('parent');
+	
+	$('#menu > li').each(function() {
+		if($(this).index()==parent){
+			$(this).find('a').attr({'class':'','aria-expanded':'true'});
+			$(this).find('div').attr({'class':'collapse in','aria-expanded':'true','style':''});
+			$(this).attr('class','active');
+			$(this).find('li').each(function(){
+				if($(this).index()==children){
+					$(this).attr('class','active');
+				}
+			})
+		}
+	})
+
+	$(function() {
+		$('#menu > li > div > ul > li').each(function() {
+			$(this).click(function() {
+				sessionStorage.setItem('children', $(this).index())
+			})
+		})
+	})
+	
+	$(function() {
+		$('#menu > li').each(function() {
+			$(this).click(function() {
+				sessionStorage.setItem('parent', $(this).index())
+			})
+		})
+	})
+
+	$().ready(function() {
+
+		// Init Sliders
+		//demo.initFormExtendedSliders();
+
+		// Init DatetimePicker
+		demo.initFormExtendedDatetimepickers();
+	});
 </script>
 
 </html>
