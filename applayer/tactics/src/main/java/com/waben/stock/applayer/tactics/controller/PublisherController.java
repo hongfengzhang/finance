@@ -22,6 +22,7 @@ import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
+import com.waben.stock.applayer.tactics.service.JedisCache;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -56,6 +57,9 @@ public class PublisherController {
 
 	@Autowired
 	private SmsService smsService;
+	
+	@Autowired
+	private JedisCache jedisCache;
 
 	@GetMapping("/{id}")
 	public Response<PublisherDto> echo(@PathVariable Long id) {
@@ -98,6 +102,7 @@ public class PublisherController {
 		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
 				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
 		data.setToken(token);
+		jedisCache.setToken(phone, token);
 		return new Response<>(data);
 	}
 
@@ -140,6 +145,7 @@ public class PublisherController {
 		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
 				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
 		data.setToken(token);
+		jedisCache.setToken(phone, token);
 		return new Response<>(data);
 	}
 
@@ -169,6 +175,18 @@ public class PublisherController {
 		}
 		// 检查验证码
 		SmsCache.matchVerificationCode(SmsType.ModifyPaymentPwdCode, phone, verificationCode);
+		accountBusiness.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
+		return new Response<>();
+	}
+	
+	@PostMapping("/initPaymentPassword")
+	@ApiOperation(value = "初始化支付密码")
+	public Response<String> initPaymentPassword(String paymentPassword) {
+		// 是否是第一次设置支付密码
+		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());
+		if (account != null && account.getPaymentPassword() != null && !"".equals(account.getPaymentPassword())) {
+			throw new ServiceException(ExceptionConstant.MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION);
+		}
 		accountBusiness.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
 		return new Response<>();
 	}
