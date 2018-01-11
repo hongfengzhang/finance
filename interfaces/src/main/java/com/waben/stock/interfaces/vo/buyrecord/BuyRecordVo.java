@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.dto.buyrecord;
+package com.waben.stock.interfaces.vo.buyrecord;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -9,12 +9,10 @@ import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
 
 /**
- * 点买记录
  * 
- * @author luomengan
- *
+ * @author Created by hujian on 2018年1月11日
  */
-public class BuyRecordDto {
+public class BuyRecordVo {
 
 	private Long id;
 	/**
@@ -40,7 +38,7 @@ public class BuyRecordDto {
 	/**
 	 * 是否递延费
 	 */
-	private Boolean deferred;
+	private String deferredString;
 	/**
 	 * 止盈点
 	 */
@@ -68,7 +66,7 @@ public class BuyRecordDto {
 	/**
 	 * 状态
 	 */
-	private BuyRecordState state;
+	private String buyRecordState;
 	/**
 	 * 持股数
 	 */
@@ -184,12 +182,12 @@ public class BuyRecordDto {
 		this.reserveFund = reserveFund;
 	}
 
-	public Boolean getDeferred() {
-		return deferred;
+	public String getDeferredString() {
+		return deferredString;
 	}
 
-	public void setDeferred(Boolean deferred) {
-		this.deferred = deferred;
+	public void setDeferredString(String deferredString) {
+		this.deferredString = deferredString;
 	}
 
 	public BigDecimal getProfitPoint() {
@@ -240,12 +238,12 @@ public class BuyRecordDto {
 		this.lossPosition = lossPosition;
 	}
 
-	public BuyRecordState getState() {
-		return state;
+	public String getBuyRecordState() {
+		return buyRecordState;
 	}
 
-	public void setState(BuyRecordState state) {
-		this.state = state;
+	public void setBuyRecordState(String buyRecordState) {
+		this.buyRecordState = buyRecordState;
 	}
 
 	public Integer getNumberOfStrand() {
@@ -254,6 +252,14 @@ public class BuyRecordDto {
 
 	public void setNumberOfStrand(Integer numberOfStrand) {
 		this.numberOfStrand = numberOfStrand;
+	}
+
+	public BigDecimal getDelegatePrice() {
+		return delegatePrice;
+	}
+
+	public void setDelegatePrice(BigDecimal delegatePrice) {
+		this.delegatePrice = delegatePrice;
 	}
 
 	public String getDelegateNumber() {
@@ -336,6 +342,14 @@ public class BuyRecordDto {
 		this.investorId = investorId;
 	}
 
+	public String getInvestorName() {
+		return investorName;
+	}
+
+	public void setInvestorName(String investorName) {
+		this.investorName = investorName;
+	}
+
 	public Long getPublisherId() {
 		return publisherId;
 	}
@@ -352,22 +366,6 @@ public class BuyRecordDto {
 		this.publisherSerialCode = publisherSerialCode;
 	}
 
-	public StockDto getStockDto() {
-		return stockDto;
-	}
-
-	public void setStockDto(StockDto stockDto) {
-		this.stockDto = stockDto;
-	}
-
-	public BigDecimal getDelegatePrice() {
-		return delegatePrice;
-	}
-
-	public void setDelegatePrice(BigDecimal delegatePrice) {
-		this.delegatePrice = delegatePrice;
-	}
-
 	public String getStockName() {
 		return stockName;
 	}
@@ -382,7 +380,6 @@ public class BuyRecordDto {
 
 	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
-
 	}
 
 	public PublisherDto getPublisherDto() {
@@ -393,18 +390,14 @@ public class BuyRecordDto {
 		this.publisherDto = publisherDto;
 	}
 
-	public String getInvestorName() {
-		return investorName;
+	public StockDto getStockDto() {
+		return stockDto;
 	}
 
-	public void setInvestorName(String investorName) {
-		this.investorName = investorName;
+	public void setStockDto(StockDto stockDto) {
+		this.stockDto = stockDto;
 	}
 	
-	public String getBuyRecordState(){
-		return state.getStatus();
-	}
-	public String getDeferredString(){
-		return deferred == true ? "是":"否";
-	}
+	
+	
 }

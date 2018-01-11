@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.buyrecord.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.buyrecord.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.buyrecord.business.StrategyTypeBusiness;
@@ -353,9 +356,41 @@ public class BuyRecordService {
 			@Override
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				Predicate state = criteriaBuilder.in(root.get("state")).value(BuyRecordState.SELLAPPLY)
-						.value(BuyRecordState.SELLLOCK).value(BuyRecordState.HOLDPOSITION);
-				criteriaQuery.where(state);
+				if(StringUtils.isEmpty(query.getPublisherPhone()) && StringUtils.isEmpty(query.getStockName()) 
+						&&StringUtils.isEmpty(query.getInvestorName()) 
+						&& StringUtils.isEmpty(query.getBeginTime())){
+					return criteriaQuery.getRestriction();
+				}
+				List<Predicate> predicatesList = new ArrayList<Predicate>();
+				if (!StringUtils.isEmpty(query.getPublisherPhone())) {
+					Predicate publisherPhoneQuery = criteriaBuilder.like(root.get("publisherPhone").as(String.class), "%"+query
+							.getPublisherPhone()+"%");
+					predicatesList.add(criteriaBuilder.and(publisherPhoneQuery));
+				}
+				if(!StringUtils.isEmpty(query.getStockName())){
+					Predicate stockNameQuery = criteriaBuilder.like(root.get("stockName").as(String.class), "%"+query
+							.getStockName()+"%");
+					predicatesList.add(criteriaBuilder.and(stockNameQuery));
+				}
+				if(!StringUtils.isEmpty(query.getInvestorName())){
+					Predicate investorNameQuery = criteriaBuilder.like(root.get("investorName").as(String.class), "%"+query
+							.getInvestorName()+"%");
+					predicatesList.add(criteriaBuilder.and(investorNameQuery));
+				}
+				if(!StringUtils.isEmpty(query.getBeginTime()) && !StringUtils.isEmpty(query.getEndTime())){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date beginTime = null;
+					Date endTime = null;
+					try {
+						beginTime = sdf.parse(query.getBeginTime());
+						endTime = sdf.parse(query.getEndTime());
+					} catch (ParseException e) {
+						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
+					}
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+					predicatesList.add(criteriaBuilder.and(createTimeQuery));
+				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

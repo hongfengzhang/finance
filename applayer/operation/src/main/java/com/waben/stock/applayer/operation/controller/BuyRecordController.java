@@ -19,6 +19,11 @@ public class BuyRecordController {
 
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
+    
+    @RequestMapping("/index")
+    public String index(){
+    	return "investor/buyrecord/index";
+    }
 
     @GetMapping("/pages")
     @ResponseBody

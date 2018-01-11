@@ -12,37 +12,62 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票名称</label>
+                            <label class="col-md-4 control-label">发布人</label>
                             <div class="col-md-8">
-                                <input type="text" name="userName" class="form-control" maxlength="11"
-                                       placeholder="股票名称"/>
+                                <input type="text" name="publisherPhone" class="form-control" maxlength="11"
+                                       placeholder="发布人"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票代码</label>
+                            <label class="col-md-4 control-label">股票名称</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="state" maxlength="11" placeholder="股票代码"/>
+                                <input type="text" class="form-control" name="stockName" maxlength="11" placeholder="股票名称"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票状态</label>
+                            <label class="col-md-4 control-label">投资人</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" maxlength="11" placeholder="股票状态"/>
+                            	<select class="selectpicker" name="investorName" data-title="请选择投资人">
+                            		<option th:each="investor,investorStart : ${investors}"
+											th:value="${investor.id}" th:text="${investor.userName}"></option>
+                            	</select>
                             </div>
                         </div>
                     </div>
-
+                    
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">买入时间</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control datetimepicker" name="beginTime" maxlength="11" placeholder="开始时间"/>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                    	<div class="form-group">
+	                    	<div class="col-sm-8">
+	                            <input type="text" class="form-control datetimepicker" name="endTime" maxlength="11" placeholder="结束时间"/>
+	                        </div>
+		                </div>
+	                </div>
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
-
+                            <input id="search" type="button" class="btn btn-fill btn-info" value="搜索"/>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -94,7 +119,7 @@
                 cache: false, // 不缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -172,11 +197,11 @@
                     title: '买入时间',
                     align: 'center'
                 }, {
-                    field: 'state',
+                    field: 'buyRecordState',
                     title: '策略状态',
                     align: 'center'
                 },{
-                    field: 'deferred',
+                    field: 'deferredString',
                     title: '是否递延',
                     align: 'center'
                 }, {
@@ -289,6 +314,43 @@
             });
 
         });
+        
+        $('#search').click(function(){
+     	   var beginTime = $("input[name='beginTime']");
+     	   var endTime = $("input[name='endTime']");
+     	   //<![CDATA[ 
+     	   if(beginTime.val() != '' && endTime.val() == ''){
+     		   swal("","请输入结束时间", "error");
+     		   return false;
+     	   }
+     	   if(endTime.val() != '' && beginTime.val() == ''){
+     		   swal("","请输入开始时间", "error");
+     		   return false;
+     	   }
+     	 	//]]>
+     	   var opt = {
+     		        url: "../holding/pages",
+     		        silent:true,
+     		        query:{
+     		        	publisherPhone:$("input[name='publisherPhone']").val(),
+     		        	stockName:$("input[name='stockName']").val(),
+                        investorName:$("select[name='investorName']").val(),
+                        beginTime:beginTime.val(),
+                        endTime:endTime.val()
+                     }
+     		    }; 
+     	   $table.bootstrapTable('refresh',opt);
+        });
+        
+        $('#reset').click(function(){
+        	$("input[name='publisherPhone']").val('');
+        	$("input[name='stockName']").val('');
+        	$("span[class='filter-option pull-left']").text('请选择投资人');
+        	$("select[name='investorName']").val('');
+        	$("input[name='beginTime']").val('');
+        	$("input[name='endTime']").val('');
+        });
+        
     </script>
 </div>
 </body>
