@@ -2,6 +2,20 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       layout:decorator="decorator/layout">
+<head>
+	<style type="text/css">
+		.dropdown-toggle{
+			border-width: 1px;
+			background-color: transparent;
+			font-weight: 400;
+			opacity: 0.8;
+			filter: alpha(opacity=80);
+			padding: 8px 16px;
+			border-color: #E3E3E3;
+			color: #888888;
+		}
+	</style>
+</head>
 
 <body>
 <div class="content" layout:fragment="content">
@@ -34,13 +48,20 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">注册时间</label>
+                            <label class="col-md-4 control-label">发布时间</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control datetimepicker" name="createTime" maxlength="11" placeholder="注册时间"/>
+                                <input type="text" class="form-control datetimepicker" name="beginTime" maxlength="11" placeholder="开始时间"/>
                             </div>
+                            
                         </div>
                     </div>
-
+                    <div class="col-md-2">
+                    	<div class="form-group">
+	                    	<div class="col-sm-8">
+	                            <input type="text" class="form-control datetimepicker" name="endTime" maxlength="11" placeholder="结束时间"/>
+	                        </div>
+		                </div>
+	                </div>
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
@@ -140,7 +161,7 @@
                     align: 'center'
                 }, {
                     field: 'createTime',
-                    title: '注册时间',
+                    title: '发布时间',
                     align: 'center'
                 }, {
                     title: '操作',
@@ -161,13 +182,13 @@
                     events: {
                         'click .view': function (e, value, row, index) {
                             info = JSON.stringify(row);
-                            $(location).prop('href',"../publisher/view/"+row.id);
+                            $(location).prop('href',"../messaging/"+row.id+"/view");
                             //swal('You click view icon, row: ', info);
                             //console.log(info);
                         },
                         'click .edit': function (e, value, row, index) {
                             info = JSON.stringify(row);
-                            $(location).prop('href',"../publisher/edit/"+row.id);
+                            $(location).prop('href',"../messaging/"+row.id+"/edit");
                             //swal('You click edit icon, row: ', info);
                             //console.log(info);
                         },
@@ -191,23 +212,38 @@
         });
         
        $('#search').click(function(){
-    	    var opt = {
+    	   var beginTime = $("input[name='beginTime']");
+    	   var endTime = $("input[name='endTime']");
+    	   //<![CDATA[ 
+    	   if(beginTime.val() != '' && endTime.val() == ''){
+    		   swal("","请输入结束时间", "error");
+    		   return false;
+    	   }
+    	   if(endTime.val() != '' && beginTime.val() == ''){
+    		   swal("","请输入开始时间", "error");
+    		   return false;
+    	   }
+    	 	//]]>
+    	   var opt = {
     		        url: "../messaging/pages",
     		        silent:true,
     		        query:{
                             title:$("input[name='title']").val(),
                             messageType:$("select[name='messageType']").val(),
-        		            createTime:$("input[name='createTime']").val() 
+                            beginTime:beginTime.val(),
+                            endTime:endTime.val()
                     }
     		    }; 
     	   $table.bootstrapTable('refresh',opt);
        });
        
        $('#reset').click(function(){
-    	   $("input[name='title']").val("");
+    	   $("input[name='title']").val('');
     	   $("span[class='filter-option pull-left']").text('请选择类型');
+    	   $("select[name='messageType']").val('');
     	   $("select[name='state']").val('');
-    	   $("input[name='createTime']").val("")
+    	   $("input[name='beginTime']").val('');
+    	   $("input[name='endTime']").val('');
        });
              
     </script>

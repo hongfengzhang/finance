@@ -11,7 +11,9 @@ public class MessagingQuery extends PageAndSortQuery{
 	
 	private String messageType;
 	
-	private String createTime;
+	private String beginTime;
+	
+	private String endTime;
 
 	public String getTitle() {
 		return title;
@@ -29,13 +31,20 @@ public class MessagingQuery extends PageAndSortQuery{
 		this.messageType = messageType;
 	}
 
-	public String getCreateTime() {
-		return createTime;
+	public String getBeginTime() {
+		return beginTime;
 	}
 
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
+	public void setBeginTime(String beginTime) {
+		this.beginTime = beginTime;
 	}
-	
-	
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
 }

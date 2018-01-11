@@ -12,36 +12,77 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票名称</label>
+                            <label class="col-md-4 control-label">发布人</label>
                             <div class="col-md-8">
-                                <input type="text" name="userName" class="form-control" maxlength="11"
-                                       placeholder="股票名称"/>
+                                <input type="text" name="publisherPhone" class="form-control" maxlength="11"
+                                       placeholder="发布人"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票代码</label>
+                            <label class="col-md-4 control-label">股票名称</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="state" maxlength="11" placeholder="股票代码"/>
+                                <input type="text" class="form-control" name="stockName" maxlength="11" placeholder="股票名称"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票状态</label>
+                            <label class="col-md-4 control-label">投资人</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" maxlength="11" placeholder="股票状态"/>
+                            	<select class="selectpicker" name="investorName" data-title="请选择投资人">
+                            		<option th:each="investor,investorStart : ${investors}"
+											th:value="${investor.id}" th:text="${investor.userName}"></option>
+                            	</select>
                             </div>
                         </div>
                     </div>
-
+                    <!-- <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">买入时间</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control datetimepicker" name="buyBeginTime" maxlength="11" placeholder="开始时间"/>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                    	<div class="form-group">
+	                    	<div class="col-sm-8">
+	                            <input type="text" class="form-control datetimepicker" name="buyEndTime" maxlength="11" placeholder="结束时间"/>
+	                        </div>
+		                </div>
+	                </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">卖出时间</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control datetimepicker" name="sellBeginTime" maxlength="11" placeholder="开始时间"/>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                    	<div class="form-group">
+	                    	<div class="col-sm-8">
+	                            <input type="text" class="form-control datetimepicker" name="sellEndTime" maxlength="11" placeholder="结束时间"/>
+	                        </div>
+		                </div>
+	                </div> -->
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+                            <input id="search" type="button" class="btn btn-fill btn-info" value="搜索"/>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -95,10 +136,21 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
-                    }
+                	var query= {
+                            page: this.pageNumber - 1,
+                            size: this.pageSize
+                        }
+                        var queryMap = {
+                        		publisherPhone:$("input[name='publisherPhone']").val(),
+              		        	stockName:$("input[name='stockName']").val(),
+              		        	investorName:$("select[name='investorName']").val()
+              		        	/* buyBeginTime:$("input[name='beginTime']").val(),
+          		        		buyEndTime:$("input[name='endTime']").val()
+          		        		sellBeginTime:$("input[name='beginTime']").val(),
+      		        			sellEndTime:$("input[name='endTime']").val() */
+                        }
+                        $.extend(query,queryMap);
+                        return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -201,6 +253,45 @@
             });
 
         });
+        
+        $('#search').click(function(){
+      	   /* var buyBeginTime = $("input[name='buyBeginTime']");
+      	   var buyEndTime = $("input[name='buyEndTime']");
+      	   var sellBeginTime = $("input[name='sellBeginTime']");
+    	   var sellEndTime = $("input[name='sellEndTime']");
+      	   //<![CDATA[ 
+      	   if(buyBeginTime.val() != '' && buyEndTime.val() == ''){
+      		   swal("","请输入买入结束时间", "error");
+      		   return false;
+      	   }
+      	   if(buyEndTime.val() != '' && buyBeginTime.val() == ''){
+      		   swal("","请输入买入开始时间", "error");
+      		   return false;
+      	   }
+      	   if(sellBeginTime.val() != '' && sellEndTime.val() == ''){
+    		   swal("","请输入卖出结束时间", "error");
+    		   return false;
+    	   }
+    	   if(sellEndTime.val() != '' && sellBeginTime.val() == ''){
+    		   swal("","请输入卖出开始时间", "error");
+    		   return false;
+    	   }
+      	 	//]]> */
+      	    
+      	   $table.bootstrapTable('refresh',opt);
+         });
+         
+         $('#reset').click(function(){
+         	$("input[name='publisherPhone']").val('');
+         	$("input[name='stockName']").val('');
+         	$("span[class='filter-option pull-left']").text('请选择投资人');
+         	$("select[name='investorName']").val('');
+         	$("input[name='buyBeginTime']").val('');
+         	$("input[name='buyEndTime']").val('');
+         	$("input[name='sellBeginTime']").val('');
+         	$("input[name='sellEndTime']").val('');
+         });
+        
     </script>
 </div>
 </body>

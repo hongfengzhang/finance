@@ -404,7 +404,7 @@ public class BuyRecordDto {
 	public String getBuyRecordState(){
 		return state.getStatus();
 	}
-	public String getDeferredString(){
+	public String getDeferredStatus(){
 		return deferred == true ? "是":"否";
 	}
 }

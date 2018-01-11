@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.message.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -62,7 +64,7 @@ public class MessagingService {
 			@Override
 			public Predicate toPredicate(Root<Messaging> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 				if(StringUtils.isEmpty(messagingQuery.getTitle()) && StringUtils.isEmpty(messagingQuery.getMessageType()) 
-						&& StringUtils.isEmpty(messagingQuery.getCreateTime())){
+						&& StringUtils.isEmpty(messagingQuery.getBeginTime())){
 					return criteriaQuery.getRestriction();
 				}
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
@@ -76,13 +78,21 @@ public class MessagingService {
 							.getMessageType()));
 					predicatesList.add(criteriaBuilder.and(stateQuery));
 				}
-				if(!StringUtils.isEmpty(messagingQuery.getCreateTime())){
-					String queryTime = messagingQuery.getCreateTime();
-					String beginTime = queryTime + " 00:00:00";
-					String endTime = queryTime + "23:59:59";
-					Predicate createTimeQuery = criteriaBuilder.between(root.get("createTime").as(Date.class),new Date(beginTime),new Date(endTime));
+				if(!StringUtils.isEmpty(messagingQuery.getBeginTime()) && !StringUtils.isEmpty(messagingQuery.getEndTime())){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date beginTime = null;
+					Date endTime = null;
+					try {
+						beginTime = sdf.parse(messagingQuery.getBeginTime());
+						endTime = sdf.parse(messagingQuery.getEndTime());
+					} catch (ParseException e) {
+						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
+					}
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

@@ -13,7 +13,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">发布人</label>
-                            <div class="col-md-8">
+                            <div  class="col-md-8">
                                 <input type="text" name="publisherPhone" class="form-control" maxlength="11"
                                        placeholder="发布人"/>
                             </div>
@@ -131,10 +131,19 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
-                    }
+                	var query= {
+                            page: this.pageNumber - 1,
+                            size: this.pageSize
+                        }
+                        var queryMap = {
+                			publisherPhone:$("input[name='publisherPhone']").val(),
+          		        	stockName:$("input[name='stockName']").val(),
+          		        	investorName:$("select[name='investorName']").val(),
+          		        	beginTime:$("input[name='beginTime']").val(),
+      		        		endTime:$("input[name='endTime']").val()
+                        }
+                        $.extend(query,queryMap);
+                        return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -201,7 +210,7 @@
                     title: '策略状态',
                     align: 'center'
                 },{
-                    field: 'deferredString',
+                    field: 'deferredStatus',
                     title: '是否递延',
                     align: 'center'
                 }, {
@@ -209,9 +218,9 @@
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
                         return [
-                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+                            /* '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
                             '<i class="fa fa-eye"></i>',
-                            '</a>',
+                            '</a>', */
                             '<a rel="tooltip" title="卖出" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
                             '<i class="fa fa-dollar"></i>',
                             '</a>',
@@ -222,10 +231,13 @@
                             swal('You click view icon, row: ', row);
                         },
                         'click .edit': function (e, value, row, index) {
-                            if(row.state!='HOLDPOSITION'){
-                                swal("警告", "持仓中才能卖出", "warning");
+                        	//<![CDATA[ 
+                            if(row.buyRecordState=='卖出锁定'){
+                                swal("警告", "当前状态不支持卖出", "warning");
                                 return false;
                             }
+                          	//]]>
+                            return false;
                             swal({
                                 title: "卖出!",
                                 text: "确认卖出当前股票信息?",
@@ -328,18 +340,8 @@
      		   return false;
      	   }
      	 	//]]>
-     	   var opt = {
-     		        url: "../holding/pages",
-     		        silent:true,
-     		        query:{
-     		        	publisherPhone:$("input[name='publisherPhone']").val(),
-     		        	stockName:$("input[name='stockName']").val(),
-                        investorName:$("select[name='investorName']").val(),
-                        beginTime:beginTime.val(),
-                        endTime:endTime.val()
-                     }
-     		    }; 
-     	   $table.bootstrapTable('refresh',opt);
+     	    
+     	   $table.bootstrapTable('refresh');
         });
         
         $('#reset').click(function(){

@@ -33,10 +33,20 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">注册时间</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control datetimepicker" name="createTime" maxlength="11" placeholder="注册时间"/>
+                                <input type="text" class="form-control datetimepicker" name="beginTime" maxlength="11" placeholder="开始时间"/>
                             </div>
+                            
                         </div>
                     </div>
+                    <div class="col-md-2">
+                    	<div class="form-group">
+		                    <div>
+		                    	<div class="col-sm-8">
+		                            <input type="text" class="form-control datetimepicker" name="endTime" maxlength="11" placeholder="结束时间"/>
+		                        </div>
+		                    </div>
+		                </div>
+	                </div>
 
                     <div class="col-md-1">
                         <div class="form-group">
@@ -190,23 +200,37 @@
         });
         
         $('#search').click(function(){
-    	    var opt = {
-    		        url: "../publisher/pages",
-    		        silent:true,
-    		        query:{
-                            phone:$("input[name='phone']").val(),
-                            promoter:$("select[name='promoter']").val(),
-        		            createTime:$("input[name='createTime']").val() 
-                    }
-    		    }; 
-    	   $table.bootstrapTable('refresh',opt);
-       });
-       
-       $('#reset').click(function(){
-    	   $("input[name='phone']").val("");
-    	   $("input[name='promoter']").val('');
-    	   $("input[name='createTime']").val("")
-       });
+     	   var beginTime = $("input[name='beginTime']");
+     	   var endTime = $("input[name='endTime']");
+     	   //<![CDATA[ 
+     	   if(beginTime.val() != '' && endTime.val() == ''){
+     		   swal("","请输入结束时间", "error");
+     		   return false;
+     	   }
+     	   if(endTime.val() != '' && beginTime.val() == ''){
+     		   swal("","请输入开始时间", "error");
+     		   return false;
+     	   }
+     	 	//]]>
+     	   var opt = {
+     		        url: "../publisher/pages",
+     		        silent:true,
+     		        query:{
+                             phone:$("input[name='phone']").val(),
+                             promoter:$("input[name='promoter']").val(),
+                             beginTime:beginTime.val(),
+                             endTime:endTime.val()
+                     }
+     		    }; 
+     	   $table.bootstrapTable('refresh',opt);
+        });
+        
+        $('#reset').click(function(){
+     	   $("input[name='phone']").val('');
+     	   $("input[name='promoter']").val('');
+     	   $("input[name='beginTime']").val('');
+     	   $("input[name='endTime']").val('');
+        });
     </script>
 </div>
 </body>

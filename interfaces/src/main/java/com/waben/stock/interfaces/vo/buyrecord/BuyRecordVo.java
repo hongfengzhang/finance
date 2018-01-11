@@ -38,7 +38,7 @@ public class BuyRecordVo {
 	/**
 	 * 是否递延费
 	 */
-	private String deferredString;
+	private String deferredStatus;
 	/**
 	 * 止盈点
 	 */
@@ -182,12 +182,12 @@ public class BuyRecordVo {
 		this.reserveFund = reserveFund;
 	}
 
-	public String getDeferredString() {
-		return deferredString;
+	public String getDeferredStatus() {
+		return deferredStatus;
 	}
 
-	public void setDeferredString(String deferredString) {
-		this.deferredString = deferredString;
+	public void setDeferredStatus(String deferredStatus) {
+		this.deferredStatus = deferredStatus;
 	}
 
 	public BigDecimal getProfitPoint() {

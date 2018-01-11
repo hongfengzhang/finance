@@ -7,7 +7,10 @@ public class PublisherQuery extends PageAndSortQuery {
     
     private String promoter;
     
-    private String createTime;
+    private String beginTime;
+	
+	private String endTime;
+
 
     public String getPhone() {
         return phone;
@@ -25,12 +28,20 @@ public class PublisherQuery extends PageAndSortQuery {
 		this.promoter = promoter;
 	}
 
-	public String getCreateTime() {
-		return createTime;
+	public String getBeginTime() {
+		return beginTime;
 	}
 
-	public void setCreateTime(String createTime) {
-		this.createTime = createTime;
+	public void setBeginTime(String beginTime) {
+		this.beginTime = beginTime;
 	}
-    
+
+	public String getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(String endTime) {
+		this.endTime = endTime;
+	}
+
 }
