@@ -169,7 +169,7 @@ public class BuyRecordController {
 
 	@RequestMapping(value = "/sellapply/{id}", method = RequestMethod.POST)
 	@ApiOperation(value = "用户申请卖出")
-	Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+	public Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
 		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 

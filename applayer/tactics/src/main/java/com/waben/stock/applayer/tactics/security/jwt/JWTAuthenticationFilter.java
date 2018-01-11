@@ -12,22 +12,18 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.service.JedisCache;
 
-@Component
 public class JWTAuthenticationFilter extends GenericFilterBean {
 
-	@Autowired
 	private JedisCache jedisCache;
 
 	@Override
@@ -75,4 +71,9 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 
 		filterChain.doFilter(request, response);
 	}
+
+	public void setJedisCache(JedisCache jedisCache) {
+		this.jedisCache = jedisCache;
+	}
+
 }

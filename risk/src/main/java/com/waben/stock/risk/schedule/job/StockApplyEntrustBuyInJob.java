@@ -37,8 +37,8 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer,this);
-        String tradeSession = "880003450508";
+        logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
+        String tradeSession = null;
         while (!interrupted) {
             try {
                 logger.info("3秒后开始轮询");
@@ -65,19 +65,27 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
-                        logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus()));
+                        logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus())
+                                .getState());
+                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
+                            //废单
+                            logger.info("废单:{}",entry.getKey());
+                            stockEntrusts.remove(entry.getKey());
+                            continue;
+                        }
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
-                            logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust.getTradeNo(),
-                                    securitiesStockEntrust.getEntrustNumber(),securitiesStockEntrust.getEntrustPrice());
+                            logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust
+                                            .getTradeNo(),
+                                    securitiesStockEntrust.getEntrustNumber(), securitiesStockEntrust.getEntrustPrice
+                                            ());
                             // 若执行结果为true 代表订单状态已成功，则  删除集合中的数据
                             //发送给队列处理，提高委托单轮询处理速度
                             logger.info("委托订单已完成:{}", entry.getKey());
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
                             Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
                             securitiesStockEntrust.setEntrustNumber(amount.intValue());
-                            securitiesStockEntrust.setEntrustPrice(BigDecimal.valueOf(Integer.valueOf
-                                    (stockEntrustQueryResult.getBusinessPrice())));
+                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult.getBusinessPrice()));
                             entrustProducer.entrustBuyIn(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                         }

@@ -32,9 +32,19 @@ public class SimpleTest {
                 "\"position_str\":\"20171208021451508400002200000144\",\"stock_account\":\"0070001553\"," +
                 "\"stock_code\":\"000001\",\"stock_name\":\"平安银行\",\"withdraw_flag\":\"0\"}]}," +
                 "{\"msg\":{\"error_info\":\"OK\",\"error_no\":\"3000\"}}]}";
+        String json1 = "{\"result\":[{\"data\":[{\"business_amount\":\"200.00\",\"business_price\":\"6.450\"," +
+                "\"entrust_amount\":\"200.00\",\"entrust_bs\":\"1\",\"entrust_no\":\"835\"," +
+                "\"entrust_price\":\"7.190\",\"entrust_status\":\"8\",\"entrust_time\":\"111117\"," +
+                "\"exchange_type\":\"1\",\"stock_account\":\"A204750122\",\"stock_code\":\"600248\"," +
+                "\"stock_name\":\"延长化建\"}]},{\"msg\":{\"error_info\":\"OK\",\"error_no\":\"3000\"}}]}";
         StockResponse<StockEntrustQueryResult> stockResponse = JacksonUtil.decode(json, new
                 TypeReference<StockResponse<StockEntrustQueryResult>>() {
                 });
+        StockEntrustQueryResult stockEntrustQueryResult = stockResponse.getResult().get(0).getData().get(0);
+        Float amount = Float.valueOf(stockResponse.getResult().get(0).getData().get(0).getEntrustPrice());
+        System.out.println(amount.intValue());
+        System.out.println(stockEntrustQueryResult.getBusinessPrice());
+        System.out.println(new BigDecimal(stockEntrustQueryResult.getBusinessPrice()));
         System.out.println(JacksonUtil.encode(stockResponse));
     }
 

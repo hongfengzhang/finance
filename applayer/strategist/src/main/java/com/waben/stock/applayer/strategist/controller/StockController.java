@@ -87,7 +87,7 @@ public class StockController {
 	}
 
 	@GetMapping("/kLine")
-	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
+	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示周K，3表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
 	public Response<List<StockKLine>> listKLine(String stockCode, Integer type, String startTime, String endTime) {
 		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime, -1));
 	}

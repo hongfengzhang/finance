@@ -1,18 +1,10 @@
 package com.waben.stock.datalayer.buyrecord.init;
 
 import com.waben.stock.datalayer.buyrecord.business.StockBusiness;
-import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.service.BuyRecordService;
-import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.rabbit.EntrustApplyProducer;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-import com.waben.stock.interfaces.enums.BuyRecordState;
-import com.waben.stock.interfaces.enums.EntrustState;
-import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.rabbit.RiskProducer;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/12/8.
@@ -24,7 +16,7 @@ public class BuyLockRecordInit implements CommandLineRunner {
 //    @Autowired
     private BuyRecordService buyRecordService;
 //    @Autowired
-    private EntrustApplyProducer entrustApplyProducer;
+    private RiskProducer entrustApplyProducer;
 //    @Autowired
     private StockBusiness stockBusiness;
 

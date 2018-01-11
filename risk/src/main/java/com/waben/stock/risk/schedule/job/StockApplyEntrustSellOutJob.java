@@ -38,7 +38,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("券商股票委托容器对象:{},当前对象{}", stockApplyEntrustSellOutContainer,this);
-        String tradeSession = "880003450508";
+        String tradeSession = null;
         while (!interrupted) {
             try {
                 logger.info("3秒后开始轮询");
@@ -65,6 +65,12 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             continue;
                         }
                         logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus()));
+                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
+                            //废单
+                            logger.info("废单:{}",entry.getKey());
+                            stockEntrusts.remove(entry.getKey());
+                            continue;
+                        }
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
                             // 若执行结果为true 代表订单状态已成功，则  删除集合中的数据
@@ -73,8 +79,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
                             Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
                             securitiesStockEntrust.setEntrustNumber(amount.intValue());
-                            securitiesStockEntrust.setEntrustPrice(BigDecimal.valueOf(Double.valueOf
-                                    (stockEntrustQueryResult.getBusinessPrice())));
+                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult.getBusinessPrice()));
                             entrustProducer.entrustSellOut(entry.getValue());
                             stockEntrusts.remove(entry.getKey());
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust.getTradeNo(),
