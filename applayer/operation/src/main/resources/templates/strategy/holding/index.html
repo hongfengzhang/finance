@@ -100,8 +100,8 @@
     <script th:src="@{/static/js/bootstrap-table.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap-table-zh-CN.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/http.js}" type="text/javascript"></script>
-    <script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
-    <script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+    <script th:src="@{/static/js/sockjs.min.js}"></script>
+    <script th:src="@{/static/js/stomp.min.js}"></script>
     <script type="text/javascript">
         var $table = $('#bootstrap-table');
         var stompClient = null;
@@ -237,7 +237,6 @@
                                 return false;
                             }
                           	//]]>
-                            return false;
                             swal({
                                 title: "卖出!",
                                 text: "确认卖出当前股票信息?",
@@ -283,7 +282,15 @@
                         arrayCode.push(stock);
                         dataMap[code+":"+index] = index;
                     }
-                    send(arrayCode);
+                    if(arrayCode.length>0) {
+                        send(arrayCode);
+                    }
+                },
+                onLoadError: function (status) {
+                    if (status == 403) {
+                        window.location.href = "../login";
+                        disconnect();
+                    }
                 },
             });
         }
@@ -299,6 +306,10 @@
                 })
             })
 
+            stompClient.onclose = function (event) {
+                setConnected(false);
+                console.log("ws已关闭");
+            }
         }
 
         function handlerSubscribe(result) {
@@ -314,6 +325,10 @@
                 }
             }
 
+        }
+        
+        function disconnect() {
+            stompClient.close();
         }
 
         $(function () {

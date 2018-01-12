@@ -16,7 +16,6 @@
 package com.waben.stock.applayer.operation.warpper;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.waben.stock.applayer.operation.warpper.auth.filter.CustomCorsFilter;
 import com.waben.stock.applayer.operation.warpper.auth.filter.LoginProcessingFilter;
 import com.waben.stock.applayer.operation.warpper.auth.handler.*;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
@@ -78,9 +77,10 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT, "/login-error").permitAll()
-                .antMatchers(HttpMethod.GET, "/turbine/**", "/turbine/hystrix.stream", "/hystrix.stream", "/file/upload").permitAll()
+                .antMatchers(HttpMethod.GET, "/turbine/**", "/turbine/hystrix.stream", "/hystrix.stream",
+                        "/file/upload", "/websocket/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
-                .antMatchers(HttpMethod.POST,"/file/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/file/**").permitAll()
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
