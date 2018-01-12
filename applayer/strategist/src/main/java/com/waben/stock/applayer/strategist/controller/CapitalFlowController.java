@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.strategist.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.joda.time.DateTime;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.strategist.business.CapitalFlowBusiness;
 import com.waben.stock.applayer.strategist.dto.publisher.CapitalFlowWithExtendDto;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
+import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -38,9 +40,9 @@ public class CapitalFlowController {
 	private CapitalFlowBusiness capitalFlowBusiness;
 
 	@GetMapping("/pages")
-	@ApiOperation(value = "用户资金流水", notes = "range表示统计范围，0全部，1最近一周，2最近一个月，3最近半年")
+	@ApiOperation(value = "用户资金流水", notes = "range表示统计范围，0全部，1最近一周，2最近一个月，3最近半年, 4最近一年, 5今天;flowType表示流水类型，0全部，1充值，2提现，3服务费, 4冻结履约保证金, 5递延费, 6退回履约保证金, 7卖出结算, 8推广佣金;")
 	public Response<PageInfo<CapitalFlowWithExtendDto>> publisherCapitalFlow(int page, int size,
-			@RequestParam(defaultValue = "0") int range) {
+			@RequestParam(defaultValue = "0") int range, @RequestParam(defaultValue = "0") int flowType) {
 		CapitalFlowQuery query = new CapitalFlowQuery(page, size);
 		Date startTime = null;
 		if (range == 1) {
@@ -49,7 +51,35 @@ public class CapitalFlowController {
 			startTime = new DateTime(new Date()).minusHours(30 * 24).toDate();
 		} else if (range == 3) {
 			startTime = new DateTime(new Date()).minusHours(180 * 24).toDate();
+		} else if (range == 4) {
+			startTime = new DateTime(new Date()).minusHours(365 * 24).toDate();
+		} else if(range == 5) {
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			startTime = cal.getTime();
 		}
+		CapitalFlowType[] types = null;
+		if (flowType == 1) {
+			types = new CapitalFlowType[] { CapitalFlowType.Recharge };
+		} else if (flowType == 2) {
+			types = new CapitalFlowType[] { CapitalFlowType.Withdrawals };
+		} else if (flowType == 3) {
+			types = new CapitalFlowType[] { CapitalFlowType.ServiceFee };
+		} else if (flowType == 4) {
+			types = new CapitalFlowType[] { CapitalFlowType.ReserveFund };
+		} else if (flowType == 5) {
+			types = new CapitalFlowType[] { CapitalFlowType.DeferredCharges };
+		} else if (flowType == 6) {
+			types = new CapitalFlowType[] { CapitalFlowType.ReturnReserveFund };
+		} else if (flowType == 7) {
+			types = new CapitalFlowType[] { CapitalFlowType.Loss, CapitalFlowType.Profit };
+		} else if (flowType == 8) {
+			types = new CapitalFlowType[] { CapitalFlowType.Promotion };
+		}
+		query.setTypes(types);
 		query.setStartTime(startTime);
 		query.setPublisherId(SecurityUtil.getUserId());
 		return new Response<>(capitalFlowBusiness.pages(query));

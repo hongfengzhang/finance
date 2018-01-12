@@ -107,6 +107,17 @@ public class InvestorBusiness {
         throw new ServiceException(response.getCode());
     }
 
+    public List<InvestorDto> findAllInvestors(){
+    	Response<List<InvestorDto>> response = investorService.fetchAllInvestors();
+    	String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
     //持仓强制卖出
     public SecuritiesStockEntrust sellOut(SecuritiesStockEntrust securitiesStockEntrust) {
         //SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto);

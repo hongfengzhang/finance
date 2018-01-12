@@ -58,6 +58,6 @@ public class InvestorDaoImpl implements InvestorDao {
 
     @Override
     public List<Investor> list() {
-        return null;
+        return repository.findAll();
     }
 }

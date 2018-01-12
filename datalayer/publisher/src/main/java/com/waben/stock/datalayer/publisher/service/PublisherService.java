@@ -1,6 +1,8 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -146,12 +148,21 @@ public class PublisherService {
 							.getPromoter());
 					predicatesList.add(promoterQuery);
 				}
-				if (!StringUtils.isEmpty(query.getPhone())) {
-					Predicate createTimeQuery = criteriaBuilder.equal(root.get("createTime").as(String.class), query
-							.getCreateTime());
-					predicatesList.add(createTimeQuery);
+				if(!StringUtils.isEmpty(query.getBeginTime()) && !StringUtils.isEmpty(query.getEndTime())){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date beginTime = null;
+					Date endTime = null;
+					try {
+						beginTime = sdf.parse(query.getBeginTime());
+						endTime = sdf.parse(query.getEndTime());
+					} catch (ParseException e) {
+						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
+					}
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

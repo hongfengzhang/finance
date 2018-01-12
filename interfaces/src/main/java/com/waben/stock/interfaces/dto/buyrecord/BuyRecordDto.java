@@ -400,4 +400,11 @@ public class BuyRecordDto {
 	public void setInvestorName(String investorName) {
 		this.investorName = investorName;
 	}
+	
+	public String getBuyRecordState(){
+		return state.getStatus();
+	}
+	public String getDeferredStatus(){
+		return deferred == true ? "是":"否";
+	}
 }

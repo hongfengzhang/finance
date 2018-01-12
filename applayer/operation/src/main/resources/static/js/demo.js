@@ -10,9 +10,10 @@ $().ready(function() {
 
     // Init Datetimepicker
 
-    if ($("#datetimepicker").length != 0) {
+    //if ($("#datetimepicker").length != 0) {
         $('.datetimepicker').datetimepicker({
-            icons: {
+        	format: 'YYYY-MM-DD HH:mm:ss',
+        	icons: {
                 time: "fa fa-clock-o",
                 date: "fa fa-calendar",
                 up: "fa fa-chevron-up",
@@ -41,8 +42,8 @@ $().ready(function() {
         });
 
         $('.timepicker').datetimepicker({
-            //          format: 'H:mm',    // use this format if you want the 24hours timepicker
-            format: 'h:mm A', //use this format if you want the 12hours timpiecker with AM/PM toggle
+            format: 'H:mm',    // use this format if you want the 24hours timepicker
+            //format: 'h:mm A', //use this format if you want the 12hours timpiecker with AM/PM toggle
             icons: {
                 time: "fa fa-clock-o",
                 date: "fa fa-calendar",
@@ -56,7 +57,7 @@ $().ready(function() {
             }
         });
 
-    };
+    //};
     fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
 
     if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
@@ -1448,54 +1449,6 @@ initFormExtendedSliders: function(){// no
                     });
                 })
         }
-    },
-    initFormExtendedDatetimepickers: function(){
-        $('.datetimepicker').datetimepicker({
-        	format: 'YYYY-MM-DD hh:mm:ss',
-        	icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-chevron-up",
-                down: "fa fa-chevron-down",
-                previous: 'fa fa-chevron-left',
-                next: 'fa fa-chevron-right',
-                today: 'fa fa-screenshot',
-                clear: 'fa fa-trash',
-                close: 'fa fa-remove'
-            }
-         });
-
-         $('.datepicker').datetimepicker({
-            format: 'yy-M-dd hh:ii:ss',
-            icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-chevron-up",
-                down: "fa fa-chevron-down",
-                previous: 'fa fa-chevron-left',
-                next: 'fa fa-chevron-right',
-                today: 'fa fa-screenshot',
-                clear: 'fa fa-trash',
-                close: 'fa fa-remove'
-            }
-         });
-
-         $('.timepicker').datetimepicker({
-//          format: 'H:mm',    // use this format if you want the 24hours timepicker
-            format: 'h:mm A',    //use this format if you want the 12hours timpiecker with AM/PM toggle
-            icons: {
-                time: "fa fa-clock-o",
-                date: "fa fa-calendar",
-                up: "fa fa-chevron-up",
-                down: "fa fa-chevron-down",
-                previous: 'fa fa-chevron-left',
-                next: 'fa fa-chevron-right',
-                today: 'fa fa-screenshot',
-                clear: 'fa fa-trash',
-                close: 'fa fa-remove'
-            }
-         });
     }
-
 
 }
