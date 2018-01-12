@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.buyrecord.warpper.messagequeue;
 
+import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,9 +25,10 @@ public class RabbitMqConsumer {
 	@RabbitListener(queues = { "entrustBuyIn" })
 	public void entrustBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
 		logger.info("券商股票委托买入成功:{}", securitiesStockEntrust.getTradeNo());
-		buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
+		BuyRecord result = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
 				securitiesStockEntrust.getEntrustPrice());
-		// 发送短信通知用户
+		//TODO 发送短信通知用户 和发送站内消息
+		// 点买记录委托成功  点买记录状态为持仓中，则将当前订单记录放入风控消息队列
 	}
 
 	@RabbitListener(queues = { "entrustSellOut" })

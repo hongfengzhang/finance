@@ -6,6 +6,9 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,4 +34,7 @@ public interface InvestorInterface {
             .APPLICATION_JSON_VALUE)
     Response<BuyRecordDto> stockApplySellOut(@PathVariable("investor") Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, @RequestParam("tradeSession") String tradeSession);
+    
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    Response<List<InvestorDto>> fetchAllInvestors();
 }

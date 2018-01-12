@@ -182,5 +182,9 @@ public class InvestorService {
         }, pageable);
         return pages;
     }
+    
+    public List<Investor> findAll(){
+    	return investorDao.list();
+    }
 
 }
