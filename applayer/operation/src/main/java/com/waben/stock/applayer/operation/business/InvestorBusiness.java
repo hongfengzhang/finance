@@ -107,5 +107,23 @@ public class InvestorBusiness {
         throw new ServiceException(response.getCode());
     }
 
-
+    //持仓强制卖出
+    public SecuritiesStockEntrust sellOut(SecuritiesStockEntrust securitiesStockEntrust) {
+        //SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto);
+        //申请卖出，更新数据库
+        Response<BuyRecordDto> response = investorService.stockApplySellOut(securitiesStockEntrust.getInvestor(), securitiesStockEntrust,
+                securitiesStockEntrust.getTradeSession());
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            securitiesStockEntrust.setTradeSession(securitiesStockEntrust.getTradeSession());
+            securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
+            securitiesStockEntrust.setEntrustNo(response.getResult().getDelegateNumber());
+            securitiesStockEntrust.setEntrustState(EntrustState.HASBEENSUCCESS);
+            entrustProducer.entrustApplySellOut(securitiesStockEntrust);
+            return securitiesStockEntrust;
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

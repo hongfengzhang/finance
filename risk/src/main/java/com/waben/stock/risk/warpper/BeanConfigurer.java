@@ -88,13 +88,13 @@ public class BeanConfigurer {
         return new TopicExchange("buyRecord");
     }
 
-    /**
-     * 风控交换机
-     */
-    @Bean("risk")
-    public TopicExchange riskExchange() {
-        return new TopicExchange("risk");
-    }
+//    /**
+//     * 风控交换机
+//     */
+//    @Bean("risk")
+//    public TopicExchange riskExchange() {
+//        return new TopicExchange("risk");
+//    }
 
     @Bean
     public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustBuyIn") Queue queue,
@@ -106,4 +106,5 @@ public class BeanConfigurer {
                                          @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
         return BindingBuilder.bind(queue).to(buyRecordExchange).with("sellOut");
     }
+
 }

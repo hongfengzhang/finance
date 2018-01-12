@@ -81,6 +81,7 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
      * @description 获取资金账户的股东账户列表
      */
     public List<StockHolder> retrieveStockHolder(String token) {
+        logger.info("token:{}",token);
         String holderUrl = context+ holderPath + "?token={token}";
         Map<String, String> params = new HashMap<>();
         params.put("token", token);

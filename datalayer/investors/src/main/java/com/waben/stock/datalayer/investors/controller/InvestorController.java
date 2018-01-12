@@ -53,6 +53,7 @@ public class InvestorController implements InvestorInterface {
         return new Response<>(investorDto);
     }
 
+
     /**
      * 投资人点买记录委托申请买入
      *
@@ -84,9 +85,6 @@ public class InvestorController implements InvestorInterface {
             securitiesStockEntrust, String tradeSession) {
         Investor result = investorService.findById(investor);
         String entrustNo = investorService.buyRecordApplySellOut(result, securitiesStockEntrust, tradeSession);
-        if (StringUtils.isEmpty(entrustNo)) {
-            logger.info("委托卖出成功:{}",entrustNo);
-        }
         BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.entrustApplySellOut(result, securitiesStockEntrust,
                 entrustNo);
         return new Response<>(buyRecordDtoResponse);

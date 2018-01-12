@@ -18,6 +18,8 @@ public class SecuritiesStockEntrust implements Serializable {
     private String tradeNo;
     private String stockName;
     private String stockCode;
+    private BigDecimal profitPosition;
+    private BigDecimal lossPosition;
 
     /**
      * 证券股票类型(上证|深证|创业板)
@@ -59,6 +61,22 @@ public class SecuritiesStockEntrust implements Serializable {
 
     private String tradeSession;
 
+
+    public BigDecimal getProfitPosition() {
+        return profitPosition;
+    }
+
+    public void setProfitPosition(BigDecimal profitPosition) {
+        this.profitPosition = profitPosition;
+    }
+
+    public BigDecimal getLossPosition() {
+        return lossPosition;
+    }
+
+    public void setLossPosition(BigDecimal lossPosition) {
+        this.lossPosition = lossPosition;
+    }
 
     public Long getBuyRecordId() {
         return buyRecordId;

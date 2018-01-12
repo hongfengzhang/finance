@@ -54,6 +54,8 @@ public class StockBuyLockInitialize implements CommandLineRunner {
             securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
             securitiesStockEntrust.setEntrustNo(buyRecord.getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
+            securitiesStockEntrust.setLossPosition(buyRecord.getLossPosition());
+            securitiesStockEntrust.setProfitPosition(buyRecord.getProfitPosition());
             stockApplyEntrustBuyInContainer.add(securitiesStockEntrust);
         }
     }

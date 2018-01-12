@@ -20,7 +20,7 @@ public class RiskProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
      * @param securitiesStockEntrust
      */
     public void risk(SecuritiesStockEntrust securitiesStockEntrust) {
-        logger.info("开始发送委托买入订单数据:{}",securitiesStockEntrust.getTradeNo());
+        logger.info("开始发送持仓订单数据:{}", securitiesStockEntrust.getTradeNo());
         super.topic("buyRecordRisk", "stock", securitiesStockEntrust);
     }
 

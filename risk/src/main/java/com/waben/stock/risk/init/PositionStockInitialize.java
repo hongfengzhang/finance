@@ -3,10 +3,10 @@ package com.waben.stock.risk.init;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.risk.business.BuyRecordBusiness;
 import com.waben.stock.risk.business.StockBusiness;
-import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
-import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
+import com.waben.stock.risk.container.PositionStockContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,38 +21,36 @@ import java.util.List;
  */
 @Component
 //@Order(Ordered.LOWEST_PRECEDENCE+100)
-public class StockSellOutInitialize implements CommandLineRunner {
+public class PositionStockInitialize implements CommandLineRunner {
 
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
+
     @Autowired
-    private StockBusiness stockBusiness;
-    @Autowired
-    private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
+    private PositionStockContainer positionStockContainer;
     Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void run(String... args) throws Exception {
-        List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithSellOutLock();
-        logger.info("获取卖出锁定的点买交易记录个数：{}", buyRecords.size());
+        List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithPositionStock();
+        logger.info("获取持仓交易记录个数：{}", buyRecords.size());
         for (BuyRecordDto buyRecord : buyRecords) {
             SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
             securitiesStockEntrust.setSerialCode(buyRecord.getSerialCode());
             securitiesStockEntrust.setInvestor(buyRecord.getInvestorId());
-//            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
-//            securitiesStockEntrust.setStockName(stockDto.getName());
-//            securitiesStockEntrust.setStockCode(stockDto.getCode());
-//            securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
             securitiesStockEntrust.setEntrustNumber(buyRecord.getNumberOfStrand());
             securitiesStockEntrust.setEntrustPrice(buyRecord.getDelegatePrice());
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
-//            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
             securitiesStockEntrust.setEntrustNo(buyRecord.getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             securitiesStockEntrust.setLossPosition(buyRecord.getLossPosition());
             securitiesStockEntrust.setProfitPosition(buyRecord.getProfitPosition());
-            stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
+            securitiesStockEntrust.setStockCode(buyRecord.getStockCode());
+            securitiesStockEntrust.setTradeSession("70001553");
+            securitiesStockEntrust.setStockName(buyRecord.getStockName());
+            positionStockContainer.add(securitiesStockEntrust);
+            logger.info("TradeSession:{}",securitiesStockEntrust.getTradeSession());
         }
     }
 }
