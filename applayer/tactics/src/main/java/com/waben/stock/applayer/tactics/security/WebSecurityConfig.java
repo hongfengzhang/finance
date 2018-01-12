@@ -14,7 +14,7 @@ import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
-import com.waben.stock.applayer.tactics.service.JedisCache;
+import com.waben.stock.applayer.tactics.service.RedisCache;
 
 @Configuration
 @EnableWebSecurity
@@ -27,11 +27,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	private CapitalAccountReference accountService;
 
 	@Autowired
-	private JedisCache jedisCache;
+	private RedisCache redisCache;
 
 	public JWTAuthenticationFilter jWTAuthenticationFilter() {
 		JWTAuthenticationFilter result = new JWTAuthenticationFilter();
-		result.setJedisCache(jedisCache);
+		result.setJedisCache(redisCache);
 		return result;
 	}
 
@@ -40,7 +40,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 			JWTLoginFilter result = new JWTLoginFilter(authenticationManager());
 			result.setPublisherService(publisherReference);
 			result.setAccountService(accountService);
-			result.setJedisCache(jedisCache);
+			result.setJedisCache(redisCache);
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("get AuthenticationManager exception!", e);
@@ -92,6 +92,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				.antMatchers("/jsonp/experienceSta", "/jsonp/{publisherId}/strategyqualify/{strategyTypeId}")
 				.permitAll();
+		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

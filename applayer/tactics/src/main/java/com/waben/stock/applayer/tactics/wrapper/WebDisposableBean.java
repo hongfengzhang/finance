@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.tactics.service.JedisCache;
+import com.waben.stock.applayer.tactics.service.RedisCache;
 
 @Component
 public class WebDisposableBean implements DisposableBean, ExitCodeGenerator {
@@ -15,7 +15,7 @@ public class WebDisposableBean implements DisposableBean, ExitCodeGenerator {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private JedisCache jedisCache;
+	private RedisCache redisCache;
 
 	@Override
 	public int getExitCode() {
@@ -26,8 +26,8 @@ public class WebDisposableBean implements DisposableBean, ExitCodeGenerator {
 	public void destroy() throws Exception {
 		logger.info("服务销毁!");
 		// 销毁jedis的连接池
-		if (jedisCache != null) {
-			jedisCache.getPool().destroy();
+		if (redisCache != null) {
+			redisCache.getPool().destroy();
 		}
 	}
 
