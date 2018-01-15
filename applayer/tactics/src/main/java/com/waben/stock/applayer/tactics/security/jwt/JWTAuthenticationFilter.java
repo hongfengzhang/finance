@@ -20,11 +20,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
-import com.waben.stock.applayer.tactics.service.JedisCache;
+import com.waben.stock.applayer.tactics.service.RedisCache;
+import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 
 public class JWTAuthenticationFilter extends GenericFilterBean {
 
-	private JedisCache jedisCache;
+	private RedisCache redisCache;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
@@ -38,7 +39,7 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 				Map<String, Object> tokenInfo = JWTTokenUtil.getTokenInfo(token);
 				String username = (String) tokenInfo.get("sub");
 				// 判断该token是否为最新登陆的token
-				String cacheToken = jedisCache.getToken(username);
+				String cacheToken = redisCache.get(String.format(RedisCacheKeyType.AppToken.getKey(), username));
 				if (cacheToken != null && !"".equals(cacheToken) && !cacheToken.equals(token)) {
 					httpRequest.getSession().invalidate();
 					HttpServletResponse httpResponse = (HttpServletResponse) response;
@@ -72,8 +73,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 		filterChain.doFilter(request, response);
 	}
 
-	public void setJedisCache(JedisCache jedisCache) {
-		this.jedisCache = jedisCache;
+	public void setJedisCache(RedisCache redisCache) {
+		this.redisCache = redisCache;
 	}
 
 }

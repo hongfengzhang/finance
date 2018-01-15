@@ -5,15 +5,15 @@ import java.util.Map;
 
 public enum SmsType implements CommonalityEnum {
 
-	RegistVerificationCode("1", "注册验证码"),
+	RegistVerificationCode("1", "APP注册验证码"),
 
-	ModifyPasswordCode("2", "修改密码验证码"),
+	ModifyPasswordCode("2", "APP修改密码验证码"),
 
-	BindCardCode("3", "绑定银行卡验证码"),
+	BindCardCode("3", "APP绑定银行卡验证码"),
 
-	StrategyWarning("4", "点买持仓提醒"),
+	StrategyWarning("4", "APP点买持仓提醒"),
 	
-	ModifyPaymentPwdCode("5", "修改支付密码");
+	ModifyPaymentPwdCode("5", "APP修改支付密码");
 
 	private String index;
 

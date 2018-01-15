@@ -18,10 +18,11 @@ import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.CustomUsernamePasswordAuthenticationToken;
-import com.waben.stock.applayer.tactics.service.JedisCache;
+import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -36,7 +37,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	private CapitalAccountReference accountService;
 
-	private JedisCache jedisCache;
+	private RedisCache redisCache;
 
 	public JWTLoginFilter(AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(loginUrl, HttpMethod.POST.name()));
@@ -57,7 +58,7 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 		String token = JWTTokenUtil.generateToken(customUserDetails);
 		// step 2 : 缓存token到redis
-		jedisCache.setToken(customUserDetails.getUsername(), token);
+		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), customUserDetails.getUsername()), token);
 		customUserDetails.setToken(token);
 		// step 3 : 返回用户信息和token到客户端
 		Long publisherId = customUserDetails.getUserId();
@@ -90,8 +91,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		this.accountService = accountService;
 	}
 
-	public void setJedisCache(JedisCache jedisCache) {
-		this.jedisCache = jedisCache;
+	public void setJedisCache(RedisCache redisCache) {
+		this.redisCache = redisCache;
 	}
 
 }
