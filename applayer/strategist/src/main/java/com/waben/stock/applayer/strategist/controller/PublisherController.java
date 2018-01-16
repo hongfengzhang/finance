@@ -165,6 +165,18 @@ public class PublisherController {
 		return new Response<>();
 	}
 	
+	@PostMapping("/initPaymentPassword")
+	@ApiOperation(value = "初始化支付密码")
+	public Response<String> initPaymentPassword(String paymentPassword) {
+		// 是否是第一次设置支付密码
+		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());
+		if (account != null && account.getPaymentPassword() != null && !"".equals(account.getPaymentPassword())) {
+			throw new ServiceException(ExceptionConstant.MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION);
+		}
+		accountBusiness.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
+		return new Response<>();
+	}
+	
 	@ApiOperation(value = "上传用户头像")
 	@PostMapping("/headPortrait")
 	public Response<String> uploadHeadPortrait(@RequestParam("file") MultipartFile file, HttpServletRequest request) {

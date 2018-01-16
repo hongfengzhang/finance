@@ -19,3 +19,7 @@ spring:
           dialect: org.hibernate.dialect.MySQL5Dialect
           connection:
             autocommit: true
+redis:
+  host: ${redis.host}
+  port: ${redis.port}
+  password: ${redis.password}

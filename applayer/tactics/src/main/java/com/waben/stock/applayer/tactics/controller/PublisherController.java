@@ -22,13 +22,14 @@ import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
-import com.waben.stock.applayer.tactics.service.JedisCache;
+import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.applayer.tactics.service.SmsService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -59,7 +60,7 @@ public class PublisherController {
 	private SmsService smsService;
 	
 	@Autowired
-	private JedisCache jedisCache;
+	private RedisCache redisCache;
 
 	@GetMapping("/{id}")
 	public Response<PublisherDto> echo(@PathVariable Long id) {
@@ -102,7 +103,7 @@ public class PublisherController {
 		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
 				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
 		data.setToken(token);
-		jedisCache.setToken(phone, token);
+		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), phone), token);
 		return new Response<>(data);
 	}
 
@@ -145,7 +146,7 @@ public class PublisherController {
 		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
 				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
 		data.setToken(token);
-		jedisCache.setToken(phone, token);
+		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), phone), token);
 		return new Response<>(data);
 	}
 

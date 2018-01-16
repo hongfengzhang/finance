@@ -3,6 +3,8 @@ package com.waben.stock.datalayer.message.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,29 +27,29 @@ public class MessageReceiptController implements MessageReceiptInterface{
 	private MessageReceiptService messageReceiptService;
 	
 	@Override
-	public Response<MessageReceiptDto> addMessageReceipt(MessageReceiptDto messageReceiptDto) {
+	public Response<MessageReceiptDto> addMessageReceipt(@RequestBody MessageReceiptDto messageReceiptDto) {
 		return new Response<MessageReceiptDto>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class, messageReceiptService.save(
 				CopyBeanUtils.copyBeanProperties(MessageReceipt.class, messageReceiptDto, false)), false));
 	}
 
 	@Override
-	public Response<Long> dropMessageReceipt(Long messageReceiptId) {
+	public Response<Long> dropMessageReceipt(@PathVariable("messageReceiptId") Long messageReceiptId) {
 		return new Response<>(messageReceiptService.remove(messageReceiptId));
 	}
 
 	@Override
-	public Response<MessageReceiptDto> modifyMessageReceipt(MessageReceiptDto messageReceiptDto) {
+	public Response<MessageReceiptDto> modifyMessageReceipt(@RequestBody MessageReceiptDto messageReceiptDto) {
 		return new Response<MessageReceiptDto>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class, messageReceiptService.revision(
 				CopyBeanUtils.copyBeanProperties(MessageReceipt.class, messageReceiptDto, false)), false));
 	}
 
 	@Override
-	public Response<MessageReceiptDto> fetchMessageReceiptById(Long messageReceiptId) {
+	public Response<MessageReceiptDto> fetchMessageReceiptById(@PathVariable("messageReceiptId") Long messageReceiptId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class, messageReceiptService.findById(messageReceiptId), false));
 	}
 
 	@Override
-	public Response<PageInfo<MessageReceiptDto>> pages(MessageReceiptQuery messageReceiptQuery) {
+	public Response<PageInfo<MessageReceiptDto>> pages(@RequestBody MessageReceiptQuery messageReceiptQuery) {
 		Page<MessageReceipt> pages = messageReceiptService.pages(messageReceiptQuery);
 		PageInfo<MessageReceiptDto> result = new PageInfo<>(pages, MessageReceiptDto.class);
 		return new Response<>(result);

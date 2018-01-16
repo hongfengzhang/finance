@@ -133,7 +133,11 @@ public class BuyRecordVo {
 	private PublisherDto publisherDto;
 
 	private StockDto stockDto;
+	
+	private String profitPointPercent;
 
+	private String lossPointPercent;
+	
 	public Long getId() {
 		return id;
 	}
@@ -396,6 +400,22 @@ public class BuyRecordVo {
 
 	public void setStockDto(StockDto stockDto) {
 		this.stockDto = stockDto;
+	}
+
+	public String getProfitPointPercent() {
+		return profitPointPercent;
+	}
+
+	public void setProfitPointPercent(String profitPointPercent) {
+		this.profitPointPercent = profitPointPercent;
+	}
+
+	public String getLossPointPercent() {
+		return lossPointPercent;
+	}
+
+	public void setLossPointPercent(String lossPointPercent) {
+		this.lossPointPercent = lossPointPercent;
 	}
 	
 	

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
@@ -41,14 +42,14 @@ public class StockMonitor implements CommandLineRunner {
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, "2018-01-01");
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
-        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:30");
+        DailyCalendar am = new DailyCalendar(workCalendar, "08:30", "11:30");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:30", "14:55");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "11:30", "21:55");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
         scheduler.addCalendar("workCalendar",workCalendar,false,false);
-
+        //拉取股票行情任务
         JobDetail jobQuotation = JobBuilder.newJob(StockQuotationJob.class).withIdentity("jobQuotation",
                 "groupQuotation")
                 .storeDurably(true)
@@ -129,9 +130,9 @@ public class StockMonitor implements CommandLineRunner {
 //        sched.scheduleJob(job,triggers,true);
 //        sched.scheduleJob(job2, triggers,true);
 
-//        scheduler.addJob(jobQuotation, true);
-//        scheduler.scheduleJob(stockQuotationAM);
-//        scheduler.scheduleJob(stockQuotationPM);
+        scheduler.addJob(jobQuotation, true);
+        scheduler.scheduleJob(stockQuotationAM);
+        scheduler.scheduleJob(stockQuotationPM);
 
         scheduler.addJob(jobBuyIn, true);
         scheduler.scheduleJob(buyInTriggerBegin);

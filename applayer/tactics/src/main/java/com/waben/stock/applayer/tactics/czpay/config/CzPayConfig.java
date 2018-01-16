@@ -32,13 +32,13 @@ public class CzPayConfig {
 	 * 测试：http://1108ab82.nat123.cc:53623/tactics/payment/czpayreturn
 	 * 生产：http://waben.cn/tactics/payment/czpayreturn
 	 */
-    public static String returnUrl = "http://waben.cn/tactics/payment/czpayreturn";
+    public static String returnUrl = "https://m.youguwang.com.cn/tactics/payment/czpayreturn";
     /**
      * 异步通知地址
      * 测试：http://1108ab82.nat123.cc:53623/tactics/payment/czpaycallback
 	 * 生产：http://waben.cn/tactics/payment/czpaycallback
      */
-    public static String notifyUrl = "http://waben.cn/tactics/payment/czpaycallback";
+    public static String notifyUrl = "https://m.youguwang.com.cn/tactics/payment/czpaycallback";
     /**
      * mac签名key
      * 测试：E1DF87DFCAC7261B5562E57CAED5F6A9

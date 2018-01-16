@@ -99,6 +99,12 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                 logger.info("轮询异常：{}", e.getMessage());
             }
         }
+//        SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
+//        securitiesStockEntrust.setBuyRecordId(1L);
+//        securitiesStockEntrust.setEntrustNo("testOrder");
+//        securitiesStockEntrust.setBuyRecordId(123L);
+//        securitiesStockEntrust.setTradeNo("testTradeNo");
+//        entrustProducer.entrustBuyIn(securitiesStockEntrust);
     }
 
     @Override
