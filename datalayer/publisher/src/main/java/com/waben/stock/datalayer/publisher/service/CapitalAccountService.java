@@ -296,6 +296,31 @@ public class CapitalAccountService {
 		return findByPublisherId(publisherId);
 	}
 
+	public CapitalAccount revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee) {
+		Date date = new Date();
+		// 解冻保证金
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		FrozenCapital frozenCapital = findFrozenCapital(publisherId, buyRecordId);
+		frozenCapital.setStatus(FrozenCapitalStatus.Thaw);
+		frozenCapital.setThawTime(date);
+		thawAmount(account, frozenCapital.getAmount(), frozenCapital.getAmount(), date);
+		CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
+				CapitalFlowType.ReturnReserveFund, frozenCapital.getAmount().abs(), date);
+		CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
+				CapitalFlowExtendType.BUYRECORD, buyRecordId);
+		flowExtendDao.create(returnReserveFundExtend);
+		// 退回服务费
+		increaseAmount(account, serviceFee, date);
+		CapitalFlow revokeServiceFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
+				CapitalFlowType.Revoke, serviceFee, date);
+		CapitalFlowExtend revokeServiceFeeExtend = new CapitalFlowExtend(revokeServiceFeeFlow,
+				CapitalFlowExtendType.BUYRECORD, buyRecordId);
+		flowExtendDao.create(revokeServiceFeeExtend);
+		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenCapital.getAmount()));
+		capitalAccountDao.update(account);
+		return findByPublisherId(publisherId);
+	}
+
 	public FrozenCapital findFrozenCapital(Long publisherId, Long buyRecordId) {
 		return frozenCapitalDao.retriveByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
 	}
@@ -391,4 +416,5 @@ public class CapitalAccountService {
 		}, pageable);
 		return pages;
 	}
+
 }

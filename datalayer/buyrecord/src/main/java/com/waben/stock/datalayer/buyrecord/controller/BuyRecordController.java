@@ -112,15 +112,7 @@ public class BuyRecordController implements BuyRecordInterface {
         buyRecordService.remove(id);
         return new Response<>();
     }
-
-    @RequestMapping("/status/{status}")
-    public Response<List<BuyRecordDto>> buyRecordsWithStatus11(@PathVariable("status") Integer status) {
-        BuyRecordState buyRecordState = BuyRecordState.getByIndex(String.valueOf(status));
-        List<BuyRecord> buyRecords = buyRecordService.fetchByStateAndOrderByCreateTime(buyRecordState);
-        List<BuyRecordDto> result = CopyBeanUtils.copyListBeanPropertiesToList(buyRecords, BuyRecordDto.class);
-        return new Response<>(result);
-    }
-
+    
     @Override
     public Response<List<BuyRecordDto>> buyRecordsWithStatus(@PathVariable("state") Integer state) {
         BuyRecordState buyRecordState = BuyRecordState.getByIndex(String.valueOf(state));
@@ -149,5 +141,11 @@ public class BuyRecordController implements BuyRecordInterface {
         PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
         return new Response<>(result);
     }
+
+	@Override
+	public Response<BuyRecordDto> revoke(@PathVariable Long id) {
+		BuyRecord buyRecord = buyRecordService.revoke(id);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+	}
 
 }
