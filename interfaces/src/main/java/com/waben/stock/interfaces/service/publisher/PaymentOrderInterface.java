@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
 
 public interface PaymentOrderInterface {
 
@@ -21,5 +23,8 @@ public interface PaymentOrderInterface {
 	@RequestMapping(value = "/{paymentNo}", method = RequestMethod.PUT)
 	public Response<PaymentOrderDto> changeState(@PathVariable("paymentNo") String paymentNo,
 			@RequestParam("stateIndex") String stateIndex);
+	
+	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Response<PageInfo<PaymentOrderDto>> pagesByQuery(@RequestBody PaymentOrderQuery query);
 
 }

@@ -97,6 +97,8 @@ public class ExceptionConstant {
 	public static final String APPLYAMOUNT_NOTENOUGH_BUYSTOCK_EXCEPTION = "6021";
 	// 持仓第二天之后才能申请卖出
 	public static final String USERSELLAPPLY_NOTMATCH_EXCEPTION = "6022";
+	// 买入中和买入锁定状态下才能撤单
+	public static final String BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION = "6023";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

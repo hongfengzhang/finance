@@ -9,6 +9,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 
 /**
  * 收藏股票 reference服务接口fallback
@@ -40,6 +41,11 @@ public class FavoriteStockReferenceFallback implements FavoriteStockReference {
 
 	@Override
 	public Response<List<String>> listsStockCode(Long publisherId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<FavoriteStockDto>> pagesByPublisherId(Long publisherId, int page, int size) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

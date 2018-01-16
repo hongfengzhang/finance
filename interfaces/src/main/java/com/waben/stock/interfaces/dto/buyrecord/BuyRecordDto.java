@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.dto.buyrecord;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
@@ -14,6 +15,7 @@ import com.waben.stock.interfaces.enums.WindControlType;
  * @author luomengan
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BuyRecordDto {
 
 	private Long id;
@@ -400,11 +402,12 @@ public class BuyRecordDto {
 	public void setInvestorName(String investorName) {
 		this.investorName = investorName;
 	}
-	
-	public String getBuyRecordState(){
-		return state.getStatus();
+
+	public String getBuyRecordState() {
+		return state != null ? state.getStatus() : null;
 	}
-	public String getDeferredStatus(){
-		return deferred == true ? "是":"否";
+
+	public String getDeferredStatus() {
+		return deferred == true ? "是" : "否";
 	}
 }

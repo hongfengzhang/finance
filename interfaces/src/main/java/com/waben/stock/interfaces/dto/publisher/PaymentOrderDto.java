@@ -22,9 +22,17 @@ public class PaymentOrderDto {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 部分支付的金额，支付宝转账方式用户具体转账的金额不可控，因此加入该字段记录
+	 */
+	private BigDecimal partAmount;
+	/**
 	 * 支付方式
 	 */
 	private PaymentType type;
+	/**
+	 * 支付宝账号
+	 */
+	private String alipayAccount;
 	/**
 	 * 支付状态
 	 */
@@ -112,6 +120,22 @@ public class PaymentOrderDto {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public BigDecimal getPartAmount() {
+		return partAmount;
+	}
+
+	public void setPartAmount(BigDecimal partAmount) {
+		this.partAmount = partAmount;
+	}
+
+	public String getAlipayAccount() {
+		return alipayAccount;
+	}
+
+	public void setAlipayAccount(String alipayAccount) {
+		this.alipayAccount = alipayAccount;
 	}
 
 }

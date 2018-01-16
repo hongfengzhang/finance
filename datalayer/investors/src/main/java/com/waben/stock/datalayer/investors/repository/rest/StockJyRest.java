@@ -29,8 +29,9 @@ import java.util.Map;
 public class StockJyRest extends StockResponseHander implements SecuritiesInterface {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-//    @Value("${securities.context}")
-    private String context="http://118.31.134.169:8000/stockjy";
+    @Value("${securities.context}")
+//    private String context="http://118.31.134.169:8000/stockjy";
+    private String context;
 
     //券商资金账户登录
     private String loginPath = "/login";

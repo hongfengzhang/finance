@@ -9,7 +9,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.alipay.api.AlipayApiException;
@@ -21,13 +20,11 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -42,41 +39,16 @@ public class AliPayBusiness {
 			AliPayConfigConstant.ALIPAY_PUBLIC_KEY, AliPayConfigConstant.SIGNTYPE);
 
 	@Autowired
-	@Qualifier("paymentOrderReference")
-	private PaymentOrderReference paymentOrderReference;
-
-	@Autowired
 	private CapitalAccountBusiness accountBusiness;
 
-	public PaymentOrderDto save(PaymentOrderDto paymentOrder) {
-		Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
-		if ("200".equals(orderResp.getCode())) {
-			return orderResp.getResult();
-		}
-		throw new ServiceException(orderResp.getCode());
-	}
-
-	public PaymentOrderDto findByPaymentNo(String paymentNo) {
-		Response<PaymentOrderDto> orderResp = paymentOrderReference.fetchByPaymentNo(paymentNo);
-		if ("200".equals(orderResp.getCode())) {
-			return orderResp.getResult();
-		}
-		throw new ServiceException(orderResp.getCode());
-	}
-
-	public PaymentOrderDto changeState(String paymentNo, PaymentState state) {
-		Response<PaymentOrderDto> orderResp = paymentOrderReference.changeState(paymentNo, state.getIndex());
-		if ("200".equals(orderResp.getCode())) {
-			return orderResp.getResult();
-		}
-		throw new ServiceException(orderResp.getCode());
-	}
+	@Autowired
+	private PaymentOrderBusiness paymentOrderBusiness; 
 
 	public void payCallback(String paymentNo, PaymentState state) {
-		PaymentOrderDto origin = findByPaymentNo(paymentNo);
+		PaymentOrderDto origin = paymentOrderBusiness.findByPaymentNo(paymentNo);
 		if (origin.getState() != state) {
 			// 更新支付订单的状态
-			changeState(paymentNo, state);
+			paymentOrderBusiness.changeState(paymentNo, state);
 			// 给发布人账号中充值
 			if (state == PaymentState.Paid) {
 				accountBusiness.recharge(origin.getPublisherId(), origin.getAmount());
@@ -86,6 +58,18 @@ public class AliPayBusiness {
 
 	/********************************************* 支付宝处理 *****************************************/
 
+	public PaymentOrderDto turnRecharge(Long publisherId, String alipayAccount, BigDecimal amount) {
+		// 创建支付订单
+		PaymentOrderDto paymentOrder = new PaymentOrderDto();
+		paymentOrder.setAmount(amount);
+		paymentOrder.setPaymentNo(UniqueCodeGenerator.generatePaymentNo());
+		paymentOrder.setPublisherId(publisherId);
+		paymentOrder.setAlipayAccount(alipayAccount);
+		paymentOrder.setType(PaymentType.AliTurnPay);
+		paymentOrder.setState(PaymentState.Unpaid);
+		return paymentOrderBusiness.save(paymentOrder);
+	}
+
 	public String pay(Long publisherId, BigDecimal amount) {
 		// 创建支付订单
 		PaymentOrderDto paymentOrder = new PaymentOrderDto();
@@ -94,7 +78,7 @@ public class AliPayBusiness {
 		paymentOrder.setPublisherId(publisherId);
 		paymentOrder.setType(PaymentType.AliAppPay);
 		paymentOrder.setState(PaymentState.Unpaid);
-		this.save(paymentOrder);
+		paymentOrderBusiness.save(paymentOrder);
 		// 支付宝签名
 		AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
 		AlipayTradeAppPayModel model = new AlipayTradeAppPayModel();
