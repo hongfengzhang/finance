@@ -18,7 +18,7 @@ public class PositionSellOutProducer extends RabbitMQProducer<PositionStock> {
 
     /**
      * 风控持仓卖出
-     * @param PositionStock
+     * @param positionStock
      */
     public void riskPositionSellOut(PositionStock positionStock) {
         logger.info("开始发送风控持仓订单数据:{}",positionStock.toString());

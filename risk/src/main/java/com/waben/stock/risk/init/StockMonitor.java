@@ -1,5 +1,6 @@
 package com.waben.stock.risk.init;
 
+import com.waben.stock.interfaces.constants.HolidayConstant;
 import com.waben.stock.risk.schedule.WorkCalendar;
 import com.waben.stock.risk.schedule.job.*;
 import org.quartz.*;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
-import static org.quartz.CronScheduleBuilder.cronSchedule;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
@@ -25,6 +25,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 public class StockMonitor implements CommandLineRunner {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
 
     /***
      * @author yuyidi 2017-11-27 20:04:24
@@ -40,7 +41,7 @@ public class StockMonitor implements CommandLineRunner {
         Date runTime = DateBuilder.evenMinuteDate(new Date());
         WeeklyCalendar workDay = new WeeklyCalendar();
         //排除特定的日期
-        WorkCalendar workCalendar = new WorkCalendar(workDay, "2018-01-01");
+        WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
         DailyCalendar am = new DailyCalendar(workCalendar, "08:30", "11:30");
         am.setInvertTimeRange(true);
@@ -48,18 +49,20 @@ public class StockMonitor implements CommandLineRunner {
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
-        scheduler.addCalendar("workCalendar",workCalendar,false,false);
+        scheduler.addCalendar("workCalendar", workCalendar, false, false);
         //拉取股票行情任务
         JobDetail jobQuotation = JobBuilder.newJob(StockQuotationJob.class).withIdentity("jobQuotation",
                 "groupQuotation")
                 .storeDurably(true)
                 .build();
-        SimpleTrigger stockQuotationAM = newTrigger().withIdentity("quotationAMTrigger", "groupQuotation").startAt(runTime)
+        SimpleTrigger stockQuotationAM = newTrigger().withIdentity("quotationAMTrigger", "groupQuotation").startAt
+                (runTime)
                 .withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever())
                 .forJob(jobQuotation)
                 .modifiedByCalendar("calendarAM")
                 .build();
-        SimpleTrigger stockQuotationPM = newTrigger().withIdentity("quotationPMTrigger", "groupQuotation").startAt(runTime)
+        SimpleTrigger stockQuotationPM = newTrigger().withIdentity("quotationPMTrigger", "groupQuotation").startAt
+                (runTime)
                 .withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever())
                 .forJob(jobQuotation)
                 .modifiedByCalendar("calendarPM")
@@ -93,10 +96,12 @@ public class StockMonitor implements CommandLineRunner {
                 .forJob(jobBuyInStop)
                 .build();
 
-        JobDetail jobSellOut = JobBuilder.newJob(StockApplyEntrustSellOutJob.class).withIdentity("jobSellOut", "groupSellOut")
+        JobDetail jobSellOut = JobBuilder.newJob(StockApplyEntrustSellOutJob.class).withIdentity("jobSellOut",
+                "groupSellOut")
                 .storeDurably(true)
                 .build();
-        JobDetail jobSellOutStop = JobBuilder.newJob(SellOutStopJob.class).withIdentity("jobSellOutStop", "groupSellOut")
+        JobDetail jobSellOutStop = JobBuilder.newJob(SellOutStopJob.class).withIdentity("jobSellOutStop",
+                "groupSellOut")
                 .storeDurably(true)
                 .build();
         Trigger sellOutTriggerBegin = newTrigger().withIdentity("sellOutTriggerBegin", "groupSellOut").startAt(runTime)
@@ -104,12 +109,14 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("workCalendar")
                 .forJob(jobSellOut)
                 .build();
-        Trigger sellOutTriggerAMStop = newTrigger().withIdentity("sellOutTriggerAMStop", "groupSellOut").startAt(runTime)
+        Trigger sellOutTriggerAMStop = newTrigger().withIdentity("sellOutTriggerAMStop", "groupSellOut").startAt
+                (runTime)
                 .withSchedule(scheduleBuilderAMStop)
                 .modifiedByCalendar("workCalendar")
                 .forJob(jobSellOutStop)
                 .build();
-        Trigger sellOutTriggerPMStop = newTrigger().withIdentity("sellOutTriggerPMStop", "groupSellOut").startAt(runTime)
+        Trigger sellOutTriggerPMStop = newTrigger().withIdentity("sellOutTriggerPMStop", "groupSellOut").startAt
+                (runTime)
                 .withSchedule(scheduleBuilderPMStop)
                 .modifiedByCalendar("workCalendar")
                 .forJob(jobSellOutStop)
@@ -136,14 +143,14 @@ public class StockMonitor implements CommandLineRunner {
 
         scheduler.addJob(jobBuyIn, true);
         scheduler.scheduleJob(buyInTriggerBegin);
-        scheduler.addJob(jobBuyInStop,true);
+        scheduler.addJob(jobBuyInStop, true);
         scheduler.scheduleJob(buyInTriggerAMStop);
         scheduler.scheduleJob(buyInTriggerPMStop);
 
 //
         scheduler.addJob(jobSellOut, true);
         scheduler.scheduleJob(sellOutTriggerBegin);
-        scheduler.addJob(jobSellOutStop,true);
+        scheduler.addJob(jobSellOutStop, true);
         scheduler.scheduleJob(sellOutTriggerAMStop);
         scheduler.scheduleJob(sellOutTriggerPMStop);
         scheduler.start();
