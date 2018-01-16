@@ -12,21 +12,34 @@ import java.math.BigDecimal;
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StockMarket {
-
+	//交易单号
 	private String exchangeId;
+	//股票代码
 	private String instrumentId;
+//	最新价格
 	private BigDecimal lastPrice;
+//	股票名称
 	private String name;
+//
 	private int status;
+//	交易日
 	private String tradeDay;
+//  涨跌价格
 	private BigDecimal upDropPrice;
+//	涨跌速度
 	private BigDecimal upDropSpeed;
+//	涨跌时间
 	private long upTime;
 	private String upTimeFormat;
+//	最高价格
 	private BigDecimal highestPrice;
+//	最低价格
 	private BigDecimal lowestPrice;
+//	卖方开价
 	private BigDecimal askPrice;
+//	涨停价格
 	private BigDecimal upLimitPrice;
+//	跌停价格
 	private BigDecimal downLimitPrice;
 
 	public String getExchangeId() {

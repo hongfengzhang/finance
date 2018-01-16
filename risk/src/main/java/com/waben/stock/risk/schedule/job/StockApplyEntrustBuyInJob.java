@@ -70,9 +70,19 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //废单
                             logger.info("废单:{}",entry.getKey());
+                            //TODO 将点买废单放入废单处理队列中
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
+
+                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
+                            logger.info("已报单:{}",entry.getKey());
+                             // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
+
+                            stockEntrusts.remove(entry.getKey());
+                            continue;
+                        }
+
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust
@@ -99,6 +109,12 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                 logger.info("轮询异常：{}", e.getMessage());
             }
         }
+//        SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
+//        securitiesStockEntrust.setBuyRecordId(1L);
+//        securitiesStockEntrust.setEntrustNo("testOrder");
+//        securitiesStockEntrust.setBuyRecordId(123L);
+//        securitiesStockEntrust.setTradeNo("testTradeNo");
+//        entrustProducer.entrustBuyIn(securitiesStockEntrust);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.waben.stock.risk;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.waben.stock.interfaces.constants.HolidayConstant;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
@@ -9,10 +10,14 @@ import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.risk.schedule.WorkCalendar;
 import org.junit.Test;
+import org.quartz.impl.calendar.WeeklyCalendar;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,4 +130,15 @@ public class SimpleTest {
         System.out.println(Float.valueOf(amount).intValue());
     }
 
+    @Test
+    public void testWorkTime() {
+        WeeklyCalendar workDay = new WeeklyCalendar();
+        //排除特定的日期
+        WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(5, 4);
+        System.out.println(new Date(workCalendar.getNextIncludedTime(calendar.getTimeInMillis())));
+
+    }
 }

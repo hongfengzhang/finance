@@ -1,6 +1,10 @@
 package com.waben.stock.datalayer.buyrecord.warpper.messagequeue;
 
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
+import com.waben.stock.datalayer.buyrecord.warpper.ApplicationContextBeanFactory;
+import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.rabbit.RiskProducer;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -22,13 +26,30 @@ public class RabbitMqConsumer {
 	@Autowired
 	private BuyRecordService buyRecordService;
 
+	private RiskProducer riskProducer = ApplicationContextBeanFactory.getBean(RiskProducer.class);
+
 	@RabbitListener(queues = { "entrustBuyIn" })
 	public void entrustBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
+		System.out.println("成功！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
 		logger.info("券商股票委托买入成功:{}", securitiesStockEntrust.getTradeNo());
-		BuyRecord result = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
-				securitiesStockEntrust.getEntrustPrice());
+		BuyRecord buyRecord = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
+			  securitiesStockEntrust.getEntrustPrice());
 		//TODO 发送短信通知用户 和发送站内消息
 		// 点买记录委托成功  点买记录状态为持仓中，则将当前订单记录放入风控消息队列
+		//风控传输对象
+		PositionStock positionStock = new PositionStock();
+		positionStock.setBuyRecordId(buyRecord.getId());
+		positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
+		positionStock.setStockCode(buyRecord.getStockCode());
+		positionStock.setStockName(buyRecord.getStockName());
+		positionStock.setLossPosition(buyRecord.getLossPosition());
+		positionStock.setProfitPosition(buyRecord.getProfitPosition());
+		positionStock.setInvestorId(buyRecord.getInvestorId());
+		positionStock.setBuyingTime(buyRecord.getBuyingTime());
+		positionStock.setStrategyTypeId(buyRecord.getStrategyTypeId());
+		positionStock.setDeferred(buyRecord.getDeferred());
+		positionStock.setTradeSession("70001553");
+		riskProducer.risk(positionStock);
 	}
 
 	@RabbitListener(queues = { "entrustSellOut" })

@@ -1,6 +1,7 @@
 package com.waben.stock.risk.warpper.messagequeue.rabbitmq;
 
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.risk.warpper.messagequeue.RabbitMQProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,4 +33,14 @@ public class EntrustProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
         logger.info("开始发送委托卖出订单数据:{}",securitiesStockEntrust.getTradeNo());
         super.topic("buyRecord", "sellOut", securitiesStockEntrust);
     }
+
+    /**
+     * 废单
+     * @param securitiesStockEntrust
+     */
+    public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
+        logger.info("开始发送废单数据:{}",securitiesStockEntrust.getTradeNo());
+        super.topic("buyRecord", "waste", securitiesStockEntrust);
+    }
+
 }

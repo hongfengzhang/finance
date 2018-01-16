@@ -88,9 +88,9 @@ public class BeanConfigurer {
     /**
      * 点买交易风控交换机
      */
-    @Bean("buyRecorkRisk")
+    @Bean("buyRecordRisk")
     public TopicExchange riskExchange() {
-        return new TopicExchange("risk");
+        return new TopicExchange("buyRecordRisk");
     }
 
     @Bean
@@ -101,8 +101,23 @@ public class BeanConfigurer {
 
     @Bean
     public Binding bindingExchangRisk(@Qualifier("risk") Queue queue,
-                                              @Qualifier("buyRecorkRisk") TopicExchange riskExchange) {
+                                              @Qualifier("buyRecordRisk") TopicExchange riskExchange) {
         return BindingBuilder.bind(queue).to(riskExchange).with("stock");
+    }
+
+    /**
+     * 风控持仓卖出队列
+     * @return
+     */
+    @Bean(name = "riskPositionSellOut")
+    public Queue riskPositionSellOut() {
+        return new Queue("riskPositionSellOut");
+    }
+
+    @Bean
+    public Binding bindingExchangPosition(@Qualifier("riskPositionSellOut") Queue queue,
+                                          @Qualifier("buyRecordRisk") TopicExchange riskExchange) {
+        return BindingBuilder.bind(queue).to(riskExchange).with("position");
     }
 
 }

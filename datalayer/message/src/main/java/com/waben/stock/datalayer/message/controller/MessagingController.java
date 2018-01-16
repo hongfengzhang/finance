@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,24 +31,24 @@ public class MessagingController implements MessagingInterface{
 	private MessagingService messagingService;
 	
 	@Override
-	public Response<MessagingDto> addMessaging(MessagingDto messagingDto) {
+	public Response<MessagingDto> addMessaging(@RequestBody MessagingDto messagingDto) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class, messagingService.save(
 				CopyBeanUtils.copyBeanProperties(Messaging.class, messagingDto, false)), false));
 	}
 
 	@Override
-	public Response<Long> dropMessaging(Long messagingId) {
+	public Response<Long> dropMessaging(@PathVariable("messagingId") Long messagingId) {
 		return new Response<>(messagingService.remove(messagingId));
 	}
 
 	@Override
-	public Response<MessagingDto> modifyMessaging(MessagingDto messagingDto) {
+	public Response<MessagingDto> modifyMessaging(@RequestBody MessagingDto messagingDto) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class, messagingService.revision(
 				CopyBeanUtils.copyBeanProperties(Messaging.class, messagingDto, false)), false));
 	}
 
 	@Override
-	public Response<MessagingDto> fetchMessagingById(Long messagingId) {
+	public Response<MessagingDto> fetchMessagingById(@PathVariable("messagingId") Long messagingId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class, messagingService.findById(messagingId),false));
 	}
 
@@ -59,7 +60,7 @@ public class MessagingController implements MessagingInterface{
 	}
 
 	@Override
-	public Response<List<MessagingDto>> fetchNotProduceReceiptAllByRecipient(String recipient) {
+	public Response<List<MessagingDto>> fetchNotProduceReceiptAllByRecipient(@PathVariable("recipient") String recipient) {
 		List<Messaging> pages = messagingService.findNotProduceReceiptMessage(recipient);
 		List<MessagingDto> result = CopyBeanUtils.copyListBeanPropertiesToList(pages,MessagingDto.class);
 		return new Response<>(result);
