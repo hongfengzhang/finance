@@ -50,6 +50,16 @@ public class InvestorController implements InvestorInterface {
         return new Response<>(result);
     }
 
+    @Override
+    public Response<InvestorDto> fetchById(@PathVariable Long id) {
+        logger.info("investorId:{}",id);
+        Investor investor = investorService.findById(id);
+        logger.info("investor:{}",investor.getId());
+        InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(investor, new InvestorDto(), false);
+        logger.info("investor:{}",investorDto.getId());
+        return new Response<>(investorDto);
+    }
+
     public Response<InvestorDto> fetchByUserName(@PathVariable String username) {
         Investor investor = investorService.findByUserName(username);
         InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(investor, new InvestorDto(), false);

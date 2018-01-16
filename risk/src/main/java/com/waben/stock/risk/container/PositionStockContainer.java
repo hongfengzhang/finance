@@ -18,16 +18,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class PositionStockContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    Map<String, List<SecuritiesStockEntrust>> riskStockContainer = new ConcurrentHashMap<>();
+    Map<String, List<PositionStock>> riskStockContainer = new ConcurrentHashMap<>();
 
-    public void add(SecuritiesStockEntrust stock) {
+    public void add(PositionStock stock) {
         logger.info("数据:{}",stock.toString());
         logger.info("StockCode:{}",stock.getStockCode());
-        List<SecuritiesStockEntrust> b = riskStockContainer.get(stock.getStockCode());
+        List<PositionStock> b = riskStockContainer.get(stock.getStockCode());
         if (b != null) {
             b.add(stock);
         } else {
-            List<SecuritiesStockEntrust> stocks = new CopyOnWriteArrayList<>();
+            List<PositionStock> stocks = new CopyOnWriteArrayList<>();
             stocks.add(stock);
             riskStockContainer.put(stock.getStockCode(), stocks);
         }
@@ -38,12 +38,7 @@ public class PositionStockContainer {
         riskStockContainer.remove(code);
     }
 
-    public void removeValue(String code,SecuritiesStockEntrust stock) {
-        List<SecuritiesStockEntrust> stocks = riskStockContainer.get(code);
-        stocks.remove(stock);
-    }
-
-    public Map<String, List<SecuritiesStockEntrust>> getRiskStockContainer() {
+    public Map<String, List<PositionStock>> getRiskStockContainer() {
         return riskStockContainer;
     }
 

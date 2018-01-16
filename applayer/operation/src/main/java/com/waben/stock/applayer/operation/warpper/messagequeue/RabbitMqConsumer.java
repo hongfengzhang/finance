@@ -1,12 +1,15 @@
 package com.waben.stock.applayer.operation.warpper.messagequeue;
 
+import com.waben.stock.applayer.operation.business.BuyRecordBusiness;
 import com.waben.stock.applayer.operation.business.InvestorBusiness;
 import com.waben.stock.applayer.operation.business.StockBusiness;
 import com.waben.stock.applayer.operation.service.investor.InvestorService;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -24,21 +27,10 @@ public class RabbitMqConsumer {
 
     @Autowired
     private InvestorBusiness investorBusiness;
-    @Autowired
-    private StockBusiness stockBusiness;
     @RabbitListener(queues = {"riskPositionSellOut"})
-    public void buyInSuccessRisk(SecuritiesStockEntrust securitiesStockEntrust) {
-        StockDto stockDto = stockBusiness.fetchWithExponentByCode(securitiesStockEntrust.getStockCode());
-        securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
-        logger.info("委托买出成功:{}", securitiesStockEntrust.getTradeNo());
-        logger.info("investor:{}",securitiesStockEntrust.getInvestor());
-        if(securitiesStockEntrust.getTradeSession()==null) {
-            logger.info("investor:{}",securitiesStockEntrust.getTradeSession());
-        }else {
-            investorBusiness.sellOut(securitiesStockEntrust);
-            logger.info("investor:{}",securitiesStockEntrust.getTradeSession());
-        }
-        //
+    public void buyInSuccessRisk(PositionStock positionStock) {
+        logger.info("强制卖出持仓订单数据:{}",positionStock.toString());
+        investorBusiness.sellOut(positionStock);
     }
 
 }

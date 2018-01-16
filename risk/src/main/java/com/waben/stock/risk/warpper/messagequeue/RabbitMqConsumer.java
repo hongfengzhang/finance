@@ -57,9 +57,9 @@ public class RabbitMqConsumer {
     }
 
     @RabbitListener(queues = {"risk"})
-    public void buyInSuccessRisk(SecuritiesStockEntrust securitiesStockEntrust) {
-        logger.info("委托买入成功，加入风控:{}", securitiesStockEntrust.getTradeNo());
-        positionStockContainer.add(securitiesStockEntrust);
+    public void buyInSuccessRisk(PositionStock positionStock) {
+        logger.info("委托买入成功，加入风控:{}", positionStock.toString());
+        positionStockContainer.add(positionStock);
     }
 
 }

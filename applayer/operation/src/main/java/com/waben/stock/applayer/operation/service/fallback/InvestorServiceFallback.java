@@ -27,6 +27,11 @@ public class InvestorServiceFallback implements InvestorService {
     }
 
     @Override
+    public Response<InvestorDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
     public Response<InvestorDto> fetchByUserName(String userName) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }

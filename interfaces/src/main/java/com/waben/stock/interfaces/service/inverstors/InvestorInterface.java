@@ -21,6 +21,9 @@ public interface InvestorInterface {
     @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<InvestorDto>> pagesByQuery(@RequestBody InvestorQuery investorQuery);
 
+    @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
+    Response<InvestorDto> fetchById(@PathVariable("id") Long id);
+
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     Response<InvestorDto> fetchByUserName(@PathVariable("username") String username);
 

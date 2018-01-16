@@ -12,17 +12,17 @@ import org.springframework.stereotype.Component;
  * @desc
  */
 @Component
-public class PositionSellOutProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
+public class PositionSellOutProducer extends RabbitMQProducer<PositionStock> {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
     /**
      * 风控持仓卖出
-     * @param SecuritiesStockEntrust
+     * @param PositionStock
      */
-    public void riskPositionSellOut(SecuritiesStockEntrust securitiesStockEntrust) {
-        logger.info("开始发送风控持仓订单数据:{}",securitiesStockEntrust.getTradeNo());
-        super.topic("buyRecordRisk", "position", securitiesStockEntrust);
+    public void riskPositionSellOut(PositionStock positionStock) {
+        logger.info("开始发送风控持仓订单数据:{}",positionStock.toString());
+        super.topic("buyRecordRisk", "position", positionStock);
     }
     
 }

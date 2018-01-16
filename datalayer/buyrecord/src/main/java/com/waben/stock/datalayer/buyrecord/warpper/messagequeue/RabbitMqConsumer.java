@@ -32,23 +32,24 @@ public class RabbitMqConsumer {
 	public void entrustBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
 		System.out.println("成功！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
 		logger.info("券商股票委托买入成功:{}", securitiesStockEntrust.getTradeNo());
-		buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
+		BuyRecord buyRecord = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
 			  securitiesStockEntrust.getEntrustPrice());
 		//TODO 发送短信通知用户 和发送站内消息
 		// 点买记录委托成功  点买记录状态为持仓中，则将当前订单记录放入风控消息队列
-		//BuyRecord buyRecord = buyRecordService.findBuyRecord(securitiesStockEntrust.getBuyRecordId());
-
 		//风控传输对象
-//		PositionStock positionStock = new PositionStock();
-//		positionStock.setTradeNo(buyRecord.getTradeNo());
-//		positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
-//		positionStock.setProfitPoint(buyRecord.getProfitPoint());
-//		positionStock.setLossPoint(buyRecord.getLossPoint());
-//		positionStock.setStockCode(buyRecord.getStockCode());
-//		positionStock.setStockName(buyRecord.getStockName());
-//		positionStock.setLossPoint(buyRecord.getLossPosition());
-//		positionStock.setProfitPosition(buyRecord.getProfitPosition());
-		riskProducer.risk(securitiesStockEntrust);
+		PositionStock positionStock = new PositionStock();
+		positionStock.setBuyRecordId(buyRecord.getId());
+		positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
+		positionStock.setStockCode(buyRecord.getStockCode());
+		positionStock.setStockName(buyRecord.getStockName());
+		positionStock.setLossPosition(buyRecord.getLossPosition());
+		positionStock.setProfitPosition(buyRecord.getProfitPosition());
+		positionStock.setInvestorId(buyRecord.getInvestorId());
+		positionStock.setBuyingTime(buyRecord.getBuyingTime());
+		positionStock.setStrategyTypeId(buyRecord.getStrategyTypeId());
+		positionStock.setDeferred(buyRecord.getDeferred());
+		positionStock.setTradeSession("70001553");
+		riskProducer.risk(positionStock);
 	}
 
 	@RabbitListener(queues = { "entrustSellOut" })

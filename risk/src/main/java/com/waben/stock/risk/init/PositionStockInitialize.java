@@ -34,23 +34,19 @@ public class PositionStockInitialize implements CommandLineRunner {
         List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithPositionStock();
         logger.info("获取持仓交易记录个数：{}", buyRecords.size());
         for (BuyRecordDto buyRecord : buyRecords) {
-            SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
-            securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
-            securitiesStockEntrust.setSerialCode(buyRecord.getSerialCode());
-            securitiesStockEntrust.setInvestor(buyRecord.getInvestorId());
-            securitiesStockEntrust.setEntrustNumber(buyRecord.getNumberOfStrand());
-            securitiesStockEntrust.setEntrustPrice(buyRecord.getDelegatePrice());
-            securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
-            securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
-            securitiesStockEntrust.setEntrustNo(buyRecord.getDelegateNumber());
-            securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
-            securitiesStockEntrust.setLossPosition(buyRecord.getLossPosition());
-            securitiesStockEntrust.setProfitPosition(buyRecord.getProfitPosition());
-            securitiesStockEntrust.setStockCode(buyRecord.getStockCode());
-            securitiesStockEntrust.setTradeSession("70001553");
-            securitiesStockEntrust.setStockName(buyRecord.getStockName());
-            positionStockContainer.add(securitiesStockEntrust);
-            logger.info("TradeSession:{}",securitiesStockEntrust.getTradeSession());
+            PositionStock positionStock = new PositionStock();
+            positionStock.setBuyRecordId(buyRecord.getId());
+            positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
+            positionStock.setStockCode(buyRecord.getStockCode());
+            positionStock.setStockName(buyRecord.getStockName());
+            positionStock.setLossPosition(buyRecord.getLossPosition());
+            positionStock.setProfitPosition(buyRecord.getProfitPosition());
+            positionStock.setInvestorId(buyRecord.getInvestorId());
+            positionStock.setBuyingTime(buyRecord.getBuyingTime());
+            positionStock.setStrategyTypeId(buyRecord.getStrategyTypeId());
+            positionStock.setTradeSession("70001553");
+            positionStockContainer.add(positionStock);
+            logger.info("TradeSession:{}",positionStock.getTradeSession());
         }
     }
 }

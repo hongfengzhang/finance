@@ -14,9 +14,14 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author Created by yuyidi on 2017/11/30.
@@ -24,7 +29,6 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class InvestorBusiness {
-
     @Autowired
     @Qualifier("investerFeignService")
     private InvestorService investorService;
@@ -32,7 +36,8 @@ public class InvestorBusiness {
     private StockBusiness stockBusiness;
     @Autowired
     private EntrustApplyProducer entrustProducer;
-
+    @Autowired
+    private BuyRecordBusiness buyRecordBusiness;
     public PageInfo<InvestorDto> investors(InvestorQuery investorQuery) {
         Response<PageInfo<InvestorDto>> response = investorService.pagesByQuery(investorQuery);
         String code = response.getCode();
@@ -118,23 +123,23 @@ public class InvestorBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    //持仓强制卖出
-    public SecuritiesStockEntrust sellOut(SecuritiesStockEntrust securitiesStockEntrust) {
-        //SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto);
-        //申请卖出，更新数据库
-        Response<BuyRecordDto> response = investorService.stockApplySellOut(securitiesStockEntrust.getInvestor(), securitiesStockEntrust,
-                securitiesStockEntrust.getTradeSession());
+    public InvestorDto findById(Long id){
+        Response<InvestorDto> response = investorService.fetchById(id);
         String code = response.getCode();
+        System.out.println("code:"+code+"   ==============================================");
+        System.out.println("result:"+response.getResult()+"   ==============================================");
         if ("200".equals(code)) {
-            securitiesStockEntrust.setTradeSession(securitiesStockEntrust.getTradeSession());
-            securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
-            securitiesStockEntrust.setEntrustNo(response.getResult().getDelegateNumber());
-            securitiesStockEntrust.setEntrustState(EntrustState.HASBEENSUCCESS);
-            entrustProducer.entrustApplySellOut(securitiesStockEntrust);
-            return securitiesStockEntrust;
+            return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
+    }
+
+    public void sellOut(PositionStock positionStock) {
+        BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(positionStock.getBuyRecordId());
+        InvestorDto result = findById(positionStock.getInvestorId());
+        result.setSecuritiesSession(positionStock.getTradeSession());
+        sellOut(result,buyRecordDto);
     }
 }

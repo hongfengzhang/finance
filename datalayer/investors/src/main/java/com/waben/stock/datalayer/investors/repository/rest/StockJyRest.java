@@ -30,8 +30,9 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
 
     Logger logger = LoggerFactory.getLogger(getClass());
 //    @Value("${securities.context}")
-    private String context="http://118.31.134.169:8000/stockjy";
 
+    //private String context="http://118.31.134.169:8000/stockjy";
+    private String context="http://106.15.37.226:8445/stockjy";
     //券商资金账户登录
     private String loginPath = "/login";
     //券商资金账户股东账户查询

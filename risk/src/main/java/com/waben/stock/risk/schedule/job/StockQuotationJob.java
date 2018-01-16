@@ -34,7 +34,7 @@ public class StockQuotationJob implements InterruptableJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("开始执行行情数据拉取");
-        Map<String, List<SecuritiesStockEntrust>> riskStockContainer = positionStockContainer.getRiskStockContainer();
+        Map<String, List<PositionStock>> riskStockContainer = positionStockContainer.getRiskStockContainer();
 
         Set<String> codes = riskStockContainer.keySet();
         List<String> codePrams = new ArrayList();
@@ -42,11 +42,11 @@ public class StockQuotationJob implements InterruptableJob {
         List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
         //线程处理
         for(StockMarket stockMarket: quotations) {
-            List<SecuritiesStockEntrust> stocks = riskStockContainer.get(stockMarket.getInstrumentId());
-            Future<List<SecuritiesStockEntrust>> future = executors.submit(new RiskProcess(stockMarket,stocks ));
+            List<PositionStock> stocks = riskStockContainer.get(stockMarket.getInstrumentId());
+            Future<List<PositionStock>> future = executors.submit(new RiskProcess(stockMarket,stocks ));
             try {
-                List<SecuritiesStockEntrust> result = future.get();
-                for (SecuritiesStockEntrust stock : result) {
+                List<PositionStock> result = future.get();
+                for (PositionStock stock : result) {
                     stocks.remove(stock);
                 }
             } catch (InterruptedException e) {
