@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -20,7 +21,6 @@ public class RiskProcess implements Callable<List<PositionStock>>{
     Logger logger = LoggerFactory.getLogger(getClass());
     private StockMarket stockMarket;
     private List<PositionStock> positionStock;
-
     public RiskProcess(StockMarket stockMarket, List<PositionStock> positionStocks) {
         this.stockMarket = stockMarket;
         this.positionStock = positionStocks;
@@ -28,28 +28,50 @@ public class RiskProcess implements Callable<List<PositionStock>>{
 
     @Override
     public List<PositionStock> call() {
-        logger.info("run==============================================");
         List<PositionStock> counts = new ArrayList<>();
-        logger.info("size:{}",positionStock.size());
+        logger.info("ThreadCallsize:{}",positionStock.size());
+        long start = System.currentTimeMillis();
         for (PositionStock riskBuyInStock : positionStock) {
             // 遍历容器内持仓中的点买交易订单
             // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价
             BigDecimal lastPrice = stockMarket.getLastPrice();
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
+            logger.info("lastPrice:{}",lastPrice);
+            logger.info("lossPosition:{}",lossPosition);
+            logger.info("profitPosition:{}",profitPosition);
+            //交易日
+            Calendar date = Calendar.getInstance();
+            date.setTime(riskBuyInStock.getBuyingTime());
+            date.add(5,-1);
+            Long expriessDay = date.getTimeInMillis()/(1000 * 60 * 60 * 24);
+            //是否递延
+            Boolean isDeferred = riskBuyInStock.getDeferred();
+            //当前时间
+            Long currentDay = new Date().getTime()/(1000 * 60 * 60 * 24);
             if(profitPosition.compareTo(lastPrice)==-1||lossPosition.compareTo(lastPrice)==1) {
                 counts.add(riskBuyInStock);
-            }
-            //如果没有递延费，达到交易日后，强制卖出
-            Date buyingTime = riskBuyInStock.getBuyingTime();
-            Long strategyType = riskBuyInStock.getStrategyTypeId();
-            Boolean isDeferred = riskBuyInStock.getDeferred();
-            logger.info("TradeSession:{}",riskBuyInStock.getTradeSession());
-            if(riskBuyInStock.getStockCode().equals("000005")) {
                 positionProducer.riskPositionSellOut(riskBuyInStock);
-                counts.add(riskBuyInStock);
+            }else {
+                //如果没有递延费，达到交易日后，强制卖出
+                if(currentDay==expriessDay) {
+                    if(!isDeferred) {
+                        counts.add(riskBuyInStock);
+                        positionProducer.riskPositionSellOut(riskBuyInStock);
+                    }else {
+                        //进行递延费扣除,递延成功，修改股票持仓到期时间
+                        Boolean result = false;
+                        if(result==false) {
+                            //result==false 余额不足以支付递延费
+                            counts.add(riskBuyInStock);
+                            positionProducer.riskPositionSellOut(riskBuyInStock);
+                        }
+                    }
+                }
             }
         }
+        long end = System.currentTimeMillis();
+        logger.info("Call执行时间：{}",(end-start));
         return counts;
     }
 }

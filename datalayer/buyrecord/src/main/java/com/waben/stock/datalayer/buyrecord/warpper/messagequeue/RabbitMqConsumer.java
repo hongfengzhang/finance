@@ -46,7 +46,6 @@ public class RabbitMqConsumer {
 		positionStock.setProfitPosition(buyRecord.getProfitPosition());
 		positionStock.setInvestorId(buyRecord.getInvestorId());
 		positionStock.setBuyingTime(buyRecord.getBuyingTime());
-		positionStock.setStrategyTypeId(buyRecord.getStrategyTypeId());
 		positionStock.setDeferred(buyRecord.getDeferred());
 		positionStock.setTradeSession("70001553");
 		riskProducer.risk(positionStock);
@@ -58,5 +57,11 @@ public class RabbitMqConsumer {
 		buyRecordService.sellOut(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
 				securitiesStockEntrust.getEntrustPrice());
 		// 发送短信通知用户
+	}
+
+	@RabbitListener(queues = { "waste" })
+	public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
+		logger.info("处理废单:{}", securitiesStockEntrust.getTradeNo());
+		//退回服务费及保证金
 	}
 }

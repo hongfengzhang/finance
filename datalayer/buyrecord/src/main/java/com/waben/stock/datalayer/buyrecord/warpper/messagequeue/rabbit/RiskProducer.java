@@ -24,5 +24,4 @@ public class RiskProducer extends RabbitMQProducer<PositionStock> {
         super.topic("buyRecordRisk", "stock", positionStock);
     }
 
-
 }
