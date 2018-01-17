@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.enums.EntrustType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author Created by yuyidi on 2017/12/2.
@@ -55,7 +56,7 @@ public class SecuritiesStockEntrust implements Serializable {
     /**
      * 委托时间
      */
-    private String entrustTime;
+    private Date entrustTime;
 
     private Long investor;
 
@@ -174,11 +175,11 @@ public class SecuritiesStockEntrust implements Serializable {
         this.entrustNo = entrustNo;
     }
 
-    public String getEntrustTime() {
+    public Date getEntrustTime() {
         return entrustTime;
     }
 
-    public void setEntrustTime(String entrustTime) {
+    public void setEntrustTime(Date entrustTime) {
         this.entrustTime = entrustTime;
     }
 
