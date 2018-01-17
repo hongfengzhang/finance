@@ -1,10 +1,13 @@
 package com.waben.stock.applayer.tactics.business;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -14,11 +17,14 @@ import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
 
 @Service
 public class PaymentOrderBusiness {
-	
+
 	@Autowired
 	@Qualifier("paymentOrderReference")
 	private PaymentOrderReference paymentOrderReference;
-	
+
+	@Autowired
+	private CapitalAccountBusiness accountBusiness;
+
 	public PaymentOrderDto save(PaymentOrderDto paymentOrder) {
 		Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
 		if ("200".equals(orderResp.getCode())) {
@@ -42,7 +48,7 @@ public class PaymentOrderBusiness {
 		}
 		throw new ServiceException(orderResp.getCode());
 	}
-	
+
 	public PageInfo<PaymentOrderDto> pages(PaymentOrderQuery query) {
 		Response<PageInfo<PaymentOrderDto>> response = paymentOrderReference.pagesByQuery(query);
 		if ("200".equals(response.getCode())) {
@@ -50,5 +56,42 @@ public class PaymentOrderBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
+
+	public PaymentOrderDto aliturnPaid(String paymentNo) {
+		PaymentOrderDto paymentOrder = this.findByPaymentNo(paymentNo);
+		if (paymentOrder.getState() != PaymentState.Paid) {
+			PaymentState oldState = paymentOrder.getState();
+			this.changeState(paymentNo, PaymentState.Paid);
+			paymentOrder.setState(PaymentState.Paid);
+			if (oldState == PaymentState.PartPaid) {
+				accountBusiness.recharge(paymentOrder.getPublisherId(),
+						paymentOrder.getAmount().subtract(paymentOrder.getPartAmount()));
+			} else {
+				accountBusiness.recharge(paymentOrder.getPublisherId(), paymentOrder.getAmount());
+			}
+		}
+		return paymentOrder;
+	}
+
+	public PaymentOrderDto aliturnPartPaid(String paymentNo, BigDecimal partAmount) {
+		PaymentOrderDto paymentOrder = this.findByPaymentNo(paymentNo);
+		if (paymentOrder.getState() == PaymentState.Unpaid || paymentOrder.getState() == PaymentState.PartPaid) {
+			if (partAmount.add(paymentOrder.getPartAmount() != null ? paymentOrder.getPartAmount() : new BigDecimal(0))
+					.compareTo(paymentOrder.getAmount()) >= 0) {
+				paymentOrder.setState(PaymentState.Paid);
+				paymentOrder.setPartAmount(partAmount
+						.add(paymentOrder.getPartAmount() != null ? paymentOrder.getPartAmount() : new BigDecimal(0)));
+				this.save(paymentOrder);
+			} else {
+				paymentOrder.setState(PaymentState.PartPaid);
+				paymentOrder.setPartAmount(partAmount);
+				this.save(paymentOrder);
+			}
+			accountBusiness.recharge(paymentOrder.getPublisherId(), partAmount);
+		} else {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "支付订单状态不匹配");
+		}
+		return paymentOrder;
+	}
+
 }

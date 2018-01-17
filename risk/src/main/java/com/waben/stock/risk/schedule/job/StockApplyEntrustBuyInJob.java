@@ -38,10 +38,14 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     private EntrustProducer entrustProducer = ApplicationContextBeanFactory.getBean(EntrustProducer.class);
 
     private Boolean interrupted = false;
+    private long millisOfDay = 24 * 60 * 60 * 1000;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+
         String tradeSession = null;
         while (!interrupted) {
             try {
@@ -57,11 +61,14 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                         String currTradeSession = securitiesStockEntrust.getTradeSession();
                         if (currTradeSession == null) {
+                            logger.info("数据库中加载的点买交易记录");
                             securitiesStockEntrust.setTradeSession(tradeSession);
                             continue;
                         } else {
+                            logger.info("最新点买交易记录session:{}",currTradeSession);
                             tradeSession = currTradeSession;
                         }
+                        logger.info("当前券商session:{}",tradeSession);
                         StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo());
@@ -82,12 +89,13 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
                             logger.info("已报单:{}",entry.getKey());
                              // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
-                            long currentDay = System.currentTimeMillis()/(1000 * 60 * 60 * 24);
-                            DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd");
-                            Date entrustTime = fmt.parse(stockEntrustQueryResult.getEntrustTime());
-                            long entrustDay = entrustTime.getTime()/(1000 * 60 * 60 * 24);
-                            if(currentDay-entrustDay>=1) {
+                            long currentDay = calendar.getTime().getTime();
+                            Calendar entrustDate = Calendar.getInstance();
+                            entrustDate.setTime(securitiesStockEntrust.getEntrustTime());
+                            long entrustDay = entrustDate.getTime().getTime();
+                            if((currentDay-entrustDay)/millisOfDay>=1) {
                                 entrustProducer.entrustWaste(securitiesStockEntrust);
+                                stockEntrusts.remove(entry.getKey());
                             }
                             continue;
                         }
@@ -118,12 +126,6 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                 logger.info("轮询异常：{}", e.getMessage());
             }
         }
-//        SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
-//        securitiesStockEntrust.setBuyRecordId(1L);
-//        securitiesStockEntrust.setEntrustNo("testOrder");
-//        securitiesStockEntrust.setBuyRecordId(123L);
-//        securitiesStockEntrust.setTradeNo("testTradeNo");
-//        entrustProducer.entrustBuyIn(securitiesStockEntrust);
     }
 
     @Override

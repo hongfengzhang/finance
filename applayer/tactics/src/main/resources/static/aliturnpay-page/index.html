@@ -90,7 +90,6 @@
 	            url: "../paymentorder/pages",
 	            contentType: "application/json",
 	            dataType: "json",
-	            
 	            data: JSON.stringify(query),
 	            success: function (jsonResult) {
 	            	var dtData = {
@@ -156,6 +155,20 @@
 			//按钮
 			}, function(index) {
 				layer.close(index);
+				$.ajax({
+		            type: "POST",
+		            url: "../paymentorder/aliturn/paid",
+		            contentType: "application/x-www-form-urlencoded",
+		            dataType: "json",
+		            data: "paymentNo=" + paymentNo,
+		            success: function (jsonResult) {
+		            	if(jsonResult.code != "200") {
+		            		layer.msg(jsonResult.message);
+		            	} else {
+		            		renderTable('#unpaidTable');
+		            	}
+		            }
+		        });
 			});
 		});
 		// 确认部分支付
@@ -167,7 +180,21 @@
 			}, function(money, index) {
 				var reg = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
 				if (reg.test(money)) {
-					alert("正确~");
+					layer.close(index);
+					$.ajax({
+			            type: "POST",
+			            url: "../paymentorder/aliturn/partpaid",
+			            contentType: "application/x-www-form-urlencoded",
+			            dataType: "json",
+			            data: "paymentNo=" + paymentNo + "&partAmount=" + money,
+			            success: function (jsonResult) {
+			            	if(jsonResult.code != "200") {
+			            		layer.msg(jsonResult.message);
+			            	} else {
+			            		renderTable('#unpaidTable');
+			            	}
+			            }
+			        });
 			    } else {
 			    	layer.msg('金额格式有误，最多为两位小数的数字', {time: 1000});
 			    };
