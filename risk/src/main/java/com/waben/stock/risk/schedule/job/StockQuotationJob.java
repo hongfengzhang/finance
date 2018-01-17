@@ -39,12 +39,9 @@ public class StockQuotationJob implements InterruptableJob {
         Set<String> codes = riskStockContainer.keySet();
         List<String> codePrams = new ArrayList();
         codePrams.addAll(codes);
-        long start = System.currentTimeMillis();
+        //拉取股票行情数据
         List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
-        long end = System.currentTimeMillis();
-        logger.info("执行时间：{}",(end-start));
         //线程处理
-        start = System.currentTimeMillis();
         for(StockMarket stockMarket: quotations) {
             List<PositionStock> stocks = riskStockContainer.get(stockMarket.getInstrumentId());
             Future<List<PositionStock>> future = executors.submit(new RiskProcess(stockMarket,stocks ));
@@ -53,16 +50,12 @@ public class StockQuotationJob implements InterruptableJob {
                 for (PositionStock stock : result) {
                     stocks.remove(stock);
                 }
-                end = System.currentTimeMillis();
-
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
         }
-        logger.info("线程处理执行时间：{}",(end-start));
-
     }
 
 
