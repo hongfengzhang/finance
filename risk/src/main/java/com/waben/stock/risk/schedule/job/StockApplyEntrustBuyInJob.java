@@ -45,7 +45,6 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
         logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-
         String tradeSession = null;
         while (!interrupted) {
             try {
@@ -62,8 +61,10 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         String currTradeSession = securitiesStockEntrust.getTradeSession();
                         if (currTradeSession == null) {
                             logger.info("数据库中加载的点买交易记录");
+                            if (tradeSession == null) {
+                                continue;
+                            }
                             securitiesStockEntrust.setTradeSession(tradeSession);
-                            continue;
                         } else {
                             logger.info("最新点买交易记录session:{}",currTradeSession);
                             tradeSession = currTradeSession;

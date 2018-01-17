@@ -48,21 +48,20 @@ public class StockQuotationJob implements InterruptableJob {
         for(StockMarket stockMarket: quotations) {
             List<PositionStock> stocks = riskStockContainer.get(stockMarket.getInstrumentId());
             Future<List<PositionStock>> future = executors.submit(new RiskProcess(stockMarket,stocks ));
+            logger.info("线程执行中,当前行情：{},股票名称:{}",stockMarket.getInstrumentId(),stockMarket.getName());
             try {
                 List<PositionStock> result = future.get();
                 for (PositionStock stock : result) {
                     stocks.remove(stock);
                 }
                 end = System.currentTimeMillis();
-
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                logger.error("中断异常:{}",e.getMessage());
             } catch (ExecutionException e) {
-                e.printStackTrace();
+                logger.error("线程执行异常:{}",e.getMessage());
             }
         }
         logger.info("线程处理执行时间：{}",(end-start));
-
     }
 
 

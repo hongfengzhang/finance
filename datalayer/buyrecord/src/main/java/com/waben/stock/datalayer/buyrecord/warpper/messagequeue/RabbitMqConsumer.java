@@ -30,7 +30,6 @@ public class RabbitMqConsumer {
 
 	@RabbitListener(queues = { "entrustBuyIn" })
 	public void entrustBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
-		System.out.println("成功！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
 		logger.info("券商股票委托买入成功:{}", securitiesStockEntrust.getTradeNo());
 		BuyRecord buyRecord = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
 			  securitiesStockEntrust.getEntrustPrice());
@@ -47,7 +46,7 @@ public class RabbitMqConsumer {
 		positionStock.setInvestorId(buyRecord.getInvestorId());
 		positionStock.setBuyingTime(buyRecord.getBuyingTime());
 		positionStock.setDeferred(buyRecord.getDeferred());
-		positionStock.setTradeSession("70001553");
+		positionStock.setTradeSession(securitiesStockEntrust.getTradeSession());
 		riskProducer.risk(positionStock);
 	}
 
