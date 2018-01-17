@@ -33,10 +33,11 @@ public class RabbitMqConsumer {
     @RabbitListener(queues = {"riskPositionSellOut"})
     public void buyInSuccessRisk(PositionStock positionStock) {
         logger.info("强制卖出持仓订单数据:{}",positionStock.toString());
-        long start = System.currentTimeMillis();
-        long end = System.currentTimeMillis();
-        logger.info("执行时间：{}",(end-start));
-        investorBusiness.sellOut(positionStock);
+
+//        long start = System.currentTimeMillis();
+//        long end = System.currentTimeMillis();
+//        logger.info("执行时间：{}",(end-start));
+//        investorBusiness.sellOut(positionStock);
     }
 
 }

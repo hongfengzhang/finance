@@ -62,7 +62,6 @@ public class SecuritiesStockEntrust implements Serializable {
 
     private String tradeSession;
 
-
     public BigDecimal getProfitPosition() {
         return profitPosition;
     }

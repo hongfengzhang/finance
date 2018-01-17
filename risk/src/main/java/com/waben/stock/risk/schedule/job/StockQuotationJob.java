@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.risk.container.PositionStockContainer;
 import com.waben.stock.risk.schedule.thread.RiskProcess;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
+import com.waben.stock.risk.warpper.messagequeue.rabbitmq.PositionSellOutProducer;
 import com.waben.stock.risk.web.StockQuotationHttp;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ public class StockQuotationJob implements InterruptableJob {
             (PositionStockContainer.class);
 
     private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
+    private PositionSellOutProducer positionProducer = ApplicationContextBeanFactory.getBean(PositionSellOutProducer
+            .class);
 
     private ExecutorService executors = Executors.newFixedThreadPool(4);
     @Override
@@ -39,29 +42,27 @@ public class StockQuotationJob implements InterruptableJob {
         Set<String> codes = riskStockContainer.keySet();
         List<String> codePrams = new ArrayList();
         codePrams.addAll(codes);
-        long start = System.currentTimeMillis();
+        //拉取股票行情数据
         List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
-        long end = System.currentTimeMillis();
-        logger.info("执行时间：{}",(end-start));
         //线程处理
-        start = System.currentTimeMillis();
         for(StockMarket stockMarket: quotations) {
             List<PositionStock> stocks = riskStockContainer.get(stockMarket.getInstrumentId());
             Future<List<PositionStock>> future = executors.submit(new RiskProcess(stockMarket,stocks ));
             logger.info("线程执行中,当前行情：{},股票名称:{}",stockMarket.getInstrumentId(),stockMarket.getName());
             try {
+                //接收被风控的持仓点买订单
                 List<PositionStock> result = future.get();
                 for (PositionStock stock : result) {
+                    positionProducer.riskPositionSellOut(stock);
                     stocks.remove(stock);
                 }
-                end = System.currentTimeMillis();
             } catch (InterruptedException e) {
                 logger.error("中断异常:{}",e.getMessage());
             } catch (ExecutionException e) {
+                e.printStackTrace();
                 logger.error("线程执行异常:{}",e.getMessage());
             }
         }
-        logger.info("线程处理执行时间：{}",(end-start));
     }
 
 

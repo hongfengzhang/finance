@@ -15,6 +15,17 @@ public class PositionStock implements Serializable{
     private Boolean deferred;
     private Date buyingTime;
     private String tradeSession;
+    private String windControlType;
+    private Date expireTime;
+    private String tradeNo;
+
+    public String getWindControlType() {
+        return windControlType;
+    }
+
+    public void setWindControlType(String windControlType) {
+        this.windControlType = windControlType;
+    }
     public Long getBuyRecordId() {
         return buyRecordId;
     }
@@ -93,6 +104,23 @@ public class PositionStock implements Serializable{
     public void setStockName(String stockName) {
         this.stockName = stockName;
     }
+
+    public Date getExpireTime() {
+        return expireTime;
+    }
+
+    public void setExpireTime(Date expireTime) {
+        this.expireTime = expireTime;
+    }
+
+    public String getTradeNo() {
+        return tradeNo;
+    }
+
+    public void setTradeNo(String tradeNo) {
+        this.tradeNo = tradeNo;
+    }
+
     @Override
     public String toString() {
         return "PositionStock{" +
@@ -106,6 +134,7 @@ public class PositionStock implements Serializable{
                 ", deferred=" + deferred +
                 ", buyingTime=" + buyingTime +
                 ", tradeSession='" + tradeSession + '\'' +
+                ", windControlType='" + windControlType + '\'' +
                 '}';
     }
 }

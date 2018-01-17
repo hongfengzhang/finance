@@ -16,8 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
@@ -60,16 +58,16 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                         String currTradeSession = securitiesStockEntrust.getTradeSession();
                         if (currTradeSession == null) {
-                            logger.info("数据库中加载的点买交易记录");
+                            logger.info("数据库中加载的委托买入点买交易记录");
                             if (tradeSession == null) {
                                 continue;
                             }
                             securitiesStockEntrust.setTradeSession(tradeSession);
                         } else {
-                            logger.info("最新点买交易记录session:{}",currTradeSession);
+                            logger.info("最新点买交易记录session:{}", currTradeSession);
                             tradeSession = currTradeSession;
                         }
-                        logger.info("当前券商session:{}",tradeSession);
+                        logger.info("当前券商session:{}", tradeSession);
                         StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo());
@@ -81,26 +79,27 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                                 .getState());
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //废单
-                            logger.info("废单:{}",entry.getKey());
+                            logger.info("废单:{}", entry.getKey());
                             //TODO 将点买废单放入废单处理队列中
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
-
-                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
-                            logger.info("已报单:{}",entry.getKey());
-                             // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
+                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex()
+                        )) {
+                            logger.info("已报单:{}", entry.getKey());
+                            // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
                             long currentDay = calendar.getTime().getTime();
                             Calendar entrustDate = Calendar.getInstance();
                             entrustDate.setTime(securitiesStockEntrust.getEntrustTime());
                             long entrustDay = entrustDate.getTime().getTime();
-                            if((currentDay-entrustDay)/millisOfDay>=1) {
+                            logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, (currentDay - entrustDay)
+                                    / millisOfDay);
+                            if ((currentDay - entrustDay) / millisOfDay >= 1) {
                                 entrustProducer.entrustWaste(securitiesStockEntrust);
                                 stockEntrusts.remove(entry.getKey());
                             }
                             continue;
                         }
-
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust
@@ -113,7 +112,8 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
                             Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
                             securitiesStockEntrust.setEntrustNumber(amount.intValue());
-                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult.getBusinessPrice()));
+                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
+                                    .getBusinessPrice()));
                             entrustProducer.entrustBuyIn(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                         }
