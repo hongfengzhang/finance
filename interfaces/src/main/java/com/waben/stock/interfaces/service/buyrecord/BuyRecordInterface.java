@@ -141,6 +141,7 @@ public interface BuyRecordInterface {
 	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
 	Response<List<BuyRecordDto>> buyRecordsWithStatus(@PathVariable("state") Integer state);
 
+
 	/**
 	 * 分页查询点买记录
 	 *

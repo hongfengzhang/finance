@@ -53,11 +53,14 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                         String currTradeSession = securitiesStockEntrust.getTradeSession();
                         if (currTradeSession == null) {
+                            logger.info("数据库中加载的点买交易记录");
                             securitiesStockEntrust.setTradeSession(tradeSession);
                             continue;
                         } else {
+                            logger.info("最新点买交易记录session:{}",currTradeSession);
                             tradeSession = currTradeSession;
                         }
+                        logger.info("当前券商session:{}",tradeSession);
                         StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo());
@@ -78,7 +81,6 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
                             logger.info("已报单:{}",entry.getKey());
                              // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
-
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
