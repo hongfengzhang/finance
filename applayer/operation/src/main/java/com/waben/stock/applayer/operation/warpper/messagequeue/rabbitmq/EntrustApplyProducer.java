@@ -32,4 +32,5 @@ public class EntrustApplyProducer extends RabbitMQProducer<SecuritiesStockEntrus
         logger.info("开始发送委托卖出订单数据:{}",securitiesStockEntrust.getTradeNo());
         super.topic("buyRecord", "applySellOut", securitiesStockEntrust);
     }
+
 }
