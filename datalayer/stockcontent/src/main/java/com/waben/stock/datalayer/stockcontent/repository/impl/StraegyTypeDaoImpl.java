@@ -5,6 +5,7 @@ import com.waben.stock.datalayer.stockcontent.repository.StrategyTypeDao;
 import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StraegyTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
@@ -33,22 +34,22 @@ public class StraegyTypeDaoImpl implements StrategyTypeDao {
 
     @Override
     public void delete(Long id) {
-
+    	repository.delete(id);
     }
 
     @Override
     public StrategyType update(StrategyType straegyType) {
-        return null;
+        return repository.save(straegyType);
     }
 
     @Override
     public StrategyType retrieve(Long id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override
     public Page<StrategyType> page(int page, int limit) {
-        return null;
+        return repository.findAll(new PageRequest(page, limit));
     }
 
     @Override

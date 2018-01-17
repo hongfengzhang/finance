@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -43,8 +44,8 @@ public class PositionStockInitialize implements CommandLineRunner {
             positionStock.setProfitPosition(buyRecord.getProfitPosition());
             positionStock.setInvestorId(buyRecord.getInvestorId());
             positionStock.setBuyingTime(buyRecord.getBuyingTime());
-            positionStock.setStrategyTypeId(buyRecord.getStrategyTypeId());
             positionStock.setTradeSession("70001553");
+            positionStock.setDeferred(buyRecord.getDeferred());
             positionStockContainer.add(positionStock);
             logger.info("TradeSession:{}",positionStock.getTradeSession());
         }

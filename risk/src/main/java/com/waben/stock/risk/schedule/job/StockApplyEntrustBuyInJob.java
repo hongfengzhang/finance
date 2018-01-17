@@ -16,6 +16,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -82,6 +86,13 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             logger.info("已报单:{}",entry.getKey());
                              // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
                             stockEntrusts.remove(entry.getKey());
+                            long currentDay = System.currentTimeMillis()/(1000 * 60 * 60 * 24);
+                            DateFormat fmt =new SimpleDateFormat("yyyy-MM-dd");
+                            Date entrustTime = fmt.parse(stockEntrustQueryResult.getEntrustTime());
+                            long entrustDay = entrustTime.getTime()/(1000 * 60 * 60 * 24);
+                            if(currentDay-entrustDay>=1) {
+                                entrustProducer.entrustWaste(securitiesStockEntrust);
+                            }
                             continue;
                         }
 

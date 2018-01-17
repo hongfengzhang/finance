@@ -104,4 +104,10 @@ public class CapitalAccountController implements CapitalAccountInterface {
 				capitalAccountService.findFrozenCapital(publisherId, buyRecordId), false));
 	}
 
+	@Override
+	public Response<CapitalAccountDto> revoke(@PathVariable Long publisherId, @PathVariable Long buyRecordId, @PathVariable BigDecimal serviceFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.revoke(publisherId, buyRecordId, serviceFee), false));
+	}
+
 }

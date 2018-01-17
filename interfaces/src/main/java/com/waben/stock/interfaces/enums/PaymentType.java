@@ -9,7 +9,9 @@ public enum PaymentType implements CommonalityEnum {
 
 	ScanPay("2", "天下付-扫码支付"),
 
-	AliAppPay("3", "支付宝-APP支付");
+	AliAppPay("3", "支付宝-APP支付"),
+	
+	AliTurnPay("4", "支付宝-转账支付");
 
 	private String index;
 

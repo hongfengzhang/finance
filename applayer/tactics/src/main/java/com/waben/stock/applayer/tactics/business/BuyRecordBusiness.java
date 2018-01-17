@@ -93,7 +93,6 @@ public class BuyRecordBusiness {
 	}
 
 	public PageInfo<BuyRecordDto> pages(BuyRecordQuery buyRecordQuery) {
-
 		Response<PageInfo<BuyRecordDto>> response = buyRecordReference.pagesByQuery(buyRecordQuery);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -179,7 +178,7 @@ public class BuyRecordBusiness {
 		Response<PageInfo<SettlementDto>> sResponse = settlementReference.pagesByQuery(sQuery);
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
-					new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
+					new BuyRecordState[] { BuyRecordState.HOLDPOSITION,
 							BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
 

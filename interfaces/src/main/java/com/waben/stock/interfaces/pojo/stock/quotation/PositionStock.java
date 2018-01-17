@@ -14,7 +14,6 @@ public class PositionStock implements Serializable{
     private Long investorId;
     private Boolean deferred;
     private Date buyingTime;
-    private Long strategyTypeId;
     private String tradeSession;
     public Long getBuyRecordId() {
         return buyRecordId;
@@ -45,14 +44,6 @@ public class PositionStock implements Serializable{
 
     public void setBuyingTime(Date buyingTime) {
         this.buyingTime = buyingTime;
-    }
-
-    public Long getStrategyTypeId() {
-        return strategyTypeId;
-    }
-
-    public void setStrategyTypeId(Long strategyTypeId) {
-        this.strategyTypeId = strategyTypeId;
     }
 
     public String getTradeSession() {
@@ -114,7 +105,6 @@ public class PositionStock implements Serializable{
                 ", investorId=" + investorId +
                 ", deferred=" + deferred +
                 ", buyingTime=" + buyingTime +
-                ", strategyTypeId=" + strategyTypeId +
                 ", tradeSession='" + tradeSession + '\'' +
                 '}';
     }

@@ -14,6 +14,7 @@ import com.waben.stock.applayer.strategist.service.StockMarketService;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
@@ -84,6 +85,39 @@ public class FavoriteStockBusiness {
 				return result;
 			} else {
 				return new ArrayList<>();
+			}
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<FavoriteStockWithMarketDto> pagesByPublisherId(Long publisherId, int page, int size) {
+		Response<PageInfo<FavoriteStockDto>> response = favoriteStockReference.pagesByPublisherId(publisherId, page,
+				size);
+		if (response.getCode().equals("200")) {
+			if (response.getResult().getContent() != null && response.getResult().getContent().size() > 0) {
+				List<FavoriteStockWithMarketDto> content = CopyBeanUtils.copyListBeanPropertiesToList(
+						response.getResult().getContent(), FavoriteStockWithMarketDto.class);
+				List<String> codes = new ArrayList<>();
+				for (FavoriteStockWithMarketDto favorite : content) {
+					codes.add(favorite.getCode());
+				}
+				List<StockMarket> marketList = stockMarketService.listStockMarket(codes);
+				for (int i = 0; i < content.size(); i++) {
+					FavoriteStockWithMarketDto favorite = content.get(i);
+					StockMarket market = marketList.get(i);
+					favorite.setLastPrice(market.getLastPrice());
+					favorite.setUpDropPrice(market.getUpDropPrice());
+					favorite.setUpDropSpeed(market.getUpDropSpeed());
+				}
+				return new PageInfo<FavoriteStockWithMarketDto>(content, response.getResult().getTotalPages(),
+						response.getResult().getLast(), response.getResult().getTotalElements(),
+						response.getResult().getSize(), response.getResult().getNumber(),
+						response.getResult().getFrist());
+			} else {
+				return new PageInfo<FavoriteStockWithMarketDto>(new ArrayList<FavoriteStockWithMarketDto>(),
+						response.getResult().getTotalPages(), response.getResult().getLast(),
+						response.getResult().getTotalElements(), response.getResult().getSize(),
+						response.getResult().getNumber(), response.getResult().getFrist());
 			}
 		}
 		throw new ServiceException(response.getCode());

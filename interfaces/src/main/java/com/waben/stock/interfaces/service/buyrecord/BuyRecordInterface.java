@@ -124,6 +124,16 @@ public interface BuyRecordInterface {
 	 */
 	@RequestMapping(value = "/deferred/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> deferred(@PathVariable("id") Long id);
+	
+	/**
+	 * 撤单
+	 *
+	 * @param id
+	 *            点买记录id
+	 * @return 点买记录
+	 */
+	@RequestMapping(value = "/revoke/{id}", method = RequestMethod.PUT)
+	Response<BuyRecordDto> revoke(@PathVariable("id") Long id);
 
 	/**
 	 * 获取发布人参与某个点买策略的次数
