@@ -223,7 +223,7 @@ public class BuyRecordService {
 						.multiply(new BigDecimal(0.9)).setScale(2, RoundingMode.HALF_UP)));
 		// 修改点买记录状态
 		StrategyTypeDto strategyType = strategyTypeBusiness.fetchById(buyRecord.getStrategyTypeId());
-		buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(buyRecord.getBuyingTime(), strategyType.getCycle()));
+		buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(buyRecord.getBuyingTime(), strategyType.getCycle() + 1));
 		return changeState(buyRecord, false);
 	}
 
@@ -335,7 +335,7 @@ public class BuyRecordService {
 		deferredRecord.setPublisherId(buyRecord.getPublisherId());
 		deferredRecord.setStrategyTypeId(strategyType.getId());
 		deferredRecord.setStrategyTypeName(strategyType.getName());
-		buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(buyRecord.getExpireTime(), 1));
+		// buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(buyRecord.getExpireTime(), 1));
 		// 扣递延费
 		accountBusiness.deferredCharges(buyRecord.getPublisherId(), id, deferredRecord.getFee());
 		return buyRecord;
