@@ -38,7 +38,8 @@ public interface CapitalAccountInterface {
 
 	@RequestMapping(value = "/{publisherId}/revoke/{buyRecordId}/serviceFee/{serviceFee}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> revoke(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("serviceFee") BigDecimal serviceFee);
+			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("serviceFee") BigDecimal serviceFee,
+			@RequestParam("deferredFee") BigDecimal deferredFee);
 
 	@RequestMapping(value = "/frozenCapital/{publisherId}/{buyRecordId}/", method = RequestMethod.GET)
 	Response<FrozenCapitalDto> fetchFrozenCapital(@PathVariable("publisherId") Long publisherId,

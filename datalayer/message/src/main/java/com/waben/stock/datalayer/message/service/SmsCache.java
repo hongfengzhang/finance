@@ -1,8 +1,6 @@
 package com.waben.stock.datalayer.message.service;
 
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +20,11 @@ import com.waben.stock.interfaces.exception.ServiceException;
 public class SmsCache {
 
 	/**
-	 * 短信有效期，15分钟
+	 * 短信有效期，15分钟，单位秒
 	 */
-	public static final long effectiveDuration = 15 * 60 * 1000;
+	public static final int effectiveDuration = 15 * 60;
 	/**
-	 * 短信发送最短间隔，1分钟，即1分钟内不能重复发送
+	 * 短信发送最短间隔，1分钟，即1分钟内不能重复发送，单位毫秒
 	 */
 	public static final long sendingInterval = 1 * 60 * 1000;
 	/**
@@ -35,106 +33,46 @@ public class SmsCache {
 	@Autowired
 	private RedisCache redisCache;
 
-	public static String getCacheKey(SmsType smsType, String phone) {
-		return smsType.name() + "_" + phone;
+	public static String getCacheKey(SmsType smsType, String phone, String cacheName) {
+		return "sms:" + smsType.name() + "_" + phone + "_" + cacheName;
 	}
-	
-	/**
-	 * 缓存验证码信息
-	 */
-	public void cache(SmsType smsType, String phone, Map<String, String> params, String[] cacheNames) {
-		// redisCache.cah
-		
-		// verificationCodeCache.put(getCacheKey(smsType, phone), new VerificationCodeInfo(verificationCode));
+
+	public static String getLastTimeCacheKey(SmsType smsType, String phone) {
+		return "sms:" + smsType.name() + "_lasttime_" + phone;
 	}
 
 	/**
 	 * 缓存验证码信息
 	 */
-	public void cache(SmsType smsType, String phone, String verificationCode) {
-		// verificationCodeCache.put(getCacheKey(smsType, phone), new VerificationCodeInfo(verificationCode));
+	public void cache(SmsType smsType, String phone, Map<String, String> params, String[] cacheNames) {
+		if (cacheNames != null && cacheNames.length > 0) {
+			for (int i = 0; i < cacheNames.length; i++) {
+				redisCache.set(getCacheKey(smsType, phone, cacheNames[i]), params.get(cacheNames[i]),
+						effectiveDuration);
+			}
+		}
+		redisCache.set(getLastTimeCacheKey(smsType, phone), String.valueOf(System.currentTimeMillis()));
 	}
 
 	/**
 	 * 检查发送条件
 	 */
 	public void checkSendCondition(SmsType smsType, String phone) {
-		/*
-		VerificationCodeInfo oldCode = verificationCodeCache.get(getCacheKey(smsType, phone));
-		if (oldCode != null && oldCode.getLatelyIntervalTime().getTime() > new Date().getTime()) {
+		String lastTime = redisCache.get(getLastTimeCacheKey(smsType, phone));
+		if (lastTime != null && !"".equals(lastTime)
+				&& (Long.parseLong(lastTime) + sendingInterval) > new Date().getTime()) {
 			throw new ServiceException(ExceptionConstant.SENDMESSAGE_INTERVAL_TOOSHORT_EXCEPTION);
 		}
-		*/
 	}
 
 	/**
 	 * 匹配验证码
 	 */
-	public void matchVerificationCode(SmsType smsType, String phone, String verificationCode) {
-		/*
-		VerificationCodeInfo oldCode = verificationCodeCache.get(getCacheKey(smsType, phone));
-		if (!(oldCode != null && oldCode.getVerificationCode().equals(verificationCode)
-				&& oldCode.getEffectiveTime().getTime() > new Date().getTime())) {
+	public void matchVerificationCode(SmsType smsType, String phone, String cacheName, String cacheValue) {
+		String oldCache = redisCache.get(getCacheKey(smsType, phone, cacheName));
+		if (!(oldCache != null && oldCache.equals(cacheValue))) {
 			throw new ServiceException(ExceptionConstant.VERIFICATIONCODE_INVALID_EXCEPTION);
 		}
-		*/
-	}
-
-	/**
-	 * 短信验证码信息
-	 * 
-	 * @author luomengan
-	 *
-	 */
-	public static class VerificationCodeInfo {
-
-		private String verificationCode;
-
-		private Date sendTime;
-
-		private Date effectiveTime;
-
-		private Date latelyIntervalTime;
-
-		public VerificationCodeInfo(String verificationCode) {
-			this.verificationCode = verificationCode;
-			this.sendTime = new Date();
-			this.effectiveTime = new Date(this.sendTime.getTime() + effectiveDuration);
-			this.latelyIntervalTime = new Date(this.sendTime.getTime() + sendingInterval);
-		}
-
-		public String getVerificationCode() {
-			return verificationCode;
-		}
-
-		public void setVerificationCode(String verificationCode) {
-			this.verificationCode = verificationCode;
-		}
-
-		public Date getSendTime() {
-			return sendTime;
-		}
-
-		public void setSendTime(Date sendTime) {
-			this.sendTime = sendTime;
-		}
-
-		public Date getEffectiveTime() {
-			return effectiveTime;
-		}
-
-		public void setEffectiveTime(Date effectiveTime) {
-			this.effectiveTime = effectiveTime;
-		}
-
-		public Date getLatelyIntervalTime() {
-			return latelyIntervalTime;
-		}
-
-		public void setLatelyIntervalTime(Date latelyIntervalTime) {
-			this.latelyIntervalTime = latelyIntervalTime;
-		}
-
 	}
 
 }

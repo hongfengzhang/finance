@@ -267,9 +267,6 @@ public class BuyRecordService {
 		if (buyRecord.getState() != BuyRecordState.SELLLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
 		}
-		if (!investorId.equals(buyRecord.getInvestorId())) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
-		}
 		buyRecord.setSellingPrice(sellingPrice);
 		buyRecord.setSellingTime(new Date());
 		BigDecimal profitOrLoss = sellingPrice.subtract(buyRecord.getBuyingPrice())

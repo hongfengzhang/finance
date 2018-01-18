@@ -158,7 +158,7 @@ public class CapitalAccountService {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, serviceFee, reserveFund, date);
-		if(deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
+		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
 			reduceAmount(account, deferredFee, date);
 		}
 		// 保存流水
@@ -173,12 +173,12 @@ public class CapitalAccountService {
 		CapitalFlowExtend reserveFundExtend = new CapitalFlowExtend(reserveFundFlow, CapitalFlowExtendType.BUYRECORD,
 				buyRecordId);
 		flowExtendDao.create(reserveFundExtend);
-		
-		if(deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
+
+		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
 			CapitalFlow deferredFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
 					CapitalFlowType.DeferredCharges, deferredFee.abs().multiply(new BigDecimal(-1)), date);
-			CapitalFlowExtend deferredFeeExtend = new CapitalFlowExtend(deferredFeeFlow, CapitalFlowExtendType.BUYRECORD,
-					buyRecordId);
+			CapitalFlowExtend deferredFeeExtend = new CapitalFlowExtend(deferredFeeFlow,
+					CapitalFlowExtendType.BUYRECORD, buyRecordId);
 			flowExtendDao.create(deferredFeeExtend);
 		}
 		// 保存冻结资金记录
@@ -306,7 +306,7 @@ public class CapitalAccountService {
 		}
 		return findByPublisherId(publisherId);
 	}
-	
+
 	@Transactional
 	public CapitalAccount returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
@@ -322,7 +322,7 @@ public class CapitalAccountService {
 	}
 
 	@Transactional
-	public CapitalAccount revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee) {
+	public CapitalAccount revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee, BigDecimal deferredFee) {
 		Date date = new Date();
 		// 解冻保证金
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
@@ -330,6 +330,7 @@ public class CapitalAccountService {
 		frozenCapital.setStatus(FrozenCapitalStatus.Thaw);
 		frozenCapital.setThawTime(date);
 		thawAmount(account, frozenCapital.getAmount(), frozenCapital.getAmount(), date);
+		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenCapital.getAmount()));
 		CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
 				CapitalFlowType.ReturnReserveFund, frozenCapital.getAmount().abs(), date);
 		CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
@@ -342,7 +343,15 @@ public class CapitalAccountService {
 		CapitalFlowExtend revokeServiceFeeExtend = new CapitalFlowExtend(revokeServiceFeeFlow,
 				CapitalFlowExtendType.BUYRECORD, buyRecordId);
 		flowExtendDao.create(revokeServiceFeeExtend);
-		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenCapital.getAmount()));
+		// 退回递延费
+		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
+			increaseAmount(account, deferredFee, date);
+			CapitalFlow deferredFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
+					CapitalFlowType.ReturnDeferredCharges, deferredFee.abs(), date);
+			CapitalFlowExtend deferredFeeExtend = new CapitalFlowExtend(deferredFeeFlow,
+					CapitalFlowExtendType.BUYRECORD, buyRecordId);
+			flowExtendDao.create(deferredFeeExtend);
+		}
 		capitalAccountDao.update(account);
 		return findByPublisherId(publisherId);
 	}

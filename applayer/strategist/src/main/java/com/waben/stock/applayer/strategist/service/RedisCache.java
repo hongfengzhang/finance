@@ -1,4 +1,4 @@
-package com.waben.stock.datalayer.message.service;
+package com.waben.stock.applayer.strategist.service;
 
 import javax.annotation.PostConstruct;
 
