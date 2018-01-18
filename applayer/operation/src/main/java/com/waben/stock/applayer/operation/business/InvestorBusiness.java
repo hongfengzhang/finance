@@ -79,11 +79,13 @@ public class InvestorBusiness {
                 investorDto.getSecuritiesSession());
         String code = response.getCode();
         if ("200".equals(code)) {
+            BuyRecordDto result= response.getResult();
             if (response.getResult().getState().equals(BuyRecordState.BUYLOCK)) {
                 securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
-                securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
-                securitiesStockEntrust.setEntrustNo(response.getResult().getDelegateNumber());
+                securitiesStockEntrust.setTradeNo(result.getTradeNo());
+                securitiesStockEntrust.setEntrustNo(result.getDelegateNumber());
                 securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
+                securitiesStockEntrust.setEntrustTime(result.getUpdateTime());
                 entrustProducer.entrustApplyBuyIn(securitiesStockEntrust);
                 return securitiesStockEntrust;
             }
@@ -126,8 +128,6 @@ public class InvestorBusiness {
     public InvestorDto findById(Long id){
         Response<InvestorDto> response = investorService.fetchById(id);
         String code = response.getCode();
-        System.out.println("code:"+code+"   ==============================================");
-        System.out.println("result:"+response.getResult()+"   ==============================================");
         if ("200".equals(code)) {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){

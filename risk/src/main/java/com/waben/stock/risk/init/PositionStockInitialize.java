@@ -44,8 +44,9 @@ public class PositionStockInitialize implements CommandLineRunner {
             positionStock.setProfitPosition(buyRecord.getProfitPosition());
             positionStock.setInvestorId(buyRecord.getInvestorId());
             positionStock.setBuyingTime(buyRecord.getBuyingTime());
-            positionStock.setTradeSession("70001553");
             positionStock.setDeferred(buyRecord.getDeferred());
+            positionStock.setTradeNo(buyRecord.getTradeNo());
+            positionStock.setExpireTime(buyRecord.getExpireTime());
             positionStockContainer.add(positionStock);
             logger.info("TradeSession:{}",positionStock.getTradeSession());
         }

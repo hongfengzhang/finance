@@ -30,7 +30,6 @@ public class RabbitMqConsumer {
 
 	@RabbitListener(queues = { "entrustBuyIn" })
 	public void entrustBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
-		System.out.println("成功！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！");
 		logger.info("券商股票委托买入成功:{}", securitiesStockEntrust.getTradeNo());
 		BuyRecord buyRecord = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
 			  securitiesStockEntrust.getEntrustPrice());
@@ -47,7 +46,9 @@ public class RabbitMqConsumer {
 		positionStock.setInvestorId(buyRecord.getInvestorId());
 		positionStock.setBuyingTime(buyRecord.getBuyingTime());
 		positionStock.setDeferred(buyRecord.getDeferred());
-		positionStock.setTradeSession("70001553");
+		positionStock.setTradeSession(securitiesStockEntrust.getTradeSession());
+		positionStock.setExpireTime(buyRecord.getExpireTime());
+		positionStock.setTradeNo(buyRecord.getTradeNo());
 		riskProducer.risk(positionStock);
 	}
 
@@ -59,9 +60,10 @@ public class RabbitMqConsumer {
 		// 发送短信通知用户
 	}
 
-	@RabbitListener(queues = { "waste" })
+	@RabbitListener(queues = { "entrustWaste" })
 	public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
 		logger.info("处理废单:{}", securitiesStockEntrust.getTradeNo());
-		//退回服务费及保证金
+		//退回服务费，保证金,解冻冻结的递延费
+		buyRecordService.revoke(securitiesStockEntrust.getBuyRecordId());
 	}
 }

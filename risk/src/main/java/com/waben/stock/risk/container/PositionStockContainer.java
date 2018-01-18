@@ -17,14 +17,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  * @desc 持仓股票容器
  */
 @Component
-@Controller
 public class PositionStockContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
     Map<String, List<PositionStock>> riskStockContainer = new ConcurrentHashMap<>();
-    @RequestMapping(value="addStock",method= RequestMethod.POST)
-    @ResponseBody
-    public String add(PositionStock stock) {
+
+    public void add(PositionStock stock) {
         logger.info("数据:{},{}",stock.toString(),stock.getStockCode());
         List<PositionStock> b = riskStockContainer.get(stock.getStockCode());
         if (b != null) {
@@ -35,7 +33,6 @@ public class PositionStockContainer {
             riskStockContainer.put(stock.getStockCode(), stocks);
         }
         logger.info("往容器添加数据成功:{}",stock.toString());
-        return "success";
     }
 
     public void removeKey(String code) {

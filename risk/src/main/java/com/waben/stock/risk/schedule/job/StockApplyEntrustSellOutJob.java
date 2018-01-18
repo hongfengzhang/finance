@@ -16,6 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -52,11 +55,16 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                         SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                         String currTradeSession = securitiesStockEntrust.getTradeSession();
                         if (currTradeSession == null) {
+                            logger.info("数据库中加载的委托卖出点买交易记录");
+                            if (tradeSession == null) {
+                                continue;
+                            }
                             securitiesStockEntrust.setTradeSession(tradeSession);
-                            continue;
                         } else {
+                            logger.info("最新点买交易记录session:{}",currTradeSession);
                             tradeSession = currTradeSession;
                         }
+                        logger.info("当前券商session:{}",tradeSession);
                         StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo());

@@ -43,9 +43,9 @@ public class StockMonitor implements CommandLineRunner {
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
-        DailyCalendar am = new DailyCalendar(workCalendar, "08:30", "11:30");
+        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:30");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "11:30", "21:55");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "21:30", "23:55");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
@@ -57,18 +57,18 @@ public class StockMonitor implements CommandLineRunner {
                 .build();
         SimpleTrigger stockQuotationAM = newTrigger().withIdentity("quotationAMTrigger", "groupQuotation").startAt
                 (runTime)
-                .withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever())
+                .withSchedule(simpleSchedule().withIntervalInSeconds(12).repeatForever())
                 .forJob(jobQuotation)
                 .modifiedByCalendar("calendarAM")
                 .build();
         SimpleTrigger stockQuotationPM = newTrigger().withIdentity("quotationPMTrigger", "groupQuotation").startAt
                 (runTime)
-                .withSchedule(simpleSchedule().withIntervalInSeconds(10).repeatForever())
+                .withSchedule(simpleSchedule().withIntervalInSeconds(12).repeatForever())
                 .forJob(jobQuotation)
                 .modifiedByCalendar("calendarPM")
                 .build();
 
-        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 30 9,13 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 30 9,21 * * ?");
         CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
         CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 55 14 * * ?");
 

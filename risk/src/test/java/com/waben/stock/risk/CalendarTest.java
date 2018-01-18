@@ -10,7 +10,10 @@ public class CalendarTest {
     public static void main(String[] args) {
         Calendar c= Calendar.getInstance();
         c.setTime(new Date());
-        int tradeDay = c.get(Calendar.DAY_OF_YEAR);
-        System.out.println(tradeDay);
+        long timeInMillis = c.getTimeInMillis()/(1000 * 60 * 60 * 24);
+        System.out.println(timeInMillis);
+        c.add(5,1);
+        timeInMillis = c.getTimeInMillis()/(1000 * 60 * 60 * 24);
+        System.out.println(timeInMillis);
     }
 }

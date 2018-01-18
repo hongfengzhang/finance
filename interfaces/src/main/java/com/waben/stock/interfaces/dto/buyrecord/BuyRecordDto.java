@@ -91,6 +91,8 @@ public class BuyRecordDto {
 	 * 点买记录创建时间
 	 */
 	private Date createTime;
+	private Date updateTime;
+	private Date expireTime;
 	/**
 	 * 点买时间
 	 */
@@ -441,5 +443,21 @@ public class BuyRecordDto {
 
 	public String getLossPointPercent() {
 		return lossPoint.multiply(new BigDecimal(100)).setScale(2).toString() + "%";
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Date getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
 	}
 }
