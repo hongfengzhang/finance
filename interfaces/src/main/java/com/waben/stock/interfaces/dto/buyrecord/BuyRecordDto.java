@@ -44,6 +44,10 @@ public class BuyRecordDto {
 	 */
 	private Boolean deferred;
 	/**
+	 * 递延费
+	 */
+	private BigDecimal deferredFee;
+	/**
 	 * 止盈点
 	 */
 	private BigDecimal profitPoint;
@@ -410,15 +414,23 @@ public class BuyRecordDto {
 	}
 
 	public String getDeferredStatus() {
-		return deferred == true ? "是":"否";
+		return deferred == true ? "是" : "否";
 	}
-	
-	public String getProfitPointPercent(){
-		return profitPoint.multiply(new BigDecimal(100)).setScale(2).toString()+"%";
+
+	public BigDecimal getDeferredFee() {
+		return deferredFee;
 	}
-	
-	public String getLossPointPercent(){
-		return lossPoint.multiply(new BigDecimal(100)).setScale(2).toString()+"%";
+
+	public void setDeferredFee(BigDecimal deferredFee) {
+		this.deferredFee = deferredFee;
+	}
+
+	public String getProfitPointPercent() {
+		return profitPoint.multiply(new BigDecimal(100)).setScale(2).toString() + "%";
+	}
+
+	public String getLossPointPercent() {
+		return lossPoint.multiply(new BigDecimal(100)).setScale(2).toString() + "%";
 	}
 
 	public Date getUpdateTime() {

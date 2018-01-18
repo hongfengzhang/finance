@@ -11,6 +11,10 @@ public class PaymentOrderQuery extends PageAndSortQuery {
 
 	private PaymentType[] types;
 
+	private SortQuery[] sorts;
+
+	private String keyword;
+
 	public PaymentOrderQuery() {
 		super();
 	}
@@ -43,6 +47,22 @@ public class PaymentOrderQuery extends PageAndSortQuery {
 
 	public void setTypes(PaymentType[] types) {
 		this.types = types;
+	}
+
+	public SortQuery[] getSorts() {
+		return sorts;
+	}
+
+	public void setSorts(SortQuery[] sorts) {
+		this.sorts = sorts;
+	}
+
+	public String getKeyword() {
+		return keyword;
+	}
+
+	public void setKeyword(String keyword) {
+		this.keyword = keyword;
 	}
 
 }

@@ -9,7 +9,6 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonParseException;
@@ -76,9 +75,8 @@ public class JuheSmsService implements SmsService {
 			// 处理发送结果
 			JuheResponseBean responseBean = objectMapper.readValue(response, JuheResponseBean.class);
 			if (responseBean.getError_code() == 0) {
-				if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
-						|| smsType == SmsType.BindCardCode || smsType == SmsType.ModifyPaymentPwdCode) {
-					// SmsCache.cache(smsType, phone, paramValues.get(0));
+				if(template.getCacheNames() != null && template.getCacheNames().length > 0) {
+					// SmsCache.cache(smsType, phone, innerParams, template.getCacheNames());
 				}
 			} else if (responseBean.getError_code() == 205401) {
 				throw new ServiceException(ExceptionConstant.PHONE_WRONG_EXCEPTION);

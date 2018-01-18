@@ -34,6 +34,12 @@
 	.table-box div.unactive {
 		display: none;
 	}
+	.operation {
+		width: 190px;
+	}
+	.paymentno-cell {
+		width: 175px;
+	}
 	</style>
 	
 	<script type="text/javascript" src="resources/js/jquery.min.js"></script>
@@ -65,13 +71,48 @@
 		});
 		// 加载数据
 		function retrieveData(sSource, aoData, fnCallback, oSettings) {
+			console.log(JSON.stringify(aoData));
+			/*
+			console.log(JSON.stringify(aoData));
 			var draw = aoData[0].value;
 			if(this.api().init().refresh && this.api().init().refresh == true ) {
-				// 此处为手动点击切换
 				oSettings.iDraw--;
 				draw = oSettings.iDraw;
 				this.api().init().refresh = false;
+			} else if(aoData[2].value.length > 0 && draw > 1) {
+				oSettings.iDraw--;
+				draw = oSettings.iDraw;
+			} */
+			var draw = (aoData[3].value / 10) + 1;
+			oSettings.iDraw = draw;
+			// 排序
+			var sorts = [];
+			var orderField = null;
+			var orderDir = null;
+			if(aoData[2].value.length > 0) {
+				var orderIndex = aoData[2].value[0].column;
+				if(orderIndex == 0) {
+					orderField = "paymentNo";
+				} else if(orderIndex == 1) {
+					orderField = "publisherId";
+				} else if(orderIndex == 2) {
+					orderField = "alipayAccount";
+				} else if(orderIndex == 3) {
+					orderField = "amount";
+				} else if(orderIndex == 4) {
+					orderField = "createTime";
+				}
+				orderDir = aoData[2].value[0].dir;
+				if(orderField) {
+					sorts.push({
+						"field": orderField,
+						"dir": orderDir
+					});
+				}
 			}
+			// 搜索
+			var keyword = aoData[5].value.value;
+			
 			var state = "Unpaid";
 			if(oSettings.sTableId == "unpaidTable") {
 				state = "Unpaid";
@@ -83,7 +124,9 @@
 			var query = {
 				"page": draw - 1,
 				"states": [state],
-				"types": ["AliTurnPay"]
+				"types": ["AliTurnPay"],
+				"sorts": sorts,
+				"keyword": keyword
 			};
 			$.ajax({
 	            type: "POST",
@@ -105,9 +148,38 @@
 		// 渲染表格
 		function renderTable(id) {
 			if($(id + "_wrapper").length > 0) {
-				$(id).dataTable().api().init().refresh = true;
 				$(id).dataTable().fnDraw();
 			} else {
+				var columns = [
+		            { "data": "paymentNo", "title": "支付单号", "className": "paymentno-cell"},
+		            { "data": "publisherId", "title": "发布人ID" },
+		            { "data": "alipayAccount", "title": "用户支付宝账号" },
+		            { "data": "amount", "title": "支付金额" },
+		            { "data": "createTime", "title": "下单时间" },
+		            { "orderable": false, "width": 200,"title": "操作", "render": function(data, type, full, meta) {
+		                return "<button class='confirm-paid-btn' amount='" + full.amount + "' paymentno='" + full.paymentNo + "'>确认支付</button> &nbsp;&nbsp; <button class='confirm-partpaid-btn' amount='" + full.amount + "' paymentno='" + full.paymentNo + "'>确认部分支付</button>";
+		            }}
+		        ];
+				if(id == "#partpaidTable") {
+					columns = [
+			            { "data": "paymentNo", "title": "支付单号", "className": "paymentno-cell"},
+			            { "data": "publisherId", "title": "发布人ID" },
+			            { "data": "alipayAccount", "title": "用户支付宝账号" },
+			            { "data": "amount", "title": "支付金额" },
+			            { "data": "createTime", "title": "下单时间" },
+			            { "orderable": false, "width": 200, "title": "操作", "render": function(data, type, full, meta) {
+			                return "<button class='confirm-partpaid-btn' amount='" + full.amount + "' paymentno='" + full.paymentNo + "'>确认部分支付</button>";
+			            }}
+			        ];
+				} else if(id == "#paidTable") {
+					columns = [
+			            { "data": "paymentNo", "title": "支付单号", "className": "paymentno-cell"},
+			            { "data": "publisherId", "title": "发布人ID" },
+			            { "data": "alipayAccount", "title": "用户支付宝账号" },
+			            { "data": "amount", "title": "支付金额" },
+			            { "data": "createTime", "title": "下单时间" }
+			        ]
+				};
 				$(id).dataTable({
 					"responsive": true,
 			        "processing": true,
@@ -115,16 +187,8 @@
 			        "bPaginate": true,
 			        "dom": "<'row'<'col-sm-6'><'col-sm-6'f>>" + "<'row'<'col-sm-12'tr>>" + "<'row'<'col-sm-3'i><'col-sm-9'p>>",
 			        "fnServerData": retrieveData,
-			        "columns": [
-			            { "data": "paymentNo", "title": "支付单号"},
-			            { "data": "alipayAccount", "title": "用户支付宝账号" },
-			            { "data": "amount", "title": "支付金额" },
-			            { "data": "createTime", "title": "下单时间" },
-			            { "width": 175,"title": "操作", "render": function(data, type, full, meta) {
-			                return "<button class='confirm-paid-btn' amount='" + full.amount + "' paymentno='" + full.paymentNo + "'>确认支付</button> &nbsp;&nbsp; <button class='confirm-partpaid-btn' amount='" + full.amount + "' paymentno='" + full.paymentNo + "'>确认部分支付</button>";
-			            }}
-			        ],
-			        "aaSorting": [[ 3, "desc" ]],
+			        "columns": columns,
+			        "aaSorting": [[ 4, "desc" ]],
 			        "oLanguage": {                        //汉化     
 		                "sLengthMenu": "每页显示 _MENU_ 条记录",
 		                "sSearch": '<span>搜索：</span>',
@@ -152,7 +216,6 @@
 			var _this = this;
 			layer.confirm('确定已收到用户支付宝转账' + $(_this).attr("amount") + '元？', {
 				btn : [ '确定', '取消' ]
-			//按钮
 			}, function(index) {
 				layer.close(index);
 				$.ajax({
@@ -223,9 +286,9 @@
 			  	<li role="presentation"><a href="#">已支付订单</a></li>
 			</ul>
 			<div class="table-box">
-				<div class="box active"><table id="unpaidTable" class="responsive table table-striped table-bordered" width="100%"></table></div>
-				<div class="box unactive"><table id="partpaidTable" class="responsive table table-striped table-bordered" width="100%"></table></div>
-				<div class="box unactive"><table id="paidTable" class="responsive table table-striped table-bordered" width="100%"></table></div>
+				<div class="box active"><table id="unpaidTable" class="table table-striped table-bordered" width="100%"></table></div>
+				<div class="box unactive"><table id="partpaidTable" class="table table-striped table-bordered" width="100%"></table></div>
+				<div class="box unactive"><table id="paidTable" class="table table-striped table-bordered" width="100%"></table></div>
 			</div>
 		</div>
 		<div class="col-md-2"></div>

@@ -55,10 +55,15 @@ public class BuyRecord {
 	@Column(name = "reserve_fund")
 	private BigDecimal reserveFund;
 	/**
-	 * 是否递延费
+	 * 是否递延
 	 */
 	@Column(name = "deferred")
 	private Boolean deferred;
+	/**
+	 * 递延费
+	 */
+	@Column(name = "deferred_fee")
+	private BigDecimal deferredFee;
 	/**
 	 * 止盈点
 	 */
@@ -454,6 +459,14 @@ public class BuyRecord {
 
 	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
+	}
+
+	public BigDecimal getDeferredFee() {
+		return deferredFee;
+	}
+
+	public void setDeferredFee(BigDecimal deferredFee) {
+		this.deferredFee = deferredFee;
 	}
 
 }

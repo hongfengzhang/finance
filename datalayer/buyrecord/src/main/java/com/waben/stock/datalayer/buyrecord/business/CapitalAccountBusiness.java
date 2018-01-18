@@ -20,9 +20,9 @@ public class CapitalAccountBusiness {
 	private CapitalAccountReference service;
 
 	public CapitalAccountDto serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, BigDecimal serviceFee,
-			BigDecimal reserveFund) {
+			BigDecimal reserveFund, BigDecimal deferredFee) {
 		Response<CapitalAccountDto> response = service.serviceFeeAndReserveFund(publisherId, buyRecordId, serviceFee,
-				reserveFund);
+				reserveFund, deferredFee);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -49,6 +49,14 @@ public class CapitalAccountBusiness {
 			BigDecimal profitOrLoss) {
 		Response<CapitalAccountDto> response = service.returnReserveFund(publisherId, buyRecordId, buyRecordSerialCode,
 				profitOrLoss);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public CapitalAccountDto returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
+		Response<CapitalAccountDto> response = service.returnDeferredFee(publisherId, buyRecordId, deferredFee);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

@@ -14,6 +14,10 @@ public class CapitalFlowDto {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 流水号
+	 */
+	private String flowNo;
+	/**
 	 * 流水类型
 	 */
 	private CapitalFlowType type;
@@ -92,6 +96,14 @@ public class CapitalFlowDto {
 
 	public void setPublisherSerialCode(String publisherSerialCode) {
 		this.publisherSerialCode = publisherSerialCode;
+	}
+	
+	public String getFlowNo() {
+		return flowNo;
+	}
+
+	public void setFlowNo(String flowNo) {
+		this.flowNo = flowNo;
 	}
 
 	public Set<CapitalFlowExtendDto> getExtendList() {
