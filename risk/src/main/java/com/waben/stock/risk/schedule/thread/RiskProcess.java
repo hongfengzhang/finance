@@ -29,7 +29,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
         List<PositionStock> counts = new ArrayList<>();
         logger.info("股票:{},已持仓中订单数量:{}", stockMarket.getName(), positionStock.size());
         long start = System.currentTimeMillis();
-        String tradeSession = "880003450508";
+        String tradeSession = null;
         // 遍历容器内持仓中的点买交易订单
         for (PositionStock riskBuyInStock : positionStock) {
             String currTradeSession = riskBuyInStock.getTradeSession();
@@ -72,6 +72,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                     continue;
                 }
             }
+
+            //若当前时间点是在14:40之前 则不进入风控队列
             counts.add(riskBuyInStock);
         }
         long end = System.currentTimeMillis();

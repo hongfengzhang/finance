@@ -30,7 +30,7 @@ public class RabbitMqConsumer {
 
 	@RabbitListener(queues = { "entrustBuyIn" })
 	public void entrustBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
-		logger.info("券商股票委托买入成功:{}", securitiesStockEntrust.getTradeNo());
+		logger.info("券商股票委托买入成功:{},{}", securitiesStockEntrust.getTradeNo(),securitiesStockEntrust.getBuyRecordId());
 		BuyRecord buyRecord = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
 			  securitiesStockEntrust.getEntrustPrice());
 		//TODO 发送短信通知用户 和发送站内消息
@@ -62,7 +62,7 @@ public class RabbitMqConsumer {
 
 	@RabbitListener(queues = { "entrustWaste" })
 	public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
-		logger.info("处理废单:{}", securitiesStockEntrust.getTradeNo());
+		logger.info("处理废单:{},订单ID:{}", securitiesStockEntrust.getTradeNo(),securitiesStockEntrust.getBuyRecordId());
 		//退回服务费，保证金,解冻冻结的递延费
 		buyRecordService.revoke(securitiesStockEntrust.getBuyRecordId());
 	}

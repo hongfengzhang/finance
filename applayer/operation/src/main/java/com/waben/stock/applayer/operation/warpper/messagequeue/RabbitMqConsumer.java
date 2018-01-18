@@ -37,7 +37,7 @@ public class RabbitMqConsumer {
 //        long start = System.currentTimeMillis();
 //        long end = System.currentTimeMillis();
 //        logger.info("执行时间：{}",(end-start));
-//        investorBusiness.sellOut(positionStock);
+        investorBusiness.sellOut(positionStock);
     }
 
 }

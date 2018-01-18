@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -57,7 +58,7 @@ public class InvestorBusiness {
     * @return com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust
     * @description 根据投资人及点买信息初始化券商股票委托信息并委托买入或卖出
     */
-    private SecuritiesStockEntrust buyRecordEntrust(InvestorDto investorDto, BuyRecordDto buyRecordDto) {
+    private SecuritiesStockEntrust buyRecordEntrust(InvestorDto investorDto, BuyRecordDto buyRecordDto, BigDecimal entrustPrice) {
         SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
         securitiesStockEntrust.setBuyRecordId(buyRecordDto.getId());
         securitiesStockEntrust.setSerialCode(buyRecordDto.getSerialCode());
@@ -67,13 +68,13 @@ public class InvestorBusiness {
         securitiesStockEntrust.setStockCode(stockDto.getCode());
         securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
         securitiesStockEntrust.setEntrustNumber(buyRecordDto.getNumberOfStrand());
-        securitiesStockEntrust.setEntrustPrice(buyRecordDto.getDelegatePrice());
+        securitiesStockEntrust.setEntrustPrice(entrustPrice);
         securitiesStockEntrust.setBuyRecordState(buyRecordDto.getState());
         return securitiesStockEntrust;
     }
 
     public SecuritiesStockEntrust buyIn(InvestorDto investorDto,BuyRecordDto buyRecordDto) {
-        SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto);
+        SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto,buyRecordDto.getDelegatePrice());
         //TODO 若没有接收到响应请求， 则回滚服务业务
         Response<BuyRecordDto> response = investorService.stockApplyBuyIn(investorDto.getId(), securitiesStockEntrust,
                 investorDto.getSecuritiesSession());
@@ -95,8 +96,8 @@ public class InvestorBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public SecuritiesStockEntrust sellOut(InvestorDto investorDto,BuyRecordDto buyRecordDto) {
-        SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto);
+    public SecuritiesStockEntrust sellOut(InvestorDto investorDto,BuyRecordDto buyRecordDto,BigDecimal entrustPrice) {
+        SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto,entrustPrice);
         //申请卖出，更新数据库
         Response<BuyRecordDto> response = investorService.stockApplySellOut(investorDto.getId(), securitiesStockEntrust,
                 investorDto.getSecuritiesSession());
@@ -140,6 +141,6 @@ public class InvestorBusiness {
         BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(positionStock.getBuyRecordId());
         InvestorDto result = findById(positionStock.getInvestorId());
         result.setSecuritiesSession(positionStock.getTradeSession());
-        sellOut(result,buyRecordDto);
+        sellOut(result,buyRecordDto,buyRecordDto.getDelegatePrice());
     }
 }

@@ -36,7 +36,7 @@ public class StockQuotationJob implements InterruptableJob {
     private ExecutorService executors = Executors.newFixedThreadPool(4);
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        logger.info("开始执行行情数据拉取,股票数量:{}",positionStockContainer.getRiskStockContainer().size());
+            logger.info("开始执行行情数据拉取,股票数量:{}",positionStockContainer.getRiskStockContainer().size());
 
         Map<String, List<PositionStock>> riskStockContainer = positionStockContainer.getRiskStockContainer();
         Set<String> codes = riskStockContainer.keySet();
