@@ -3,7 +3,9 @@ package com.waben.stock.risk.schedule.job;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
+import com.waben.stock.risk.container.PositionStockContainer;
 import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
@@ -32,6 +34,8 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustSellOutContainer.class);
+    private PositionStockContainer positionStockContainer = ApplicationContextBeanFactory.getBean
+            (PositionStockContainer.class);
     private SecuritiesEntrustHttp securitiesEntrust = ApplicationContextBeanFactory.getBean(SecuritiesEntrustHttp
             .class);
     private EntrustProducer entrustProducer = ApplicationContextBeanFactory.getBean(EntrustProducer.class);
@@ -48,12 +52,19 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                 Thread.sleep(3 * 1000);
                 Map<String, SecuritiesStockEntrust> stockEntrusts = stockApplyEntrustSellOutContainer
                         .getSellOutContainer();
+                Map<String, PositionStock> entrustSellOutContainer = positionStockContainer.getEntrustSellOutContainer();
                 logger.info("券商委托股票容器内剩余:{}个委托卖出订单", stockEntrusts.size());
                 for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
+
                     logger.info("此处执行HTTP，当前委托订单为：{}", entry.getKey());
                     try {
                         SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                         String currTradeSession = securitiesStockEntrust.getTradeSession();
+                        //如果持仓容器里有锁定卖出订单，则删除持仓容器里的订单
+                        if(entrustSellOutContainer.get(securitiesStockEntrust.getTradeNo())!=null){
+                            logger.info("删除申请卖出容器的数据:{}",securitiesStockEntrust.getTradeNo());
+                            entrustSellOutContainer.remove(securitiesStockEntrust.getTradeNo());
+                        }
                         if (currTradeSession == null) {
                             logger.info("数据库中加载的委托卖出点买交易记录");
                             if (tradeSession == null) {

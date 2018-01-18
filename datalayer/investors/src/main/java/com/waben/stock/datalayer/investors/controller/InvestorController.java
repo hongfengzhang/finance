@@ -97,9 +97,11 @@ public class InvestorController implements InvestorInterface {
     public Response<BuyRecordDto> stockApplySellOut(@PathVariable Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, String tradeSession) {
         Investor result = investorService.findById(investor);
-        String entrustNo = investorService.buyRecordApplySellOut(result, securitiesStockEntrust, tradeSession);
+        //下单，返回委托编号
+        String entrustNo = investorService.buyRecordApplySellOut(securitiesStockEntrust, tradeSession);
+        //修改订单状态
         BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.entrustApplySellOut(result, securitiesStockEntrust,
-                entrustNo);
+                entrustNo,WindControlType.PUBLISHERAPPLY.getIndex());
         return new Response<>(buyRecordDtoResponse);
     }
 

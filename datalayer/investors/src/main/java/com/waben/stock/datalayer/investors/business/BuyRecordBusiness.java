@@ -50,11 +50,19 @@ public class BuyRecordBusiness {
         throw new ServiceException(response.getCode());
     }
 
+    /**
+     *
+     * @param investor 投资人id
+     * @param securitiesStockEntrust
+     * @param entrust 委托编号
+     * @return
+     */
     public BuyRecordDto entrustApplySellOut(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String
-            entrust) {
+            entrust,String windControlType) {
 //        securitiesStockEntrust.setEntrustNumber(entrust);
+        //卖出锁定
         Response<BuyRecordDto> response = buyRecordReference.sellLock(investor.getId(), securitiesStockEntrust
-                .getBuyRecordId(), entrust, WindControlType.PUBLISHERAPPLY.getIndex());
+                .getBuyRecordId(), entrust, windControlType);
         if ("200".equals(response.getCode())) {
             BuyRecordDto result = response.getResult();
             result.setDelegateNumber(entrust);

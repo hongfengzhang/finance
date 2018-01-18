@@ -38,7 +38,6 @@ public class RabbitMqConsumer {
 		//风控传输对象
 		PositionStock positionStock = new PositionStock();
 		positionStock.setBuyRecordId(buyRecord.getId());
-		positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
 		positionStock.setStockCode(buyRecord.getStockCode());
 		positionStock.setStockName(buyRecord.getStockName());
 		positionStock.setLossPosition(buyRecord.getLossPosition());
@@ -49,6 +48,7 @@ public class RabbitMqConsumer {
 		positionStock.setTradeSession(securitiesStockEntrust.getTradeSession());
 		positionStock.setExpireTime(buyRecord.getExpireTime());
 		positionStock.setTradeNo(buyRecord.getTradeNo());
+		positionStock.setEntrustNumber(buyRecord.getNumberOfStrand());
 		riskProducer.risk(positionStock);
 	}
 
@@ -66,4 +66,5 @@ public class RabbitMqConsumer {
 		//退回服务费，保证金,解冻冻结的递延费
 		buyRecordService.revoke(securitiesStockEntrust.getBuyRecordId());
 	}
+
 }

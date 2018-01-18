@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class PositionStock implements Serializable{
     private Long buyRecordId;
-    private BigDecimal buyingPrice;
+    private BigDecimal entrustPrice;
     private String stockCode;
     private String stockName;
     private BigDecimal profitPosition;
@@ -18,7 +18,7 @@ public class PositionStock implements Serializable{
     private String windControlType;
     private Date expireTime;
     private String tradeNo;
-
+    private Integer entrustNumber;
     public String getWindControlType() {
         return windControlType;
     }
@@ -81,8 +81,12 @@ public class PositionStock implements Serializable{
         this.lossPosition = lossPosition;
     }
 
-    public BigDecimal getBuyingPrice() {
-        return buyingPrice;
+    public BigDecimal getEntrustPrice() {
+        return entrustPrice;
+    }
+
+    public void setEntrustPrice(BigDecimal entrustPrice) {
+        this.entrustPrice = entrustPrice;
     }
 
     public String getStockCode() {
@@ -91,10 +95,6 @@ public class PositionStock implements Serializable{
 
     public String getStockName() {
         return stockName;
-    }
-
-    public void setBuyingPrice(BigDecimal buyingPrice) {
-        this.buyingPrice = buyingPrice;
     }
 
     public void setStockCode(String stockCode) {
@@ -121,11 +121,19 @@ public class PositionStock implements Serializable{
         this.tradeNo = tradeNo;
     }
 
+    public Integer getEntrustNumber() {
+        return entrustNumber;
+    }
+
+    public void setEntrustNumber(Integer entrustNumber) {
+        this.entrustNumber = entrustNumber;
+    }
+
     @Override
     public String toString() {
         return "PositionStock{" +
                 "buyRecordId='" + buyRecordId + '\'' +
-                ", buyingPrice=" + buyingPrice +
+                ", entrustPrice=" + entrustPrice +
                 ", stockCode='" + stockCode + '\'' +
                 ", stockName='" + stockName + '\'' +
                 ", profitPosition=" + profitPosition +

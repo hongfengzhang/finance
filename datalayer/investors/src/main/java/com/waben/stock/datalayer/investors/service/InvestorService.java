@@ -1,16 +1,19 @@
 package com.waben.stock.datalayer.investors.service;
 
+import com.waben.stock.datalayer.investors.business.StockBusiness;
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.entity.SecurityAccount;
 import com.waben.stock.datalayer.investors.repository.InvestorDao;
 import com.waben.stock.datalayer.investors.repository.rest.StockJyRest;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.EntrustType;
 import com.waben.stock.interfaces.exception.SecuritiesStockException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockHolder;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockMoney;
@@ -137,7 +140,7 @@ public class InvestorService {
     }
 
     @Transactional
-    public String buyRecordApplySellOut(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String
+    public String buyRecordApplySellOut(SecuritiesStockEntrust securitiesStockEntrust, String
             tradeSession) {
         //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
@@ -187,5 +190,6 @@ public class InvestorService {
     public List<Investor> findAll(){
     	return investorDao.list();
     }
+
 
 }

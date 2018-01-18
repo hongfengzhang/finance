@@ -37,7 +37,6 @@ public class PositionStockInitialize implements CommandLineRunner {
         for (BuyRecordDto buyRecord : buyRecords) {
             PositionStock positionStock = new PositionStock();
             positionStock.setBuyRecordId(buyRecord.getId());
-            positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
             positionStock.setStockCode(buyRecord.getStockCode());
             positionStock.setStockName(buyRecord.getStockName());
             positionStock.setLossPosition(buyRecord.getLossPosition());

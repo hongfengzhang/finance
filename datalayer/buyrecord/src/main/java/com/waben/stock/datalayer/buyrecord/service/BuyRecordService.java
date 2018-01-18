@@ -252,6 +252,7 @@ public class BuyRecordService {
 		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION && buyRecord.getState() != BuyRecordState.SELLAPPLY) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
+
 		if (buyRecord.getWindControlType() == null) {
 			buyRecord.setWindControlType(windControlType);
 		}
@@ -524,7 +525,7 @@ public class BuyRecordService {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION);
 		}
 		// 撤单退款
-		accountBusiness.revoke(buyRecord.getPublisherId(), id, buyRecord.getServiceFee(), buyRecord.getDeferredFee());
+		accountBusiness.revoke(buyRecord.getPublisherId(), id, buyRecord.getServiceFee());
 		// 修改点买记录状态
 		buyRecord.setState(BuyRecordState.REVOKE);
 		buyRecord.setUpdateTime(new Date());
