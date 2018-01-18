@@ -57,6 +57,18 @@ public class RedisCache {
 			}
 		}
 	}
+	
+	public void set(String key, String value, int seconds) {
+		Jedis jedis = null;
+		try {
+			jedis = pool.getResource();
+			jedis.setex(key, seconds, value);
+		} finally {
+			if (jedis != null) {
+				jedis.close();
+			}
+		}
+	}
 
 	public JedisPool getPool() {
 		return pool;

@@ -532,7 +532,7 @@ public class BuyRecordService {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION);
 		}
 		// 撤单退款
-		accountBusiness.revoke(buyRecord.getPublisherId(), id, buyRecord.getServiceFee());
+		accountBusiness.revoke(buyRecord.getPublisherId(), id, buyRecord.getServiceFee(), buyRecord.getDeferredFee());
 		// 修改点买记录状态
 		buyRecord.setState(BuyRecordState.REVOKE);
 		buyRecord.setUpdateTime(new Date());

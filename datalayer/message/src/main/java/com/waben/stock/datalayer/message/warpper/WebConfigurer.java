@@ -3,8 +3,11 @@ package com.waben.stock.datalayer.message.warpper;
 import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.warpper.converter.DateConverter;
 import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactory;
+
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -28,6 +31,11 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
 		exceptionResolvers.add(new ExecptionHandler());
 		super.configureHandlerExceptionResolvers(exceptionResolvers);
+	}
+	
+	@Bean
+	public RestTemplate restTemplate() {
+		return new RestTemplate();
 	}
 
 }
