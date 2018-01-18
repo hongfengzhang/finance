@@ -78,12 +78,10 @@ public class BuyRecordController {
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
 			BigDecimal deferredFee, @RequestParam(required = true) String paymentPassword) {
 		// 检查交易时间段
-		/*
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
 		}
-		*/
 		// 判断该股票是否已经停牌
 		boolean isSuspension = stockBusiness.isSuspension(stockCode);
 		if (isSuspension) {
