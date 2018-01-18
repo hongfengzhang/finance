@@ -137,8 +137,8 @@ public class SimpleTest {
         WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(5, 4);
-        System.out.println(new Date(workCalendar.getNextIncludedTime(calendar.getTimeInMillis())));
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        System.out.println(new Date(workCalendar.getNextIncludedTime(new Date().getTime())));
 
     }
 }

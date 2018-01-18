@@ -88,13 +88,12 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         )) {
                             logger.info("已报单:{}", entry.getKey());
                             // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
-                            long currentDay = calendar.getTime().getTime();
+                            long currentDay = calendar.getTime().getTime()/millisOfDay;
                             Calendar entrustDate = Calendar.getInstance();
                             entrustDate.setTime(securitiesStockEntrust.getEntrustTime());
-                            long entrustDay = entrustDate.getTime().getTime();
-                            logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, (currentDay - entrustDay)
-                                    / millisOfDay);
-                            if ((currentDay - entrustDay) / millisOfDay >= 1) {
+                            long entrustDay = entrustDate.getTime().getTime()/millisOfDay;
+                            logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
+                            if ((currentDay - entrustDay) >= 1) {
                                 entrustProducer.entrustWaste(securitiesStockEntrust);
                                 stockEntrusts.remove(entry.getKey());
                             }

@@ -4,7 +4,7 @@
       layout:decorator="decorator/layout">
 
 <body>
-<div class="content" layout:fragment="content" >
+<div class="content" layout:fragment="content">
     <div class="card">
         <div class="content">
             <div class="row">
@@ -13,7 +13,7 @@
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">发布人</label>
-                            <div  class="col-md-8">
+                            <div class="col-md-8">
                                 <input type="text" name="publisherPhone" class="form-control" maxlength="11"
                                        placeholder="发布人"/>
                             </div>
@@ -24,7 +24,8 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">股票名称</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="stockName" maxlength="11" placeholder="股票名称"/>
+                                <input type="text" class="form-control" name="stockName" maxlength="11"
+                                       placeholder="股票名称"/>
                             </div>
                         </div>
                     </div>
@@ -33,37 +34,39 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">投资人</label>
                             <div class="col-sm-8">
-                            	<select class="selectpicker" name="investorName" data-title="请选择投资人">
-                            		<option th:each="investor,investorStart : ${investors}"
-											th:value="${investor.id}" th:text="${investor.userName}"></option>
-                            	</select>
+                                <select class="selectpicker" name="investorName" data-title="请选择投资人">
+                                    <option th:each="investor,investorStart : ${investors}"
+                                            th:value="${investor.id}" th:text="${investor.userName}"></option>
+                                </select>
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">买入时间</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control datetimepicker" name="beginTime" maxlength="11" placeholder="开始时间"/>
+                                <input type="text" class="form-control datetimepicker" name="beginTime" maxlength="11"
+                                       placeholder="开始时间"/>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="col-md-2">
-                    	<div class="form-group">
-	                    	<div class="col-sm-8">
-	                            <input type="text" class="form-control datetimepicker" name="endTime" maxlength="11" placeholder="结束时间"/>
-	                        </div>
-		                </div>
-	                </div>
+                        <div class="form-group">
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control datetimepicker" name="endTime" maxlength="11"
+                                       placeholder="结束时间"/>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
                             <input id="search" type="button" class="btn btn-fill btn-info" value="搜索"/>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-1"></label>
@@ -107,12 +110,14 @@
         var stompClient = null;
         var dataRows;
         var dataMap = {};
+
         function send(codes) {
             console.log("开始发送消息")
             stompClient.send("/publish", {}, JSON.stringify(codes));
         }
+
         function setConnected(connected) {
-            console.log("是否已经连接成功"+connected);
+            console.log("是否已经连接成功" + connected);
             $table.bootstrapTable({
                 url: "../holding/pages",
                 dataType: "json",
@@ -129,25 +134,25 @@
                 sortName: 'id', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
-                sidePagination:"server",
-                queryParams:function () {
-                	var query= {
-                            page: this.pageNumber - 1,
-                            size: this.pageSize
-                        }
-                        var queryMap = {
-                			publisherPhone:$("input[name='publisherPhone']").val(),
-          		        	stockName:$("input[name='stockName']").val(),
-          		        	investorName:$("select[name='investorName']").val(),
-          		        	beginTime:$("input[name='beginTime']").val(),
-      		        		endTime:$("input[name='endTime']").val()
-                        }
-                        $.extend(query,queryMap);
-                        return query;
+                sidePagination: "server",
+                queryParams: function () {
+                    var query = {
+                        page: this.pageNumber - 1,
+                        size: this.pageSize
+                    }
+                    var queryMap = {
+                        publisherPhone: $("input[name='publisherPhone']").val(),
+                        stockName: $("input[name='stockName']").val(),
+                        investorName: $("select[name='investorName']").val(),
+                        beginTime: $("input[name='beginTime']").val(),
+                        endTime: $("input[name='endTime']").val()
+                    }
+                    $.extend(query, queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        return{
+                        return {
                             total: res.result.totalElements,
                             rows: res.result.content
                         }
@@ -165,7 +170,7 @@
                     field: 'stockName',
                     title: '股票名称',
                     align: 'center'
-                },{
+                }, {
                     field: 'stockCode',
                     title: '股票代码',
                     align: 'center'
@@ -173,11 +178,11 @@
                     field: 'investorName',
                     title: '投资人',
                     align: 'center'
-                },  {
+                }, {
                     field: 'buyingPrice',
                     title: '买入金额',
                     align: 'center'
-                },  {
+                }, {
                     field: 'numberOfStrand',
                     title: '数量',
                     align: 'center'
@@ -185,31 +190,27 @@
                     field: 'currentAmount',
                     title: '当前价位',
                     align: 'center'
-                },{
-                    field: 'profitWarnPosition',
-                    title: '止盈预警点位',
+                }, {
+                    field: 'entrustPrice',
+                    title: '委托卖出价格',
                     align: 'center'
-                },{
-                    field: 'lossWarnPosition',
-                    title: '止损预警点位',
-                    align: 'center'
-                },{
+                }, {
                     field: 'profitPosition',
                     title: '止盈点位',
                     align: 'center'
-                },{
+                }, {
                     field: 'lossPosition',
                     title: '止损点位',
                     align: 'center'
-                },{
+                }, {
                     field: 'profitPointPercent',
                     title: '止盈点',
                     align: 'center'
-                },{
+                }, {
                     field: 'lossPointPercent',
                     title: '止损点',
                     align: 'center'
-                },{
+                }, {
                     field: 'createTime',
                     title: '买入时间',
                     align: 'center'
@@ -217,7 +218,7 @@
                     field: 'buyRecordState',
                     title: '策略状态',
                     align: 'center'
-                },{
+                }, {
                     field: 'deferredStatus',
                     title: '是否递延',
                     align: 'center'
@@ -239,12 +240,12 @@
                             swal('You click view icon, row: ', row);
                         },
                         'click .edit': function (e, value, row, index) {
-                        	//<![CDATA[ 
-                            if(row.buyRecordState=='卖出锁定'){
+                            //<![CDATA[
+                            if (row.buyRecordState == '卖出锁定') {
                                 swal("警告", "当前状态不支持卖出", "warning");
                                 return false;
                             }
-                          	//]]>
+                            //]]>
                             swal({
                                 title: "卖出!",
                                 text: "确认卖出当前股票信息?",
@@ -256,16 +257,16 @@
                                 closeOnCancel: false
                             }, function (isConfirm) {
                                 if (isConfirm) {
-                                    post("../../investor/buyrecord/" + row.id + "/sellout", null,function (data) {
-                                        if(data.code == '200') {
+                                    post("../../investor/buyrecord/" + row.id + "/sellout", {entrustPrice: row.entrustPrice}, function (data) {
+                                        if (data.code == '200') {
                                             swal("Succsess!", "卖出成功.", "success");
                                             //当前一行禁用
                                             $table.bootstrapTable('updateCell', {
                                                 rowIndex: index,
-                                                fieldName: 'state',
-                                                fieldValue: 'SELLAPPLY'
+                                                fieldName: 'buyRecordState',
+                                                fieldValue: '卖出锁定'
                                             });
-                                        }else{
+                                        } else {
                                             swal("Failed", "卖出失败", "error");
                                         }
                                     }, true);
@@ -277,20 +278,20 @@
                         }
                     }
                 }],
-                onLoadSuccess: function(data){  //加载成功时执行
+                onLoadSuccess: function (data) {  //加载成功时执行
                     dataRows = data.rows;
                     var arrayCode = new Array();
-                    for(var index in dataRows){
+                    for (var index in dataRows) {
                         var stock = new Object();
                         var record = dataRows[index];
-                        var code =record.stockCode;
+                        var code = record.stockCode;
                         var time = record.createTime;
                         stock.code = code;
                         stock.time = time;
                         arrayCode.push(stock);
-                        dataMap[code+":"+index] = index;
+                        dataMap[code + ":" + index] = index;
                     }
-                    if(arrayCode.length>0) {
+                    if (arrayCode.length > 0) {
                         send(arrayCode);
                     }
                 },
@@ -302,13 +303,14 @@
                 },
             });
         }
+
         function connect() {
             var socket = new SockJS("/operation/websocket");
             stompClient = Stomp.over(socket);
-            stompClient.connect({},function (frame) {
+            stompClient.connect({}, function (frame) {
                 setConnected(true);
                 var subcribe = "/quotation/investor/callback";
-                stompClient.subscribe(subcribe,function(response) {
+                stompClient.subscribe(subcribe, function (response) {
                     var result = JSON.parse(response.body);
                     handlerSubscribe(result);
                 })
@@ -321,26 +323,32 @@
         }
 
         function handlerSubscribe(result) {
-            for(var index in result) {
+            for (var index in result) {
                 var stock = result[index].code;
-                var row = stock+":"+index;
-                if(dataMap[row]){
+                var row = stock + ":" + index;
+                if (dataMap[row]) {
                     $table.bootstrapTable('updateCell', {
                         rowIndex: dataMap[row],
                         fieldName: 'currentAmount',
                         fieldValue: result[index].price
                     });
+                    $table.bootstrapTable('updateCell', {
+                        rowIndex: dataMap[row],
+                        fieldName: 'entrustPrice',
+                        fieldValue: result[index].entrustPrice
+                    });
                 }
             }
 
         }
-        
+
         function disconnect() {
             stompClient.close();
         }
 
         $(function () {
             connect()
+
             //activate the tooltips after the data table is initialized
             $('[rel="tooltip"]').tooltip();
 
@@ -349,33 +357,33 @@
             });
 
         });
-        
-        $('#search').click(function(){
-     	   var beginTime = $("input[name='beginTime']");
-     	   var endTime = $("input[name='endTime']");
-     	   //<![CDATA[ 
-     	   if(beginTime.val() != '' && endTime.val() == ''){
-     		   swal("","请输入结束时间", "error");
-     		   return false;
-     	   }
-     	   if(endTime.val() != '' && beginTime.val() == ''){
-     		   swal("","请输入开始时间", "error");
-     		   return false;
-     	   }
-     	 	//]]>
-     	    
-     	   $table.bootstrapTable('refresh');
+
+        $('#search').click(function () {
+            var beginTime = $("input[name='beginTime']");
+            var endTime = $("input[name='endTime']");
+            //<![CDATA[
+            if (beginTime.val() != '' && endTime.val() == '') {
+                swal("", "请输入结束时间", "error");
+                return false;
+            }
+            if (endTime.val() != '' && beginTime.val() == '') {
+                swal("", "请输入开始时间", "error");
+                return false;
+            }
+            //]]>
+
+            $table.bootstrapTable('refresh');
         });
-        
-        $('#reset').click(function(){
-        	$("input[name='publisherPhone']").val('');
-        	$("input[name='stockName']").val('');
-        	$("span[class='filter-option pull-left']").text('请选择投资人');
-        	$("select[name='investorName']").val('');
-        	$("input[name='beginTime']").val('');
-        	$("input[name='endTime']").val('');
+
+        $('#reset').click(function () {
+            $("input[name='publisherPhone']").val('');
+            $("input[name='stockName']").val('');
+            $("span[class='filter-option pull-left']").text('请选择投资人');
+            $("select[name='investorName']").val('');
+            $("input[name='beginTime']").val('');
+            $("input[name='endTime']").val('');
         });
-        
+
     </script>
 </div>
 </body>
