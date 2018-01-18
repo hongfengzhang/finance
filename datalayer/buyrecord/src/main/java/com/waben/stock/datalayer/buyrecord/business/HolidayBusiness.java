@@ -105,7 +105,8 @@ public class HolidayBusiness {
 	 *            多少个交易日
 	 * @return 日期
 	 */
-	public Date getAfterTradeDate(Date date, Integer after) {
+	public Date getAfterTradeDate(Date before, Integer after) {
+		Date date = new Date(before.getTime());
 		while (after > 0) {
 			date.setTime(date.getTime() + 24 * 60 * 60 * 1000);
 			if (isTradeDay(date)) {

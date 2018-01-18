@@ -29,7 +29,9 @@ public enum CapitalFlowType implements CommonalityEnum {
 	
 	Promotion("9", "推广佣金"),
 	
-	Revoke("10", "撤单退款");
+	Revoke("10", "撤单退款"),
+	
+	ReturnDeferredCharges("11", "退回递延费");
 
 	private String index;
 

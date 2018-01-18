@@ -34,7 +34,7 @@ public interface CapitalAccountInterface {
 	@RequestMapping(value = "/{publisherId}/{buyRecordId}/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("serviceFee") BigDecimal serviceFee,
-			@PathVariable("reserveFund") BigDecimal reserveFund);
+			@PathVariable("reserveFund") BigDecimal reserveFund, @RequestParam("deferredFee") BigDecimal deferredFee);
 
 	@RequestMapping(value = "/{publisherId}/revoke/{buyRecordId}/serviceFee/{serviceFee}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> revoke(@PathVariable("publisherId") Long publisherId,
@@ -53,6 +53,10 @@ public interface CapitalAccountInterface {
 			@PathVariable("buyRecordId") Long buyRecordId,
 			@RequestParam(name = "buyRecordSerialCode") String buyRecordSerialCode,
 			@PathVariable("profitOrLoss") BigDecimal profitOrLoss);
+
+	@RequestMapping(value = "/{publisherId}/{buyRecordId}/returnDeferredFee/{deferredFee}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> returnDeferredFee(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("deferredFee") BigDecimal deferredFee);
 
 	@RequestMapping(value = "/{publisherId}/modifyPaymentPassword", method = RequestMethod.PUT)
 	Response<Void> modifyPaymentPassword(@PathVariable("publisherId") Long publisherId,

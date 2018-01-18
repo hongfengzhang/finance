@@ -57,10 +57,10 @@ public class CapitalAccountController implements CapitalAccountInterface {
 
 	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable Long publisherId,
-			@PathVariable Long buyRecordId, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
-				capitalAccountService.serviceFeeAndReserveFund(publisherId, buyRecordId, serviceFee, reserveFund),
-				false));
+			@PathVariable Long buyRecordId, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund,
+			BigDecimal deferredFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
+				.serviceFeeAndReserveFund(publisherId, buyRecordId, serviceFee, reserveFund, deferredFee), false));
 	}
 
 	@Override
@@ -105,9 +105,17 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> revoke(@PathVariable Long publisherId, @PathVariable Long buyRecordId, @PathVariable BigDecimal serviceFee) {
+	public Response<CapitalAccountDto> revoke(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
+			@PathVariable BigDecimal serviceFee) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.revoke(publisherId, buyRecordId, serviceFee), false));
+	}
+
+	@Override
+	public Response<CapitalAccountDto> returnDeferredFee(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
+			@PathVariable BigDecimal deferredFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.returnDeferredFee(publisherId, buyRecordId, deferredFee), false));
 	}
 
 }

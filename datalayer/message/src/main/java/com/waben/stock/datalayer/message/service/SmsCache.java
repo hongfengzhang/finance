@@ -5,6 +5,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -15,6 +18,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
  * @author luomengan
  *
  */
+@Component
 public class SmsCache {
 
 	/**
@@ -26,44 +30,54 @@ public class SmsCache {
 	 */
 	public static final long sendingInterval = 1 * 60 * 1000;
 	/**
-	 * 短信验证码缓存，key为smsType_phone，value为验证码
+	 * redis缓存
 	 */
-	public static final Map<String, VerificationCodeInfo> verificationCodeCache = Collections
-			.synchronizedMap(new HashMap<String, VerificationCodeInfo>());
+	@Autowired
+	private RedisCache redisCache;
 
-	/**
-	 * 获取短信验证码缓存key
-	 */
 	public static String getCacheKey(SmsType smsType, String phone) {
 		return smsType.name() + "_" + phone;
+	}
+	
+	/**
+	 * 缓存验证码信息
+	 */
+	public void cache(SmsType smsType, String phone, Map<String, String> params, String[] cacheNames) {
+		// redisCache.cah
+		
+		// verificationCodeCache.put(getCacheKey(smsType, phone), new VerificationCodeInfo(verificationCode));
 	}
 
 	/**
 	 * 缓存验证码信息
 	 */
-	public static void cache(SmsType smsType, String phone, String verificationCode) {
-		verificationCodeCache.put(getCacheKey(smsType, phone), new VerificationCodeInfo(verificationCode));
+	public void cache(SmsType smsType, String phone, String verificationCode) {
+		// verificationCodeCache.put(getCacheKey(smsType, phone), new VerificationCodeInfo(verificationCode));
 	}
 
 	/**
 	 * 检查发送条件
 	 */
-	public static void checkSendCondition(SmsType smsType, String phone) {
+	public void checkSendCondition(SmsType smsType, String phone) {
+		/*
 		VerificationCodeInfo oldCode = verificationCodeCache.get(getCacheKey(smsType, phone));
 		if (oldCode != null && oldCode.getLatelyIntervalTime().getTime() > new Date().getTime()) {
 			throw new ServiceException(ExceptionConstant.SENDMESSAGE_INTERVAL_TOOSHORT_EXCEPTION);
 		}
+		*/
 	}
 
 	/**
 	 * 匹配验证码
 	 */
-	public static void matchVerificationCode(SmsType smsType, String phone, String verificationCode) {
+	public void matchVerificationCode(SmsType smsType, String phone, String verificationCode) {
+		/*
 		VerificationCodeInfo oldCode = verificationCodeCache.get(getCacheKey(smsType, phone));
 		if (!(oldCode != null && oldCode.getVerificationCode().equals(verificationCode)
 				&& oldCode.getEffectiveTime().getTime() > new Date().getTime())) {
 			throw new ServiceException(ExceptionConstant.VERIFICATIONCODE_INVALID_EXCEPTION);
 		}
+		*/
 	}
 
 	/**

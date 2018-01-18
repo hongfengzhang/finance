@@ -14,58 +14,66 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 
 @Component
 public class CapitalAccountServiceFallback implements CapitalAccountService {
-    @Override
-    public Response<PageInfo<CapitalAccountDto>> pages(CapitalAccountQuery publisherQuery) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	@Override
+	public Response<PageInfo<CapitalAccountDto>> pages(CapitalAccountQuery publisherQuery) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
-    @Override
-    public Response<CapitalAccountDto> fetchByPublisherSerialCode(String serialCode) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	@Override
+	public Response<CapitalAccountDto> fetchByPublisherSerialCode(String serialCode) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
-    @Override
-    public Response<CapitalAccountDto> fetchByPublisherId(Long publisherId) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	@Override
+	public Response<CapitalAccountDto> fetchByPublisherId(Long publisherId) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
-    @Override
-    public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	@Override
+	public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
-    @Override
-    public Response<CapitalAccountDto> withdrawals(Long publisherId, String withdrawalsNo, String withdrawalsStateIndex) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+	@Override
+	public Response<CapitalAccountDto> withdrawals(Long publisherId, String withdrawalsNo,
+			String withdrawalsStateIndex) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
-    @Override
-    public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, BigDecimal serviceFee, BigDecimal reserveFund) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
-
-    @Override
-    public Response<FrozenCapitalDto> fetchFrozenCapital(Long publisherId, Long buyRecordId) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
-
-    @Override
-    public Response<CapitalAccountDto> deferredCharges(Long publisherId, Long buyRecordId, BigDecimal deferredCharges) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
-
-    @Override
-    public Response<CapitalAccountDto> returnReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode, BigDecimal profitOrLoss) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
-
-    @Override
-    public Response<Void> modifyPaymentPassword(Long publisherId, String paymentPassword) {
+	@Override
+	public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
+			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
 	@Override
+	public Response<FrozenCapitalDto> fetchFrozenCapital(Long publisherId, Long buyRecordId) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> deferredCharges(Long publisherId, Long buyRecordId, BigDecimal deferredCharges) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> returnReserveFund(Long publisherId, Long buyRecordId, String buyRecordSerialCode,
+			BigDecimal profitOrLoss) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<Void> modifyPaymentPassword(Long publisherId, String paymentPassword) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
 	public Response<CapitalAccountDto> revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }
