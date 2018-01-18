@@ -12,10 +12,7 @@ import java.util.List;
 public class PageToPageInfo {
 
     public static <T> PageInfo<T> pageToPageInfo(Page<?> page, Class<T> targetType) {
-        List<?> contents = page.getContent();
-        List<T> target = CopyBeanUtils.copyListBeanPropertiesToList(contents, targetType);
-        PageInfo<T> result = new PageInfo<>(target, page.getTotalPages(), page.isLast(), page
-                .getTotalElements(), page.getSize(), page.getNumber(), page.isFirst());
+        PageInfo<T> result = new PageInfo<>(page, targetType);
         return result;
     }
 }

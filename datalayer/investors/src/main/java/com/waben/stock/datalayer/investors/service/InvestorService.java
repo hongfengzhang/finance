@@ -106,7 +106,6 @@ public class InvestorService {
     @Transactional
     public String entrustApplyBuyIn(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String
             tradeSession) {
-    	tradeSession = "880003450508";
         //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         StockMoney stockMoney = stockJyRest.money(tradeSession);
