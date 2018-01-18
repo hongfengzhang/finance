@@ -252,11 +252,6 @@ public class BuyRecordService {
 		if (buyRecord.getState() != BuyRecordState.HOLDPOSITION && buyRecord.getState() != BuyRecordState.SELLAPPLY) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
-		if (investorId != null && windControlType != WindControlType.PUBLISHERAPPLY) {
-			if (!investorId.equals(buyRecord.getInvestorId())) {
-				throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
-			}
-		}
 		if (buyRecord.getWindControlType() == null) {
 			buyRecord.setWindControlType(windControlType);
 		}
@@ -270,9 +265,6 @@ public class BuyRecordService {
 		BuyRecord buyRecord = buyRecordDao.retrieve(id);
 		if (buyRecord.getState() != BuyRecordState.SELLLOCK) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION);
-		}
-		if (!investorId.equals(buyRecord.getInvestorId())) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_INVESTORID_NOTMATCH_EXCEPTION);
 		}
 		buyRecord.setSellingPrice(sellingPrice);
 		buyRecord.setSellingTime(new Date());
