@@ -102,10 +102,6 @@ public class BuyRecordDto {
 	 */
 	private BigDecimal buyingPrice;
 	/**
-	 * 到期时间
-	 */
-	private Date expireTime;
-	/**
 	 * 风控类型
 	 */
 	private WindControlType windControlType;
@@ -419,14 +415,6 @@ public class BuyRecordDto {
 
 	public String getDeferredStatus() {
 		return deferred == true ? "是" : "否";
-	}
-
-	public Date getExpireTime() {
-		return expireTime;
-	}
-
-	public void setExpireTime(Date expireTime) {
-		this.expireTime = expireTime;
 	}
 
 	public BigDecimal getDeferredFee() {
