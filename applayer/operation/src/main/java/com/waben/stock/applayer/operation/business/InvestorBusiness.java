@@ -137,10 +137,4 @@ public class InvestorBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public void sellOut(PositionStock positionStock) {
-        BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(positionStock.getBuyRecordId());
-        InvestorDto result = findById(positionStock.getInvestorId());
-        result.setSecuritiesSession(positionStock.getTradeSession());
-        sellOut(result,buyRecordDto,buyRecordDto.getDelegatePrice());
-    }
 }
