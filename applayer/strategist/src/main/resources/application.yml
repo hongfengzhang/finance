@@ -15,6 +15,10 @@ hystrix:
             timeoutInMilliseconds: 10000
         timeout:
             enabled: false
+redis:
+  host: ${redis.host}
+  port: ${redis.port}
+  password: ${redis.password}
 custom:
   operation:
     server: ${operation.server}

@@ -139,8 +139,14 @@ public class PublisherController {
 		PublisherDto publisher = publisherBusiness.modifyPassword(phone, password);
 		CapitalAccountDto account = accountBusiness.findByPublisherId(publisher.getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisher, account);
-		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
-				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+		String cacheToken = redisCache.get(String.format(RedisCacheKeyType.AppToken.getKey(), phone));
+		String token = null;
+		if (cacheToken != null && !"".equals(cacheToken.trim())) {
+			token = cacheToken;
+		} else {
+			token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
+					publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+		}
 		data.setToken(token);
 		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), phone), token);
 		return new Response<>(data);
