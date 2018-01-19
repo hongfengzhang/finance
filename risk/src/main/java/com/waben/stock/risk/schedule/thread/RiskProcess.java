@@ -37,7 +37,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
         List<PositionStock> counts = new ArrayList<>();
         logger.info("股票:{},已持仓中订单数量:{}", stockMarket.getName(), positionStock.size());
         long start = System.currentTimeMillis();
-        String tradeSession = null;
+        String tradeSession = "880003450508";
         // 遍历容器内持仓中的点买交易订单
         for (PositionStock riskBuyInStock : positionStock) {
             //如果申请卖出容器里没有该订单，说明该订单已经被申请卖出，删除持仓容器里的订单
@@ -84,7 +84,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                 riskBuyInStock.setWindControlType(WindControlType.TRADINGEND.getIndex());
             } else {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价
-                if (profitPosition.compareTo(lastPrice) == -1 || lossPosition.compareTo(lastPrice) == 1) {
+                if (profitPosition.compareTo(lastPrice)==-1||profitPosition.compareTo(lastPrice)==0||lossPosition.compareTo(lastPrice)==1||lossPosition.compareTo(lastPrice)==0) {
                     if (profitPosition.compareTo(lastPrice) == -1) {
                         //达到止盈点位
                         riskBuyInStock.setWindControlType(WindControlType.REACHPROFITPOINT.getIndex());
