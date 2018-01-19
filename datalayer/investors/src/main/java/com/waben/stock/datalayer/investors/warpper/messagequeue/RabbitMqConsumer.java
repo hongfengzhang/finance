@@ -40,8 +40,9 @@ public class RabbitMqConsumer {
 		securitiesStockEntrust.setEntrustNumber(positionStock.getEntrustNumber());
 		securitiesStockEntrust.setEntrustPrice(positionStock.getEntrustPrice());
 		String entrustNo = investorService.buyRecordApplySellOut(securitiesStockEntrust, positionStock.getTradeSession());
+		logger.info("委托申请成功委托编号:{}",entrustNo);
 		Investor investor = investorService.findById(positionStock.getInvestorId());
 		BuyRecordDto buyRecordDto = buyRecordBusiness.entrustApplySellOut(investor, securitiesStockEntrust, entrustNo, positionStock.getWindControlType());
-		logger.info("委托申请成功:{}",buyRecordDto.getTradeNo());
+		logger.info("修改订单状态成功:{}",buyRecordDto.getTradeNo());
 	}
 }

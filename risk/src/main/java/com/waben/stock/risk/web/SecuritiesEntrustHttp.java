@@ -42,11 +42,12 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
         headers.add("broker_id","1001");
     }
 
-    public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo) {
-        String queryEntrusUrl = context+ queryEntrustPath + "?token={token}&entrust_no={entrust_no}";
+    public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo,String stockCode) {
+        String queryEntrusUrl = context+ queryEntrustPath + "?token={token}&entrust_no={entrust_no}&stock_code={stock_code}";
         Map<String, String> params = new HashMap<>();
         params.put("token", tradeSession);
         params.put("entrust_no", entrustNo);
+        params.put("stock_code",stockCode);
         String result = null;
         try {
             result = HttpRest.get(queryEntrusUrl, String.class, params,headers);
