@@ -18,6 +18,8 @@ public interface CrawlerService {
 
     AnnualReportModel selectAnnualReport(String id);
 
-    void doDelteTask(Class clazz)  ;
+    void doDelteTask(Class clazz);
+    
+    List<?> selectDailyReport(Integer type, int page, int pageSize);
 
 }

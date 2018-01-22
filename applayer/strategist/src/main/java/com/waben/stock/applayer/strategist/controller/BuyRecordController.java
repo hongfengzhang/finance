@@ -117,7 +117,13 @@ public class BuyRecordController {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
-		if (serviceFee.add(reserveFund).add(deferredFee).compareTo(capitalAccount.getAvailableBalance()) > 0) {
+		BigDecimal totalFee = new BigDecimal(0);
+		if (deferred) {
+			totalFee = totalFee.add(serviceFee).add(reserveFund).add(deferredFee);
+		} else {
+			totalFee = totalFee.add(serviceFee).add(reserveFund);
+		}
+		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
 		// 初始化点买数据

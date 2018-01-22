@@ -142,6 +142,7 @@ public class StockBusiness {
 					}
 				}
 			}
+			result.setIsTradeTime(holidayBusiness.isTradeTime());
 			return result;
 		}
 		return null;

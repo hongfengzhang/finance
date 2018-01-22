@@ -248,6 +248,7 @@ public class CrawlerData {
                 model.setTitle("【快讯】");
             }
             model.setSource("财联社电报");
+            dailyReportDao.saveReport(model);
         }
     }
 

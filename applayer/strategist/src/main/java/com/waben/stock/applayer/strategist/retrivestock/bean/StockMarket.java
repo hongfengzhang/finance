@@ -15,18 +15,52 @@ public class StockMarket {
 
 	private String exchangeId;
 	private String instrumentId;
-	private BigDecimal lastPrice;
 	private String name;
 	private int status;
-	private String tradeDay;
-	private BigDecimal upDropPrice;
-	private BigDecimal upDropSpeed;
 	private long upTime;
 	private String upTimeFormat;
-	private BigDecimal highestPrice;
-	private BigDecimal lowestPrice;
 	private BigDecimal upLimitPrice;
 	private BigDecimal downLimitPrice;
+	/**
+	 * 交易日，格式yyyy-MM-dd
+	 */
+	private String tradeDay;
+	/**
+	 * 最新价
+	 */
+	private BigDecimal lastPrice;
+	/**
+	 * 跌涨价格
+	 */
+	private BigDecimal upDropPrice;
+	/**
+	 * 跌涨幅度
+	 */
+	private BigDecimal upDropSpeed;
+	/**
+	 * 最高价
+	 */
+	private BigDecimal highestPrice;
+	/**
+	 * 最低价
+	 */
+	private BigDecimal lowestPrice;
+	/**
+	 * 今开
+	 */
+	private BigDecimal openPrice;
+	/**
+	 * 昨收
+	 */
+	private BigDecimal preClsPrice;
+	/**
+	 * 成交量，单位手
+	 */
+	private BigDecimal volume;
+	/**
+	 * 成交额，单位元
+	 */
+	private BigDecimal turnover;
 	/**
 	 * 卖1~卖5
 	 */
@@ -324,6 +358,38 @@ public class StockMarket {
 
 	public void setBidVolume5(BigDecimal bidVolume5) {
 		this.bidVolume5 = bidVolume5;
+	}
+
+	public BigDecimal getOpenPrice() {
+		return openPrice;
+	}
+
+	public void setOpenPrice(BigDecimal openPrice) {
+		this.openPrice = openPrice;
+	}
+
+	public BigDecimal getPreClsPrice() {
+		return preClsPrice;
+	}
+
+	public void setPreClsPrice(BigDecimal preClsPrice) {
+		this.preClsPrice = preClsPrice;
+	}
+
+	public BigDecimal getVolume() {
+		return volume;
+	}
+
+	public void setVolume(BigDecimal volume) {
+		this.volume = volume;
+	}
+
+	public BigDecimal getTurnover() {
+		return turnover;
+	}
+
+	public void setTurnover(BigDecimal turnover) {
+		this.turnover = turnover;
 	}
 
 }

@@ -13,6 +13,10 @@ public class CapitalFlowWithExtendDto {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 流水号
+	 */
+	private String flowNo;
+	/**
 	 * 流水类型
 	 */
 	private CapitalFlowType type;
@@ -127,6 +131,14 @@ public class CapitalFlowWithExtendDto {
 
 	public void setStrategyTypeName(String strategyTypeName) {
 		this.strategyTypeName = strategyTypeName;
+	}
+
+	public String getFlowNo() {
+		return flowNo;
+	}
+
+	public void setFlowNo(String flowNo) {
+		this.flowNo = flowNo;
 	}
 
 }
