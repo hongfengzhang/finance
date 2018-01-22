@@ -85,10 +85,12 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 //                            stockEntrusts.remove(entry.getKey());
 //                            continue;
 //                        }
-                        logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus()));
-                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())||stockEntrustQueryResult == null) {
+                        if(stockEntrustQueryResult != null) {
+                            logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus()));
+                        }
+                        if (stockEntrustQueryResult == null|| stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //废单
-                            logger.info("废单:{}",entry.getKey());
+                            logger.info("卖出废单:{}",entry.getKey());
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;
@@ -96,6 +98,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
                             // 若当前时间大于委托卖出时间1天。将点买废单放入废单处理队列中
                             //当前时间
+                            logger.info("卖出废单:{}",entry.getKey());
                             calendar.setTime(new Date());
                             long currentDay = calendar.getTime().getTime()/millisOfDay;
                             //委托卖出时间
