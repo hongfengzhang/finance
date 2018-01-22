@@ -68,7 +68,7 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("calendarPM")
                 .build();
 
-        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 16 9,14 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 39 9,16 * * ?");
         CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
         CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 55 14 * * ?");
 
