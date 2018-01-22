@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -14,11 +15,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,62 +62,5 @@ public class BeanConfigurer {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         return rabbitTemplate;
     }
-
-//    /**
-//     * 创建 委托申请买入队列
-//     */
-//    @Bean(name = "entrustApplyBuyIn")
-//    public Queue entrustBuyInQueue() {
-//        return new Queue("entrustApplyBuyIn");
-//    }
-//
-//    /**
-//     * 风控队列
-//     * @return
-//     */
-//    @Bean(name = "risk")
-//    public Queue risk() {
-//        return new Queue("risk");
-//    }
-//
-//    @Bean("buyRecord")
-//    public TopicExchange buyRecordExchange() {
-//        return new TopicExchange("buyRecord");
-//    }
-//
-//    /**
-//     * 点买交易风控交换机
-//     */
-//    @Bean("buyRecordRisk")
-//    public TopicExchange riskExchange() {
-//        return new TopicExchange("buyRecordRisk");
-//    }
-//
-//    @Bean
-//    public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustApplyBuyIn") Queue queue,
-//                                              @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
-//        return BindingBuilder.bind(queue).to(buyRecordExchange).with("applyBuyIn");
-//    }
-//
-//    @Bean
-//    public Binding bindingExchangRisk(@Qualifier("risk") Queue queue,
-//                                              @Qualifier("buyRecordRisk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("stock");
-//    }
-//
-//    /**
-//     * 风控持仓卖出队列
-//     * @return
-//     */
-//    @Bean(name = "riskPositionSellOut")
-//    public Queue riskPositionSellOut() {
-//        return new Queue("riskPositionSellOut");
-//    }
-//
-//    @Bean
-//    public Binding bindingExchangPosition(@Qualifier("riskPositionSellOut") Queue queue,
-//                                          @Qualifier("buyRecordRisk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("position");
-//    }
 
 }

@@ -86,7 +86,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 //                            continue;
 //                        }
                         logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus()));
-                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())||stockEntrustQueryResult == null) {
+                        if (stockEntrustQueryResult == null|| stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //废单
                             logger.info("废单:{}",entry.getKey());
                             entrustProducer.entrustWaste(securitiesStockEntrust);

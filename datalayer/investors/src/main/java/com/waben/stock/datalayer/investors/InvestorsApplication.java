@@ -15,7 +15,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableHystrix
 //扫描包
 @ComponentScan(basePackages = { "com.waben.stock" })
-@SpringBootApplication(exclude = RabbitAutoConfiguration.class)
+@SpringBootApplication
 public class InvestorsApplication {
 
 	public static void main(String[] args) {
