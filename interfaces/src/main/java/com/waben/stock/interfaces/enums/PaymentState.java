@@ -15,7 +15,9 @@ public enum PaymentState implements CommonalityEnum {
 
 	Paid("2", "已支付"),
 
-	Failure("3", "支付失败");
+	Failure("3", "支付失败"),
+	
+	PartPaid("4", "部分支付");
 
 	PaymentState(String index, String status) {
 		this.index = index;

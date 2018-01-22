@@ -50,11 +50,22 @@ public class InvestorController implements InvestorInterface {
         return new Response<>(result);
     }
 
+    @Override
+    public Response<InvestorDto> fetchById(@PathVariable Long id) {
+        logger.info("investorId:{}",id);
+        Investor investor = investorService.findById(id);
+        logger.info("investor:{}",investor.getId());
+        InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(investor, new InvestorDto(), false);
+        logger.info("investor:{}",investorDto.getId());
+        return new Response<>(investorDto);
+    }
+
     public Response<InvestorDto> fetchByUserName(@PathVariable String username) {
         Investor investor = investorService.findByUserName(username);
         InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(investor, new InvestorDto(), false);
         return new Response<>(investorDto);
     }
+
 
     /**
      * 投资人点买记录委托申请买入
@@ -86,12 +97,11 @@ public class InvestorController implements InvestorInterface {
     public Response<BuyRecordDto> stockApplySellOut(@PathVariable Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, String tradeSession) {
         Investor result = investorService.findById(investor);
-        String entrustNo = investorService.buyRecordApplySellOut(result, securitiesStockEntrust, tradeSession);
-        if (StringUtils.isEmpty(entrustNo)) {
-            logger.info("委托卖出成功:{}",entrustNo);
-        }
+        //下单，返回委托编号
+        String entrustNo = investorService.buyRecordApplySellOut(securitiesStockEntrust, tradeSession);
+        //修改订单状态
         BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.entrustApplySellOut(result, securitiesStockEntrust,
-                entrustNo);
+                entrustNo,WindControlType.PUBLISHERAPPLY.getIndex());
         return new Response<>(buyRecordDtoResponse);
     }
 

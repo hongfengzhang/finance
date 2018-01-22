@@ -55,10 +55,15 @@ public class BuyRecord {
 	@Column(name = "reserve_fund")
 	private BigDecimal reserveFund;
 	/**
-	 * 是否递延费
+	 * 是否递延
 	 */
 	@Column(name = "deferred")
 	private Boolean deferred;
+	/**
+	 * 递延费
+	 */
+	@Column(name = "deferred_fee")
+	private BigDecimal deferredFee;
 	/**
 	 * 止盈点
 	 */
@@ -121,6 +126,11 @@ public class BuyRecord {
 	@Column(name = "buying_price")
 	private BigDecimal buyingPrice;
 	/**
+	 * 到期时间
+	 */
+	@Column(name = "expire_time")
+	private Date expireTime;
+	/**
 	 * 风控类型
 	 */
 	@Column(name = "wind_control_type")
@@ -159,7 +169,7 @@ public class BuyRecord {
 	/**
 	 * 投资人名称
 	 */
-	@Column(name="investor_name")
+	@Column(name = "investor_name")
 	private String investorName;
 	/**
 	 * 发布人ID
@@ -442,4 +452,21 @@ public class BuyRecord {
 	public void setInvestorName(String investorName) {
 		this.investorName = investorName;
 	}
+
+	public Date getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
+	}
+
+	public BigDecimal getDeferredFee() {
+		return deferredFee;
+	}
+
+	public void setDeferredFee(BigDecimal deferredFee) {
+		this.deferredFee = deferredFee;
+	}
+
 }

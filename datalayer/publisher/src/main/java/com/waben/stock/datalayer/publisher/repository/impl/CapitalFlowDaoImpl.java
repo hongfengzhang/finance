@@ -15,6 +15,7 @@ import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.datalayer.publisher.repository.impl.jpa.CapitalFlowRepository;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
+import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
  * 资金流水 Dao实现
@@ -73,6 +74,7 @@ public class CapitalFlowDaoImpl implements CapitalFlowDao {
 		t.setPublisherSerialCode(publisherSerialCode);
 		t.setType(type);
 		t.setRemark(type.getType());
+		t.setFlowNo(UniqueCodeGenerator.generateFlowNo());
 		return repository.save(t);
 	}
 

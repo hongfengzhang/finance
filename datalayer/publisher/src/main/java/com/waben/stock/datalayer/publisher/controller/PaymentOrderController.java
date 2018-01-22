@@ -16,6 +16,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
 import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 
 /**
  * 支付订单 Controller
@@ -55,4 +56,11 @@ public class PaymentOrderController implements PaymentOrderInterface {
 		return new Response<>(result);
 	}
 
+	@Override
+	public Response<PageInfo<PaymentOrderDto>> pagesByQuery(@RequestBody PaymentOrderQuery query) {
+		Page<PaymentOrder> page = service.pagesByQuery(query);
+		PageInfo<PaymentOrderDto> result = PageToPageInfo.pageToPageInfo(page, PaymentOrderDto.class);
+		return new Response<>(result);
+	}
+	
 }

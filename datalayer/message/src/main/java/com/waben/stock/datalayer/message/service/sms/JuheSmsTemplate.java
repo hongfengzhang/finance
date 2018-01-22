@@ -9,15 +9,19 @@ import com.waben.stock.interfaces.enums.SmsType;
 
 public enum JuheSmsTemplate implements CommonalityEnum {
 
-	RegistVerificationCode("1", "注册验证码", "57093", new String[] { "code" }, new VerifyCodeParamProducer()),
+	RegistVerificationCode("1", "注册验证码", "57093", new String[] { "code" }, new String[] { "code" },
+			new VerifyCodeParamProducer()),
 
-	ModifyPasswordCode("2", "修改密码验证码", "57093", new String[] { "code" }, new VerifyCodeParamProducer()),
+	ModifyPasswordCode("2", "修改密码验证码", "57093", new String[] { "code" }, new String[] { "code" },
+			new VerifyCodeParamProducer()),
 
-	BindCardCode("3", "绑定银行卡验证码", "57093", new String[] { "code" }, new VerifyCodeParamProducer()),
+	BindCardCode("3", "绑定银行卡验证码", "57093", new String[] { "code" }, new String[] { "code" },
+			new VerifyCodeParamProducer()),
 
-	StrategyWarning("4", "点买持仓提醒", "50597", new String[] { "stgyName", "delayDay" }, null),
+	StrategyWarning("4", "点买持仓提醒", "50597", new String[] { "stgyName", "delayDay" }, null, null),
 
-	ModifyPaymentPwdCode("5", "修改支付密码验证码", "57093", new String[] { "code" }, new VerifyCodeParamProducer());
+	ModifyPaymentPwdCode("5", "修改支付密码验证码", "57093", new String[] { "code" }, new String[] { "code" },
+			new VerifyCodeParamProducer());
 
 	private String index;
 
@@ -27,14 +31,17 @@ public enum JuheSmsTemplate implements CommonalityEnum {
 
 	private String[] paramNames;
 
+	private String[] cacheNames;
+
 	private ParamProducer producer;
 
-	private JuheSmsTemplate(String index, String name, String templateCode, String[] paramNames,
+	private JuheSmsTemplate(String index, String name, String templateCode, String[] paramNames, String cacheNames[],
 			ParamProducer producer) {
 		this.index = index;
 		this.name = name;
 		this.templateCode = templateCode;
 		this.paramNames = paramNames;
+		this.cacheNames = cacheNames;
 		this.producer = producer;
 	}
 
@@ -48,7 +55,7 @@ public enum JuheSmsTemplate implements CommonalityEnum {
 
 	public Map<String, String> getParamMap() {
 		Map<String, String> result = new HashMap<>();
-		if (paramNames != null && paramNames.length > 0) {
+		if (paramNames != null && paramNames.length > 0 && producer != null) {
 			List<String> paramValues = producer.produce();
 			for (int i = 0; i < paramNames.length; i++) {
 				result.put(paramNames[i], paramValues.get(i));
@@ -103,6 +110,18 @@ public enum JuheSmsTemplate implements CommonalityEnum {
 
 	public void setParamNames(String[] paramNames) {
 		this.paramNames = paramNames;
+	}
+
+	public void setProducer(ParamProducer producer) {
+		this.producer = producer;
+	}
+
+	public String[] getCacheNames() {
+		return cacheNames;
+	}
+
+	public void setCacheNames(String[] cacheNames) {
+		this.cacheNames = cacheNames;
 	}
 
 }

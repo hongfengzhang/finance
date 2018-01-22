@@ -42,6 +42,15 @@ public class UniqueCodeGenerator {
 	}
 	
 	/**
+	 * 生成流水单号
+	 * 
+	 * @return 流水单号
+	 */
+	public static String generateFlowNo() {
+		return IdGenerator.INSTANCE.nextId();
+	}
+	
+	/**
 	 * 生成提现单号
 	 * 
 	 * @return 提现单号

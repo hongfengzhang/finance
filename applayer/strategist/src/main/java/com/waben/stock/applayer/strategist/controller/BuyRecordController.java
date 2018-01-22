@@ -70,7 +70,7 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal delegatePrice,
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
-			@RequestParam(required = true) String paymentPassword) {
+			BigDecimal deferredFee, @RequestParam(required = true) String paymentPassword) {
 		// 检查交易时间段
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
@@ -104,6 +104,9 @@ public class BuyRecordController {
 		if (!(lossPoint.abs().compareTo(new BigDecimal(0)) > 0 && lossPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
 			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
 		}
+		if (deferred && (deferredFee == null || deferredFee.compareTo(new BigDecimal(0)) <= 0)) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+		}
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();
@@ -114,7 +117,7 @@ public class BuyRecordController {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
-		if (serviceFee.add(reserveFund).compareTo(capitalAccount.getAvailableBalance()) > 0) {
+		if (serviceFee.add(reserveFund).add(deferredFee).compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
 		// 初始化点买数据
@@ -127,6 +130,7 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint.abs().multiply(new BigDecimal(-1)));
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
+		dto.setDeferredFee(deferredFee);
 		dto.setDelegatePrice(delegatePrice);
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());
@@ -163,7 +167,12 @@ public class BuyRecordController {
 
 	@RequestMapping(value = "/sellapply/{id}", method = RequestMethod.POST)
 	@ApiOperation(value = "用户申请卖出")
-	Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+	public Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+		// 检查交易时间段
+		boolean isTradeTime = holidayBusiness.isTradeTime();
+		if (!isTradeTime) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+		}
 		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 

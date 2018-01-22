@@ -21,7 +21,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
 
-// @Service("juheSmsService")
+@Service("juheSmsService")
 public class JuheSmsService implements SmsService {
 
 	private static final String ServerUrl = "http://v.juhe.cn/sms/send";
@@ -38,8 +38,13 @@ public class JuheSmsService implements SmsService {
 	@Autowired
 	private ObjectMapper objectMapper;
 
+	@Autowired
+	private SmsCache smsCache;
+
 	public void sendMessage(SmsType smsType, String phone) {
 		try {
+			// 检查发送条件是否满足
+			smsCache.checkSendCondition(smsType, phone);
 			// 组装请求参数
 			Map<String, Object> params = new HashMap<String, Object>();
 			JuheSmsTemplate template = JuheSmsTemplate.getBySmsType(smsType);
@@ -76,9 +81,8 @@ public class JuheSmsService implements SmsService {
 			// 处理发送结果
 			JuheResponseBean responseBean = objectMapper.readValue(response, JuheResponseBean.class);
 			if (responseBean.getError_code() == 0) {
-				if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
-						|| smsType == SmsType.BindCardCode || smsType == SmsType.ModifyPaymentPwdCode) {
-					// SmsCache.cache(smsType, phone, paramValues.get(0));
+				if (template.getCacheNames() != null && template.getCacheNames().length > 0) {
+					smsCache.cache(smsType, phone, innerParams, template.getCacheNames());
 				}
 			} else if (responseBean.getError_code() == 205401) {
 				throw new ServiceException(ExceptionConstant.PHONE_WRONG_EXCEPTION);

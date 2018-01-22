@@ -14,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 
 /**
  * @author Created by yuyidi on 2017/11/29.
@@ -59,10 +60,10 @@ public class InvestorController {
     @RequestMapping("/buyrecord/{buyrecord}/sellout")
     @ResponseBody
     public Response<SecuritiesStockEntrust> buyRecordSellOut(@PathVariable
-                                                                     ("buyrecord") Long buyrecord) {
+                                                                     ("buyrecord") Long buyrecord, BigDecimal entrustPrice) {
         InvestorDto investorDto = (InvestorDto) SecurityAccount.current().getSecurity();
         BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(buyrecord);
-        SecuritiesStockEntrust result = investorBusiness.sellOut(investorDto, buyRecordDto);
+        SecuritiesStockEntrust result = investorBusiness.sellOut(investorDto, buyRecordDto,entrustPrice);
         return new Response<>(result);
     }
 

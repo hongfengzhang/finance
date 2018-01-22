@@ -26,5 +26,8 @@ public interface PaymentOrderInterface {
 	@RequestMapping(value = "/{paymentNo}", method = RequestMethod.PUT)
 	public Response<PaymentOrderDto> changeState(@PathVariable("paymentNo") String paymentNo,
 			@RequestParam("stateIndex") String stateIndex);
+	
+	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Response<PageInfo<PaymentOrderDto>> pagesByQuery(@RequestBody PaymentOrderQuery query);
 
 }

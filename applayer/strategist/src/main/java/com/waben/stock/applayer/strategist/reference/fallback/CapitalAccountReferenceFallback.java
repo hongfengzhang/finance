@@ -50,7 +50,7 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 
 	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
-			BigDecimal serviceFee, BigDecimal reserveFund) {
+			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
@@ -79,9 +79,20 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 	public Response<CapitalAccountDto> fetchById(Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+	
+	@Override
+	public Response<CapitalAccountDto> revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee,
+			BigDecimal deferredFee) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
 	@Override
 	public Response<CapitalAccountDto> modifyCapitalAccount(CapitalAccountDto capitalAccountDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+	
+	@Override
+	public Response<CapitalAccountDto> returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

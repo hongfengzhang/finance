@@ -1,6 +1,8 @@
 package com.waben.stock.risk.warpper.messagequeue;
 
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
+import com.waben.stock.risk.container.PositionStockContainer;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import org.slf4j.Logger;
@@ -23,6 +25,9 @@ public class RabbitMqConsumer {
 
     @Autowired
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
+
+    @Autowired
+    private PositionStockContainer positionStockContainer;
 
 //    @RabbitListener(queues = {"shangSecurity"})
 //    public void shangSecurity(String message) {
@@ -49,6 +54,12 @@ public class RabbitMqConsumer {
     public void entrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
         logger.info("消费券商股票申请委托卖出消息:{}",securitiesStockEntrust.getTradeNo());
         stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
+    }
+
+    @RabbitListener(queues = {"risk"})
+    public void buyInSuccessRisk(PositionStock positionStock) {
+        logger.info("委托买入成功，加入风控:{}", positionStock.toString());
+        positionStockContainer.add(positionStock);
     }
 
 }

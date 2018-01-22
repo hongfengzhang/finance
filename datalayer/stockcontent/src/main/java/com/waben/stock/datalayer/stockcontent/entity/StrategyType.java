@@ -41,7 +41,7 @@ public class StrategyType {
 	/**
 	 * 穿仓点
 	 */
-	@Column
+	@Column(scale = 3)
 	private BigDecimal wearingPoint;
 	/**
 	 * 市值集合
@@ -62,7 +62,7 @@ public class StrategyType {
 	/**
 	 * 止盈点
 	 */
-	@Column
+	@Column(scale = 3)
 	private BigDecimal profit;
 	/**
 	 * 递延费

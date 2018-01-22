@@ -18,6 +18,7 @@ import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -83,9 +84,15 @@ public class FavoriteStockController {
 	}
 
 	@GetMapping("/favoriteStockList")
-	@ApiOperation(value = "获取收藏股票")
+	@ApiOperation(value = "获取收藏股票列表")
 	public Response<List<FavoriteStockWithMarketDto>> favoriteStockList() {
 		return new Response<>(favoriteBusiness.listsByPublisherId(SecurityUtil.getUserId()));
 	}
 
+	@GetMapping("/favoriteStockPage")
+	@ApiOperation(value = "获取收藏股票分页数据")
+	public Response<PageInfo<FavoriteStockWithMarketDto>> favoriteStockPage(int page, int size) {
+		return new Response<>(favoriteBusiness.pagesByPublisherId(SecurityUtil.getUserId(), page , size));
+	}
+	
 }

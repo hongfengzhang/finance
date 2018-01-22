@@ -32,4 +32,9 @@ public class PaymentOrderServiceFallback implements PaymentOrderService {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<PageInfo<PaymentOrderDto>> pagesByQuery(PaymentOrderQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

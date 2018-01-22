@@ -30,6 +30,11 @@ public class CapitalFlow {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
+	 * 流水号
+	 */
+	@Column(name = "flow_no")
+	private String flowNo;
+	/**
 	 * 冻结资金
 	 */
 	@Column(name = "amount")
@@ -139,4 +144,12 @@ public class CapitalFlow {
 		return capitalFlowType;
 	}
 	
+	public String getFlowNo() {
+		return flowNo;
+	}
+
+	public void setFlowNo(String flowNo) {
+		this.flowNo = flowNo;
+	}
+
 }
