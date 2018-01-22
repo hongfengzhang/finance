@@ -27,6 +27,7 @@ public class PositionStockContainer {
     public void add(PositionStock stock) {
         logger.info("数据:{},{}",stock.toString(),stock.getStockCode());
         List<PositionStock> b = riskStockContainer.get(stock.getStockCode());
+        //添加数据到申请委托卖出容器，以交易编号为key
         entrustSellOutContainer.put(stock.getTradeNo(),stock);
         if (b != null) {
             b.add(stock);

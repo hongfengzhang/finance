@@ -23,4 +23,9 @@ public class CapitalFlowServiceFallback implements CapitalFlowService{
 	public Response<BigDecimal> promotionTotalAmount(Long publisherId) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<CapitalFlowDto> fetchById(Long capitalFlowId) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

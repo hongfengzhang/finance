@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.pojo.query;
 
+import java.util.Date;
+
 public class StrategyPostedQuery extends PageAndSortQuery{
     private Long publisherId;
     
@@ -7,9 +9,9 @@ public class StrategyPostedQuery extends PageAndSortQuery{
     
     private String stockName;
     
-    private String beginTime;
+    private Date beginTime;
     
-    private String endTime;
+    private Date endTime;
 
     public Long getPublisherId() {
         return publisherId;
@@ -35,20 +37,20 @@ public class StrategyPostedQuery extends PageAndSortQuery{
 		this.stockName = stockName;
 	}
 
-	public String getBeginTime() {
+	public Date getBeginTime() {
 		return beginTime;
 	}
 
-	public void setBeginTime(String beginTime) {
+	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-    
+
 }

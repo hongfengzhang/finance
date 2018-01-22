@@ -44,6 +44,10 @@ public class StockQuotationJob implements InterruptableJob {
         List<String> codePrams = new ArrayList();
         codePrams.addAll(codes);
         //拉取股票行情数据
+        if(codePrams.isEmpty()) {
+            logger.info("没有股票！");
+            return;
+        }
         List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
         //线程处理
         for(StockMarket stockMarket: quotations) {
@@ -54,6 +58,7 @@ public class StockQuotationJob implements InterruptableJob {
                 //接收被风控的持仓点买订单
                 List<PositionStock> result = future.get();
                 for (PositionStock stock : result) {
+                    logger.info("止损止盈单:{}",stock.getTradeNo());
                     positionProducer.riskPositionSellOut(stock);
                     stocks.remove(stock);
                 }

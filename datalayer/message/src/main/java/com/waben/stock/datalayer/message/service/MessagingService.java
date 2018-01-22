@@ -1,7 +1,5 @@
 package com.waben.stock.datalayer.message.service;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,7 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -63,10 +60,6 @@ public class MessagingService {
 		Page<Messaging> pages = messagingDao.page(new Specification<Messaging>() {
 			@Override
 			public Predicate toPredicate(Root<Messaging> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-				if(StringUtils.isEmpty(messagingQuery.getTitle()) && StringUtils.isEmpty(messagingQuery.getMessageType()) 
-						&& StringUtils.isEmpty(messagingQuery.getBeginTime())){
-					return criteriaQuery.getRestriction();
-				}
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
 				if (!StringUtils.isEmpty(messagingQuery.getTitle())) {
 					Predicate titleQuery = criteriaBuilder.like(root.get("title").as(String.class), "%"+messagingQuery
@@ -78,17 +71,9 @@ public class MessagingService {
 							.getMessageType()));
 					predicatesList.add(criteriaBuilder.and(stateQuery));
 				}
-				if(!StringUtils.isEmpty(messagingQuery.getBeginTime()) && !StringUtils.isEmpty(messagingQuery.getEndTime())){
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					Date beginTime = null;
-					Date endTime = null;
-					try {
-						beginTime = sdf.parse(messagingQuery.getBeginTime());
-						endTime = sdf.parse(messagingQuery.getEndTime());
-					} catch (ParseException e) {
-						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
-					}
-					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+				if(messagingQuery.getBeginTime() != null && messagingQuery.getEndTime() != null){
+					
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),messagingQuery.getBeginTime(),messagingQuery.getEndTime());
 					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));

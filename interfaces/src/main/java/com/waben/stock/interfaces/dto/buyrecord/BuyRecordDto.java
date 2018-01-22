@@ -91,8 +91,11 @@ public class BuyRecordDto {
 	 * 点买记录创建时间
 	 */
 	private Date createTime;
-	private Date updateTime;
 	private Date expireTime;
+	/**
+	 * 点买记录更新时间
+	 */
+	private Date updateTime;
 	/**
 	 * 点买时间
 	 */
@@ -448,4 +451,5 @@ public class BuyRecordDto {
 	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
 	}
+
 }

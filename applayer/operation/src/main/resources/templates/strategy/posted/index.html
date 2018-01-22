@@ -98,7 +98,7 @@
                 cache: false, // 不缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -261,17 +261,8 @@
       		   swal("","请输入开始时间", "error");
       		   return false;
       	   }
-      	 	//]]> 
-      	/*    var opt = {
-      		        url: "../posted/pages",
-      		        silent:true,
-      		        query:{
-      		        	publisherPhone:$("input[name='publisherPhone']").val(),
-      		        	stockName:$("input[name='stockName']").val(),
-      		        	beginTime:beginTime.val(),
-      		        	endTime:endTime.val()
-                      }
-      		    };  */
+      	 	//]]>
+      	   $table.bootstrapTable('getOptions').pageNumber = 1;
       	   $table.bootstrapTable('refresh');
          });
         
@@ -281,6 +272,8 @@
          	$("input[name='stockName']").val('');
          	$("input[name='beginTime']").val('');
          	$("input[name='endTime']").val('');
+         	$table.bootstrapTable('getOptions').pageNumber = 1;
+        	$table.bootstrapTable('refresh');
          });
 
     </script>

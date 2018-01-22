@@ -14,6 +14,12 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 
 @Component
 public class CapitalAccountServiceFallback implements CapitalAccountService {
+
+
+	@Override
+	public Response<CapitalAccountDto> fetchById(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 	@Override
 	public Response<PageInfo<CapitalAccountDto>> pages(CapitalAccountQuery publisherQuery) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -73,6 +79,10 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<CapitalAccountDto> modifyCapitalAccount(CapitalAccountDto capitalAccountDto) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 	@Override
 	public Response<CapitalAccountDto> returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);

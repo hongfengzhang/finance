@@ -32,8 +32,9 @@ public class MessagingController implements MessagingInterface{
 	
 	@Override
 	public Response<MessagingDto> addMessaging(@RequestBody MessagingDto messagingDto) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class, messagingService.save(
-				CopyBeanUtils.copyBeanProperties(Messaging.class, messagingDto, false)), false));
+		Messaging messaging = CopyBeanUtils.copyBeanProperties(Messaging.class, messagingDto, false);
+		Messaging resultMessaging = messagingService.save(messaging);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class,resultMessaging, false));
 	}
 
 	@Override
@@ -43,13 +44,15 @@ public class MessagingController implements MessagingInterface{
 
 	@Override
 	public Response<MessagingDto> modifyMessaging(@RequestBody MessagingDto messagingDto) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class, messagingService.revision(
-				CopyBeanUtils.copyBeanProperties(Messaging.class, messagingDto, false)), false));
+		Messaging messaging = CopyBeanUtils.copyBeanProperties(Messaging.class, messagingDto, false);
+		Messaging resultMessaging = messagingService.revision(messaging);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class,resultMessaging, false));
 	}
 
 	@Override
 	public Response<MessagingDto> fetchMessagingById(@PathVariable("messagingId") Long messagingId) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class, messagingService.findById(messagingId),false));
+		Messaging messaging = messagingService.findById(messagingId);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class, messaging,false));
 	}
 
 	@Override

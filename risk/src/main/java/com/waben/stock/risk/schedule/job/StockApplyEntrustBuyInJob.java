@@ -42,8 +42,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(new Date());
-        String tradeSession = null;
+        String tradeSession = "880003450508";
         while (!interrupted) {
             try {
                 logger.info("3秒后开始轮询");
@@ -70,28 +69,27 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         logger.info("当前券商session:{}", tradeSession);
                         StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
-                                        .getEntrustNo());
-                        if (stockEntrustQueryResult == null) {
+                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
+                        if (stockEntrustQueryResult == null || stockEntrustQueryResult.getEntrustStatus().equals
+                                (EntrustState.WASTEORDER.getIndex())) {
+                            //废单
+                            logger.info("买入废单:{}", entry.getKey());
+                            //TODO 将点买废单放入废单处理队列中
+                            entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
                         logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus())
                                 .getState());
-                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
-                            //废单
-                            logger.info("废单:{}", entry.getKey());
-                            //TODO 将点买废单放入废单处理队列中
-                            stockEntrusts.remove(entry.getKey());
-                            continue;
-                        }
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex()
                         )) {
-                            logger.info("已报单:{}", entry.getKey());
+                            logger.info("买入废单:{}", entry.getKey());
                             // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
-                            long currentDay = calendar.getTime().getTime()/millisOfDay;
-                            Calendar entrustDate = Calendar.getInstance();
-                            entrustDate.setTime(securitiesStockEntrust.getEntrustTime());
-                            long entrustDay = entrustDate.getTime().getTime()/millisOfDay;
+                            calendar.setTime(new Date());                    //当前时间
+                            long currentDay = calendar.getTime().getTime() / millisOfDay;
+                            //委托买入时间
+                            calendar.setTime(securitiesStockEntrust.getEntrustTime());
+                            long entrustDay = calendar.getTime().getTime() / millisOfDay;
                             logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
                             if ((currentDay - entrustDay) >= 1) {
                                 entrustProducer.entrustWaste(securitiesStockEntrust);

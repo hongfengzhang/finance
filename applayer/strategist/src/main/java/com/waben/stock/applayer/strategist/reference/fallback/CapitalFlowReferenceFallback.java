@@ -31,4 +31,9 @@ public class CapitalFlowReferenceFallback implements CapitalFlowReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<CapitalFlowDto> fetchById(Long capitalFlowId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

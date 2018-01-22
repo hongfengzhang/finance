@@ -40,8 +40,9 @@ public class BindCardController implements BindCardInterface {
 
 	@Override
 	public Response<List<BindCardDto>> listsByPublisherId(@PathVariable Long publisherId) {
-		return new Response<>(
-				CopyBeanUtils.copyListBeanPropertiesToList(bindCardService.list(publisherId), BindCardDto.class));
+		List<BindCard> bindCards = bindCardService.list(publisherId);
+		List<BindCardDto> result = CopyBeanUtils.copyListBeanPropertiesToList(bindCards, BindCardDto.class);
+		return new Response<>(result);
 	}
 
 	@Override
