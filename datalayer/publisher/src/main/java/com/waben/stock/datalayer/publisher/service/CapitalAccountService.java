@@ -1,7 +1,11 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -30,14 +34,17 @@ import com.waben.stock.datalayer.publisher.repository.FrozenCapitalDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.datalayer.publisher.repository.WithdrawalsOrderDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
 import com.waben.stock.interfaces.enums.FrozenCapitalType;
+import com.waben.stock.interfaces.enums.MessageType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowExtendQuery;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 @Service
 public class CapitalAccountService {
@@ -68,6 +75,10 @@ public class CapitalAccountService {
 	 */
 	public CapitalAccount findByPublisherSerialCode(String publisherSerialCode) {
 		return capitalAccountDao.retriveByPublisherSerialCode(publisherSerialCode);
+	}
+	
+	public CapitalAccount findById(Long id){
+		return capitalAccountDao.retrieve(id);
 	}
 
 	/**
@@ -442,14 +453,27 @@ public class CapitalAccountService {
 			@Override
 			public Predicate toPredicate(Root<CapitalAccount> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				if (!StringUtils.isEmpty(query.getId())) {
-					Predicate typeQuery = criteriaBuilder.equal(root.get("id").as(String.class), query.getId());
-					criteriaQuery.where(criteriaBuilder.and(typeQuery));
+				List<Predicate> predicatesList = new ArrayList<Predicate>();
+				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
+					Predicate publisherIdQuery = criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId());
+					predicatesList.add(criteriaBuilder.and(publisherIdQuery));
 				}
+				if (query.getBeginTime() != null) {
+					Predicate updateTimeQuery = criteriaBuilder.between(root.<Date>get("updateTime").as(Date.class),query.getBeginTime(),query.getEndTime());
+					predicatesList.add(criteriaBuilder.and(updateTimeQuery));
+				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("updateTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
 		return pages;
+	}
+	
+	public CapitalAccount revision(CapitalAccountDto accountDto){
+		CapitalAccount request = CopyBeanUtils.copyBeanProperties(CapitalAccount.class, accountDto, false);
+		CapitalAccount response = capitalAccountDao.update(request);
+		return response;
 	}
 
 }

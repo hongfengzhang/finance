@@ -9,14 +9,6 @@ public class StrategyUnwindQuery extends PageAndSortQuery{
     
     private String investorName;
     
-    private String buyBeginTime;
-    
-    private String buyEndTime;
-    
-    private String sellBeginTime;
-    
-    private String sellEndTime;
-
     public Long getPublisherId() {
         return publisherId;
     }
@@ -48,37 +40,5 @@ public class StrategyUnwindQuery extends PageAndSortQuery{
 	public void setInvestorName(String investorName) {
 		this.investorName = investorName;
 	}
-
-	public String getBuyBeginTime() {
-		return buyBeginTime;
-	}
-
-	public void setBuyBeginTime(String buyBeginTime) {
-		this.buyBeginTime = buyBeginTime;
-	}
-
-	public String getBuyEndTime() {
-		return buyEndTime;
-	}
-
-	public void setBuyEndTime(String buyEndTime) {
-		this.buyEndTime = buyEndTime;
-	}
-
-	public String getSellBeginTime() {
-		return sellBeginTime;
-	}
-
-	public void setSellBeginTime(String sellBeginTime) {
-		this.sellBeginTime = sellBeginTime;
-	}
-
-	public String getSellEndTime() {
-		return sellEndTime;
-	}
-
-	public void setSellEndTime(String sellEndTime) {
-		this.sellEndTime = sellEndTime;
-	}
-    
+  
 }

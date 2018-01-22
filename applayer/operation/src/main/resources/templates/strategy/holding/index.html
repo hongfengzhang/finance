@@ -34,10 +34,11 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">投资人</label>
                             <div class="col-sm-8">
-                                <select class="selectpicker" name="investorName" data-title="请选择投资人">
-                                    <option th:each="investor,investorStart : ${investors}"
-                                            th:value="${investor.id}" th:text="${investor.userName}"></option>
-                                </select>
+                            	<select class="selectpicker" name="investorName" data-title="请选择投资人">
+                            		<option value="" selected="selected">请选择投资人</option>
+                            		<option th:each="investor,investorStart : ${investors}"
+											th:value="${investor.id}" th:text="${investor.userName}"></option>
+                            	</select>
                             </div>
                         </div>
                     </div>
@@ -127,6 +128,7 @@
                 search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
+                pageNumber: 1,
                 pageSize: 10, //每页的记录行数（*）
                 minimumCountColumns: 1, // 设置最少显示列个数
                 clickToSelect: true, // 单击行即可以选中
@@ -210,9 +212,9 @@
                     field: 'lossPointPercent',
                     title: '止损点',
                     align: 'center'
-                }, {
-                    field: 'createTime',
-                    title: '买入时间',
+                },{
+                    field: 'updateTime',
+                    title: '锁定时间',
                     align: 'center'
                 }, {
                     field: 'buyRecordState',
@@ -240,12 +242,10 @@
                             swal('You click view icon, row: ', row);
                         },
                         'click .edit': function (e, value, row, index) {
-                            //<![CDATA[
-                            if (row.buyRecordState == '卖出锁定') {
+                            if(row.buyRecordState=='卖出锁定'){
                                 swal("警告", "当前状态不支持卖出", "warning");
                                 return false;
                             }
-                            //]]>
                             swal({
                                 title: "卖出!",
                                 text: "确认卖出当前股票信息?",
@@ -339,7 +339,6 @@
                     });
                 }
             }
-
         }
 
         function disconnect() {
@@ -355,33 +354,34 @@
             $(window).resize(function () {
                 $table.bootstrapTable('resetView');
             });
-
         });
-
-        $('#search').click(function () {
-            var beginTime = $("input[name='beginTime']");
-            var endTime = $("input[name='endTime']");
-            //<![CDATA[
-            if (beginTime.val() != '' && endTime.val() == '') {
-                swal("", "请输入结束时间", "error");
-                return false;
-            }
-            if (endTime.val() != '' && beginTime.val() == '') {
-                swal("", "请输入开始时间", "error");
-                return false;
-            }
-            //]]>
-
-            $table.bootstrapTable('refresh');
+        
+        $('#search').click(function(){
+     	   var beginTime = $("input[name='beginTime']");
+     	   var endTime = $("input[name='endTime']");
+     	   //<![CDATA[ 
+     	   if(beginTime.val() != '' && endTime.val() == ''){
+     		   swal("","请输入结束时间", "error");
+     		   return false;
+     	   }
+     	   if(endTime.val() != '' && beginTime.val() == ''){
+     		   swal("","请输入开始时间", "error");
+     		   return false;
+     	   }
+     	 	//]]>
+     	   $table.bootstrapTable('getOptions').pageNumber = 1;
+     	   $table.bootstrapTable('refresh');
         });
-
-        $('#reset').click(function () {
-            $("input[name='publisherPhone']").val('');
-            $("input[name='stockName']").val('');
-            $("span[class='filter-option pull-left']").text('请选择投资人');
-            $("select[name='investorName']").val('');
-            $("input[name='beginTime']").val('');
-            $("input[name='endTime']").val('');
+        
+        $('#reset').click(function(){
+        	$("input[name='publisherPhone']").val('');
+        	$("input[name='stockName']").val('');
+        	$("span[class='filter-option pull-left']").text('请选择投资人');
+        	$("select[name='investorName']").val('');
+        	$("input[name='beginTime']").val('');
+        	$("input[name='endTime']").val('');
+        	$table.bootstrapTable('getOptions').pageNumber = 1;
+        	$table.bootstrapTable('refresh');
         });
 
     </script>

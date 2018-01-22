@@ -84,6 +84,10 @@ public class BuyRecordVo {
 	 */
 	private Date createTime;
 	/**
+	 * 点买记录更新时间
+	 */
+	private Date updateTime;
+	/**
 	 * 点买时间
 	 */
 	private Date buyingTime;
@@ -417,7 +421,13 @@ public class BuyRecordVo {
 	public void setLossPointPercent(String lossPointPercent) {
 		this.lossPointPercent = lossPointPercent;
 	}
-	
-	
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
 	
 }

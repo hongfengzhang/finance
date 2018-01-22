@@ -39,7 +39,8 @@
                             <label class="col-md-4 control-label">类型</label>
                             <div class="col-sm-8">
                             	<select class="selectpicker" name="messageType" data-title="请选择类型">
-                            		<option th:each="state,stateStart : ${messageType}"
+                            		<option value="" selected="selected">请选择类型</option>
+                            		<option th:each="state,stateStart : ${types}"
 											th:value="${state.index}" th:text="${state.type}"></option>
                             	</select>
                             </div>
@@ -127,10 +128,18 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
-                    }
+                	var query= {
+                            page: this.pageNumber - 1,
+                            size: this.pageSize
+                        }
+                        var queryMap = {
+                			title:$("input[name='title']").val(),
+          		        	messageType:$("select[name='messageType']").val(),
+          		        	beginTime:$("input[name='beginTime']").val(),
+      		        		endTime:$("input[name='endTime']").val()
+                        }
+                    $.extend(query,queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -224,17 +233,8 @@
     		   return false;
     	   }
     	 	//]]>
-    	   var opt = {
-    		        url: "../messaging/pages",
-    		        silent:true,
-    		        query:{
-                            title:$("input[name='title']").val(),
-                            messageType:$("select[name='messageType']").val(),
-                            beginTime:beginTime.val(),
-                            endTime:endTime.val()
-                    }
-    		    }; 
-    	   $table.bootstrapTable('refresh',opt);
+    	   $table.bootstrapTable('getOptions').pageNumber = 1;
+    	   $table.bootstrapTable('refresh');
        });
        
        $('#reset').click(function(){
@@ -244,6 +244,8 @@
     	   $("select[name='state']").val('');
     	   $("input[name='beginTime']").val('');
     	   $("input[name='endTime']").val('');
+    	   $table.bootstrapTable('getOptions').pageNumber = 1;
+    	   $table.bootstrapTable('refresh');
        });
              
     </script>

@@ -26,7 +26,7 @@ public interface MessagingInterface {
 	 * @param messagingDto
 	 * @return
 	 */
-	@RequestMapping(value="/add", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/add", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Response<MessagingDto> addMessaging(@RequestBody MessagingDto messagingDto);
 	
 	/**
@@ -42,7 +42,7 @@ public interface MessagingInterface {
 	 * @param messagingDto
 	 * @return
 	 */
-	@RequestMapping(value="/modify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Response<MessagingDto> modifyMessaging(@RequestBody MessagingDto messagingDto);
 	
 	/**

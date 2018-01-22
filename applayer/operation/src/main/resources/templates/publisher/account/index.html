@@ -10,35 +10,58 @@
             <div class="row">
                 <form class="form-horizontal">
 
-                    <div class="col-md-2">
+					<div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">帐号</label>
-                            <div class="col-md-8">
-                                <input type="text" name="account" class="form-control" maxlength="11"
-                                       placeholder="帐号"/>
+                            <label class="col-md-4 control-label">流水类型</label>
+                            <div class="col-sm-8">
+                            	<select class="selectpicker" name="types" data-title="请选择流水类型">
+                            		<option value="" selected="selected">请选择流水类型</option>
+                            		<option th:each="capitalFlowType,capitalFlowTypeStart : ${capitalFlowTypes}"
+											th:value="${capitalFlowType.index}" th:text="${capitalFlowType.type}"></option>
+                            	</select>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-2 control-label">日期</label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="开始日期"/>
-                            </div>
-                            <label></label>
-                            <div class="col-md-5">
-                                <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="结束日期"/>
+                            <label class="col-md-4 control-label">发布人ID</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" name="publisherId" maxlength="11"
+                                       placeholder="发布人ID"/>
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">生产时间</label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control datetimepicker" name="startTime" maxlength="11" placeholder="开始时间"/>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                    	<div class="form-group">
+		                    <div>
+		                    	<div class="col-sm-8">
+		                            <input type="text" class="form-control datetimepicker" name="endTime" maxlength="11" placeholder="结束时间"/>
+		                        </div>
+		                    </div>
+		                </div>
+	                </div>
 
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+                            <input id="search" type="button" class="btn btn-fill btn-info" value="搜索"/>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -80,7 +103,7 @@
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -92,10 +115,18 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
-                    }
+                	var query= {
+                            page: this.pageNumber - 1,
+                            size: this.pageSize
+                        }
+                        var queryMap = {
+                			types:$("select[name='types']").val(),
+                			publisherId:$("input[name='publisherId']").val(),
+                			startTime:$("input[name='startTime']").val(),
+      		        		endTime:$("input[name='endTime']").val()
+                        }
+                    $.extend(query,queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -118,12 +149,12 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'type',
+                    field: 'capitalFlowType',
                     title: '流水类型',
                     align: 'center'
                 }, {
-                    field: 'occurrenceTime',
-                    title: '生产时间',
+                    field: 'amount',
+                    title: '金额',
                     align: 'center'
                 }, {
                     field: 'publisherId',
@@ -134,6 +165,10 @@
                     title: '发布人序列号',
                     align: 'center'
                 }, {
+                    field: 'occurrenceTime',
+                    title: '生产时间',
+                    align: 'center'
+                }, {
                     title: '操作',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
@@ -141,9 +176,9 @@
                             '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
                             '<i class="fa fa-eye"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
+                            /* '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
                             '<i class="fa fa-edit"></i>',
-                            '</a>',
+                            '</a>', */
                             '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
                             '<i class="fa fa-trash"></i>',
                             '</a>'
@@ -151,10 +186,7 @@
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
+                        	$(location).prop('href',"../capitalflow/"+row.id+"/view");
                         },
                         'click .edit': function (e, value, row, index) {
                             info = JSON.stringify(row);
@@ -179,6 +211,33 @@
             });
 
         });
+        
+        $('#search').click(function(){
+      	   var startTime = $("input[name='startTime']");
+      	   var endTime = $("input[name='endTime']");
+      	   //<![CDATA[ 
+      	   if(startTime.val() != '' && endTime.val() == ''){
+      		   swal("","请输入结束时间", "error");
+      		   return false;
+      	   }
+      	   if(endTime.val() != '' && startTime.val() == ''){
+      		   swal("","请输入开始时间", "error");
+      		   return false;
+      	   }
+      	 	//]]>
+      	   $table.bootstrapTable('getOptions').pageNumber = 1;
+      	   $table.bootstrapTable('refresh');
+         });
+         
+         $('#reset').click(function(){
+      	   $("input[name='publisherId']").val('');
+      	   $("span[class='filter-option pull-left']").text('请选择流水类型');
+      	   $("select[name='types']").val('');
+      	   $("input[name='startTime']").val('');
+      	   $("input[name='endTime']").val('');
+      	   $table.bootstrapTable('getOptions').pageNumber = 1;
+      	   $table.bootstrapTable('refresh');
+         });
     </script>
 </div>
 </body>

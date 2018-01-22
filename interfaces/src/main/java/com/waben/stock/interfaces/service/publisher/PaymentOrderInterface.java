@@ -14,6 +14,9 @@ import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
 
 public interface PaymentOrderInterface {
 
+	@RequestMapping(value = "/pages" , method = RequestMethod.GET)
+	public Response<PageInfo<PaymentOrderDto>> pages(@RequestBody PaymentOrderQuery query);
+	
 	@RequestMapping(value = "/{paymentNo}", method = RequestMethod.GET)
 	Response<PaymentOrderDto> fetchByPaymentNo(@PathVariable("paymentNo") String paymentNo);
 

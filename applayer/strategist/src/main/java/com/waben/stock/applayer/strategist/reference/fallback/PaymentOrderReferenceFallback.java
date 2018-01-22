@@ -34,6 +34,10 @@ public class PaymentOrderReferenceFallback implements PaymentOrderReference {
 	}
 
 	@Override
+	public Response<PageInfo<PaymentOrderDto>> pages(PaymentOrderQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+	@Override
 	public Response<PageInfo<PaymentOrderDto>> pagesByQuery(PaymentOrderQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

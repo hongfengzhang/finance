@@ -28,8 +28,9 @@ public class MessageReceiptController implements MessageReceiptInterface{
 	
 	@Override
 	public Response<MessageReceiptDto> addMessageReceipt(@RequestBody MessageReceiptDto messageReceiptDto) {
-		return new Response<MessageReceiptDto>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class, messageReceiptService.save(
-				CopyBeanUtils.copyBeanProperties(MessageReceipt.class, messageReceiptDto, false)), false));
+		MessageReceipt requestMessaging = CopyBeanUtils.copyBeanProperties(MessageReceipt.class, messageReceiptDto, false);
+		MessageReceipt responseMessaging = messageReceiptService.save(requestMessaging);
+		return new Response<MessageReceiptDto>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class,responseMessaging, false));
 	}
 
 	@Override
@@ -39,13 +40,15 @@ public class MessageReceiptController implements MessageReceiptInterface{
 
 	@Override
 	public Response<MessageReceiptDto> modifyMessageReceipt(@RequestBody MessageReceiptDto messageReceiptDto) {
-		return new Response<MessageReceiptDto>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class, messageReceiptService.revision(
-				CopyBeanUtils.copyBeanProperties(MessageReceipt.class, messageReceiptDto, false)), false));
+		MessageReceipt requestMessaging = CopyBeanUtils.copyBeanProperties(MessageReceipt.class, messageReceiptDto, false);
+		MessageReceipt responseMessaging = messageReceiptService.revision(requestMessaging);
+		return new Response<MessageReceiptDto>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class,responseMessaging, false));
 	}
 
 	@Override
 	public Response<MessageReceiptDto> fetchMessageReceiptById(@PathVariable("messageReceiptId") Long messageReceiptId) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class, messageReceiptService.findById(messageReceiptId), false));
+		MessageReceipt messageReceipt = messageReceiptService.findById(messageReceiptId);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(MessageReceiptDto.class, messageReceipt, false));
 	}
 
 	@Override
