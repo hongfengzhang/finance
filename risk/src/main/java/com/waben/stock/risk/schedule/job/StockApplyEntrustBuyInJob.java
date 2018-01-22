@@ -42,7 +42,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
         Calendar calendar = Calendar.getInstance();
-        String tradeSession = null;
+        String tradeSession = "880003450508";
         while (!interrupted) {
             try {
                 logger.info("3秒后开始轮询");

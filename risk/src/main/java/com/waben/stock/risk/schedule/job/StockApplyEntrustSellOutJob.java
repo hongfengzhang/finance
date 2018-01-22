@@ -46,7 +46,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("券商股票委托容器对象:{},当前对象{}", stockApplyEntrustSellOutContainer,this);
-        String tradeSession = null;
+        String tradeSession = "880003450508";
         Calendar calendar = Calendar.getInstance();
         while (!interrupted) {
             try {

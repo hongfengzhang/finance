@@ -30,6 +30,7 @@ public class RabbitMqConsumer {
 	private StockBusiness stockBusiness;
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
+
 	@RabbitListener(queues = {"riskPositionSellOut"})
 	public void buyInSuccessRisk(PositionStock positionStock) {
 		logger.info("强制卖出持仓订单数据:{}",positionStock.toString());
