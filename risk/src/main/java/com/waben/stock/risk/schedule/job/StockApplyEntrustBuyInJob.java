@@ -74,18 +74,20 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
 //                            stockEntrusts.remove(entry.getKey());
 //                            continue;
 //                        }
-                        logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus())
-                                .getState());
+                        if(stockEntrustQueryResult != null) {
+                            logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus())
+                                    .getState());
+                        }
                         if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //废单
-                            logger.info("废单:{}", entry.getKey());
+                            logger.info("买入废单:{}", entry.getKey());
                             //TODO 将点买废单放入废单处理队列中
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
-                            logger.info("已报单:{}", entry.getKey());
+                            logger.info("买入废单:{}", entry.getKey());
                             // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
                             //当前时间
                             calendar.setTime(new Date());
