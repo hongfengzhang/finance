@@ -2,12 +2,19 @@ package com.waben.stock.datalayer.publisher.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
+
+import com.waben.stock.interfaces.dto.publisher.PublisherInformationStatisticsDto;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /***
  * @author yuyidi 2017-11-15 17:30:16
@@ -71,6 +78,9 @@ public class Publisher {
 	 */
 	@Column(name = "head_portrait")
 	private String headPortrait;
+	
+	@OneToOne(mappedBy = "publisher" , cascade = CascadeType.REMOVE)
+	private PublisherInformationStatistics publisherInformationStatistics;
 
 	public Long getId() {
 		return id;
@@ -158,6 +168,18 @@ public class Publisher {
 
 	public void setHeadPortrait(String headPortrait) {
 		this.headPortrait = headPortrait;
+	}
+
+	public PublisherInformationStatistics getPublisherInformationStatistics() {
+		return publisherInformationStatistics;
+	}
+
+	public void setPublisherInformationStatistics(PublisherInformationStatistics publisherInformationStatistics) {
+		this.publisherInformationStatistics = publisherInformationStatistics;
+	}
+	
+	public PublisherInformationStatisticsDto getPublisherInformationStatisticsDto(){
+		return CopyBeanUtils.copyBeanProperties(PublisherInformationStatisticsDto.class, publisherInformationStatistics, false);
 	}
 
 }

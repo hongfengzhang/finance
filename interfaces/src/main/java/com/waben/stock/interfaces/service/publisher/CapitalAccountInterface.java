@@ -19,6 +19,9 @@ public interface CapitalAccountInterface {
 	@RequestMapping(value = "/publisherSerialCode/{serialCode}", method = RequestMethod.GET)
 	Response<CapitalAccountDto> fetchByPublisherSerialCode(@PathVariable("serialCode") String serialCode);
 
+	@RequestMapping(value = "/{capitalAccountId}/view", method = RequestMethod.GET)
+	Response<CapitalAccountDto> fetchById(@PathVariable("capitalAccountId") Long capitalAccountId);
+	
 	@RequestMapping(value = "/publisherId/{publisherId}", method = RequestMethod.GET)
 	Response<CapitalAccountDto> fetchByPublisherId(@PathVariable("publisherId") Long publisherId);
 
@@ -53,5 +56,8 @@ public interface CapitalAccountInterface {
 	@RequestMapping(value = "/{publisherId}/modifyPaymentPassword", method = RequestMethod.PUT)
 	Response<Void> modifyPaymentPassword(@PathVariable("publisherId") Long publisherId,
 			@RequestParam(name = "paymentPassword") String paymentPassword);
+	
+	@RequestMapping(value = "/modify" , method = RequestMethod.PUT , consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<CapitalAccountDto> modifyCapitalAccount(@RequestBody CapitalAccountDto capitalAccountDto);
 
 }

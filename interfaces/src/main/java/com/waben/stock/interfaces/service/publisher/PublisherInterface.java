@@ -31,6 +31,9 @@ public interface PublisherInterface {
 	Response<PublisherDto> register(@RequestParam(name = "phone") String phone,
 			@RequestParam(name = "password") String password, @RequestParam(name = "promoter") String promoter,
 			@RequestParam(name = "endType", required = false) String endType);
+	
+	@RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PublisherDto> modify(@RequestBody PublisherDto publisherDto);
 
 	@RequestMapping(value = "/{phone}/modifyPassword", method = RequestMethod.PUT)
 	Response<PublisherDto> modifyPassword(@PathVariable("phone") String phone,

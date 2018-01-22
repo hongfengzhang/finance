@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.publisher.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import com.waben.stock.datalayer.publisher.service.PaymentOrderService;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
 import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
@@ -43,6 +46,13 @@ public class PaymentOrderController implements PaymentOrderInterface {
 	public Response<PaymentOrderDto> fetchByPaymentNo(@PathVariable String paymentNo) {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(PaymentOrderDto.class, service.findByPaymentNo(paymentNo), false));
+	}
+
+	@Override
+	public Response<PageInfo<PaymentOrderDto>> pages(PaymentOrderQuery query) {
+		Page<PaymentOrder> pages = service.pages(query);
+		PageInfo<PaymentOrderDto> result = new PageInfo<>(pages, PaymentOrderDto.class);
+		return new Response<>(result);
 	}
 
 }

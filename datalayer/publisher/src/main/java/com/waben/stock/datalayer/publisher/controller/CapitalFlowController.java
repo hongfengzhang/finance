@@ -18,6 +18,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.publisher.CapitalFlowInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 
 /**
@@ -45,6 +46,13 @@ public class CapitalFlowController implements CapitalFlowInterface {
 	@Override
 	public Response<BigDecimal> promotionTotalAmount(@PathVariable Long publisherId) {
 		return new Response<>(capitalFlowService.promotionTotalAmount(publisherId));
+	}
+
+	@Override
+	public Response<CapitalFlowDto> fetchById(@PathVariable Long capitalFlowId) {
+		CapitalFlow capitalFlow = capitalFlowService.findById(capitalFlowId);
+		CapitalFlowDto capitalFlowDto = CopyBeanUtils.copyBeanProperties(CapitalFlowDto.class, capitalFlow, false);
+		return new Response<>(capitalFlowDto);
 	}
 
 }

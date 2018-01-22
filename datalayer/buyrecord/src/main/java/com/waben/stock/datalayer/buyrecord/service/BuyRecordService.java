@@ -355,17 +355,8 @@ public class BuyRecordService {
 							.getStockName()+"%");
 					predicatesList.add(criteriaBuilder.and(stockNameQuery));
 				}
-				if(!StringUtils.isEmpty(query.getBeginTime()) && !StringUtils.isEmpty(query.getEndTime())){
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					Date beginTime = null;
-					Date endTime = null;
-					try {
-						beginTime = sdf.parse(query.getBeginTime());
-						endTime = sdf.parse(query.getEndTime());
-					} catch (ParseException e) {
-						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
-					}
-					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+				if(query.getBeginTime() != null && query.getEndTime() != null){
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),query.getBeginTime(),query.getEndTime());
 					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -401,17 +392,8 @@ public class BuyRecordService {
 							.getInvestorName()+"%");
 					predicatesList.add(criteriaBuilder.and(investorNameQuery));
 				}
-				if(!StringUtils.isEmpty(query.getBeginTime()) && !StringUtils.isEmpty(query.getEndTime())){
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					Date beginTime = null;
-					Date endTime = null;
-					try {
-						beginTime = sdf.parse(query.getBeginTime());
-						endTime = sdf.parse(query.getEndTime());
-					} catch (ParseException e) {
-						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
-					}
-					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+				if(query.getBeginTime() != null && query.getEndTime() != null){
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),query.getBeginTime(),query.getEndTime());
 					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -443,29 +425,9 @@ public class BuyRecordService {
 					predicatesList.add(criteriaBuilder.and(stockNameQuery));
 				}
 				if(!StringUtils.isEmpty(query.getInvestorName())){
-					Predicate investorNameQuery = criteriaBuilder.like(root.get("investorName").as(String.class), "%"+query
-							.getInvestorName()+"%");
+					Predicate investorNameQuery = criteriaBuilder.equal(root.get("investorName").as(String.class), query
+							.getInvestorName());
 					predicatesList.add(criteriaBuilder.and(investorNameQuery));
-				}
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-				Date beginTime = null;
-				Date endTime = null;
-				Predicate createTimeQuery = null;
-				try {
-					if(!StringUtils.isEmpty(query.getBuyBeginTime()) && !StringUtils.isEmpty(query.getBuyEndTime())){
-						beginTime = sdf.parse(query.getBuyBeginTime());
-						endTime = sdf.parse(query.getBuyEndTime());
-						createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
-						predicatesList.add(criteriaBuilder.and(createTimeQuery));
-					}
-					if(!StringUtils.isEmpty(query.getSellBeginTime()) && !StringUtils.isEmpty(query.getSellEndTime())){
-						beginTime = sdf.parse(query.getSellBeginTime());
-						endTime = sdf.parse(query.getSellEndTime());
-						createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
-						predicatesList.add(criteriaBuilder.and(createTimeQuery));
-					}
-				} catch (ParseException e) {
-					throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
 				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));

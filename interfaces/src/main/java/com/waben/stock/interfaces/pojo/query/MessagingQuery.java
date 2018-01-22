@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.pojo.query;
 
+import java.util.Date;
+
 /**
  * 
  * @author Created by hujian on 2018年1月4日
@@ -11,9 +13,9 @@ public class MessagingQuery extends PageAndSortQuery{
 	
 	private String messageType;
 	
-	private String beginTime;
+	private Date beginTime;
 	
-	private String endTime;
+	private Date endTime;
 
 	public String getTitle() {
 		return title;
@@ -31,19 +33,19 @@ public class MessagingQuery extends PageAndSortQuery{
 		this.messageType = messageType;
 	}
 
-	public String getBeginTime() {
+	public Date getBeginTime() {
 		return beginTime;
 	}
 
-	public void setBeginTime(String beginTime) {
+	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
 

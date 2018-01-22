@@ -7,6 +7,8 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
 
 /**
  * 支付订单 reference服务接口fallback
@@ -28,6 +30,11 @@ public class PaymentOrderReferenceFallback implements PaymentOrderReference {
 
 	@Override
 	public Response<PaymentOrderDto> changeState(String paymentNo, String stateIndex) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<PaymentOrderDto>> pages(PaymentOrderQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

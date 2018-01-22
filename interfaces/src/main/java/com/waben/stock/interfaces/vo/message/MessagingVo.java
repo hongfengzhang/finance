@@ -2,6 +2,9 @@ package com.waben.stock.interfaces.vo.message;
 
 import java.util.Date;
 
+import org.springframework.web.bind.annotation.GetMapping;
+
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.waben.stock.interfaces.enums.MessageType;
 
 /**
@@ -11,14 +14,16 @@ import com.waben.stock.interfaces.enums.MessageType;
 public class MessagingVo {
 
 	private Long id;
-	
+
 	private String title;
-	
+
 	private String content;
-	
+
 	private String messageType;
-	
+
 	private Date createTime;
+
+	private MessageType type;
 
 	public Long getId() {
 		return id;
@@ -60,5 +65,11 @@ public class MessagingVo {
 		this.createTime = createTime;
 	}
 
+	public MessageType getType() {
+		return type;
+	}
 	
+	public void setType(MessageType type) {
+		this.type = type;
+	}
 }

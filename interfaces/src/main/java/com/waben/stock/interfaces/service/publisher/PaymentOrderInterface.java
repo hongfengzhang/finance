@@ -9,9 +9,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
 
 public interface PaymentOrderInterface {
 
+	@RequestMapping(value = "/pages" , method = RequestMethod.GET)
+	public Response<PageInfo<PaymentOrderDto>> pages(@RequestBody PaymentOrderQuery query);
+	
 	@RequestMapping(value = "/{paymentNo}", method = RequestMethod.GET)
 	Response<PaymentOrderDto> fetchByPaymentNo(@PathVariable("paymentNo") String paymentNo);
 

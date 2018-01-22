@@ -131,4 +131,12 @@ public class CapitalFlow {
 		this.extendList = extendList;
 	}
 
+	public String getCapitalFlowType(){
+		String capitalFlowType = null;
+		if(type != null){
+			capitalFlowType = type.getType();
+		}
+		return capitalFlowType;
+	}
+	
 }

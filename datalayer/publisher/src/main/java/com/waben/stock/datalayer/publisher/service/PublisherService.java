@@ -134,16 +134,17 @@ public class PublisherService {
 		Page<Publisher> pages = publisherDao.page(new Specification<Publisher>() {
 			@Override
 			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-				if(StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPhone())){
+				if(StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPromoter()) && StringUtils.isEmpty(query.getBeginTime())){
+					criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
 					return criteriaQuery.getRestriction();
 				}
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
 				if (!StringUtils.isEmpty(query.getPhone())) {
-					Predicate phoneQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query
-							.getPhone());
+					Predicate phoneQuery = criteriaBuilder.like(root.get("phone").as(String.class), "%"+query
+							.getPhone()+"%");
 					predicatesList.add(phoneQuery);
 				}
-				if (!StringUtils.isEmpty(query.getPhone())) {
+				if (!StringUtils.isEmpty(query.getPromoter())) {
 					Predicate promoterQuery = criteriaBuilder.equal(root.get("promoter").as(String.class), query
 							.getPromoter());
 					predicatesList.add(promoterQuery);
@@ -181,4 +182,7 @@ public class PublisherService {
 		return publisher;
 	}
 
+	public Publisher revision(Publisher publisher){
+		return publisherDao.update(publisher);
+	}
 }

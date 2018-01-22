@@ -69,4 +69,8 @@ public class CapitalFlowService {
 		return capitalFlowDao.promotionTotalAmount(publisherId);
 	}
 
+	
+	public CapitalFlow findById(Long capitalFlowId){
+		return capitalFlowDao.retrieve(capitalFlowId);
+	}
 }

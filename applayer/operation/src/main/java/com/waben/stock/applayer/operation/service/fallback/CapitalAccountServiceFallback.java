@@ -63,4 +63,14 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
     public Response<Void> modifyPaymentPassword(Long publisherId, String paymentPassword) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<CapitalAccountDto> fetchById(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> modifyCapitalAccount(CapitalAccountDto capitalAccountDto) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

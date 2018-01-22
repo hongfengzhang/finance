@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.dto.message;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.enums.MessageType;
 
 /**
@@ -9,6 +10,7 @@ import com.waben.stock.interfaces.enums.MessageType;
  * @author Created by hujian on 2018年1月4日
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MessagingDto {
 
 	private Long id;
@@ -64,6 +66,8 @@ public class MessagingDto {
 	public String getMessageType(){
 		return type.getType();
 	}
+	
+	
 	
 	
 }

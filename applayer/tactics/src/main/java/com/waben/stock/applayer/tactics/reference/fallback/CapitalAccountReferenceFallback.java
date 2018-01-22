@@ -75,4 +75,14 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<CapitalAccountDto> fetchById(Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> modifyCapitalAccount(CapitalAccountDto capitalAccountDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

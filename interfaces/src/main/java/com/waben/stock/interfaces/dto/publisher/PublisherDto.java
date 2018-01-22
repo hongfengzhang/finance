@@ -2,10 +2,13 @@ package com.waben.stock.interfaces.dto.publisher;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 /**
  * @author Created by yuyidi on 2017/11/12.
  * @desc
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PublisherDto {
 
 	private Long id;
@@ -35,6 +38,10 @@ public class PublisherDto {
 	// @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date createTime;
 	/**
+	 * 角色
+	 */
+	private Long role;
+	/**
 	 * 是否为测试用户
 	 */
 	private Boolean isTest;
@@ -46,6 +53,11 @@ public class PublisherDto {
 	 * 头像
 	 */
 	private String headPortrait;
+
+	/**
+	 * 发布人信息统计
+	 */
+	private PublisherInformationStatisticsDto publisherInformationStatisticsDto;
 
 	public Long getId() {
 		return id;
@@ -103,6 +115,14 @@ public class PublisherDto {
 		this.createTime = createTime;
 	}
 
+	public Long getRole() {
+		return role;
+	}
+
+	public void setRole(Long role) {
+		this.role = role;
+	}
+
 	public Boolean getIsTest() {
 		return isTest;
 	}
@@ -125,6 +145,22 @@ public class PublisherDto {
 
 	public void setHeadPortrait(String headPortrait) {
 		this.headPortrait = headPortrait;
+	}
+
+	public PublisherInformationStatisticsDto getPublisherInformationStatisticsDto() {
+		return publisherInformationStatisticsDto;
+	}
+
+	public void setPublisherInformationStatisticsDto(
+			PublisherInformationStatisticsDto publisherInformationStatisticsDto) {
+		this.publisherInformationStatisticsDto = publisherInformationStatisticsDto;
+	}
+
+	public Long getStrategyCount() {
+		if (publisherInformationStatisticsDto != null) {
+			return publisherInformationStatisticsDto.getStrategyCount();
+		}
+		return null;
 	}
 
 }
