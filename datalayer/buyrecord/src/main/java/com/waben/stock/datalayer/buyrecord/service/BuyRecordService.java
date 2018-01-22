@@ -521,9 +521,9 @@ public class BuyRecordService {
 		if (buyRecord == null) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NOT_FOUND_EXCEPTION);
 		}
-		if (!(buyRecord.getState() == BuyRecordState.POSTED || buyRecord.getState() == BuyRecordState.BUYLOCK)) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION);
-		}
+//		if (!(buyRecord.getState() == BuyRecordState.POSTED || buyRecord.getState() == BuyRecordState.BUYLOCK )) {
+//			throw new ServiceException(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION);
+//		}
 		// 撤单退款
 		accountBusiness.revoke(buyRecord.getPublisherId(), id, buyRecord.getServiceFee(), buyRecord.getDeferredFee());
 		// 修改点买记录状态

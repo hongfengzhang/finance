@@ -38,6 +38,8 @@ public class RabbitMqConsumer {
 	private BuyRecordBusiness buyRecordBusiness;
 	@Autowired
 	private EntrustApplyProducer entrustProducer;
+
+
 	@RabbitListener(queues = {"riskPositionSellOut"})
 	public void buyInSuccessRisk(PositionStock positionStock) throws InterruptedException {
 		logger.info("强制卖出持仓订单数据:{}", JacksonUtil.encode(positionStock));
@@ -47,6 +49,7 @@ public class RabbitMqConsumer {
 		securitiesStockEntrust.setStockCode(positionStock.getStockCode());
 		securitiesStockEntrust.setEntrustNumber(positionStock.getEntrustNumber());
 		securitiesStockEntrust.setEntrustPrice(positionStock.getEntrustPrice());
+		securitiesStockEntrust.setBuyRecordId(positionStock.getBuyRecordId());
 //		String entrustNo = investorService.buyRecordApplySellOut(securitiesStockEntrust, positionStock.getTradeSession());
 		String entrustNo = String.valueOf(new Random().nextInt(100));
 		logger.info("风控委托申请成功委托编号:{}",entrustNo);
