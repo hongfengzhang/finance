@@ -32,7 +32,7 @@ public class PaymentOrderQuery extends PageAndSortQuery {
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
 	}
-
+	
 	public PaymentState[] getStates() {
 		return states;
 	}

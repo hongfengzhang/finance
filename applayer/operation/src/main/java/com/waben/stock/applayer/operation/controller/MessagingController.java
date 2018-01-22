@@ -18,7 +18,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.MessagingQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.MessagingVo;
+import com.waben.stock.interfaces.vo.message.MessagingVo;
 
 /**
  * 
@@ -30,32 +30,46 @@ public class MessagingController {
 
 	@Autowired
 	private MessagingBusiness messagingBusiness;
-	
+
 	@RequestMapping("/index")
-    public String index(ModelMap map) {
-		map.addAttribute("messageType", MessageType.values());
-        return "message/manage/index";
-    }
-	
+	public String index(ModelMap map) {
+		map.addAttribute("types", MessageType.values());
+		return "message/manage/index";
+	}
+
 	@GetMapping("/pages")
-    @ResponseBody
-	public Response<PageInfo<MessagingVo>> pages(MessagingQuery messagingQuery){
+	@ResponseBody
+	public Response<PageInfo<MessagingVo>> pages(MessagingQuery messagingQuery) {
 		PageInfo<MessagingDto> pages = messagingBusiness.pages(messagingQuery);
-		List<MessagingVo> messagingVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pages.getContent(), MessagingVo.class); 
-		PageInfo<MessagingVo> result = new PageInfo<>(messagingVoContent, pages.getTotalPages(), pages.getLast(), pages.getTotalElements(), pages.getSize(), pages.getNumber(), pages.getFrist());
+		List<MessagingVo> messagingVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pages.getContent(),
+				MessagingVo.class);
+		PageInfo<MessagingVo> result = new PageInfo<>(messagingVoContent, pages.getTotalPages(), pages.getLast(),
+				pages.getTotalElements(), pages.getSize(), pages.getNumber(), pages.getFrist());
 		return new Response<>(result);
 	}
-	
+
 	@RequestMapping("/{messagingId}/view")
-	public String view(@PathVariable Long messagingId,ModelMap map){
-		map.addAttribute("messaging", messagingBusiness.fetchMessagingById(messagingId));
+	public String view(@PathVariable Long messagingId, ModelMap map) {
+		map.addAttribute("messaging", CopyBeanUtils.copyBeanProperties(MessagingVo.class,
+				messagingBusiness.fetchMessagingById(messagingId), false));
 		return "message/manage/view";
 	}
-	
+
 	@RequestMapping("/{messagingId}/edit")
-	public String edit(@PathVariable Long messagingId,ModelMap map){
-		map.addAttribute("messaging", messagingBusiness.fetchMessagingById(messagingId));
+	public String edit(@PathVariable Long messagingId, ModelMap map) {
+		map.addAttribute("types", MessageType.values());
+		MessagingDto messageingDto = messagingBusiness.fetchMessagingById(messagingId);
+		MessagingVo messagingVo = CopyBeanUtils.copyBeanProperties(MessagingVo.class, messageingDto, false);
+		map.addAttribute("messaging", messagingVo);
 		return "message/manage/edit";
 	}
-	
+
+	@RequestMapping("/modify")
+	@ResponseBody
+	public Response<MessagingVo> modify(MessagingVo vo) {
+		MessagingDto messagingDto = CopyBeanUtils.copyBeanProperties(MessagingDto.class, vo, false);
+		MessagingDto result = messagingBusiness.modifyMessaging(messagingDto);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingVo.class, result, false));
+	}
+
 }

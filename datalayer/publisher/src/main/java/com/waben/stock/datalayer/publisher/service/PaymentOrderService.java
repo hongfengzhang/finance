@@ -51,6 +51,21 @@ public class PaymentOrderService {
 		return paymentOrderDao.retrieveByPaymentNo(paymentNo);
 	}
 
+	public Page<PaymentOrder> pages(final PaymentOrderQuery query){
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<PaymentOrder> pages = paymentOrderDao.page(new Specification<PaymentOrder>() {
+			@Override
+			public Predicate toPredicate(Root<PaymentOrder> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder cb) {
+				if(query.getPublisherId() != null){
+					Predicate publisherIdQuery = cb.equal(root.get("publisherId").as(Long.class), query.getPublisherId());
+					criteriaQuery.where(publisherIdQuery);
+				}
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+	}
+	
 	public Page<PaymentOrder> pagesByQuery(final PaymentOrderQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<PaymentOrder> pages = paymentOrderDao.page(new Specification<PaymentOrder>() {
@@ -97,5 +112,6 @@ public class PaymentOrderService {
 		}, pageable);
 		return pages;
 	}
+	
 
 }

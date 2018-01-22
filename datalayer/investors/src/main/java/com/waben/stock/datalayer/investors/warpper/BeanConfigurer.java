@@ -36,8 +36,8 @@ public class BeanConfigurer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private ConnectionFactory connectionFactory;
+    /*@Autowired
+    private ConnectionFactory connectionFactory;*/
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
@@ -55,12 +55,12 @@ public class BeanConfigurer {
     }
 
 
-    @Bean
+    /*@Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     public RabbitTemplate rabbitTemplate() {
         logger.info("host,username:{}{}", connectionFactory.getHost(), connectionFactory.getUsername());
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         return rabbitTemplate;
-    }
+    }*/
 
 }

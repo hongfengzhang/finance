@@ -29,4 +29,37 @@ public class CapitalAccountBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+    
+    public CapitalAccountDto findByPublisherId(Long publisherId){
+    	Response<CapitalAccountDto> response = capitalAccountService.fetchByPublisherId(publisherId);
+    	String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+    
+    public CapitalAccountDto findById(Long capitalAccountId){
+    	Response<CapitalAccountDto> response = capitalAccountService.fetchById(capitalAccountId);
+    	String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+    
+    public CapitalAccountDto modifyCapitalAccount(CapitalAccountDto capitalAccountDto){
+    	Response<CapitalAccountDto> response = capitalAccountService.modifyCapitalAccount(capitalAccountDto);
+    	String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

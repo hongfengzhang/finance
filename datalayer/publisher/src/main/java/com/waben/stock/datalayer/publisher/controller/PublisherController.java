@@ -82,4 +82,11 @@ public class PublisherController implements PublisherInterface {
 				publisherService.modiyHeadportrait(id, headPortrait), false));
 	}
 
+	@Override
+	public Response<PublisherDto> modify(@RequestBody PublisherDto publisherDto) {
+		Publisher publisher = CopyBeanUtils.copyBeanProperties(Publisher.class, publisherDto, false);
+		PublisherDto result = CopyBeanUtils.copyBeanProperties(PublisherDto.class,publisherService.revision(publisher),false);
+		return new Response<>(result);
+	}
+
 }

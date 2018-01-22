@@ -113,5 +113,13 @@ public class CapitalFlowDto {
 	public void setExtendList(Set<CapitalFlowExtendDto> extendList) {
 		this.extendList = extendList;
 	}
+	
+	public String getCapitalFlowType(){
+		String capitalFlowType = null;
+		if(type != null){
+			capitalFlowType = type.getType();
+		}
+		return capitalFlowType;
+	}
 
 }
