@@ -63,8 +63,8 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public CapitalAccountDto revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee) {
-		Response<CapitalAccountDto> response = service.revoke(publisherId, buyRecordId, serviceFee);
+	public CapitalAccountDto revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee, BigDecimal deferredFee) {
+		Response<CapitalAccountDto> response = service.revoke(publisherId, buyRecordId, serviceFee, deferredFee);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

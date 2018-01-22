@@ -43,8 +43,8 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
 			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
 	@Override
 	public Response<FrozenCapitalDto> fetchFrozenCapital(Long publisherId, Long buyRecordId) {
@@ -68,7 +68,8 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee) {
+	public Response<CapitalAccountDto> revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee,
+			BigDecimal deferredFee) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
@@ -76,4 +77,5 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 	public Response<CapitalAccountDto> returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 }

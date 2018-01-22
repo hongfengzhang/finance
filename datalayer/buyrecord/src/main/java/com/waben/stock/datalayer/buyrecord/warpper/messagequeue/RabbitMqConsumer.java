@@ -3,6 +3,9 @@ package com.waben.stock.datalayer.buyrecord.warpper.messagequeue;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.rabbit.RiskProducer;
+import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.EntrustState;
+import com.waben.stock.interfaces.enums.EntrustType;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import org.slf4j.Logger;
@@ -38,7 +41,6 @@ public class RabbitMqConsumer {
 		//风控传输对象
 		PositionStock positionStock = new PositionStock();
 		positionStock.setBuyRecordId(buyRecord.getId());
-		positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
 		positionStock.setStockCode(buyRecord.getStockCode());
 		positionStock.setStockName(buyRecord.getStockName());
 		positionStock.setLossPosition(buyRecord.getLossPosition());
@@ -49,6 +51,7 @@ public class RabbitMqConsumer {
 		positionStock.setTradeSession(securitiesStockEntrust.getTradeSession());
 		positionStock.setExpireTime(buyRecord.getExpireTime());
 		positionStock.setTradeNo(buyRecord.getTradeNo());
+		positionStock.setEntrustNumber(buyRecord.getNumberOfStrand());
 		riskProducer.risk(positionStock);
 	}
 
@@ -63,7 +66,15 @@ public class RabbitMqConsumer {
 	@RabbitListener(queues = { "entrustWaste" })
 	public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
 		logger.info("处理废单:{},订单ID:{}", securitiesStockEntrust.getTradeNo(),securitiesStockEntrust.getBuyRecordId());
-		//退回服务费，保证金,解冻冻结的递延费
+		//EntrustType entrustType = securitiesStockEntrust.getEntrustType();
+		//判断订单是买入废单还是卖出废单
+//		if(EntrustType.BUY.equals(entrustType)) {
+			//买入废单处理，退回服务费，保证金,解冻冻结的递延费
 		buyRecordService.revoke(securitiesStockEntrust.getBuyRecordId());
+//		}else if(EntrustType.SELL.equals(entrustType)) {
+//			//卖出废单处理
+//		}
+
 	}
+
 }

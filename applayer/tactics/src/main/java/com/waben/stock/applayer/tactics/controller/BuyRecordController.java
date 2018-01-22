@@ -110,7 +110,7 @@ public class BuyRecordController {
 		if (!(lossPoint.abs().compareTo(new BigDecimal(0)) > 0 && lossPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
 			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
 		}
-		if(deferred && (deferredFee == null || deferredFee.compareTo(new BigDecimal(0)) <= 0)) {
+		if (deferred && (deferredFee == null || deferredFee.compareTo(new BigDecimal(0)) <= 0)) {
 			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
 		}
 		// 验证支付密码
@@ -174,6 +174,11 @@ public class BuyRecordController {
 	@RequestMapping(value = "/sellapply/{id}", method = RequestMethod.POST)
 	@ApiOperation(value = "用户申请卖出")
 	public Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+		// 检查交易时间段
+		boolean isTradeTime = holidayBusiness.isTradeTime();
+		if (!isTradeTime) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+		}
 		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 

@@ -106,9 +106,9 @@ public class CapitalAccountController implements CapitalAccountInterface {
 
 	@Override
 	public Response<CapitalAccountDto> revoke(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
-			@PathVariable BigDecimal serviceFee) {
+			@PathVariable BigDecimal serviceFee, BigDecimal deferredFee) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
-				capitalAccountService.revoke(publisherId, buyRecordId, serviceFee), false));
+				capitalAccountService.revoke(publisherId, buyRecordId, serviceFee, deferredFee), false));
 	}
 
 	@Override

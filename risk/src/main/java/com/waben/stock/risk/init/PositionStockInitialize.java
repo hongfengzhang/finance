@@ -37,7 +37,6 @@ public class PositionStockInitialize implements CommandLineRunner {
         for (BuyRecordDto buyRecord : buyRecords) {
             PositionStock positionStock = new PositionStock();
             positionStock.setBuyRecordId(buyRecord.getId());
-            positionStock.setBuyingPrice(buyRecord.getBuyingPrice());
             positionStock.setStockCode(buyRecord.getStockCode());
             positionStock.setStockName(buyRecord.getStockName());
             positionStock.setLossPosition(buyRecord.getLossPosition());
@@ -46,6 +45,7 @@ public class PositionStockInitialize implements CommandLineRunner {
             positionStock.setBuyingTime(buyRecord.getBuyingTime());
             positionStock.setDeferred(buyRecord.getDeferred());
             positionStock.setTradeNo(buyRecord.getTradeNo());
+            positionStock.setEntrustNumber(buyRecord.getNumberOfStrand());
             positionStock.setExpireTime(buyRecord.getExpireTime());
             positionStockContainer.add(positionStock);
             logger.info("TradeSession:{}",positionStock.getTradeSession());

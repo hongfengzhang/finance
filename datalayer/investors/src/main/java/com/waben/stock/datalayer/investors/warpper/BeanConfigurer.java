@@ -3,20 +3,28 @@ package com.waben.stock.datalayer.investors.warpper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.waben.stock.interfaces.exception.SecuritiesStockException;
-import com.waben.stock.interfaces.exception.ExecptionHandler;
-import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.connection.ConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.SpringApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Scope;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
 
-import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -27,6 +35,9 @@ import java.util.List;
 public class BeanConfigurer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private ConnectionFactory connectionFactory;
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
@@ -43,12 +54,13 @@ public class BeanConfigurer {
         return jackson2HttpMessageConverter;
     }
 
+
     @Bean
-    public ExecptionHandler execptionHandler() {
-        ExecptionHandler execptionHandler = new ExecptionHandler();
-        execptionHandler.extendException(Arrays.asList(new ExceptionInformation(SecuritiesStockException.class,
-                HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "500")));
-        return execptionHandler;
+    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+    public RabbitTemplate rabbitTemplate() {
+        logger.info("host,username:{}{}", connectionFactory.getHost(), connectionFactory.getUsername());
+        RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
+        return rabbitTemplate;
     }
 
 }

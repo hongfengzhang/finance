@@ -39,20 +39,26 @@ public class StockQuotationJob implements InterruptableJob {
             logger.info("开始执行行情数据拉取,股票数量:{}",positionStockContainer.getRiskStockContainer().size());
 
         Map<String, List<PositionStock>> riskStockContainer = positionStockContainer.getRiskStockContainer();
+        Map<String, PositionStock> entrustSellOutContainer = positionStockContainer.getEntrustSellOutContainer();
         Set<String> codes = riskStockContainer.keySet();
         List<String> codePrams = new ArrayList();
         codePrams.addAll(codes);
         //拉取股票行情数据
+        if(codePrams.isEmpty()) {
+            logger.info("没有股票！");
+            return;
+        }
         List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
         //线程处理
         for(StockMarket stockMarket: quotations) {
             List<PositionStock> stocks = riskStockContainer.get(stockMarket.getInstrumentId());
-            Future<List<PositionStock>> future = executors.submit(new RiskProcess(stockMarket,stocks ));
+            Future<List<PositionStock>> future = executors.submit(new RiskProcess(stockMarket,stocks,entrustSellOutContainer));
             logger.info("线程执行中,当前行情：{},股票名称:{}",stockMarket.getInstrumentId(),stockMarket.getName());
             try {
                 //接收被风控的持仓点买订单
                 List<PositionStock> result = future.get();
                 for (PositionStock stock : result) {
+                    logger.info("止损止盈单:{}",stock.getTradeNo());
                     positionProducer.riskPositionSellOut(stock);
                     stocks.remove(stock);
                 }
