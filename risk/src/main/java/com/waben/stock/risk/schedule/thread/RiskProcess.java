@@ -63,10 +63,11 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             //过期时间
-            long expriessDay = riskBuyInStock.getExpireTime().getTime() / millisOfDay;
-            //当前时间
+//            long expriessDay = riskBuyInStock.getExpireTime().getTime() / millisOfDay;
+//            //当前时间
+//
+//            long currentDay = date.getTime() / millisOfDay;
             Date date = new Date();
-            long currentDay = date.getTime() / millisOfDay;
             DateFormat df = DateFormat.getTimeInstance();//只显示出时分秒
             SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
             String format = df.format(date);
@@ -78,9 +79,12 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            logger.info("过期时间:{},当前时间:{},相差天数:{}", expriessDay, currentDay, (currentDay - expriessDay));
+            SimpleDateFormat sdfDate=new SimpleDateFormat("yyyy-mm-dd");
+            String currentDay = sdfDate.format(date);
+            String expriessDay = sdfDate.format(riskBuyInStock.getExpireTime());
+            logger.info("过期时间:{},当前时间:{}", expriessDay, currentDay);
             //判断持仓到期时间是否已经达到且是否达到14:40:00
-            if (currentDay == expriessDay&&currentTime.getTime()>=expriessTime.getTime()) {
+            if (currentDay.equalsIgnoreCase(expriessDay)&&currentTime.getTime()>=expriessTime.getTime()) {
                 riskBuyInStock.setWindControlType(WindControlType.TRADINGEND.getIndex());
             } else {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价

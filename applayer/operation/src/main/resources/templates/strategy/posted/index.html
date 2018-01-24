@@ -88,10 +88,18 @@
     <script th:src="@{/static/js/bootstrap-table.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap-table-zh-CN.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/http.js}" type="text/javascript"></script>
-    <script src="https://cdn.bootcss.com/jquery.serializeJSON/2.8.1/jquery.serializejson.js" type="text/javascript"></script>
+    <!--<script src="https://cdn.bootcss.com/jquery.serializeJSON/2.8.1/jquery.serializejson.js" type="text/javascript"></script>-->
     <script type="text/javascript">
         var $table = $('#bootstrap-table');
+
         $(function () {
+            $.fn.serializeJson=function(){
+                var serializeObj={};
+                $(this.serializeArray()).each(function(){
+                    serializeObj[this.name]=this.value;
+                });
+                return serializeObj;
+            };
             $table.bootstrapTable({
                 url: "../posted/pages",
                 dataType: "json",
@@ -114,12 +122,8 @@
                         page: this.pageNumber - 1,
                         size: this.pageSize
                     }
-                    var queryMap = {
-                    		publisherPhone:$("input[name='publisherPhone']").val(),
-          		        	stockName:$("input[name='stockName']").val(),
-          		        	beginTime:$("input[name='beginTime']").val(),
-      		        		endTime:$("input[name='endTime']").val()
-                    }
+                    var queryMap = $("#postedQuery").serializeJson();
+                    console.log(queryMap)
                     $.extend(query,queryMap);
                     return query;
                 },
@@ -137,8 +141,8 @@
                     }
                 },
                 columns: [{
-                    field: 'id',
-                    title: 'ID',
+                    field: 'tradeNo',
+                    title: '交易号',
                     align: 'center'
                 }, {
                     field: 'publisherPhone',
