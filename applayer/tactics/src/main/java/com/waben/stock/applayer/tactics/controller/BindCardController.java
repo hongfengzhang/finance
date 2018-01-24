@@ -58,7 +58,7 @@ public class BindCardController {
 	}
 	
 	@PostMapping("/unbundling/{id}")
-	@ApiOperation(value = "解绑支行信息")
+	@ApiOperation(value = "解绑银行卡")
 	public Response<Long> unbundling(@PathVariable("id") Long id) {
 		return new Response<>(bindCardBusiness.remove(id));
 	}

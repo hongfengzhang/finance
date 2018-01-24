@@ -123,7 +123,13 @@ public class BuyRecordController {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
-		if (serviceFee.add(reserveFund).add(deferredFee).compareTo(capitalAccount.getAvailableBalance()) > 0) {
+		BigDecimal totalFee = new BigDecimal(0);
+		if(deferred) {
+			totalFee = totalFee.add(serviceFee).add(reserveFund).add(deferredFee);
+		} else {
+			totalFee = totalFee.add(serviceFee).add(reserveFund);
+		}
+		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
 		// 初始化点买数据
@@ -136,7 +142,7 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint.abs().multiply(new BigDecimal(-1)));
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
-		dto.setDeferredFee(deferredFee);
+		dto.setDeferredFee(deferred ? deferredFee : new BigDecimal(0));
 		dto.setDelegatePrice(delegatePrice);
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());

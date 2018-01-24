@@ -17,6 +17,10 @@ public class CapitalFlowWithExtendDto {
 	 */
 	private CapitalFlowType type;
 	/**
+	 * 流水号
+	 */
+	private String flowNo;
+	/**
 	 * 产生时间
 	 */
 	private Date occurrenceTime;
@@ -127,6 +131,14 @@ public class CapitalFlowWithExtendDto {
 
 	public void setStrategyTypeName(String strategyTypeName) {
 		this.strategyTypeName = strategyTypeName;
+	}
+
+	public String getFlowNo() {
+		return flowNo;
+	}
+
+	public void setFlowNo(String flowNo) {
+		this.flowNo = flowNo;
 	}
 
 }

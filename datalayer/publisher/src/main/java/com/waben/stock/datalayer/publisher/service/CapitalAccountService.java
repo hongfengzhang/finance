@@ -173,12 +173,13 @@ public class CapitalAccountService {
 			reduceAmount(account, deferredFee, date);
 		}
 		// 保存流水
-		CapitalFlow serviceFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.ServiceFee, serviceFee.abs().multiply(new BigDecimal(-1)), date);
-		CapitalFlowExtend serviceFeeExtend = new CapitalFlowExtend(serviceFeeFlow, CapitalFlowExtendType.BUYRECORD,
-				buyRecordId);
-		flowExtendDao.create(serviceFeeExtend);
-
+		if (serviceFee != null && serviceFee.compareTo(new BigDecimal(0)) > 0) {
+			CapitalFlow serviceFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
+					CapitalFlowType.ServiceFee, serviceFee.abs().multiply(new BigDecimal(-1)), date);
+			CapitalFlowExtend serviceFeeExtend = new CapitalFlowExtend(serviceFeeFlow, CapitalFlowExtendType.BUYRECORD,
+					buyRecordId);
+			flowExtendDao.create(serviceFeeExtend);
+		}
 		CapitalFlow reserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
 				CapitalFlowType.ReserveFund, reserveFund.abs().multiply(new BigDecimal(-1)), date);
 		CapitalFlowExtend reserveFundExtend = new CapitalFlowExtend(reserveFundFlow, CapitalFlowExtendType.BUYRECORD,
@@ -302,16 +303,20 @@ public class CapitalAccountService {
 					query.setPublisherId(publisherId);
 					query.setExtendType(CapitalFlowExtendType.BUYRECORD);
 					query.setExtendId(buyRecordId);
-					Page<CapitalFlowExtend> serviceFee = extendService.pagesByQuery(query);
-					BigDecimal promotionAmount = serviceFee.getContent().get(0).getFlow().getAmount().abs()
-							.multiply(new BigDecimal(0.1));
-					CapitalAccount promoterAccount = capitalAccountDao.retriveByPublisherId(promoter.getId());
-					increaseAmount(promoterAccount, promotionAmount, date);
-					CapitalFlow promotionFlow = flowDao.create(promoter.getId(), promoter.getSerialCode(),
-							CapitalFlowType.Promotion, promotionAmount, date);
-					CapitalFlowExtend promotionExtend = new CapitalFlowExtend(promotionFlow,
-							CapitalFlowExtendType.PUBLISHER, publisherId);
-					flowExtendDao.create(promotionExtend);
+					Page<CapitalFlowExtend> serviceFeePage = extendService.pagesByQuery(query);
+					if (serviceFeePage.getContent() != null && serviceFeePage.getContent().size() > 0) {
+						BigDecimal serviceFee = serviceFeePage.getContent().get(0).getFlow().getAmount().abs();
+						if (serviceFee.compareTo(new BigDecimal(0)) > 0) {
+							BigDecimal promotionAmount = serviceFee.multiply(new BigDecimal(0.1));
+							CapitalAccount promoterAccount = capitalAccountDao.retriveByPublisherId(promoter.getId());
+							increaseAmount(promoterAccount, promotionAmount, date);
+							CapitalFlow promotionFlow = flowDao.create(promoter.getId(), promoter.getSerialCode(),
+									CapitalFlowType.Promotion, promotionAmount, date);
+							CapitalFlowExtend promotionExtend = new CapitalFlowExtend(promotionFlow,
+									CapitalFlowExtendType.PUBLISHER, publisherId);
+							flowExtendDao.create(promotionExtend);
+						}
+					}
 				}
 			}
 		}

@@ -54,8 +54,8 @@ public class CrawlerData {
 
 
 
-    @Scheduled(cron = "0 0 0/2 * * ? ")
-    @Async
+    // @Scheduled(cron = "0 0 0/2 * * ? ")
+    // @Async
     public void news() {
         logger.info("从 <财联社> 获取深度新闻数据,当前线程为 {}", Thread.currentThread().getName());
         long ctime = System.currentTimeMillis() / 1000 / 100;
@@ -180,8 +180,8 @@ public class CrawlerData {
     }
 
 
-    @Scheduled(cron = "0 0/1 * * * ? ")
-    @Async
+    // @Scheduled(cron = "0 0/1 * * * ? ")
+    // @Async
     public void bulletin() {
         logger.info("从 <财联社> 获取7*24小时数据,当前线程为 {}", Thread.currentThread().getName());
         long ctime = System.currentTimeMillis() / 1000 / 100;
@@ -248,6 +248,7 @@ public class CrawlerData {
                 model.setTitle("【快讯】");
             }
             model.setSource("财联社电报");
+            dailyReportDao.saveReport(model);
         }
     }
 

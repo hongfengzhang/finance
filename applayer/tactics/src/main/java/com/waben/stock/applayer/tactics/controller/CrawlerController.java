@@ -79,9 +79,8 @@ public class CrawlerController {
         return Response.success(crawlerService.selectAnnualReport(id));
     }
 
-
     @RequestMapping("/delErrorInfo")
-    @ApiOperation(value = "获取省份列表", hidden = true)
+    @ApiOperation(value = "none", hidden = true)
     public Response delErrorInfo()  {
 
         crawlerService.doDelteTask(AnnualReportModel.class);
@@ -109,5 +108,24 @@ public class CrawlerController {
         return  Response.success();
     }
 
+    @RequestMapping(value = "/informationData", method = RequestMethod.GET)
+    @ApiOperation(value = "7*24小时资讯")
+    public Response informationData(@RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        return Response.success(crawlerService.selectDailyReport(1, page, pageSize));
+    }
+    
+    @RequestMapping(value = "/importantNews", method = RequestMethod.GET)
+    @ApiOperation(value = "要闻")
+    public Response importantNews(@RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        return Response.success(crawlerService.selectDailyReport(2, page, pageSize));
+    }
+    
+    @RequestMapping(value = "/dailyReportDetail", method = RequestMethod.GET)
+    @ApiOperation(value = "7*27资讯和要闻详情")
+    public Response dailyReportDetail(String id) {
+    	return Response.success(crawlerService.selectDailyReport(id));
+    }
 
 }
