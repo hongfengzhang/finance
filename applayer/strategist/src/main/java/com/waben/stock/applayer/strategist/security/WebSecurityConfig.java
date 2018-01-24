@@ -82,6 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll();
 		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
 		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/pclists").permitAll();
+		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

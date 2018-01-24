@@ -26,7 +26,6 @@ $(function(){
 	});
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
-		console.log(JSON.stringify(aoData));
 		var draw = (aoData[3].value / 10) + 1;
 		oSettings.iDraw = draw;
 		// 排序
@@ -74,7 +73,7 @@ $(function(){
 		};
 		$.ajax({
             type: "POST",
-            url: "../paymentorder/pages",
+            url: "../aliturn/pages",
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(query),
@@ -164,7 +163,7 @@ $(function(){
 			layer.close(index);
 			$.ajax({
 	            type: "POST",
-	            url: "../paymentorder/aliturn/paid",
+	            url: "../aliturn/paid",
 	            contentType: "application/x-www-form-urlencoded",
 	            dataType: "json",
 	            data: "paymentNo=" + paymentNo,
@@ -179,7 +178,7 @@ $(function(){
 		});
 	});
 	// 确认部分支付
-	$("#unpaidTable_wrapper").on("click", ".confirm-partpaid-btn", function(event){
+	$("#unpaidTable_wrapper, #partpaidTable_wrapper").on("click", ".confirm-partpaid-btn", function(event){
 		var paymentNo = $(this).attr("paymentno");
 		layer.prompt({
 			title : '输入用户支付宝转账的金额',
@@ -190,7 +189,7 @@ $(function(){
 				layer.close(index);
 				$.ajax({
 		            type: "POST",
-		            url: "../paymentorder/aliturn/partpaid",
+		            url: "../aliturn/partpaid",
 		            contentType: "application/x-www-form-urlencoded",
 		            dataType: "json",
 		            data: "paymentNo=" + paymentNo + "&partAmount=" + money,
