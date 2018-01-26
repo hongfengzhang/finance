@@ -41,6 +41,16 @@ public class StockServiceFallbackFactory implements FallbackFactory<StockService
             public Response<StockDto> fetchWithExponentByCode(String code) {
                 return null;
             }
+
+            @Override
+            public Response<Integer> modify(StockDto stockDto) {
+                return null;
+            }
+
+            @Override
+            public void delete(Long id) {
+
+            }
         };
     }
 }

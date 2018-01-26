@@ -32,6 +32,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -175,11 +177,29 @@ public class InvestorService {
             @Override
             public Predicate toPredicate(Root<Investor> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
                     criteriaBuilder) {
+
+//                if(StringUtils.isEmpty(query.getUserName()) && StringUtils.isEmpty(query.getBeginTime())){
+//                    criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
+//                    return criteriaQuery.getRestriction();
+//                }
+                List<Predicate> predicatesList = new ArrayList();
                 if (!StringUtils.isEmpty(query.getUserName())) {
                     Predicate userNameQuery = criteriaBuilder.equal(root.get("userName").as(String.class), query
                             .getUserName());
-                    criteriaQuery.where(criteriaBuilder.and(userNameQuery));
+                    predicatesList.add(userNameQuery);
                 }
+
+                if(query.getBeginTime() != null && query.getEndTime() != null){
+                    Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),query.getBeginTime(),query.getEndTime());
+                    predicatesList.add(criteriaBuilder.and(createTimeQuery));
+                }
+                if (query.getState() != null&&query.getState()!=2) {
+                    Predicate stateQuery = criteriaBuilder.equal(root.get("state").as(Integer.class), query
+                            .getState());
+                    predicatesList.add(stateQuery);
+                }
+                criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
@@ -191,4 +211,11 @@ public class InvestorService {
     }
 
 
+    public Integer revision(Investor investor) {
+        return investorDao.updateById(investor.getUserName(),investor.getState(),investor.getId());
+    }
+
+    public void delete(Long id) {
+        investorDao.delete(id);
+    }
 }

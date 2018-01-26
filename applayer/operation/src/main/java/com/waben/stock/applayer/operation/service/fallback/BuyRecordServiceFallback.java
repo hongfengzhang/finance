@@ -60,6 +60,11 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     }
 
     @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
     public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }

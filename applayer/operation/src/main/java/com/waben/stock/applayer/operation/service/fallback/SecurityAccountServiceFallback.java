@@ -19,4 +19,14 @@ public class SecurityAccountServiceFallback implements SecurityAccountService {
     public Response<PageInfo<SecurityAccountDto>> pagesByQuery(SecurityAccountQuery securityAccountQuery) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<SecurityAccountDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
 }

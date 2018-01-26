@@ -11,6 +11,8 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -64,4 +66,11 @@ public class SettlementService {
 		return pages;
 	}
 
+    public Settlement findByBuyRecord(Long id) {
+		Settlement result = settlementDao.retrieveByBuyRecord(id);
+		if (result == null) {
+			throw new ServiceException(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION);
+		}
+		return result;
+	}
 }

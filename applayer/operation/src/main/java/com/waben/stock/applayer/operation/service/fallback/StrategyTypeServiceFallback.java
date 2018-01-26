@@ -28,6 +28,16 @@ public class StrategyTypeServiceFallback implements StrategyTypeService {
 	}
 
 	@Override
+	public Response<StrategyTypeDto> modify(StrategyTypeDto strategyTypeDto) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public void delete(Long id) {
+
+	}
+
+	@Override
 	public Response<StrategyTypeDto> fetchById(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

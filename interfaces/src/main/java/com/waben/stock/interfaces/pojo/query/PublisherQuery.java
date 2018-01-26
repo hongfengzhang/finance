@@ -1,15 +1,17 @@
 package com.waben.stock.interfaces.pojo.query;
 
 
+import java.util.Date;
+
 public class PublisherQuery extends PageAndSortQuery {
 
     private String phone;
     
     private String promoter;
     
-    private String beginTime;
+    private Date beginTime;
 	
-	private String endTime;
+	private Date endTime;
 
 
     public String getPhone() {
@@ -28,20 +30,19 @@ public class PublisherQuery extends PageAndSortQuery {
 		this.promoter = promoter;
 	}
 
-	public String getBeginTime() {
+	public Date getBeginTime() {
 		return beginTime;
 	}
 
-	public void setBeginTime(String beginTime) {
+	public void setBeginTime(Date beginTime) {
 		this.beginTime = beginTime;
 	}
 
-	public String getEndTime() {
+	public Date getEndTime() {
 		return endTime;
 	}
 
-	public void setEndTime(String endTime) {
+	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
 	}
-
 }

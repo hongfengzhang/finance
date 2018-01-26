@@ -29,4 +29,13 @@ public class StockReferenceFallback implements StockReference {
 	public Response<StockDto> fetchWithExponentByCode(String code) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<Integer> modify(StockDto stockDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);	}
+
+	@Override
+	public void delete(Long id) {
+
+	}
 }

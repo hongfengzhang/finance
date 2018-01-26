@@ -22,6 +22,16 @@ import org.springframework.stereotype.Component;
 public class InvestorServiceFallback implements InvestorService {
 
     @Override
+    public Response<Integer> modify(InvestorDto investorDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
     public Response<PageInfo<InvestorDto>> pagesByQuery(InvestorQuery investorQuery) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }

@@ -21,7 +21,8 @@ public class StockDto {
      */
     private Boolean status;
 
-    public StockExponentDto stockExponentDto;
+
+    private StockExponentDto exponent;
 
     public Long getId() {
         return id;
@@ -55,11 +56,12 @@ public class StockDto {
         this.status = status;
     }
 
-    public StockExponentDto getStockExponentDto() {
-        return stockExponentDto;
+    public StockExponentDto getExponent() {
+        return exponent;
     }
 
-    public void setStockExponentDto(StockExponentDto stockExponentDto) {
-        this.stockExponentDto = stockExponentDto;
+    public void setExponent(StockExponentDto exponent) {
+        this.exponent = exponent;
     }
+
 }

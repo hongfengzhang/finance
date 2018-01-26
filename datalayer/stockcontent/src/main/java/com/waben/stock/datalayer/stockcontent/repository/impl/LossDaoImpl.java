@@ -33,12 +33,12 @@ public class LossDaoImpl implements LossDao {
 
     @Override
     public Loss update(Loss loss) {
-        return null;
+        return repository.save(loss);
     }
 
     @Override
     public Loss retrieve(Long id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override

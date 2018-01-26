@@ -2,10 +2,14 @@ package com.waben.stock.datalayer.buyrecord.controller;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
+import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.investor.SecurityAccountDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,6 +52,16 @@ public class SettlementController implements SettlementInterface {
 		}
 
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<SettlementDto> fetchByBuyRecord(@PathVariable Long id) {
+		Settlement settlement = settlementService.findByBuyRecord(id);
+		SettlementDto settlementDto = CopyBeanUtils.copyBeanProperties(settlement, new SettlementDto(), false);
+		BuyRecord buyRecord = settlement.getBuyRecord();
+		BuyRecordDto buyRecordDto = CopyBeanUtils.copyBeanProperties(buyRecord, new BuyRecordDto(), false);
+		settlementDto.setBuyRecord(buyRecordDto);
+		return new Response<>(settlementDto);
 	}
 
 }

@@ -18,6 +18,8 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -45,9 +47,24 @@ public class LossService {
             @Override
             public Predicate toPredicate(Root<Loss> root, CriteriaQuery<?> criteriaQuery,
                                          CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicatesList = new ArrayList();
+                if (!StringUtils.isEmpty(lossQuery.getPoint())&&lossQuery.getPoint()!=null) {
+                    Predicate valueQuery = criteriaBuilder.equal(root.get("point").as(BigDecimal.class), lossQuery
+                            .getPoint());
+                    predicatesList.add(valueQuery);
+                }
+                criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
         return result;
+    }
+
+    public Loss fetchById(Long id) {
+        return lossDao.retrieve(id);
+    }
+
+    public Loss revision(Loss loss) {
+        return lossDao.update(loss);
     }
 }

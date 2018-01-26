@@ -149,17 +149,8 @@ public class PublisherService {
 							.getPromoter());
 					predicatesList.add(promoterQuery);
 				}
-				if(!StringUtils.isEmpty(query.getBeginTime()) && !StringUtils.isEmpty(query.getEndTime())){
-					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-					Date beginTime = null;
-					Date endTime = null;
-					try {
-						beginTime = sdf.parse(query.getBeginTime());
-						endTime = sdf.parse(query.getEndTime());
-					} catch (ParseException e) {
-						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
-					}
-					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+				if(query.getBeginTime() != null && query.getEndTime() != null){
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),query.getBeginTime(),query.getEndTime());
 					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));

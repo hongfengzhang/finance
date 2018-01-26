@@ -14,7 +14,9 @@ public class BuyRecordQuery extends PageAndSortQuery {
 
 	private Long publisherId;
 
-	private BuyRecordState[] states;
+//	private BuyRecordState[] states;
+	private Integer state;
+	private Long investorId;
 
 	private Date startCreateTime;
 
@@ -24,12 +26,12 @@ public class BuyRecordQuery extends PageAndSortQuery {
 		super();
 	}
 
-	public BuyRecordQuery(int page, int size, Long publisherId, BuyRecordState[] states) {
+	public BuyRecordQuery(int page, int size, Long publisherId,Integer state) {
 		super();
 		super.setPage(page);
 		super.setSize(size);
 		this.publisherId = publisherId;
-		this.states = states;
+		this.state = state;
 	}
 
 	public Long getPublisherId() {
@@ -40,13 +42,13 @@ public class BuyRecordQuery extends PageAndSortQuery {
 		this.publisherId = publisherId;
 	}
 
-	public BuyRecordState[] getStates() {
-		return states;
-	}
-
-	public void setStates(BuyRecordState[] states) {
-		this.states = states;
-	}
+//	public BuyRecordState[] getStates() {
+//		return states;
+//	}
+//
+//	public void setStates(BuyRecordState[] states) {
+//		this.states = states;
+//	}
 
 	public Date getStartCreateTime() {
 		return startCreateTime;
@@ -64,4 +66,19 @@ public class BuyRecordQuery extends PageAndSortQuery {
 		this.endCreateTime = endCreateTime;
 	}
 
+	public Long getInvestorId() {
+		return investorId;
+	}
+
+	public void setInvestorId(Long investor) {
+		this.investorId = investor;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
 }

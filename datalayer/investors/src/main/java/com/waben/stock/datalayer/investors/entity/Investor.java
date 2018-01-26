@@ -1,7 +1,6 @@
 package com.waben.stock.datalayer.investors.entity;
 
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
-
 import javax.persistence.*;
 import java.util.Date;
 
@@ -89,14 +88,6 @@ public class Investor {
         this.role = role;
     }
 
-    public SecurityAccount getSecurityAccount() {
-        return securityAccount;
-    }
-
-    public void setSecurityAccount(SecurityAccount securityAccount) {
-        this.securityAccount = securityAccount;
-    }
-
     public Boolean getState() {
         return state;
     }
@@ -119,5 +110,13 @@ public class Investor {
 
     public void setSecuritiesSession(String securitiesSession) {
         this.securitiesSession = securitiesSession;
+    }
+
+    public SecurityAccount getSecurityAccount() {
+        return securityAccount;
+    }
+
+    public void setSecurityAccount(SecurityAccount securityAccount) {
+        this.securityAccount = securityAccount;
     }
 }

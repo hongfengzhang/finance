@@ -15,4 +15,9 @@ public class SettlementFallback implements SettlementService{
     public Response<PageInfo<SettlementDto>> pagesByQuery(SettlementQuery query) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<SettlementDto> fetchByBuyRecord(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

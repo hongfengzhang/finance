@@ -12,11 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -44,9 +47,24 @@ public class AmountValueService {
             @Override
             public Predicate toPredicate(Root<AmountValue> root, CriteriaQuery<?> criteriaQuery,
                                          CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicatesList = new ArrayList();
+                if (!StringUtils.isEmpty(query.getValue())&&query.getValue()!=null) {
+                    Predicate valueQuery = criteriaBuilder.equal(root.get("value").as(Integer.class), query
+                            .getValue());
+                    predicatesList.add(valueQuery);
+                }
+                criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
         return result;
+    }
+
+    public AmountValue fetchById(Long id) {
+        return amountValueDao.retrieve(id);
+    }
+
+    public AmountValue revision(AmountValue amountValue) {
+        return amountValueDao.update(amountValue);
     }
 }

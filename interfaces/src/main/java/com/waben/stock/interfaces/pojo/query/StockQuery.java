@@ -6,31 +6,31 @@ package com.waben.stock.interfaces.pojo.query;
  */
 public class StockQuery extends PageAndSortQuery {
 
-    private String name;
-    private String code;
-    private String keyword;
+    private String stockName;
+    private String stockCode;
+    private Integer status;
 
-    public String getName() {
-        return name;
+    public String getStockName() {
+        return stockName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setStockName(String stockName) {
+        this.stockName = stockName;
     }
 
-    public String getCode() {
-        return code;
+    public String getStockCode() {
+        return stockCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setStockCode(String stockCode) {
+        this.stockCode = stockCode;
     }
 
-    public String getKeyword() {
-        return keyword;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setKeyword(String keyword) {
-        this.keyword = keyword;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 }

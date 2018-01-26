@@ -2,12 +2,10 @@ package com.waben.stock.datalayer.stockcontent.controller;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.datalayer.stockcontent.entity.StrategyType;
 import com.waben.stock.datalayer.stockcontent.service.StrategyTypeService;
@@ -37,13 +35,25 @@ public class StrategyTypeController implements StrategyTypeInterface {
     }
 
     @Override
-    public Response<PageInfo<StrategyTypeDto>> pages(StrategyTypeQuery query) {
+    public Response<PageInfo<StrategyTypeDto>> pages(@RequestBody StrategyTypeQuery query) {
         Page<StrategyType> pages = straegyTypeService.pages(query);
         PageInfo<StrategyTypeDto> result = new PageInfo<>(pages, StrategyTypeDto.class);
         return new Response<>(result);
     }
 
-	@Override
+    @Override
+    public Response<StrategyTypeDto> modify(@RequestBody StrategyTypeDto strategyTypeDto) {
+        StrategyType strategyType = CopyBeanUtils.copyBeanProperties(StrategyType.class, strategyTypeDto, false);
+        StrategyTypeDto result = CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class,straegyTypeService.revision(strategyType),false);
+        return new Response<>(result);
+    }
+
+    @Override
+    public void delete(@PathVariable Long id) {
+        straegyTypeService.delete(id);
+    }
+
+    @Override
 	public Response<StrategyTypeDto> fetchById(@PathVariable Long id) {
 		StrategyType strategyType = straegyTypeService.findById(id);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class, strategyType, false));

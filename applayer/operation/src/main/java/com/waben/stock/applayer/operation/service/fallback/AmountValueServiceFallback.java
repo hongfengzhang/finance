@@ -16,4 +16,14 @@ public class AmountValueServiceFallback implements AmountValueService {
     public Response<PageInfo<AmountValueDto>> pagesByQuery(AmountValueQuery amountValueQuery) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<AmountValueDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<AmountValueDto> modify(AmountValueDto amountValueDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

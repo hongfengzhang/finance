@@ -11,9 +11,11 @@ import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.SecurityAccountQuery;
 import com.waben.stock.interfaces.service.inverstors.SecurityAccountInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,5 +38,17 @@ public class SecurityAccountController  implements SecurityAccountInterface{
         Page<SecurityAccount> page = securityAccountService.pagesByQuery(securityAccountQuery);
         PageInfo<SecurityAccountDto> result = PageToPageInfo.pageToPageInfo(page, SecurityAccountDto.class);
         return new Response<>(result);
+    }
+
+    @Override
+    public Response<SecurityAccountDto> fetchById(@PathVariable Long id) {
+        SecurityAccount securityAccount = securityAccountService.fetchById(id);
+        SecurityAccountDto securityAccountDto = CopyBeanUtils.copyBeanProperties(securityAccount, new SecurityAccountDto(), false);
+        return new Response<>(securityAccountDto);
+    }
+
+    @Override
+    public void delete(@PathVariable Long id) {
+        securityAccountService.delete(id);
     }
 }

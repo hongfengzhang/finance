@@ -3,6 +3,7 @@ package com.waben.stock.applayer.operation.business;
 import com.waben.stock.applayer.operation.service.stock.StockService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -51,4 +52,29 @@ public class StockBusiness {
         throw new ServiceException(response.getCode());
     }
 
+    public StockDto fetchById(Long id) {
+        Response<StockDto> response = stockService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public Integer revision(StockDto stockDto) {
+        Response<Integer> response = stockService.modify(stockDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public void delete(Long id) {
+        stockService.delete(id);
+    }
 }

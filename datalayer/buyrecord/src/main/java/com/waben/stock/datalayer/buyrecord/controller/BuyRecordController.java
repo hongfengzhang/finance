@@ -148,7 +148,12 @@ public class BuyRecordController implements BuyRecordInterface {
         return new Response<>(result);
     }
 
-	@Override
+    @Override
+    public void delete(@PathVariable Long id) {
+        buyRecordService.delete(id);
+    }
+
+    @Override
 	public Response<BuyRecordDto> revoke(@PathVariable Long id) {
 		BuyRecord buyRecord = buyRecordService.revoke(id);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));

@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.dto.stockcontent;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/23.
@@ -10,7 +11,7 @@ public class LossDto implements Comparable<LossDto> {
 
 	private Long id;
 	private BigDecimal point;
-
+	private Set<StrategyTypeDto> strategyTypesDto;
 	public Long getId() {
 		return id;
 	}
@@ -26,7 +27,16 @@ public class LossDto implements Comparable<LossDto> {
 	public void setPoint(BigDecimal point) {
 		this.point = point;
 	}
+	public Set<StrategyTypeDto> getStrategyTypesDto() {
+		return strategyTypesDto;
+	}
 
+	public void setStrategyTypesDto(Set<StrategyTypeDto> strategyTypesDto) {
+		this.strategyTypesDto = strategyTypesDto;
+	}
+	public void setStrategyTypes(Set<StrategyTypeDto> strategyTypes) {
+		this.strategyTypesDto = strategyTypes;
+	}
 	@Override
 	public int compareTo(LossDto o) {
 		return o.getPoint().compareTo(point);

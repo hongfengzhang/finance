@@ -1,7 +1,9 @@
 package com.waben.stock.datalayer.stockcontent.controller;
 
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
+import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
 import com.waben.stock.datalayer.stockcontent.service.StockService;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -37,7 +39,11 @@ public class StockController implements StockInterface {
 
 	@Override
 	public Response<StockDto> fetchById(@PathVariable Long id) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(StockDto.class, stockService.findById(id), false));
+		Stock stock = stockService.findById(id);
+		StockDto stockDto = CopyBeanUtils.copyBeanProperties(StockDto.class, stock, false);
+		StockExponentDto stockExponentDto = CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stock.getExponent(), false);
+		stockDto.setExponent(stockExponentDto);
+		return new Response<>(stockDto);
 	}
 
 	@Override
@@ -45,10 +51,22 @@ public class StockController implements StockInterface {
 		Stock stock = stockService.findByCode(code);
 		StockDto result = CopyBeanUtils.copyBeanProperties(StockDto.class, stock, false);
 		if (stock.getExponent() != null) {
-			result.setStockExponentDto(
+			result.setExponent(
 					CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stock.getExponent(), false));
 		}
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<Integer> modify(@RequestBody StockDto stockDto) {
+		Stock stock = CopyBeanUtils.copyBeanProperties(Stock.class, stockDto, false);
+		Integer result = stockService.revision(stock);
+		return new Response<>(result);
+	}
+
+	@Override
+	public void delete(@PathVariable Long id) {
+		stockService.delete(id);
 	}
 
 }
