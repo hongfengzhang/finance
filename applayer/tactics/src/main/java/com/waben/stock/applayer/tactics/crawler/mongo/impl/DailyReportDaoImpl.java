@@ -83,4 +83,10 @@ public class DailyReportDaoImpl implements DailyReportDao {
 		return query;
 	}
 
+	@Override
+	public DailyReportModel selectDailyReport(String id) {
+		Query query = Query.query(Criteria.where("id").is(id));
+        return mongoTemplate.findOne(query, DailyReportModel.class, DAILY_REPORT);
+	}
+
 }

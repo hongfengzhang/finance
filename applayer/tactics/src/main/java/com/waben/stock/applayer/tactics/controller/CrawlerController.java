@@ -121,5 +121,11 @@ public class CrawlerController {
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         return Response.success(crawlerService.selectDailyReport(2, page, pageSize));
     }
+    
+    @RequestMapping(value = "/dailyReportDetail", method = RequestMethod.GET)
+    @ApiOperation(value = "7*27资讯和要闻详情")
+    public Response dailyReportDetail(String id) {
+    	return Response.success(crawlerService.selectDailyReport(id));
+    }
 
 }

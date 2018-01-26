@@ -11,4 +11,6 @@ public interface DailyReportDao {
     String saveReport(DailyReportModel dailyReport);
     
     List<?> selectDailyReport(Integer type, int page, int pageSize);
+
+	DailyReportModel selectDailyReport(String id);
 }

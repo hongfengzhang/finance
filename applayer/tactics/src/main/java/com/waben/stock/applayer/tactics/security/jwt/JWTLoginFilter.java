@@ -47,13 +47,15 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
 			throws AuthenticationException, IOException, ServletException {
-		return getAuthenticationManager().authenticate(
-				new CustomUsernamePasswordAuthenticationToken(req.getParameter("phone"), req.getParameter("password")));
+		CustomUsernamePasswordAuthenticationToken authentication = new CustomUsernamePasswordAuthenticationToken(
+				req.getParameter("phone"), req.getParameter("password"));
+		return getAuthenticationManager().authenticate(authentication);
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
 			Authentication auth) throws IOException, ServletException {
+		String registrationId = req.getParameter("registrationId");
 		// step 1 : 生成token
 		CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 		String token = JWTTokenUtil.generateToken(customUserDetails);

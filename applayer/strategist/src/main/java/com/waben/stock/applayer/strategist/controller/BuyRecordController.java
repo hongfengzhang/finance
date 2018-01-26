@@ -136,7 +136,7 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint.abs().multiply(new BigDecimal(-1)));
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
-		dto.setDeferredFee(deferredFee);
+		dto.setDeferredFee(deferred ? deferredFee : new BigDecimal(0));
 		dto.setDelegatePrice(delegatePrice);
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());

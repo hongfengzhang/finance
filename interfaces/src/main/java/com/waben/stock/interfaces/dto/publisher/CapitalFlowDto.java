@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CapitalFlowDto {
 
 	private Long id;

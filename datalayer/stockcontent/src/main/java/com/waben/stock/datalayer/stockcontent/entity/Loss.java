@@ -19,7 +19,8 @@ public class Loss {
 	private Long id;
 	@Column(scale = 3)
 	private BigDecimal point;
-
+	@Column
+	private Integer multiple;
 	@JsonBackReference
 	@ManyToMany(targetEntity = StrategyType.class, mappedBy = "losses")
 	private Set<StrategyType> strategyTypes;
@@ -47,4 +48,13 @@ public class Loss {
 	public void setStrategyTypes(Set<StrategyType> strategyTypes) {
 		this.strategyTypes = strategyTypes;
 	}
+
+	public Integer getMultiple() {
+		return multiple;
+	}
+
+	public void setMultiple(Integer multiple) {
+		this.multiple = multiple;
+	}
+
 }
