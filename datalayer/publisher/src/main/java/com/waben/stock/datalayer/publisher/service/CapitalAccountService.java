@@ -1,11 +1,11 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -13,14 +13,16 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
+import com.waben.stock.datalayer.publisher.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlowExtend;
@@ -39,15 +41,19 @@ import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
 import com.waben.stock.interfaces.enums.FrozenCapitalType;
-import com.waben.stock.interfaces.enums.MessageType;
+import com.waben.stock.interfaces.enums.OutsideMessageType;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowExtendQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 @Service
 public class CapitalAccountService {
+
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private CapitalAccountDao capitalAccountDao;
@@ -70,14 +76,17 @@ public class CapitalAccountService {
 	@Autowired
 	private WithdrawalsOrderDao withdrawalsOrderDao;
 
+	@Autowired
+	private OutsideMessageBusiness outsideMessageBusiness;
+
 	/**
 	 * 根据发布人系列号获取资金账户
 	 */
 	public CapitalAccount findByPublisherSerialCode(String publisherSerialCode) {
 		return capitalAccountDao.retriveByPublisherSerialCode(publisherSerialCode);
 	}
-	
-	public CapitalAccount findById(Long id){
+
+	public CapitalAccount findById(Long id) {
 		return capitalAccountDao.retrieve(id);
 	}
 
@@ -97,6 +106,58 @@ public class CapitalAccountService {
 		capitalAccountDao.update(account);
 	}
 
+	private void sendRechargeOutsideMessage(Long publisherId, BigDecimal amount) {
+		try {
+			OutsideMessage message = new OutsideMessage();
+			message.setPublisherId(publisherId);
+			message.setTitle("资金通知");
+			message.setContent(String.format("您的资金账户已充值成功+%s元", amount.toString()));
+			Map<String, String> extras = new HashMap<>();
+			extras.put("title", message.getTitle());
+			extras.put("content", String.format("您的资金账户已充值成功<span id=\"money\">+%s元</span>", amount.toString()));
+			extras.put("publisherId", String.valueOf(publisherId));
+			extras.put("resourceType", ResourceType.PUBLISHER.getIndex());
+			extras.put("resourceId", String.valueOf(publisherId));
+			extras.put("type", OutsideMessageType.ACCOUNT_RECHARGESUCCESS.getIndex());
+			message.setExtras(extras);
+			outsideMessageBusiness.send(message);
+		} catch (Exception ex) {
+			logger.error("发送资金通知失败，{}充值成功{}_{}", publisherId, amount.toString(), ex.getMessage());
+		}
+	}
+
+	private void sendWithdrawalsOutsideMessage(Long publisherId, BigDecimal amount, boolean isSuccessful) {
+		try {
+			OutsideMessage message = new OutsideMessage();
+			message.setPublisherId(publisherId);
+			message.setTitle("资金通知");
+			if (isSuccessful) {
+				message.setContent(String.format("您的资金账户已成功提现-%s元", amount.toString()));
+			} else {
+				message.setContent(String.format("您的资金账户提现失败%s元", amount.toString()));
+			}
+			Map<String, String> extras = new HashMap<>();
+			extras.put("title", message.getTitle());
+			if (isSuccessful) {
+				extras.put("content", String.format("您的资金账户已成功提现<span id=\"money\">-%s元</span>", amount.toString()));
+			} else {
+				extras.put("content", String.format("您的资金账户提现失败<span id=\"money\">%s元</span>", amount.toString()));
+			}
+			extras.put("publisherId", String.valueOf(publisherId));
+			extras.put("resourceType", ResourceType.PUBLISHER.getIndex());
+			extras.put("resourceId", String.valueOf(publisherId));
+			if (isSuccessful) {
+				extras.put("type", OutsideMessageType.ACCOUNT_WITHDRAWALSSUCCESS.getIndex());
+			} else {
+				extras.put("type", OutsideMessageType.ACCOUNT_WITHDRAWALFAILED.getIndex());
+			}
+			message.setExtras(extras);
+			outsideMessageBusiness.send(message);
+		} catch (Exception ex) {
+			logger.error("发送资金通知失败，{}充值成功{}_{}", publisherId, amount.toString(), ex.getMessage());
+		}
+	}
+
 	/**
 	 * 充值
 	 */
@@ -106,6 +167,8 @@ public class CapitalAccountService {
 		Date date = new Date();
 		increaseAmount(account, amount, date);
 		flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Recharge, amount.abs(), date);
+		
+		sendRechargeOutsideMessage(publisherId, amount);
 		return findByPublisherId(publisherId);
 	}
 
@@ -139,6 +202,7 @@ public class CapitalAccountService {
 				// 产生资金流水
 				flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Withdrawals,
 						amount.abs().multiply(new BigDecimal(-1)), date);
+				sendWithdrawalsOutsideMessage(publisherId, amount.abs(), true);
 				return findByPublisherId(publisherId);
 			} else if (withdrawalsState == WithdrawalsState.FAILURE) {
 				// 修改提现订单的状态
@@ -155,6 +219,8 @@ public class CapitalAccountService {
 				account.setFrozenCapital(account.getFrozenCapital().subtract(amount));
 				account.setAvailableBalance(account.getAvailableBalance().add(amount));
 				capitalAccountDao.update(account);
+				sendWithdrawalsOutsideMessage(publisherId, amount.abs(), false);
+				return findByPublisherId(publisherId);
 			}
 		}
 		return account;
@@ -235,40 +301,32 @@ public class CapitalAccountService {
 			return account;
 		}
 		BigDecimal frozenAmount = frozen.getAmount();
-		if (profitOrLoss.compareTo(new BigDecimal(0)) >= 0) {
-			// 退回全部冻结资金
-			thawAmount(account, frozenAmount, frozenAmount, date);
-			CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-					CapitalFlowType.ReturnReserveFund, frozenAmount.abs(), date);
-			CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
-					CapitalFlowExtendType.BUYRECORD, buyRecordId);
-			flowExtendDao.create(returnReserveFundExtend);
+		// 退回全部冻结资金
+		thawAmount(account, frozenAmount, frozenAmount, date);
+		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenAmount.abs()));
+		capitalAccountDao.update(account);
+		CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
+				CapitalFlowType.ReturnReserveFund, frozenAmount.abs(), date);
+		CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
+				CapitalFlowExtendType.BUYRECORD, buyRecordId);
+		flowExtendDao.create(returnReserveFundExtend);
+		// 盈亏
+		if (profitOrLoss.compareTo(new BigDecimal(0)) > 0) {
 			// 盈利
-			if (profitOrLoss.compareTo(new BigDecimal(0)) > 0) {
-				increaseAmount(account, profitOrLoss, date);
-				CapitalFlow profitFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-						CapitalFlowType.Profit, profitOrLoss.abs(), date);
-				CapitalFlowExtend profitExtend = new CapitalFlowExtend(profitFlow, CapitalFlowExtendType.BUYRECORD,
-						buyRecordId);
-				flowExtendDao.create(profitExtend);
-			}
-		} else {
+			increaseAmount(account, profitOrLoss, date);
+			CapitalFlow profitFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
+					CapitalFlowType.Profit, profitOrLoss.abs(), date);
+			CapitalFlowExtend profitExtend = new CapitalFlowExtend(profitFlow, CapitalFlowExtendType.BUYRECORD,
+					buyRecordId);
+			flowExtendDao.create(profitExtend);
+		} else if (profitOrLoss.compareTo(new BigDecimal(0)) < 0) {
 			// 亏损
 			BigDecimal lossAmountAbs = profitOrLoss.abs();
 			if (lossAmountAbs.compareTo(frozenAmount) > 0) {
 				// 最多亏损保证金
 				lossAmountAbs = frozenAmount;
 			}
-			BigDecimal returnFrozenAmount = frozenAmount.subtract(lossAmountAbs);
-			if (returnFrozenAmount.compareTo(new BigDecimal(0)) > 0) {
-				// 退回部分保证金
-				thawAmount(account, returnFrozenAmount, frozenAmount, date);
-				CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-						CapitalFlowType.ReturnReserveFund, returnFrozenAmount.abs(), date);
-				CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
-						CapitalFlowExtendType.BUYRECORD, buyRecordId);
-				flowExtendDao.create(returnReserveFundExtend);
-			}
+			reduceAmount(account, lossAmountAbs, date);
 			CapitalFlow lossFlow = flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Loss,
 					lossAmountAbs.abs().multiply(new BigDecimal(-1)), date);
 			CapitalFlowExtend lossExtend = new CapitalFlowExtend(lossFlow, CapitalFlowExtendType.BUYRECORD,
@@ -279,9 +337,6 @@ public class CapitalAccountService {
 		frozen.setStatus(FrozenCapitalStatus.Thaw);
 		frozen.setThawTime(new Date());
 		frozenCapitalDao.update(frozen);
-		// 修改账户的冻结资金数
-		account.setFrozenCapital(account.getFrozenCapital().subtract(frozen.getAmount()));
-		capitalAccountDao.update(account);
 		// 是否为被推广人的第一笔单，如果是，推广人赚取10%的服务费
 		Publisher publisher = publisherDao.retrieve(publisherId);
 		if (publisher.getPromoter() != null && !"".equals(publisher.getPromoter().trim())) {
@@ -324,7 +379,7 @@ public class CapitalAccountService {
 	}
 
 	@Transactional
-	public CapitalAccount returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
+	public synchronized CapitalAccount returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		increaseAmount(account, deferredFee, date);
@@ -338,7 +393,7 @@ public class CapitalAccountService {
 	}
 
 	@Transactional
-	public CapitalAccount revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee, BigDecimal deferredFee) {
+	public synchronized CapitalAccount revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee, BigDecimal deferredFee) {
 		Date date = new Date();
 		// 解冻保证金
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
@@ -387,7 +442,7 @@ public class CapitalAccountService {
 	 *            原先冻结资金
 	 * 
 	 */
-	private void thawAmount(CapitalAccount account, BigDecimal amount, BigDecimal frozenAmount, Date date) {
+	private synchronized void thawAmount(CapitalAccount account, BigDecimal amount, BigDecimal frozenAmount, Date date) {
 		account.setBalance(account.getBalance().subtract(frozenAmount.subtract(amount)));
 		account.setAvailableBalance(account.getAvailableBalance().add(amount));
 		account.setUpdateTime(date);
@@ -402,7 +457,7 @@ public class CapitalAccountService {
 	 * @param amount
 	 *            金额
 	 */
-	private void increaseAmount(CapitalAccount account, BigDecimal amount, Date date) {
+	private synchronized void increaseAmount(CapitalAccount account, BigDecimal amount, Date date) {
 		account.setBalance(account.getBalance().add(amount));
 		account.setAvailableBalance(account.getAvailableBalance().add(amount));
 		account.setUpdateTime(date);
@@ -417,7 +472,7 @@ public class CapitalAccountService {
 	 * @param amount
 	 *            金额
 	 */
-	private void reduceAmount(CapitalAccount account, BigDecimal amount, Date date) {
+	private synchronized void reduceAmount(CapitalAccount account, BigDecimal amount, Date date) {
 		BigDecimal amountAbs = amount.abs();
 		// 判断账余额是否足够
 		if (account.getAvailableBalance().compareTo(amountAbs) < 0) {
@@ -437,7 +492,7 @@ public class CapitalAccountService {
 	 * @param amount
 	 *            金额
 	 */
-	private void reduceAmount(CapitalAccount account, BigDecimal amount, BigDecimal frozenCapital, Date date) {
+	private synchronized void reduceAmount(CapitalAccount account, BigDecimal amount, BigDecimal frozenCapital, Date date) {
 		BigDecimal amountAbs = amount.abs();
 		BigDecimal frozenCapitalAbs = frozenCapital.abs();
 		BigDecimal totalAmountAbs = amountAbs.add(frozenCapitalAbs);
@@ -460,11 +515,13 @@ public class CapitalAccountService {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
 				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
-					Predicate publisherIdQuery = criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId());
+					Predicate publisherIdQuery = criteriaBuilder.equal(root.get("publisherId").as(Long.class),
+							query.getPublisherId());
 					predicatesList.add(criteriaBuilder.and(publisherIdQuery));
 				}
 				if (query.getBeginTime() != null) {
-					Predicate updateTimeQuery = criteriaBuilder.between(root.<Date>get("updateTime").as(Date.class),query.getBeginTime(),query.getEndTime());
+					Predicate updateTimeQuery = criteriaBuilder.between(root.<Date>get("updateTime").as(Date.class),
+							query.getBeginTime(), query.getEndTime());
 					predicatesList.add(criteriaBuilder.and(updateTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -474,8 +531,8 @@ public class CapitalAccountService {
 		}, pageable);
 		return pages;
 	}
-	
-	public CapitalAccount revision(CapitalAccountDto accountDto){
+
+	public CapitalAccount revision(CapitalAccountDto accountDto) {
 		CapitalAccount request = CopyBeanUtils.copyBeanProperties(CapitalAccount.class, accountDto, false);
 		CapitalAccount response = capitalAccountDao.update(request);
 		return response;

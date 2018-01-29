@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.service;
 
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,30 @@ public class RedisCache {
 					Protocol.DEFAULT_TIMEOUT, redisPassword);
 		} else {
 			pool = new JedisPool(new JedisPoolConfig(), redisHost, Integer.parseInt(redisPort));
+		}
+	}
+	
+	public void hset(String key, String field, String value) {
+		Jedis jedis = null;
+		try {
+			jedis = pool.getResource();
+			jedis.hset(key, field, value);
+		} finally {
+			if (jedis != null) {
+				jedis.close();
+			}
+		}
+	}
+	
+	public Map<String, String> hgetAll(String key) {
+		Jedis jedis = null;
+		try {
+			jedis = pool.getResource();
+			return jedis.hgetAll(key);
+		} finally {
+			if (jedis != null) {
+				jedis.close();
+			}
 		}
 	}
 

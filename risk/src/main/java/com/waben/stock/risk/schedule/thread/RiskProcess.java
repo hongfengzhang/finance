@@ -69,11 +69,11 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             Date expriessTime = null;
             try {
                 currentTime = sdf.parse(format);
-                expriessTime = sdf.parse("14:40:00");
+                expriessTime = sdf.parse("10:00:00");
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            SimpleDateFormat sdfDate=new SimpleDateFormat("yyyy-mm-dd");
+            SimpleDateFormat sdfDate=new SimpleDateFormat("yyyy-MM-dd");
             String currentDay = sdfDate.format(date);
             String expriessDay = sdfDate.format(riskBuyInStock.getExpireTime());
             logger.info("过期时间:{},当前时间:{}", expriessDay, currentDay);

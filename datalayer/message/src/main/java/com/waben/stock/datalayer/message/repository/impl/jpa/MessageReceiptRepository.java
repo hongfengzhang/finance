@@ -1,8 +1,7 @@
 package com.waben.stock.datalayer.message.repository.impl.jpa;
 
-import org.springframework.data.domain.Page;
-
 import com.waben.stock.datalayer.message.entity.MessageReceipt;
+import com.waben.stock.datalayer.message.entity.Messaging;
 
 /**
  * 
@@ -10,6 +9,8 @@ import com.waben.stock.datalayer.message.entity.MessageReceipt;
  *
  */
 public interface MessageReceiptRepository extends CustomJpaRepository<MessageReceipt, Long>{
+
+	MessageReceipt findByMessageAndRecipient(Messaging messaging, String recipient);
 
 	
 }

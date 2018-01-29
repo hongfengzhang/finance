@@ -2,11 +2,12 @@ package com.waben.stock.datalayer.buyrecord.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -26,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.buyrecord.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.buyrecord.business.HolidayBusiness;
+import com.waben.stock.datalayer.buyrecord.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.buyrecord.business.StrategyTypeBusiness;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
 import com.waben.stock.datalayer.buyrecord.entity.DeferredRecord;
@@ -38,8 +40,11 @@ import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
+import com.waben.stock.interfaces.enums.OutsideMessageType;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
@@ -70,6 +75,9 @@ public class BuyRecordService {
 
 	@Autowired
 	private DeferredRecordDao deferredRecordDao;
+
+	@Autowired
+	private OutsideMessageBusiness outsideMessageBusiness;
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
@@ -118,6 +126,8 @@ public class BuyRecordService {
 				}
 			}
 		}
+		// 站外消息推送
+		sendOutsideMessage(buyRecord);
 		return buyRecord;
 	}
 
@@ -189,7 +199,87 @@ public class BuyRecordService {
 		record.setState(next);
 		record.setUpdateTime(new Date());
 		BuyRecord result = buyRecordDao.update(record);
+		// 站外消息推送
+		sendOutsideMessage(record);
 		return result;
+	}
+
+	private void sendOutsideMessage(BuyRecord record) {
+		try {
+			BuyRecordState state = record.getState();
+			Map<String, String> extras = new HashMap<>();
+			OutsideMessage message = new OutsideMessage();
+			message.setPublisherId(record.getPublisherId());
+			message.setTitle("点买通知");
+			extras.put("title", message.getTitle());
+			extras.put("publisherId", String.valueOf(record.getPublisherId()));
+			extras.put("resourceType", ResourceType.BUYRECORD.getIndex());
+			extras.put("resourceId", String.valueOf(record.getId()));
+			message.setExtras(extras);
+			switch (state) {
+			case POSTED:
+				message.setContent(String.format("您已成功购买“%s %s”策略", record.getStockName(), record.getStockCode()));
+				extras.put("content", String.format("您已成功购买“<span id=\"stock\">%s %s</span>”策略", record.getStockName(),
+						record.getStockCode()));
+				extras.put("type", OutsideMessageType.BUY_POSTED.getIndex());
+				break;
+			case BUYLOCK:
+				message.setContent(
+						String.format("您所购买的“%s %s”策略已进入“买入锁定”状态", record.getStockName(), record.getStockCode()));
+				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“买入锁定”状态",
+						record.getStockName(), record.getStockCode()));
+				extras.put("type", OutsideMessageType.BUY_BUYLOCK.getIndex());
+				break;
+			case HOLDPOSITION:
+				message.setContent(String.format("您所购买的“%s %s”策略已进入“持仓中”状态", record.getStockName(), record.getStockCode()));
+				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“持仓中”状态",
+						record.getStockName(), record.getStockCode()));
+				extras.put("type", OutsideMessageType.BUY_HOLDPOSITION.getIndex());
+				break;
+			case SELLAPPLY:
+				message.setContent(
+						String.format("您所购买的“%s %s”策略已进入“卖出申请”状态", record.getStockName(), record.getStockCode()));
+				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“卖出申请”状态",
+						record.getStockName(), record.getStockCode()));
+				extras.put("type", OutsideMessageType.BUY_SELLAPPLY.getIndex());
+				break;
+			case SELLLOCK:
+				message.setContent(
+						String.format("您所购买的“%s %s”策略已进入“卖出锁定”状态", record.getStockName(), record.getStockCode()));
+				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“卖出锁定”状态",
+						record.getStockName(), record.getStockCode()));
+				extras.put("type", OutsideMessageType.BUY_SELLLOCK.getIndex());
+				break;
+			case UNWIND:
+				message.setContent(String.format("您所购买的“%s %s”策略已进入“已结算”状态", record.getStockName(), record.getStockCode()));
+				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“已结算”状态",
+						record.getStockName(), record.getStockCode()));
+				extras.put("type", OutsideMessageType.BUY_UNWIND.getIndex());
+				break;
+			case REVOKE:
+				if (record.getWindControlType() != null) {
+					message.setContent(String.format("您所购买的“%s %s”策略“委托第三方买入”失败，系统已发起自动退款", record.getStockName(),
+							record.getStockCode()));
+					extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略“委托第三方买入”失败，系统已发起自动退款",
+							record.getStockName(), record.getStockCode()));
+					extras.put("type", OutsideMessageType.BUY_BUYFAILED.getIndex());
+				} else {
+					message.setContent(String.format("您所购买的“%s %s”策略“委托第三方卖出”失败，系统已发起自动退款", record.getStockName(),
+							record.getStockCode()));
+					extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略“委托第三方卖出”失败，系统已发起自动退款",
+							record.getStockName(), record.getStockCode()));
+					extras.put("type", OutsideMessageType.BUY_SELLFAILED.getIndex());
+				}
+				break;
+			default:
+				break;
+			}
+			if (message.getContent() != null) {
+				outsideMessageBusiness.send(message);
+			}
+		} catch(Exception ex) {
+			logger.error("发送点买通知失败，{}_{}_{}", record.getId(), record.getState().getStatus(), ex.getMessage());
+		}
 	}
 
 	@Transactional
@@ -233,7 +323,11 @@ public class BuyRecordService {
 						.multiply(new BigDecimal(0.9)).setScale(2, RoundingMode.HALF_UP)));
 		// 修改点买记录状态
 		StrategyTypeDto strategyType = strategyTypeBusiness.fetchById(buyRecord.getStrategyTypeId());
-		buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(date, strategyType.getCycle() + 1));
+		if(buyRecord.getDeferred()) {
+			buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(date, strategyType.getCycle() + 1));
+		} else {
+			buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(date, strategyType.getCycle()));
+		}
 		return changeState(buyRecord, false);
 	}
 
@@ -396,8 +490,9 @@ public class BuyRecordService {
 							"%" + query.getStockName() + "%");
 					predicatesList.add(criteriaBuilder.and(stockNameQuery));
 				}
-				if(query.getBeginTime() != null && query.getEndTime() != null){
-					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),query.getBeginTime(),query.getEndTime());
+				if (query.getBeginTime() != null && query.getEndTime() != null) {
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),
+							query.getBeginTime(), query.getEndTime());
 					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -433,8 +528,9 @@ public class BuyRecordService {
 							"%" + query.getInvestorName() + "%");
 					predicatesList.add(criteriaBuilder.and(investorNameQuery));
 				}
-				if(query.getBeginTime() != null && query.getEndTime() != null){
-					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),query.getBeginTime(),query.getEndTime());
+				if (query.getBeginTime() != null && query.getEndTime() != null) {
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),
+							query.getBeginTime(), query.getEndTime());
 					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -465,9 +561,9 @@ public class BuyRecordService {
 							"%" + query.getStockName() + "%");
 					predicatesList.add(criteriaBuilder.and(stockNameQuery));
 				}
-				if(!StringUtils.isEmpty(query.getInvestorName())){
-					Predicate investorNameQuery = criteriaBuilder.equal(root.get("investorName").as(String.class), query
-							.getInvestorName());
+				if (!StringUtils.isEmpty(query.getInvestorName())) {
+					Predicate investorNameQuery = criteriaBuilder.equal(root.get("investorName").as(String.class),
+							query.getInvestorName());
 					predicatesList.add(criteriaBuilder.and(investorNameQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -483,15 +579,17 @@ public class BuyRecordService {
 		if (buyRecord == null) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NOT_FOUND_EXCEPTION);
 		}
-//		if (!(buyRecord.getState() == BuyRecordState.POSTED || buyRecord.getState() == BuyRecordState.BUYLOCK )) {
-//			throw new ServiceException(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION);
-//		}
+		if(buyRecord.getState() == BuyRecordState.REVOKE) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION);
+		}
 		// 撤单退款
 		accountBusiness.revoke(buyRecord.getPublisherId(), id, buyRecord.getServiceFee(), buyRecord.getDeferredFee());
 		// 修改点买记录状态
 		buyRecord.setState(BuyRecordState.REVOKE);
 		buyRecord.setUpdateTime(new Date());
 		buyRecordDao.update(buyRecord);
+		// 站外消息推送
+		sendOutsideMessage(buyRecord);
 		return buyRecord;
 	}
 

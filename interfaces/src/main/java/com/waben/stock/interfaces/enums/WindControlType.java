@@ -19,8 +19,6 @@ public enum WindControlType implements CommonalityEnum {
 	
 	PUBLISHERAPPLY("4", "客户申请平仓");
 
-
-	
 	private WindControlType(String index, String type) {
 		this.index = index;
 		this.type = type;

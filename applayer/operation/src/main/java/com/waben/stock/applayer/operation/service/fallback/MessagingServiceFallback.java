@@ -44,4 +44,9 @@ public class MessagingServiceFallback implements MessagingService {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<MessagingDto> readMessage(Long recipient, Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

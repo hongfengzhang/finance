@@ -4,6 +4,8 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/publisher")
 @Api(description = "策略发布人")
 public class PublisherController {
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private PublisherBusiness publisherBusiness;
@@ -101,6 +105,19 @@ public class PublisherController {
 		data.setToken(token);
 		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), phone), token);
 		return new Response<>(data);
+	}
+
+	@PostMapping("/registrationId")
+	@ApiOperation(value = "设置极光registrationId")
+	public Response<String> bindRegistrationId(String registrationId) {
+		logger.info("用户{}设置极光registrationId:{}", SecurityUtil.getUserId(), registrationId);
+		if (registrationId != null && !"".equals(registrationId.trim())) {
+			redisCache.set(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), SecurityUtil.getUserId()),
+					registrationId.trim());
+		}
+		Response<String> response = new Response<String>();
+		response.setResult(registrationId);
+		return response;
 	}
 
 	@GetMapping("/getCurrent")

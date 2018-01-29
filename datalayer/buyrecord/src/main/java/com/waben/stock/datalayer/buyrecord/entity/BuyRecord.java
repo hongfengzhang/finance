@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.waben.stock.datalayer.buyrecord.entity.enumconverter.BuyingRecordStatusConverter;
@@ -196,6 +197,9 @@ public class BuyRecord {
 	 */
 	@Column(name = "update_time")
 	private Date updateTime;
+
+	@OneToOne(mappedBy = "buyRecord")
+	private Settlement settlement;
 
 	public Long getId() {
 		return id;
@@ -467,6 +471,20 @@ public class BuyRecord {
 
 	public void setDeferredFee(BigDecimal deferredFee) {
 		this.deferredFee = deferredFee;
+	}
+
+	public BigDecimal getPublisherProfitOrLoss() {
+		if (settlement != null) {
+			return settlement.getPublisherProfitOrLoss();
+		}
+		return null;
+	}
+
+	public BigDecimal getProfitOrLoss() {
+		if (settlement != null) {
+			return settlement.getProfitOrLoss();
+		}
+		return null;
 	}
 
 }

@@ -13,7 +13,9 @@ public enum BannerForwardCategory implements CommonalityEnum {
 
 	APP("1", "APP"),
 
-	PC("2", "PC");
+	PC("2", "PC"), 
+	
+	APPSHELVES("3", "app上架使用");
 
 	private String index;
 

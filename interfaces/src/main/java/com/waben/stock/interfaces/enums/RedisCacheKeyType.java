@@ -5,7 +5,11 @@ import java.util.Map;
 
 public enum RedisCacheKeyType implements CommonalityEnum {
 
-	AppToken("1", "token:app:%s");
+	AppToken("1", "token:app:%s"),
+	
+	AppRegistrationId("2", "jiguang:registrationId:%s"), 
+	
+	StockMarket("3", "stock:market:%s");
 
 	private String index;
 

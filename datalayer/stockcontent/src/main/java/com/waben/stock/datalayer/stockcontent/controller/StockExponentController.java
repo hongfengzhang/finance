@@ -7,6 +7,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.stockcontent.StockExponentInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -30,4 +31,10 @@ public class StockExponentController implements StockExponentInterface{
                 StockExponentDto.class);
         return new Response<>(stockExponentDtos);
     }
+    
+	@Override
+	public Response<StockExponentDto> fetchStockExponent(@PathVariable String code) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stockExponentService.findStockExponent(code), false));
+	}
+    
 }

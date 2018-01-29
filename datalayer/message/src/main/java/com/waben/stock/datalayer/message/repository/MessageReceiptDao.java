@@ -1,8 +1,7 @@
 package com.waben.stock.datalayer.message.repository;
 
-import org.springframework.data.domain.Page;
-
 import com.waben.stock.datalayer.message.entity.MessageReceipt;
+import com.waben.stock.datalayer.message.entity.Messaging;
 
 /**
  * 
@@ -11,6 +10,8 @@ import com.waben.stock.datalayer.message.entity.MessageReceipt;
  */
 
 public interface MessageReceiptDao extends BaseDao<MessageReceipt, Long> {
+
+	MessageReceipt findByMessageAndRecipient(Messaging messaging, String recipient);
 
 	
 }

@@ -7,15 +7,21 @@ import java.util.Date;
  * @author Created by hujian on 2018年1月4日
  *
  */
-public class MessagingQuery extends PageAndSortQuery{
+public class MessagingQuery extends PageAndSortQuery {
 
 	private String title;
-	
+
 	private String messageType;
-	
+
 	private Date beginTime;
-	
+
 	private Date endTime;
+
+	private Boolean isOutside;
+
+	private Long publisherId;
+
+	private Boolean hasRead;
 
 	public String getTitle() {
 		return title;
@@ -47,6 +53,30 @@ public class MessagingQuery extends PageAndSortQuery{
 
 	public void setEndTime(Date endTime) {
 		this.endTime = endTime;
+	}
+
+	public Boolean getIsOutside() {
+		return isOutside;
+	}
+
+	public void setIsOutside(Boolean isOutside) {
+		this.isOutside = isOutside;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
+	}
+
+	public Boolean getHasRead() {
+		return hasRead;
+	}
+
+	public void setHasRead(Boolean hasRead) {
+		this.hasRead = hasRead;
 	}
 
 }
