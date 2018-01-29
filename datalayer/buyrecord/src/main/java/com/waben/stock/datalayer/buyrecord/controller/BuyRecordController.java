@@ -50,6 +50,7 @@ public class BuyRecordController implements BuyRecordInterface {
 
     @Override
     public Response<BuyRecordDto> addBuyRecord(@RequestBody BuyRecordDto buyRecordDto) {
+    	logger.info("发布人{}点买股票{}，申请资金{}!", buyRecordDto.getPublisherId(), buyRecordDto.getStockCode(), buyRecordDto.getApplyAmount());
         BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
         return new Response<>(
                 CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.save(buyRecord), false));
@@ -64,6 +65,7 @@ public class BuyRecordController implements BuyRecordInterface {
 
     @Override
     public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber) {
+    	logger.info("投资人{}买入锁定，点买记录{}，委托编号{}!", investorId, id, delegateNumber);
         BuyRecord buyRecord = buyRecordService.buyLock(investorId, id, delegateNumber);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
     }
@@ -71,12 +73,14 @@ public class BuyRecordController implements BuyRecordInterface {
     @Override
     public Response<BuyRecordDto> buyInto(@PathVariable Long investorId, @PathVariable Long id,
                                           BigDecimal buyingPrice) {
+    	logger.info("投资人{}买入成功，点买记录{}，买入价格{}!", investorId, id, buyingPrice);
         BuyRecord buyRecord = buyRecordService.buyInto(investorId, id, buyingPrice);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
     }
 
     @Override
     public Response<BuyRecordDto> sellApply(@PathVariable Long publisherId, @PathVariable Long id) {
+    	logger.info("发布人{}申请卖出点买记录{}!", publisherId, id);
         BuyRecord buyRecord = buyRecordService.sellApply(publisherId, id);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
     }
@@ -84,6 +88,7 @@ public class BuyRecordController implements BuyRecordInterface {
     @Override
     public Response<BuyRecordDto> sellLock(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber,
                                            String windControlTypeIndex) {
+    	logger.info("投资人{}卖出锁定，点买记录{}，委托编号{}，风控类型-{}!", investorId, id, delegateNumber, WindControlType.getByIndex(windControlTypeIndex).getType());
         BuyRecord buyRecord = buyRecordService.sellLock(investorId, id, delegateNumber,
                 WindControlType.getByIndex(windControlTypeIndex));
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
@@ -92,6 +97,7 @@ public class BuyRecordController implements BuyRecordInterface {
     @Override
     public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id,
                                           BigDecimal sellingPrice) {
+    	logger.info("投资人{}卖出成功，点买记录{}，卖出价格{}!", investorId, id, sellingPrice);
         BuyRecord buyRecord = buyRecordService.sellOut(investorId, id, sellingPrice);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
     }
@@ -101,21 +107,18 @@ public class BuyRecordController implements BuyRecordInterface {
     	BuyRecord buyRecord = buyRecordService.deferred(id);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
 	}
+    
+    @Override
+    public Response<Integer> strategyJoinCount(@PathVariable Long publisherId, @PathVariable Long strategyTypeId) {
+    	return new Response<>(buyRecordService.strategyJoinCount(publisherId, strategyTypeId));
+    }
 
     @Override
     public Response<Void> dropBuyRecord(@PathVariable Long id) {
         buyRecordService.remove(id);
         return new Response<>();
     }
-
-    @RequestMapping("/status/{status}")
-    public Response<List<BuyRecordDto>> buyRecordsWithStatus11(@PathVariable("status") Integer status) {
-        BuyRecordState buyRecordState = BuyRecordState.getByIndex(String.valueOf(status));
-        List<BuyRecord> buyRecords = buyRecordService.fetchByStateAndOrderByCreateTime(buyRecordState);
-        List<BuyRecordDto> result = CopyBeanUtils.copyListBeanPropertiesToList(buyRecords, BuyRecordDto.class);
-        return new Response<>(result);
-    }
-
+    
     @Override
     public Response<List<BuyRecordDto>> buyRecordsWithStatus(@PathVariable("state") Integer state) {
         BuyRecordState buyRecordState = BuyRecordState.getByIndex(String.valueOf(state));
@@ -144,5 +147,11 @@ public class BuyRecordController implements BuyRecordInterface {
         PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
         return new Response<>(result);
     }
+
+	@Override
+	public Response<BuyRecordDto> revoke(@PathVariable Long id) {
+		BuyRecord buyRecord = buyRecordService.revoke(id);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+	}
 
 }

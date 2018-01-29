@@ -30,6 +30,11 @@ public class CapitalFlow {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
+	 * 流水号
+	 */
+	@Column(name = "flow_no")
+	private String flowNo;
+	/**
 	 * 冻结资金
 	 */
 	@Column(name = "amount")
@@ -129,6 +134,22 @@ public class CapitalFlow {
 
 	public void setExtendList(Set<CapitalFlowExtend> extendList) {
 		this.extendList = extendList;
+	}
+
+	public String getCapitalFlowType(){
+		String capitalFlowType = null;
+		if(type != null){
+			capitalFlowType = type.getType();
+		}
+		return capitalFlowType;
+	}
+	
+	public String getFlowNo() {
+		return flowNo;
+	}
+
+	public void setFlowNo(String flowNo) {
+		this.flowNo = flowNo;
 	}
 
 }

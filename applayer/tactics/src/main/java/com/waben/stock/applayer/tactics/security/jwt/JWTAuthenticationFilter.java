@@ -20,34 +20,48 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
+import com.waben.stock.applayer.tactics.service.RedisCache;
+import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 
 public class JWTAuthenticationFilter extends GenericFilterBean {
+
+	private RedisCache redisCache;
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		// 获取请求中的token
-		String token = ((HttpServletRequest) request).getHeader(JWTTokenUtil.HEADER_STRING);
+		String token = httpRequest.getHeader(JWTTokenUtil.HEADER_STRING);
 		if (token != null && !"".equals(token)) {
 			// 获取token中的信息
 			try {
 				Map<String, Object> tokenInfo = JWTTokenUtil.getTokenInfo(token);
-				// 判断username是否存在，以及token是否过期
 				String username = (String) tokenInfo.get("sub");
-				Long userId = new Long((Integer) tokenInfo.get("userId"));
-				String serialCode = (String) tokenInfo.get("serialCode");
-				if (username != null && !"".equals(username)) {
-					Date exp = (Date) tokenInfo.get("exp");
-					if (exp != null && exp.getTime() * 1000 > System.currentTimeMillis()) {
-						// 如果为正确的token，将身份验证放入上下文中
-						List<GrantedAuthority> authorities = AuthorityUtils
-								.commaSeparatedStringToAuthorityList((String) tokenInfo.get("authorities"));
-						CustomUserDetails userDeatails = new CustomUserDetails(userId, serialCode, username, null,
-								authorities);
-						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-								username, null, authorities);
-						authentication.setDetails(userDeatails);
-						SecurityContextHolder.getContext().setAuthentication(authentication);
+				// 判断该token是否为最新登陆的token
+				String cacheToken = redisCache.get(String.format(RedisCacheKeyType.AppToken.getKey(), username));
+				if (cacheToken != null && !"".equals(cacheToken) && !cacheToken.equals(token)) {
+					httpRequest.getSession().invalidate();
+					HttpServletResponse httpResponse = (HttpServletResponse) response;
+					httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
+					SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+				} else {
+					// 判断username是否存在，以及token是否过期
+					Long userId = new Long((Integer) tokenInfo.get("userId"));
+					String serialCode = (String) tokenInfo.get("serialCode");
+					if (username != null && !"".equals(username)) {
+						Date exp = (Date) tokenInfo.get("exp");
+						if (exp != null && exp.getTime() * 1000 > System.currentTimeMillis()) {
+							// 如果为正确的token，将身份验证放入上下文中
+							List<GrantedAuthority> authorities = AuthorityUtils
+									.commaSeparatedStringToAuthorityList((String) tokenInfo.get("authorities"));
+							CustomUserDetails userDeatails = new CustomUserDetails(userId, serialCode, username, null,
+									authorities);
+							UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+									username, null, authorities);
+							authentication.setDetails(userDeatails);
+							SecurityContextHolder.getContext().setAuthentication(authentication);
+						}
 					}
 				}
 			} catch (Exception ex) {
@@ -58,4 +72,9 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 
 		filterChain.doFilter(request, response);
 	}
+
+	public void setJedisCache(RedisCache redisCache) {
+		this.redisCache = redisCache;
+	}
+
 }

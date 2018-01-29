@@ -260,7 +260,7 @@ public class MACTest {
         pay.put("sendTime", "20171221171639");
         pay.put("sendSeqId", "201712211716112");
         pay.put("transType", "Y001");
-        pay.put("organizationId", "243463836");
+        pay.put("organizationId", " ");
         pay.put("payPass", "5");
         pay.put("transAmt", "2");
 //        pay.put("cardNo", "6217007200027128555");

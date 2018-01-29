@@ -1,7 +1,11 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -129,12 +133,37 @@ public class PublisherService {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<Publisher> pages = publisherDao.page(new Specification<Publisher>() {
 			@Override
-			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery,
-					CriteriaBuilder criteriaBuilder) {
-				if (!StringUtils.isEmpty(query.getPhone())) {
-					Predicate typeQuery = criteriaBuilder.equal(root.get("phone").as(String.class), query.getPhone());
-					criteriaQuery.where(criteriaBuilder.and(typeQuery));
+			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				if(StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPromoter()) && StringUtils.isEmpty(query.getBeginTime())){
+					criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
+					return criteriaQuery.getRestriction();
 				}
+				List<Predicate> predicatesList = new ArrayList<Predicate>();
+				if (!StringUtils.isEmpty(query.getPhone())) {
+					Predicate phoneQuery = criteriaBuilder.like(root.get("phone").as(String.class), "%"+query
+							.getPhone()+"%");
+					predicatesList.add(phoneQuery);
+				}
+				if (!StringUtils.isEmpty(query.getPromoter())) {
+					Predicate promoterQuery = criteriaBuilder.equal(root.get("promoter").as(String.class), query
+							.getPromoter());
+					predicatesList.add(promoterQuery);
+				}
+				if(!StringUtils.isEmpty(query.getBeginTime()) && !StringUtils.isEmpty(query.getEndTime())){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					Date beginTime = null;
+					Date endTime = null;
+					try {
+						beginTime = sdf.parse(query.getBeginTime());
+						endTime = sdf.parse(query.getEndTime());
+					} catch (ParseException e) {
+						throw new ServiceException(ExceptionConstant.DATETIME_ERROR);
+					}
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),beginTime,endTime);
+					predicatesList.add(criteriaBuilder.and(createTimeQuery));
+				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
@@ -153,4 +182,7 @@ public class PublisherService {
 		return publisher;
 	}
 
+	public Publisher revision(Publisher publisher){
+		return publisherDao.update(publisher);
+	}
 }

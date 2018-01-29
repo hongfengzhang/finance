@@ -16,10 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.alipay.api.AlipayApiException;
 import com.waben.stock.applayer.tactics.business.AliPayBusiness;
+import com.waben.stock.applayer.tactics.business.PaymentOrderBusiness;
+import com.waben.stock.applayer.tactics.dto.payment.AliturnPaymentOrderDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,6 +36,16 @@ public class AliPayController {
 
 	@Autowired
 	private AliPayBusiness aliPayBusiness;
+
+	@Autowired
+	private PaymentOrderBusiness paymentOrderBusiness;
+
+	@ApiOperation(value = "支付宝转账充值")
+	@PostMapping("/turnrecharge")
+	public Response<AliturnPaymentOrderDto> turnRecharge(String alipayAccount, BigDecimal amount) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(AliturnPaymentOrderDto.class,
+				aliPayBusiness.turnRecharge(SecurityUtil.getUserId(), alipayAccount, amount), false));
+	}
 
 	@ApiOperation(value = "支付宝充值")
 	@PostMapping("/alirecharge")
@@ -74,7 +87,7 @@ public class AliPayController {
 	public Response<String> sync(String paymentNo) throws AlipayApiException {
 		Response<String> resp = new Response<String>();
 		String result = "fail";
-		PaymentOrderDto order = aliPayBusiness.findByPaymentNo(paymentNo);
+		PaymentOrderDto order = paymentOrderBusiness.findByPaymentNo(paymentNo);
 		if (order != null) {
 			if (order.getState() == PaymentState.Paid) {
 				// 当前订单支付成功

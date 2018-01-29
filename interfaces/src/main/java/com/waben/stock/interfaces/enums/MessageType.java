@@ -22,7 +22,7 @@ public enum MessageType implements CommonalityEnum {
 
     static {
         for (MessageType _enum : MessageType.values()) {
-            valueMap.put(_enum.getType(), _enum);
+            valueMap.put(_enum.getIndex(), _enum);
         }
     }
 

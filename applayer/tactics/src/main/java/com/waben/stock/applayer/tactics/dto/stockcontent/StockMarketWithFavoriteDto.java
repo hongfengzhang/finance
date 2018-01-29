@@ -11,6 +11,10 @@ import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 public class StockMarketWithFavoriteDto extends StockMarket {
 
 	private boolean favorite;
+	/**
+	 * 是否交易时间段
+	 */
+	private boolean isTradeTime;
 
 	public boolean isFavorite() {
 		return favorite;
@@ -18,6 +22,14 @@ public class StockMarketWithFavoriteDto extends StockMarket {
 
 	public void setFavorite(boolean favorite) {
 		this.favorite = favorite;
+	}
+
+	public boolean getIsTradeTime() {
+		return isTradeTime;
+	}
+
+	public void setIsTradeTime(boolean isTradeTime) {
+		this.isTradeTime = isTradeTime;
 	}
 
 }

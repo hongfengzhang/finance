@@ -16,6 +16,7 @@ import com.waben.stock.applayer.tactics.dto.stockcontent.StockMarketWithFavorite
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.stockcontent.StockWithFavoriteDto;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockKLine;
+import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -102,6 +103,12 @@ public class StockController {
 	@ApiOperation(value = "盘口")
 	public Response<StockDiscDto> disc(@PathVariable("code") String code) {
 		return new Response<>(stockBusiness.disc(code));
+	}
+	
+	@GetMapping("/{exponent}/ranking")
+	@ApiOperation(value = "大盘股票跌涨排行榜", notes = "1涨幅榜，2跌幅榜，3价格降序，4，价格升序")
+	public Response<List<StockMarket>> ranking(@PathVariable("exponent") String exponent, int rankType, int size) {
+		return new Response<>(stockBusiness.ranking(exponent, rankType, size));
 	}
 
 }

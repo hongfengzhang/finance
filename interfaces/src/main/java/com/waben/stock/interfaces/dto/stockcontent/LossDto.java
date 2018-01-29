@@ -10,6 +10,7 @@ public class LossDto implements Comparable<LossDto> {
 
 	private Long id;
 	private BigDecimal point;
+	private Integer multiple;
 
 	public Long getId() {
 		return id;
@@ -30,6 +31,14 @@ public class LossDto implements Comparable<LossDto> {
 	@Override
 	public int compareTo(LossDto o) {
 		return o.getPoint().compareTo(point);
+	}
+
+	public Integer getMultiple() {
+		return multiple;
+	}
+
+	public void setMultiple(Integer multiple) {
+		this.multiple = multiple;
 	}
 
 }

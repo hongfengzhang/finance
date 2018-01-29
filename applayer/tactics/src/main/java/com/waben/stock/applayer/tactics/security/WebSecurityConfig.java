@@ -14,6 +14,7 @@ import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
+import com.waben.stock.applayer.tactics.service.RedisCache;
 
 @Configuration
 @EnableWebSecurity
@@ -25,12 +26,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private CapitalAccountReference accountService;
 
-	@Bean
+	@Autowired
+	private RedisCache redisCache;
+
+	public JWTAuthenticationFilter jWTAuthenticationFilter() {
+		JWTAuthenticationFilter result = new JWTAuthenticationFilter();
+		result.setJedisCache(redisCache);
+		return result;
+	}
+
 	public JWTLoginFilter jwtLoginFilter() {
 		try {
 			JWTLoginFilter result = new JWTLoginFilter(authenticationManager());
 			result.setPublisherService(publisherReference);
 			result.setAccountService(accountService);
+			result.setJedisCache(redisCache);
 			return result;
 		} catch (Exception e) {
 			throw new RuntimeException("get AuthenticationManager exception!", e);
@@ -68,29 +78,35 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 开放接口
 		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/getEnabledCircularsList",
+		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
 				"/system/stockMarketExponent", "/system/getAppHomeTopData").permitAll();
 		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
 		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
 		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
-				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}").permitAll();
+				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking").permitAll();
 		http.authorizeRequests().antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn",
 				"/payment/czpaycallback", "/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
 		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/applists").permitAll();
+		http.authorizeRequests()
+				.antMatchers("/jsonp/experienceSta", "/jsonp/{publisherId}/strategyqualify/{strategyTypeId}")
+				.permitAll();
+		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
+		http.authorizeRequests().antMatchers("/aliturnpay-page/**", "/paymentorder/**").permitAll();
+		http.authorizeRequests().antMatchers("/appversion/currentAppVersion").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
 		// 添加一个过滤器 所有访问 /login 的请求交给 JWTLoginFilter 来处理 这个类处理所有的JWT相关内容
 		http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
 		// 添加一个过滤器验证其他请求的Token是否合法
-		http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
 		http.sessionManagement().maximumSessions(1);
 	}
- 
+
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);

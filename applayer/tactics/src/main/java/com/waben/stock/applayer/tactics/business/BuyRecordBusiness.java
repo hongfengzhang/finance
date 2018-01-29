@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.tactics.business;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +19,8 @@ import com.waben.stock.applayer.tactics.reference.SettlementReference;
 import com.waben.stock.applayer.tactics.reference.StockReference;
 import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -32,6 +34,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 @Service
 public class BuyRecordBusiness {
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -88,37 +92,9 @@ public class BuyRecordBusiness {
 	}
 
 	public PageInfo<BuyRecordDto> pages(BuyRecordQuery buyRecordQuery) {
-
 		Response<PageInfo<BuyRecordDto>> response = buyRecordReference.pagesByQuery(buyRecordQuery);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
-		}
-		throw new ServiceException(response.getCode());
-	}
-
-	public PageInfo<BuyRecordWithMarketDto> pagesSettlement(SettlementQuery query) {
-		Response<PageInfo<SettlementDto>> response = settlementReference.pagesByQuery(query);
-		if ("200".equals(response.getCode())) {
-			List<BuyRecordWithMarketDto> content = new ArrayList<>();
-			List<SettlementDto> settlementContent = response.getResult().getContent();
-			if (settlementContent != null && settlementContent.size() > 0) {
-				for (SettlementDto settlement : settlementContent) {
-					BuyRecordWithMarketDto buyRecord = wrapMarketInfo(settlement.getBuyRecord());
-					buyRecord.setProfitOrLoss(settlement.getProfitOrLoss());
-					buyRecord.setPublisherProfitOrLoss(settlement.getPublisherProfitOrLoss());
-					DeferredRecordDto deferredRecordDto = deferredRecordReference
-							.fetchByPublisherIdAndBuyRecordId(buyRecord.getPublisherId(), buyRecord.getId())
-							.getResult();
-					if (deferredRecordDto != null) {
-						buyRecord.setDeferredDays(deferredRecordDto.getCycle());
-						buyRecord.setDeferredCharges(deferredRecordDto.getFee());
-					}
-					content.add(buyRecord);
-				}
-			}
-			return new PageInfo<>(content, response.getResult().getTotalPages(), response.getResult().getLast(),
-					response.getResult().getTotalElements(), response.getResult().getSize(),
-					response.getResult().getNumber(), response.getResult().getFrist());
 		}
 		throw new ServiceException(response.getCode());
 	}
@@ -154,11 +130,18 @@ public class BuyRecordBusiness {
 	}
 
 	public BuyRecordDto sellApply(Long userId, Long id) {
-		Response<BuyRecordDto> response = buyRecordReference.sellApply(userId, id);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
+		BuyRecordDto buyRecord = this.findById(id);
+		// 持仓中的才能申请卖出
+		if (buyRecord.getState() == BuyRecordState.HOLDPOSITION && buyRecord.getBuyingTime() != null
+				&& !sdf.format(new Date()).equals(sdf.format(buyRecord.getBuyingTime()))) {
+			Response<BuyRecordDto> response = buyRecordReference.sellApply(userId, id);
+			if ("200".equals(response.getCode())) {
+				return response.getResult();
+			}
+			throw new ServiceException(response.getCode());
+		} else {
+			throw new ServiceException(ExceptionConstant.USERSELLAPPLY_NOTMATCH_EXCEPTION);
 		}
-		throw new ServiceException(response.getCode());
 	}
 
 	public PageInfo<TradeDynamicDto> tradeDynamic(int page, int size) {
@@ -167,7 +150,7 @@ public class BuyRecordBusiness {
 		Response<PageInfo<SettlementDto>> sResponse = settlementReference.pagesByQuery(sQuery);
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
-					new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
+					new BuyRecordState[] { BuyRecordState.HOLDPOSITION,
 							BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
 
@@ -203,6 +186,25 @@ public class BuyRecordBusiness {
 			return new PageInfo<TradeDynamicDto>(content, 0, false, 0L, size, page, false);
 		}
 		throw new ServiceException(sResponse.getCode());
+	}
+
+	public Integer strategyJoinCount(Long publisherId, Long strategyTypeId) {
+		Response<Integer> response = buyRecordReference.strategyJoinCount(publisherId, strategyTypeId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public boolean hasStrategyQualify(Long publisherId, Long strategyTypeId) {
+		if (new Long(3).equals(strategyTypeId)) {
+			// 策略类型为3，表示2000元体验金活动
+			Integer count = this.strategyJoinCount(publisherId, strategyTypeId);
+			if (count != null && count > 0) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 }

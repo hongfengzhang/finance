@@ -114,7 +114,7 @@ public interface BuyRecordInterface {
 	@RequestMapping(value = "/{investorId}/sellout/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> sellOut(@PathVariable("investorId") Long investorId, @PathVariable("id") Long id,
 			@RequestParam(name = "sellingPrice") BigDecimal sellingPrice);
-	
+
 	/**
 	 * 递延
 	 *
@@ -124,9 +124,34 @@ public interface BuyRecordInterface {
 	 */
 	@RequestMapping(value = "/deferred/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> deferred(@PathVariable("id") Long id);
+	
+	/**
+	 * 撤单
+	 *
+	 * @param id
+	 *            点买记录id
+	 * @return 点买记录
+	 */
+	@RequestMapping(value = "/revoke/{id}", method = RequestMethod.PUT)
+	Response<BuyRecordDto> revoke(@PathVariable("id") Long id);
+
+	/**
+	 * 获取发布人参与某个点买策略的次数
+	 * 
+	 * @param publisherId
+	 *            发布人ID
+	 * @param strategyTypeId
+	 *            策略类型ID
+	 * @return 参与次数
+	 */
+	@RequestMapping(value = "/{publisherId}/join/{strategyTypeId}/count", method = RequestMethod.GET)
+	Response<Integer> strategyJoinCount(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("strategyTypeId") Long strategyTypeId);
 
 	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
 	Response<List<BuyRecordDto>> buyRecordsWithStatus(@PathVariable("state") Integer state);
+
+
 	/**
 	 * 分页查询点买记录
 	 *
@@ -134,7 +159,7 @@ public interface BuyRecordInterface {
 	 *            查询条件
 	 * @return 点买记录
 	 */
-	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery);
 
 	@RequestMapping(value = "/posted/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)

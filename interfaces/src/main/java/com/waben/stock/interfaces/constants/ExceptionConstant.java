@@ -37,6 +37,8 @@ public class ExceptionConstant {
 	public static final String ORIGINAL_PASSWORD_MISMATCH_EXCEPTION = "2007";
 	// 手机号不匹配
 	public static final String PHONE_MISMATCH_EXCEPTION = "2008";
+	// 已经设置过支付密码，修改支付密码需要验证码
+	public static final String MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION = "2009";
 
 	/* 业务异常 */
 	// 系统管理业务异常
@@ -89,6 +91,16 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_ALREADY_DEFERRED_EXCEPTION = "6018";
 	// 当前用户为测试用户，不能进行提现操作
 	public static final String TESTUSER_NOWITHDRAWALS_EXCEPTION = "6019";
+	// 当前用户不能参与该策略，或该策略为一次性参与活动且当前用户已经参与
+	public static final String STRATEGYQUALIFY_NOTENOUGH_EXCEPTION = "6020";
+	// 申请市值不足购买一手
+	public static final String APPLYAMOUNT_NOTENOUGH_BUYSTOCK_EXCEPTION = "6021";
+	// 持仓第二天之后才能申请卖出
+	public static final String USERSELLAPPLY_NOTMATCH_EXCEPTION = "6022";
+	// 买入中和买入锁定状态下才能撤单
+	public static final String BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION = "6023";
+	// 不支持购买创业板的股票
+	public static final String DEVELOPSTOCK_NOTSUPPORT_EXCEPTION = "6024";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

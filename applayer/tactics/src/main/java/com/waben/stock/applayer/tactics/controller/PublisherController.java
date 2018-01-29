@@ -1,10 +1,11 @@
 package com.waben.stock.applayer.tactics.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,21 +18,22 @@ import org.springframework.web.multipart.MultipartFile;
 import com.waben.stock.applayer.tactics.business.BindCardBusiness;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
+import com.waben.stock.applayer.tactics.business.SmsBusiness;
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
+import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.applayer.tactics.service.SmsCache;
-import com.waben.stock.applayer.tactics.service.SmsService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.util.RandomUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -44,6 +46,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/publisher")
 @Api(description = "策略发布人")
 public class PublisherController {
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private PublisherBusiness publisherBusiness;
@@ -55,7 +59,13 @@ public class PublisherController {
 	private BindCardBusiness bindCardBusiness;
 
 	@Autowired
-	private SmsService smsService;
+	private SmsBusiness smsBusiness;
+
+	@Autowired
+	private RedisCache redisCache;
+
+	@Autowired
+	private SmsCache smsCache;
 
 	@GetMapping("/{id}")
 	public Response<PublisherDto> echo(@PathVariable Long id) {
@@ -66,13 +76,7 @@ public class PublisherController {
 	@ApiOperation(value = "发送短信", notes = "type(1:注册,2:修改密码,3:绑定银行卡,5:修改支付密码)")
 	public Response<String> sendAuthCode(String phone, int type) {
 		SmsType smsType = SmsType.getByIndex(String.valueOf(type));
-		List<String> paramValues = new ArrayList<>();
-		// 发送注册短信
-		if (smsType == SmsType.RegistVerificationCode || smsType == SmsType.ModifyPasswordCode
-				|| smsType == SmsType.BindCardCode || smsType == SmsType.ModifyPaymentPwdCode) {
-			paramValues.add(RandomUtil.generateRandomCode(4));
-		}
-		smsService.sendMessage(smsType, phone, paramValues);
+		smsBusiness.sendAuthCode(phone, smsType);
 		return new Response<>();
 	}
 
@@ -80,7 +84,8 @@ public class PublisherController {
 	@ApiOperation(value = "验证修改支付密码的验证码是否正确")
 	public Response<Boolean> validatePaymentPwdCode(@PathVariable("verificationCode") String verificationCode) {
 		// 检查验证码
-		SmsCache.matchVerificationCode(SmsType.ModifyPaymentPwdCode, SecurityUtil.getUsername(), verificationCode);
+		smsCache.matchVerificationCode(SmsType.ModifyPaymentPwdCode, SecurityUtil.getUsername(), "code",
+				verificationCode);
 		return new Response<>(true);
 	}
 
@@ -90,7 +95,7 @@ public class PublisherController {
 			@RequestParam(required = true) String password, @RequestParam(required = true) String verificationCode,
 			String promoter, HttpServletRequest request) {
 		// 检查验证码
-		SmsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, verificationCode);
+		smsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, "code", verificationCode);
 		// 注册
 		PublisherDto publisher = publisherBusiness.register(phone, password, promoter, request.getHeader("endType"));
 		CapitalAccountDto account = accountBusiness.findByPublisherId(publisher.getId());
@@ -98,7 +103,21 @@ public class PublisherController {
 		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
 				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
 		data.setToken(token);
+		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), phone), token);
 		return new Response<>(data);
+	}
+
+	@PostMapping("/registrationId")
+	@ApiOperation(value = "设置极光registrationId")
+	public Response<String> bindRegistrationId(String registrationId) {
+		logger.info("用户{}设置极光registrationId:{}", SecurityUtil.getUserId(), registrationId);
+		if (registrationId != null && !"".equals(registrationId.trim())) {
+			redisCache.set(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), SecurityUtil.getUserId()),
+					registrationId.trim());
+		}
+		Response<String> response = new Response<String>();
+		response.setResult(registrationId);
+		return response;
 	}
 
 	@GetMapping("/getCurrent")
@@ -118,6 +137,7 @@ public class PublisherController {
 		List<BindCardDto> bindCardList = bindCardBusiness.listsByPublisherId(SecurityUtil.getUserId());
 		if (bindCardList != null && bindCardList.size() > 0) {
 			result.getResult().setSettingBindCard(true);
+			result.getResult().setBindCardCount(bindCardList.size());
 		}
 		// 获取是否设置过支付密码
 		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());
@@ -131,14 +151,21 @@ public class PublisherController {
 	@ApiOperation(value = "修改密码")
 	public Response<PublisherCapitalAccountDto> modifyPassword(String phone, String password, String verificationCode) {
 		// 检查验证码
-		SmsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, verificationCode);
+		smsCache.matchVerificationCode(SmsType.ModifyPasswordCode, phone, "code", verificationCode);
 		// 修改密码
 		PublisherDto publisher = publisherBusiness.modifyPassword(phone, password);
 		CapitalAccountDto account = accountBusiness.findByPublisherId(publisher.getId());
 		PublisherCapitalAccountDto data = new PublisherCapitalAccountDto(publisher, account);
-		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
-				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+		String cacheToken = redisCache.get(String.format(RedisCacheKeyType.AppToken.getKey(), phone));
+		String token = null;
+		if (cacheToken != null && !"".equals(cacheToken.trim())) {
+			token = cacheToken;
+		} else {
+			token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
+					publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
+		}
 		data.setToken(token);
+		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), phone), token);
 		return new Response<>(data);
 	}
 
@@ -159,7 +186,7 @@ public class PublisherController {
 		data.setToken(token);
 		return new Response<>(data);
 	}
-	
+
 	@PostMapping("/modifyPaymentPassword")
 	@ApiOperation(value = "设置支付密码")
 	public Response<String> modifyPaymentPassword(String phone, String paymentPassword, String verificationCode) {
@@ -167,11 +194,23 @@ public class PublisherController {
 			throw new ServiceException(ExceptionConstant.PHONE_MISMATCH_EXCEPTION);
 		}
 		// 检查验证码
-		SmsCache.matchVerificationCode(SmsType.ModifyPaymentPwdCode, phone, verificationCode);
+		smsCache.matchVerificationCode(SmsType.ModifyPaymentPwdCode, phone, "code", verificationCode);
 		accountBusiness.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
 		return new Response<>();
 	}
-	
+
+	@PostMapping("/initPaymentPassword")
+	@ApiOperation(value = "初始化支付密码")
+	public Response<String> initPaymentPassword(String paymentPassword) {
+		// 是否是第一次设置支付密码
+		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());
+		if (account != null && account.getPaymentPassword() != null && !"".equals(account.getPaymentPassword())) {
+			throw new ServiceException(ExceptionConstant.MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION);
+		}
+		accountBusiness.modifyPaymentPassword(SecurityUtil.getUserId(), paymentPassword);
+		return new Response<>();
+	}
+
 	@ApiOperation(value = "上传用户头像")
 	@PostMapping("/headPortrait")
 	public Response<String> uploadHeadPortrait(@RequestParam("file") MultipartFile file, HttpServletRequest request) {

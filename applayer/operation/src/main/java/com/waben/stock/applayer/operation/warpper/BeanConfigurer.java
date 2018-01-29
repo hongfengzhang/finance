@@ -27,8 +27,11 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
@@ -130,23 +133,33 @@ public class BeanConfigurer {
     }
 
 
-    /**
-     * 创建上证 深证 创业板队列
-     */
-    @Bean(name = "shangSecurity")
-    public Queue shangSecurity() {
-        return new Queue("shangSecurity");
+    @Bean
+    public SessionRegistry sessionRegistry() {
+        return new SessionRegistryImpl();
     }
 
-    @Bean(name = "shenSecurity")
-    public Queue shenSecurity() {
-        return new Queue("shenSecurity");
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
     }
 
-    @Bean(name = "developSecurity")
-    public Queue developSecurity() {
-        return new Queue("developSecurity");
-    }
+//    /**
+//     * 创建上证 深证 创业板队列
+//     */
+//    @Bean(name = "shangSecurity")
+//    public Queue shangSecurity() {
+//        return new Queue("shangSecurity");
+//    }
+//
+//    @Bean(name = "shenSecurity")
+//    public Queue shenSecurity() {
+//        return new Queue("shenSecurity");
+//    }
+//
+//    @Bean(name = "developSecurity")
+//    public Queue developSecurity() {
+//        return new Queue("developSecurity");
+//    }
 
     /**
      * 创建 委托申请买入队列
@@ -163,13 +176,13 @@ public class BeanConfigurer {
         return new Queue("entrustApplySellOut");
     }
 
-    /**
-     * 点买交易风控交换机
-     */
-    @Bean("risk")
-    public TopicExchange riskExchange() {
-        return new TopicExchange("risk");
-    }
+//    /**
+//     * 点买交易风控交换机
+//     */
+//    @Bean("risk")
+//    public TopicExchange riskExchange() {
+//        return new TopicExchange("risk");
+//    }
 
     @Bean("buyRecord")
     public TopicExchange buyRecordExchange() {
@@ -177,21 +190,21 @@ public class BeanConfigurer {
     }
 
 
-    @Bean
-    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,
-                                                @Qualifier("risk")TopicExchange riskExchange) {
-        return BindingBuilder.bind(queue).to(riskExchange).with("shang");
-    }
-    @Bean
-    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,
-                                               @Qualifier("risk") TopicExchange riskExchange) {
-        return BindingBuilder.bind(queue).to(riskExchange).with("shen");
-    }
-    @Bean
-    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,
-                                                  @Qualifier("risk") TopicExchange riskExchange) {
-        return BindingBuilder.bind(queue).to(riskExchange).with("develop");
-    }
+//    @Bean
+//    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,
+//                                                @Qualifier("risk")TopicExchange riskExchange) {
+//        return BindingBuilder.bind(queue).to(riskExchange).with("shang");
+//    }
+//    @Bean
+//    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,
+//                                               @Qualifier("risk") TopicExchange riskExchange) {
+//        return BindingBuilder.bind(queue).to(riskExchange).with("shen");
+//    }
+//    @Bean
+//    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,
+//                                                  @Qualifier("risk") TopicExchange riskExchange) {
+//        return BindingBuilder.bind(queue).to(riskExchange).with("develop");
+//    }
 
 
     /**绑定申请买入卖出路由与队列*/

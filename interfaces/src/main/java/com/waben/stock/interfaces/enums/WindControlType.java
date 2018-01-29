@@ -18,7 +18,7 @@ public enum WindControlType implements CommonalityEnum {
 	REACHLOSSPOINT("3", "达到止损点"),
 	
 	PUBLISHERAPPLY("4", "客户申请平仓");
-	
+
 	private WindControlType(String index, String type) {
 		this.index = index;
 		this.type = type;

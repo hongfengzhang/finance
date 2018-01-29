@@ -30,7 +30,7 @@ public class CzWithholdConfig {
 	// public static String salt_key = "C2I5C130DMDPC7L6W59X8683W08E8D39";
 	
 	// 生产
-	public static String backUrl = "http://waben.cn/strategist/payment/czwithholdcallback";
+	public static String backUrl = "https://m.youguwang.com.cn/strategist/payment/czwithholdcallback";
 	// 生产
 	public static String salt_key = "NWUCH4OL1102FMW4KN48LUL08ES8M2UL";
 	

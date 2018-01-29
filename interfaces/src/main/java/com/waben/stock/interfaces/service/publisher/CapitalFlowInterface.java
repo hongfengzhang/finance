@@ -34,5 +34,13 @@ public interface CapitalFlowInterface {
 	 */
 	@RequestMapping(value = "/{publisherId}/promotion/amount", method = RequestMethod.GET)
 	Response<BigDecimal> promotionTotalAmount(@PathVariable("publisherId") Long publisherId);
+	
+	/**
+	 * 根据流水ID获取流水信息
+	 * @param capitalFlowId
+	 * @return
+	 */
+	@RequestMapping(value = "/{capitalFlowId}/view/", method = RequestMethod.GET)
+	Response<CapitalFlowDto> fetchById(@PathVariable("capitalFlowId") Long capitalFlowId);
 
 }

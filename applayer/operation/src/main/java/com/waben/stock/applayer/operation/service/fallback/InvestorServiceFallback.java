@@ -9,6 +9,9 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,6 +23,11 @@ public class InvestorServiceFallback implements InvestorService {
 
     @Override
     public Response<PageInfo<InvestorDto>> pagesByQuery(InvestorQuery investorQuery) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<InvestorDto> fetchById(Long id) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
@@ -38,4 +46,9 @@ public class InvestorServiceFallback implements InvestorService {
     public Response<BuyRecordDto> stockApplySellOut(Long investor, SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<List<InvestorDto>> fetchAllInvestors() {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

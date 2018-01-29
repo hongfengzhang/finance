@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.enums.EntrustType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @author Created by yuyidi on 2017/12/2.
@@ -18,6 +19,8 @@ public class SecuritiesStockEntrust implements Serializable {
     private String tradeNo;
     private String stockName;
     private String stockCode;
+    private BigDecimal profitPosition;
+    private BigDecimal lossPosition;
 
     /**
      * 证券股票类型(上证|深证|创业板)
@@ -53,12 +56,27 @@ public class SecuritiesStockEntrust implements Serializable {
     /**
      * 委托时间
      */
-    private String entrustTime;
+    private Date entrustTime;
 
     private Long investor;
 
     private String tradeSession;
 
+    public BigDecimal getProfitPosition() {
+        return profitPosition;
+    }
+
+    public void setProfitPosition(BigDecimal profitPosition) {
+        this.profitPosition = profitPosition;
+    }
+
+    public BigDecimal getLossPosition() {
+        return lossPosition;
+    }
+
+    public void setLossPosition(BigDecimal lossPosition) {
+        this.lossPosition = lossPosition;
+    }
 
     public Long getBuyRecordId() {
         return buyRecordId;
@@ -156,11 +174,11 @@ public class SecuritiesStockEntrust implements Serializable {
         this.entrustNo = entrustNo;
     }
 
-    public String getEntrustTime() {
+    public Date getEntrustTime() {
         return entrustTime;
     }
 
-    public void setEntrustTime(String entrustTime) {
+    public void setEntrustTime(Date entrustTime) {
         this.entrustTime = entrustTime;
     }
 

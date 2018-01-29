@@ -35,6 +35,9 @@ public class BindCardController {
 
 	@Autowired
 	private BindCardBusiness bindCardBusiness;
+	
+	@Autowired
+	private SmsCache smsCache;
 
 	@PostMapping("/bindBankCard")
 	@ApiOperation(value = "绑定银行卡")
@@ -42,7 +45,7 @@ public class BindCardController {
 			@RequestParam(required = true) String idCard, @RequestParam(required = true) String phone,
 			@RequestParam(required = true) String bankCard, @RequestParam(required = true) String verificationCode) {
 		// 检查验证码
-		SmsCache.matchVerificationCode(SmsType.BindCardCode, phone, verificationCode);
+		smsCache.matchVerificationCode(SmsType.BindCardCode, phone, "code", verificationCode);
 		// 绑定银行卡
 		BindCardDto bindCardDto = new BindCardDto();
 		bindCardDto.setBankCard(bankCard);
@@ -55,7 +58,7 @@ public class BindCardController {
 	}
 	
 	@PostMapping("/unbundling/{id}")
-	@ApiOperation(value = "解绑支行信息")
+	@ApiOperation(value = "解绑银行卡")
 	public Response<Long> unbundling(@PathVariable("id") Long id) {
 		return new Response<>(bindCardBusiness.remove(id));
 	}

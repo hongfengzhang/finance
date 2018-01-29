@@ -1,7 +1,7 @@
 server:
-  port: 8007
+  port: 8008
 management:
-  port: 3007
+  port: 3008
   context-path: /turbine
 spring:
   mvc:
@@ -19,3 +19,7 @@ spring:
           dialect: org.hibernate.dialect.MySQL5Dialect
           connection:
             autocommit: true
+redis:
+  host: ${redis.host}
+  port: ${redis.port}
+  password: ${redis.password}

@@ -44,14 +44,13 @@ public class WebSocketController {
     @MessageMapping("/publish")
     public void publish(String codes) {
         List<StockRequestMessage> stockRequestMessages = JacksonUtil.decode(codes, new TypeReference<List
-                <StockRequestMessage>>() {
-        });
+                <StockRequestMessage>>() {});
         stocks.put("investor", stockRequestMessages);
     }
 
     @Scheduled(fixedRate = 6*1000)
     public void callback() {
-        logger.info("推送股票最新行情");
+        //logger.info("推送股票最新行情");
         for (Map.Entry<String, List<StockRequestMessage>> entry : stocks.entrySet()) {
             List<StockMarket> result = stockQuotationHttp.fetQuotationByCode(entry.getValue());
             List<StockResponseMessage> stockMarkets = new ArrayList<>();
@@ -59,7 +58,7 @@ public class WebSocketController {
                 StockResponseMessage stockResponseMessage = new StockResponseMessage();
                 stockResponseMessage.setCode(stockMarket.getInstrumentId());
                 stockResponseMessage.setPrice(String.valueOf(stockMarket.getLastPrice()));
-                stockResponseMessage.setEntrustPrice(String.valueOf(stockMarket.getUpLimitPrice()));
+                stockResponseMessage.setEntrustPrice(String.valueOf(stockMarket.getDownLimitPrice()));
                 stockMarkets.add(stockResponseMessage);
             }
             messagingTemplate.convertAndSendToUser(entry.getKey(), "/callback", stockMarkets);

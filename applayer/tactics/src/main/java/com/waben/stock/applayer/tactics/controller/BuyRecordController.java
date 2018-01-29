@@ -1,8 +1,11 @@
 package com.waben.stock.applayer.tactics.controller;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +25,12 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.SettlementQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -42,6 +45,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/buyRecord")
 @Api(description = "点买交易")
 public class BuyRecordController {
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
@@ -61,6 +66,12 @@ public class BuyRecordController {
 		return new Response<>(holidayBusiness.isTradeTime());
 	}
 
+	@GetMapping("/strategyqualify/{strategyTypeId}")
+	@ApiOperation(value = "是否有资格参与某个策略")
+	public Response<Boolean> hasStrategyQualify(@PathVariable("strategyTypeId") Long strategyTypeId) {
+		return new Response<>(buyRecordBusiness.hasStrategyQualify(SecurityUtil.getUserId(), strategyTypeId));
+	}
+
 	@PostMapping("/buy")
 	@ApiOperation(value = "点买")
 	public Response<BuyRecordWithMarketDto> buy(@RequestParam(required = true) Long strategyTypeId,
@@ -69,7 +80,8 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal delegatePrice,
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
-			@RequestParam(required = true) String paymentPassword) {
+			BigDecimal deferredFee, @RequestParam(required = true) String paymentPassword) {
+		logger.info("APP调用接口发布人{}点买股票{}，申请资金{}!", SecurityUtil.getUserId(), stockCode, applyAmount);
 		// 检查交易时间段
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
@@ -79,6 +91,23 @@ public class BuyRecordController {
 		boolean isSuspension = stockBusiness.isSuspension(stockCode);
 		if (isSuspension) {
 			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		}
+		// 判断该股票是否为创业板股票
+		StockDto stock = stockBusiness.findByCode(stockCode);
+		if("4621".equals(stock.getStockExponentDto().getExponentCode())) {
+			throw new ServiceException(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION);
+		}
+		// 判断是否有资格参与该策略
+		boolean qualify = buyRecordBusiness.hasStrategyQualify(SecurityUtil.getUserId(), strategyTypeId);
+		if (!qualify) {
+			throw new ServiceException(ExceptionConstant.STRATEGYQUALIFY_NOTENOUGH_EXCEPTION);
+		}
+		// 判断该市值是否足够购买一手股票
+		BigDecimal temp = applyAmount.divide(delegatePrice, 2, RoundingMode.HALF_DOWN);
+		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].multiply(BigDecimal.valueOf(100))
+				.intValue();
+		if (numberOfStrand < 100) {
+			throw new ServiceException(ExceptionConstant.APPLYAMOUNT_NOTENOUGH_BUYSTOCK_EXCEPTION);
 		}
 		// 检查参数是否合理
 		if (delegatePrice.compareTo(new BigDecimal(0)) <= 0) {
@@ -91,6 +120,9 @@ public class BuyRecordController {
 		if (!(lossPoint.abs().compareTo(new BigDecimal(0)) > 0 && lossPoint.abs().compareTo(new BigDecimal(1)) < 0)) {
 			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
 		}
+		if (deferred && (deferredFee == null || deferredFee.compareTo(new BigDecimal(0)) <= 0)) {
+			throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+		}
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();
@@ -101,7 +133,13 @@ public class BuyRecordController {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
-		if (serviceFee.add(reserveFund).compareTo(capitalAccount.getAvailableBalance()) > 0) {
+		BigDecimal totalFee = new BigDecimal(0);
+		if(deferred) {
+			totalFee = totalFee.add(serviceFee).add(reserveFund).add(deferredFee);
+		} else {
+			totalFee = totalFee.add(serviceFee).add(reserveFund);
+		}
+		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
 		// 初始化点买数据
@@ -114,6 +152,7 @@ public class BuyRecordController {
 		dto.setLossPoint(lossPoint.abs().multiply(new BigDecimal(-1)));
 		dto.setStockCode(stockCode);
 		dto.setDeferred(deferred);
+		dto.setDeferredFee(deferred ? deferredFee : new BigDecimal(0));
 		dto.setDelegatePrice(delegatePrice);
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());
@@ -137,9 +176,12 @@ public class BuyRecordController {
 	@GetMapping("/pagesUnwind")
 	@ApiOperation(value = "结算的点买记录列表")
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesUnwind(int page, int size) {
-		SettlementQuery query = new SettlementQuery(page, size);
-		query.setPublisherId(SecurityUtil.getUserId());
-		return new Response<>(buyRecordBusiness.pagesSettlement(query));
+		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
+				new BuyRecordState[] { BuyRecordState.UNWIND, BuyRecordState.REVOKE });
+		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
+		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
+		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
+				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
 	}
 
 	@GetMapping("/tradeDynamic")
@@ -150,7 +192,12 @@ public class BuyRecordController {
 
 	@RequestMapping(value = "/sellapply/{id}", method = RequestMethod.POST)
 	@ApiOperation(value = "用户申请卖出")
-	Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+	public Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
+		// 检查交易时间段
+		boolean isTradeTime = holidayBusiness.isTradeTime();
+		if (!isTradeTime) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+		}
 		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 

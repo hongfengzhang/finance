@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.strategist.business.BindCardBusiness;
 import com.waben.stock.applayer.strategist.dto.publisher.BindCardFullDto;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
-import com.waben.stock.applayer.strategist.service.SmsCache;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
-import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
@@ -70,6 +68,12 @@ public class BindCardController {
 	public Response<List<BindCardFullDto>> myBankCardList() {
 		List<BindCardDto> list = bindCardBusiness.listsByPublisherId(SecurityUtil.getUserId());
 		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(list, BindCardFullDto.class));
+	}
+	
+	@PostMapping("/unbundling/{id}")
+	@ApiOperation(value = "解绑银行卡")
+	public Response<Long> unbundling(@PathVariable("id") Long id) {
+		return new Response<>(bindCardBusiness.remove(id));
 	}
 
 }

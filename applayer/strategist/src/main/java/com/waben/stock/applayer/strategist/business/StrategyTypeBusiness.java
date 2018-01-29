@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,31 @@ public class StrategyTypeBusiness {
 	public List<StrategyTypeDto> lists() {
 		Response<List<StrategyTypeDto>> response = strategyTypeReference.lists(true);
 		if ("200".equals(response.getCode())) {
-			return response.getResult();
+			List<StrategyTypeDto> result = new ArrayList<>();
+			if (response.getResult() != null && response.getResult().size() > 0) {
+				for (StrategyTypeDto type : response.getResult()) {
+					if (type.getServiceFeePerWan().compareTo(new BigDecimal(0)) > 0) {
+						result.add(type);
+					}
+				}
+			}
+			return result;
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public StrategyTypeDto retriveExperienceStrategyType() {
+		Response<List<StrategyTypeDto>> response = strategyTypeReference.lists(true);
+		if ("200".equals(response.getCode())) {
+			StrategyTypeDto result = null;
+			if (response.getResult() != null && response.getResult().size() > 0) {
+				for (StrategyTypeDto type : response.getResult()) {
+					if (type.getId().intValue() == 3) {
+						result = type;
+					}
+				}
+			}
+			return result;
 		}
 		throw new ServiceException(response.getCode());
 	}

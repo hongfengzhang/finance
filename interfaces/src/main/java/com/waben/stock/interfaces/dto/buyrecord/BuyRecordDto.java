@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.dto.buyrecord;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
@@ -14,6 +15,7 @@ import com.waben.stock.interfaces.enums.WindControlType;
  * @author luomengan
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BuyRecordDto {
 
 	private Long id;
@@ -41,6 +43,10 @@ public class BuyRecordDto {
 	 * 是否递延费
 	 */
 	private Boolean deferred;
+	/**
+	 * 递延费
+	 */
+	private BigDecimal deferredFee;
 	/**
 	 * 止盈点
 	 */
@@ -85,6 +91,11 @@ public class BuyRecordDto {
 	 * 点买记录创建时间
 	 */
 	private Date createTime;
+	private Date expireTime;
+	/**
+	 * 点买记录更新时间
+	 */
+	private Date updateTime;
 	/**
 	 * 点买时间
 	 */
@@ -105,6 +116,14 @@ public class BuyRecordDto {
 	 * 卖出价格
 	 */
 	private BigDecimal sellingPrice;
+	/**
+	 * 盈亏
+	 */
+	private BigDecimal profitOrLoss;
+	/**
+	 * 发布人盈亏
+	 */
+	private BigDecimal publisherProfitOrLoss;
 	/**
 	 * 股票代码
 	 */
@@ -400,4 +419,61 @@ public class BuyRecordDto {
 	public void setInvestorName(String investorName) {
 		this.investorName = investorName;
 	}
+
+	public String getBuyRecordState() {
+		return state != null ? state.getStatus() : null;
+	}
+
+	public String getDeferredStatus() {
+		return deferred == true ? "是" : "否";
+	}
+
+	public BigDecimal getDeferredFee() {
+		return deferredFee;
+	}
+
+	public void setDeferredFee(BigDecimal deferredFee) {
+		this.deferredFee = deferredFee;
+	}
+
+	public String getProfitPointPercent() {
+		return profitPoint.multiply(new BigDecimal(100)).setScale(2).toString() + "%";
+	}
+
+	public String getLossPointPercent() {
+		return lossPoint.multiply(new BigDecimal(100)).setScale(2).toString() + "%";
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public Date getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(Date expireTime) {
+		this.expireTime = expireTime;
+	}
+
+	public BigDecimal getProfitOrLoss() {
+		return profitOrLoss;
+	}
+
+	public void setProfitOrLoss(BigDecimal profitOrLoss) {
+		this.profitOrLoss = profitOrLoss;
+	}
+
+	public BigDecimal getPublisherProfitOrLoss() {
+		return publisherProfitOrLoss;
+	}
+
+	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
+		this.publisherProfitOrLoss = publisherProfitOrLoss;
+	}
+
 }

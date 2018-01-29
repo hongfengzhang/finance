@@ -13,4 +13,6 @@ import java.util.List;
 public interface BuyRecordDao extends BaseDao<BuyRecord, Long> {
 
     List<BuyRecord> retieveByStateAndOrderByCreateTime(BuyRecordState state);
+    
+    Integer strategyJoinCount(Long publisherId, Long strategyTypeId);
 }

@@ -4,8 +4,10 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CapitalFlowDto {
 
 	private Long id;
@@ -13,6 +15,10 @@ public class CapitalFlowDto {
 	 * 冻结资金
 	 */
 	private BigDecimal amount;
+	/**
+	 * 流水号
+	 */
+	private String flowNo;
 	/**
 	 * 流水类型
 	 */
@@ -93,6 +99,14 @@ public class CapitalFlowDto {
 	public void setPublisherSerialCode(String publisherSerialCode) {
 		this.publisherSerialCode = publisherSerialCode;
 	}
+	
+	public String getFlowNo() {
+		return flowNo;
+	}
+
+	public void setFlowNo(String flowNo) {
+		this.flowNo = flowNo;
+	}
 
 	public Set<CapitalFlowExtendDto> getExtendList() {
 		return extendList;
@@ -100,6 +114,14 @@ public class CapitalFlowDto {
 
 	public void setExtendList(Set<CapitalFlowExtendDto> extendList) {
 		this.extendList = extendList;
+	}
+	
+	public String getCapitalFlowType(){
+		String capitalFlowType = null;
+		if(type != null){
+			capitalFlowType = type.getType();
+		}
+		return capitalFlowType;
 	}
 
 }

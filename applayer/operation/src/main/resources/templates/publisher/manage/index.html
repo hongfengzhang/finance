@@ -12,36 +12,53 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票名称</label>
+                            <label class="col-md-4 control-label">联系方式</label>
                             <div class="col-md-8">
-                                <input type="text" name="userName" class="form-control" maxlength="11"
-                                       placeholder="股票名称"/>
+                                <input type="text" class="form-control" name="phone" maxlength="11"
+                                       placeholder="联系方式"/>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">推广人</label>
+                            <div class="col-md-8">
+                                <input type="text" class="form-control" name="promoter" maxlength="11"
+                                       placeholder="推广人"/>
                             </div>
                         </div>
                     </div>
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">股票代码</label>
+                            <label class="col-md-4 control-label">注册时间</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="state" maxlength="11" placeholder="股票代码"/>
+                                <input type="text" class="form-control datetimepicker" name="beginTime" maxlength="11" placeholder="开始时间"/>
                             </div>
+                            
                         </div>
                     </div>
-
                     <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">股票状态</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" maxlength="11" placeholder="股票状态"/>
-                            </div>
-                        </div>
-                    </div>
+                    	<div class="form-group">
+		                    <div>
+		                    	<div class="col-sm-8">
+		                            <input type="text" class="form-control datetimepicker" name="endTime" maxlength="11" placeholder="结束时间"/>
+		                        </div>
+		                    </div>
+		                </div>
+	                </div>
 
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+                            <input id="search" type="button" class="btn btn-fill btn-info" value="搜索"/>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -83,7 +100,7 @@
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -95,10 +112,18 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
-                    }
+                	var query= {
+                            page: this.pageNumber - 1,
+                            size: this.pageSize
+                        }
+                        var queryMap = {
+                			phone:$("input[name='phone']").val(),
+                			promoter:$("input[name='promoter']").val(),
+          		        	beginTime:$("input[name='beginTime']").val(),
+      		        		endTime:$("input[name='endTime']").val()
+                        }
+                    $.extend(query,queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -116,20 +141,16 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'serialCode',
-                    title: '序列码',
-                    align: 'center'
-                }, {
                     field: 'phone',
-                    title: '电话',
-                    align: 'center'
-                }, {
-                    field: 'password',
-                    title: '推广码',
+                    title: '联系方式',
                     align: 'center'
                 }, {
                     field: 'promoter',
                     title: '推广人',
+                    align: 'center'
+                },{
+                    field: 'strategyCount',
+                    title: '发布策略次数',
                     align: 'center'
                 }, {
                     field: 'createTime',
@@ -146,9 +167,9 @@
                             '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
                             '<i class="fa fa-edit"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+                            /* '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
                             '<i class="fa fa-trash"></i>',
-                            '</a>'
+                            '</a>' */
                         ].join('');
                     },
                     events: {
@@ -181,6 +202,32 @@
                 $table.bootstrapTable('resetView');
             });
 
+        });
+        
+        $('#search').click(function(){
+     	   var beginTime = $("input[name='beginTime']");
+     	   var endTime = $("input[name='endTime']");
+     	   //<![CDATA[ 
+     	   if(beginTime.val() != '' && endTime.val() == ''){
+     		   swal("","请输入结束时间", "error");
+     		   return false;
+     	   }
+     	   if(endTime.val() != '' && beginTime.val() == ''){
+     		   swal("","请输入开始时间", "error");
+     		   return false;
+     	   }
+     	 	//]]>
+     	   $table.bootstrapTable('getOptions').pageNumber = 1;
+     	   $table.bootstrapTable('refresh');
+        });
+        
+        $('#reset').click(function(){
+     	   $("input[name='phone']").val('');
+     	   $("input[name='promoter']").val('');
+     	   $("input[name='beginTime']").val('');
+     	   $("input[name='endTime']").val('');
+     	   $table.bootstrapTable('getOptions').pageNumber = 1;
+     	   $table.bootstrapTable('refresh');
         });
     </script>
 </div>

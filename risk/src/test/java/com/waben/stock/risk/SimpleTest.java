@@ -1,6 +1,7 @@
 package com.waben.stock.risk;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.waben.stock.interfaces.constants.HolidayConstant;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
@@ -9,10 +10,14 @@ import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.risk.schedule.WorkCalendar;
 import org.junit.Test;
+import org.quartz.impl.calendar.WeeklyCalendar;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,9 +37,19 @@ public class SimpleTest {
                 "\"position_str\":\"20171208021451508400002200000144\",\"stock_account\":\"0070001553\"," +
                 "\"stock_code\":\"000001\",\"stock_name\":\"平安银行\",\"withdraw_flag\":\"0\"}]}," +
                 "{\"msg\":{\"error_info\":\"OK\",\"error_no\":\"3000\"}}]}";
+        String json1 = "{\"result\":[{\"data\":[{\"business_amount\":\"200.00\",\"business_price\":\"6.450\"," +
+                "\"entrust_amount\":\"200.00\",\"entrust_bs\":\"1\",\"entrust_no\":\"835\"," +
+                "\"entrust_price\":\"7.190\",\"entrust_status\":\"8\",\"entrust_time\":\"111117\"," +
+                "\"exchange_type\":\"1\",\"stock_account\":\"A204750122\",\"stock_code\":\"600248\"," +
+                "\"stock_name\":\"延长化建\"}]},{\"msg\":{\"error_info\":\"OK\",\"error_no\":\"3000\"}}]}";
         StockResponse<StockEntrustQueryResult> stockResponse = JacksonUtil.decode(json, new
                 TypeReference<StockResponse<StockEntrustQueryResult>>() {
                 });
+        StockEntrustQueryResult stockEntrustQueryResult = stockResponse.getResult().get(0).getData().get(0);
+        Float amount = Float.valueOf(stockResponse.getResult().get(0).getData().get(0).getEntrustPrice());
+        System.out.println(amount.intValue());
+        System.out.println(stockEntrustQueryResult.getBusinessPrice());
+        System.out.println(new BigDecimal(stockEntrustQueryResult.getBusinessPrice()));
         System.out.println(JacksonUtil.encode(stockResponse));
     }
 
@@ -115,4 +130,15 @@ public class SimpleTest {
         System.out.println(Float.valueOf(amount).intValue());
     }
 
+    @Test
+    public void testWorkTime() {
+        WeeklyCalendar workDay = new WeeklyCalendar();
+        //排除特定的日期
+        WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        System.out.println(new Date(workCalendar.getNextIncludedTime(new Date().getTime())));
+
+    }
 }

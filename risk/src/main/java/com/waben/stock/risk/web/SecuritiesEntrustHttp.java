@@ -7,6 +7,7 @@ import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponse;
 import com.waben.stock.interfaces.pojo.stock.stockjy.StockResponseHander;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
+import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.web.HttpRest;
 import org.slf4j.Logger;
@@ -33,17 +34,20 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
     private String context;
     //券商委托单查询
     private String queryEntrustPath = "/qryentrust";
+    //券商撤单
+    private String withdrawPath = "/withdraw";
 
     private HttpHeaders headers = new HttpHeaders();
     {
         headers.add("broker_id","1001");
     }
 
-    public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo) {
-        String queryEntrusUrl = context+ queryEntrustPath + "?token={token}&entrust_no={entrust_no}";
+    public StockEntrustQueryResult queryEntrust(String tradeSession, String entrustNo,String stockCode) {
+        String queryEntrusUrl = context+ queryEntrustPath + "?token={token}&entrust_no={entrust_no}&stock_code={stock_code}";
         Map<String, String> params = new HashMap<>();
         params.put("token", tradeSession);
         params.put("entrust_no", entrustNo);
+        params.put("stock_code",stockCode);
         String result = null;
         try {
             result = HttpRest.get(queryEntrusUrl, String.class, params,headers);
@@ -61,6 +65,27 @@ public class SecuritiesEntrustHttp extends StockResponseHander implements Securi
             return null;
         }
         return stockEntrustQueryResult.get(0);
+    }
+
+    public String withdraw(String tradeSession, String entrustNo) {
+        String queryEntrusUrl = context+ withdrawPath + "?token={token}&entrust_no={entrust_no}";
+        Map<String, String> params = new HashMap<>();
+        params.put("token", tradeSession);
+        params.put("entrust_no", entrustNo);
+        String result = null;
+        try {
+            result = HttpRest.get(queryEntrusUrl, String.class, params,headers);
+        } catch (Exception ex) {
+            logger.info("委托单查询异常:{}", ex.getMessage());
+        }
+        logger.info("券商委托单查询,请求地址:{},请求结果:{}", queryEntrusUrl, result);
+
+        StockResponse<StockEntrustResult> stockResponse = JacksonUtil.decode(result, new
+                TypeReference<StockResponse<StockEntrustResult>>() {
+                });
+        StockEntrustResult stockEntrustResult = handlerResult(stockResponse, ExceptionConstant
+                .INVESTOR_STOCKENTRUST_FETCH_ERROR).get(0);
+        return stockEntrustResult.getEntrustNo();
     }
 
 }

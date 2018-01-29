@@ -1,9 +1,14 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -20,14 +25,17 @@ import com.waben.stock.applayer.strategist.retrivestock.bean.StockKLine;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
+import com.waben.stock.applayer.strategist.service.RedisCache;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 
 /**
  * 股票 Business
@@ -54,6 +62,9 @@ public class StockBusiness {
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
+	
+	@Autowired
+	private RedisCache redisCache;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -142,6 +153,7 @@ public class StockBusiness {
 					}
 				}
 			}
+			result.setIsTradeTime(holidayBusiness.isTradeTime());
 			return result;
 		}
 		return null;
@@ -178,6 +190,83 @@ public class StockBusiness {
 		codes.add(stockCode);
 		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
 		return market.getStatus() == 0;
+	}
+	
+	public List<StockMarket> ranking(String exponent, int rankType, int size) {
+		String code = "4609";
+		if ("2A01".equals(exponent)) {
+			code = "4609";
+		} else if ("1A0001".equals(exponent)) {
+			code = "4353";
+		} else if ("399006".equals(exponent)) {
+			code = "4621";
+		}
+		Map<String, String> map = redisCache.hgetAll(String.format(RedisCacheKeyType.StockMarket.getKey(), code));
+		Collection<String> stockStrs = map.values();
+		List<StockMarket> stockList = new ArrayList<>();
+		for (String stockStr : stockStrs) {
+			StockMarket stockMarket = JacksonUtil.decode(stockStr, StockMarket.class);
+			if (stockMarket.getUpDropSpeed() != null && stockMarket.getStatus() == 1) {
+				stockList.add(stockMarket);
+			}
+		}
+		if (rankType == 1) {
+			// 涨幅榜
+			Collections.sort(stockList, new SpeedUpComparator());
+		} else if(rankType == 2) {
+			// 跌幅榜
+			Collections.sort(stockList, new SpeedDownComparator());
+		} else if(rankType == 3) {
+			// 价格降序
+			Collections.sort(stockList, new PriceUpComparator());
+		} else if(rankType == 4) {
+			// 价格升序
+			Collections.sort(stockList, new PriceDownComparator());
+		}
+
+		List<StockMarket> result = new ArrayList<>();
+		for (int i = 0; i < size; i++) {
+			if (i < stockList.size()) {
+				result.add(stockList.get(i));
+			}
+		}
+		return result;
+	}
+
+	private class SpeedUpComparator implements Comparator<StockMarket> {
+		@Override
+		public int compare(StockMarket o1, StockMarket o2) {
+			BigDecimal upDropSpeed1 = o1.getUpDropSpeed();
+			BigDecimal upDropSpeed2 = o2.getUpDropSpeed();
+			return upDropSpeed1.compareTo(upDropSpeed2) * -1;
+		}
+	}
+
+	private class SpeedDownComparator implements Comparator<StockMarket> {
+		@Override
+		public int compare(StockMarket o1, StockMarket o2) {
+			BigDecimal upDropSpeed1 = o1.getUpDropSpeed();
+			BigDecimal upDropSpeed2 = o2.getUpDropSpeed();
+			return upDropSpeed1.compareTo(upDropSpeed2);
+		}
+	}
+	
+	private class PriceUpComparator implements Comparator<StockMarket> {
+		@Override
+		public int compare(StockMarket o1, StockMarket o2) {
+			BigDecimal price1 = o1.getLastPrice();
+			BigDecimal price2 = o2.getLastPrice();
+			return price1.compareTo(price2) * -1;
+		}
+	}
+
+	private class PriceDownComparator implements Comparator<StockMarket> {
+		@Override
+		public int compare(StockMarket o1, StockMarket o2) {
+			BigDecimal price1 = o1.getLastPrice();
+			BigDecimal price2 = o2.getLastPrice();
+			return price1.compareTo(price2);
+		}
 	}
 
 }

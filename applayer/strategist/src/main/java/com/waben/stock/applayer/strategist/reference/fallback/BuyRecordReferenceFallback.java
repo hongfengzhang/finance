@@ -95,4 +95,14 @@ public class BuyRecordReferenceFallback implements BuyRecordReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<Integer> strategyJoinCount(Long publisherId, Long strategyTypeId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<BuyRecordDto> revoke(Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

@@ -3,9 +3,17 @@ package com.waben.stock.datalayer.publisher.service;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.publisher.entity.FavoriteStock;
@@ -71,6 +79,21 @@ public class FavoriteStockService {
 
 	public List<String> listStockCodeByPublisherId(Long publisherId) {
 		return favoriteStockDao.listStockCode(publisherId);
+	}
+
+	public Page<FavoriteStock> pagesByQuery(final Long publisherId, int page, int size) {
+		Pageable pageable = new PageRequest(page, size);
+		Page<FavoriteStock> pages = favoriteStockDao.page(new Specification<FavoriteStock>() {
+			@Override
+			public Predicate toPredicate(Root<FavoriteStock> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
+				criteriaQuery.where(criteriaBuilder.equal(root.get("publisherId").as(Long.class), publisherId));
+				criteriaQuery.orderBy(criteriaBuilder.asc(root.get("sort").as(Integer.class)),
+						criteriaBuilder.desc(root.get("favoriteTime").as(Long.class)));
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
 	}
 
 }

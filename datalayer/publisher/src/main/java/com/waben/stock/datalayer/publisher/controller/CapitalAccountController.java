@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,7 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	private CapitalAccountService capitalAccountService;
 
 	@Override
-	public Response<PageInfo<CapitalAccountDto>> pages(CapitalAccountQuery capitalAccountQuery) {
+	public Response<PageInfo<CapitalAccountDto>> pages(@RequestBody CapitalAccountQuery capitalAccountQuery) {
 		Page<CapitalAccount> pages = capitalAccountService.pages(capitalAccountQuery);
 		PageInfo<CapitalAccountDto> result = new PageInfo<>(pages, CapitalAccountDto.class);
 		return new Response<>(result);
@@ -57,10 +58,10 @@ public class CapitalAccountController implements CapitalAccountInterface {
 
 	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable Long publisherId,
-			@PathVariable Long buyRecordId, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
-				capitalAccountService.serviceFeeAndReserveFund(publisherId, buyRecordId, serviceFee, reserveFund),
-				false));
+			@PathVariable Long buyRecordId, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund,
+			BigDecimal deferredFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
+				.serviceFeeAndReserveFund(publisherId, buyRecordId, serviceFee, reserveFund, deferredFee), false));
 	}
 
 	@Override
@@ -102,6 +103,34 @@ public class CapitalAccountController implements CapitalAccountInterface {
 			@PathVariable Long buyRecordId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FrozenCapitalDto.class,
 				capitalAccountService.findFrozenCapital(publisherId, buyRecordId), false));
+	}
+
+	@Override
+	public Response<CapitalAccountDto> fetchById(@PathVariable Long capitalAccountId) {
+		CapitalAccount account = capitalAccountService.findById(capitalAccountId);
+		CapitalAccountDto accountDto = CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, account, false);
+		return new Response<CapitalAccountDto>(accountDto);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> modifyCapitalAccount(@RequestBody CapitalAccountDto capitalAccountDto) {
+		CapitalAccount account = capitalAccountService.revision(capitalAccountDto);
+		CapitalAccountDto accountDto = CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, account, false);
+		return new Response<CapitalAccountDto>(accountDto);
+	}
+	
+	@Override
+	public Response<CapitalAccountDto> revoke(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
+			@PathVariable BigDecimal serviceFee, BigDecimal deferredFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.revoke(publisherId, buyRecordId, serviceFee, deferredFee), false));
+	}
+
+	@Override
+	public Response<CapitalAccountDto> returnDeferredFee(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
+			@PathVariable BigDecimal deferredFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.returnDeferredFee(publisherId, buyRecordId, deferredFee), false));
 	}
 
 }

@@ -16,6 +16,7 @@ import com.waben.stock.applayer.strategist.dto.stockcontent.StockMarketWithFavor
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockWithFavoriteDto;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockKLine;
+import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -87,7 +88,7 @@ public class StockController {
 	}
 
 	@GetMapping("/kLine")
-	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
+	@ApiOperation(value = "获取K线图数据", notes = "type:1表示天K，2表示周K，3表示月K； startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
 	public Response<List<StockKLine>> listKLine(String stockCode, Integer type, String startTime, String endTime) {
 		return new Response<>(stockBusiness.listKLine(stockCode, type, startTime, endTime, -1));
 	}
@@ -102,6 +103,12 @@ public class StockController {
 	@ApiOperation(value = "盘口")
 	public Response<StockDiscDto> disc(@PathVariable("code") String code) {
 		return new Response<>(stockBusiness.disc(code));
+	}
+	
+	@GetMapping("/{exponent}/ranking")
+	@ApiOperation(value = "大盘股票跌涨排行榜", notes = "1涨幅榜，2跌幅榜，3价格降序，4，价格升序")
+	public Response<List<StockMarket>> ranking(@PathVariable("exponent") String exponent, int rankType, int size) {
+		return new Response<>(stockBusiness.ranking(exponent, rankType, size));
 	}
 
 }

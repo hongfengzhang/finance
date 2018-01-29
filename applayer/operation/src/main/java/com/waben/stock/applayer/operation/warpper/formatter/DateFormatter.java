@@ -13,6 +13,7 @@ public class DateFormatter implements Formatter<Date> {
 
         @Override
         public Date parse(String text, Locale locale) throws ParseException {
+        	System.out.println("=========="+text);
             return formatter.parse(text);
         }
 

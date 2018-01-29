@@ -10,9 +10,10 @@ $().ready(function() {
 
     // Init Datetimepicker
 
-    if ($("#datetimepicker").length != 0) {
+    //if ($("#datetimepicker").length != 0) {
         $('.datetimepicker').datetimepicker({
-            icons: {
+        	format: 'YYYY-MM-DD HH:mm:ss',
+        	icons: {
                 time: "fa fa-clock-o",
                 date: "fa fa-calendar",
                 up: "fa fa-chevron-up",
@@ -26,7 +27,7 @@ $().ready(function() {
         });
 
         $('.datepicker').datetimepicker({
-            format: 'MM/DD/YYYY',
+            format: 'YYYY/MM/DD',
             icons: {
                 time: "fa fa-clock-o",
                 date: "fa fa-calendar",
@@ -41,8 +42,8 @@ $().ready(function() {
         });
 
         $('.timepicker').datetimepicker({
-            //          format: 'H:mm',    // use this format if you want the 24hours timepicker
-            format: 'h:mm A', //use this format if you want the 12hours timpiecker with AM/PM toggle
+            format: 'H:mm',    // use this format if you want the 24hours timepicker
+            //format: 'h:mm A', //use this format if you want the 12hours timpiecker with AM/PM toggle
             icons: {
                 time: "fa fa-clock-o",
                 date: "fa fa-calendar",
@@ -56,7 +57,7 @@ $().ready(function() {
             }
         });
 
-    };
+    //};
     fixed_plugin_open = $('.sidebar .sidebar-wrapper .nav li.active a p').html();
 
     if (window_width > 767 && fixed_plugin_open == 'Dashboard') {
@@ -229,7 +230,7 @@ $().ready(function() {
 type = ['primary', 'info', 'success', 'warning', 'danger'];
 
 demo = {
-    initPickColor: function() {
+    initPickColor: function() {//1
         $('.pick-class-label').click(function() {
             var new_class = $(this).attr('new-class');
             var old_class = $('#display-buttons').attr('data-class');
@@ -497,7 +498,7 @@ demo = {
         });
     },
 
-    initCharts: function() {
+    initCharts: function() {//1
 
         /*  **************** 24 Hours Performance - single line ******************** */
 
@@ -706,7 +707,7 @@ demo = {
         // lbd.startAnimationForLineChart(dailySalesChart);
     },
 
-    initVectorMap: function() {
+    initVectorMap: function() {//1
         var mapData = {
             "AU": 760,
             "BR": 550,
@@ -745,7 +746,7 @@ demo = {
         });
     },
 
-    initFullCalendar: function() {
+    initFullCalendar: function() {//1
         $calendar = $('#fullCalendar');
 
         today = new Date();
@@ -871,7 +872,7 @@ demo = {
         });
     },
 
-    initDashboardPageCharts: function() {
+    initDashboardPageCharts: function() {//1
 
         var dataPreferences = {
             series: [
@@ -1051,9 +1052,60 @@ demo = {
 
     },
 
+	initAnimationsArea: function(){// no
+    	$('.animationsArea .btn').click(function(){
+        	animation_class = $(this).data('animation-class');
 
+        	$parent = $(this).closest('.animationsArea');
 
-    initSmallGoogleMaps: function() {
+        	$parent.find('.btn').removeClass('btn-fill');
+
+        	$(this).addClass('btn-fill');
+
+        	$parent.find('.animated')
+        	       .removeAttr('class')
+        	       .addClass('animated')
+        	       .addClass(animation_class);
+
+        	$parent.siblings('.header').find('.title small').html('class: <code>animated ' + animation_class + '</code>');
+    	});
+	},
+initFormExtendedSliders: function(){// no
+
+        // Sliders for demo purpose in refine cards section
+        if($('#slider-range').length != 0){
+            $( "#slider-range" ).slider({
+        		range: true,
+        		min: 0,
+        		max: 500,
+        		values: [ 75, 300 ],
+        	});
+        }
+        if($('#refine-price-range').length != 0){
+        	 $( "#refine-price-range" ).slider({
+        		range: true,
+        		min: 0,
+        		max: 999,
+        		values: [ 100, 850 ],
+        		slide: function( event, ui ) {
+        		    min_price = ui.values[0];
+        		    max_price = ui.values[1];
+            		$(this).siblings('.price-left').html('&euro; ' + min_price);
+            		$(this).siblings('.price-right').html('&euro; ' + max_price)
+        		}
+        	});
+        }
+
+        if($('#slider-default').length != 0 || $('#slider-default2').length != 0){
+        	$( "#slider-default, #slider-default2" ).slider({
+        			value: 70,
+        			orientation: "horizontal",
+        			range: "min",
+        			animate: true
+        	});
+        }
+    },
+    initSmallGoogleMaps: function() {//1
 
         // Regular Map
         var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
@@ -1201,7 +1253,7 @@ demo = {
 
     },
 
-    initFullScreenGoogleMap: function() {
+    initFullScreenGoogleMap: function() {//1
         var myLatlng = new google.maps.LatLng(40.748817, -73.985428);
         var mapOptions = {
             zoom: 13,
@@ -1305,7 +1357,7 @@ demo = {
         marker.setMap(map);
     },
 
-    showNotification: function(from, align) {
+    showNotification: function(from, align) {//1
         color = Math.floor((Math.random() * 4) + 1);
 
         $.notify({
@@ -1324,7 +1376,7 @@ demo = {
 
     // Sweet Alerts
 
-    showSwal: function(type) {
+    showSwal: function(type) {// 1
         if (type == 'basic') {
             swal("普通的消息!");
 
@@ -1398,7 +1450,5 @@ demo = {
                 })
         }
     }
-
-
 
 }

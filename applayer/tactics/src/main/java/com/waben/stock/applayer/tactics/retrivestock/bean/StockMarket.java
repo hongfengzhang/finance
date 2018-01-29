@@ -15,18 +15,52 @@ public class StockMarket {
 
 	private String exchangeId;
 	private String instrumentId;
-	private BigDecimal lastPrice;
 	private String name;
 	private int status;
-	private String tradeDay;
-	private BigDecimal upDropPrice;
-	private BigDecimal upDropSpeed;
 	private long upTime;
 	private String upTimeFormat;
-	private BigDecimal highestPrice;
-	private BigDecimal lowestPrice;
 	private BigDecimal upLimitPrice;
 	private BigDecimal downLimitPrice;
+	/**
+	 * 交易日，格式yyyy-MM-dd
+	 */
+	private String tradeDay;
+	/**
+	 * 最新价
+	 */
+	private BigDecimal lastPrice;
+	/**
+	 * 跌涨价格
+	 */
+	private BigDecimal upDropPrice;
+	/**
+	 * 跌涨幅度
+	 */
+	private BigDecimal upDropSpeed;
+	/**
+	 * 最高价
+	 */
+	private BigDecimal highestPrice;
+	/**
+	 * 最低价
+	 */
+	private BigDecimal lowestPrice;
+	/**
+	 * 今开
+	 */
+	private BigDecimal openPrice;
+	/**
+	 * 昨收
+	 */
+	private BigDecimal preClsPrice;
+	/**
+	 * 成交量，单位手
+	 */
+	private BigDecimal volume;
+	/**
+	 * 成交额，单位元
+	 */
+	private BigDecimal turnover;
 	/**
 	 * 卖1~卖5
 	 */
@@ -35,6 +69,11 @@ public class StockMarket {
 	private BigDecimal askPrice3;
 	private BigDecimal askPrice4;
 	private BigDecimal askPrice5;
+	private BigDecimal askVolume;
+	private BigDecimal askVolume2;
+	private BigDecimal askVolume3;
+	private BigDecimal askVolume4;
+	private BigDecimal askVolume5;
 	/**
 	 * 买1~买5
 	 */
@@ -43,6 +82,11 @@ public class StockMarket {
 	private BigDecimal bidPrice3;
 	private BigDecimal bidPrice4;
 	private BigDecimal bidPrice5;
+	private BigDecimal bidVolume;
+	private BigDecimal bidVolume2;
+	private BigDecimal bidVolume3;
+	private BigDecimal bidVolume4;
+	private BigDecimal bidVolume5;
 
 	public String getExchangeId() {
 		return exchangeId;
@@ -234,6 +278,118 @@ public class StockMarket {
 
 	public void setBidPrice5(BigDecimal bidPrice5) {
 		this.bidPrice5 = bidPrice5;
+	}
+
+	public BigDecimal getAskVolume() {
+		return askVolume;
+	}
+
+	public void setAskVolume(BigDecimal askVolume) {
+		this.askVolume = askVolume;
+	}
+
+	public BigDecimal getAskVolume2() {
+		return askVolume2;
+	}
+
+	public void setAskVolume2(BigDecimal askVolume2) {
+		this.askVolume2 = askVolume2;
+	}
+
+	public BigDecimal getAskVolume3() {
+		return askVolume3;
+	}
+
+	public void setAskVolume3(BigDecimal askVolume3) {
+		this.askVolume3 = askVolume3;
+	}
+
+	public BigDecimal getAskVolume4() {
+		return askVolume4;
+	}
+
+	public void setAskVolume4(BigDecimal askVolume4) {
+		this.askVolume4 = askVolume4;
+	}
+
+	public BigDecimal getAskVolume5() {
+		return askVolume5;
+	}
+
+	public void setAskVolume5(BigDecimal askVolume5) {
+		this.askVolume5 = askVolume5;
+	}
+
+	public BigDecimal getBidVolume() {
+		return bidVolume;
+	}
+
+	public void setBidVolume(BigDecimal bidVolume) {
+		this.bidVolume = bidVolume;
+	}
+
+	public BigDecimal getBidVolume2() {
+		return bidVolume2;
+	}
+
+	public void setBidVolume2(BigDecimal bidVolume2) {
+		this.bidVolume2 = bidVolume2;
+	}
+
+	public BigDecimal getBidVolume3() {
+		return bidVolume3;
+	}
+
+	public void setBidVolume3(BigDecimal bidVolume3) {
+		this.bidVolume3 = bidVolume3;
+	}
+
+	public BigDecimal getBidVolume4() {
+		return bidVolume4;
+	}
+
+	public void setBidVolume4(BigDecimal bidVolume4) {
+		this.bidVolume4 = bidVolume4;
+	}
+
+	public BigDecimal getBidVolume5() {
+		return bidVolume5;
+	}
+
+	public void setBidVolume5(BigDecimal bidVolume5) {
+		this.bidVolume5 = bidVolume5;
+	}
+
+	public BigDecimal getOpenPrice() {
+		return openPrice;
+	}
+
+	public void setOpenPrice(BigDecimal openPrice) {
+		this.openPrice = openPrice;
+	}
+
+	public BigDecimal getPreClsPrice() {
+		return preClsPrice;
+	}
+
+	public void setPreClsPrice(BigDecimal preClsPrice) {
+		this.preClsPrice = preClsPrice;
+	}
+
+	public BigDecimal getVolume() {
+		return volume;
+	}
+
+	public void setVolume(BigDecimal volume) {
+		this.volume = volume;
+	}
+
+	public BigDecimal getTurnover() {
+		return turnover;
+	}
+
+	public void setTurnover(BigDecimal turnover) {
+		this.turnover = turnover;
 	}
 
 }

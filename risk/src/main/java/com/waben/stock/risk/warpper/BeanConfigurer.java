@@ -79,6 +79,15 @@ public class BeanConfigurer {
         return new Queue("entrustSellOut");
     }
 
+    /**
+     * 创建废单队列
+     * @return
+     */
+    @Bean(name = "entrustWaste")
+    public Queue wasteQueue() {
+        return new Queue("entrustWaste");
+    }
+
 
     /**
      * 点买交换机
@@ -88,13 +97,13 @@ public class BeanConfigurer {
         return new TopicExchange("buyRecord");
     }
 
-    /**
-     * 风控交换机
-     */
-    @Bean("risk")
-    public TopicExchange riskExchange() {
-        return new TopicExchange("risk");
-    }
+//    /**
+//     * 风控交换机
+//     */
+//    @Bean("risk")
+//    public TopicExchange riskExchange() {
+//        return new TopicExchange("risk");
+//    }
 
     @Bean
     public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustBuyIn") Queue queue,
@@ -102,8 +111,15 @@ public class BeanConfigurer {
         return BindingBuilder.bind(queue).to(buyRecordExchange).with("buyIn");
     }
     @Bean
-    public Binding bindingExchangEntrust(@Qualifier("entrustSellOut") Queue queue,
+    public Binding bindingExchangEntrustSellOut(@Qualifier("entrustSellOut") Queue queue,
                                          @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
         return BindingBuilder.bind(queue).to(buyRecordExchange).with("sellOut");
     }
+
+    @Bean
+    public Binding bindingExchangWaste(@Qualifier("entrustWaste") Queue queue,
+                                         @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
+        return BindingBuilder.bind(queue).to(buyRecordExchange).with("waste");
+    }
+
 }

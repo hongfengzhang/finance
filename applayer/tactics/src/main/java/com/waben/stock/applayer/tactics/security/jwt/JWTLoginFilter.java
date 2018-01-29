@@ -18,9 +18,11 @@ import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.CustomUsernamePasswordAuthenticationToken;
+import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -35,6 +37,8 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	private CapitalAccountReference accountService;
 
+	private RedisCache redisCache;
+
 	public JWTLoginFilter(AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(loginUrl, HttpMethod.POST.name()));
 		setAuthenticationManager(authManager);
@@ -43,8 +47,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	public Authentication attemptAuthentication(HttpServletRequest req, HttpServletResponse res)
 			throws AuthenticationException, IOException, ServletException {
-		return getAuthenticationManager().authenticate(
-				new CustomUsernamePasswordAuthenticationToken(req.getParameter("phone"), req.getParameter("password")));
+		CustomUsernamePasswordAuthenticationToken authentication = new CustomUsernamePasswordAuthenticationToken(
+				req.getParameter("phone"), req.getParameter("password"));
+		return getAuthenticationManager().authenticate(authentication);
 	}
 
 	@Override
@@ -53,8 +58,10 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		// step 1 : 生成token
 		CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 		String token = JWTTokenUtil.generateToken(customUserDetails);
+		// step 2 : 缓存token到redis
+		redisCache.set(String.format(RedisCacheKeyType.AppToken.getKey(), customUserDetails.getUsername()), token);
 		customUserDetails.setToken(token);
-		// step 2 : 返回用户信息和token到客户端
+		// step 3 : 返回用户信息和token到客户端
 		Long publisherId = customUserDetails.getUserId();
 		Response<PublisherDto> publisherResp = publisherReference.fetchById(publisherId);
 		Response<CapitalAccountDto> accountResp = accountService.fetchByPublisherId(publisherId);
@@ -83,6 +90,10 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	public void setAccountService(CapitalAccountReference accountService) {
 		this.accountService = accountService;
+	}
+
+	public void setJedisCache(RedisCache redisCache) {
+		this.redisCache = redisCache;
 	}
 
 }

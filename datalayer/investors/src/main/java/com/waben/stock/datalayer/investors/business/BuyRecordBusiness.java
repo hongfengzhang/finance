@@ -2,12 +2,15 @@ package com.waben.stock.datalayer.investors.business;
 
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.WindControlType;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,17 +53,28 @@ public class BuyRecordBusiness {
         throw new ServiceException(response.getCode());
     }
 
+    /**
+     *
+     * @param investor 投资人id
+     * @param securitiesStockEntrust
+     * @param entrust 委托编号
+     * @return
+     */
     public BuyRecordDto entrustApplySellOut(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String
-            entrust) {
+            entrust,String windControlType) {
 //        securitiesStockEntrust.setEntrustNumber(entrust);
+        //卖出锁定
         Response<BuyRecordDto> response = buyRecordReference.sellLock(investor.getId(), securitiesStockEntrust
-                .getBuyRecordId(), entrust, WindControlType.PUBLISHERAPPLY.getIndex());
+                .getBuyRecordId(), entrust, windControlType);
+        logger.info("result:{}", JacksonUtil.encode(response));
         if ("200".equals(response.getCode())) {
             BuyRecordDto result = response.getResult();
             result.setDelegateNumber(entrust);
             if (result.getState().equals(BuyRecordState.SELLLOCK)) {
-                return response.getResult();
+                return result;
             }
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(response.getCode())){
+            throw new NetflixCircuitException(response.getCode());
         }
         throw new ServiceException(response.getCode());
     }

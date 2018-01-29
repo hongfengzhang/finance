@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
 
+/**
+ * 
+ * @author Created by hujian on 2018年1月18日
+ */
 public interface BindCardInterface {
 
 	/**
