@@ -33,4 +33,12 @@ public class EntrustApplyProducer extends RabbitMQProducer<SecuritiesStockEntrus
         super.topic("buyRecord", "applySellOut", securitiesStockEntrust);
     }
 
+    /**
+     * 委托查询撤单
+     * @param securitiesStockEntrust
+     */
+    public void entrustQueryWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
+        logger.info("开始发送委托查询撤单订单数据:{}",securitiesStockEntrust.getTradeNo());
+        super.topic("buyRecord", "queryWithdraw", securitiesStockEntrust);
+    }
 }

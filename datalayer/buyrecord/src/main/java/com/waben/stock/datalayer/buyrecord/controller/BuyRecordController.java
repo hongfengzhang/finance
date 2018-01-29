@@ -95,6 +95,12 @@ public class BuyRecordController implements BuyRecordInterface {
     }
 
     @Override
+    public Response<BuyRecordDto> withdrawLock(String entrustNo, Long id) {
+        BuyRecord buyRecord = buyRecordService.withdrawLock(entrustNo,id);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+    }
+
+    @Override
     public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id,
                                           BigDecimal sellingPrice) {
     	logger.info("投资人{}卖出成功，点买记录{}，卖出价格{}!", investorId, id, sellingPrice);

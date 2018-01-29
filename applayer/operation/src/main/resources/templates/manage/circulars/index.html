@@ -14,25 +14,21 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">公告标题</label>
                             <div class="col-md-8">
-                                <input type="text" name="userName" class="form-control" maxlength="11"
+                                <input type="text" name="title" class="form-control" maxlength="11"
                                        placeholder="公告标题"/>
                             </div>
                         </div>
                     </div>
-
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">内容</label>
-                            <div class="col-sm-8">
-                                <input type="text" class="form-control" name="state" maxlength="11" placeholder="公告内容"/>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+                            <input type="button" class="btn btn-fill btn-info" value="搜索" id="search"/>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -74,7 +70,7 @@
                 cache: true, // 缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -86,10 +82,15 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
+                    var query= {
+                        page: this.pageNumber - 1,
+                        size: this.pageSize
                     }
+                    var queryMap = {
+                        title:$("input[name='title']").val(),
+                    }
+                    $.extend(query,queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -110,11 +111,7 @@
                     field: 'title',
                     title: '标题',
                     align: 'center'
-                }, {
-                    field: 'content',
-                    title: '内容',
-                    align: 'center'
-                }, {
+                },{
                     field: 'createTime',
                     title: '创建时间',
                     align: 'center'
@@ -140,20 +137,36 @@
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../circulars/view/"+row.id);
                         },
                         'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-                            swal('You click edit icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../circulars/edit/"+row.id);
                         },
                         'click .remove': function (e, value, row, index) {
-
-                            demo.showSwal('warning-message-and-cancel', row);
-
+                            swal({
+                                title: "你确定吗?",
+                                text: "删除后,数据将不可被恢复!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 删除!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function(isConfirm) {
+                                if (isConfirm) {
+                                    $.ajax({
+                                        url:'../circulars/delete',
+                                        type:'post',
+                                        data:{"id":row.id},
+                                        success:function (response) {
+                                            swal("Deleted!", "数据删除成功.", "success");
+                                            $table.bootstrapTable('refresh');
+                                        }
+                                    })
+                                } else {
+                                    swal("Cancelled", "数据已取消删除 :)", "error");
+                                }
+                            });
                         }
                     }
                 }]
@@ -166,7 +179,23 @@
             $(window).resize(function () {
                 $table.bootstrapTable('resetView');
             });
+            $('#search').click(function(){
+                var title = $("input[name='title']").val();
 
+                //<![CDATA[
+                if(title == "") {
+                    swal("请输入查询数据！");
+                }
+                //]]>
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
+            });
+
+            $('#reset').click(function(){
+                $("input[name='title']").val('');
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
+            });
         });
     </script>
 </div>

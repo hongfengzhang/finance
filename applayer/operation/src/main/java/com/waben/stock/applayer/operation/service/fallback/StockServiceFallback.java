@@ -44,4 +44,9 @@ public class StockServiceFallback implements StockService {
 	public void delete(Long id) {
 
 	}
+
+	@Override
+	public Response<StockDto> add(StockDto requestDto) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

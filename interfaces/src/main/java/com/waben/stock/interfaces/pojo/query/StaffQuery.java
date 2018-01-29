@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.pojo.query;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 
 /**
  * @author Created by yuyidi on 2017/11/19.
@@ -10,9 +11,10 @@ import javax.validation.constraints.NotNull;
 public class StaffQuery extends PageAndSortQuery{
 
     private String userName;
-    private Boolean state;
-    private Long role;
 
+    private Date beginTime;
+    private Date endTime;
+    private Integer state;
     public String getUserName() {
         return userName;
     }
@@ -21,19 +23,29 @@ public class StaffQuery extends PageAndSortQuery{
         this.userName = userName;
     }
 
-    public Boolean getState() {
+    public Date getBeginTime() {
+        return beginTime;
+    }
+
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public Integer getState() {
         return state;
     }
 
-    public void setState(Boolean state) {
+    public void setState(Integer state) {
         this.state = state;
     }
 
-    public Long getRole() {
-        return role;
-    }
 
-    public void setRole(Long role) {
-        this.role = role;
-    }
 }

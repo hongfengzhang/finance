@@ -29,12 +29,12 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public void delete(Long id) {
-
+        repository.delete(id);
     }
 
     @Override
     public Role update(Role role) {
-        return null;
+        return repository.save(role);
     }
 
     @Override

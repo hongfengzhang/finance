@@ -9,7 +9,7 @@ public class StockQuery extends PageAndSortQuery {
     private String stockName;
     private String stockCode;
     private Integer status;
-
+    private String keyword;
     public String getStockName() {
         return stockName;
     }
@@ -32,5 +32,13 @@ public class StockQuery extends PageAndSortQuery {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
     }
 }

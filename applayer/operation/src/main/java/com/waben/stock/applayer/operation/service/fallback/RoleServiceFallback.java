@@ -28,4 +28,19 @@ public class RoleServiceFallback implements RoleService {
     public Response<PageInfo<RoleDto>> pages(RoleQuery query) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<RoleDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<RoleDto> modify(RoleDto roleDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
 }

@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.manage.StaffService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -36,5 +37,42 @@ public class StaffBusiness {
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
+    }
+
+    public StaffDto fetchById(Long id) {
+        Response<StaffDto> response = staffService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public StaffDto findById(Long id) {
+        Response<StaffDto> response = staffService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public Integer revision(StaffDto requestDto) {
+        Response<Integer> response = staffService.modify(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public void delete(Long id) {
+        staffService.delete(id);
     }
 }

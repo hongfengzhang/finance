@@ -32,4 +32,20 @@ public class StaffServiceFallback implements StaffService {
 	public Response<StaffDto> saveStaff(StaffDto staffDto) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+    @Override
+    public Response<StaffDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+
+    }
+
+    @Override
+    public Response<Integer> modify(StaffDto staffDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
 }

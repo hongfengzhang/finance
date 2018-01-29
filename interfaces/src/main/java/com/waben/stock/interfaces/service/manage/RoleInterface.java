@@ -1,6 +1,8 @@
 package com.waben.stock.interfaces.service.manage;
 
 import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
@@ -23,5 +25,12 @@ public interface RoleInterface {
 
     @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<RoleDto>> pages(@RequestBody RoleQuery query);
+    @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
+    Response<RoleDto> fetchById(@PathVariable("id") Long id);
 
+    @RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<RoleDto> modify(@RequestBody RoleDto roleDto);
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    void delete(@PathVariable("id") Long id);
 }

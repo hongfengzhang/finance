@@ -27,6 +27,11 @@ public class StaffDaoImpl implements StaffDao {
     }
 
     @Override
+    public Integer updateById(Long id, String userName, Boolean state) {
+        return repository.revisionById(id, userName, state);
+    }
+
+    @Override
     public Staff create(Staff staff) {
         return repository.save(staff);
     }

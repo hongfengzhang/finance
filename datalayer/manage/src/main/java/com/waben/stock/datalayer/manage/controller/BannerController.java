@@ -2,10 +2,12 @@ package com.waben.stock.datalayer.manage.controller;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,5 +49,22 @@ public class BannerController implements BannerInterface {
         Page<Banner> page = bannerService.pagesByQuery(query);
         PageInfo<BannerDto> result = PageToPageInfo.pageToPageInfo(page, BannerDto.class);
         return new Response<>(result);
+    }
+
+    @Override
+    public Response<BannerDto> fetchById(@PathVariable Long id) {
+        Banner banner = bannerService.fetchById(id);
+        BannerDto bannerDto = CopyBeanUtils.copyBeanProperties(banner, new BannerDto(), false);
+        return new Response<>(bannerDto);
+    }
+
+    @Override
+    public Response<BannerDto> modify(@RequestBody BannerDto bannerDto) {
+        return null;
+    }
+
+    @Override
+    public void delete(@PathVariable Long id) {
+        bannerService.delete(id);
     }
 }

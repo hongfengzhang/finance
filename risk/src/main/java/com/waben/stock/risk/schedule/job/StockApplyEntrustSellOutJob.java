@@ -85,7 +85,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                                 (EntrustState.WASTEORDER.getIndex())) {
                             //废单
                             logger.info("卖出废单:{}", entry.getKey());
-                            entrustProducer.entrustWaste(securitiesStockEntrust);
+                            entrustProducer.entrustWithdraw(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
@@ -102,7 +102,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             long entrustDay = calendar.getTime().getTime() / millisOfDay;
                             logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
                             if ((currentDay - entrustDay) >= 1) {
-                                entrustProducer.entrustWaste(securitiesStockEntrust);
+                                entrustProducer.entrustWithdraw(securitiesStockEntrust);
                                 stockEntrusts.remove(entry.getKey());
                             }
                             continue;

@@ -58,4 +58,9 @@ public class StockVo {
     public void setStockExponent(StockExponentVo stockExponentVo) {
         this.stockExponent = stockExponentVo;
     }
+
+    public void setExponent(StockExponentVo exponent) {
+        this.stockExponent = exponent;
+    }
+
 }

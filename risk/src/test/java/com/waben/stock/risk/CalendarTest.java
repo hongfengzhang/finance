@@ -13,12 +13,22 @@ public class CalendarTest {
     public static void main(String[] args) throws ParseException {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-mm-dd HH:mm:ss");
         SimpleDateFormat sdf2=new SimpleDateFormat("yyyy-mm-dd");
-        Date parse1 = sdf.parse("2018-01-25 00:00:00");
-        Date parse2 = sdf2.parse("2018-01-25 13:59:59");
-        Date parse3 = sdf2.parse("2018-01-25 23:59:59");
+        SimpleDateFormat sdfTime=new SimpleDateFormat("HH:mm:ss");
+        Date parse = sdfTime.parse("10:40:00");
+//        Date parse1 = sdf.parse("2018-01-25 00:00:00");
+//        Date parse2 = sdf2.parse("2018-01-27 13:59:59");
+        DateFormat df = DateFormat.getTimeInstance();
+        Date parse3 = sdf2.parse("2018-01-26 23:59:59");
 
-        System.out.println(sdf2.format(parse2).equalsIgnoreCase(sdf2.format(parse3)));
+        Date parse1 = sdfTime.parse(df.format(new Date()));
+        String format = sdf2.format(new Date());
+        String format1 = sdf2.format(parse3);
 
+        System.out.println(format.equalsIgnoreCase(format1));
+        System.out.println(format.compareToIgnoreCase(format1));
+        if((format.equalsIgnoreCase(format1)||format.compareToIgnoreCase(format1)>0)&&parse1.getTime()>parse.getTime()) {
+            System.out.println("ssssss");
+        }
 //        new Date().getTime() <
 //
 //        Calendar c= Calendar.getInstance();

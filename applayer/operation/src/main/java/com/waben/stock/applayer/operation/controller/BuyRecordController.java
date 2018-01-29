@@ -37,7 +37,6 @@ public class BuyRecordController {
         PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(buyRecordQuery);
         List<BuyRecordVo> buyRecordVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), BuyRecordVo.class);
         PageInfo<BuyRecordVo> response = new PageInfo<>(buyRecordVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
-
         return new Response<>(response);
     }
 

@@ -72,6 +72,22 @@ public class BeanConfigurer {
     }
 
     /**
+     * 创建 委托申请撤单队列
+     */
+    @Bean(name = "entrustApplyWithdraw")
+    public Queue entrustWithdrawQueue() {
+        return new Queue("entrustApplyWithdraw");
+    }
+
+    /**
+     * 创建 委托申请查询撤单队列
+     */
+    @Bean(name = "entrustQueryWithdraw")
+    public Queue queryWithdrawQueue() {
+        return new Queue("entrustQueryWithdraw");
+    }
+
+    /**
      * 风控队列
      * @return
      */
@@ -103,6 +119,18 @@ public class BeanConfigurer {
     public Binding bindingExchangRisk(@Qualifier("risk") Queue queue,
                                               @Qualifier("buyRecordRisk") TopicExchange riskExchange) {
         return BindingBuilder.bind(queue).to(riskExchange).with("stock");
+    }
+
+    @Bean
+    public Binding bindingExchangEntrustWithdraw(@Qualifier("entrustApplyWithdraw") Queue queue,
+                                      @Qualifier("buyRecord") TopicExchange riskExchange) {
+        return BindingBuilder.bind(queue).to(riskExchange).with("withdraw");
+    }
+
+    @Bean
+    public Binding bindingExchangQueryWithdraw(@Qualifier("entrustQueryWithdraw") Queue queue,
+                                                 @Qualifier("buyRecord") TopicExchange riskExchange) {
+        return BindingBuilder.bind(queue).to(riskExchange).with("queryWithdraw");
     }
 
     /**

@@ -5,6 +5,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
+import com.waben.stock.datalayer.stockcontent.repository.StockExponentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +34,8 @@ public class StockService {
 
 	@Autowired
 	private StockDao stockDao;
-
+	@Autowired
+	private StockExponentDao stockExponentDao;
 	@Transactional
 	public Stock saveStock(Stock stock) {
 		return stockDao.create(stock);
@@ -79,5 +82,11 @@ public class StockService {
 
 	public void delete(Long id) {
 		stockDao.delete(id);
+	}
+
+    public Stock save(Stock stock) {
+		StockExponent stockExponent = stockExponentDao.retrieveWithExponeneCode(stock.getExponent().getExponentCode());
+		stock.setExponent(stockExponent);
+		return stockDao.create(stock);
 	}
 }

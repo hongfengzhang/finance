@@ -498,4 +498,12 @@ public class BuyRecordService {
 	public void delete(Long id) {
 		buyRecordDao.delete(id);
 	}
+
+	public BuyRecord withdrawLock(String entrustNo, Long id) {
+		BuyRecord buyRecord = buyRecordDao.retrieve(id);
+		buyRecord.setTradeNo(entrustNo);
+		buyRecord.setUpdateTime(new Date());
+		buyRecord.setState(BuyRecordState.WITHDRAWLOCK);
+		return buyRecordDao.update(buyRecord);
+	}
 }

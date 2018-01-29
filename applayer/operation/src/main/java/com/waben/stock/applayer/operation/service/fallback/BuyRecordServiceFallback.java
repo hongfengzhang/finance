@@ -38,6 +38,11 @@ public class BuyRecordServiceFallback implements BuyRecordService {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
+    @Override
+    public Response<BuyRecordDto> withdrawLock(String entrustNo, Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 
     @Override
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {

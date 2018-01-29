@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.manage.controller;
 
 import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.service.StaffService;
+import com.waben.stock.interfaces.dto.investor.SecurityAccountDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -53,6 +54,26 @@ public class StaffController implements StaffInterface {
         Staff result = staffService.saveStaff(staff);
         StaffDto staffDtoResult = CopyBeanUtils.copyBeanProperties(result, new StaffDto(), false);
         return new Response<>(staffDtoResult);
+    }
+
+    @Override
+    public Response<StaffDto> fetchById(@PathVariable Long id) {
+        Staff staff = staffService.fetchById(id);
+        StaffDto staffDto = CopyBeanUtils.copyBeanProperties(staff, new StaffDto(), false);
+        staffDto.setRoleDto(CopyBeanUtils.copyBeanProperties(staff.getRole(), new RoleDto(), false));
+        return new Response<>(staffDto);
+    }
+
+    @Override
+    public Response<Integer> modify(@RequestBody StaffDto staffDto) {
+        Staff staff = CopyBeanUtils.copyBeanProperties(Staff.class, staffDto, false);
+        int result = staffService.revision(staff);
+        return new Response<>(result);
+    }
+
+    @Override
+    public void delete(@PathVariable Long id) {
+        staffService.delete(id);
     }
 
 }

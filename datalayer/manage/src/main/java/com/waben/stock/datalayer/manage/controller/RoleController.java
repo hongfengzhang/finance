@@ -1,8 +1,11 @@
 package com.waben.stock.datalayer.manage.controller;
 
 import com.waben.stock.datalayer.manage.entity.Role;
+import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.service.RoleService;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
@@ -39,5 +42,24 @@ public class RoleController implements RoleInterface {
         Page<Role> page = roleService.pagesByQuery(query);
         PageInfo<RoleDto> result = PageToPageInfo.pageToPageInfo(page, RoleDto.class);
         return new Response<>(result);
+    }
+
+    @Override
+    public Response<RoleDto> fetchById(@PathVariable Long id) {
+        Role role = roleService.fetchById(id);
+        RoleDto roleDto = CopyBeanUtils.copyBeanProperties(role, new RoleDto(), false);
+        return new Response<>(roleDto);
+    }
+
+    @Override
+    public Response<RoleDto> modify(@RequestBody  RoleDto roleDto) {
+        Role role = CopyBeanUtils.copyBeanProperties(Role.class, roleDto, false);
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.revision(role),false);
+        return new Response<>(result);
+    }
+
+    @Override
+    public void delete(@PathVariable Long id) {
+        roleService.delete(id);
     }
 }

@@ -38,4 +38,9 @@ public class StockReferenceFallback implements StockReference {
 	public void delete(Long id) {
 
 	}
+
+	@Override
+	public Response<StockDto> add(StockDto requestDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

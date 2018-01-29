@@ -1,31 +1,14 @@
 package com.waben.stock.applayer.operation.controller;
 
-import com.rabbitmq.tools.json.JSONUtil;
 import com.waben.stock.applayer.operation.business.AmountValueBusiness;
-import com.waben.stock.applayer.operation.business.LossBusiness;
-import com.waben.stock.interfaces.dto.investor.InvestorDto;
-import com.waben.stock.interfaces.dto.investor.SecurityAccountDto;
-import com.waben.stock.interfaces.dto.manage.PermissionDto;
+
 import com.waben.stock.interfaces.dto.stockcontent.AmountValueDto;
-import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.AmountValueQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.util.JacksonUtil;
-import com.waben.stock.interfaces.vo.investor.InvestorVo;
-import com.waben.stock.interfaces.vo.investor.SecurityAccountVo;
 import com.waben.stock.interfaces.vo.stockcontent.AmountValueVo;
-import com.waben.stock.interfaces.vo.stockcontent.StrategyTypeVo;
-import org.codehaus.jackson.annotate.JsonSetter;
-import org.codehaus.jackson.map.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.jackson.JsonObjectSerializer;
-import org.springframework.boot.json.GsonJsonParser;
-import org.springframework.boot.json.JsonJsonParser;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.data.domain.Page;
-import org.springframework.http.converter.json.GsonFactoryBean;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;

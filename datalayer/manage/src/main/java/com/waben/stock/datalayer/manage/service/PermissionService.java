@@ -14,11 +14,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/12/11.
@@ -45,7 +49,18 @@ public class PermissionService {
             @Override
             public Predicate toPredicate(Root<Permission> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
                     criteriaBuilder) {
-
+                List<Predicate> predicatesList = new ArrayList();
+                if (!StringUtils.isEmpty(query.getName())) {
+                    Predicate nameQuery = criteriaBuilder.equal(root.get("name").as(String.class), query
+                            .getName());
+                    predicatesList.add(nameQuery);
+                }
+                if (!StringUtils.isEmpty(query.getCode())) {
+                    Predicate codeQuery = criteriaBuilder.equal(root.get("expression").as(String.class), query
+                            .getCode());
+                    predicatesList.add(codeQuery);
+                }
+                criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);

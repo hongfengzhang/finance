@@ -33,15 +33,22 @@ public class EntrustProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
         logger.info("开始发送委托卖出订单数据:{}",securitiesStockEntrust.getTradeNo());
         super.topic("buyRecord", "sellOut", securitiesStockEntrust);
     }
+    /**
+     * 委托申请撤单
+     * @param securitiesStockEntrust
+     */
+    public void entrustWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
+        //TODO 调用上游撤单接口
+        logger.info("开始发送委托申请撤单订单数据:{}",securitiesStockEntrust.getTradeNo());
+        super.topic("buyRecord", "withdraw", securitiesStockEntrust);
+    }
 
     /**
      * 废单
      * @param securitiesStockEntrust
      */
     public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
-        //TODO 调用上游撤单接口
         logger.info("开始发送废单数据:{}",securitiesStockEntrust.getTradeNo());
-
         super.topic("buyRecord", "waste", securitiesStockEntrust);
     }
 

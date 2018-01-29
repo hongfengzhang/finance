@@ -165,6 +165,12 @@ public class InvestorService {
         return enturstNo;
     }
 
+    public String buyRecordApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
+        StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
+        String enturstNo = stockJyRest.withdraw(securitiesStockEntrust.getTradeSession(), securitiesStockEntrust.getEntrustNo());
+
+        return enturstNo;
+    }
 
     @Transactional
     public Investor save(Investor investor) {

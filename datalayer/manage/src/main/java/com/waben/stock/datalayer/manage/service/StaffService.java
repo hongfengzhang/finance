@@ -20,6 +20,9 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/11/15.
@@ -48,11 +51,23 @@ public class StaffService {
             @Override
             public Predicate toPredicate(Root<Staff> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
                     criteriaBuilder) {
+                List<Predicate> predicatesList = new ArrayList<>();
                 if (!StringUtils.isEmpty(staffQuery.getUserName())) {
                     Predicate userNameQuery = criteriaBuilder.equal(root.get("userName").as(String.class), staffQuery
                             .getUserName());
-                    criteriaQuery.where(criteriaBuilder.and(userNameQuery));
+                    predicatesList.add(userNameQuery);
                 }
+                if(staffQuery.getBeginTime() != null && staffQuery.getEndTime() != null){
+                    Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),staffQuery.getBeginTime(),staffQuery.getEndTime());
+                    predicatesList.add(criteriaBuilder.and(createTimeQuery));
+                }
+                if (staffQuery.getState() != null&&staffQuery.getState()!=2) {
+                    Predicate stateQuery = criteriaBuilder.equal(root.get("state").as(Integer.class), staffQuery
+                            .getState());
+                    predicatesList.add(stateQuery);
+                }
+                criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
@@ -65,4 +80,15 @@ public class StaffService {
     }
 
 
+    public Staff fetchById(Long id) {
+        return staffDao.retrieve(id);
+    }
+
+    public Integer revision(Staff staff) {
+        return staffDao.updateById(staff.getId(),staff.getUserName(),staff.getState());
+    }
+
+    public void delete(Long id) {
+        staffDao.delete(id);
+    }
 }

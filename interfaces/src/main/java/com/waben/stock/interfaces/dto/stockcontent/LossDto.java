@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.dto.stockcontent;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/23.

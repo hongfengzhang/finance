@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.dto.stockcontent;
 
+import com.waben.stock.interfaces.vo.stockcontent.StockExponentVo;
+
 /**
  * 股票
  *
@@ -63,5 +65,7 @@ public class StockDto {
     public void setExponent(StockExponentDto exponent) {
         this.exponent = exponent;
     }
-
+    public void setStockExponent(StockExponentDto stockExponent) {
+        this.exponent = stockExponent;
+    }
 }

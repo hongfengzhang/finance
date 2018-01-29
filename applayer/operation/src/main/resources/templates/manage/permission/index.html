@@ -32,7 +32,13 @@
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+                            <input type="button" class="btn btn-fill btn-info" value="搜索" id="search"/>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -74,7 +80,7 @@
                 cache: true, // 缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -86,10 +92,16 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
+                    var query= {
+                        page: this.pageNumber - 1,
+                        size: this.pageSize
                     }
+                    var queryMap = {
+                        name:$("input[name='name']").val(),
+                        code:$("input[name='code']").val(),
+                    }
+                    $.extend(query,queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -123,9 +135,9 @@
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
                         return [
-                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
-                            '<i class="fa fa-eye"></i>',
-                            '</a>',
+//                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+//                            '<i class="fa fa-eye"></i>',
+//                            '</a>',
                             '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
                             '<i class="fa fa-edit"></i>',
                             '</a>',
@@ -162,7 +174,25 @@
             $(window).resize(function () {
                 $table.bootstrapTable('resetView');
             });
+            $('#search').click(function(){
+                var name = $("input[name='name']");
+                var code = $("input[name='code']");
 
+                //<![CDATA[
+                if(code == ""&&name == "2") {
+                    swal("请输入查询数据！");
+                }
+                //]]>
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
+            });
+
+            $('#reset').click(function(){
+                $("input[name='name']").val('');
+                $("input[name='code']").val('');
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
+            });
         });
     </script>
 </div>

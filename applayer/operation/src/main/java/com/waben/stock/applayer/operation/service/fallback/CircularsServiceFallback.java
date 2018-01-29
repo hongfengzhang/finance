@@ -27,4 +27,19 @@ public class CircularsServiceFallback implements CircularsService {
     public Response<PageInfo<CircularsDto>> pages(CircularsQuery query) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<CircularsDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<Integer> modify(CircularsDto circularsDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
 }

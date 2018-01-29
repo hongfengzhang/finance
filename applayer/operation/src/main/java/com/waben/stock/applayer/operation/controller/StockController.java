@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.investor.SecurityAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
@@ -54,12 +55,30 @@ public class StockController {
         return "stock/manage/edit";
     }
 
+    @RequestMapping("/add")
+    public String add(ModelMap map) {
+        List<StockExponentDto> stockExponentDtos = stockBusiness.fetchStockExponents();
+        List<StockExponentVo> stockExponentVos = CopyBeanUtils.copyListBeanPropertiesToList(stockExponentDtos, StockExponentVo.class);
+        map.addAttribute("stockExponentVos",stockExponentVos);
+        return "stock/manage/add";
+    }
+
     @RequestMapping("/modify")
     @ResponseBody
     public Response<Integer> modify(StockVo vo){
         StockDto requestDto = CopyBeanUtils.copyBeanProperties(StockDto.class, vo, false);
         Integer result = stockBusiness.revision(requestDto);
         return new Response<>(result);
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<StockVo> add(StockVo vo){
+        StockDto requestDto = CopyBeanUtils.copyBeanProperties(StockDto.class, vo, false);
+        requestDto.setStockExponent(CopyBeanUtils.copyBeanProperties(StockExponentDto.class, vo.getStockExponent(), false));
+        StockDto stockDto = stockBusiness.save(requestDto);
+        StockVo stockVo = CopyBeanUtils.copyBeanProperties(StockVo.class,stockDto , false);
+        return new Response<>(stockVo);
     }
 
     @RequestMapping("/view/{id}")

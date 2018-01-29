@@ -51,6 +51,11 @@ public class StockServiceFallbackFactory implements FallbackFactory<StockService
             public void delete(Long id) {
 
             }
+
+            @Override
+            public Response<StockDto> add(StockDto requestDto) {
+                return null;
+            }
         };
     }
 }

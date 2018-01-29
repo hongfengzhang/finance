@@ -69,4 +69,12 @@ public class StockController implements StockInterface {
 		stockService.delete(id);
 	}
 
+	@Override
+	public Response<StockDto> add(@RequestBody StockDto stockDto) {
+		Stock stock = CopyBeanUtils.copyBeanProperties(Stock.class, stockDto, false);
+		stock.setExponent(CopyBeanUtils.copyBeanProperties(StockExponent.class, stockDto.getExponent(), false));
+		StockDto result = CopyBeanUtils.copyBeanProperties(StockDto.class, stockService.save(stock), false);
+		return new Response<>(result);
+	}
+
 }

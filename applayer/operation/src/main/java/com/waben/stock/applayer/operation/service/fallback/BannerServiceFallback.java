@@ -24,4 +24,19 @@ public class BannerServiceFallback implements BannerService {
     public Response<PageInfo<BannerDto>> pages(BannerQuery query) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<BannerDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<BannerDto> modify(BannerDto bannerDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
 }

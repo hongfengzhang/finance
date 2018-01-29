@@ -17,4 +17,5 @@ public interface CircularsDao extends BaseDao<Circulars, Long> {
 
 	List<Circulars> retrieveCirculars(Boolean enable);
 
+    Integer updateById(Long id, String title, String content);
 }
