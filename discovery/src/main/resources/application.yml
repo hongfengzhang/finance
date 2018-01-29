@@ -13,8 +13,12 @@ eureka:
       healthCheckUrlPath: ${management.context-path}/health
       statusPageUrlPath: ${management.context-path}/info
       hostname: ${spring.cloud.client.ipAddress}
+      lease-expiration-duration-in-seconds: 30  # 续约到期时间
+      lease-renewal-interval-in-seconds: 10  #续约更新时间间隔
   client:
     register-with-eureka: true
     fetch-registry: true
   server:
     renewal-percent-threshold: '0.8'
+    enable-self-preservation: false
+    eviction-interval-timer-in-ms: 4000

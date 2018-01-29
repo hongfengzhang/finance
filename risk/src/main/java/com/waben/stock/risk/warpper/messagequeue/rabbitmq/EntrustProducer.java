@@ -39,7 +39,9 @@ public class EntrustProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
      * @param securitiesStockEntrust
      */
     public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
+        //TODO 调用上游撤单接口
         logger.info("开始发送废单数据:{}",securitiesStockEntrust.getTradeNo());
+
         super.topic("buyRecord", "waste", securitiesStockEntrust);
     }
 
