@@ -23,12 +23,12 @@ import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.SettlementQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -80,6 +80,11 @@ public class BuyRecordController {
 		boolean isSuspension = stockBusiness.isSuspension(stockCode);
 		if (isSuspension) {
 			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		}
+		// 判断该股票是否为创业板股票
+		StockDto stock = stockBusiness.findByCode(stockCode);
+		if ("4621".equals(stock.getStockExponentDto().getExponentCode())) {
+			throw new ServiceException(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION);
 		}
 		// 判断是否有资格参与该策略
 		boolean qualify = buyRecordBusiness.hasStrategyQualify(SecurityUtil.getUserId(), strategyTypeId);
@@ -160,9 +165,12 @@ public class BuyRecordController {
 	@GetMapping("/pagesUnwind")
 	@ApiOperation(value = "结算的点买记录列表")
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesUnwind(int page, int size) {
-		SettlementQuery query = new SettlementQuery(page, size);
-		query.setPublisherId(SecurityUtil.getUserId());
-		return new Response<>(buyRecordBusiness.pagesSettlement(query));
+		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
+				new BuyRecordState[] { BuyRecordState.UNWIND, BuyRecordState.REVOKE });
+		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
+		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
+		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
+				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
 	}
 
 	@GetMapping("/tradeDynamic")

@@ -159,7 +159,7 @@ public interface BuyRecordInterface {
 	 *            查询条件
 	 * @return 点买记录
 	 */
-	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery);
 
 	@RequestMapping(value = "/posted/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)

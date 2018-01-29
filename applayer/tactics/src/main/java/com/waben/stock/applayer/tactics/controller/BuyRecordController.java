@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,12 +25,12 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.SettlementQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,6 +45,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/buyRecord")
 @Api(description = "点买交易")
 public class BuyRecordController {
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
@@ -77,6 +81,7 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
 			BigDecimal deferredFee, @RequestParam(required = true) String paymentPassword) {
+		logger.info("APP调用接口发布人{}点买股票{}，申请资金{}!", SecurityUtil.getUserId(), stockCode, applyAmount);
 		// 检查交易时间段
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
@@ -86,6 +91,11 @@ public class BuyRecordController {
 		boolean isSuspension = stockBusiness.isSuspension(stockCode);
 		if (isSuspension) {
 			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		}
+		// 判断该股票是否为创业板股票
+		StockDto stock = stockBusiness.findByCode(stockCode);
+		if("4621".equals(stock.getStockExponentDto().getExponentCode())) {
+			throw new ServiceException(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION);
 		}
 		// 判断是否有资格参与该策略
 		boolean qualify = buyRecordBusiness.hasStrategyQualify(SecurityUtil.getUserId(), strategyTypeId);
@@ -166,9 +176,12 @@ public class BuyRecordController {
 	@GetMapping("/pagesUnwind")
 	@ApiOperation(value = "结算的点买记录列表")
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesUnwind(int page, int size) {
-		SettlementQuery query = new SettlementQuery(page, size);
-		query.setPublisherId(SecurityUtil.getUserId());
-		return new Response<>(buyRecordBusiness.pagesSettlement(query));
+		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
+				new BuyRecordState[] { BuyRecordState.UNWIND, BuyRecordState.REVOKE });
+		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
+		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
+		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
+				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
 	}
 
 	@GetMapping("/tradeDynamic")

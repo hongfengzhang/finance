@@ -99,6 +99,8 @@ public class ExceptionConstant {
 	public static final String USERSELLAPPLY_NOTMATCH_EXCEPTION = "6022";
 	// 买入中和买入锁定状态下才能撤单
 	public static final String BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION = "6023";
+	// 不支持购买创业板的股票
+	public static final String DEVELOPSTOCK_NOTSUPPORT_EXCEPTION = "6024";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

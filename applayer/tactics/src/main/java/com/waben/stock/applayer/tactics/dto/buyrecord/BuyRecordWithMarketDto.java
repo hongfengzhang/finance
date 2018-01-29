@@ -13,14 +13,6 @@ import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 public class BuyRecordWithMarketDto extends BuyRecordDto {
 
 	/**
-	 * 盈亏
-	 */
-	private BigDecimal profitOrLoss;
-	/**
-	 * 发布人盈亏
-	 */
-	private BigDecimal publisherProfitOrLoss;
-	/**
 	 * 股票名称
 	 */
 	private String stockName;
@@ -77,19 +69,8 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 		this.upDropSpeed = upDropSpeed;
 	}
 
-	public BigDecimal getPublisherProfitOrLoss() {
-		return publisherProfitOrLoss;
-	}
-
-	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
-		this.publisherProfitOrLoss = publisherProfitOrLoss;
-	}
-
-	public void setProfitOrLoss(BigDecimal profitOrLoss) {
-		this.profitOrLoss = profitOrLoss;
-	}
-
 	public BigDecimal getProfitOrLoss() {
+		BigDecimal profitOrLoss = super.getProfitOrLoss();
 		if (profitOrLoss == null && getLastPrice() != null && getBuyingPrice() != null) {
 			return new BigDecimal(getNumberOfStrand()).multiply(getLastPrice().subtract(getBuyingPrice()));
 		}

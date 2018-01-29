@@ -61,6 +61,17 @@ public class SystemController {
 		PageInfo<BannerDto> pages = bannerBusiness.pages(query);
 		return new Response<>(pages.getContent());
 	}
+	
+	@GetMapping("/banner/lists")
+	@ApiOperation(value = "根据类别获取轮播图列表", notes="type(1:APP,2:PC,3:APP上架使用)")
+	public Response<List<BannerDto>> getBannerListByCategory(int type) {
+		BannerQuery query = new BannerQuery();
+		query.setPage(0);
+		query.setSize(10);
+		query.setCategory(BannerForwardCategory.getByIndex(String.valueOf(type)));
+		PageInfo<BannerDto> pages = bannerBusiness.pages(query);
+		return new Response<>(pages.getContent());
+	}
 
 	@GetMapping("/getEnabledCircularsList")
 	@ApiOperation(value = "获取通告列表")

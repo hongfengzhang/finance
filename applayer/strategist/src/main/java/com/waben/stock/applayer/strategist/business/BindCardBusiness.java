@@ -78,6 +78,14 @@ public class BindCardBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	
+	public Long remove(Long id) {
+		Response<Long> response = bindCardReference.dropBankCard(id);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 	public BindCardDto revision(BindCardDto bindCard) {
 		Response<BindCardDto> response = bindCardReference.modifyBankCard(bindCard);

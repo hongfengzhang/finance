@@ -69,5 +69,10 @@ public class MessagingController implements MessagingInterface{
 		return new Response<>(result);
 	}
 
+	@Override
+	public Response<MessagingDto> readMessage(@PathVariable Long recipient, @PathVariable Long id) {
+		Messaging resultMessaging = messagingService.readMessage(String.valueOf(recipient), id);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class,resultMessaging, false));
+	}
 	
 }

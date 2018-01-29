@@ -1,9 +1,12 @@
-package com.waben.stock.applayer.tactics.service;
+package com.waben.stock.datalayer.message.service;
 
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -33,23 +36,43 @@ import cn.jpush.api.push.model.notification.Notification;
 @Service
 public class JiguangService {
 
-	private static final String APP_KEY = "973418bb64e24cbfc54af5bb";
+	private static final String APP_KEY = "50a90087ee30438b218105b8";
 
-	private static final String MASTER_SECRET = "2109cbbb2e856dcf7f112384";
+	private static final String MASTER_SECRET = "93822312b1afc8fe1fab3f59";
+
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
+
+	private boolean isProd = true;
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
-	private PushPayload buildPushObjectForSingle(String registrationId, String alert, Map<String, String> extras) {
+	@PostConstruct
+	public void init() {
+		if ("prod".equals(activeProfile)) {
+			isProd = true;
+		} else {
+			isProd = false;
+		}
+	}
+
+	private PushPayload buildPushObjectForSingle(String registrationId, String title, String alert,
+			Map<String, String> extras) {
 		Builder builder = PushPayload.newBuilder();
 		builder.setPlatform(Platform.all());
 		builder.setAudience(
 				Audience.newBuilder().addAudienceTarget(AudienceTarget.registrationId(registrationId)).build());
-		builder.setNotification(Notification.android(alert, "优股网", extras));
-		builder.setNotification(Notification.ios(alert, extras));
+		builder.setNotification(Notification.newBuilder()
+				.addPlatformNotification(IosNotification.newBuilder().setAlert(alert).addExtras(extras).build())
+				.addPlatformNotification(
+						AndroidNotification.newBuilder().setTitle(title).setAlert(alert).addExtras(extras).build())
+				.build());
+		// ture为生产环境，false为开发环境
+		builder.setOptions(Options.newBuilder().setApnsProduction(isProd).build());
 		return builder.build();
 	}
 
-	private PushPayload buildPushObjectForMultiple(String[] registrationIdArr, String alert,
+	private PushPayload buildPushObjectForMultiple(String[] registrationIdArr, String title, String alert,
 			Map<String, String> extras) {
 		Builder builder = PushPayload.newBuilder();
 		builder.setPlatform(Platform.all());
@@ -58,20 +81,21 @@ public class JiguangService {
 		builder.setNotification(Notification.newBuilder()
 				.addPlatformNotification(IosNotification.newBuilder().setAlert(alert).addExtras(extras).build())
 				.addPlatformNotification(
-						AndroidNotification.newBuilder().setTitle("优股网").setAlert(alert).addExtras(extras).build())
+						AndroidNotification.newBuilder().setTitle(title).setAlert(alert).addExtras(extras).build())
 				.build());
-		builder.setOptions(Options.newBuilder().setApnsProduction(true).build());
+		// ture为生产环境，false为开发环境
+		builder.setOptions(Options.newBuilder().setApnsProduction(isProd).build());
 		return builder.build();
 	}
 
-	private PushPayload buildPushObjectForAllDevice(String alert, Map<String, String> extras) {
+	private PushPayload buildPushObjectForAllDevice(String title, String alert, Map<String, String> extras) {
 		Builder builder = PushPayload.newBuilder();
 		builder.setPlatform(Platform.all());
 		builder.setAudience(Audience.newBuilder().setAll(true).build());
 		builder.setNotification(Notification.ios(alert, extras));
-		builder.setNotification(Notification.android(alert, "优股网", extras));
+		builder.setNotification(Notification.android(alert, title, extras));
 		// ture为生产环境，false为开发环境
-		builder.setOptions(Options.newBuilder().setApnsProduction(true).build());
+		builder.setOptions(Options.newBuilder().setApnsProduction(isProd).build());
 		return builder.build();
 	}
 
@@ -97,16 +121,16 @@ public class JiguangService {
 		}
 	}
 
-	public void pushAllDevice(String alert, Map<String, String> extras) {
-		pushNotification(buildPushObjectForAllDevice(alert, extras));
+	public void pushAllDevice(String title, String alert, Map<String, String> extras) {
+		pushNotification(buildPushObjectForAllDevice(title, alert, extras));
 	}
 
-	public void pushSingleDevice(String registrationId, String alert, Map<String, String> extras) {
-		pushNotification(buildPushObjectForSingle(registrationId, alert, extras));
+	public void pushSingleDevice(String registrationId, String title, String alert, Map<String, String> extras) {
+		pushNotification(buildPushObjectForSingle(registrationId, title, alert, extras));
 	}
 
-	public void pushMultipleDevice(String[] registrationIdArr, String alert, Map<String, String> extras) {
-		pushNotification(buildPushObjectForMultiple(registrationIdArr, alert, extras));
+	public void pushMultipleDevice(String[] registrationIdArr, String title, String alert, Map<String, String> extras) {
+		pushNotification(buildPushObjectForMultiple(registrationIdArr, title, alert, extras));
 	}
 
 }

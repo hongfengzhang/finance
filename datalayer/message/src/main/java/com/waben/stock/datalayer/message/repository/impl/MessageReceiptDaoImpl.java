@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.message.entity.MessageReceipt;
+import com.waben.stock.datalayer.message.entity.Messaging;
 import com.waben.stock.datalayer.message.repository.MessageReceiptDao;
 import com.waben.stock.datalayer.message.repository.impl.jpa.MessageReceiptRepository;
 
@@ -54,5 +55,9 @@ public class MessageReceiptDaoImpl implements MessageReceiptDao {
 		return repository.findAll();
 	}
 
+	@Override
+	public MessageReceipt findByMessageAndRecipient(Messaging messaging, String recipient) {
+		return repository.findByMessageAndRecipient(messaging, recipient);
+	}
 
 }

@@ -117,6 +117,14 @@ public class BuyRecordDto {
 	 */
 	private BigDecimal sellingPrice;
 	/**
+	 * 盈亏
+	 */
+	private BigDecimal profitOrLoss;
+	/**
+	 * 发布人盈亏
+	 */
+	private BigDecimal publisherProfitOrLoss;
+	/**
 	 * 股票代码
 	 */
 	private String stockCode;
@@ -450,6 +458,22 @@ public class BuyRecordDto {
 
 	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
+	}
+
+	public BigDecimal getProfitOrLoss() {
+		return profitOrLoss;
+	}
+
+	public void setProfitOrLoss(BigDecimal profitOrLoss) {
+		this.profitOrLoss = profitOrLoss;
+	}
+
+	public BigDecimal getPublisherProfitOrLoss() {
+		return publisherProfitOrLoss;
+	}
+
+	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
+		this.publisherProfitOrLoss = publisherProfitOrLoss;
 	}
 
 }

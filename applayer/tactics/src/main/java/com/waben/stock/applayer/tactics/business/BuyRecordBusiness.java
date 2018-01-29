@@ -21,7 +21,6 @@ import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -96,33 +95,6 @@ public class BuyRecordBusiness {
 		Response<PageInfo<BuyRecordDto>> response = buyRecordReference.pagesByQuery(buyRecordQuery);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
-		}
-		throw new ServiceException(response.getCode());
-	}
-
-	public PageInfo<BuyRecordWithMarketDto> pagesSettlement(SettlementQuery query) {
-		Response<PageInfo<SettlementDto>> response = settlementReference.pagesByQuery(query);
-		if ("200".equals(response.getCode())) {
-			List<BuyRecordWithMarketDto> content = new ArrayList<>();
-			List<SettlementDto> settlementContent = response.getResult().getContent();
-			if (settlementContent != null && settlementContent.size() > 0) {
-				for (SettlementDto settlement : settlementContent) {
-					BuyRecordWithMarketDto buyRecord = wrapMarketInfo(settlement.getBuyRecord());
-					buyRecord.setProfitOrLoss(settlement.getProfitOrLoss());
-					buyRecord.setPublisherProfitOrLoss(settlement.getPublisherProfitOrLoss());
-					DeferredRecordDto deferredRecordDto = deferredRecordReference
-							.fetchByPublisherIdAndBuyRecordId(buyRecord.getPublisherId(), buyRecord.getId())
-							.getResult();
-					if (deferredRecordDto != null) {
-						buyRecord.setDeferredDays(deferredRecordDto.getCycle());
-						buyRecord.setDeferredCharges(deferredRecordDto.getFee());
-					}
-					content.add(buyRecord);
-				}
-			}
-			return new PageInfo<>(content, response.getResult().getTotalPages(), response.getResult().getLast(),
-					response.getResult().getTotalElements(), response.getResult().getSize(),
-					response.getResult().getNumber(), response.getResult().getFrist());
 		}
 		throw new ServiceException(response.getCode());
 	}
