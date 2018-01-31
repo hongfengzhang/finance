@@ -32,7 +32,7 @@ public class StockWithdrawLockInitialize implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithWithdrawStock();
-        logger.info("获取买入锁定的点买交易记录个数：{}", buyRecords.size());
+        logger.info("获取撤单锁定的点买交易记录个数：{}", buyRecords.size());
         for (BuyRecordDto buyRecord : buyRecords) {
             SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());

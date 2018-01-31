@@ -38,9 +38,9 @@
                                     <label>类型</label>
                                     <select class="selectpicker" name="type">
 	                            		<option th:each="state: ${types}"
-												th:value="${state.index}" th:text="${state.type}" th:if="${state.type eq messaging.messageType}" selected="selected"></option>
+												th:value="${state.index}" th:text="${state.type}" th:if="${state.type eq messaging.type}" selected="selected"></option>
 										<option th:each="state : ${types}"
-												th:value="${state.index}" th:text="${state.type}" th:if="${state.type ne messaging.messageType}"></option>
+												th:value="${state.index}" th:text="${state.type}" th:if="${state.type ne messaging.type}"></option>
                             		</select>
                                 </div>
                             </div>

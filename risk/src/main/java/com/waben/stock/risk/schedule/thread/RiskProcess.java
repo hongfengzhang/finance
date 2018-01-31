@@ -78,7 +78,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             String expriessDay = sdfDate.format(riskBuyInStock.getExpireTime());
             logger.info("过期时间:{},当前时间:{}", expriessDay, currentDay);
             //判断持仓到期时间是否已经达到且是否达到14:40:00
-            if ((currentDay.equalsIgnoreCase(expriessDay)||currentDay.compareToIgnoreCase(expriessDay)>0)&&currentTime.getTime()>=expriessTime.getTime()) {
+            if (currentDay.compareToIgnoreCase(expriessDay)>=0&&currentTime.getTime()>=expriessTime.getTime()) {
                 riskBuyInStock.setWindControlType(WindControlType.TRADINGEND.getIndex());
             } else {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价
