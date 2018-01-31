@@ -247,27 +247,21 @@ public class InvestorService {
         investorDao.delete(id);
     }
 
-    private SecuritiesStockEntrust buyRecordEntrust(InvestorDto investorDto, BuyRecordDto buyRecordDto, BigDecimal entrustPrice) {
+    private SecuritiesStockEntrust buyRecordEntrust(Long investorId, String stockCode) {
         SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
-        securitiesStockEntrust.setBuyRecordId(buyRecordDto.getId());
-        securitiesStockEntrust.setSerialCode(buyRecordDto.getSerialCode());
-        securitiesStockEntrust.setInvestor(investorDto.getId());
-        StockDto stockDto = stockBusiness.fetchWithExponentByCode(buyRecordDto.getStockCode());
+        securitiesStockEntrust.setInvestor(investorId);
+        StockDto stockDto = stockBusiness.fetchWithExponentByCode(stockCode);
         securitiesStockEntrust.setStockName(stockDto.getName());
         securitiesStockEntrust.setStockCode(stockDto.getCode());
         securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
-        securitiesStockEntrust.setEntrustNumber(buyRecordDto.getNumberOfStrand());
-        securitiesStockEntrust.setEntrustPrice(entrustPrice);
-        securitiesStockEntrust.setBuyRecordState(buyRecordDto.getState());
         return securitiesStockEntrust;
     }
 
-    public BuyRecordDto buyIn(BuyRecordDto buyRecordDto) {
+    public BuyRecordDto buyIn(SecuritiesStockEntrust securitiesStockEntrust) {
         //获取投资人对象
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
         InvestorDto investorDto = investorsContainer.get(0);
-
-        SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto,buyRecordDto.getDelegatePrice());
+        securitiesStockEntrust= buyRecordEntrust(investorDto.getId(), securitiesStockEntrust.getStockCode());
         //TODO 若没有接收到响应请求， 则回滚服务业务
         String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
         Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
