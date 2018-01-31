@@ -27,6 +27,7 @@ import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.buyrecord.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.buyrecord.business.HolidayBusiness;
+import com.waben.stock.datalayer.buyrecord.business.InvestorBusiness;
 import com.waben.stock.datalayer.buyrecord.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.buyrecord.business.StrategyTypeBusiness;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
@@ -78,6 +79,9 @@ public class BuyRecordService {
 
 	@Autowired
 	private OutsideMessageBusiness outsideMessageBusiness;
+	
+	@Autowired
+	private InvestorBusiness investorBusiness;
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
@@ -126,6 +130,8 @@ public class BuyRecordService {
 				}
 			}
 		}
+		// 自动买入股票
+		investorBusiness.voluntarilyStockApplyBuyIn(buyRecord.getId());
 		// 站外消息推送
 		sendOutsideMessage(buyRecord);
 		return buyRecord;
