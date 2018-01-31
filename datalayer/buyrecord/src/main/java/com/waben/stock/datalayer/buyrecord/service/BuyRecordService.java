@@ -156,6 +156,9 @@ public class BuyRecordService {
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
+				if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
+					predicateList.add(root.get("state").in(buyRecordQuery.getStates()));
+				}
 				if (buyRecordQuery.getState() != null && buyRecordQuery.getState() != 0) {
 					predicateList
 							.add(criteriaBuilder.equal(root.get("state").as(Integer.class), buyRecordQuery.getState()));
