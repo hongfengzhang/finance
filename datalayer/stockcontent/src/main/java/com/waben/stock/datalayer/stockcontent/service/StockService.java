@@ -60,6 +60,25 @@ public class StockService {
 					Predicate statusQuery = criteriaBuilder.equal(root.get("status").as(Integer.class),
 							stockQuery.getStatus());
 					predicatesList.add(criteriaBuilder.and(statusQuery));
+				} else if (!StringUtils.isEmpty(stockQuery.getKeyword())) {
+					String keyword = stockQuery.getKeyword();
+					String[] codeLikeArr = new String[] {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+					boolean isCode = false;
+					for(String codeLike : codeLikeArr) {
+						if(keyword.startsWith(codeLike)) {
+							isCode = true;
+							break;
+						}
+					}
+					if(isCode) {
+						Predicate keywordQuery = criteriaBuilder.like(root.get("code").as(String.class),
+								"%" + keyword + "%");
+						predicatesList.add(criteriaBuilder.and(keywordQuery));
+					} else {
+						Predicate keywordQuery = criteriaBuilder.like(root.get("name").as(String.class),
+								"%" + keyword + "%");
+						predicatesList.add(criteriaBuilder.and(keywordQuery));
+					}
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
 				return criteriaQuery.getRestriction();
