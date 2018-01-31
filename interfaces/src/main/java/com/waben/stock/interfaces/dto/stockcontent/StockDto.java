@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.dto.stockcontent;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.vo.stockcontent.StockExponentVo;
 
 /**
@@ -7,6 +8,7 @@ import com.waben.stock.interfaces.vo.stockcontent.StockExponentVo;
  *
  * @author luomengan
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockDto {
 
     private Long id;
