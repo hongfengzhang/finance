@@ -247,10 +247,9 @@ public class InvestorService {
         investorDao.delete(id);
     }
 
-    private SecuritiesStockEntrust buyRecordEntrust(Long investorId, String stockCode) {
-        SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
+    private SecuritiesStockEntrust buyRecordEntrust(Long investorId, SecuritiesStockEntrust securitiesStockEntrust) {
         securitiesStockEntrust.setInvestor(investorId);
-        StockDto stockDto = stockBusiness.fetchWithExponentByCode(stockCode);
+        StockDto stockDto = stockBusiness.fetchWithExponentByCode(securitiesStockEntrust.getStockCode());
         securitiesStockEntrust.setStockName(stockDto.getName());
         securitiesStockEntrust.setStockCode(stockDto.getCode());
         securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
@@ -261,7 +260,7 @@ public class InvestorService {
         //获取投资人对象
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
         InvestorDto investorDto = investorsContainer.get(0);
-        securitiesStockEntrust= buyRecordEntrust(investorDto.getId(), securitiesStockEntrust.getStockCode());
+        securitiesStockEntrust= buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         //TODO 若没有接收到响应请求， 则回滚服务业务
         String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
         Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
