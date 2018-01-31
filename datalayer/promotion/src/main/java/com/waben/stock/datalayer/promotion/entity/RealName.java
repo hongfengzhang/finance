@@ -4,29 +4,37 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
- * 结构类别
+ * 实名信息
  * 
  * @author luomengan
  *
  */
 @Entity
-@Table(name = "p_organization_category")
-public class OrganizationCategory {
+@Table(name = "p_real_name")
+public class RealName {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 机构类别名称
+	 * 身份证号码
+	 */
+	private String idCard;
+	/**
+	 * 姓名
 	 */
 	private String name;
 	/**
-	 * 层级
+	 * 对应的机构管理用户
 	 */
-	private Integer level;
+	@OneToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 
 	public Long getId() {
 		return id;
@@ -34,6 +42,14 @@ public class OrganizationCategory {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
 	}
 
 	public String getName() {
@@ -44,12 +60,12 @@ public class OrganizationCategory {
 		this.name = name;
 	}
 
-	public Integer getLevel() {
-		return level;
+	public User getUser() {
+		return user;
 	}
 
-	public void setLevel(Integer level) {
-		this.level = level;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 }

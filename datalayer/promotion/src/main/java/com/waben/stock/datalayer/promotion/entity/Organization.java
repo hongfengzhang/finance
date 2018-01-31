@@ -11,26 +11,30 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * 结构
+ * 机构
  * 
  * @author luomengan
  *
  */
 @Entity
-@Table(name = "organization")
+@Table(name = "p_organization")
 public class Organization {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 结构代码
+	 * 机构代码
 	 */
 	private String code;
 	/**
-	 * 结构名称
+	 * 机构名称
 	 */
 	private String name;
+	/**
+	 * 层级
+	 */
+	private Integer level;
 	/**
 	 * 所属类别
 	 */
@@ -45,6 +49,10 @@ public class Organization {
 	 * 创建时间
 	 */
 	private Date createTime;
+	/**
+	 * 排序号
+	 */
+	private Integer sortNum;
 
 	public Long getId() {
 		return id;
@@ -92,6 +100,22 @@ public class Organization {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Integer getLevel() {
+		return level;
+	}
+
+	public void setLevel(Integer level) {
+		this.level = level;
+	}
+
+	public Integer getSortNum() {
+		return sortNum;
+	}
+
+	public void setSortNum(Integer sortNum) {
+		this.sortNum = sortNum;
 	}
 
 }
