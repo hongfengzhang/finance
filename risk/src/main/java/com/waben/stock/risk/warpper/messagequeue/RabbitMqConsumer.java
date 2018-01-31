@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.risk.container.PositionStockContainer;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
+import com.waben.stock.risk.container.StockApplyEntrustWithdrawContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -25,6 +26,9 @@ public class RabbitMqConsumer {
 
     @Autowired
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
+
+    @Autowired
+    private StockApplyEntrustWithdrawContainer stockApplyEntrustWithdrawContainer;
 
     @Autowired
     private PositionStockContainer positionStockContainer;
@@ -54,6 +58,12 @@ public class RabbitMqConsumer {
     public void entrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
         logger.info("消费券商股票申请委托卖出消息:{}",securitiesStockEntrust.getTradeNo());
         stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
+    }
+
+    @RabbitListener(queues = {"entrustQueryWithdraw"})
+    public void entrustQueryWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
+        logger.info("消费券商股票申请委托撤单消息:{}",securitiesStockEntrust.getTradeNo());
+        stockApplyEntrustWithdrawContainer.add(securitiesStockEntrust);
     }
 
     @RabbitListener(queues = {"risk"})

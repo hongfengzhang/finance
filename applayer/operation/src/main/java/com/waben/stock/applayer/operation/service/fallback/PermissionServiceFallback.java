@@ -9,6 +9,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PermissionQuery;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
  * @author Created by yuyidi on 2017/12/11.
  * @desc
@@ -25,4 +27,21 @@ public class PermissionServiceFallback implements PermissionService {
     public Response<PageInfo<PermissionDto>> pages(PermissionQuery query) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<PermissionDto> modify(PermissionDto requestDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
+    public Response<PermissionDto> add(PermissionDto requestDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+
+    @Override
+    public Response<List<PermissionDto>> fetchPermissions() {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
 }

@@ -18,7 +18,7 @@ public class RiskProducer extends RabbitMQProducer<BuyRecordMessage> {
         BuyRecordMessage buyRecordMessage = CopyBeanUtils.copyBeanProperties(buyRecord, new BuyRecordMessage(),
                 false);
         //获取点买记录股票信息的指数信息
-        String exponent = buyRecord.getStockDto().getStockExponentDto().getExponentCode();
+        String exponent = buyRecord.getStockDto().getExponent().getExponentCode();
         super.topic("buyRecord", ExponentEnum.getByCode(exponent).getType(), buyRecordMessage);
     }
 

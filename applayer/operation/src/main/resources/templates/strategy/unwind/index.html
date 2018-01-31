@@ -146,7 +146,7 @@
                     title: '股票代码',
                     align: 'center'
                 }, {
-                    field: 'investorName',
+                    field: 'investorId',
                     title: '投资人',
                     align: 'center'
                 },  {
@@ -160,10 +160,6 @@
                 }, {
                     field: 'sellingPrice',
                     title: '卖出价格',
-                    align: 'center'
-                },{
-                    field: 'profits',
-                    title: '盈亏',
                     align: 'center'
                 },{
                     field: 'buyingTime',
@@ -181,20 +177,17 @@
                             '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
                             '<i class="fa fa-eye"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-                            '<i class="fa fa-edit"></i>',
-                            '</a>',
-                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                            '<i class="fa fa-trash"></i>',
-                            '</a>'
+//                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
+//                            '<i class="fa fa-edit"></i>',
+//                            '</a>',
+//                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+//                            '<i class="fa fa-trash"></i>',
+//                            '</a>'
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../../buyrecord/view/"+row.id);
                         },
                         'click .edit': function (e, value, row, index) {
                             info = JSON.stringify(row);

@@ -81,20 +81,21 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                         StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo(), securitiesStockEntrust.getStockCode());
-                        if (stockEntrustQueryResult == null || stockEntrustQueryResult.getEntrustStatus().equals
-                                (EntrustState.WASTEORDER.getIndex())) {
+                        if(stockEntrustQueryResult == null) {
+                            continue;
+                        }
+                        logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus()));
+                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //废单
                             logger.info("卖出废单:{}", entry.getKey());
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;
                         }
-                        logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus()));
-                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex()
-                        )) {
+                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
                             // 若当前时间大于委托卖出时间1天。将点买废单放入废单处理队列中
                             //当前时间
-                            logger.info("卖出废单:{}", entry.getKey());
+                            logger.info("卖出撤单:{}", entry.getKey());
                             calendar.setTime(new Date());
                             long currentDay = calendar.getTime().getTime() / millisOfDay;
                             //委托卖出时间
@@ -102,7 +103,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             long entrustDay = calendar.getTime().getTime() / millisOfDay;
                             logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
                             if ((currentDay - entrustDay) >= 1) {
-                                entrustProducer.entrustWaste(securitiesStockEntrust);
+                                entrustProducer.entrustWithdraw(securitiesStockEntrust);
                                 stockEntrusts.remove(entry.getKey());
                             }
                             continue;

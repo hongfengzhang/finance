@@ -98,7 +98,7 @@ public class BuyRecordVo {
 	/**
 	 * 风控类型
 	 */
-	private WindControlType windControlType;
+	private String windControlType;
 	/**
 	 * 卖出时间
 	 */
@@ -302,11 +302,12 @@ public class BuyRecordVo {
 		this.buyingPrice = buyingPrice;
 	}
 
-	public WindControlType getWindControlType() {
+	public String getWindControlType() {
 		return windControlType;
 	}
 
-	public void setWindControlType(WindControlType windControlType) {
+	public void setWindControlTypes
+			(String windControlType) {
 		this.windControlType = windControlType;
 	}
 

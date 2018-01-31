@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.dto.stockcontent;
 
+import com.waben.stock.interfaces.vo.stockcontent.StockExponentVo;
+
 /**
  * 股票
  *
@@ -21,7 +23,8 @@ public class StockDto {
      */
     private Boolean status;
 
-    public StockExponentDto stockExponentDto;
+
+    private StockExponentDto exponent;
 
     public Long getId() {
         return id;
@@ -55,11 +58,14 @@ public class StockDto {
         this.status = status;
     }
 
-    public StockExponentDto getStockExponentDto() {
-        return stockExponentDto;
+    public StockExponentDto getExponent() {
+        return exponent;
     }
 
-    public void setStockExponentDto(StockExponentDto stockExponentDto) {
-        this.stockExponentDto = stockExponentDto;
+    public void setExponent(StockExponentDto exponent) {
+        this.exponent = exponent;
+    }
+    public void setStockExponent(StockExponentDto stockExponent) {
+        this.exponent = stockExponent;
     }
 }

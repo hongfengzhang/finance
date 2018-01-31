@@ -31,6 +31,11 @@ public class CircularsDaoImpl implements CircularsDao {
 	}
 
 	@Override
+	public Integer updateById(Long id, String title, String content) {
+		return repository.updateById(id,title,content);
+	}
+
+	@Override
 	public List<Circulars> retrieveCircularsWithInExpireTime(Date date) {
 		return repository.findByEnableAndExpireTimeGreaterThan(true,date);
 	}

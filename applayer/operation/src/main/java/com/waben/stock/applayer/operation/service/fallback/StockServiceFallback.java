@@ -34,4 +34,19 @@ public class StockServiceFallback implements StockService {
 	public Response<StockDto> fetchWithExponentByCode(String code) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<Integer> modify(StockDto stockDto) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public void delete(Long id) {
+
+	}
+
+	@Override
+	public Response<StockDto> add(StockDto requestDto) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

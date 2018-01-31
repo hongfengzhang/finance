@@ -45,6 +45,8 @@ public class SettlementDaoImpl implements SettlementDao {
 		return repository.findById(id);
 	}
 
+
+
 	@Override
 	public Page<Settlement> page(int page, int limit) {
 		return repository.findAll(new PageRequest(page, limit));
@@ -60,4 +62,8 @@ public class SettlementDaoImpl implements SettlementDao {
 		return repository.findAll();
 	}
 
+	@Override
+	public Settlement retrieveByBuyRecord(Long id) {
+		return repository.findByBuyRecordId(id);
+	}
 }

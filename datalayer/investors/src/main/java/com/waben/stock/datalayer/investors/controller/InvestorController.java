@@ -2,9 +2,12 @@ package com.waben.stock.datalayer.investors.controller;
 
 import com.waben.stock.datalayer.investors.business.BuyRecordBusiness;
 import com.waben.stock.datalayer.investors.entity.Investor;
+import com.waben.stock.datalayer.investors.entity.SecurityAccount;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.investor.SecurityAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
@@ -12,6 +15,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.service.inverstors.InvestorInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 
 import java.util.List;
@@ -21,10 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Created by yuyidi on 2017/11/5.
@@ -41,6 +42,19 @@ public class InvestorController implements InvestorInterface {
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
 
+    @Override
+    public Response<Integer> modify(@RequestBody InvestorDto investorDto) {
+        Investor investor = CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false);
+        int result = investorService.revision(investor);
+        return new Response<>(result);
+    }
+
+    @Override
+    public void delete(@PathVariable Long id) {
+        logger.info("删除",id);
+        investorService.delete(id);
+    }
+
     /**
      * 投资人列表
      */
@@ -52,17 +66,17 @@ public class InvestorController implements InvestorInterface {
 
     @Override
     public Response<InvestorDto> fetchById(@PathVariable Long id) {
-        logger.info("investorId:{}",id);
         Investor investor = investorService.findById(id);
-        logger.info("investor:{}",investor.getId());
         InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(investor, new InvestorDto(), false);
-        logger.info("investor:{}",investorDto.getId());
+        SecurityAccount securityAccount = investor.getSecurityAccount();
+        SecurityAccountDto securityAccountDto = CopyBeanUtils.copyBeanProperties(securityAccount, new SecurityAccountDto(), false);
+        investorDto.setSecurityAccountDto(securityAccountDto);
         return new Response<>(investorDto);
     }
 
     public Response<InvestorDto> fetchByUserName(@PathVariable String username) {
         Investor investor = investorService.findByUserName(username);
-        InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(investor, new InvestorDto(), false);
+        InvestorDto investorDto = CopyBeanUtils.copyBeanProperties(InvestorDto.class, investor, false);
         return new Response<>(investorDto);
     }
 
@@ -79,10 +93,19 @@ public class InvestorController implements InvestorInterface {
     public Response<BuyRecordDto> stockApplyBuyIn(@PathVariable Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, String tradeSession) {
         Investor result = investorService.findById(investor);
-        String entrustNo = investorService.entrustApplyBuyIn(result, securitiesStockEntrust, tradeSession);
+        String entrustNo = investorService.entrustApplyBuyIn(securitiesStockEntrust, tradeSession);
         BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.buyRecordApplyBuyIn(result, securitiesStockEntrust,
                 entrustNo);
         return new Response<>(buyRecordDtoResponse);
+    }
+    /**
+     * 自动买入
+     */
+    @Override
+    public Response<BuyRecordDto> voluntarilyStockApplyBuyIn(@PathVariable Long buyrecord) {
+        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(buyrecord);
+        BuyRecordDto result = investorService.buyIn(buyRecordDto);
+        return new Response<>(result);
     }
 
     /**

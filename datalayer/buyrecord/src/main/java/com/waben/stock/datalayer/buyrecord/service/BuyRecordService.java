@@ -138,12 +138,17 @@ public class BuyRecordService {
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
-				if (buyRecordQuery.getStates() != null && buyRecordQuery.getStates().length > 0) {
-					predicateList.add(root.get("state").in(buyRecordQuery.getStates()));
+				if (buyRecordQuery.getState() != null && buyRecordQuery.getState()!=0) {
+					predicateList.add(criteriaBuilder.equal(root.get("state").as(Integer.class),
+							buyRecordQuery.getState()));
 				}
 				if (buyRecordQuery.getPublisherId() != null && buyRecordQuery.getPublisherId() > 0) {
 					predicateList.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class),
 							buyRecordQuery.getPublisherId()));
+				}
+				if (buyRecordQuery.getInvestorId() != null && buyRecordQuery.getInvestorId() > 0) {
+					predicateList.add(criteriaBuilder.equal(root.get("investorId").as(Long.class),
+							buyRecordQuery.getInvestorId()));
 				}
 				if (buyRecordQuery.getStartCreateTime() != null) {
 					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("createTime").as(Date.class),
@@ -588,4 +593,15 @@ public class BuyRecordService {
 		return buyRecord;
 	}
 
+	public void delete(Long id) {
+		buyRecordDao.delete(id);
+	}
+
+	public BuyRecord withdrawLock(String entrustNo, Long id) {
+		BuyRecord buyRecord = buyRecordDao.retrieve(id);
+		buyRecord.setTradeNo(entrustNo);
+		buyRecord.setUpdateTime(new Date());
+		buyRecord.setState(BuyRecordState.WITHDRAWLOCK);
+		return buyRecordDao.update(buyRecord);
+	}
 }

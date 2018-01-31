@@ -67,14 +67,6 @@ public class RabbitMqConsumer {
 	public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
 		logger.info("处理废单:{},订单ID:{}", securitiesStockEntrust.getTradeNo(),securitiesStockEntrust.getBuyRecordId());
 		buyRecordService.revoke(securitiesStockEntrust.getBuyRecordId());
-		//EntrustType entrustType = securitiesStockEntrust.getEntrustType();
-		//判断订单是买入废单还是卖出废单
-//		if(EntrustType.BUY.equals(entrustType)) {
-		//买入废单处理，退回服务费，保证金,解冻冻结的递延费
-//		}else if(EntrustType.SELL.equals(entrustType)) {
-//			//卖出废单处理
-//		}
-
 	}
 
 }

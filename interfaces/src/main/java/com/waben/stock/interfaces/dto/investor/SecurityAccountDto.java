@@ -1,19 +1,22 @@
 package com.waben.stock.interfaces.dto.investor;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 /**
  * @author Created by yuyidi on 2017/11/29.
  * @desc
  */
-public class SecurityAccountDto {
+public class SecurityAccountDto{
 
     private Long id;
+    private String name;
     /**
      * 股票账户
      */
     private String account;
-
+    private String password;
+    private String identity;
     /**
      * 账户余额
      */
@@ -53,5 +56,29 @@ public class SecurityAccountDto {
 
     public void setAvailability(BigDecimal availability) {
         this.availability = availability;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getIdentity() {
+        return identity;
+    }
+
+    public void setIdentity(String identity) {
+        this.identity = identity;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

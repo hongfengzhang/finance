@@ -45,4 +45,8 @@ public class BuyRecordBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+
+    public void delete(Long id) {
+        buyRecordService.delete(id);
+    }
 }

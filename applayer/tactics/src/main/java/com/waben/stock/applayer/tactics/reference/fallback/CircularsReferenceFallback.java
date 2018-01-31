@@ -30,4 +30,24 @@ public class CircularsReferenceFallback implements CircularsReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<CircularsDto> fetchById(Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<Integer> modify(CircularsDto circularsDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public void delete(Long id) {
+
+	}
+
+	@Override
+	public Response<CircularsDto> add(CircularsDto requestDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

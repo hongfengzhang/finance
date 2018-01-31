@@ -2,6 +2,8 @@ package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.stock.StrategyTypeService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -36,4 +38,40 @@ public class StrategyTypeBusiness {
     }
 
 
+    public StrategyTypeDto fetchById(Long id) {
+        Response<StrategyTypeDto> response = strategyTypeService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public StrategyTypeDto revision(StrategyTypeDto requestDto) {
+        Response<StrategyTypeDto> response = strategyTypeService.modify(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public void delete(Long id) {
+        strategyTypeService.delete(id);
+    }
+
+    public StrategyTypeDto save(StrategyTypeDto requestDto) {
+        Response<StrategyTypeDto> response = strategyTypeService.add(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

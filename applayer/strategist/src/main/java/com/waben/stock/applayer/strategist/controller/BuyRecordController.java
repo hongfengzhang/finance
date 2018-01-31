@@ -83,7 +83,7 @@ public class BuyRecordController {
 		}
 		// 判断该股票是否为创业板股票
 		StockDto stock = stockBusiness.findByCode(stockCode);
-		if ("4621".equals(stock.getStockExponentDto().getExponentCode())) {
+		if ("4621".equals(stock.getExponent().getExponentCode())) {
 			throw new ServiceException(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION);
 		}
 		// 判断是否有资格参与该策略

@@ -31,7 +31,6 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
     Logger logger = LoggerFactory.getLogger(getClass());
     @Value("${securities.context}")
     private String context;
-//    private String context="http://106.15.37.226:8445/stockjy";
     //券商资金账户登录
     private String loginPath = "/login";
     //券商资金账户股东账户查询
@@ -42,6 +41,8 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
     private String queryEntrusPath = "/qryentrust";
     //资金信息
     private String moneyPath = "/money";
+    //券商撤单
+    private String withdrawPath = "/withdraw";
 
     private HttpHeaders headers = new HttpHeaders();
     {
@@ -153,5 +154,32 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
         return handlerResult(stockResponse, ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR);
     }
 
+    /***
+     *
+     * @param tradeSession
+     * @param entrustNo
+     * @return entrustNo
+     * @description 委托申请撤单
+     */
+    public String withdraw(String tradeSession, String entrustNo) {
+        String queryEntrusUrl = context+ withdrawPath + "?token={token}&entrust_no={entrust_no}";
+        Map<String, String> params = new HashMap<>();
+        params.put("token", tradeSession);
+        params.put("entrust_no", entrustNo);
+        String result = null;
+        try {
+            result = HttpRest.get(queryEntrusUrl, String.class, params,headers);
+        } catch (Exception ex) {
+            logger.info("委托单查询异常:{}", ex.getMessage());
+        }
+        logger.info("券商委托单查询,请求地址:{},请求结果:{}", queryEntrusUrl, result);
+
+        StockResponse<StockEntrustResult> stockResponse = JacksonUtil.decode(result, new
+                TypeReference<StockResponse<StockEntrustResult>>() {
+                });
+        StockEntrustResult stockEntrustResult = handlerResult(stockResponse, ExceptionConstant
+                .INVESTOR_STOCKENTRUST_FETCH_ERROR).get(0);
+        return stockEntrustResult.getEntrustNo();
+    }
 
 }

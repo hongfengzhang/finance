@@ -310,7 +310,9 @@ public class BuyRecordDto {
 	public WindControlType getWindControlType() {
 		return windControlType;
 	}
-
+	public String getWindControlTypes() {
+		return windControlType!=null?windControlType.getType():null;
+	}
 	public void setWindControlType(WindControlType windControlType) {
 		this.windControlType = windControlType;
 	}

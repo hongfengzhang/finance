@@ -76,7 +76,7 @@ public class MessagingDto {
 	 * 是否已读
 	 */
 	private Boolean hasRead;
-
+	private Long publisherId;
 	public Long getId() {
 		return id;
 	}
@@ -165,4 +165,19 @@ public class MessagingDto {
 		this.link = link;
 	}
 
+	public Boolean getOutside() {
+		return isOutside;
+	}
+
+	public void setOutside(Boolean outside) {
+		isOutside = outside;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
+	}
 }

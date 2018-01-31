@@ -2,16 +2,26 @@ package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.BannerBusiness;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BannerQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PermissionQuery;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.message.BannerVo;
+import com.waben.stock.interfaces.vo.message.CircularsVo;
+import com.waben.stock.interfaces.vo.message.RoleVo;
+import com.waben.stock.interfaces.vo.stockcontent.StrategyTypeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/banner")
@@ -27,8 +37,55 @@ public class BannerController {
 
     @GetMapping("/pages")
     @ResponseBody
-    public Response<PageInfo<BannerDto>> pages(BannerQuery query) {
-        PageInfo<BannerDto> response = bannerBusiness.pages(query);
+    public Response<PageInfo<BannerVo>> pages(BannerQuery query) {
+        PageInfo<BannerDto> pageInfo = bannerBusiness.pages(query);
+        List<BannerVo> bannerVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), BannerVo.class);
+        PageInfo<BannerVo> response = new PageInfo<>(bannerVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
         return new Response<>(response);
+    }
+
+    @RequestMapping("/view/{id}")
+    public String view(@PathVariable Long id, ModelMap map){
+        BannerDto bannerDto = bannerBusiness.fetchById(id);
+        BannerVo bannerVo = CopyBeanUtils.copyBeanProperties(BannerVo.class, bannerDto, false);
+        map.addAttribute("banner", bannerVo);
+        return "manage/banner/view";
+    }
+    @RequestMapping("/delete")
+    @ResponseBody
+    public Response<Integer> delete(Long id){
+        bannerBusiness.delete(id);
+        return new Response<>(1);
+    }
+
+    @RequestMapping("/add")
+    public String add() {
+        return "manage/banner/add";
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<BannerVo> add(BannerVo vo){
+        BannerDto requestDto = CopyBeanUtils.copyBeanProperties(BannerDto.class, vo, false);
+        BannerDto bannerDto = bannerBusiness.save(requestDto);
+        BannerVo bannerVo = CopyBeanUtils.copyBeanProperties(BannerVo.class,bannerDto , false);
+        return new Response<>(bannerVo);
+    }
+
+    @RequestMapping("/edit/{id}")
+    public String edit(@PathVariable Long id,ModelMap map){
+        BannerDto bannerDto = bannerBusiness.fetchById(id);
+        BannerVo circularsVo = CopyBeanUtils.copyBeanProperties(BannerVo.class, bannerDto, false);
+        map.addAttribute("banner", circularsVo);
+        return "manage/banner/edit";
+    }
+
+    @RequestMapping("/modify")
+    @ResponseBody
+    public Response<BannerVo> modify(BannerVo vo){
+        BannerDto requestDto = CopyBeanUtils.copyBeanProperties(BannerDto.class, vo, false);
+        BannerDto responseDto = bannerBusiness.revision(requestDto);
+        BannerVo result = CopyBeanUtils.copyBeanProperties(BannerVo.class, responseDto, false);
+        return new Response<>(result);
     }
 }

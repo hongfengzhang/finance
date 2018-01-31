@@ -1,18 +1,35 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.RoleBusiness;
 import com.waben.stock.applayer.operation.business.StaffBusiness;
+import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.dto.stockcontent.LossDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.interfaces.vo.investor.InvestorVo;
+import com.waben.stock.interfaces.vo.message.CircularsVo;
+import com.waben.stock.interfaces.vo.message.RoleVo;
+import com.waben.stock.interfaces.vo.message.StaffVo;
+import com.waben.stock.interfaces.vo.stockcontent.LossVo;
+import com.waben.stock.interfaces.vo.stockcontent.StockExponentVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/11/19.
@@ -23,7 +40,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class StaffController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-
+    @Autowired
+    private RoleBusiness roleBusiness;
     @Autowired
     private StaffBusiness staffBusiness;
 
@@ -34,8 +52,60 @@ public class StaffController {
 
     @RequestMapping("/pages")
     @ResponseBody
-    public Response<PageInfo<StaffDto>> pages(StaffQuery staffQuery) {
-        PageInfo<StaffDto> pages = staffBusiness.staffs(staffQuery);
-        return new Response<>(pages);
+    public Response<PageInfo<StaffVo>> pages(StaffQuery staffQuery) {
+        PageInfo<StaffDto> pageInfo = staffBusiness.staffs(staffQuery);
+        List<StaffVo> staffVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), StaffVo.class);
+        PageInfo<StaffVo> response = new PageInfo<>(staffVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
+        return new Response<>(response);
+    }
+
+    @RequestMapping("/view/{id}")
+    public String view(@PathVariable Long id, ModelMap map){
+        StaffDto staffDto = staffBusiness.fetchById(id);
+        StaffVo staffVo = CopyBeanUtils.copyBeanProperties(StaffVo.class, staffDto, false);
+        staffVo.setRoleVo(CopyBeanUtils.copyBeanProperties(RoleVo.class, staffDto.getRoleDto(), false));
+        map.addAttribute("staff", staffVo);
+        return "manage/staff/view";
+    }
+
+    @RequestMapping("/edit/{id}")
+    public String edit(@PathVariable Long id,ModelMap map){
+        StaffDto staffDto = staffBusiness.findById(id);
+        StaffVo staffVo = CopyBeanUtils.copyBeanProperties(StaffVo.class, staffDto, false);
+        map.addAttribute("staff", staffVo);
+        return "manage/staff/edit";
+    }
+
+    @RequestMapping("/modify")
+    @ResponseBody
+    public Response<Integer> modify(StaffVo vo){
+        StaffDto requestDto = CopyBeanUtils.copyBeanProperties(StaffDto.class, vo, false);
+        Integer result = staffBusiness.revision(requestDto);
+        return new Response<>(result);
+    }
+
+    @RequestMapping("/delete")
+    @ResponseBody
+    public Response<Integer> delete(Long id){
+        staffBusiness.delete(id);
+        return new Response<>(1);
+    }
+
+    @RequestMapping("/add")
+    public String add(ModelMap map) {
+        List<RoleDto> roleDtos = roleBusiness.fetchRoles();
+        List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos, RoleVo.class);
+        map.addAttribute("roleVo",roleVos);
+        return "manage/staff/add";
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<StaffVo> add(StaffVo vo){
+        StaffDto requestDto = CopyBeanUtils.copyBeanProperties(StaffDto.class, vo, false);
+        requestDto.setRoleDto(CopyBeanUtils.copyBeanProperties(RoleDto.class, vo.getRoleVo(), false));
+        StaffDto staffDto = staffBusiness.save(requestDto);
+        StaffVo staffVo = CopyBeanUtils.copyBeanProperties(StaffVo.class,staffDto , false);
+        return new Response<>(staffVo);
     }
 }

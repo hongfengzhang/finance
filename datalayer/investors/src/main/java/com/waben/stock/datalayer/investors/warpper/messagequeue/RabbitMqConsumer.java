@@ -45,7 +45,7 @@ public class RabbitMqConsumer {
 		logger.info("强制卖出持仓订单数据:{}", JacksonUtil.encode(positionStock));
 		SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
 		StockDto stockDto = stockBusiness.fetchWithExponentByCode(positionStock.getStockCode());
-		securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
+		securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
 		securitiesStockEntrust.setStockCode(positionStock.getStockCode());
 		securitiesStockEntrust.setEntrustNumber(positionStock.getEntrustNumber());
 		securitiesStockEntrust.setEntrustPrice(positionStock.getEntrustPrice());
@@ -60,5 +60,17 @@ public class RabbitMqConsumer {
 		securitiesStockEntrust.setEntrustNo(buyRecordDto.getDelegateNumber());
 		securitiesStockEntrust.setEntrustState(EntrustState.HASBEENSUCCESS);
 		entrustProducer.entrustApplySellOut(securitiesStockEntrust);
+	}
+
+	@RabbitListener(queues = {"entrustApplyWithdraw"})
+	public void entrustApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
+		logger.info("委托撤单订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
+		String entrustNo = investorService.buyRecordApplyWithdraw(securitiesStockEntrust);
+		BuyRecordDto buyRecordDto = buyRecordBusiness.entrustApplyWithdraw(entrustNo, securitiesStockEntrust.getBuyRecordId());
+		logger.info("修改订单撤单锁定状态成功:{}",buyRecordDto.getTradeNo());
+		securitiesStockEntrust.setTradeNo(buyRecordDto.getTradeNo());
+		securitiesStockEntrust.setEntrustNo(buyRecordDto.getDelegateNumber());
+		securitiesStockEntrust.setEntrustState(EntrustState.REPORTEDTOWITHDRAW);
+		entrustProducer.entrustQueryWithdraw(securitiesStockEntrust);
 	}
 }

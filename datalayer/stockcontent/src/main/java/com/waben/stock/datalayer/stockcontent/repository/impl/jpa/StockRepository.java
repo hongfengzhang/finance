@@ -2,9 +2,11 @@ package com.waben.stock.datalayer.stockcontent.repository.impl.jpa;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 股票 Jpa
@@ -18,5 +20,10 @@ public interface StockRepository extends CustomJpaRepository<Stock, Long> {
 	List<Stock> findByNameLikeOrCodeLikeOrPinyinAbbrLike(String name, String code, String pinyinAbbr, Integer limit);
 
 	Stock findByCode(String code);
+
+	@Transactional
+	@Modifying
+	@Query(value="update stock set status=?1, name=?2, code=?3 where id=?4",nativeQuery = true)
+	Integer revisionById(Boolean status, String name, String code, Long id);
 
 }

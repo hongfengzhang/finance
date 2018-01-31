@@ -181,23 +181,20 @@
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
                         return [
-                            /* '<a rel="tooltip" title="详情" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
-                            '<i class="fa fa-eye"></i>',
-                            '</a>', */
+//                             '<a rel="tooltip" title="详情" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+//                            '<i class="fa fa-eye"></i>',
+//                            '</a>',
                             '<a rel="tooltip" title="买入" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
                             '<i class="fa fa-cny"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                            '<i class="fa fa-trash"></i>',
-                            '</a>'
+//                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+//                            '<i class="fa fa-trash"></i>',
+//                            '</a>'
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-//                            swal('You click view icon, row: ', info);
-//                            get("../../buyrecord/" + row.id, function () {
-//
-//                            }, true);
+
                         },
                         'click .edit': function (e, value, row, index) {
                             if (row.buyRecordState == '买入锁定') {

@@ -14,7 +14,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">用户名</label>
                             <div class="col-md-8">
-                                <input type="text" name="name" class="form-control" maxlength="11"
+                                <input type="text" name="userName" class="form-control" maxlength="11"
                                        placeholder="用户名"/>
                             </div>
                         </div>
@@ -25,12 +25,12 @@
                             <label class="col-md-2 control-label">日期</label>
                             <div class="col-md-5">
                                 <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="开始日期"/>
+                                       placeholder="开始日期" name="beginTime"/>
                             </div>
                             <label></label>
                             <div class="col-md-5">
                                 <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="结束日期"/>
+                                       placeholder="结束日期" name="endTime"/>
                             </div>
                         </div>
                     </div>
@@ -39,14 +39,24 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">状态</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="state" maxlength="11" placeholder="用户状态"/>
+                                <select class="form-control" name="state">
+                                    <option value="2">全部</option>
+                                    <option value="1">正常</option>
+                                    <option value="0">异常</option>
+                                </select>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+                            <input type="button" class="btn btn-fill btn-info" value="搜索" id="search"/>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -62,7 +72,6 @@
                 <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
-
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
 
@@ -88,7 +97,7 @@
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -100,10 +109,18 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
+                    var query= {
+                        page: this.pageNumber - 1,
+                        size: this.pageSize
                     }
+                    var queryMap = {
+                       userName:$("input[name='userName']").val(),
+                        beginTime:$("input[name='beginTime']").val(),
+                        endTime:$("input[name='endTime']").val(),
+                        state:$("[name='state']").val()
+                    }
+                    $.extend(query,queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -125,9 +142,15 @@
                     title: '投资人',
                     align: 'center'
                 },{
-                    field: 'state',
                     title: '用户状态',
-                    align: 'center'
+                    align: 'center',
+                    formatter: function stateFormatter(value, row, index) {
+                        if(value=="false") {
+                            return "异常";
+                        }else {
+                            return "正常";
+                        }
+                    }
                 }, {
                     field: 'createTime',
                     title: '注册日期',
@@ -150,20 +173,37 @@
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../investor/view/"+row.id);
                         },
                         'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-                            swal('You click edit icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../investor/edit/"+row.id);
                         },
                         'click .remove': function (e, value, row, index) {
 
-                            demo.showSwal('warning-message-and-cancel', row);
-
+                            swal({
+                                title: "你确定吗?",
+                                text: "删除后,数据将不可被恢复!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 删除!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function(isConfirm) {
+                                if (isConfirm) {
+                                    $.ajax({
+                                        url:'../investor/delete',
+                                        type:'post',
+                                        data:{"id":row.id},
+                                        success:function (response) {
+                                            swal("Deleted!", "数据删除成功.", "success");
+                                            $table.bootstrapTable('refresh');
+                                        }
+                                    })
+                                } else {
+                                    swal("Cancelled", "数据已取消删除 :)", "error");
+                                }
+                            });
                         }
                     }
                 }]
@@ -177,6 +217,38 @@
                 $table.bootstrapTable('resetView');
             });
 
+            $('#search').click(function(){
+                var beginTime = $("input[name='beginTime']");
+                var endTime = $("input[name='endTime']");
+                var userName = $("input[name='userName']");
+                var state = $("[name='state']");
+
+                //<![CDATA[
+                if(beginTime == ""&&endTime == ""&&userName == ""&&state == "2") {
+                    alert("请输入查询数据！");
+                }
+
+                if(beginTime.val() != '' && endTime.val() == ''){
+                    swal("","请输入结束时间", "error");
+                    return false;
+                }
+                if(endTime.val() != '' && beginTime.val() == ''){
+                    swal("","请输入开始时间", "error");
+                    return false;
+                }
+                //]]>
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
+            });
+
+            $('#reset').click(function(){
+                $("input[name='userName']").val('');
+                $("input[name='beginTime']").val('');
+                $("input[name='endTime']").val('');
+                $("[name='state']").val('2');
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
+            });
         });
     </script>
 </div>

@@ -5,6 +5,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
+import com.waben.stock.datalayer.stockcontent.repository.StockExponentDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,6 +20,10 @@ import com.waben.stock.datalayer.stockcontent.entity.Stock;
 import com.waben.stock.datalayer.stockcontent.repository.StockDao;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 /***
  * @author yuyidi 2017-11-22 10:08:52
  * @class com.waben.stock.datalayer.stockcontent.service.StockService
@@ -28,7 +34,8 @@ public class StockService {
 
 	@Autowired
 	private StockDao stockDao;
-
+	@Autowired
+	private StockExponentDao stockExponentDao;
 	@Transactional
 	public Stock saveStock(Stock stock) {
 		return stockDao.create(stock);
@@ -40,20 +47,21 @@ public class StockService {
 			@Override
 			public Predicate toPredicate(Root<Stock> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				if (!StringUtils.isEmpty(stockQuery.getName())) {
+				List<Predicate> predicatesList = new ArrayList();
+				if (!StringUtils.isEmpty(stockQuery.getStockName())) {
 					Predicate nameQuery = criteriaBuilder.equal(root.get("name").as(String.class),
-							stockQuery.getName());
-					criteriaQuery.where(criteriaBuilder.and(nameQuery));
-				} else if (!StringUtils.isEmpty(stockQuery.getCode())) {
+							stockQuery.getStockName());
+					predicatesList.add(criteriaBuilder.and(nameQuery));
+				} else if (!StringUtils.isEmpty(stockQuery.getStockCode())) {
 					Predicate codeQuery = criteriaBuilder.equal(root.get("code").as(String.class),
-							stockQuery.getCode());
-					criteriaQuery.where(criteriaBuilder.and(codeQuery));
-				} else if (!StringUtils.isEmpty(stockQuery.getKeyword())) {
-					String keyword = stockQuery.getKeyword();
-					Predicate nameQuery = criteriaBuilder.like(root.get("name").as(String.class), "%" + keyword + "%");
-					Predicate codeQuery = criteriaBuilder.like(root.get("code").as(String.class), "%" + keyword + "%");
-					criteriaQuery.where(criteriaBuilder.or(nameQuery, codeQuery));
+							stockQuery.getStockCode());
+					predicatesList.add(criteriaBuilder.and(codeQuery));
+				} else if (!StringUtils.isEmpty(stockQuery.getStatus())&&stockQuery.getStatus()!=2) {
+					Predicate statusQuery = criteriaBuilder.equal(root.get("status").as(Integer.class),
+							stockQuery.getStatus());
+					predicatesList.add(criteriaBuilder.and(statusQuery));
 				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
@@ -68,4 +76,21 @@ public class StockService {
 		return stockDao.retrieveByCode(code);
 	}
 
+    public Integer revision(Stock stock) {
+		return stockDao.updateById(stock.getStatus(),stock.getName(),stock.getCode(),stock.getId());
+	}
+
+	public void delete(Long id) {
+		stockDao.delete(id);
+	}
+
+    public Stock save(Stock stock) {
+		if(stockDao.retrieveByCode(stock.getCode())==null){
+			StockExponent stockExponent = stockExponentDao.retrieveWithExponeneCode(stock.getExponent().getExponentCode());
+			stock.setExponent(stockExponent);
+			return stockDao.create(stock);
+		}else {
+			return null;
+		}
+	}
 }

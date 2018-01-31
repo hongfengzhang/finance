@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.stockcontent;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,4 +30,12 @@ public interface StrategyTypeInterface {
 
     @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<StrategyTypeDto>> pages(@RequestBody StrategyTypeQuery query);
+
+    @RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<StrategyTypeDto> modify(@RequestBody StrategyTypeDto strategyTypeDto);
+
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+    void delete(@PathVariable("id") Long id);
+    @RequestMapping(value = "/save", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<StrategyTypeDto> add(StrategyTypeDto requestDto);
 }

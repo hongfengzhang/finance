@@ -68,9 +68,9 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("calendarPM")
                 .build();
 
-        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 30 9,13 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 40 9,15 * * ?");
         CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 45 11 * * ?");
-        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 15 15 * * ?");
+        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 15 19 * * ?");
 
         JobDetail jobBuyIn = JobBuilder.newJob(StockApplyEntrustBuyInJob.class).withIdentity("jobBuyIn", "groupBuyIn")
                 .storeDurably(true)
@@ -121,21 +121,32 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("workCalendar")
                 .forJob(jobSellOutStop)
                 .build();
-//        ListenerManager listenerManager = scheduler.getListenerManager();
-//        JobListener listener = new BuyInJobListener();
-//        Matcher<JobKey> matcher = KeyMatcher.keyEquals(job.getKey());
-//        listenerManager.addJobListener(listener, matcher);
-//        TriggerListener triggerListener = new BuyInTriggerListener();
-//        Matcher<TriggerKey> triggerAMKeyMatcher = KeyMatcher.keyEquals(triggerAMStop.getKey());
-//        Matcher<TriggerKey> triggerPMKeyMatcher = KeyMatcher.keyEquals(triggerPMStop.getKey());
-//        listenerManager.addTriggerListener(triggerListener,triggerAMKeyMatcher);
-//        listenerManager.addTriggerListener(triggerListener,triggerPMKeyMatcher);
-//        Set<Trigger> triggers = new HashSet<>();
-//        triggers.add(trigger);
-//        triggers.add(triggerAMStop);
-//        triggers.add(triggerPMStop);
-//        sched.scheduleJob(job,triggers,true);
-//        sched.scheduleJob(job2, triggers,true);
+
+        JobDetail jobWithdraw = JobBuilder.newJob(StockApplyEntrustSellOutJob.class).withIdentity("jobWithdraw",
+                "groupWithdraw")
+                .storeDurably(true)
+                .build();
+        JobDetail jobWithdrawStop = JobBuilder.newJob(SellOutStopJob.class).withIdentity("jobWithdrawStop",
+                "groupWithdraw")
+                .storeDurably(true)
+                .build();
+        Trigger withdrawTriggerBegin = newTrigger().withIdentity("withdrawTriggerBegin", "groupWithdraw").startAt(runTime)
+                .withSchedule(scheduleEntrustBuilder)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobSellOut)
+                .build();
+        Trigger withdrawTriggerAMStop = newTrigger().withIdentity("withdrawTriggerAMStop", "groupWithdraw").startAt
+                (runTime)
+                .withSchedule(scheduleBuilderAMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobSellOutStop)
+                .build();
+        Trigger withdrawTriggerPMStop = newTrigger().withIdentity("withdrawTriggerPMStop", "groupWithdraw").startAt
+                (runTime)
+                .withSchedule(scheduleBuilderPMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobSellOutStop)
+                .build();
 
         scheduler.addJob(jobQuotation, true);
         scheduler.scheduleJob(stockQuotationAM);
@@ -147,12 +158,18 @@ public class StockMonitor implements CommandLineRunner {
         scheduler.scheduleJob(buyInTriggerAMStop);
         scheduler.scheduleJob(buyInTriggerPMStop);
 
-//
         scheduler.addJob(jobSellOut, true);
         scheduler.scheduleJob(sellOutTriggerBegin);
         scheduler.addJob(jobSellOutStop, true);
         scheduler.scheduleJob(sellOutTriggerAMStop);
         scheduler.scheduleJob(sellOutTriggerPMStop);
+
+        scheduler.addJob(jobWithdraw, true);
+        scheduler.scheduleJob(withdrawTriggerBegin);
+        scheduler.addJob(jobWithdrawStop, true);
+        scheduler.scheduleJob(withdrawTriggerAMStop);
+        scheduler.scheduleJob(withdrawTriggerPMStop);
+
         scheduler.start();
     }
 }

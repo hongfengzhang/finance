@@ -4,6 +4,7 @@ import com.waben.stock.datalayer.stockcontent.entity.AmountValue;
 import com.waben.stock.datalayer.stockcontent.entity.Loss;
 import com.waben.stock.datalayer.stockcontent.entity.StrategyType;
 import com.waben.stock.datalayer.stockcontent.repository.StrategyTypeDao;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.query.StrategyTypeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -59,9 +60,9 @@ public class StrategyTypeService {
             @Override
             public Predicate toPredicate(Root<StrategyType> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
                     criteriaBuilder) {
-                if (!StringUtils.isEmpty(query.getType())) {
-                    Predicate typeQuery = criteriaBuilder.equal(root.get("type").as(String.class), query
-                            .getType());
+                if (!StringUtils.isEmpty(query.getState())&&query.getState()!=2) {
+                    Predicate typeQuery = criteriaBuilder.equal(root.get("state").as(Integer.class), query
+                            .getState());
                     criteriaQuery.where(criteriaBuilder.and(typeQuery));
                 }
                 return criteriaQuery.getRestriction();
@@ -73,4 +74,16 @@ public class StrategyTypeService {
 	public StrategyType findById(Long id) {
 		return strategyTypeDao.retrieve(id);
 	}
+
+    public StrategyType revision(StrategyType strategyType) {
+        return strategyTypeDao.update(strategyType);
+    }
+
+    public void delete(Long id) {
+        strategyTypeDao.delete(id);
+    }
+
+    public StrategyType save(StrategyType strategyType) {
+        return strategyTypeDao.create(strategyType);
+    }
 }

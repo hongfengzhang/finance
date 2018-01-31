@@ -100,6 +100,10 @@ public interface BuyRecordInterface {
 			@RequestParam(name = "delegateNumber") String delegateNumber,
 			@RequestParam(name = "windControlTypeIndex") String windControlTypeIndex);
 
+
+	@RequestMapping(value = "/{entrustNo}/withdraw/{id}", method = RequestMethod.PUT)
+	Response<BuyRecordDto> withdrawLock(@PathVariable("entrustNo") String entrustNo, @PathVariable("id") Long id);
+
 	/**
 	 * 投资人卖出股票，此时状态为“已平仓”
 	 *
@@ -170,5 +174,8 @@ public interface BuyRecordInterface {
 
 	@RequestMapping(value = "/unwind/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(@RequestBody StrategyUnwindQuery trategyUnwindQuery);
+
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	void delete(@PathVariable("id") Long id);
 
 }

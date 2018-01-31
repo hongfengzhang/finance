@@ -74,7 +74,7 @@ public class MD5Util {
 	/*public static void main(String[] args) {
 		try {
 			JSONObject json = new JSONObject();
-			
+
 			json.put("transType", "B001");
 			json.put("payPass", "1");
 			json.put("transAmt", "100");

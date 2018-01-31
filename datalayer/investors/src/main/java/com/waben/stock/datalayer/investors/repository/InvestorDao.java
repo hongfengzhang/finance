@@ -10,4 +10,5 @@ public interface InvestorDao extends BaseDao<Investor,Long> {
 
     Investor retieveWithUserName(String userName);
 
+    Integer updateById(String userName,Boolean state,Long investorId);
 }

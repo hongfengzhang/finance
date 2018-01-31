@@ -171,8 +171,8 @@ class MACCoder {
 
 public class MACTest {
     public static void main(String[] args) throws Exception {
-//		sign();
-        pay();
+       //sign();
+       pay();
 //        scanCode();
 
 //		byte[] keyHmacMD5=MACCoder.initHmacMD5Key();
@@ -196,7 +196,7 @@ public class MACTest {
     public static void sign() {
         Map<String, String> sign = new HashMap<>();
         sign.put("sendTime", "20171220141915");
-        sign.put("sendSeqId", "123456789");
+        sign.put("sendSeqId", "201801171703");
         sign.put("transType", "A001");
         sign.put("organizationId", "283673885");
         String json = JacksonUtil.encode(sign);
@@ -206,39 +206,50 @@ public class MACTest {
     public static void pay() throws Exception {
 
         Map<String, String> pay = new HashMap<>();
-//        JSONObject pay = new JSONObject();
-//        pay.put("bankCode", "ICBC");
-//        pay.put("body", "充值");
-//        pay.put("callBackUrl", "http://www.baidu.com");
-//        pay.put("cardType", "0");
-//        pay.put("mobile", "18322325897");
-//        pay.put("name", "充值");
-//        pay.put("notifyUrl", "http://www.baidu.com/notifyURL.html");
-//        pay.put("organizationId", "243463836");
-//        pay.put("payType", "T1");
-//        pay.put("sendSeqId", "201712211716392822");
-//        pay.put("sendTime", "20171221171639");
-//        pay.put("transAmt", "200");
-//        pay.put("transType", "BP02");
-//        pay.put("subject", "MD5");
 
-        pay.put("bankCode", "BOC");
-        pay.put("body", "new shop");
-        pay.put("callBackUrl", "http://localhost:29173/Trade/Empty");
+//        pay.put("body", "testscancode");
+//        pay.put("cardNo", "611301061018010026580");
+//        pay.put("idNum", "211324196502020031");
+//        pay.put("mobile", "13274220935");
+//        pay.put("name", "刘国忠");
+//        pay.put("notifyUrl", "http://www.baidu.com/notify");
+//        pay.put("organizationId", "283683895");
+//        pay.put("payPass", "5");
+//        pay.put("sendSeqId", "testScanCode20180119094823");
+//        pay.put("sendTime", "20180119094825");
+//        pay.put("subject", "MD5");
+//        pay.put("transAmt", "1000");
+//        pay.put("transType", "Y001");
+
+
+
+
+        pay.put("bankCode", "ICBC");
+        pay.put("body", "chongzhi");
+        pay.put("callBackUrl", "http://vzz5yu.natappfree.cc/tfb/callback1");
         pay.put("cardType", "0");
-        pay.put("mobile", "18322325897");
-        pay.put("name", "new shop");
-        pay.put("notifyUrl", "http://localhost:29173/Trade/DepositAsyncCallback");
-        pay.put("organizationId", "243463836");
+        pay.put("mobile", "13265306324");
+        pay.put("name", "BankPay");
+        pay.put("notifyUrl", "http://vzz5yu.natappfree.cc/tfb/callback");
+        pay.put("organizationId", "283683895");
         pay.put("payType", "T1");
-        pay.put("sendSeqId", "1225chzzhif74523451");
-        pay.put("sendTime", "20171225103736");
-        pay.put("transAmt", "11100");
+        pay.put("sendSeqId", "201801181341034875");
+        pay.put("sendTime", "201801181341335");
+        pay.put("transAmt", "300");
         pay.put("transType", "BP02");
         pay.put("subject", "MD5");
 
-		String mac = MakeMacUtil.md5MakeMac(JacksonUtil.encode(pay), "E1DF87DFCAC7261B5562E57CAED5F6A9");
-		pay.put("mac", mac);
+//        pay.put("fee","390");
+//        pay.put("orgSendSeqId","2018012215234607");
+//        pay.put("organizationId","283683895");
+//        pay.put("payDesc","支付成功");
+//        pay.put("payResult","00");
+//        pay.put("transAmt","65040");
+        //BDBEA61420BAEA211846DEB12FC99EC5   283673885
+
+        //14CE14C92727EBEAD73F533A0EBF503A   283683895
+        String mac = MakeMacUtil.md5MakeMac(JacksonUtil.encode(pay), "14CE14C92727EBEAD73F533A0EBF503A");
+        pay.put("mac", mac);
         System.out.println(JacksonUtil.encode(pay));
 
     }
