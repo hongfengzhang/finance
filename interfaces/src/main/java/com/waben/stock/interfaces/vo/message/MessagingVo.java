@@ -85,12 +85,12 @@ public class MessagingVo {
 		this.type = type;
 	}
 
-	public Boolean getOutside() {
+	public Boolean getIsOutside() {
 		return isOutside;
 	}
 
-	public void setOutside(Boolean outside) {
-		isOutside = outside;
+	public void setIsOutside(Boolean isOutside) {
+		this.isOutside = isOutside;
 	}
 
 	public OutsideMessageType getOutsideMsgType() {

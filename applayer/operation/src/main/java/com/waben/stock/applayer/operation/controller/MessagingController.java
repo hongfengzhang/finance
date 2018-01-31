@@ -100,4 +100,11 @@ public class MessagingController {
 		MessagingVo messagingVo = CopyBeanUtils.copyBeanProperties(MessagingVo.class,messagingDto , false);
 		return new Response<>(messagingVo);
 	}
+
+	@RequestMapping("/delete")
+	@ResponseBody
+	public Response<Integer> delete(Long id){
+		messagingBusiness.delete(id);
+		return new Response<>(1);
+	}
 }

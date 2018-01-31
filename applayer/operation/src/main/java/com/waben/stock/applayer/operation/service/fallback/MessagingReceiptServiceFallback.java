@@ -6,7 +6,9 @@ import com.waben.stock.interfaces.dto.message.MessageReceiptDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.MessageReceiptQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import org.springframework.stereotype.Component;
 
+@Component
 public class MessagingReceiptServiceFallback implements MessagingReceiptService {
 
     @Override

@@ -108,6 +108,7 @@ public class InvestorBusiness {
             securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
             securitiesStockEntrust.setEntrustNo(response.getResult().getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENSUCCESS);
+            securitiesStockEntrust.setEntrustTime(response.getResult().getUpdateTime());
             entrustProducer.entrustApplySellOut(securitiesStockEntrust);
             return securitiesStockEntrust;
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){

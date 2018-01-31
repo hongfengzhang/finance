@@ -44,11 +44,14 @@ public class MessagingController implements MessagingInterface{
 	public Response<MessagingDto> addMessaging(@RequestBody MessagingDto messagingDto) {
 
 		Messaging messaging = CopyBeanUtils.copyBeanProperties(Messaging.class, messagingDto, false);
+		Messaging resultMessaging = messagingService.save(messaging);
 		if(messagingDto.getType().equals(MessageType.POIT)) {
 			MessageReceipt messageReceipt = new MessageReceipt();
-			messageReceipt.setMessage(messaging);
+			messageReceipt.setMessage(resultMessaging);
 			messageReceipt.setRecipient(messagingDto.getPublisherId().toString());
-			messageReceiptService.save(messageReceipt);
+			messageReceipt.setState(false);
+			MessageReceipt save = messageReceiptService.save(messageReceipt);
+			System.out.println(save.getId());
 		}
 		if(messaging.getIsOutside()) {
 			OutsideMessage outsideMessage = new OutsideMessage();
@@ -63,7 +66,6 @@ public class MessagingController implements MessagingInterface{
 				servcie.send(outsideMessage);
 			}
 		}
-		Messaging resultMessaging = messagingService.save(messaging);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(MessagingDto.class,resultMessaging, false));
 	}
 

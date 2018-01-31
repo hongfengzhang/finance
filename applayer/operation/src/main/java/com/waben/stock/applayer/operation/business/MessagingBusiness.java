@@ -93,4 +93,8 @@ public class MessagingBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+
+    public void delete(Long id) {
+        messagingService.dropMessaging(id);
+    }
 }

@@ -12,7 +12,7 @@ import org.springframework.cloud.netflix.feign.FeignClient;
  * 
  * @author Created by hujian on 2018年1月4日
  */
-@FeignClient(name = "message", path = "messaging", fallback = MessagingReceiptServiceFallback.class, qualifier = "messagingReceiptFeignService", configuration = FeignConfiguration.class)
+@FeignClient(name = "message", path = "messagingReceipt", fallback = MessagingReceiptServiceFallback.class, qualifier = "messagingReceiptFeignService", configuration = FeignConfiguration.class)
 public interface MessagingReceiptService extends MessageReceiptInterface {
 
 }
