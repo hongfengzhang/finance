@@ -7,6 +7,7 @@ import com.waben.stock.datalayer.investors.reference.StockReference;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.datalayer.investors.warpper.messagequeue.rabbitmq.EntrustApplyProducer;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.pojo.Response;
@@ -72,5 +73,12 @@ public class RabbitMqConsumer {
 		securitiesStockEntrust.setEntrustNo(buyRecordDto.getDelegateNumber());
 		securitiesStockEntrust.setEntrustState(EntrustState.REPORTEDTOWITHDRAW);
 		entrustProducer.entrustQueryWithdraw(securitiesStockEntrust);
+	}
+
+	@RabbitListener(queues = {"voluntarilyApplyBuyIn"})
+	public void voluntarilyEntrustApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
+		logger.info("自动买入订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
+		BuyRecordDto buyRecordDto = investorService.buyIn(securitiesStockEntrust);
+		logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
 	}
 }

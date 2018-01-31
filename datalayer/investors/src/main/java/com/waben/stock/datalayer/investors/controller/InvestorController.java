@@ -103,9 +103,9 @@ public class InvestorController implements InvestorInterface {
      */
     @Override
     public Response<BuyRecordDto> voluntarilyStockApplyBuyIn(@PathVariable Long buyrecord) {
-        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(buyrecord);
-        BuyRecordDto result = investorService.buyIn(buyRecordDto);
-        return new Response<>(result);
+//        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(buyrecord);
+//        BuyRecordDto result = investorService.buyIn(buyRecordDto);
+        return new Response<>();
     }
 
     /**
