@@ -101,6 +101,8 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION = "6023";
 	// 不支持购买创业板的股票
 	public static final String DEVELOPSTOCK_NOTSUPPORT_EXCEPTION = "6024";
+	// 银联支付单笔最大额度为5000
+	public static final String UNIONPAY_SINGLELIMIT_EXCEPTION = "6025";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

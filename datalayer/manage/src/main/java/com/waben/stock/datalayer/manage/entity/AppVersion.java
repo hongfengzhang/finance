@@ -11,7 +11,7 @@ import javax.persistence.Table;
 
 /**
  * 
- * app版本
+ * app版本（IOS用于审核用）
  * 
  * @author luomengan
  *

@@ -150,8 +150,8 @@ public class BuyRecordBusiness {
 		Response<PageInfo<SettlementDto>> sResponse = settlementReference.pagesByQuery(sQuery);
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
-					new BuyRecordState[] { BuyRecordState.HOLDPOSITION,
-							BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
+					new BuyRecordState[] { BuyRecordState.HOLDPOSITION, BuyRecordState.SELLAPPLY,
+							BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
 
 			int total = sResponse.getResult().getContent().size() + pageInfo.getContent().size();
@@ -163,7 +163,7 @@ public class BuyRecordBusiness {
 			List<TradeDynamicDto> content = new ArrayList<>();
 			for (int n = 0; n < total; n++) {
 				TradeDynamicDto inner = new TradeDynamicDto();
-				if (n % 2 == 0 && i > 0) {
+				if ((n % 2 == 0 && i > 0) || ((bSize - j) == 0 && bSize == 0)) {
 					SettlementDto settlement = sResponse.getResult().getContent().get(sSize - i);
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
