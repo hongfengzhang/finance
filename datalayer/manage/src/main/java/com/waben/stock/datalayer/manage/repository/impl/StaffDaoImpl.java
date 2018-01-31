@@ -38,7 +38,7 @@ public class StaffDaoImpl implements StaffDao {
 
     @Override
     public void delete(Long id) {
-
+        repository.delete(id);
     }
 
     @Override

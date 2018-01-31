@@ -6,6 +6,7 @@ import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.service.CircularsService;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CircularsQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -69,5 +70,12 @@ public class CircularsController implements CircularsInterface {
     @Override
     public void delete(@PathVariable Long id) {
         circularsService.delete(id);
+    }
+
+    @Override
+    public Response<CircularsDto> add(@RequestBody CircularsDto requestDto) {
+        Circulars circulars = CopyBeanUtils.copyBeanProperties(Circulars.class, requestDto, false);
+        CircularsDto result = CopyBeanUtils.copyBeanProperties(CircularsDto.class,circularsService.save(circulars),false);
+        return new Response<>(result);
     }
 }

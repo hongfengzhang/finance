@@ -25,10 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Created by yuyidi on 2017/11/5.
@@ -96,10 +93,19 @@ public class InvestorController implements InvestorInterface {
     public Response<BuyRecordDto> stockApplyBuyIn(@PathVariable Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, String tradeSession) {
         Investor result = investorService.findById(investor);
-        String entrustNo = investorService.entrustApplyBuyIn(result, securitiesStockEntrust, tradeSession);
+        String entrustNo = investorService.entrustApplyBuyIn(securitiesStockEntrust, tradeSession);
         BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.buyRecordApplyBuyIn(result, securitiesStockEntrust,
                 entrustNo);
         return new Response<>(buyRecordDtoResponse);
+    }
+    /**
+     * 自动买入
+     */
+    @Override
+    public Response<BuyRecordDto> voluntarilyStockApplyBuyIn(@PathVariable Long buyrecord) {
+        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(buyrecord);
+        BuyRecordDto result = investorService.buyIn(buyRecordDto);
+        return new Response<>(result);
     }
 
     /**

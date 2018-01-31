@@ -27,4 +27,9 @@ public class StockExponentServiceFallback implements StockExponentService {
 	public Response<List<StockExponentDto>> fetchStockExponents() {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<StockExponentDto> fetchStockExponent(String code) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

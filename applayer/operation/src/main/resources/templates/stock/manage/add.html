@@ -100,11 +100,11 @@
                               type : 'success'
                           },function(){
                               setTimeout(function(){
-                                  $(location).prop('href',"../index");
+                                  $(location).prop('href',"../stock/index");
                               },500);
                           });
                       }else {
-                          swal("添加失败！");
+                          swal("股票已存在！");
                       }
                   }
               })

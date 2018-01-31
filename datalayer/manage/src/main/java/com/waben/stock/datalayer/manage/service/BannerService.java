@@ -83,4 +83,12 @@ public class BannerService {
 	public void delete(Long id) {
 		bannerDao.delete(id);
 	}
+
+    public Banner save(Banner banner) {
+		return bannerDao.create(banner);
+    }
+
+	public Banner revision(Banner banner) {
+		return bannerDao.update(banner);
+	}
 }

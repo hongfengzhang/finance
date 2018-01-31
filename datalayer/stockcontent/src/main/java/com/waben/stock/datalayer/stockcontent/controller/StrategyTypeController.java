@@ -54,6 +54,13 @@ public class StrategyTypeController implements StrategyTypeInterface {
     }
 
     @Override
+    public Response<StrategyTypeDto> add(@RequestBody StrategyTypeDto strategyTypeDto) {
+        StrategyType strategyType = CopyBeanUtils.copyBeanProperties(StrategyType.class, strategyTypeDto, false);
+        StrategyTypeDto result = CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class,straegyTypeService.save(strategyType),false);
+        return new Response<>(result);
+    }
+
+    @Override
 	public Response<StrategyTypeDto> fetchById(@PathVariable Long id) {
 		StrategyType strategyType = straegyTypeService.findById(id);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class, strategyType, false));

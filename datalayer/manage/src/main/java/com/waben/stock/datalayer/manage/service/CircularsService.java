@@ -75,4 +75,8 @@ public class CircularsService {
     public Integer revision(Circulars circulars) {
         return circularsDao.updateById(circulars.getId(),circulars.getTitle(),circulars.getContent());
     }
+
+    public Circulars save(Circulars circulars) {
+        return circularsDao.create(circulars);
+    }
 }

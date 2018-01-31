@@ -4,6 +4,7 @@ import com.waben.stock.datalayer.stockcontent.entity.AmountValue;
 import com.waben.stock.datalayer.stockcontent.entity.Loss;
 import com.waben.stock.datalayer.stockcontent.entity.StrategyType;
 import com.waben.stock.datalayer.stockcontent.repository.StrategyTypeDao;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.query.StrategyTypeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -80,5 +81,9 @@ public class StrategyTypeService {
 
     public void delete(Long id) {
         strategyTypeDao.delete(id);
+    }
+
+    public StrategyType save(StrategyType strategyType) {
+        return strategyTypeDao.create(strategyType);
     }
 }

@@ -1,15 +1,25 @@
 package com.waben.stock.datalayer.investors.service;
 
+import com.waben.stock.datalayer.investors.business.BuyRecordBusiness;
 import com.waben.stock.datalayer.investors.business.StockBusiness;
+import com.waben.stock.datalayer.investors.container.InvestorContainer;
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.entity.SecurityAccount;
 import com.waben.stock.datalayer.investors.repository.InvestorDao;
 import com.waben.stock.datalayer.investors.repository.rest.StockJyRest;
+import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
+import com.waben.stock.datalayer.investors.warpper.messagequeue.rabbitmq.EntrustApplyProducer;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.investor.InvestorDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.enums.EntrustType;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.SecuritiesStockException;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
@@ -17,6 +27,7 @@ import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockHolder;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockMoney;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +43,11 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Created by yuyidi on 2017/11/30.
@@ -47,7 +60,16 @@ public class InvestorService {
     private InvestorDao investorDao;
     @Autowired
     private SecuritiesInterface securitiesInterface;
-
+    @Autowired
+    private StockBusiness stockBusiness;
+    @Autowired
+    private BuyRecordBusiness buyRecordBusiness;
+//    private InvestorContainer investorContainer = ApplicationContextBeanFactory.getBean
+//            (InvestorContainer.class);
+    @Autowired
+    private InvestorContainer investorContainer;
+    @Autowired
+    private EntrustApplyProducer entrustProducer;
     /***
      * @author yuyidi 2017-11-30 19:37:27
      * @method findByUserName
@@ -109,8 +131,7 @@ public class InvestorService {
      * @description 点买交易记录执行券商股票委托
      */
     @Transactional
-    public String entrustApplyBuyIn(Investor investor, SecuritiesStockEntrust securitiesStockEntrust, String
-            tradeSession) {
+    public String entrustApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust, String tradeSession) {
         //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         StockMoney stockMoney = stockJyRest.money(tradeSession);
@@ -140,6 +161,7 @@ public class InvestorService {
         return enturstNo;
     }
 
+
     @Transactional
     public String buyRecordApplySellOut(SecuritiesStockEntrust securitiesStockEntrust, String
             tradeSession) {
@@ -168,9 +190,9 @@ public class InvestorService {
     public String buyRecordApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         String enturstNo = stockJyRest.withdraw(securitiesStockEntrust.getTradeSession(), securitiesStockEntrust.getEntrustNo());
-
         return enturstNo;
     }
+
 
     @Transactional
     public Investor save(Investor investor) {
@@ -223,5 +245,42 @@ public class InvestorService {
 
     public void delete(Long id) {
         investorDao.delete(id);
+    }
+
+    private SecuritiesStockEntrust buyRecordEntrust(InvestorDto investorDto, BuyRecordDto buyRecordDto, BigDecimal entrustPrice) {
+        SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
+        securitiesStockEntrust.setBuyRecordId(buyRecordDto.getId());
+        securitiesStockEntrust.setSerialCode(buyRecordDto.getSerialCode());
+        securitiesStockEntrust.setInvestor(investorDto.getId());
+        StockDto stockDto = stockBusiness.fetchWithExponentByCode(buyRecordDto.getStockCode());
+        securitiesStockEntrust.setStockName(stockDto.getName());
+        securitiesStockEntrust.setStockCode(stockDto.getCode());
+        securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
+        securitiesStockEntrust.setEntrustNumber(buyRecordDto.getNumberOfStrand());
+        securitiesStockEntrust.setEntrustPrice(entrustPrice);
+        securitiesStockEntrust.setBuyRecordState(buyRecordDto.getState());
+        return securitiesStockEntrust;
+    }
+
+    public BuyRecordDto buyIn(BuyRecordDto buyRecordDto) {
+        //获取投资人对象
+        List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
+        InvestorDto investorDto = investorsContainer.get(0);
+
+        SecuritiesStockEntrust securitiesStockEntrust= buyRecordEntrust(investorDto, buyRecordDto,buyRecordDto.getDelegatePrice());
+        //TODO 若没有接收到响应请求， 则回滚服务业务
+        String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
+        Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
+        BuyRecordDto result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
+        //如果委托成功,加入委托买入锁定队列
+        if (result.getState().equals(BuyRecordState.BUYLOCK)) {
+            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
+            securitiesStockEntrust.setTradeNo(result.getTradeNo());
+            securitiesStockEntrust.setEntrustNo(result.getDelegateNumber());
+            securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
+            securitiesStockEntrust.setEntrustTime(result.getUpdateTime());
+            entrustProducer.entrustApplyBuyIn(securitiesStockEntrust);
+        }
+        return result;
     }
 }

@@ -1,18 +1,24 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.RoleBusiness;
 import com.waben.stock.applayer.operation.business.StaffBusiness;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.dto.stockcontent.LossDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.vo.investor.InvestorVo;
+import com.waben.stock.interfaces.vo.message.CircularsVo;
 import com.waben.stock.interfaces.vo.message.RoleVo;
 import com.waben.stock.interfaces.vo.message.StaffVo;
 import com.waben.stock.interfaces.vo.stockcontent.LossVo;
+import com.waben.stock.interfaces.vo.stockcontent.StockExponentVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +40,8 @@ import java.util.List;
 public class StaffController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-
+    @Autowired
+    private RoleBusiness roleBusiness;
     @Autowired
     private StaffBusiness staffBusiness;
 
@@ -82,5 +89,23 @@ public class StaffController {
     public Response<Integer> delete(Long id){
         staffBusiness.delete(id);
         return new Response<>(1);
+    }
+
+    @RequestMapping("/add")
+    public String add(ModelMap map) {
+        List<RoleDto> roleDtos = roleBusiness.fetchRoles();
+        List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos, RoleVo.class);
+        map.addAttribute("roleVo",roleVos);
+        return "manage/staff/add";
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<StaffVo> add(StaffVo vo){
+        StaffDto requestDto = CopyBeanUtils.copyBeanProperties(StaffDto.class, vo, false);
+        requestDto.setRoleDto(CopyBeanUtils.copyBeanProperties(RoleDto.class, vo.getRoleVo(), false));
+        StaffDto staffDto = staffBusiness.save(requestDto);
+        StaffVo staffVo = CopyBeanUtils.copyBeanProperties(StaffVo.class,staffDto , false);
+        return new Response<>(staffVo);
     }
 }

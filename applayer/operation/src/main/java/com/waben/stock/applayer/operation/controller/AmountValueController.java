@@ -24,7 +24,7 @@ public class AmountValueController {
 
     @GetMapping("/index")
     public String index() {
-        return "/stock/amountvalue/index";
+        return "stock/amountvalue/index";
     }
 
     @GetMapping("/pages")

@@ -64,6 +64,7 @@ public class RabbitMqConsumer {
 
 	@RabbitListener(queues = {"entrustApplyWithdraw"})
 	public void entrustApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
+		logger.info("委托撤单订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
 		String entrustNo = investorService.buyRecordApplyWithdraw(securitiesStockEntrust);
 		BuyRecordDto buyRecordDto = buyRecordBusiness.entrustApplyWithdraw(entrustNo, securitiesStockEntrust.getBuyRecordId());
 		logger.info("修改订单撤单锁定状态成功:{}",buyRecordDto.getTradeNo());

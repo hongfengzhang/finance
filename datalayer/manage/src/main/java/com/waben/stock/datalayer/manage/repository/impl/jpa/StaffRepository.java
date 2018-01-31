@@ -14,6 +14,6 @@ public interface StaffRepository extends CustomJpaRepository<Staff, Long> {
     Staff findByUserName(String userName);
     @Transactional
     @Modifying
-    @Query(value="update staff set state=?3, user_name=?2 where id=?1",nativeQuery = true)
+    @Query(value="update staff set state=?3, user_name=?2, update_time=now() where id=?1",nativeQuery = true)
     Integer revisionById(Long id, String userName, Boolean state);
 }

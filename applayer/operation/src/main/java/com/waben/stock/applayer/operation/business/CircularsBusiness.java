@@ -4,6 +4,7 @@ import com.waben.stock.applayer.operation.service.manage.CircularsService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -53,6 +54,17 @@ public class CircularsBusiness {
 
     public Integer revision(CircularsDto requestDto) {
         Response<Integer> response = circularsService.modify(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public CircularsDto save(CircularsDto requestDto) {
+        Response<CircularsDto> response = circularsService.add(requestDto);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

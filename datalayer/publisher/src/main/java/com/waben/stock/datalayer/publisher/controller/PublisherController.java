@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.publisher.controller;
 
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
+
+import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/11/5.
@@ -74,6 +77,14 @@ public class PublisherController implements PublisherInterface {
 		Page<Publisher> pageData = publisherService.pagePromotionUser(id, page, size);
 		PageInfo<PublisherDto> result = PageToPageInfo.pageToPageInfo(pageData, PublisherDto.class);
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<List<PublisherDto>> fetchPublishers() {
+		List<Publisher> publishers = publisherService.findPublishers();
+		List<PublisherDto> publisherDtos = CopyBeanUtils.copyListBeanPropertiesToList(publishers,
+				PublisherDto.class);
+		return new Response<>(publisherDtos);
 	}
 
 	@Override

@@ -38,17 +38,4 @@ public class SettlementController {
         return new Response<>(response);
     }
 
-    @RequestMapping("/view/{id}")
-    public String view(@PathVariable Long id, ModelMap map){
-//        InvestorDto investorDto = investorBusiness.findById(id);
-//        InvestorVo investorVo = CopyBeanUtils.copyBeanProperties(InvestorVo.class, investorDto, false);
-//        map.addAttribute("investor", investorVo);
-//        SecurityAccountDto securityAccountDto = investorDto.getSecurityAccountDto();
-//        SecurityAccountVo securityAccountVo = CopyBeanUtils.copyBeanProperties(SecurityAccountVo.class, securityAccountDto, false);
-//        map.addAttribute("securityAccount", securityAccountVo);
-        SettlementDto settlementDto = settlementBusiness.findByBuyRecord(id);
-        SettlementVo settlementVo = CopyBeanUtils.copyBeanProperties(SettlementVo.class, settlementDto, false);
-        map.addAttribute("settlement", settlementVo);
-        return "investor/buyrecord/view";
-    }
 }

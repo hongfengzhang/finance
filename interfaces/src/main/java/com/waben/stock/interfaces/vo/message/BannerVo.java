@@ -1,5 +1,9 @@
 package com.waben.stock.interfaces.vo.message;
 
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 
 /**
@@ -15,9 +19,8 @@ public class BannerVo {
 	private String description;
 	private Integer sort;
 	private Boolean enable;
-	private Date createTime;
-	private String forward;
-
+	private Date createTime = new Date();
+	private String bannerForward;
 	public Long getId() {
 		return id;
 	}
@@ -66,12 +69,11 @@ public class BannerVo {
 		this.createTime = createTime;
 	}
 
-	public String getForward() {
-		return forward;
+	public String getBannerForward() {
+		return bannerForward;
 	}
 
-	public void setForward(String forward) {
-		this.forward = forward;
+	public void setBannerForward(String bannerForward) {
+		this.bannerForward = bannerForward;
 	}
-
 }

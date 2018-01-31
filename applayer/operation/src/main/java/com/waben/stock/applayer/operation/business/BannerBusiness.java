@@ -3,7 +3,9 @@ package com.waben.stock.applayer.operation.business;
 import com.waben.stock.applayer.operation.service.manage.BannerService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -45,5 +47,27 @@ public class BannerBusiness {
 
     public void delete(Long id) {
         bannerService.delete(id);
+    }
+
+    public BannerDto save(BannerDto requestDto) {
+        Response<BannerDto> response = bannerService.add(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public BannerDto revision(BannerDto requestDto) {
+        Response<BannerDto> response = bannerService.modify(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
     }
 }

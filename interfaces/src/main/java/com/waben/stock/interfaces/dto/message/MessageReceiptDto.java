@@ -12,7 +12,7 @@ public class MessageReceiptDto {
 	
 	private String recipient;
 	
-	private Boolean state;
+	private Boolean state = false;
 
 	public Long getId() {
 		return id;

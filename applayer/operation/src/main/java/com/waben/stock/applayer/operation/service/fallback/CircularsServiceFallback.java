@@ -42,4 +42,8 @@ public class CircularsServiceFallback implements CircularsService {
     public void delete(Long id) {
 
     }
+
+    @Override
+    public Response<CircularsDto> add(CircularsDto requestDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
 }

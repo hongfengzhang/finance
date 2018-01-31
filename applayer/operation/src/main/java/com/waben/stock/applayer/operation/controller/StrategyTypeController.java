@@ -82,5 +82,17 @@ public class StrategyTypeController {
         strategyTypeBusiness.delete(id);
         return new Response<>(1);
     }
+    @RequestMapping("/add")
+    public String add(ModelMap map) {
+        return "stock/strategytype/add";
+    }
 
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<StrategyTypeVo> add(StrategyTypeVo vo){
+        StrategyTypeDto requestDto = CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class, vo, false);
+        StrategyTypeDto responseDto = strategyTypeBusiness.save(requestDto);
+        StrategyTypeVo result = CopyBeanUtils.copyBeanProperties(StrategyTypeVo.class, responseDto, false);
+        return new Response<>(result);
+    }
 }

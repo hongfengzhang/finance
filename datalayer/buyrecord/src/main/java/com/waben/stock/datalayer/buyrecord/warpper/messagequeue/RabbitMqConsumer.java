@@ -67,7 +67,6 @@ public class RabbitMqConsumer {
 	public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
 		logger.info("处理废单:{},订单ID:{}", securitiesStockEntrust.getTradeNo(),securitiesStockEntrust.getBuyRecordId());
 		buyRecordService.revoke(securitiesStockEntrust.getBuyRecordId());
-
 	}
 
 }

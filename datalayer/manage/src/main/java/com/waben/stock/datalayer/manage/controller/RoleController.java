@@ -5,6 +5,7 @@ import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.service.RoleService;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -18,6 +19,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/11/16.
@@ -61,5 +64,20 @@ public class RoleController implements RoleInterface {
     @Override
     public void delete(@PathVariable Long id) {
         roleService.delete(id);
+    }
+
+    @Override
+    public Response<RoleDto> add(@RequestBody RoleDto roleDto) {
+        Role role = CopyBeanUtils.copyBeanProperties(Role.class, roleDto, false);
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.save(role),false);
+        return new Response<>(result);
+    }
+
+    @Override
+    public Response<List<RoleDto>> fetchRoles() {
+        List<Role> roles = roleService.findRoles();
+        List<RoleDto> roleDtos = CopyBeanUtils.copyListBeanPropertiesToList(roles,
+                RoleDto.class);
+        return new Response<>(roleDtos);
     }
 }

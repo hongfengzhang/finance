@@ -39,4 +39,9 @@ public class BannerServiceFallback implements BannerService {
     public void delete(Long id) {
 
     }
+
+    @Override
+    public Response<BannerDto> add(BannerDto requestDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

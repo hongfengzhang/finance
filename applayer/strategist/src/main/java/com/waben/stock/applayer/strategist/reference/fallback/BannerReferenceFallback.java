@@ -45,4 +45,8 @@ public class BannerReferenceFallback implements BannerReference {
 
 	}
 
+	@Override
+	public Response<BannerDto> add(BannerDto requestDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);	}
+
 }

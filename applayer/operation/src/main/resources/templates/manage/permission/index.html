@@ -54,7 +54,12 @@
                 <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
-
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label class="col-md-5"></label>
+                        <a id="add" class="btn btn-fill btn-info" href="../permission/add">添加</a>
+                    </div>
+                </div>
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
 
@@ -154,14 +159,34 @@
                             console.log(info);
                         },
                         'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-                            swal('You click edit icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../permission/edit/"+row.id);
                         },
                         'click .remove': function (e, value, row, index) {
 
-                            demo.showSwal('warning-message-and-cancel', row);
-
+                            swal({
+                                title: "你确定吗?",
+                                text: "删除后,数据将不可被恢复!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 删除!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function(isConfirm) {
+                                if (isConfirm) {
+                                    $.ajax({
+                                        url:'../permission/delete',
+                                        type:'post',
+                                        data:{"id":row.id},
+                                        success:function (response) {
+                                            swal("Deleted!", "数据删除成功.", "success");
+                                            $table.bootstrapTable('refresh');
+                                        }
+                                    })
+                                } else {
+                                    swal("Cancelled", "数据已取消删除 :)", "error");
+                                }
+                            });
                         }
                     }
                 }]

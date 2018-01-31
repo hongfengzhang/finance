@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.manage.controller;
 
+import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.service.StaffService;
 import com.waben.stock.interfaces.dto.investor.SecurityAccountDto;
@@ -51,6 +52,7 @@ public class StaffController implements StaffInterface {
     @Override
     public Response<StaffDto> saveStaff(@RequestBody StaffDto staffDto) {
         Staff staff = CopyBeanUtils.copyBeanProperties(staffDto, new Staff(), false);
+        staff.setRole(CopyBeanUtils.copyBeanProperties(Role.class, staffDto.getRoleDto(), false));
         Staff result = staffService.saveStaff(staff);
         StaffDto staffDtoResult = CopyBeanUtils.copyBeanProperties(result, new StaffDto(), false);
         return new Response<>(staffDtoResult);
@@ -75,5 +77,6 @@ public class StaffController implements StaffInterface {
     public void delete(@PathVariable Long id) {
         staffService.delete(id);
     }
+
 
 }

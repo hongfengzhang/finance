@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.manage.controller;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.manage.entity.Circulars;
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,11 +62,20 @@ public class BannerController implements BannerInterface {
 
     @Override
     public Response<BannerDto> modify(@RequestBody BannerDto bannerDto) {
-        return null;
+        Banner banner = CopyBeanUtils.copyBeanProperties(Banner.class, bannerDto, false);
+        BannerDto result = CopyBeanUtils.copyBeanProperties(BannerDto.class,bannerService.revision(banner),false);
+        return new Response<>(result);
     }
 
     @Override
     public void delete(@PathVariable Long id) {
         bannerService.delete(id);
+    }
+
+    @Override
+    public Response<BannerDto> add(@RequestBody BannerDto requestDto) {
+        Banner banner = CopyBeanUtils.copyBeanProperties(Banner.class, requestDto, false);
+        BannerDto result = CopyBeanUtils.copyBeanProperties(BannerDto.class,bannerService.save(banner),false);
+        return new Response<>(result);
     }
 }

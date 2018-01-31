@@ -106,8 +106,7 @@ public class InvestorController {
 
     @RequestMapping("/buyrecord/{buyrecord}/sellout")
     @ResponseBody
-    public Response<SecuritiesStockEntrust> buyRecordSellOut(@PathVariable
-                                                                     ("buyrecord") Long buyrecord, BigDecimal entrustPrice) {
+    public Response<SecuritiesStockEntrust> buyRecordSellOut(@PathVariable("buyrecord") Long buyrecord, BigDecimal entrustPrice) {
         InvestorDto investorDto = (InvestorDto) SecurityAccount.current().getSecurity();
         BuyRecordDto buyRecordDto = buyRecordBusiness.fetchBuyRecord(buyrecord);
         SecuritiesStockEntrust result = investorBusiness.sellOut(investorDto, buyRecordDto,entrustPrice);

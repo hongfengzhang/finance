@@ -5,6 +5,8 @@ import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BannerQuery;
 import com.waben.stock.interfaces.pojo.query.CircularsQuery;
@@ -14,6 +16,7 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.message.BannerVo;
 import com.waben.stock.interfaces.vo.message.CircularsVo;
 import com.waben.stock.interfaces.vo.message.StaffVo;
+import com.waben.stock.interfaces.vo.stockcontent.StockVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -72,9 +75,23 @@ public class CircularsController {
 
     @RequestMapping("/modify")
     @ResponseBody
-    public Response<Integer> modify(StaffVo vo){
+    public Response<Integer> modify(CircularsVo vo){
         CircularsDto requestDto = CopyBeanUtils.copyBeanProperties(CircularsDto.class, vo, false);
         Integer result = circularsBusiness.revision(requestDto);
         return new Response<>(result);
+    }
+
+    @RequestMapping("/add")
+    public String add() {
+        return "manage/circulars/add";
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<CircularsVo> add(CircularsVo vo){
+        CircularsDto requestDto = CopyBeanUtils.copyBeanProperties(CircularsDto.class, vo, false);
+        CircularsDto circularsDto = circularsBusiness.save(requestDto);
+        CircularsVo circularsVo = CopyBeanUtils.copyBeanProperties(CircularsVo.class,circularsDto , false);
+        return new Response<>(circularsVo);
     }
 }

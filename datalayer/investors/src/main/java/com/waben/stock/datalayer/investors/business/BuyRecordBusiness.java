@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.investors.business;
 
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
+import com.waben.stock.datalayer.investors.reference.fallback.BuyRecordReferenceFallBack;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
@@ -83,6 +84,17 @@ public class BuyRecordBusiness {
 
     public BuyRecordDto entrustApplyWithdraw(String entrustNo, Long id) {
         Response<BuyRecordDto> response = buyRecordReference.withdrawLock(entrustNo,id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public BuyRecordDto findById(Long buyrecord) {
+        Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(buyrecord);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

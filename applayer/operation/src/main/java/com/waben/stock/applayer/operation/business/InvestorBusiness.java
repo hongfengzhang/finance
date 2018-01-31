@@ -151,4 +151,15 @@ public class InvestorBusiness {
     public void delete(Long id) {
         investorService.delete(id);
     }
+
+    public InvestorDto findByUserName(String userName) {
+        Response<InvestorDto> response = investorService.fetchByUserName(userName);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

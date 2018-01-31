@@ -29,7 +29,7 @@ public class LossController {
 
     @GetMapping("/index")
     public String index() {
-        return "/stock/loss/index";
+        return "stock/loss/index";
     }
 
     @GetMapping("/pages")

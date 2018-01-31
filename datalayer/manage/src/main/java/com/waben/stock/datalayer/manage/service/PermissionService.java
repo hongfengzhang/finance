@@ -67,4 +67,19 @@ public class PermissionService {
         return pages;
     }
 
+    public void delete(Long id) {
+        permissionDao.delete(id);
+    }
+
+    public Permission save(Permission permission) {
+        return permissionDao.create(permission);
+    }
+
+    public Permission revision(Permission permission) {
+        return permissionDao.update(permission);
+    }
+
+    public List<Permission> findPermissions() {
+        return permissionDao.list();
+    }
 }

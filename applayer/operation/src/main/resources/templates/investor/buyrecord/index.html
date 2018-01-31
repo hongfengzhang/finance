@@ -13,7 +13,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">记录状态</label>
                             <div class="col-sm-8">
-                                <select name="state">
+                                <select class="form-control" name="state">
                                     <option value="0">请选择</option>
                                     <option value="1">买入中</option>
                                     <option value="2">买入锁定</option>
@@ -21,7 +21,8 @@
                                     <option value="4">卖出申请</option>
                                     <option value="5">卖出锁定</option>
                                     <option value="6">已平仓</option>
-                                    <option value="7">撤单</option>
+                                    <option value="7">撤单锁定</option>
+                                    <option value="8">撤单</option>
                                 </select>
                             </div>
                         </div>
@@ -239,7 +240,7 @@
                             if(row.buyRecordState!='已平仓') {
                                 swal('暂未平仓，没有结算信息！');
                             }else {
-                                $(location).prop('href',"../settlement/view/"+row.id);
+                                $(location).prop('href',"../buyrecord/view/"+row.id);
                             }
 
                         },

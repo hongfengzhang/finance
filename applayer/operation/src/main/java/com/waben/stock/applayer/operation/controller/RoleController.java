@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.controller;
 
 import com.netflix.discovery.converters.Auto;
 import com.waben.stock.applayer.operation.business.RoleBusiness;
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -11,6 +12,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.message.CircularsVo;
 import com.waben.stock.interfaces.vo.message.RoleVo;
 import com.waben.stock.interfaces.vo.message.StaffVo;
 import com.waben.stock.interfaces.vo.stockcontent.StrategyTypeVo;
@@ -79,5 +81,18 @@ public class RoleController {
     public Response<Integer> delete(Long id){
         roleBusiness.delete(id);
         return new Response<>(1);
+    }
+
+    @RequestMapping("/add")
+    public String add() {
+        return "manage/role/add";
+    }
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<RoleVo> add(RoleVo vo){
+        RoleDto requestDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, vo, false);
+        RoleDto roleDto = roleBusiness.save(requestDto);
+        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
+        return new Response<>(roleVo);
     }
 }

@@ -76,4 +76,12 @@ public class RoleService {
     public void delete(Long id) {
         roleDao.delete(id);
     }
+
+    public Role save(Role role) {
+        return roleDao.create(role);
+    }
+
+    public List<Role> findRoles() {
+        return roleDao.list();
+    }
 }

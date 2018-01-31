@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.service.manage;
 
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -34,6 +35,7 @@ public interface StaffInterface {
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     void delete(@PathVariable("id") Long id);
+
 }
 
 

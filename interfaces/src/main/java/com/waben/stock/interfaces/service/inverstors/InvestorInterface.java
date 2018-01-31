@@ -38,6 +38,10 @@ public interface InvestorInterface {
     Response<BuyRecordDto> stockApplyBuyIn(@PathVariable("investor") Long investor, @RequestBody SecuritiesStockEntrust
             securitiesStockEntrust, @RequestParam("tradeSession") String tradeSession);
 
+    @RequestMapping(value = "/volapplybuyin/{buyrecode}/", method = RequestMethod.POST, consumes = MediaType
+            .APPLICATION_JSON_VALUE)
+    Response<BuyRecordDto> voluntarilyStockApplyBuyIn(@PathVariable("buyrecode") Long buyrecode);
+
     @RequestMapping(value = "/{investor}/buyrecord/applysellout", method = RequestMethod.POST, consumes = MediaType
             .APPLICATION_JSON_VALUE)
     Response<BuyRecordDto> stockApplySellOut(@PathVariable("investor") Long investor, @RequestBody SecuritiesStockEntrust

@@ -24,7 +24,7 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public Role create(Role role) {
-        return null;
+        return repository.save(role);
     }
 
     @Override
@@ -54,6 +54,6 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public List<Role> list() {
-        return null;
+        return repository.findAll();
     }
 }

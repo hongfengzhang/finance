@@ -85,8 +85,12 @@ public class StockService {
 	}
 
     public Stock save(Stock stock) {
-		StockExponent stockExponent = stockExponentDao.retrieveWithExponeneCode(stock.getExponent().getExponentCode());
-		stock.setExponent(stockExponent);
-		return stockDao.create(stock);
+		if(stockDao.retrieveByCode(stock.getCode())==null){
+			StockExponent stockExponent = stockExponentDao.retrieveWithExponeneCode(stock.getExponent().getExponentCode());
+			stock.setExponent(stockExponent);
+			return stockDao.create(stock);
+		}else {
+			return null;
+		}
 	}
 }

@@ -45,4 +45,9 @@ public class StrategyTypeReferenceFallback implements StrategyTypeReference {
 
 	}
 
+	@Override
+	public Response<StrategyTypeDto> add(StrategyTypeDto requestDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

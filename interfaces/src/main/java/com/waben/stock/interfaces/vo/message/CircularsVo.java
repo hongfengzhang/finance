@@ -13,7 +13,7 @@ public class CircularsVo {
 	private Long id;
 	private String title;
 	private String content;
-	private Date createTime;
+	private Date createTime = new Date();
 	private Date expireTime;
 	private Boolean enable;
 

@@ -176,4 +176,8 @@ public class PublisherService {
 	public Publisher revision(Publisher publisher){
 		return publisherDao.update(publisher);
 	}
+
+    public List<Publisher> findPublishers() {
+		return publisherDao.list();
+    }
 }

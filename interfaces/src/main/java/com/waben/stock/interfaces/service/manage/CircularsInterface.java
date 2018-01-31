@@ -26,4 +26,6 @@ public interface CircularsInterface {
 
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	void delete(@PathVariable("id") Long id);
+	@RequestMapping(value = "/save", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<CircularsDto> add(CircularsDto requestDto);
 }
