@@ -3,6 +3,9 @@ package com.waben.stock.datalayer.buyrecord.warpper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+
+import feign.Retryer;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +56,11 @@ public class BeanConfigurer {
         jackson2HttpMessageConverter.setSupportedMediaTypes(mediaTypes);
         return jackson2HttpMessageConverter;
     }
-
+    
+	@Bean
+	Retryer feignRetryer() {
+		return Retryer.NEVER_RETRY;
+	}
 
     @Bean
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
