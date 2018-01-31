@@ -64,6 +64,14 @@ public class BeanConfigurer {
     }
 
     /**
+     * 创建 自动申请买入队列
+     */
+    @Bean(name = "voluntarilyApplyBuyIn")
+    public Queue voluntarilyBuyInQueue() {
+        return new Queue("voluntarilyApplyBuyIn");
+    }
+
+    /**
      * 创建 委托申请买入队列
      */
     @Bean(name = "entrustApplyBuyIn")
@@ -107,6 +115,12 @@ public class BeanConfigurer {
     @Bean("buyRecordRisk")
     public TopicExchange riskExchange() {
         return new TopicExchange("buyRecordRisk");
+    }
+
+    @Bean
+    public Binding bindingExchangVoluntarilyBuyIn(@Qualifier("voluntarilyApplyBuyIn") Queue queue,
+                                              @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
+        return BindingBuilder.bind(queue).to(buyRecordExchange).with("voluntarilyBuyIn");
     }
 
     @Bean

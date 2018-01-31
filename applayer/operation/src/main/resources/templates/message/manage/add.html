@@ -148,21 +148,19 @@
   			data:$("#msgForm").serialize(),
   			success:function (response) {
   				if(response.code != '200'){
-  					console.log("------服务器出错-------");
+  					swal("------服务器出错-------");
 					return false;	
   				}
-   				var data = response.result;
-   				var id = $("input[name='id']").val();
-   				if(data.id == id){
-   					swal({
-   							text : '添加成功',
-   							type : 'success'
-   						},function(){
-   						setTimeout(function(){
-   							$(location).prop('href',"../message/index");
-   						},500);
-   					});
-   				}
+                if(response.result!=null){
+                    swal({
+                        text : '添加成功',
+                        type : 'success'
+                    },function(){
+                        setTimeout(function(){
+                            $(location).prop('href',"../message/index");
+                        },500);
+                    });
+                }
   			}
   		})
   	  });	

@@ -52,6 +52,7 @@ public class StockSellOutInitialize implements CommandLineRunner {
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             securitiesStockEntrust.setLossPosition(buyRecord.getLossPosition());
             securitiesStockEntrust.setProfitPosition(buyRecord.getProfitPosition());
+            securitiesStockEntrust.setEntrustTime(buyRecord.getUpdateTime());
             stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
         }
     }
