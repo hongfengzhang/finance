@@ -155,6 +155,10 @@ public class InvestorService {
         if (stockAccount == null) {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
+
+        if(securitiesStockEntrust.getBuyRecordState().equals(BuyRecordState.BUYLOCK)) {
+            throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+        }
         //开始委托下单
         String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
                 EntrustType.BUY);
@@ -179,6 +183,10 @@ public class InvestorService {
         }
         if (stockAccount == null) {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
+        }
+
+        if(securitiesStockEntrust.getBuyRecordState().equals(BuyRecordState.SELLLOCK)) {
+            throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
         }
         //开始委托下单卖出
         String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,

@@ -123,6 +123,7 @@ public class InvestorController implements InvestorInterface {
         //下单，返回委托编号
         String entrustNo = investorService.buyRecordApplySellOut(securitiesStockEntrust, tradeSession);
         //修改订单状态
+
         BuyRecordDto buyRecordDtoResponse = buyRecordBusiness.entrustApplySellOut(result, securitiesStockEntrust,
                 entrustNo,WindControlType.PUBLISHERAPPLY.getIndex());
         return new Response<>(buyRecordDtoResponse);

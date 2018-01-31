@@ -95,8 +95,8 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             if ((currentDay - entrustDay) >= 1) {
                                 entrustProducer.entrustWithdraw(securitiesStockEntrust);
                                 stockEntrusts.remove(entry.getKey());
+                                continue;
                             }
-                            continue;
                         }
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
