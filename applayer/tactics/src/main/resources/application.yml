@@ -19,6 +19,8 @@ hystrix:
             timeoutInMilliseconds: 10000
         timeout:
             enabled: false
+ribbon:
+  OkToRetryOnAllOperations: false
 redis:
   host: ${redis.host}
   port: ${redis.port}

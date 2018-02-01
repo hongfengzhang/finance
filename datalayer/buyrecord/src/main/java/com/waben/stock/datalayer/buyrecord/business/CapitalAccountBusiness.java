@@ -19,6 +19,14 @@ public class CapitalAccountBusiness {
 	@Qualifier("capitalAccountFeignReference")
 	private CapitalAccountReference service;
 
+	public CapitalAccountDto fetchByPublisherId(Long publisherId) {
+		Response<CapitalAccountDto> response = service.fetchByPublisherId(publisherId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 	public CapitalAccountDto serviceFeeAndReserveFund(Long publisherId, Long buyRecordId, BigDecimal serviceFee,
 			BigDecimal reserveFund, BigDecimal deferredFee) {
 		Response<CapitalAccountDto> response = service.serviceFeeAndReserveFund(publisherId, buyRecordId, serviceFee,

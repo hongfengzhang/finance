@@ -38,6 +38,7 @@ import com.waben.stock.datalayer.buyrecord.repository.DeferredRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
 import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.rabbit.VoluntarilyBuyInProducer;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
@@ -103,6 +104,16 @@ public class BuyRecordService {
 
 	@Transactional
 	public BuyRecord save(BuyRecord buyRecord) {
+		// 再检查一余额是否充足
+		CapitalAccountDto account = accountBusiness.fetchByPublisherId(buyRecord.getPublisherId());
+		BigDecimal totalFee = buyRecord.getServiceFee().add(buyRecord.getReserveFund());
+		if(buyRecord.getDeferred()) {
+			totalFee = totalFee.add(buyRecord.getDeferredFee());
+		}
+		if(account.getAvailableBalance().compareTo(totalFee) < 0) {
+			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+		}
+		
 		buyRecord.setSerialCode(UniqueCodeGenerator.generateSerialCode());
 		buyRecord.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		buyRecord.setState(BuyRecordState.POSTED);
