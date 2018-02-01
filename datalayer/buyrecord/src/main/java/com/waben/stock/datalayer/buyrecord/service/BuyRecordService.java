@@ -476,14 +476,14 @@ public class BuyRecordService {
 		if (!buyRecord.getDeferred()) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_USERNOTDEFERRED_EXCEPTION);
 		}
-		DeferredRecord deferredRecord = deferredRecordDao
+		List<DeferredRecord> deferredRecordList = deferredRecordDao
 				.retrieveByPublisherIdAndBuyRecordId(buyRecord.getPublisherId(), id);
-		if (deferredRecord != null) {
+		if (deferredRecordList != null && deferredRecordList.size() > 0) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_ALREADY_DEFERRED_EXCEPTION);
 		}
 		// 获取策略类型
 		StrategyTypeDto strategyType = strategyTypeBusiness.fetchById(buyRecord.getStrategyTypeId());
-		deferredRecord = new DeferredRecord();
+		DeferredRecord deferredRecord = new DeferredRecord();
 		deferredRecord.setBuyRecordId(id);
 		deferredRecord.setCycle(strategyType.getCycle());
 		deferredRecord.setDeferredTime(new Date());

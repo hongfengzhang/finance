@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.tactics.business;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +22,7 @@ import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -97,6 +99,27 @@ public class BuyRecordBusiness {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<BuyRecordWithMarketDto> pagesUnwind(BuyRecordQuery buyRecordQuery) {
+		PageInfo<BuyRecordDto> pageInfo = this.pages(buyRecordQuery);
+		List<BuyRecordWithMarketDto> content = this.wrapMarketInfo(pageInfo.getContent());
+		for (BuyRecordWithMarketDto market : content) {
+			List<DeferredRecordDto> deferredRecordList = deferredRecordReference
+					.fetchByPublisherIdAndBuyRecordId(market.getPublisherId(), market.getId()).getResult();
+			Integer deferredDays = 0;
+			BigDecimal deferredCharges = new BigDecimal(0);
+			if (deferredRecordList != null && deferredRecordList.size() > 0) {
+				for(DeferredRecordDto deferredRecord : deferredRecordList) {
+					deferredDays += deferredRecord.getCycle();
+					deferredCharges = deferredCharges.add(deferredRecord.getFee().abs());
+				}
+			}
+			market.setDeferredDays(deferredDays);
+			market.setDeferredCharges(deferredCharges);
+		}
+		return new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(),
+				pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
 	}
 
 	public BuyRecordWithMarketDto wrapMarketInfo(BuyRecordDto buyRecord) {

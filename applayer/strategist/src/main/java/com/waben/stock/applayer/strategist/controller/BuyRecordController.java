@@ -167,10 +167,7 @@ public class BuyRecordController {
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesUnwind(int page, int size) {
 		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
 				new BuyRecordState[] { BuyRecordState.UNWIND, BuyRecordState.REVOKE });
-		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
-		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
-		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
-				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
+		return new Response<>(buyRecordBusiness.pagesUnwind(query));
 	}
 
 	@GetMapping("/tradeDynamic")

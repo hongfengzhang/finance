@@ -61,7 +61,7 @@ public class DeferredRecordDaoImpl implements DeferredRecordDao {
 	}
 
 	@Override
-	public DeferredRecord retrieveByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId) {
+	public List<DeferredRecord> retrieveByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId) {
 		return repository.findByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
 	}
 

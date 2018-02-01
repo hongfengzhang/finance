@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.buyrecord.repository;
 
+import java.util.List;
+
 import com.waben.stock.datalayer.buyrecord.entity.DeferredRecord;
 
 /**
@@ -10,6 +12,6 @@ import com.waben.stock.datalayer.buyrecord.entity.DeferredRecord;
  */
 public interface DeferredRecordDao extends BaseDao<DeferredRecord, Long> {
 
-	DeferredRecord retrieveByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
+	List<DeferredRecord> retrieveByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
 
 }

@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -59,6 +61,12 @@ public class BindingCard {
 	 * 支行名称
 	 */
 	private String branchBankName;
+	/**
+	 * 对应的机构
+	 */
+	@OneToOne
+	@JoinColumn(name = "org_id")
+	private Organization org;
 
 	public Long getId() {
 		return id;
@@ -146,6 +154,14 @@ public class BindingCard {
 
 	public void setBranchBankName(String branchBankName) {
 		this.branchBankName = branchBankName;
+	}
+
+	public Organization getOrg() {
+		return org;
+	}
+
+	public void setOrg(Organization org) {
+		this.org = org;
 	}
 
 }

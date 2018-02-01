@@ -45,7 +45,7 @@ public class OrganizationAccount {
 	 */
 	private Date updateTime;
 	/**
-	 * 对应的用户
+	 * 对应的机构
 	 */
 	@OneToOne
 	@JoinColumn(name = "org_id")
