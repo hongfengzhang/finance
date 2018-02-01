@@ -95,4 +95,15 @@ public class RabbitMqConsumer {
 			logger.info("服务异常：{}",serviceException.getMessage());
 		}
 	}
+
+	@RabbitListener(queues = {"voluntarilyApplySellOut"})
+	public void voluntarilyEntrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
+		logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
+		try {
+			BuyRecordDto buyRecordDto = investorService.voluntarilyApplySellOut(securitiesStockEntrust);
+			logger.info("委托卖出成功：{}",JacksonUtil.encode(buyRecordDto));
+		}catch (ServiceException serviceException) {
+			logger.info("服务异常：{}",serviceException.getMessage());
+		}
+	}
 }

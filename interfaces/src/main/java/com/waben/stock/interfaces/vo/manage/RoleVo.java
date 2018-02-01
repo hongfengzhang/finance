@@ -1,7 +1,4 @@
-package com.waben.stock.interfaces.vo.message;
-
-import com.waben.stock.interfaces.dto.manage.MenuDto;
-import com.waben.stock.interfaces.dto.manage.PermissionDto;
+package com.waben.stock.interfaces.vo.manage;
 
 import java.io.Serializable;
 import java.util.Set;

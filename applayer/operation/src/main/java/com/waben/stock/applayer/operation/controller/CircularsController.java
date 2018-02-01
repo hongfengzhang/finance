@@ -1,22 +1,12 @@
 package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.CircularsBusiness;
-import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
-import com.waben.stock.interfaces.dto.manage.PermissionDto;
-import com.waben.stock.interfaces.dto.manage.StaffDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.pojo.query.BannerQuery;
 import com.waben.stock.interfaces.pojo.query.CircularsQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.PermissionQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.message.BannerVo;
-import com.waben.stock.interfaces.vo.message.CircularsVo;
-import com.waben.stock.interfaces.vo.message.StaffVo;
-import com.waben.stock.interfaces.vo.stockcontent.StockVo;
+import com.waben.stock.interfaces.vo.manage.CircularsVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
