@@ -30,11 +30,11 @@ public class RealName {
 	 */
 	private String name;
 	/**
-	 * 对应的机构管理用户
+	 * 对应的机构
 	 */
 	@OneToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+	@JoinColumn(name = "org_id")
+	private Organization org;
 
 	public Long getId() {
 		return id;
@@ -60,12 +60,12 @@ public class RealName {
 		this.name = name;
 	}
 
-	public User getUser() {
-		return user;
+	public Organization getOrg() {
+		return org;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setOrg(Organization org) {
+		this.org = org;
 	}
 
 }

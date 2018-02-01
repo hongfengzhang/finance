@@ -1,10 +1,5 @@
 package com.waben.stock.interfaces.dto.manage;
 
-import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
 import java.util.Date;
 
 /**
@@ -21,7 +16,7 @@ public class BannerDto {
 	private Integer sort;
 	private Boolean enable;
 	private Date createTime;
-	private String bannerForward;
+	private String forward;
 
 	public Long getId() {
 		return id;
@@ -71,11 +66,12 @@ public class BannerDto {
 		this.createTime = createTime;
 	}
 
-	public String getBannerForward() {
-		return bannerForward;
+	public String getForward() {
+		return forward;
 	}
 
-	public void setBannerForward(String bannerForward) {
-		this.bannerForward = bannerForward;
+	public void setForward(String forward) {
+		this.forward = forward;
 	}
+
 }

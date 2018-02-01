@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.buyrecord.repository.impl.jpa;
 
+import java.util.List;
+
 import com.waben.stock.datalayer.buyrecord.entity.DeferredRecord;
 
 /**
@@ -10,6 +12,6 @@ import com.waben.stock.datalayer.buyrecord.entity.DeferredRecord;
  */
 public interface DeferredRecordRepository extends CustomJpaRepository<DeferredRecord, Long> {
 
-	DeferredRecord findByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
+	List<DeferredRecord> findByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
 
 }

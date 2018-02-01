@@ -43,6 +43,18 @@ public class Settlement {
 	 */
 	private String strategyTypeName;
 	/**
+	 * 信息服务费
+	 */
+	private BigDecimal serviceFee;
+	/**
+	 * 递延费
+	 */
+	private BigDecimal deferredFee;
+	/**
+	 * 软件服务费
+	 */
+	private BigDecimal softwareFee;
+	/**
 	 * 总收入
 	 */
 	private BigDecimal totalIncome;
@@ -173,6 +185,30 @@ public class Settlement {
 
 	public void setSettlementTime(Date settlementTime) {
 		this.settlementTime = settlementTime;
+	}
+
+	public BigDecimal getServiceFee() {
+		return serviceFee;
+	}
+
+	public void setServiceFee(BigDecimal serviceFee) {
+		this.serviceFee = serviceFee;
+	}
+
+	public BigDecimal getDeferredFee() {
+		return deferredFee;
+	}
+
+	public void setDeferredFee(BigDecimal deferredFee) {
+		this.deferredFee = deferredFee;
+	}
+
+	public BigDecimal getSoftwareFee() {
+		return softwareFee;
+	}
+
+	public void setSoftwareFee(BigDecimal softwareFee) {
+		this.softwareFee = softwareFee;
 	}
 
 }

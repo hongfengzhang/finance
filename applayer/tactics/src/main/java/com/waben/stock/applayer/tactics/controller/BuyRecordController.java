@@ -45,7 +45,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/buyRecord")
 @Api(description = "点买交易")
 public class BuyRecordController {
-	
+
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -84,11 +84,10 @@ public class BuyRecordController {
 		logger.info("APP调用接口发布人{}点买股票{}，申请资金{}!", SecurityUtil.getUserId(), stockCode, applyAmount);
 		// 检查交易时间段
 		/*
-		boolean isTradeTime = holidayBusiness.isTradeTime();
-		if (!isTradeTime) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
-		}
-		*/
+		 * boolean isTradeTime = holidayBusiness.isTradeTime(); if
+		 * (!isTradeTime) { throw new ServiceException(ExceptionConstant.
+		 * BUYRECORD_NONTRADINGPERIOD_EXCEPTION); }
+		 */
 		// 判断该股票是否已经停牌
 		boolean isSuspension = stockBusiness.isSuspension(stockCode);
 		if (isSuspension) {
@@ -96,7 +95,7 @@ public class BuyRecordController {
 		}
 		// 判断该股票是否为创业板股票
 		StockDto stock = stockBusiness.findByCode(stockCode);
-		if("4621".equals(stock.getExponent().getExponentCode())) {
+		if ("4621".equals(stock.getExponent().getExponentCode())) {
 			throw new ServiceException(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION);
 		}
 		// 判断是否有资格参与该策略
@@ -136,7 +135,7 @@ public class BuyRecordController {
 		}
 		// 检查余额
 		BigDecimal totalFee = new BigDecimal(0);
-		if(deferred) {
+		if (deferred) {
 			totalFee = totalFee.add(serviceFee).add(reserveFund).add(deferredFee);
 		} else {
 			totalFee = totalFee.add(serviceFee).add(reserveFund);
@@ -180,10 +179,7 @@ public class BuyRecordController {
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesUnwind(int page, int size) {
 		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
 				new BuyRecordState[] { BuyRecordState.UNWIND, BuyRecordState.REVOKE });
-		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
-		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
-		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
-				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
+		return new Response<>(buyRecordBusiness.pagesUnwind(query));
 	}
 
 	@GetMapping("/tradeDynamic")
