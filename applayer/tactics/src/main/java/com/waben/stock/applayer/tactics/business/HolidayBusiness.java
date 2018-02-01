@@ -60,12 +60,12 @@ public class HolidayBusiness {
 				return false;
 			}
 		}
-		// 判断是否为9:30~11:30 13:00~15:00
+		// 判断是否为9:30~11:30 13:00~14:50
 		try {
 			boolean isAm = now.getTime() >= fullSdf.parse(nowStr + " 09:30:00").getTime()
 					&& now.getTime() < fullSdf.parse(nowStr + " 11:30:00").getTime();
 			boolean isPm = now.getTime() >= fullSdf.parse(nowStr + " 13:00:00").getTime()
-					&& now.getTime() < fullSdf.parse(nowStr + " 15:00:00").getTime();
+					&& now.getTime() < fullSdf.parse(nowStr + " 14:50:00").getTime();
 			if (!(isAm || isPm)) {
 				return false;
 			}
