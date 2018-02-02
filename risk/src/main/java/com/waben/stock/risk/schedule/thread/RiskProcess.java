@@ -69,7 +69,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             Date expriessTime = null;
             try {
                 currentTime = sdf.parse(format);
-                expriessTime = sdf.parse("10:00:00");
+                expriessTime = sdf.parse("14:40:00");
             } catch (ParseException e) {
                 e.printStackTrace();
             }
