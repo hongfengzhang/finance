@@ -118,6 +118,8 @@ public class InvestorService {
         } else if (exponent.equals("4609")) {
             //深证
             type = "2";
+        }else if(exponent.equals("4621")){
+            type = "2";
         } else {
             throw new ServiceException(ExceptionConstant.INVESTOR_EXCHANGE_TYPE_NOT_SUPPORT_EXCEPTION);
         }
