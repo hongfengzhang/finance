@@ -16,6 +16,7 @@ import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.enums.EntrustType;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.SecuritiesStockException;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -206,7 +207,7 @@ public class InvestorService {
         InvestorDto investorDto = investorsContainer.get(0);
         securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
-        BuyRecordDto buyRecordDto = buyRecordBusiness.buyRecordApplyBuyIn(CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false), securitiesStockEntrust, entrustNo);
+        BuyRecordDto buyRecordDto = buyRecordBusiness.entrustApplySellOut(CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false), securitiesStockEntrust, entrustNo, WindControlType.PUBLISHERAPPLY.getIndex());
         return buyRecordDto;
     }
     public String buyRecordApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
