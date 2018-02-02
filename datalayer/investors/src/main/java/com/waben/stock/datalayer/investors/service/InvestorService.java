@@ -189,12 +189,26 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
         }
         //开始委托下单卖出
-        String enturstNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
+        String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
                 EntrustType
                         .SELL);
-        return enturstNo;
+        return entrustNo;
     }
 
+    /**
+     * 自动委托买出
+     * @param securitiesStockEntrust
+     * @return
+     */
+    @Transactional
+    public BuyRecordDto voluntarilyApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
+        List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
+        InvestorDto investorDto = investorsContainer.get(0);
+        securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
+        String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
+        BuyRecordDto buyRecordDto = buyRecordBusiness.buyRecordApplyBuyIn(CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false), securitiesStockEntrust, entrustNo);
+        return buyRecordDto;
+    }
     public String buyRecordApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         String enturstNo = stockJyRest.withdraw(securitiesStockEntrust.getTradeSession(), securitiesStockEntrust.getEntrustNo());
@@ -264,6 +278,11 @@ public class InvestorService {
         return securitiesStockEntrust;
     }
 
+    /**
+     * 自动买入
+     * @param securitiesStockEntrust
+     * @return
+     */
     public BuyRecordDto buyIn(SecuritiesStockEntrust securitiesStockEntrust) {
         //获取投资人对象
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();

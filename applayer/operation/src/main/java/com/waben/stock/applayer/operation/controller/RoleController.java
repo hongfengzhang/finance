@@ -1,21 +1,13 @@
 package com.waben.stock.applayer.operation.controller;
 
-import com.netflix.discovery.converters.Auto;
+
 import com.waben.stock.applayer.operation.business.RoleBusiness;
-import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
-import com.waben.stock.interfaces.dto.manage.StaffDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
-import com.waben.stock.interfaces.pojo.query.StockQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.message.CircularsVo;
-import com.waben.stock.interfaces.vo.message.RoleVo;
-import com.waben.stock.interfaces.vo.message.StaffVo;
-import com.waben.stock.interfaces.vo.stockcontent.StrategyTypeVo;
+import com.waben.stock.interfaces.vo.manage.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

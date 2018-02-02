@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.vo.message;
+package com.waben.stock.interfaces.vo.manage;
 
 import java.util.Date;
 
