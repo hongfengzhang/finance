@@ -276,6 +276,7 @@ public class BuyRecordService {
 				extras.put("type", OutsideMessageType.BUY_HOLDPOSITION.getIndex());
 				break;
 			case SELLAPPLY:
+				message.setTitle("点卖通知");
 				message.setContent(
 						String.format("您所购买的“%s %s”策略已进入“卖出申请”状态", record.getStockName(), record.getStockCode()));
 				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“卖出申请”状态",
@@ -283,6 +284,7 @@ public class BuyRecordService {
 				extras.put("type", OutsideMessageType.BUY_SELLAPPLY.getIndex());
 				break;
 			case SELLLOCK:
+				message.setTitle("点卖通知");
 				message.setContent(
 						String.format("您所购买的“%s %s”策略已进入“卖出锁定”状态", record.getStockName(), record.getStockCode()));
 				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“卖出锁定”状态",
@@ -290,6 +292,7 @@ public class BuyRecordService {
 				extras.put("type", OutsideMessageType.BUY_SELLLOCK.getIndex());
 				break;
 			case UNWIND:
+				message.setTitle("点卖通知");
 				message.setContent(
 						String.format("您所购买的“%s %s”策略已进入“已结算”状态", record.getStockName(), record.getStockCode()));
 				extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略已进入“已结算”状态",
@@ -298,12 +301,14 @@ public class BuyRecordService {
 				break;
 			case REVOKE:
 				if (record.getWindControlType() != null) {
+					message.setTitle("点买通知");
 					message.setContent(String.format("您所购买的“%s %s”策略“委托第三方买入”失败，系统已发起自动退款", record.getStockName(),
 							record.getStockCode()));
 					extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略“委托第三方买入”失败，系统已发起自动退款",
 							record.getStockName(), record.getStockCode()));
 					extras.put("type", OutsideMessageType.BUY_BUYFAILED.getIndex());
 				} else {
+					message.setTitle("点卖通知");
 					message.setContent(String.format("您所购买的“%s %s”策略“委托第三方卖出”失败，系统已发起自动退款", record.getStockName(),
 							record.getStockCode()));
 					extras.put("content", String.format("您所购买的“<span id=\"stock\">%s %s</span>”策略“委托第三方卖出”失败，系统已发起自动退款",
@@ -318,7 +323,7 @@ public class BuyRecordService {
 				outsideMessageBusiness.send(message);
 			}
 		} catch (Exception ex) {
-			logger.error("发送点买通知失败，{}_{}_{}", record.getId(), record.getState().getStatus(), ex.getMessage());
+			logger.error("发送点买或者点卖通知失败，{}_{}_{}", record.getId(), record.getState().getStatus(), ex.getMessage());
 		}
 	}
 
