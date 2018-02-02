@@ -24,6 +24,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.datalayer.buyrecord.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.buyrecord.business.HolidayBusiness;
@@ -36,6 +37,8 @@ import com.waben.stock.datalayer.buyrecord.entity.Settlement;
 import com.waben.stock.datalayer.buyrecord.repository.BuyRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.DeferredRecordDao;
 import com.waben.stock.datalayer.buyrecord.repository.SettlementDao;
+import com.waben.stock.datalayer.buyrecord.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.datalayer.buyrecord.retrivestock.bean.StockMarket;
 import com.waben.stock.datalayer.buyrecord.warpper.messagequeue.rabbit.VoluntarilyBuyInProducer;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -91,6 +94,9 @@ public class BuyRecordService {
 
 	@Autowired
 	private VoluntarilyBuyInProducer producer;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -107,13 +113,13 @@ public class BuyRecordService {
 		// 再检查一余额是否充足
 		CapitalAccountDto account = accountBusiness.fetchByPublisherId(buyRecord.getPublisherId());
 		BigDecimal totalFee = buyRecord.getServiceFee().add(buyRecord.getReserveFund());
-		if(buyRecord.getDeferred()) {
+		if (buyRecord.getDeferred()) {
 			totalFee = totalFee.add(buyRecord.getDeferredFee());
 		}
-		if(account.getAvailableBalance().compareTo(totalFee) < 0) {
+		if (account.getAvailableBalance().compareTo(totalFee) < 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-		
+
 		buyRecord.setSerialCode(UniqueCodeGenerator.generateSerialCode());
 		buyRecord.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		buyRecord.setState(BuyRecordState.POSTED);
@@ -375,6 +381,20 @@ public class BuyRecordService {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_PUBLISHERID_NOTMATCH_EXCEPTION);
 		}
 		buyRecord.setWindControlType(WindControlType.PUBLISHERAPPLY);
+		// 获取股票的跌停价
+		StockMarket market = RetriveStockOverHttp.stockMarket(restTemplate, buyRecord.getStockCode());
+		if(market == null || market.getDownLimitPrice() == null || market.getDownLimitPrice().compareTo(new BigDecimal(0)) <= 0) {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, String.format("获取股票{}的跌停价失败!", buyRecord.getStockCode()));
+		}
+		// 放入自动买入股票队列
+		SecuritiesStockEntrust entrust = new SecuritiesStockEntrust();
+		entrust.setBuyRecordId(buyRecord.getId());
+		entrust.setSerialCode(buyRecord.getSerialCode());
+		entrust.setStockCode(buyRecord.getStockCode());
+		entrust.setEntrustNumber(buyRecord.getNumberOfStrand());
+		entrust.setBuyRecordState(buyRecord.getState());
+		entrust.setEntrustPrice(market.getDownLimitPrice());
+		producer.voluntarilyEntrustApplySellOut(entrust);
 		// 修改点买记录状态
 		return changeState(buyRecord, false);
 	}
