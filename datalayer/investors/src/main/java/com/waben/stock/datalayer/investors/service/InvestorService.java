@@ -207,8 +207,17 @@ public class InvestorService {
         InvestorDto investorDto = investorsContainer.get(0);
         securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
-        BuyRecordDto buyRecordDto = buyRecordBusiness.entrustApplySellOut(CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false), securitiesStockEntrust, entrustNo, WindControlType.PUBLISHERAPPLY.getIndex());
-        return buyRecordDto;
+        BuyRecordDto result = buyRecordBusiness.entrustApplySellOut(CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false), securitiesStockEntrust, entrustNo, WindControlType.PUBLISHERAPPLY.getIndex());
+        //如果委托成功,加入委托卖出锁定队列
+        if (result.getState().equals(BuyRecordState.BUYLOCK)) {
+            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
+            securitiesStockEntrust.setTradeNo(result.getTradeNo());
+            securitiesStockEntrust.setEntrustNo(result.getDelegateNumber());
+            securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
+            securitiesStockEntrust.setEntrustTime(result.getUpdateTime());
+            entrustProducer.entrustApplySellOut(securitiesStockEntrust);
+        }
+        return result;
     }
     public String buyRecordApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
