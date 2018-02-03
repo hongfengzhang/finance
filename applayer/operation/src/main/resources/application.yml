@@ -1,6 +1,7 @@
 server:
   port: 8082
   context-path: /operation
+  connection-timeout: 60000
 management:
   port: 3032
   context-path: /turbine
