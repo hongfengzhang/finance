@@ -6,6 +6,7 @@ import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.quartz.InterruptableJob;
@@ -55,11 +56,11 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 //                        continue;
 //                    }
                     logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
-                    BuyRecordDto buyRecordDto = investorService.voluntarilyApplySellOut(securitiesStockEntrust);
+                    BuyRecordDto buyRecordDto = investorService.voluntarilyApplySellOut(securitiesStockEntrust, WindControlType.PUBLISHERAPPLY.getIndex());
                     logger.info("委托卖出成功：{}", JacksonUtil.encode(buyRecordDto));
                     sellOutContainer.remove(securitiesStockEntrust.getBuyRecordId());
                 } catch (Exception exception) {
-                    logger.info("卖出异常：{}", exception.getMessage());
+                    logger.info("卖出异常：{}", exception);
                 }
             }
         }
