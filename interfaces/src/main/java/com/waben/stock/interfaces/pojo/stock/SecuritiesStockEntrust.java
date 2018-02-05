@@ -61,7 +61,7 @@ public class SecuritiesStockEntrust implements Serializable {
     private Long investor;
 
     private String tradeSession;
-
+    private String windControlType;
     public BigDecimal getProfitPosition() {
         return profitPosition;
     }
@@ -196,5 +196,13 @@ public class SecuritiesStockEntrust implements Serializable {
 
     public void setInvestor(Long investor) {
         this.investor = investor;
+    }
+
+    public String getWindControlType() {
+        return windControlType;
+    }
+
+    public void setWindControlType(String windControlType) {
+        this.windControlType = windControlType;
     }
 }

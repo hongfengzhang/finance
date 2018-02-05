@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.investors.container;
 
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,7 @@ public class StockApplyEntrustSellOutContainer {
     Map<Long, SecuritiesStockEntrust> sellOutContainer = new ConcurrentHashMap<>();
 
     public void add(SecuritiesStockEntrust stock) {
+        logger.info("往申请卖出容器添加数据：{}", JacksonUtil.encode(stock));
         sellOutContainer.put(stock.getBuyRecordId(), stock);
     }
 

@@ -392,7 +392,7 @@ public class BuyRecordService {
 		if(market == null || market.getDownLimitPrice() == null || market.getDownLimitPrice().compareTo(new BigDecimal(0)) <= 0) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, String.format("获取股票{}的跌停价失败!", buyRecord.getStockCode()));
 		}
-		// 放入自动买入股票队列
+		// 放入自动卖出股票队列
 		SecuritiesStockEntrust entrust = new SecuritiesStockEntrust();
 		entrust.setBuyRecordId(buyRecord.getId());
 		entrust.setSerialCode(buyRecord.getSerialCode());
@@ -400,6 +400,7 @@ public class BuyRecordService {
 		entrust.setEntrustNumber(buyRecord.getNumberOfStrand());
 		entrust.setBuyRecordState(buyRecord.getState());
 		entrust.setEntrustPrice(market.getDownLimitPrice());
+		entrust.setWindControlType(WindControlType.PUBLISHERAPPLY.getIndex());
 		producer.voluntarilyEntrustApplySellOut(entrust);
 		// 修改点买记录状态
 		return changeState(buyRecord, false);
