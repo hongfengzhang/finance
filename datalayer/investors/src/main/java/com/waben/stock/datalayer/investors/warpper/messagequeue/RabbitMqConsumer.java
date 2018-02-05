@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.investors.warpper.messagequeue;
 
 import com.waben.stock.datalayer.investors.business.BuyRecordBusiness;
 import com.waben.stock.datalayer.investors.business.StockBusiness;
+import com.waben.stock.datalayer.investors.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.datalayer.investors.entity.Investor;
 import com.waben.stock.datalayer.investors.reference.StockReference;
 import com.waben.stock.datalayer.investors.service.InvestorService;
@@ -44,7 +45,10 @@ public class RabbitMqConsumer {
 	private BuyRecordBusiness buyRecordBusiness;
 	@Autowired
 	private EntrustApplyProducer entrustProducer;
-
+	@Autowired
+	private StockApplyEntrustBuyInContainer stockApplyEntrustBuyInContainer;
+	@Autowired
+	private StockApplyEntrustBuyInContainer stockApplyEntrustSellOutContainer;
 
 	@RabbitListener(queues = {"riskPositionSellOut"})
 	public void buyInSuccessRisk(PositionStock positionStock) throws InterruptedException {
@@ -87,23 +91,25 @@ public class RabbitMqConsumer {
 
 	@RabbitListener(queues = {"voluntarilyApplyBuyIn"})
 	public void voluntarilyEntrustApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
-		logger.info("自动买入订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
-		try {
-			BuyRecordDto buyRecordDto = investorService.buyIn(securitiesStockEntrust);
-			logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
-		}catch (ServiceException serviceException) {
-			logger.info("服务异常：{}",serviceException.getMessage());
-		}
+//		logger.info("自动买入订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
+//		try {
+//			BuyRecordDto buyRecordDto = investorService.buyIn(securitiesStockEntrust);
+//			logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
+//		}catch (ServiceException serviceException) {
+//			logger.info("服务异常：{}",serviceException.getMessage());
+//		}
+		stockApplyEntrustBuyInContainer.add(securitiesStockEntrust);
 	}
 
 	@RabbitListener(queues = {"voluntarilyApplySellOut"})
 	public void voluntarilyEntrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
-		logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
-		try {
-			BuyRecordDto buyRecordDto = investorService.voluntarilyApplySellOut(securitiesStockEntrust);
-			logger.info("委托卖出成功：{}",JacksonUtil.encode(buyRecordDto));
-		}catch (ServiceException serviceException) {
-			logger.info("服务异常：{}",serviceException.getMessage());
-		}
+//		logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
+//		try {
+//			BuyRecordDto buyRecordDto = investorService.voluntarilyApplySellOut(securitiesStockEntrust);
+//			logger.info("委托卖出成功：{}",JacksonUtil.encode(buyRecordDto));
+//		}catch (ServiceException serviceException) {
+//			logger.info("服务异常：{}",serviceException.getMessage());
+//		}
+		stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
 	}
 }

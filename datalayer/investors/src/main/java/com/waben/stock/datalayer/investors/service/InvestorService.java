@@ -295,7 +295,7 @@ public class InvestorService {
      * @param securitiesStockEntrust
      * @return
      */
-    public BuyRecordDto buyIn(SecuritiesStockEntrust securitiesStockEntrust) {
+    public BuyRecordDto voluntarilyApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
         //获取投资人对象
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
         InvestorDto investorDto = investorsContainer.get(0);
