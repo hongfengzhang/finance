@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.reference.AppVersionReference;
-import com.waben.stock.interfaces.dto.manage.AppVersionDto;
+import com.waben.stock.applayer.tactics.reference.AppVersionAuditReference;
+import com.waben.stock.interfaces.dto.manage.AppVersionAuditDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -16,14 +16,14 @@ import com.waben.stock.interfaces.pojo.Response;
  *
  */
 @Service
-public class AppVersionBusiness {
+public class AppVersionAuditBusiness {
 
 	@Autowired
 	@Qualifier("appVersionReference")
-	private AppVersionReference reference;
+	private AppVersionAuditReference reference;
 
-	public AppVersionDto getCurrentAppVersion() {
-		Response<AppVersionDto> response = reference.getCurrentAppVersion();
+	public AppVersionAuditDto getAppVersionAudit(Integer deviceType, Integer shellIndex) {
+		Response<AppVersionAuditDto> response = reference.getAppVersionAudit(deviceType, shellIndex);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

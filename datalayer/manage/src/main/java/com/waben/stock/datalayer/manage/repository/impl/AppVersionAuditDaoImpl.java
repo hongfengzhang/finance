@@ -9,9 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
-import com.waben.stock.datalayer.manage.entity.AppVersion;
-import com.waben.stock.datalayer.manage.repository.AppVersionDao;
-import com.waben.stock.datalayer.manage.repository.impl.jpa.AppVersionRepository;
+import com.waben.stock.datalayer.manage.entity.AppVersionAudit;
+import com.waben.stock.datalayer.manage.repository.AppVersionAuditDao;
+import com.waben.stock.datalayer.manage.repository.impl.jpa.AppVersionAuditRepository;
 
 /**
  * app版本 Dao实现
@@ -20,13 +20,13 @@ import com.waben.stock.datalayer.manage.repository.impl.jpa.AppVersionRepository
  *
  */
 @Repository
-public class AppVersionDaoImpl implements AppVersionDao {
+public class AppVersionAuditDaoImpl implements AppVersionAuditDao {
 
 	@Autowired
-	private AppVersionRepository repository;
+	private AppVersionAuditRepository repository;
 
 	@Override
-	public AppVersion create(AppVersion t) {
+	public AppVersionAudit create(AppVersionAudit t) {
 		return repository.save(t);
 	}
 
@@ -36,28 +36,33 @@ public class AppVersionDaoImpl implements AppVersionDao {
 	}
 
 	@Override
-	public AppVersion update(AppVersion t) {
+	public AppVersionAudit update(AppVersionAudit t) {
 		return repository.save(t);
 	}
 
 	@Override
-	public AppVersion retrieve(Long id) {
+	public AppVersionAudit retrieve(Long id) {
 		return repository.findById(id);
 	}
 
 	@Override
-	public Page<AppVersion> page(int page, int limit) {
+	public Page<AppVersionAudit> page(int page, int limit) {
 		return repository.findAll(new PageRequest(page, limit));
 	}
 
 	@Override
-	public Page<AppVersion> page(Specification<AppVersion> specification, Pageable pageable) {
+	public Page<AppVersionAudit> page(Specification<AppVersionAudit> specification, Pageable pageable) {
 		return repository.findAll(specification, pageable);
 	}
 
 	@Override
-	public List<AppVersion> list() {
+	public List<AppVersionAudit> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public AppVersionAudit findByDeviceTypeAndShellIndex(Integer deviceType, Integer shellIndex) {
+		return repository.findByDeviceTypeAndShellIndex(deviceType, shellIndex);
 	}
 
 }

@@ -13,6 +13,7 @@ import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,12 @@ public class StockController implements StockInterface {
 	@Autowired
 	private StockService stockService;
 
+	@GetMapping("/initStockAbbr")
+	public Response<String> initStockAbbr() {
+		stockService.initStockAbbr();
+		return new Response<>();
+	}
+
 	@Override
 	public Response<PageInfo<StockDto>> pagesByQuery(@RequestBody StockQuery staffQuery) {
 		Page<Stock> stocks = stockService.pages(staffQuery);
@@ -41,7 +48,8 @@ public class StockController implements StockInterface {
 	public Response<StockDto> fetchById(@PathVariable Long id) {
 		Stock stock = stockService.findById(id);
 		StockDto stockDto = CopyBeanUtils.copyBeanProperties(StockDto.class, stock, false);
-		StockExponentDto stockExponentDto = CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stock.getExponent(), false);
+		StockExponentDto stockExponentDto = CopyBeanUtils.copyBeanProperties(StockExponentDto.class,
+				stock.getExponent(), false);
 		stockDto.setExponent(stockExponentDto);
 		return new Response<>(stockDto);
 	}
@@ -51,8 +59,7 @@ public class StockController implements StockInterface {
 		Stock stock = stockService.findByCode(code);
 		StockDto result = CopyBeanUtils.copyBeanProperties(StockDto.class, stock, false);
 		if (stock.getExponent() != null) {
-			result.setExponent(
-					CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stock.getExponent(), false));
+			result.setExponent(CopyBeanUtils.copyBeanProperties(StockExponentDto.class, stock.getExponent(), false));
 		}
 		return new Response<>(result);
 	}

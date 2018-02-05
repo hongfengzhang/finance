@@ -159,6 +159,7 @@ public class BuyRecordService {
 		entrust.setStockCode(buyRecord.getStockCode());
 		entrust.setEntrustNumber(buyRecord.getNumberOfStrand());
 		entrust.setBuyRecordState(buyRecord.getState());
+		entrust.setEntrustTime(buyRecord.getCreateTime());
 		entrust.setEntrustPrice(buyRecord.getDelegatePrice());
 		producer.voluntarilyEntrustApplyBuyIn(entrust);
 		// 站外消息推送
