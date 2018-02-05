@@ -43,6 +43,7 @@ public class StockBuyInInitialize implements CommandLineRunner {
             securitiesStockEntrust.setEntrustPrice(buyRecord.getDelegatePrice());
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
             securitiesStockEntrust.setStockCode(buyRecord.getStockCode());
+            securitiesStockEntrust.setEntrustTime(buyRecord.getCreateTime());
             stockApplyEntrustBuyInContainer.add(securitiesStockEntrust);
         }
     }

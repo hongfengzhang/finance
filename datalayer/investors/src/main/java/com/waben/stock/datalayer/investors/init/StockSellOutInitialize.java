@@ -58,6 +58,8 @@ public class StockSellOutInitialize implements CommandLineRunner {
             securitiesStockEntrust.setEntrustNumber(buyRecord.getNumberOfStrand());
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
             securitiesStockEntrust.setStockCode(buyRecord.getStockCode());
+            securitiesStockEntrust.setEntrustTime(buyRecord.getUpdateTime());
+            securitiesStockEntrust.setWindControlType(buyRecord.getWindControlTypes());
             for(StockMarket stockMarket: quotations) {
                 if(stockMarket.getInstrumentId().equals(buyRecord.getStockCode())) {
                     securitiesStockEntrust.setEntrustPrice(stockMarket.getDownLimitPrice());

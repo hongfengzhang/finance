@@ -6,6 +6,7 @@ import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
@@ -41,28 +42,31 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     @Autowired
     private BuyRecordReference buyRecordReference;
     private Boolean interrupted = false;
+    private long millisOfDay = 24 * 60 * 60 * 1000;
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("委托买入容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
-        SimpleDateFormat sdfDate=new SimpleDateFormat("yyyy-MM-dd");
         while (!interrupted) {
             try {
                 Map<Long, SecuritiesStockEntrust> buyInContainer = securitiesStockEntrustContainer.getBuyInContainer();
                 for (Map.Entry<Long, SecuritiesStockEntrust> entry : buyInContainer.entrySet()) {
                     SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                     Date entrustTime = securitiesStockEntrust.getEntrustTime();
+                    logger.info("自动买入订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
                     Date currentTime = new Date();
-                    String currentDay = sdfDate.format(currentTime);
-                    String entrustDay = sdfDate.format(entrustTime);
-                    if(currentDay.compareToIgnoreCase(entrustDay)>=1) {
-                        logger.info("当前时间大于委托买入时间执行废单:{}，点买记录:{}", currentDay.compareToIgnoreCase(entrustDay),securitiesStockEntrust.getBuyRecordId());
+                    long currentDay = currentTime.getTime()/millisOfDay;
+                    long entrustDay = entrustTime.getTime()/millisOfDay;
+                    logger.info("当前时间：{},过期时间：{}",currentDay,entrustDay);
+                    if(currentDay-entrustDay>=1) {
+                        logger.info("当前时间大于委托买入时间执行废单:{}，点买记录:{}", currentDay-entrustDay,securitiesStockEntrust.getBuyRecordId());
                         buyRecordReference.revoke(securitiesStockEntrust.getBuyRecordId());
                         continue;
                     }
-                    logger.info("自动买入订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
                     BuyRecordDto buyRecordDto = investorService.voluntarilyApplyBuyIn(securitiesStockEntrust);
-                    logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
-                    buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
+                    if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
+                        logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
+                        buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
+                    }
                 }
             }catch (Exception exception) {
                 logger.info("买入异常：{}",exception);

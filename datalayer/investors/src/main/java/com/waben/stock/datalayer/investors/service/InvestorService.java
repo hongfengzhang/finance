@@ -188,9 +188,6 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
 
-        if(securitiesStockEntrust.getBuyRecordState().equals(BuyRecordState.SELLLOCK)) {
-            throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
-        }
         //开始委托下单卖出
         String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
                 EntrustType
@@ -199,29 +196,33 @@ public class InvestorService {
     }
 
     /**
-     * 自动委托买出
+     * 自动委托卖出
      * @param securitiesStockEntrust
      * @return
      */
     @Transactional
-    public BuyRecordDto voluntarilyApplySellOut(SecuritiesStockEntrust securitiesStockEntrust,String windControlType) {
+    public BuyRecordDto voluntarilyApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
-        if(investorsContainer.size()==0) {
-            logger.info("没有找到投资人数据");
-            return null;
-        }
         InvestorDto investorDto = investorsContainer.get(0);
         securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
+        //委托前判断这个单是否是符合委托卖出条件的单
+        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
+        if(BuyRecordState.SELLLOCK.equals(buyRecordDto.getState())) {
+            return buyRecordDto;
+        }
         String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
         Investor investor = CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false);
         BuyRecordDto result = null;
         try{
-            result = buyRecordBusiness.entrustApplySellOut(investor,securitiesStockEntrust, entrustNo, windControlType);
+            result = buyRecordBusiness.entrustApplySellOut(investor,securitiesStockEntrust, entrustNo, securitiesStockEntrust.getWindControlType());
         }catch (ServiceException serviceException) {
             logger.info("服务异常：{}",serviceException.getMessage());
         }
+        if(result==null) {
+            result = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
+        }
         //如果委托成功,加入委托卖出锁定队列
-        if (result.getState().equals(BuyRecordState.BUYLOCK)) {
+        if (result.getState().equals(BuyRecordState.SELLLOCK)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(result.getTradeNo());
             securitiesStockEntrust.setEntrustNo(result.getDelegateNumber());
@@ -308,13 +309,14 @@ public class InvestorService {
     public BuyRecordDto voluntarilyApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
         //获取投资人对象
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
-        if(investorsContainer.size()==0) {
-            logger.info("没有找到投资人数据");
-            return null;
-        }
         InvestorDto investorDto = investorsContainer.get(0);
         securitiesStockEntrust= buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         //TODO 若没有接收到响应请求， 则回滚服务业务
+        //委托前判断这个单是否是符合委托买入条件的单
+        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
+        if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
+            return buyRecordDto;
+        }
         String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
         Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
         BuyRecordDto result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
@@ -322,6 +324,9 @@ public class InvestorService {
             result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
         }catch (ServiceException serviceException) {
             logger.info("服务异常：{}",serviceException.getMessage());
+        }
+        if(result==null) {
+            result = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
         }
         //如果委托成功,加入委托买入锁定队列
         if (result.getState().equals(BuyRecordState.BUYLOCK)) {

@@ -59,7 +59,7 @@ public class StockMonitor implements CommandLineRunner {
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
         DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:45");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "15:15");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "15:45");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
@@ -77,7 +77,7 @@ public class StockMonitor implements CommandLineRunner {
                 .build();
         SimpleTrigger stockQuotationPM = newTrigger().withIdentity("quotationPMTrigger", "groupQuotation").startAt
                 (runTime)
-                .withSchedule(simpleSchedule().withIntervalInSeconds(12).repeatForever())
+                .withSchedule(simpleSchedule().withIntervalInSeconds(6).repeatForever())
                 .forJob(jobQuotation)
                 .modifiedByCalendar("calendarPM")
                 .build();

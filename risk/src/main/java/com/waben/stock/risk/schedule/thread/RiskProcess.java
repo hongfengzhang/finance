@@ -3,10 +3,8 @@ package com.waben.stock.risk.schedule.thread;
 import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
-import javafx.geometry.Pos;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -18,7 +16,6 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 public class RiskProcess implements Callable<List<PositionStock>> {
-    public static final DateFormat df = DateFormat.getTimeInstance();
     Logger logger = LoggerFactory.getLogger(getClass());
 
     private StockMarket stockMarket;
@@ -33,6 +30,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 
     @Override
     public List<PositionStock> call() {
+        long day = (1000*60*60*24);
         List<PositionStock> counts = new ArrayList<>();
         logger.info("股票:{},已持仓中订单数量:{}", stockMarket.getName(), positionStock.size());
         long start = System.currentTimeMillis();
@@ -61,24 +59,27 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
-            Date date = new Date();
-            DateFormat df = DateFormat.getTimeInstance();//只显示出时分秒
+            Date currentDay = new Date();
+            Date expriessDay = riskBuyInStock.getExpireTime();
             SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
-            String format = df.format(date);
+            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date currentTime = null;
             Date expriessTime = null;
             try {
-                currentTime = sdf.parse(format);
+                currentTime = sdf.parse(DateFormat.getTimeInstance().format(currentDay));
                 expriessTime = sdf.parse("14:40:00");
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            SimpleDateFormat sdfDate=new SimpleDateFormat("yyyy-MM-dd");
-            String currentDay = sdfDate.format(date);
-            String expriessDay = sdfDate.format(riskBuyInStock.getExpireTime());
-            logger.info("过期时间:{},当前时间:{}", expriessDay, currentDay);
+            logger.info("过期时间:{},当前时间:{}", time.format(expriessDay), time.format(currentDay));
+            logger.info("过期时间:{},当前时间:{}", sdf.format(expriessTime), sdf.format(currentTime));
+            long expriessDayL = Long.parseLong(expriessDay.getTime()+"");
+            long currentDayL = Long.parseLong(currentDay.getTime()+"");
+            long expriessTimeL = Long.parseLong(expriessTime.getTime()+"");
+            long currentTimeL = Long.parseLong(currentTime.getTime()+"");
             //判断持仓到期时间是否已经达到且是否达到14:40:00
-            if (currentDay.compareToIgnoreCase(expriessDay)>=0&&currentTime.getTime()>=expriessTime.getTime()) {
+            if (currentDayL-expriessDayL>=0&&currentTimeL-expriessTimeL>=0) {
+                logger.info("交易期满:{}",riskBuyInStock.getTradeNo());
                 riskBuyInStock.setWindControlType(WindControlType.TRADINGEND.getIndex());
             } else {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价

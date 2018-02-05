@@ -46,15 +46,9 @@ public class StockMonitor implements CommandLineRunner {
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
-        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:45");
-        am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "15:15");
-        pm.setInvertTimeRange(true);
-        scheduler.addCalendar("calendarAM", am, false, false);
-        scheduler.addCalendar("calendarPM", pm, false, false);
         scheduler.addCalendar("workCalendar", workCalendar, false, false);
         //上午任务
-        CronScheduleBuilder scheduleEntrustBuilderAM = CronScheduleBuilder.cronSchedule("0 30 9 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilderAM = CronScheduleBuilder.cronSchedule("0 0 10 * * ?");
         CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
         //下午任务
         CronScheduleBuilder scheduleEntrustBuilderPM = CronScheduleBuilder.cronSchedule("0 0 13 * * ?");
