@@ -1,16 +1,18 @@
 package com.waben.stock.datalayer.investors.web;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.quotation.Resonse;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.web.HttpRest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/12/5.
@@ -24,6 +26,9 @@ public class StockQuotationHttp {
     private String context = "http://lemi.esongbai.com/stk/stk";
 
     public List<StockMarket> fetQuotationByCode(List<String> requestMessages) {
+    	if(requestMessages == null || requestMessages.size() == 0) {
+    		return new ArrayList<StockMarket>();
+    	}
         StringBuilder codes = new StringBuilder();
         for (String stockRequestMessage : requestMessages) {
             codes.append(stockRequestMessage).append(",");
