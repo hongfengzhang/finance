@@ -204,12 +204,22 @@ public class InvestorService {
      * @return
      */
     @Transactional
-    public BuyRecordDto voluntarilyApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
+    public BuyRecordDto voluntarilyApplySellOut(SecuritiesStockEntrust securitiesStockEntrust,String windControlType) {
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
+        if(investorsContainer.size()==0) {
+            logger.info("没有找到投资人数据");
+            return null;
+        }
         InvestorDto investorDto = investorsContainer.get(0);
         securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
-        BuyRecordDto result = buyRecordBusiness.entrustApplySellOut(CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false), securitiesStockEntrust, entrustNo, WindControlType.PUBLISHERAPPLY.getIndex());
+        Investor investor = CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false);
+        BuyRecordDto result = null;
+        try{
+            result = buyRecordBusiness.entrustApplySellOut(investor,securitiesStockEntrust, entrustNo, windControlType);
+        }catch (ServiceException serviceException) {
+            logger.info("服务异常：{}",serviceException.getMessage());
+        }
         //如果委托成功,加入委托卖出锁定队列
         if (result.getState().equals(BuyRecordState.BUYLOCK)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
@@ -298,12 +308,21 @@ public class InvestorService {
     public BuyRecordDto voluntarilyApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
         //获取投资人对象
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
+        if(investorsContainer.size()==0) {
+            logger.info("没有找到投资人数据");
+            return null;
+        }
         InvestorDto investorDto = investorsContainer.get(0);
         securitiesStockEntrust= buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         //TODO 若没有接收到响应请求， 则回滚服务业务
         String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
         Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
         BuyRecordDto result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
+        try{
+            result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
+        }catch (ServiceException serviceException) {
+            logger.info("服务异常：{}",serviceException.getMessage());
+        }
         //如果委托成功,加入委托买入锁定队列
         if (result.getState().equals(BuyRecordState.BUYLOCK)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());

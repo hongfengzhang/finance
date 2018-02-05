@@ -65,7 +65,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                     buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
                 }
             }catch (Exception exception) {
-                logger.info("买入异常：{}",exception.getMessage());
+                logger.info("买入异常：{}",exception);
             }
         }
     }

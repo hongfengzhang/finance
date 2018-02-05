@@ -39,6 +39,10 @@ public class StockSellOutInitialize implements CommandLineRunner {
     public void run(String... args) throws Exception {
         //拉取最新股票详情
         List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithSellOut();
+        if(buyRecords.size()==0){
+            logger.info("没有卖出中的订单");
+            return;
+        }
         Set<String> codes = new HashSet();
         for (BuyRecordDto buyRecord : buyRecords) {
             codes.add(buyRecord.getStockCode());
