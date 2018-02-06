@@ -322,13 +322,13 @@ public class InvestorService {
         BuyRecordDto result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
         try{
             result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
-        }catch (ServiceException serviceException) {
-            logger.info("服务异常：{}",serviceException.getMessage());
+        }catch (Exception ex) {
+            logger.error("服务异常：{}",ex.getMessage());
         }
         if(result==null) {
             result = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
         }
-        //如果委托成功,加入委托买入锁定队列
+        //如果委托成功,判断数据库的订单状态是否正确，如果正确加入委托买入锁定队列，否则进行撤单
         if (result.getState().equals(BuyRecordState.BUYLOCK)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(result.getTradeNo());
@@ -336,6 +336,10 @@ public class InvestorService {
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             securitiesStockEntrust.setEntrustTime(result.getUpdateTime());
             entrustProducer.entrustApplyBuyIn(securitiesStockEntrust);
+        }else {
+            securitiesStockEntrust.setEntrustNo(entrustNo);
+            String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
+
         }
         return result;
     }

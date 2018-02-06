@@ -155,6 +155,13 @@ public class BuyRecordController implements BuyRecordInterface {
     }
 
     @Override
+    public Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(StrategyUnwindQuery trategyUnwindQuery) {
+        Page<BuyRecord> page = buyRecordService.pagesByWithdrawQuery(trategyUnwindQuery);
+        PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+        return new Response<>(result);
+    }
+
+    @Override
     public void delete(@PathVariable Long id) {
         buyRecordService.delete(id);
     }

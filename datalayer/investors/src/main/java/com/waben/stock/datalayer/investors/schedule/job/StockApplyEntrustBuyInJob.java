@@ -1,16 +1,12 @@
 package com.waben.stock.datalayer.investors.schedule.job;
 
-import com.waben.stock.datalayer.investors.business.BuyRecordBusiness;
 import com.waben.stock.datalayer.investors.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
-import com.waben.stock.interfaces.enums.EntrustState;
-import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
-import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
@@ -18,11 +14,6 @@ import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -43,11 +34,11 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     private long millisOfDay = 24 * 60 * 60 * 1000;
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        logger.info("委托买入容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
         while (!interrupted) {
             try {
                 Map<Long, SecuritiesStockEntrust> buyInContainer = securitiesStockEntrustContainer.getBuyInContainer();
                 for (Map.Entry<Long, SecuritiesStockEntrust> entry : buyInContainer.entrySet()) {
+                    logger.info("委托买入容器对象:{}", buyInContainer.size());
                     SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                     Date entrustTime = securitiesStockEntrust.getEntrustTime();
                     logger.info("自动买入订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));

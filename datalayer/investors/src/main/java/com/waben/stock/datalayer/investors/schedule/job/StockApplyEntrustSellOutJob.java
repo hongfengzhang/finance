@@ -39,8 +39,8 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         while (!interrupted) {
             Map<Long, SecuritiesStockEntrust> sellOutContainer = securitiesStockEntrustContainer.getSellOutContainer();
-            logger.info("委托卖出容器对象:{}", sellOutContainer.size());
             for (Map.Entry<Long, SecuritiesStockEntrust> entry : sellOutContainer.entrySet()) {
+                logger.info("委托卖出容器对象:{}", sellOutContainer.size());
                 try {
                     SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                     logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));

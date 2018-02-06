@@ -175,6 +175,9 @@ public interface BuyRecordInterface {
 	@RequestMapping(value = "/unwind/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(@RequestBody StrategyUnwindQuery trategyUnwindQuery);
 
+	@RequestMapping(value = "/withdraw/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(@RequestBody StrategyUnwindQuery trategyUnwindQuery);
+
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	void delete(@PathVariable("id") Long id);
 

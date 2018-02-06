@@ -77,7 +77,7 @@ public class StockMonitor implements CommandLineRunner {
                 .build();
         SimpleTrigger stockQuotationPM = newTrigger().withIdentity("quotationPMTrigger", "groupQuotation").startAt
                 (runTime)
-                .withSchedule(simpleSchedule().withIntervalInSeconds(6).repeatForever())
+                .withSchedule(simpleSchedule().withIntervalInSeconds(12).repeatForever())
                 .forJob(jobQuotation)
                 .modifiedByCalendar("calendarPM")
                 .build();

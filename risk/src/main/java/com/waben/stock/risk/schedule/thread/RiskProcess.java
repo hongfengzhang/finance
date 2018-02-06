@@ -63,22 +63,15 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             Date expriessDay = riskBuyInStock.getExpireTime();
             SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
             SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date currentTime = null;
-            Date expriessTime = null;
-            try {
-                currentTime = sdf.parse(DateFormat.getTimeInstance().format(currentDay));
-                expriessTime = sdf.parse("14:40:00");
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+            String currentTime = sdf.format(currentDay);
+            String expriessTime = "14:40:00";
             logger.info("过期时间:{},当前时间:{}", time.format(expriessDay), time.format(currentDay));
-            logger.info("过期时间:{},当前时间:{}", sdf.format(expriessTime), sdf.format(currentTime));
+            logger.info("过期时间:{},当前时间:{}", expriessTime, currentTime);
+            logger.info("结果：{}",currentTime.compareTo(expriessTime));
             long expriessDayL = Long.parseLong(expriessDay.getTime()+"");
             long currentDayL = Long.parseLong(currentDay.getTime()+"");
-            long expriessTimeL = Long.parseLong(expriessTime.getTime()+"");
-            long currentTimeL = Long.parseLong(currentTime.getTime()+"");
             //判断持仓到期时间是否已经达到且是否达到14:40:00
-            if (currentDayL-expriessDayL>=0&&currentTimeL-expriessTimeL>=0) {
+            if (currentDayL-expriessDayL>=0&&currentTime.compareTo(expriessTime)>=0) {
                 logger.info("交易期满:{}",riskBuyInStock.getTradeNo());
                 riskBuyInStock.setWindControlType(WindControlType.TRADINGEND.getIndex());
             } else {

@@ -665,4 +665,37 @@ public class BuyRecordService {
 		buyRecord.setState(BuyRecordState.WITHDRAWLOCK);
 		return buyRecordDao.update(buyRecord);
 	}
+
+	public Page<BuyRecord> pagesByWithdrawQuery(final StrategyUnwindQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
+			@Override
+			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
+										 CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicatesList = new ArrayList<Predicate>();
+				Predicate state = criteriaBuilder.in(root.get("state")).value(BuyRecordState.WITHDRAWLOCK)
+						.value(BuyRecordState.REVOKE);
+				predicatesList.add(criteriaBuilder.and(state));
+				if (!StringUtils.isEmpty(query.getPublisherPhone())) {
+					Predicate publisherPhoneQuery = criteriaBuilder.like(root.get("publisherPhone").as(String.class),
+							"%" + query.getPublisherPhone() + "%");
+					predicatesList.add(criteriaBuilder.and(publisherPhoneQuery));
+				}
+				if (!StringUtils.isEmpty(query.getStockName())) {
+					Predicate stockNameQuery = criteriaBuilder.like(root.get("stockName").as(String.class),
+							"%" + query.getStockName() + "%");
+					predicatesList.add(criteriaBuilder.and(stockNameQuery));
+				}
+				if (!StringUtils.isEmpty(query.getInvestorName())) {
+					Predicate investorNameQuery = criteriaBuilder.like(root.get("investorName").as(String.class),
+							"%" + query.getInvestorName() + "%");
+					predicatesList.add(criteriaBuilder.and(investorNameQuery));
+				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+	}
 }

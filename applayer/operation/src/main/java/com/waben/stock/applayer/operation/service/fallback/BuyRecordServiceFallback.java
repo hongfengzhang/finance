@@ -65,6 +65,11 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     }
 
     @Override
+    public Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(StrategyUnwindQuery trategyUnwindQuery) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
     public void delete(Long id) {
 
     }
