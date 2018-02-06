@@ -37,10 +37,8 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
 
     private StockApplyEntrustBuyInContainer securitiesStockEntrustContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustBuyInContainer.class);
-    @Autowired
-    private InvestorService investorService;
-    @Autowired
-    private BuyRecordReference buyRecordReference;
+    private InvestorService investorService = ApplicationContextBeanFactory.getBean(InvestorService.class);
+    private BuyRecordReference buyRecordReference = ApplicationContextBeanFactory.getBean(BuyRecordReference.class);
     private Boolean interrupted = false;
     private long millisOfDay = 24 * 60 * 60 * 1000;
     @Override
@@ -60,6 +58,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                     if(currentDay-entrustDay>=1) {
                         logger.info("当前时间大于委托买入时间执行废单:{}，点买记录:{}", currentDay-entrustDay,securitiesStockEntrust.getBuyRecordId());
                         buyRecordReference.revoke(securitiesStockEntrust.getBuyRecordId());
+                        buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
                         continue;
                     }
                     BuyRecordDto buyRecordDto = investorService.voluntarilyApplyBuyIn(securitiesStockEntrust);
@@ -68,8 +67,9 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
                     }
                 }
-            }catch (Exception exception) {
-                logger.info("买入异常：{}",exception);
+            }catch (Exception ex) {
+            	ex.printStackTrace();
+                logger.error("买入异常：{}", ex.getMessage());
             }
         }
     }

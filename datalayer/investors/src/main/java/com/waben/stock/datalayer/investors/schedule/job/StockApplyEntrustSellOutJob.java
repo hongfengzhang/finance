@@ -33,8 +33,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 
     private StockApplyEntrustSellOutContainer securitiesStockEntrustContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustSellOutContainer.class);
-    @Autowired
-    private InvestorService investorService;
+    private InvestorService investorService = ApplicationContextBeanFactory.getBean(InvestorService.class);
     private Boolean interrupted = false;
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -50,8 +49,9 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                     if(BuyRecordState.SELLLOCK.equals(buyRecordDto.getState())) {
                         sellOutContainer.remove(securitiesStockEntrust.getBuyRecordId());
                     }
-                } catch (Exception exception) {
-                    logger.info("卖出异常：{}", exception);
+                 } catch (Exception ex) {
+                	ex.printStackTrace();
+                    logger.error("卖出异常：{}", ex.getMessage());
                 }
             }
         }
