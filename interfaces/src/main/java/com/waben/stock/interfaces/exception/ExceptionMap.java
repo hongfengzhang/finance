@@ -58,6 +58,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.USERSELLAPPLY_NOTMATCH_EXCEPTION, "持仓第二天之后才能申请卖出");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION, "买入中和买入锁定状态下才能撤单");
 		exceptionMap.put(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION, "不支持购买创业板的股票");
+		exceptionMap.put(ExceptionConstant.UNIONPAY_SINGLELIMIT_EXCEPTION, "银联支付单笔最大额度为5000");
+		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION, "该股票已涨停，不能购买");
+		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION, "该股票已跌停，不能购买");
 
 		exceptionMap.put(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION, "投资人信息未找到");
 		exceptionMap.put(ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION, "投资人券商账户登陆异常");

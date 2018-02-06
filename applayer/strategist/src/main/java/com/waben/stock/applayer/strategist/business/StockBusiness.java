@@ -27,6 +27,7 @@ import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.applayer.strategist.service.RedisCache;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
@@ -190,6 +191,22 @@ public class StockBusiness {
 		codes.add(stockCode);
 		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
 		return market.getStatus() == 0;
+	}
+	
+	/**
+	 * 检查股票是否可以购买，停牌、涨停、跌停不能购买
+	 */
+	public void checkStock(String stockCode) {
+		List<String> codes = new ArrayList<>();
+		codes.add(stockCode);
+		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+		if (market.getStatus() == 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(0.1)) >= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(-0.1)) <= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION);
+		}
 	}
 	
 	public List<StockMarket> ranking(String exponent, int rankType, int size) {
