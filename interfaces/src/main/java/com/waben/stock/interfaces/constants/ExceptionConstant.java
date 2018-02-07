@@ -39,6 +39,14 @@ public class ExceptionConstant {
 	public static final String PHONE_MISMATCH_EXCEPTION = "2008";
 	// 已经设置过支付密码，修改支付密码需要验证码
 	public static final String MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION = "2009";
+	// 不能绑定信用卡
+	public static final String CREDITCARD_NOTSUPPORT_EXCEPTION = "2010";
+	// 未找到该卡号对应的银行，请检查输入的信息是否正确
+	public static final String BANKCARD_NOTRECOGNITION_EXCEPTION = "2011";
+	// 不支持的银行卡号
+	public static final String BANKCARD_NOTSUPPORT_EXCEPTION = "2012";
+	// 用户不匹配
+	public static final String PUBLISHERID_NOTMATCH_EXCEPTION = "2013";
 
 	/* 业务异常 */
 	// 系统管理业务异常

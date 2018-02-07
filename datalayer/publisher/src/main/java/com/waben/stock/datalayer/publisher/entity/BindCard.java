@@ -39,6 +39,11 @@ public class BindCard {
 	@Column(name = "bank_card")
 	private String bankCard;
 	/**
+	 * 银行代码
+	 */
+	@Column(name = "bank_code")
+	private String bankCode;
+	/**
 	 * 银行名称
 	 */
 	@Column(name = "bank_name")
@@ -142,6 +147,14 @@ public class BindCard {
 
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
+	}
+
+	public String getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
 	}
 
 }
