@@ -78,7 +78,13 @@ public class RabbitMqConsumer {
 	public void entrustApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
 		logger.info("委托撤单订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
 		try{
-			BuyRecordDto buyRecordDto = investorService.buyRecordApplyWithdraw(securitiesStockEntrust);
+			String entrustNo = investorService.buyRecordApplyWithdraw(securitiesStockEntrust);
+			BuyRecordDto buyRecordDto = buyRecordBusiness.entrustApplyWithdraw(entrustNo, securitiesStockEntrust.getBuyRecordId());
+			logger.info("修改订单撤单锁定状态成功:{}",buyRecordDto.getTradeNo());
+			securitiesStockEntrust.setTradeNo(buyRecordDto.getTradeNo());
+			securitiesStockEntrust.setEntrustNo(buyRecordDto.getDelegateNumber());
+			securitiesStockEntrust.setEntrustState(EntrustState.REPORTEDTOWITHDRAW);
+			entrustProducer.entrustQueryWithdraw(securitiesStockEntrust);
 			logger.info("撤单成功：{}",JacksonUtil.encode(buyRecordDto));
 		}catch (Exception ex) {
 			logger.error("撤单失败：{}",ex.getMessage());

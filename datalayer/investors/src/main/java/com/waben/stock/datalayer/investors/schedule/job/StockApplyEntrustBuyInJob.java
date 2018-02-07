@@ -34,6 +34,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     private long millisOfDay = 24 * 60 * 60 * 1000;
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        logger.info("委托买入任务开始");
         while (!interrupted) {
             try {
                 Map<Long, SecuritiesStockEntrust> buyInContainer = securitiesStockEntrustContainer.getBuyInContainer();
@@ -56,8 +57,8 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                     if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
                         logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
                         buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
-                    }else if(BuyRecordState.WITHDRAWLOCK.equals(buyRecordDto.getState())) {
-                        logger.info("委托买入失败，进行撤单：{}",JacksonUtil.encode(buyRecordDto));
+                    }else {
+                        logger.info("委托买入失败，进行撤单,等待再次轮询：{}",JacksonUtil.encode(buyRecordDto));
                         buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
                     }
                 }

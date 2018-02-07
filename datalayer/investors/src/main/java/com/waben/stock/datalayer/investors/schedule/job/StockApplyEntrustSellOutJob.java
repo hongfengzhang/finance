@@ -37,6 +37,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     private Boolean interrupted = false;
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        logger.info("委托卖出任务开始");
         while (!interrupted) {
             Map<Long, SecuritiesStockEntrust> sellOutContainer = securitiesStockEntrustContainer.getSellOutContainer();
             for (Map.Entry<Long, SecuritiesStockEntrust> entry : sellOutContainer.entrySet()) {
@@ -48,7 +49,9 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                     logger.info("委托卖出成功：{}", JacksonUtil.encode(buyRecordDto));
                     if(BuyRecordState.SELLLOCK.equals(buyRecordDto.getState())) {
                         sellOutContainer.remove(securitiesStockEntrust.getBuyRecordId());
-                    }
+                    }else {
+                        logger.info("委托卖出失败，进行撤单,等待再次轮询：{}",JacksonUtil.encode(buyRecordDto));
+                        sellOutContainer.remove(securitiesStockEntrust.getBuyRecordId());                    }
                  } catch (Exception ex) {
                 	ex.printStackTrace();
                     logger.error("卖出异常：{}", ex.getMessage());
