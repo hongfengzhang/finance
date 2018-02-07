@@ -33,6 +33,10 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.ORIGINAL_PASSWORD_MISMATCH_EXCEPTION, "原始密码不匹配");
 		exceptionMap.put(ExceptionConstant.PHONE_MISMATCH_EXCEPTION, "手机号不匹配");
 		exceptionMap.put(ExceptionConstant.MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION, "已经设置过支付密码，修改支付密码需要验证码");
+		exceptionMap.put(ExceptionConstant.CREDITCARD_NOTSUPPORT_EXCEPTION, "不能绑定信用卡");
+		exceptionMap.put(ExceptionConstant.BANKCARD_NOTRECOGNITION_EXCEPTION, "未找到该卡号对应的银行，请检查输入的信息是否正确");
+		exceptionMap.put(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION, "不支持的银行卡号");
+		exceptionMap.put(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION, "用户不匹配");
 
 		exceptionMap.put(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION, "账户可用余额不足");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION, "买入或者卖出前需进行锁定操作");
@@ -58,6 +62,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.USERSELLAPPLY_NOTMATCH_EXCEPTION, "持仓第二天之后才能申请卖出");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION, "买入中和买入锁定状态下才能撤单");
 		exceptionMap.put(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION, "不支持购买创业板的股票");
+		exceptionMap.put(ExceptionConstant.UNIONPAY_SINGLELIMIT_EXCEPTION, "银联支付单笔最大额度为5000");
+		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION, "该股票已涨停，不能购买");
+		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION, "该股票已跌停，不能购买");
 
 		exceptionMap.put(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION, "投资人信息未找到");
 		exceptionMap.put(ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION, "投资人券商账户登陆异常");

@@ -95,7 +95,7 @@ public class BuyRecordController implements BuyRecordInterface {
     }
 
     @Override
-    public Response<BuyRecordDto> withdrawLock(String entrustNo, Long id) {
+    public Response<BuyRecordDto> withdrawLock(@PathVariable String entrustNo, @PathVariable Long id) {
         BuyRecord buyRecord = buyRecordService.withdrawLock(entrustNo,id);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
     }
@@ -155,8 +155,22 @@ public class BuyRecordController implements BuyRecordInterface {
     }
 
     @Override
+    public Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(@RequestBody StrategyUnwindQuery trategyUnwindQuery) {
+        Page<BuyRecord> page = buyRecordService.pagesByWithdrawQuery(trategyUnwindQuery);
+        PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+        return new Response<>(result);
+    }
+
+    @Override
     public void delete(@PathVariable Long id) {
         buyRecordService.delete(id);
+    }
+
+    @Override
+    public Response<BuyRecordDto> updateState(@RequestBody BuyRecordDto buyRecordDto) {
+        BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
+        BuyRecordDto result = CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.revisionState(buyRecord), false);
+        return new Response<>(result);
     }
 
     @Override

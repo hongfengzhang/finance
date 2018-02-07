@@ -20,6 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Created by yuyidi on 2017/12/2.
  * @desc
@@ -67,6 +69,7 @@ public class BuyRecordBusiness {
             entrust,String windControlType) {
 //        securitiesStockEntrust.setEntrustNumber(entrust);
         //卖出锁定
+        logger.info("id:{},bId:{},entrust:{},w:{}",investor.getId(),securitiesStockEntrust.getBuyRecordId(),entrust,windControlType);
         Response<BuyRecordDto> response = buyRecordReference.sellLock(investor.getId(), securitiesStockEntrust
                 .getBuyRecordId(), entrust, windControlType);
         logger.info("result:{}", JacksonUtil.encode(response));
@@ -95,6 +98,39 @@ public class BuyRecordBusiness {
 
     public BuyRecordDto findById(Long buyrecord) {
         Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(buyrecord);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public List<BuyRecordDto> buyRecordsWithBuyIn() {
+        Response<List<BuyRecordDto>> response = buyRecordReference.buyRecordsWithStatus(1);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public List<BuyRecordDto> buyRecordsWithSellOut() {
+        Response<List<BuyRecordDto>> response = buyRecordReference.buyRecordsWithStatus(4);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public BuyRecordDto revisionState(BuyRecordDto buyRecordDto) {
+        Response<BuyRecordDto> response = buyRecordReference.updateState(buyRecordDto);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

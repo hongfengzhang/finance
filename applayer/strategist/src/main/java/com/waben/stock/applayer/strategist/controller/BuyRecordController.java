@@ -76,16 +76,8 @@ public class BuyRecordController {
 		if (!isTradeTime) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
 		}
-		// 判断该股票是否已经停牌
-		boolean isSuspension = stockBusiness.isSuspension(stockCode);
-		if (isSuspension) {
-			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
-		}
-		// 判断该股票是否为创业板股票
-		StockDto stock = stockBusiness.findByCode(stockCode);
-		if ("4621".equals(stock.getExponent().getExponentCode())) {
-			throw new ServiceException(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION);
-		}
+		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
+		stockBusiness.checkStock(stockCode);
 		// 判断是否有资格参与该策略
 		boolean qualify = buyRecordBusiness.hasStrategyQualify(SecurityUtil.getUserId(), strategyTypeId);
 		if (!qualify) {

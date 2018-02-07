@@ -29,6 +29,7 @@ import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockHolder;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockMoney;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,7 +173,7 @@ public class InvestorService {
     @Transactional
     public String buyRecordApplySellOut(SecuritiesStockEntrust securitiesStockEntrust, String
             tradeSession) {
-        //查询资金账户可用资金
+//        //查询资金账户可用资金
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         //查询当前资金账户的股东账户信息
         List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
@@ -188,9 +189,6 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
         }
 
-        if(securitiesStockEntrust.getBuyRecordState().equals(BuyRecordState.SELLLOCK)) {
-            throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
-        }
         //开始委托下单卖出
         String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
                 EntrustType
@@ -199,7 +197,7 @@ public class InvestorService {
     }
 
     /**
-     * 自动委托买出
+     * 自动委托卖出
      * @param securitiesStockEntrust
      * @return
      */
@@ -208,23 +206,64 @@ public class InvestorService {
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
         InvestorDto investorDto = investorsContainer.get(0);
         securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
+        //委托前判断这个单是否是符合委托卖出条件的单
+        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
+        if(BuyRecordState.SELLLOCK.equals(buyRecordDto.getState())) {
+            return buyRecordDto;
+        }
         String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
-        BuyRecordDto result = buyRecordBusiness.entrustApplySellOut(CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false), securitiesStockEntrust, entrustNo, WindControlType.PUBLISHERAPPLY.getIndex());
+        Investor investor = CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false);
+        BuyRecordDto result = null;
+        try{
+            result = buyRecordBusiness.entrustApplySellOut(investor,securitiesStockEntrust, entrustNo, securitiesStockEntrust.getWindControlType());
+        }catch (Exception ex) {
+            logger.error("卖出异常：{}",ex.getMessage());
+        }
+        if(result==null) {
+            result = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
+        }
         //如果委托成功,加入委托卖出锁定队列
-        if (result.getState().equals(BuyRecordState.BUYLOCK)) {
+        if (result.getState().equals(BuyRecordState.SELLLOCK)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(result.getTradeNo());
             securitiesStockEntrust.setEntrustNo(result.getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             securitiesStockEntrust.setEntrustTime(result.getUpdateTime());
             entrustProducer.entrustApplySellOut(securitiesStockEntrust);
+        }else {
+            securitiesStockEntrust.setEntrustNo(entrustNo);
+            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
+            String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
+            logger.info("撤单委托编号：{}",withdrawEntrustNo);
         }
-        return result;
+        return buyRecordDto;
     }
+    /**
+     * 委托撤单
+     * @param securitiesStockEntrust
+     * @return
+     */
     public String buyRecordApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
+        //获取投资人信息
+        List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
+        InvestorDto investorDto = investorsContainer.get(0);
+        securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
+
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
-        String enturstNo = stockJyRest.withdraw(securitiesStockEntrust.getTradeSession(), securitiesStockEntrust.getEntrustNo());
-        return enturstNo;
+        //查询当前资金账户的股东账户信息
+        List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(securitiesStockEntrust.getTradeSession());
+        String type = stockType(securitiesStockEntrust.getExponent());
+        String stockAccount = null;
+        for (StockHolder stockHolder : stockHolders) {
+            if (stockHolder.getExchangeType().equals(type)) {
+                stockAccount = stockHolder.getStockAccount();
+                break;
+            }
+        }
+        //开始委托撤单
+        String entrustNo = stockJyRest.withdraw(securitiesStockEntrust,stockAccount);
+
+        return entrustNo;
     }
 
 
@@ -295,16 +334,31 @@ public class InvestorService {
      * @param securitiesStockEntrust
      * @return
      */
-    public BuyRecordDto buyIn(SecuritiesStockEntrust securitiesStockEntrust) {
+    public BuyRecordDto voluntarilyApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
         //获取投资人对象
         List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
         InvestorDto investorDto = investorsContainer.get(0);
-        securitiesStockEntrust= buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
+        securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         //TODO 若没有接收到响应请求， 则回滚服务业务
+        //委托前判断这个单是否是符合委托买入条件的单
+        BuyRecordDto buyRecordDto = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
+        logger.info("订单:{}", JacksonUtil.encode(buyRecordDto));
+        if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
+            logger.info("不符合委托买入条件:{}", JacksonUtil.encode(buyRecordDto));
+            return buyRecordDto;
+        }
         String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
         Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
-        BuyRecordDto result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
-        //如果委托成功,加入委托买入锁定队列
+        BuyRecordDto result = null;
+        try{
+            result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
+        }catch (Exception ex) {
+            logger.error("服务异常：{}",ex.getMessage());
+        }
+        if(result==null) {
+            result = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
+        }
+        //如果委托成功,判断数据库的订单状态是否正确，如果正确加入委托买入锁定队列，否则进行撤单
         if (result.getState().equals(BuyRecordState.BUYLOCK)) {
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(result.getTradeNo());
@@ -312,7 +366,12 @@ public class InvestorService {
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             securitiesStockEntrust.setEntrustTime(result.getUpdateTime());
             entrustProducer.entrustApplyBuyIn(securitiesStockEntrust);
+        }else {
+            securitiesStockEntrust.setEntrustNo(entrustNo);
+            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
+            String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
+            logger.info("撤单委托编号：{}",withdrawEntrustNo);
         }
-        return result;
+        return buyRecordDto;
     }
 }

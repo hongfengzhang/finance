@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.tactics.business;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 import org.slf4j.Logger;
@@ -9,18 +11,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.czpay.CzPayOverHttp;
-import com.waben.stock.applayer.tactics.czpay.CzWithholdOverSocket;
-import com.waben.stock.applayer.tactics.czpay.bean.CzPayCallback;
-import com.waben.stock.applayer.tactics.czpay.bean.CzPayResponse;
-import com.waben.stock.applayer.tactics.czpay.bean.CzPayReturn;
-import com.waben.stock.applayer.tactics.czpay.bean.CzWithholdResponse;
 import com.waben.stock.applayer.tactics.dto.payment.PayRequest;
+import com.waben.stock.applayer.tactics.payapi.czpay.CzPayOverHttp;
+import com.waben.stock.applayer.tactics.payapi.czpay.CzWithholdOverSocket;
+import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzPayCallback;
+import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzPayResponse;
+import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzPayReturn;
+import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzWithholdResponse;
+import com.waben.stock.applayer.tactics.payapi.tfbpay.util.RSAUtils;
+import com.waben.stock.applayer.tactics.payapi.tfbpay.util.RequestUtils;
+import com.waben.stock.applayer.tactics.payapi.wabenpay.WabenPayOverHttp;
+import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageRequestBean;
+import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageResponseBean;
+import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.PayRequestBean;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
-import com.waben.stock.applayer.tactics.tfbpay.util.RSAUtils;
-import com.waben.stock.applayer.tactics.tfbpay.util.RequestUtils;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
@@ -46,6 +53,11 @@ public class PaymentBusiness {
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
+
+	@Autowired
+	private BindCardBusiness bindCardBusiness;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
 	public String recharge(Long publisherId, PayRequest payReq) {
 		payReq.setPaymentNo(UniqueCodeGenerator.generatePaymentNo());
@@ -100,7 +112,7 @@ public class PaymentBusiness {
 		}
 		throw new ServiceException(orderResp.getCode());
 	}
-	
+
 	public WithdrawalsOrderDto revisionWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
 		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.modifyWithdrawalsOrder(withdrawalsOrderDto);
 		if ("200".equals(orderResp.getCode())) {
@@ -108,7 +120,7 @@ public class PaymentBusiness {
 		}
 		throw new ServiceException(orderResp.getCode());
 	}
-	
+
 	public PaymentOrderDto findByPaymentNo(String paymentNo) {
 		Response<PaymentOrderDto> orderResp = paymentOrderReference.fetchByPaymentNo(paymentNo);
 		if ("200".equals(orderResp.getCode())) {
@@ -258,6 +270,74 @@ public class PaymentBusiness {
 		this.revisionWithdrawalsOrder(order);
 		if (order.getState() == WithdrawalsState.PROCESSING) {
 			accountBusiness.withdrawals(order.getPublisherId(), withdrawalsNo, withdrawalsState);
+		}
+	}
+
+	public String quickPayMessage(BigDecimal amount, Long bindCardId, Long publisherId) {
+		BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
+		if (bindCard == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		if (publisherId.compareTo(bindCard.getPublisherId()) != 0) {
+			throw new ServiceException(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		if (bindCard.getContractNo() == null || "".equals(bindCard.getContractNo().trim())) {
+			bindCard.setContractNo(bindCardBusiness.getWabenContractNo(bindCard));
+			bindCardBusiness.revision(bindCard);
+		}
+		// 请求发送快捷短信
+		amount.setScale(2, RoundingMode.DOWN);
+		MessageRequestBean request = new MessageRequestBean();
+		request.setAmount(amount.multiply(new BigDecimal(100)).toString());
+		request.setContractNo(bindCard.getContractNo());
+		request.setMember(String.valueOf(bindCard.getPublisherId()));
+		try {
+			MessageResponseBean msgResp = WabenPayOverHttp.message(request);
+			// 请求成功，创建订单，并返回订单号
+			PaymentOrderDto paymentOrder = new PaymentOrderDto();
+			paymentOrder.setAmount(amount);
+			paymentOrder.setPaymentNo(UniqueCodeGenerator.generatePaymentNo());
+			paymentOrder.setPublisherId(bindCard.getPublisherId());
+			paymentOrder.setType(PaymentType.QuickPay);
+			paymentOrder.setState(PaymentState.Unpaid);
+			paymentOrder.setThirdPaymentNo(msgResp.getTransactNo());
+			paymentOrder.setCreateTime(sdf.parse(msgResp.getOrderTime()));
+			this.savePaymentOrder(paymentOrder);
+			return paymentOrder.getPaymentNo();
+		} catch (Exception ex) {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, ex.getMessage());
+		}
+	}
+
+	public String quickPay(String paymentNo, Long bindCardId, String validaCode, Long publisherId) {
+		PaymentOrderDto paymentOrder = findByPaymentNo(paymentNo);
+		if (paymentOrder == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		if (publisherId.compareTo(paymentOrder.getPublisherId()) != 0) {
+			throw new ServiceException(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
+		if (bindCard == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		if (publisherId.compareTo(bindCard.getPublisherId()) != 0) {
+			throw new ServiceException(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		// 请求快捷支付
+		PayRequestBean request = new PayRequestBean();
+		request.setOutTradeNo(paymentOrder.getThirdPaymentNo());
+		request.setTimeStart(sdf.format(paymentOrder.getCreateTime()));
+		request.setContractNo(bindCard.getContractNo());
+		request.setBankAccount(bindCard.getBankCard());
+		request.setValidaCode(validaCode);
+		request.setTransactNo(paymentOrder.getPaymentNo());
+		request.setAmount(paymentOrder.getAmount().multiply(new BigDecimal(100)).toString());
+		try {
+			WabenPayOverHttp.pay(request);
+			return paymentOrder.getPaymentNo();
+		} catch (Exception ex) {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, ex.getMessage());
 		}
 	}
 
