@@ -1,10 +1,9 @@
-package com.waben.stock.datalayer.investors.init;
+package com.waben.stock.risk.init;
 
-import com.waben.stock.datalayer.investors.business.BuyRecordBusiness;
-import com.waben.stock.datalayer.investors.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.risk.business.BuyRecordBusiness;
+import com.waben.stock.risk.warpper.messagequeue.rabbitmq.VoluntarilyApplyEntrustProducer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,17 +14,18 @@ import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/12/14.
- * @desc
+ * @desc 初始化申请买入的点买记录
  */
 @Component
 //@Order(Ordered.LOWEST_PRECEDENCE+100)
-public class StockBuyInInitialize implements CommandLineRunner {
+public class StockApplyBuyInInitialize implements CommandLineRunner {
 
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
 
     @Autowired
-    private StockApplyEntrustBuyInContainer stockApplyEntrustBuyInContainer;
+    private VoluntarilyApplyEntrustProducer producer;
+
     Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void run(String... args) throws Exception {
@@ -44,7 +44,8 @@ public class StockBuyInInitialize implements CommandLineRunner {
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
             securitiesStockEntrust.setStockCode(buyRecord.getStockCode());
             securitiesStockEntrust.setEntrustTime(buyRecord.getCreateTime());
-            stockApplyEntrustBuyInContainer.add(securitiesStockEntrust);
+            securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
+            producer.voluntarilyEntrustApplyBuyIn(securitiesStockEntrust);
         }
     }
 }

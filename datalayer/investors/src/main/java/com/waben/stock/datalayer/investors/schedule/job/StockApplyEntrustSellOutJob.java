@@ -39,22 +39,27 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("委托卖出任务开始");
         while (!interrupted) {
-            Map<Long, SecuritiesStockEntrust> sellOutContainer = securitiesStockEntrustContainer.getSellOutContainer();
-            for (Map.Entry<Long, SecuritiesStockEntrust> entry : sellOutContainer.entrySet()) {
+            Map<String, SecuritiesStockEntrust> sellOutContainer = securitiesStockEntrustContainer.getSellOutContainer();
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            for (Map.Entry<String, SecuritiesStockEntrust> entry : sellOutContainer.entrySet()) {
                 logger.info("委托卖出容器对象:{}", sellOutContainer.size());
                 try {
                     SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                     logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
                     BuyRecordDto buyRecordDto = investorService.voluntarilyApplySellOut(securitiesStockEntrust);
-                    logger.info("委托卖出成功：{}", JacksonUtil.encode(buyRecordDto));
-                    if(BuyRecordState.SELLLOCK.equals(buyRecordDto.getState())) {
-                        sellOutContainer.remove(securitiesStockEntrust.getBuyRecordId());
-                    }else {
-                        logger.info("委托卖出失败，进行撤单,等待再次轮询：{}",JacksonUtil.encode(buyRecordDto));
-                        sellOutContainer.remove(securitiesStockEntrust.getBuyRecordId());                    }
+                    if(buyRecordDto!=null) {
+                        if(BuyRecordState.SELLLOCK.equals(buyRecordDto.getState())) {
+                            logger.info("委托卖出成功：{}", JacksonUtil.encode(buyRecordDto));
+                            sellOutContainer.remove(securitiesStockEntrust.getTradeNo());
+                        }
+                    }
                  } catch (Exception ex) {
                 	ex.printStackTrace();
-                    logger.error("卖出异常：{}", ex.getMessage());
+                    logger.error("自动卖出异常：{}", ex.getMessage());
                 }
             }
         }

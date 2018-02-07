@@ -52,7 +52,7 @@ public class BuyRecordBusiness {
             result.setDelegateNumber(entrust);
             if (result.getState().equals(BuyRecordState.BUYLOCK)) {
                 logger.info("点买记录买入锁定成功:{}", result.getTradeNo());
-                return response.getResult();
+                return result;
             }
         }
         throw new ServiceException(response.getCode());

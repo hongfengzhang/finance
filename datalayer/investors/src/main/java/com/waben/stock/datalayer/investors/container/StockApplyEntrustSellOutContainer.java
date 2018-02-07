@@ -17,18 +17,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StockApplyEntrustSellOutContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    Map<Long, SecuritiesStockEntrust> sellOutContainer = new ConcurrentHashMap<>();
+    Map<String, SecuritiesStockEntrust> sellOutContainer = new ConcurrentHashMap<>();
 
     public void add(SecuritiesStockEntrust stock) {
-        logger.info("往申请卖出容器添加数据：{}", JacksonUtil.encode(stock));
-        sellOutContainer.put(stock.getBuyRecordId(), stock);
+        sellOutContainer.put(stock.getTradeNo(), stock);
     }
 
-    public void remove(Long buyrecordId) {
-        sellOutContainer.remove(buyrecordId);
+    public void remove(String tradeNo) {
+        sellOutContainer.remove(tradeNo);
     }
 
-    public Map<Long, SecuritiesStockEntrust> getSellOutContainer() {
+    public Map<String, SecuritiesStockEntrust> getSellOutContainer() {
         return sellOutContainer;
     }
 

@@ -59,10 +59,13 @@ public class RabbitMqConsumer {
 	public void buyInSuccessRisk(PositionStock positionStock) throws InterruptedException {
 		logger.info("强制卖出持仓订单数据:{}", JacksonUtil.encode(positionStock));
 		BuyRecordDto buyRecordDto = buyRecordBusiness.findById(positionStock.getBuyRecordId());
-		buyRecordDto.setWindControlType(WindControlType.getByIndex(positionStock.getWindControlType()));
-		buyRecordDto.setUpdateTime(new Date());
-		buyRecordBusiness.revisionState(buyRecordDto);
-		logger.info("修改订单状态位卖出申请：{}",buyRecordDto.getState());
+		logger.info("修改前订单状态位卖出申请：{}",buyRecordDto.getState());
+		if(!BuyRecordState.SELLAPPLY.equals(buyRecordDto.getState())) {
+			buyRecordDto.setWindControlType(WindControlType.getByIndex(positionStock.getWindControlType()));
+			buyRecordDto.setUpdateTime(new Date());
+			BuyRecordDto result = buyRecordBusiness.revisionState(buyRecordDto);
+			logger.info("修改后订单状态位卖出申请：{}",result.getState());
+		}
 		SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
 		StockDto stockDto = stockBusiness.fetchWithExponentByCode(positionStock.getStockCode());
 		securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
@@ -71,6 +74,7 @@ public class RabbitMqConsumer {
 		securitiesStockEntrust.setEntrustPrice(positionStock.getEntrustPrice());
 		securitiesStockEntrust.setBuyRecordId(positionStock.getBuyRecordId());
 		securitiesStockEntrust.setWindControlType(positionStock.getWindControlType());
+		securitiesStockEntrust.setTradeNo(positionStock.getTradeNo());
 		stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
 	}
 

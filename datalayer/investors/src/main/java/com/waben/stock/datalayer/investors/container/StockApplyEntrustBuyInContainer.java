@@ -16,17 +16,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public class StockApplyEntrustBuyInContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    Map<Long, SecuritiesStockEntrust> buyInContainer = new ConcurrentHashMap<>();
+    Map<String, SecuritiesStockEntrust> buyInContainer = new ConcurrentHashMap<>();
 
     public void add(SecuritiesStockEntrust stock) {
-        buyInContainer.put(stock.getBuyRecordId(), stock);
+        buyInContainer.put(stock.getTradeNo(), stock);
     }
 
-    public void remove(Long buyrecordId) {
-        buyInContainer.remove(buyrecordId);
+    public void remove(String tradeNo) {
+        buyInContainer.remove(tradeNo);
     }
 
-    public Map<Long, SecuritiesStockEntrust> getBuyInContainer() {
+    public Map<String, SecuritiesStockEntrust> getBuyInContainer() {
         return buyInContainer;
     }
 

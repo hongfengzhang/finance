@@ -34,37 +34,37 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     private long millisOfDay = 24 * 60 * 60 * 1000;
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        logger.info("委托买入任务开始");
+        logger.info("自动委托买入任务开始");
         while (!interrupted) {
             try {
-                Map<Long, SecuritiesStockEntrust> buyInContainer = securitiesStockEntrustContainer.getBuyInContainer();
-                for (Map.Entry<Long, SecuritiesStockEntrust> entry : buyInContainer.entrySet()) {
+                Map<String, SecuritiesStockEntrust> buyInContainer = securitiesStockEntrustContainer.getBuyInContainer();
+                Thread.sleep(3000);
+                for (Map.Entry<String, SecuritiesStockEntrust> entry : buyInContainer.entrySet()) {
                     logger.info("委托买入容器对象:{}", buyInContainer.size());
                     SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
-                    Date entrustTime = securitiesStockEntrust.getEntrustTime();
                     logger.info("自动买入订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
+                    Date entrustTime = securitiesStockEntrust.getEntrustTime();//点买记录创建时间
                     Date currentTime = new Date();
                     long currentDay = currentTime.getTime()/millisOfDay;
                     long entrustDay = entrustTime.getTime()/millisOfDay;
-                    logger.info("当前时间：{},过期时间：{}",currentDay,entrustDay);
+                    logger.info("当前时间：{},点买创建时间：{}",currentDay,entrustDay);
                     if(currentDay-entrustDay>=1) {
-                        logger.info("当前时间大于委托买入时间执行废单:{}，点买记录:{}", currentDay-entrustDay,securitiesStockEntrust.getBuyRecordId());
+                        logger.info("当前时间大于委托买入时间执行废单:{}，点买记录:{}", currentDay-entrustDay,securitiesStockEntrust.getTradeNo());
                         buyRecordReference.revoke(securitiesStockEntrust.getBuyRecordId());
-                        buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
+                        buyInContainer.remove(securitiesStockEntrust.getTradeNo());
                         continue;
                     }
                     BuyRecordDto buyRecordDto = investorService.voluntarilyApplyBuyIn(securitiesStockEntrust);
-                    if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
-                        logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
-                        buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
-                    }else {
-                        logger.info("委托买入失败，进行撤单,等待再次轮询：{}",JacksonUtil.encode(buyRecordDto));
-                        buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
+                    if (buyRecordDto != null) {
+                        if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
+                            logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
+                            buyInContainer.remove(securitiesStockEntrust.getTradeNo());
+                        }
                     }
                 }
             }catch (Exception ex) {
             	ex.printStackTrace();
-                logger.error("买入异常：{}", ex.getMessage());
+                logger.error("自动买入异常：{}", ex.getMessage());
             }
         }
     }
