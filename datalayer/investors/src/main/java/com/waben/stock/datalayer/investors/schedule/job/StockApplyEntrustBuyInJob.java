@@ -1,6 +1,6 @@
 package com.waben.stock.datalayer.investors.schedule.job;
 
-import com.waben.stock.datalayer.investors.container.StockApplyEntrustBuyInContainer;
+import com.waben.stock.datalayer.investors.container.VoluntarilyApplyEntrustBuyInContainer;
 import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
@@ -26,8 +26,8 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    private StockApplyEntrustBuyInContainer securitiesStockEntrustContainer = ApplicationContextBeanFactory.getBean
-            (StockApplyEntrustBuyInContainer.class);
+    private VoluntarilyApplyEntrustBuyInContainer securitiesStockEntrustContainer = ApplicationContextBeanFactory.getBean
+            (VoluntarilyApplyEntrustBuyInContainer.class);
     private InvestorService investorService = ApplicationContextBeanFactory.getBean(InvestorService.class);
     private BuyRecordReference buyRecordReference = ApplicationContextBeanFactory.getBean(BuyRecordReference.class);
     private Boolean interrupted = false;
@@ -38,7 +38,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
         while (!interrupted) {
             try {
                 Map<String, SecuritiesStockEntrust> buyInContainer = securitiesStockEntrustContainer.getBuyInContainer();
-                Thread.sleep(3000);
+                Thread.sleep(500);
                 for (Map.Entry<String, SecuritiesStockEntrust> entry : buyInContainer.entrySet()) {
                     logger.info("委托买入容器对象:{}", buyInContainer.size());
                     SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
