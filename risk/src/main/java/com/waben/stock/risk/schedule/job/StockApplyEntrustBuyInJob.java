@@ -41,7 +41,6 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
-        Calendar calendar = Calendar.getInstance();
         String tradeSession = "880003450508";
         while (!interrupted) {
             try {
@@ -50,7 +49,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                 // 容器中委托数据可能包含来自数据库或者消息队列
                 Map<String, SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer
                         .getBuyInContainer();
-                logger.info("券商委托股票容器内剩余:{}个委托订单", stockEntrusts.size());
+                logger.info("券商委托买入股票容器内剩余:{}个委托订单", stockEntrusts.size());
                 for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
                     logger.info("此处执行HTTP，当前委托订单为：{}", entry.getKey());
                     try {
@@ -86,11 +85,10 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
                             logger.info("买入委托撤单:{}", entry.getKey());
                             // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
-                            calendar.setTime(new Date());                    //当前时间
-                            long currentDay = calendar.getTime().getTime() / millisOfDay;
+                           //当前时间
+                            long currentDay = new Date().getTime() / millisOfDay;
                             //委托买入时间
-                            calendar.setTime(securitiesStockEntrust.getEntrustTime());
-                            long entrustDay = calendar.getTime().getTime() / millisOfDay;
+                            long entrustDay = securitiesStockEntrust.getEntrustTime().getTime() / millisOfDay;
                             logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
                             if ((currentDay - entrustDay) >= 1) {
                                 entrustProducer.entrustWithdraw(securitiesStockEntrust);

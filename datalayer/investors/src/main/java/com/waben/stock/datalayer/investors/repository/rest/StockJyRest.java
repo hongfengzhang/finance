@@ -156,24 +156,21 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
 
     /***
      *
-     * @param tradeSession
-     * @param entrustNo
+     * @param securitiesStockEntrust
+     * @param stockAccount
      * @return entrustNo
      * @description 委托申请撤单
      */
-    public String withdraw(String tradeSession, String entrustNo) {
-        String queryEntrusUrl = context+ withdrawPath + "?token={token}&entrust_no={entrust_no}";
+    public String withdraw(SecuritiesStockEntrust securitiesStockEntrust,String stockAccount) {
+        String withdrawEntrusUrl = context+ withdrawPath + "?token={token}&stock_account={stock_account}&stock_code={stock_code}&exchange_type={exchange_type}&entrust_no={entrust_no}";
         Map<String, String> params = new HashMap<>();
-        params.put("token", tradeSession);
-        params.put("entrust_no", entrustNo);
-        String result = null;
-        try {
-            result = HttpRest.get(queryEntrusUrl, String.class, params,headers);
-        } catch (Exception ex) {
-            logger.info("委托单查询异常:{}", ex.getMessage());
-        }
-        logger.info("券商委托单查询,请求地址:{},请求结果:{}", queryEntrusUrl, result);
-
+        params.put("token", securitiesStockEntrust.getTradeSession());
+        params.put("entrust_no", securitiesStockEntrust.getEntrustNo());
+        params.put("stock_code",securitiesStockEntrust.getStockCode());
+        params.put("exchange_type",securitiesStockEntrust.getExponent());
+        params.put("stock_account",stockAccount);
+        String result = HttpRest.get(withdrawEntrusUrl, String.class, params,headers);
+        logger.info("券商委托撤单,请求地址:{},请求结果:{}", withdrawEntrusUrl, result);
         StockResponse<StockEntrustResult> stockResponse = JacksonUtil.decode(result, new
                 TypeReference<StockResponse<StockEntrustResult>>() {
                 });

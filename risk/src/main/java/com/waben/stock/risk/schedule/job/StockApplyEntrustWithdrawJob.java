@@ -49,7 +49,7 @@ public class StockApplyEntrustWithdrawJob implements InterruptableJob {
                 // 容器中委托数据可能包含来自数据库或者消息队列
                 Map<String, SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer
                         .getWithdrawContainer();
-                logger.info("券商委托股票容器内剩余:{}个委托订单", stockEntrusts.size());
+                logger.info("券商委托撤单股票容器内剩余:{}个委托订单", stockEntrusts.size());
                 for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
                     logger.info("此处执行HTTP，当前委托订单为：{}", entry.getKey());
                     try {
@@ -72,7 +72,7 @@ public class StockApplyEntrustWithdrawJob implements InterruptableJob {
                         if (stockEntrustQueryResult.getEntrustStatus().equals
                                 (EntrustState.WASTEORDER.getIndex())) {
                             //废单
-                            logger.info("买入废单:{}", entry.getKey());
+                            logger.info("废单:{}", entry.getKey());
                             //TODO 将点买废单放入废单处理队列中
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());

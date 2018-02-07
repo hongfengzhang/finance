@@ -5,6 +5,7 @@ import com.waben.stock.datalayer.investors.business.StockBusiness;
 import com.waben.stock.datalayer.investors.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.datalayer.investors.container.StockApplyEntrustSellOutContainer;
 import com.waben.stock.datalayer.investors.entity.Investor;
+import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
 import com.waben.stock.datalayer.investors.reference.StockReference;
 import com.waben.stock.datalayer.investors.service.InvestorService;
 import com.waben.stock.datalayer.investors.warpper.messagequeue.rabbitmq.EntrustApplyProducer;
@@ -14,6 +15,7 @@ import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -26,9 +28,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -51,10 +55,14 @@ public class RabbitMqConsumer {
 	private StockApplyEntrustBuyInContainer stockApplyEntrustBuyInContainer;
 	@Autowired
 	private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
-
 	@RabbitListener(queues = {"riskPositionSellOut"})
 	public void buyInSuccessRisk(PositionStock positionStock) throws InterruptedException {
 		logger.info("强制卖出持仓订单数据:{}", JacksonUtil.encode(positionStock));
+		BuyRecordDto buyRecordDto = buyRecordBusiness.findById(positionStock.getBuyRecordId());
+		buyRecordDto.setWindControlType(WindControlType.getByIndex(positionStock.getWindControlType()));
+		buyRecordDto.setUpdateTime(new Date());
+		buyRecordBusiness.revisionState(buyRecordDto);
+		logger.info("修改订单状态位卖出申请：{}",buyRecordDto.getState());
 		SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
 		StockDto stockDto = stockBusiness.fetchWithExponentByCode(positionStock.getStockCode());
 		securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
@@ -69,13 +77,12 @@ public class RabbitMqConsumer {
 	@RabbitListener(queues = {"entrustApplyWithdraw"})
 	public void entrustApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
 		logger.info("委托撤单订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
-		String entrustNo = investorService.buyRecordApplyWithdraw(securitiesStockEntrust);
-		BuyRecordDto buyRecordDto = buyRecordBusiness.entrustApplyWithdraw(entrustNo, securitiesStockEntrust.getBuyRecordId());
-		logger.info("修改订单撤单锁定状态成功:{}",buyRecordDto.getTradeNo());
-		securitiesStockEntrust.setTradeNo(buyRecordDto.getTradeNo());
-		securitiesStockEntrust.setEntrustNo(buyRecordDto.getDelegateNumber());
-		securitiesStockEntrust.setEntrustState(EntrustState.REPORTEDTOWITHDRAW);
-		entrustProducer.entrustQueryWithdraw(securitiesStockEntrust);
+		try{
+			BuyRecordDto buyRecordDto = investorService.buyRecordApplyWithdraw(securitiesStockEntrust);
+			logger.info("撤单成功：{}",JacksonUtil.encode(buyRecordDto));
+		}catch (Exception ex) {
+			logger.error("撤单失败：{}",ex.getMessage());
+		}
 	}
 
 	@RabbitListener(queues = {"voluntarilyApplyBuyIn"})

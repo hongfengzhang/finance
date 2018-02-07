@@ -55,7 +55,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                         .getSellOutContainer();
                 Map<String, PositionStock> entrustSellOutContainer = positionStockContainer
                         .getEntrustSellOutContainer();
-                logger.info("券商委托股票容器内剩余:{}个委托卖出订单", stockEntrusts.size());
+                logger.info("券商委托卖出股票容器内剩余:{}个委托卖出订单", stockEntrusts.size());
                 for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
 
                     logger.info("此处执行HTTP，当前委托订单为：{}", entry.getKey());
@@ -95,14 +95,12 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                         if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
                             // 若当前时间大于委托卖出时间1天。将点买废单放入废单处理队列中
                             //当前时间
-                            logger.info("卖出撤单:{}", entry.getKey());
-                            calendar.setTime(new Date());
-                            long currentDay = calendar.getTime().getTime() / millisOfDay;
+                            long currentDay = new Date().getTime() / millisOfDay;
                             //委托卖出时间
-                            calendar.setTime(securitiesStockEntrust.getEntrustTime());
-                            long entrustDay = calendar.getTime().getTime() / millisOfDay;
+                            long entrustDay = securitiesStockEntrust.getEntrustTime().getTime() / millisOfDay;
                             logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
                             if ((currentDay - entrustDay) >= 1) {
+                                logger.info("卖出撤单:{}", entry.getKey());
                                 entrustProducer.entrustWithdraw(securitiesStockEntrust);
                                 stockEntrusts.remove(entry.getKey());
                             }

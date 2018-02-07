@@ -698,4 +698,8 @@ public class BuyRecordService {
 		}, pageable);
 		return pages;
 	}
+
+    public BuyRecord revisionState(BuyRecord buyRecord) {
+		return changeState(buyRecord, false);
+	}
 }
