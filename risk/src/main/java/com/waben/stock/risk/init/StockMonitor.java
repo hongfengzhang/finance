@@ -10,6 +10,7 @@ import org.quartz.impl.calendar.WeeklyCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -22,11 +23,12 @@ import static org.quartz.TriggerBuilder.newTrigger;
  * @desc 股票行情监控调度器
  */
 @Component
+@Order(1)
 public class StockMonitor implements CommandLineRunner {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-
+    private Scheduler schedulerInstance;
     /***
      * @author yuyidi 2017-11-27 20:04:24
      * @method run
@@ -169,7 +171,11 @@ public class StockMonitor implements CommandLineRunner {
         scheduler.addJob(jobWithdrawStop, true);
         scheduler.scheduleJob(withdrawTriggerAMStop);
         scheduler.scheduleJob(withdrawTriggerPMStop);
-
+        schedulerInstance = scheduler;
         scheduler.start();
+    }
+
+    public Scheduler getSchedulerInstance() {
+        return schedulerInstance;
     }
 }
