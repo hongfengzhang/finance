@@ -30,6 +30,7 @@ import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.BankType;
+import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -59,7 +60,7 @@ public class PaymentController {
 
 	@Autowired
 	private CapitalAccountBusiness capitalAccountBusiness;
-	
+
 	@Autowired
 	private PublisherBusiness publisherBusiness;
 
@@ -92,13 +93,43 @@ public class PaymentController {
 		}
 	}
 
+	@PostMapping("/quickpaymessage")
+	@ApiOperation(value = "快捷支付发送短信验证码")
+	public Response<String> quickPayMessage(@RequestParam(required = true) BigDecimal amount,
+			@RequestParam(required = true) Long bindCardId) {
+		return new Response<>(paymentBusiness.quickPayMessage(amount, bindCardId, SecurityUtil.getUserId()));
+	}
+
+	@PostMapping("/quickpay")
+	@ApiOperation(value = "快捷支付")
+	public Response<String> quickPay(@RequestParam(required = true) String paymentNo,
+			@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String validaCode) {
+		return new Response<>(paymentBusiness.quickPay(paymentNo, bindCardId, validaCode, SecurityUtil.getUserId()));
+	}
+
+	@GetMapping("/quickpaynotify")
+	@ApiOperation(value = "快捷支付")
+	public String quickPayNotify(HttpServletRequest request, HttpServletResponse httpResp) {
+		String amount = request.getParameter("amount");
+		String merchantNo = request.getParameter("merchantNo");
+		String outTradeNo = request.getParameter("outTradeNo");
+		String transactNo = request.getParameter("transactNo");
+		String transactTime = request.getParameter("transactTime");
+		String tradeType = request.getParameter("tradeType");
+		String sign = request.getParameter("sign");
+		// TODO 验签
+		// 完成支付
+		paymentBusiness.payCallback(outTradeNo, PaymentState.Paid);
+		return "SUCCESS";
+	}
+
 	@PostMapping("/withdrawals")
-	@ApiOperation(value = "提现", notes = "paymentType:1银联支付")
+	@ApiOperation(value = "提现")
 	public Response<String> withdrawals(@RequestParam(required = true) BigDecimal amount,
 			@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
 		// 判断是否为测试用户，测试用户不能提现
 		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
-		if(publisher.getIsTest() != null && publisher.getIsTest()) {
+		if (publisher.getIsTest() != null && publisher.getIsTest()) {
 			throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
 		}
 		// 验证支付密码
@@ -119,7 +150,7 @@ public class PaymentController {
 		BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
 		CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
 		if (bankType == null) {
-			bankType = CzBankType.JSYH;
+			throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
 		}
 		paymentBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
 				bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode());

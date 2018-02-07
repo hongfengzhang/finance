@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.dto.publisher;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class BindCardDto {
 
 	private Long id;
@@ -20,6 +23,10 @@ public class BindCardDto {
 	 */
 	private String bankCard;
 	/**
+	 * 银行代码
+	 */
+	private String bankCode;
+	/**
 	 * 银行名称
 	 */
 	private String bankName;
@@ -35,6 +42,10 @@ public class BindCardDto {
 	 * 策略发布人ID
 	 */
 	private Long publisherId;
+	/**
+	 * 对应的支付平台编号
+	 */
+	private String contractNo;
 
 	public Long getId() {
 		return id;
@@ -106,6 +117,22 @@ public class BindCardDto {
 
 	public void setBranchCode(String branchCode) {
 		this.branchCode = branchCode;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
+	}
+
+	public String getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
 	}
 
 }
