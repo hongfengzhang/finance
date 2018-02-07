@@ -180,5 +180,6 @@ public interface BuyRecordInterface {
 
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	void delete(@PathVariable("id") Long id);
-
+	@RequestMapping(value = "/update", method = RequestMethod.PUT)
+	Response<BuyRecordDto> updateState(@RequestBody BuyRecordDto buyRecordDto);
 }

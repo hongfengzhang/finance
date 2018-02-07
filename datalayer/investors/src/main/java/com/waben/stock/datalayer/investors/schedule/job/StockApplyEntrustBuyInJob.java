@@ -56,6 +56,9 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                     if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
                         logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
                         buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
+                    }else if(BuyRecordState.WITHDRAWLOCK.equals(buyRecordDto.getState())) {
+                        logger.info("委托买入失败，进行撤单：{}",JacksonUtil.encode(buyRecordDto));
+                        buyInContainer.remove(securitiesStockEntrust.getBuyRecordId());
                     }
                 }
             }catch (Exception ex) {

@@ -100,6 +100,11 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     }
 
     @Override
+    public Response<BuyRecordDto> updateState(BuyRecordDto buyRecordDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
     public Response<List<BuyRecordDto>> buyRecordsWithStatus(Integer buyRecordState) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }

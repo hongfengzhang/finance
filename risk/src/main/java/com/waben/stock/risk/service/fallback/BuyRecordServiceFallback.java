@@ -74,6 +74,11 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     }
 
     @Override
+    public Response<BuyRecordDto> updateState(BuyRecordDto buyRecordDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
     public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }

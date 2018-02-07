@@ -6,6 +6,7 @@ import com.waben.stock.datalayer.investors.container.StockApplyEntrustSellOutCon
 import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.datalayer.investors.web.StockQuotationHttp;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class StockSellOutInitialize implements CommandLineRunner {
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
             securitiesStockEntrust.setStockCode(buyRecord.getStockCode());
             securitiesStockEntrust.setEntrustTime(buyRecord.getUpdateTime());
-            securitiesStockEntrust.setWindControlType(buyRecord.getWindControlTypes());
+            securitiesStockEntrust.setWindControlType(buyRecord.getWindControlType().getIndex());
             for(StockMarket stockMarket: quotations) {
                 if(stockMarket.getInstrumentId().equals(buyRecord.getStockCode())) {
                     securitiesStockEntrust.setEntrustPrice(stockMarket.getDownLimitPrice());
