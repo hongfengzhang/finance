@@ -232,13 +232,10 @@ public class InvestorService {
             entrustProducer.entrustApplySellOut(securitiesStockEntrust);
         }else {
             securitiesStockEntrust.setEntrustNo(entrustNo);
+            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
             logger.info("撤单委托编号：{}",withdrawEntrustNo);
         }
-        securitiesStockEntrust.setEntrustNo(entrustNo);
-        securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
-        String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
-        logger.info("撤单委托编号：{}",withdrawEntrustNo);
         return buyRecordDto;
     }
     /**
@@ -372,19 +369,9 @@ public class InvestorService {
         }else {
             securitiesStockEntrust.setEntrustNo(entrustNo);
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
-            buyRecordApplyWithdraw(securitiesStockEntrust);
-        }
-
-        try{
-            securitiesStockEntrust.setEntrustNo(entrustNo);
-            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
             logger.info("撤单委托编号：{}",withdrawEntrustNo);
-        }catch (Exception ex) {
-            logger.error("服务异常：{}",ex.getMessage());
         }
-
-
         return buyRecordDto;
     }
 }
