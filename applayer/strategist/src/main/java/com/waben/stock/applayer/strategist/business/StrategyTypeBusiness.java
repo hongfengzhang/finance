@@ -2,7 +2,9 @@ package com.waben.stock.applayer.strategist.business;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -56,6 +58,17 @@ public class StrategyTypeBusiness {
 			return result;
 		}
 		throw new ServiceException(response.getCode());
+	}
+	
+	public Map<Long, Integer> strategyTypeMap() {
+		Map<Long, Integer> result = new HashMap<Long, Integer>();
+		List<StrategyTypeDto> list = this.lists();
+		if (list != null && list.size() > 0) {
+			for (StrategyTypeDto strategy : list) {
+				result.put(strategy.getId(), strategy.getCycle());
+			}
+		}
+		return result;
 	}
 
 }

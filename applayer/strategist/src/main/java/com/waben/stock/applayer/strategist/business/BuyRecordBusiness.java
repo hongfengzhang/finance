@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -61,6 +62,9 @@ public class BuyRecordBusiness {
 	@Autowired
 	@Qualifier("deferredRecordReference")
 	private DeferredRecordReference deferredRecordReference;
+	
+	@Autowired
+	private StrategyTypeBusiness strategyTypeBusiness;
 
 	public BuyRecordDto findById(Long id) {
 		Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(id);
@@ -131,10 +135,14 @@ public class BuyRecordBusiness {
 	}
 
 	public List<BuyRecordWithMarketDto> wrapMarketInfo(List<BuyRecordDto> list) {
+		Map<Long, Integer> strategyTypeMap = strategyTypeBusiness.strategyTypeMap();
 		List<BuyRecordWithMarketDto> result = CopyBeanUtils.copyListBeanPropertiesToList(list,
 				BuyRecordWithMarketDto.class);
 		List<String> codes = new ArrayList<>();
 		for (BuyRecordWithMarketDto record : result) {
+			if (record.getStrategyTypeId() != null) {
+				record.setCycle(strategyTypeMap.get(record.getStrategyTypeId()));
+			}
 			codes.add(record.getStockCode());
 		}
 		if (codes.size() > 0) {
@@ -190,6 +198,8 @@ public class BuyRecordBusiness {
 					inner.setStockName(settlement.getBuyRecord().getStockName());
 					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
+					inner.setTradePrice(settlement.getBuyRecord().getSellingPrice());
+					inner.setTradeTime(settlement.getBuyRecord().getSellingTime());
 					content.add(inner);
 					isSettlement = false;
 				} else {
@@ -201,6 +211,8 @@ public class BuyRecordBusiness {
 						inner.setStockCode(buyRecord.getStockCode());
 						inner.setStockName(buyRecord.getStockName());
 						inner.setPhone(buyRecord.getPublisherPhone());
+						inner.setTradePrice(buyRecord.getBuyingPrice());
+						inner.setTradeTime(buyRecord.getBuyingTime());
 						content.add(inner);
 						isSettlement = true;
 					} else {

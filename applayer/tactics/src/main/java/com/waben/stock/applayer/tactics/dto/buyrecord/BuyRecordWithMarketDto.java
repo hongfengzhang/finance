@@ -36,6 +36,10 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 	 * 递延费
 	 */
 	private BigDecimal deferredCharges;
+	/**
+	 * 周期
+	 */
+	private Integer cycle;
 
 	public String getStockName() {
 		return stockName;
@@ -97,6 +101,14 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 
 	public void setDeferredCharges(BigDecimal deferredCharges) {
 		this.deferredCharges = deferredCharges;
+	}
+
+	public Integer getCycle() {
+		return cycle;
+	}
+
+	public void setCycle(Integer cycle) {
+		this.cycle = cycle;
 	}
 
 }
