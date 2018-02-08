@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.tactics.payapi.wabenpay.config;
+package com.waben.stock.applayer.strategist.payapi.wabenpay.config;
 
 public class WabenPayConfig {
 

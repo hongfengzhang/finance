@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.tactics.payapi.wabenpay;
+package com.waben.stock.applayer.strategist.payapi.wabenpay;
 
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,15 +10,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
-import com.waben.stock.applayer.tactics.payapi.czpay.util.Md5Util;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindRequestBean;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindResponseBean;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageRequestBean;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageResponseBean;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.PayRequestBean;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.PayResponseBean;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WabenPayConfig;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.util.RequestParamBuilder;
+import com.waben.stock.applayer.strategist.payapi.czpay.util.Md5Util;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.BindRequestBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.BindResponseBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.MessageRequestBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.MessageResponseBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.PayRequestBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.PayResponseBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WabenPayConfig;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.util.RequestParamBuilder;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
 

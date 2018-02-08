@@ -97,17 +97,21 @@ public class PaymentController {
 	@ApiOperation(value = "快捷支付发送短信验证码")
 	public Response<String> quickPayMessage(@RequestParam(required = true) BigDecimal amount,
 			@RequestParam(required = true) Long bindCardId) {
-		return new Response<>(paymentBusiness.quickPayMessage(amount, bindCardId, SecurityUtil.getUserId()));
+		Response<String> result = new Response<String>();
+		result.setResult(paymentBusiness.quickPayMessage(amount, bindCardId, SecurityUtil.getUserId()));
+		return result;
 	}
 
 	@PostMapping("/quickpay")
 	@ApiOperation(value = "快捷支付")
 	public Response<String> quickPay(@RequestParam(required = true) String paymentNo,
 			@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String validaCode) {
-		return new Response<>(paymentBusiness.quickPay(paymentNo, bindCardId, validaCode, SecurityUtil.getUserId()));
+		Response<String> result = new Response<String>();
+		result.setResult(paymentBusiness.quickPay(paymentNo, bindCardId, validaCode, SecurityUtil.getUserId()));
+		return result;
 	}
 
-	@GetMapping("/quickpaynotify")
+	@PostMapping("/quickpaynotify")
 	@ApiOperation(value = "快捷支付")
 	public String quickPayNotify(HttpServletRequest request, HttpServletResponse httpResp) {
 		String amount = request.getParameter("amount");

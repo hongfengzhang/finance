@@ -288,7 +288,7 @@ public class PaymentBusiness {
 		// 请求发送快捷短信
 		amount.setScale(2, RoundingMode.DOWN);
 		MessageRequestBean request = new MessageRequestBean();
-		request.setAmount(amount.multiply(new BigDecimal(100)).toString());
+		request.setAmount(amount.multiply(new BigDecimal(100)).setScale(0).toString());
 		request.setContractNo(bindCard.getContractNo());
 		request.setMember(String.valueOf(bindCard.getPublisherId()));
 		try {
@@ -326,13 +326,13 @@ public class PaymentBusiness {
 		}
 		// 请求快捷支付
 		PayRequestBean request = new PayRequestBean();
-		request.setOutTradeNo(paymentOrder.getThirdPaymentNo());
+		request.setOutTradeNo(paymentOrder.getPaymentNo());
 		request.setTimeStart(sdf.format(paymentOrder.getCreateTime()));
 		request.setContractNo(bindCard.getContractNo());
 		request.setBankAccount(bindCard.getBankCard());
 		request.setValidaCode(validaCode);
-		request.setTransactNo(paymentOrder.getPaymentNo());
-		request.setAmount(paymentOrder.getAmount().multiply(new BigDecimal(100)).toString());
+		request.setTransactNo(paymentOrder.getThirdPaymentNo());
+		request.setAmount(paymentOrder.getAmount().multiply(new BigDecimal(100)).setScale(0).toString());
 		try {
 			WabenPayOverHttp.pay(request);
 			return paymentOrder.getPaymentNo();

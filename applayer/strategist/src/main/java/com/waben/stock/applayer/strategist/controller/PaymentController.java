@@ -21,15 +21,16 @@ import com.waben.stock.applayer.strategist.business.BindCardBusiness;
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.strategist.business.PaymentBusiness;
 import com.waben.stock.applayer.strategist.business.PublisherBusiness;
-import com.waben.stock.applayer.strategist.czpay.config.CzBankType;
 import com.waben.stock.applayer.strategist.dto.payment.PayRequest;
 import com.waben.stock.applayer.strategist.dto.payment.UnionPayRequest;
+import com.waben.stock.applayer.strategist.payapi.czpay.config.CzBankType;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.BankType;
+import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -90,6 +91,40 @@ public class PaymentController {
 		} catch (IOException e) {
 			throw new RuntimeException("http write interrupt");
 		}
+	}
+	
+	@PostMapping("/quickpaymessage")
+	@ApiOperation(value = "快捷支付发送短信验证码")
+	public Response<String> quickPayMessage(@RequestParam(required = true) BigDecimal amount,
+			@RequestParam(required = true) Long bindCardId) {
+		Response<String> result = new Response<String>();
+		result.setResult(paymentBusiness.quickPayMessage(amount, bindCardId, SecurityUtil.getUserId()));
+		return result;
+	}
+
+	@PostMapping("/quickpay")
+	@ApiOperation(value = "快捷支付")
+	public Response<String> quickPay(@RequestParam(required = true) String paymentNo,
+			@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String validaCode) {
+		Response<String> result = new Response<String>();
+		result.setResult(paymentBusiness.quickPay(paymentNo, bindCardId, validaCode, SecurityUtil.getUserId()));
+		return result;
+	}
+
+	@PostMapping("/quickpaynotify")
+	@ApiOperation(value = "快捷支付")
+	public String quickPayNotify(HttpServletRequest request, HttpServletResponse httpResp) {
+		String amount = request.getParameter("amount");
+		String merchantNo = request.getParameter("merchantNo");
+		String outTradeNo = request.getParameter("outTradeNo");
+		String transactNo = request.getParameter("transactNo");
+		String transactTime = request.getParameter("transactTime");
+		String tradeType = request.getParameter("tradeType");
+		String sign = request.getParameter("sign");
+		// TODO 验签
+		// 完成支付
+		paymentBusiness.payCallback(outTradeNo, PaymentState.Paid);
+		return "SUCCESS";
 	}
 
 	@PostMapping("/withdrawals")
