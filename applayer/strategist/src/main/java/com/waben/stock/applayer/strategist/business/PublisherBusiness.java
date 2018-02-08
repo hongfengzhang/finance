@@ -94,7 +94,7 @@ public class PublisherBusiness {
 			IOUtils.copy(file.getInputStream(), fos);
 			FileSystemResource resource = new FileSystemResource(temp);
 			MultiValueMap<String, Object> param = new LinkedMultiValueMap<>();
-			param.add("uploadFile", resource);
+			param.add("file", resource);
 			String result = restTemplate.postForObject(operationServer + "file/upload", param, String.class);
 			return result;
 		} catch (IOException e) {
