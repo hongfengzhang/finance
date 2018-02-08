@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -45,6 +46,7 @@ public class RabbitMqConsumer {
 		BuyRecordDto buyRecordDto = buyRecordBusiness.findById(positionStock.getBuyRecordId());
 		logger.info("风控卖出队列消费点买记录状态：{}",buyRecordDto.getState());
 		if(BuyRecordState.HOLDPOSITION.equals(buyRecordDto.getState())) {
+			//放入卖出容器
 			SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
 			StockDto stockDto = stockBusiness.fetchWithExponentByCode(positionStock.getStockCode());
 			securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
