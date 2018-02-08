@@ -5,9 +5,8 @@ import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -17,12 +16,15 @@ import java.util.concurrent.Callable;
 
 public class RiskProcess implements Callable<List<PositionStock>> {
     Logger logger = LoggerFactory.getLogger(getClass());
-
+    String expriessTime = "14:40:00";
+    SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+    SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private StockMarket stockMarket;
     private List<PositionStock> positionStock;
-    private Map<String,PositionStock> entrustSellOutContainer;
+    private Map<String, PositionStock> entrustSellOutContainer;
 
-    public RiskProcess(StockMarket stockMarket, List<PositionStock> positionStocks,Map<String,PositionStock> entrustSellOutContainer) {
+    public RiskProcess(StockMarket stockMarket, List<PositionStock> positionStocks, Map<String, PositionStock>
+            entrustSellOutContainer) {
         this.stockMarket = stockMarket;
         this.positionStock = positionStocks;
         this.entrustSellOutContainer = entrustSellOutContainer;
@@ -30,7 +32,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 
     @Override
     public List<PositionStock> call() {
-        long day = (1000*60*60*24);
+//        long day = (1000*60*60*24);
         List<PositionStock> counts = new ArrayList<>();
         logger.info("股票:{},已持仓中订单数量:{}", stockMarket.getName(), positionStock.size());
         long start = System.currentTimeMillis();
@@ -38,46 +40,41 @@ public class RiskProcess implements Callable<List<PositionStock>> {
         // 遍历容器内持仓中的点买交易订单
         for (PositionStock riskBuyInStock : positionStock) {
             //如果申请卖出容器里没有该订单，说明该订单已经被申请卖出，删除持仓容器里的订单
-            if(entrustSellOutContainer.get(riskBuyInStock.getTradeNo())==null){
-                logger.info("删除持仓容器的数据:{}",riskBuyInStock.toString());
+            if (entrustSellOutContainer.get(riskBuyInStock.getTradeNo()) == null) {
+                logger.info("删除持仓容器的数据:{}", riskBuyInStock.toString());
                 counts.add(riskBuyInStock);
                 continue;
             }
             String currTradeSession = riskBuyInStock.getTradeSession();
             if (currTradeSession == null) {
-                logger.info("数据库中加载的持仓点买交易记录");
                 if (tradeSession == null) {
                     continue;
                 }
                 riskBuyInStock.setTradeSession(tradeSession);
             } else {
-                logger.info("最新持仓点买交易记录session:{}", currTradeSession);
                 tradeSession = currTradeSession;
             }
-            logger.info("当前券商session:{}", tradeSession);
             BigDecimal lastPrice = stockMarket.getLastPrice();
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             Date currentDay = new Date();
             Date expriessDay = riskBuyInStock.getExpireTime();
-            SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
-            SimpleDateFormat time=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentTime = sdf.format(currentDay);
-            String expriessTime = "14:40:00";
             logger.info("过期时间:{},当前时间:{}", time.format(expriessDay), time.format(currentDay));
             logger.info("过期时间:{},当前时间:{}", expriessTime, currentTime);
-            logger.info("结果：{}",currentTime.compareTo(expriessTime));
-            long expriessDayL = Long.parseLong(expriessDay.getTime()+"");
-            long currentDayL = Long.parseLong(currentDay.getTime()+"");
+            logger.info("结果：{}", currentTime.compareTo(expriessTime));
+            long expriessDayL = Long.parseLong(expriessDay.getTime() + "");
+            long currentDayL = Long.parseLong(currentDay.getTime() + "");
             //判断持仓到期时间是否已经达到且是否达到14:40:00
-            if (currentDayL-expriessDayL>=0&&currentTime.compareTo(expriessTime)>=0) {
-                logger.info("交易期满:{}",riskBuyInStock.getTradeNo());
+            if (currentDayL - expriessDayL >= 0 && currentTime.compareTo(expriessTime) >= 0) {
+                logger.info("交易期满:{}", riskBuyInStock.getTradeNo());
                 riskBuyInStock.setWindControlType(WindControlType.TRADINGEND.getIndex());
             } else {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价
-                if (profitPosition.compareTo(lastPrice)==-1||profitPosition.compareTo(lastPrice)==0||lossPosition.compareTo(lastPrice)==1||lossPosition.compareTo(lastPrice)==0) {
-                    if (profitPosition.compareTo(lastPrice) == -1) {
+                if (profitPosition.compareTo(lastPrice) == -1 || profitPosition.compareTo(lastPrice) == 0 ||
+                        lossPosition.compareTo(lastPrice) == 1 || lossPosition.compareTo(lastPrice) == 0) {
+                    if (lastPrice.compareTo(profitPosition) >= 0) {
                         //达到止盈点位
                         riskBuyInStock.setWindControlType(WindControlType.REACHPROFITPOINT.getIndex());
                     } else {

@@ -27,7 +27,11 @@ public enum BuyRecordState implements CommonalityEnum {
 
 	WITHDRAWLOCK("7","撤单锁定"),
 
-	REVOKE("8", "撤单");
+	REVOKE("8", "撤单"),
+
+	HASENTRUST("9","已委托");
+
+
 
 	BuyRecordState(String index, String status) {
 		this.index = index;

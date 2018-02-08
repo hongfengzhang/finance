@@ -152,7 +152,7 @@ public class BuyRecordService {
 				}
 			}
 		}
-		// 放入自动买入股票队列
+
 		SecuritiesStockEntrust entrust = new SecuritiesStockEntrust();
 		entrust.setBuyRecordId(buyRecord.getId());
 		entrust.setSerialCode(buyRecord.getSerialCode());
@@ -161,6 +161,8 @@ public class BuyRecordService {
 		entrust.setBuyRecordState(buyRecord.getState());
 		entrust.setEntrustTime(buyRecord.getCreateTime());
 		entrust.setEntrustPrice(buyRecord.getDelegatePrice());
+		entrust.setTradeNo(buyRecord.getTradeNo());
+		// 放入自动买入股票队列
 		producer.voluntarilyEntrustApplyBuyIn(entrust);
 		// 站外消息推送
 		sendOutsideMessage(buyRecord);

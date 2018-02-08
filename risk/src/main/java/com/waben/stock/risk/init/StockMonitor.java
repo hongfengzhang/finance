@@ -19,6 +19,7 @@ import org.quartz.impl.calendar.WeeklyCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.interfaces.constants.HolidayConstant;
@@ -36,11 +37,12 @@ import com.waben.stock.risk.schedule.job.WithdrawStopJob;
  * @desc 股票行情监控调度器
  */
 @Component
+@Order(1)
 public class StockMonitor implements CommandLineRunner {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-
+    private Scheduler schedulerInstance;
     /***
      * @author yuyidi 2017-11-27 20:04:24
      * @method run
@@ -59,7 +61,7 @@ public class StockMonitor implements CommandLineRunner {
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
         DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:45");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "15:45");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "15:15");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
@@ -185,7 +187,11 @@ public class StockMonitor implements CommandLineRunner {
         scheduler.addJob(jobWithdrawStop, true);
         scheduler.scheduleJob(withdrawTriggerAMStop);
         scheduler.scheduleJob(withdrawTriggerPMStop);
-
+        schedulerInstance = scheduler;
         scheduler.start();
+    }
+
+    public Scheduler getSchedulerInstance() {
+        return schedulerInstance;
     }
 }

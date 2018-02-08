@@ -13,20 +13,20 @@ import java.util.concurrent.ConcurrentHashMap;
  * @desc 券商股票申请委托买入容器
  */
 @Component
-public class StockApplyEntrustBuyInContainer {
+public class VoluntarilyApplyEntrustBuyInContainer {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    Map<Long, SecuritiesStockEntrust> buyInContainer = new ConcurrentHashMap<>();
+    Map<String, SecuritiesStockEntrust> buyInContainer = new ConcurrentHashMap<>();
 
     public void add(SecuritiesStockEntrust stock) {
-        buyInContainer.put(stock.getBuyRecordId(), stock);
+        buyInContainer.put(stock.getTradeNo(), stock);
     }
 
-    public void remove(Long buyrecordId) {
-        buyInContainer.remove(buyrecordId);
+    public void remove(String tradeNo) {
+        buyInContainer.remove(tradeNo);
     }
 
-    public Map<Long, SecuritiesStockEntrust> getBuyInContainer() {
+    public Map<String, SecuritiesStockEntrust> getBuyInContainer() {
         return buyInContainer;
     }
 

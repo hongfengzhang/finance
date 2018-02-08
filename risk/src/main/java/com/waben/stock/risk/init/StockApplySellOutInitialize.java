@@ -1,14 +1,11 @@
-package com.waben.stock.datalayer.investors.init;
+package com.waben.stock.risk.init;
 
-import com.waben.stock.datalayer.investors.business.BuyRecordBusiness;
-import com.waben.stock.datalayer.investors.container.StockApplyEntrustBuyInContainer;
-import com.waben.stock.datalayer.investors.container.StockApplyEntrustSellOutContainer;
-import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
-import com.waben.stock.datalayer.investors.web.StockQuotationHttp;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
+import com.waben.stock.risk.business.BuyRecordBusiness;
+import com.waben.stock.risk.warpper.messagequeue.rabbitmq.VoluntarilyApplyEntrustProducer;
+import com.waben.stock.risk.web.StockQuotationHttp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +23,16 @@ import java.util.Set;
  */
 @Component
 //@Order(Ordered.LOWEST_PRECEDENCE+100)
-public class StockSellOutInitialize implements CommandLineRunner {
+public class StockApplySellOutInitialize implements CommandLineRunner {
 
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
 
     @Autowired
-    private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer;
-    @Autowired
     private StockQuotationHttp stockQuotationHttp;
+    @Autowired
+    private VoluntarilyApplyEntrustProducer producer;
+
     Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public void run(String... args) throws Exception {
@@ -61,13 +59,14 @@ public class StockSellOutInitialize implements CommandLineRunner {
             securitiesStockEntrust.setStockCode(buyRecord.getStockCode());
             securitiesStockEntrust.setEntrustTime(buyRecord.getUpdateTime());
             securitiesStockEntrust.setWindControlType(buyRecord.getWindControlType().getIndex());
+            securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
             for(StockMarket stockMarket: quotations) {
                 if(stockMarket.getInstrumentId().equals(buyRecord.getStockCode())) {
                     securitiesStockEntrust.setEntrustPrice(stockMarket.getDownLimitPrice());
                     break;
                 }
             }
-            stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
+            producer.voluntarilyEntrustApplySellOut(securitiesStockEntrust);
         }
     }
 }
