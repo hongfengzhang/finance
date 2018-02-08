@@ -55,6 +55,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                 tradeSession = currTradeSession;
             }
             BigDecimal lastPrice = stockMarket.getLastPrice();
+//            BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
+//            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
@@ -66,8 +68,18 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             logger.info("结果：{}", currentTime.compareTo(expriessTime));
             long expriessDayL = Long.parseLong(expriessDay.getTime() + "");
             long currentDayL = Long.parseLong(currentDay.getTime() + "");
-            //判断持仓到期时间是否已经达到且是否达到14:40:00
+//            //判断是否跌停或涨停
+//            if(lastPrice.compareTo(upLimitPrice)>=0||lastPrice.compareTo(downLimitPrice)<=0) {
+//                if(lastPrice.compareTo(upLimitPrice)>=0) {
+//                    //涨停
+//                    riskBuyInStock.setWindControlType(WindControlType.LIMITUP.getIndex());
+//                }else {
+//                    //跌停
+//                    riskBuyInStock.setWindControlType(WindControlType.LIMITDOWN.getIndex());
+//                }
+//            }else
             if (currentDayL - expriessDayL >= 0 && currentTime.compareTo(expriessTime) >= 0) {
+                //判断持仓到期时间是否已经达到且是否达到14:40:00
                 logger.info("交易期满:{}", riskBuyInStock.getTradeNo());
                 riskBuyInStock.setWindControlType(WindControlType.TRADINGEND.getIndex());
             } else {
