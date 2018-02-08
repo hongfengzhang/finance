@@ -29,8 +29,8 @@ public class WabenPayConfig {
 	/**
 	 * 通知回调地址
 	 */
-	// public static final String notifyUrl = "http://1108ab82.nat123.cc:53623/payment/quickpaynotify";
-	public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/payment/quickpaynotify";
+	public static final String testNotifyUrl = "http://1108ab82.nat123.cc:53623/payment/quickpaynotify";
+	public static final String prodNotifyUrl = "https://m.youguwang.com.cn/tactics/payment/quickpaynotify";
 
 	public static String getMerchantno() {
 		return merchantNo;

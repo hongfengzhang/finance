@@ -10,7 +10,7 @@ public class PayRequestBean {
 
 	private String outTradeNo;
 
-	private String notifyUrl = WabenPayConfig.notifyUrl;
+	private String notifyUrl;
 
 	private String amount;
 
