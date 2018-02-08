@@ -21,9 +21,21 @@ public class CalendarTest {
 //        Date date = new Date();
 //        logger.info("过期时间:{},当前时间:{}", date1.getTime(), date.getTime());
 //        logger.info("结果：{}",date1.getTime()-date.getTime());
+//        SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
+//        Date currentDay = new Date();
+//        Date parse = sdf.parse(DateFormat.getTimeInstance().format(currentDay));
+//        logger.info("{},{}",parse, sdf.format(parse));
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
-        Date currentDay = new Date();
-        Date parse = sdf.parse(DateFormat.getTimeInstance().format(currentDay));
-        logger.info("{},{}",parse, sdf.format(parse));
+        String parse1 = "2018-02-05 00:00:00";
+        String parse2 = "2018-02-05 00:00:00";
+        logger.info("result:{}",parse1.compareToIgnoreCase(parse2));
+        String s = "14:40:00";
+        logger.info("current:{}",s);
+        String s1 = "14:40:00";
+        logger.info("result:{}",s.compareToIgnoreCase(s1));
+        if(parse1.compareToIgnoreCase(parse2)>=0&&s.compareToIgnoreCase(s1)>=0) {
+            logger.info("ook");
+        }
     }
 }

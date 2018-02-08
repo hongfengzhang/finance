@@ -203,7 +203,7 @@ public class InvestorService {
         securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
         //委托前判断这个单是否是符合委托卖出条件的单
         BuyRecordDto buyRecordDto = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
-        if (!BuyRecordState.SELLAPPLY.equals(buyRecordDto.getState())) {
+        if (!BuyRecordState.SELLAPPLY.equals(buyRecordDto.getState())||!BuyRecordState.HOLDPOSITION.equals(buyRecordDto.getState())) {
             logger.info("不符合委托卖出条件:{}", JacksonUtil.encode(buyRecordDto));
             return buyRecordDto;
         }
