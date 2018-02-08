@@ -47,6 +47,8 @@ public class ExceptionConstant {
 	public static final String BANKCARD_NOTSUPPORT_EXCEPTION = "2012";
 	// 用户不匹配
 	public static final String PUBLISHERID_NOTMATCH_EXCEPTION = "2013";
+	// 银行卡信息有误，请检查输入的信息是否正确
+	public static final String BANKCARDINFO_NOTMATCH_EXCEPTION = "2014";
 
 	/* 业务异常 */
 	// 系统管理业务异常

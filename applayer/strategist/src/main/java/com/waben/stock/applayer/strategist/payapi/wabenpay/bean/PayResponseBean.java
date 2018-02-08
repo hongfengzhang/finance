@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.tactics.payapi.wabenpay.bean;
+package com.waben.stock.applayer.strategist.payapi.wabenpay.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.applayer.tactics.payapi.juhe.BankCardInfoVerifier;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindRequestBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindResponseBean;
@@ -72,8 +73,7 @@ public class BindCardBusiness {
 		request.setName(bindCard.getName());
 		request.setPhone(bindCard.getPhone());
 		request.setCardNo(bindCard.getBankCard());
-		WaBenBankType wabenBankType = WaBenBankType
-				.getByPlateformBankType(BankType.getByCode(bindCard.getBankCode()));
+		WaBenBankType wabenBankType = WaBenBankType.getByPlateformBankType(BankType.getByCode(bindCard.getBankCode()));
 		if (wabenBankType == null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
 		}
@@ -85,7 +85,7 @@ public class BindCardBusiness {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, ex.getMessage());
 		}
 	}
-	
+
 	public BindCardDto save(BindCardDto bindCard) {
 		if (bankIconMap.size() == 0) {
 			init();
@@ -99,6 +99,12 @@ public class BindCardBusiness {
 		bindCard.setBankName(bankInfoDto.getBankName());
 		bindCard.setBankCode(bankInfoDto.getBankCode());
 		bindCard.setContractNo(this.getWabenContractNo(bindCard));
+		// 判断四要素
+		boolean isValid = BankCardInfoVerifier.verify(bindCard.getName(), bindCard.getIdCard(), bindCard.getPhone(),
+				bindCard.getBankCard());
+		if (!isValid) {
+			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
+		}
 		// 执行绑卡操作
 		Response<BindCardDto> response = service.addBankCard(bindCard);
 		if ("200".equals(response.getCode())) {
