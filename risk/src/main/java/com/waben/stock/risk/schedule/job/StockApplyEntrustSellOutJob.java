@@ -89,19 +89,6 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;
-                        }else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
-                            // 若当前时间大于委托卖出时间1天。将点买废单放入废单处理队列中
-                            //当前时间
-                            long currentDay = new Date().getTime() / millisOfDay;
-                            //委托卖出时间
-                            long entrustDay = securitiesStockEntrust.getEntrustTime().getTime() / millisOfDay;
-                            logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
-                            if ((currentDay - entrustDay) >= 1) {
-                                logger.info("委托卖出轮询点买记录卖出超时:{}", entry.getKey());
-                                entrustProducer.entrustWithdraw(securitiesStockEntrust);
-                                stockEntrusts.remove(entry.getKey());
-                            }
-                            continue;
                         }else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
                             // 若执行结果为true 代表订单状态已成功，则  删除集合中的数据
@@ -119,6 +106,20 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                                     securitiesStockEntrust.getEntrustNumber(), securitiesStockEntrust.getEntrustPrice
                                             ());
                         }
+//                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex())) {
+//                            // 若当前时间大于委托卖出时间1天。将点买废单放入废单处理队列中
+//                            //当前时间
+//                            long currentDay = new Date().getTime() / millisOfDay;
+//                            //委托卖出时间
+//                            long entrustDay = securitiesStockEntrust.getEntrustTime().getTime() / millisOfDay;
+//                            logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
+//                            if ((currentDay - entrustDay) >= 1) {
+//                                logger.info("委托卖出轮询点买记录卖出超时:{}", entry.getKey());
+//                                entrustProducer.entrustWithdraw(securitiesStockEntrust);
+//                                stockEntrusts.remove(entry.getKey());
+//                            }
+//                            continue;
+//                        }else
                     } catch (ServiceException ex) {
                         logger.error("券商委托单查询异常:{}", ex.getMessage());
                     }

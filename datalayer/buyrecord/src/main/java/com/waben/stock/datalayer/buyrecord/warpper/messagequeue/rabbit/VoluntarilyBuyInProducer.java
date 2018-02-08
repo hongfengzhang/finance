@@ -28,7 +28,7 @@ public class VoluntarilyBuyInProducer extends RabbitMQProducer<SecuritiesStockEn
      * 自动申请买入
      * @param securitiesStockEntrust
      */
-    public void voluntarilyEntrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
+    public void  voluntarilyEntrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
         logger.info("开始发送自动卖出订单数据:{}",securitiesStockEntrust.getTradeNo());
         super.topic("buyRecord", "voluntarilySellOut", securitiesStockEntrust);
     }
