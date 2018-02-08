@@ -86,6 +86,11 @@ public class BuyRecord {
 	@Column(name = "loss_point", scale = 3)
 	private BigDecimal lossPoint;
 	/**
+	 * 杠杆倍数
+	 */
+	@Column(name = "loss_multiple")
+	private Integer lossMultiple;
+	/**
 	 * 止损预警点位
 	 */
 	@Column(name = "loss_warn_position")
@@ -485,6 +490,14 @@ public class BuyRecord {
 			return settlement.getProfitOrLoss();
 		}
 		return null;
+	}
+
+	public Integer getLossMultiple() {
+		return lossMultiple;
+	}
+
+	public void setLossMultiple(Integer lossMultiple) {
+		this.lossMultiple = lossMultiple;
 	}
 
 }

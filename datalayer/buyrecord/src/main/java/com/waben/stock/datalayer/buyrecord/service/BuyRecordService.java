@@ -339,7 +339,9 @@ public class BuyRecordService {
 		buyRecord.setInvestorId(investorId);
 		buyRecord.setDelegateNumber(delegateNumber);
 		// 修改点买记录状态
-		return changeState(buyRecord, false);
+		changeState(buyRecord, false);
+		sendOutsideMessage(buyRecord);
+		return buyRecord;
 	}
 
 	@Transactional
@@ -376,7 +378,9 @@ public class BuyRecordService {
 		} else {
 			buyRecord.setExpireTime(holidayBusiness.getAfterTradeDate(date, strategyType.getCycle()));
 		}
-		return changeState(buyRecord, false);
+		changeState(buyRecord, false);
+		sendOutsideMessage(buyRecord);
+		return buyRecord;
 	}
 
 	@Transactional
@@ -401,11 +405,14 @@ public class BuyRecordService {
 		entrust.setStockCode(buyRecord.getStockCode());
 		entrust.setEntrustNumber(buyRecord.getNumberOfStrand());
 		entrust.setBuyRecordState(buyRecord.getState());
+		entrust.setTradeNo(buyRecord.getTradeNo());
 		entrust.setEntrustPrice(market.getDownLimitPrice());
 		entrust.setWindControlType(WindControlType.PUBLISHERAPPLY.getIndex());
 		producer.voluntarilyEntrustApplySellOut(entrust);
 		// 修改点买记录状态
-		return changeState(buyRecord, false);
+		changeState(buyRecord, false);
+		sendOutsideMessage(buyRecord);
+		return buyRecord;
 	}
 
 	@Transactional
@@ -420,7 +427,9 @@ public class BuyRecordService {
 		}
 		buyRecord.setDelegateNumber(delegateNumber);
 		// 修改点买记录状态
-		return changeState(buyRecord, true);
+		changeState(buyRecord, false);
+		sendOutsideMessage(buyRecord);
+		return buyRecord;
 	}
 
 	@Transactional
@@ -493,7 +502,9 @@ public class BuyRecordService {
 			}
 		}
 		// 修改点买记录状态
-		return changeState(buyRecord, false);
+		changeState(buyRecord, false);
+		sendOutsideMessage(buyRecord);
+		return buyRecord;
 	}
 
 	@Deprecated
