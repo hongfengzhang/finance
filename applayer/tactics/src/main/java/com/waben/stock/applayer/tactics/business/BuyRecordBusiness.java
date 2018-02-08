@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -62,6 +63,9 @@ public class BuyRecordBusiness {
 	@Qualifier("deferredRecordReference")
 	private DeferredRecordReference deferredRecordReference;
 
+	@Autowired
+	private StrategyTypeBusiness strategyTypeBusiness;
+
 	public BuyRecordDto findById(Long id) {
 		Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(id);
 		if ("200".equals(response.getCode())) {
@@ -110,7 +114,7 @@ public class BuyRecordBusiness {
 			Integer deferredDays = 0;
 			BigDecimal deferredCharges = new BigDecimal(0);
 			if (deferredRecordList != null && deferredRecordList.size() > 0) {
-				for(DeferredRecordDto deferredRecord : deferredRecordList) {
+				for (DeferredRecordDto deferredRecord : deferredRecordList) {
 					deferredDays += deferredRecord.getCycle();
 					deferredCharges = deferredCharges.add(deferredRecord.getFee().abs());
 				}
@@ -130,10 +134,14 @@ public class BuyRecordBusiness {
 	}
 
 	public List<BuyRecordWithMarketDto> wrapMarketInfo(List<BuyRecordDto> list) {
+		Map<Long, Integer> strategyTypeMap = strategyTypeBusiness.strategyTypeMap();
 		List<BuyRecordWithMarketDto> result = CopyBeanUtils.copyListBeanPropertiesToList(list,
 				BuyRecordWithMarketDto.class);
 		List<String> codes = new ArrayList<>();
 		for (BuyRecordWithMarketDto record : result) {
+			if (record.getStrategyTypeId() != null) {
+				record.setCycle(strategyTypeMap.get(record.getStrategyTypeId()));
+			}
 			codes.add(record.getStockCode());
 		}
 		if (codes.size() > 0) {
@@ -176,35 +184,38 @@ public class BuyRecordBusiness {
 					new BuyRecordState[] { BuyRecordState.HOLDPOSITION, BuyRecordState.SELLAPPLY,
 							BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
-
 			int total = sResponse.getResult().getContent().size() + pageInfo.getContent().size();
-			int sSize = sResponse.getResult().getContent().size();
-			int bSize = pageInfo.getContent().size();
-			int i = sSize;
-			int j = bSize;
-
 			List<TradeDynamicDto> content = new ArrayList<>();
+			boolean isSettlement = true;
 			for (int n = 0; n < total; n++) {
-				TradeDynamicDto inner = new TradeDynamicDto();
-				if ((n % 2 == 0 && i > 0) || ((bSize - j) == 0 && bSize == 0)) {
-					SettlementDto settlement = sResponse.getResult().getContent().get(sSize - i);
+				if (isSettlement && sResponse.getResult().getContent().size() > 0) {
+					SettlementDto settlement = sResponse.getResult().getContent().remove(0);
+					TradeDynamicDto inner = new TradeDynamicDto();
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
 					inner.setStockCode(settlement.getBuyRecord().getStockCode());
 					inner.setStockName(settlement.getBuyRecord().getStockName());
 					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
-					i--;
+					content.add(inner);
+					isSettlement = false;
 				} else {
-					BuyRecordDto buyRecord = pageInfo.getContent().get(bSize - j);
-					inner.setTradeType(1);
-					inner.setPublisherId(buyRecord.getPublisherId());
-					inner.setStockCode(buyRecord.getStockCode());
-					inner.setStockName(buyRecord.getStockName());
-					inner.setPhone(buyRecord.getPublisherPhone());
-					j--;
+					if (pageInfo.getContent().size() > 0) {
+						BuyRecordDto buyRecord = pageInfo.getContent().remove(0);
+						TradeDynamicDto inner = new TradeDynamicDto();
+						inner.setTradeType(1);
+						inner.setPublisherId(buyRecord.getPublisherId());
+						inner.setStockCode(buyRecord.getStockCode());
+						inner.setStockName(buyRecord.getStockName());
+						inner.setPhone(buyRecord.getPublisherPhone());
+						content.add(inner);
+						isSettlement = true;
+					} else {
+						isSettlement = true;
+						total++;
+					}
 				}
-				content.add(inner);
+
 			}
 			return new PageInfo<TradeDynamicDto>(content, 0, false, 0L, size, page, false);
 		}

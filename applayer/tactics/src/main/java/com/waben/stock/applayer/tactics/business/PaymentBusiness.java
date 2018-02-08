@@ -5,10 +5,13 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
+import javax.annotation.PostConstruct;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.payment.PayRequest;
@@ -24,6 +27,7 @@ import com.waben.stock.applayer.tactics.payapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageRequestBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageResponseBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.PayRequestBean;
+import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WabenPayConfig;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -56,6 +60,20 @@ public class PaymentBusiness {
 
 	@Autowired
 	private BindCardBusiness bindCardBusiness;
+
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
+
+	private boolean isProd = true;
+
+	@PostConstruct
+	public void init() {
+		if ("prod".equals(activeProfile)) {
+			isProd = true;
+		} else {
+			isProd = false;
+		}
+	}
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
@@ -330,6 +348,7 @@ public class PaymentBusiness {
 		request.setTimeStart(sdf.format(paymentOrder.getCreateTime()));
 		request.setContractNo(bindCard.getContractNo());
 		request.setBankAccount(bindCard.getBankCard());
+		request.setNotifyUrl(isProd ? WabenPayConfig.prodNotifyUrl : WabenPayConfig.testNotifyUrl);
 		request.setValidaCode(validaCode);
 		request.setTransactNo(paymentOrder.getThirdPaymentNo());
 		request.setAmount(paymentOrder.getAmount().multiply(new BigDecimal(100)).setScale(0).toString());

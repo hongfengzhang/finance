@@ -162,6 +162,7 @@ public class WabenPayOverHttp {
 		request.setContractNo("1002112031516182");
 		request.setBankAccount("6227002432210669566");
 		request.setValidaCode("183240");
+		request.setNotifyUrl(WabenPayConfig.testNotifyUrl);
 		request.setTransactNo("1802062002415148256");
 		request.setAmount("1");
 		pay(request);

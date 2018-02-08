@@ -69,8 +69,9 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal reserveFund,
 			@RequestParam(required = true) BigDecimal delegatePrice,
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
-			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
-			BigDecimal deferredFee, @RequestParam(required = true) String paymentPassword) {
+			Integer lossMultiple, @RequestParam(required = true) String stockCode,
+			@RequestParam(required = true) Boolean deferred, BigDecimal deferredFee,
+			@RequestParam(required = true) String paymentPassword) {
 		// 检查交易时间段
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
@@ -129,6 +130,7 @@ public class BuyRecordController {
 		dto.setApplyAmount(applyAmount);
 		dto.setServiceFee(serviceFee);
 		dto.setReserveFund(reserveFund);
+		dto.setLossMultiple(lossMultiple);
 		dto.setProfitPoint(profitPoint);
 		dto.setLossPoint(lossPoint.abs().multiply(new BigDecimal(-1)));
 		dto.setStockCode(stockCode);
