@@ -28,7 +28,7 @@ public class RetriveStockMarketSchedule {
 	/**
 	 * 获取间隔间隔
 	 */
-	public static final long Retrive_Interval = 3 * 60 * 1000;
+	public static final long Retrive_Interval = 1 * 60 * 1000;
 
 	@Autowired
 	private StockMarketService stockMarketService;
