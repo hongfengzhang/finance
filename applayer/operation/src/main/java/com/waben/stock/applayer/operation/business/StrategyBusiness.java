@@ -55,7 +55,7 @@ public class StrategyBusiness {
     }
 
     public PageInfo<BuyRecordDto> withdrawPages(StrategyUnwindQuery strategyUnwindQuery) {
-        Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByUnwindQuery(strategyUnwindQuery);
+        Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByWithdrawQuery(strategyUnwindQuery);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

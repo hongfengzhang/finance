@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 public class RiskProcess implements Callable<List<PositionStock>> {
     Logger logger = LoggerFactory.getLogger(getClass());
     String expriessTime = "14:40:00";
+    long millisOfDay = 24 * 60 * 60 * 1000;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private StockMarket stockMarket;
@@ -32,7 +33,6 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 
     @Override
     public List<PositionStock> call() {
-//        long day = (1000*60*60*24);
         List<PositionStock> counts = new ArrayList<>();
         logger.info("股票:{},已持仓中订单数量:{}", stockMarket.getName(), positionStock.size());
         long start = System.currentTimeMillis();
@@ -86,14 +86,18 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价
                 if (profitPosition.compareTo(lastPrice) == -1 || profitPosition.compareTo(lastPrice) == 0 ||
                         lossPosition.compareTo(lastPrice) == 1 || lossPosition.compareTo(lastPrice) == 0) {
-                    if (lastPrice.compareTo(profitPosition) >= 0) {
-                        //达到止盈点位
-                        riskBuyInStock.setWindControlType(WindControlType.REACHPROFITPOINT.getIndex());
-                    } else {
-                        //达到止损点位
-                        riskBuyInStock.setWindControlType(WindControlType.REACHLOSSPOINT.getIndex());
+                    long buying = riskBuyInStock.getBuyingTime().getTime()/millisOfDay;//买入时间
+                    long current = currentDay.getTime()/millisOfDay;
+                    if(current-buying>=1) {
+                        if (lastPrice.compareTo(profitPosition) >= 0) {
+                            //达到止盈点位
+                            riskBuyInStock.setWindControlType(WindControlType.REACHPROFITPOINT.getIndex());
+                        } else {
+                            //达到止损点位
+                            riskBuyInStock.setWindControlType(WindControlType.REACHLOSSPOINT.getIndex());
+                        }
+                        logger.info("满足止损止盈条件:{}", riskBuyInStock.getTradeNo());
                     }
-                    logger.info("满足止损止盈条件:{}", riskBuyInStock.getTradeNo());
                 } else {
                     logger.info("当前持仓订单未满足止损或止盈条件,不执行风控强制平仓：{}", riskBuyInStock.getTradeNo());
                     continue;
