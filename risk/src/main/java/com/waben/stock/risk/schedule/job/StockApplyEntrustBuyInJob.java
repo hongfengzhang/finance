@@ -66,9 +66,11 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             tradeSession = currTradeSession;
                         }
                         logger.info("当前券商session:{}", tradeSession);
-                        StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
-                                (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
-                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
+//                        StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
+//                                (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
+//                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
+                        StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
+                        stockEntrustQueryResult.setEntrustStatus(EntrustState.HASBEENSUCCESS.getIndex());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
                         if (stockEntrustQueryResult == null) {
                             logger.info("委托买入轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
@@ -101,10 +103,10 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                                     securitiesStockEntrust.getEntrustNumber(),
                                     securitiesStockEntrust.getEntrustPrice());
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
-                            Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
-                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
-                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
-                                    .getBusinessPrice()));
+//                            Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
+//                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
+//                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
+//                                    .getBusinessPrice()));
                             entrustProducer.entrustBuyIn(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                         }

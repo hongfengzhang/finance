@@ -32,7 +32,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 
     @Override
     public List<PositionStock> call() {
-//        long day = (1000*60*60*24);
+        boolean flag = true;
         List<PositionStock> counts = new ArrayList<>();
         logger.info("股票:{},已持仓中订单数量:{}", stockMarket.getName(), positionStock.size());
         long start = System.currentTimeMillis();
@@ -57,8 +57,19 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             BigDecimal lastPrice = stockMarket.getLastPrice();
 //            BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
 //            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
-            BigDecimal lossPosition = riskBuyInStock.getLossPosition();
-            BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
+//            BigDecimal lossPosition = riskBuyInStock.getLossPosition();
+//            BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
+            BigDecimal lossPosition;
+            BigDecimal profitPosition;
+            if(flag) {
+                lossPosition = lastPrice.add(new BigDecimal("0.01"));
+                profitPosition = lastPrice.add(new BigDecimal("0.01"));
+                flag = false;
+            }else {
+                lossPosition = lastPrice.subtract(new BigDecimal("0.01"));
+                profitPosition = lastPrice.subtract(new BigDecimal("0.01"));
+                flag = true;
+            }
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             Date currentDay = new Date();
             Date expriessDay = riskBuyInStock.getExpireTime();
