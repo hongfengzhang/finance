@@ -53,9 +53,6 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                logger.error("自动卖出异常：{}", ex.getMessage());
             }
         }
     }

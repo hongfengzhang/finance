@@ -427,7 +427,7 @@ public class BuyRecordService {
 		}
 		buyRecord.setDelegateNumber(delegateNumber);
 		// 修改点买记录状态
-		changeState(buyRecord, false);
+		changeState(buyRecord, true);
 		sendOutsideMessage(buyRecord);
 		return buyRecord;
 	}

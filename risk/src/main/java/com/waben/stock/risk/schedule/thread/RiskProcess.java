@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 public class RiskProcess implements Callable<List<PositionStock>> {
     Logger logger = LoggerFactory.getLogger(getClass());
     String expriessTime = "14:40:00";
+    long millisOfDay = 24 * 60 * 60 * 1000;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private StockMarket stockMarket;
@@ -57,19 +58,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             BigDecimal lastPrice = stockMarket.getLastPrice();
 //            BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
 //            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
-//            BigDecimal lossPosition = riskBuyInStock.getLossPosition();
-//            BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
-            BigDecimal lossPosition;
-            BigDecimal profitPosition;
-            if(flag) {
-                lossPosition = lastPrice.add(new BigDecimal("0.01"));
-                profitPosition = lastPrice.add(new BigDecimal("0.01"));
-                flag = false;
-            }else {
-                lossPosition = lastPrice.subtract(new BigDecimal("0.01"));
-                profitPosition = lastPrice.subtract(new BigDecimal("0.01"));
-                flag = true;
-            }
+            BigDecimal lossPosition = riskBuyInStock.getLossPosition();
+            BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             Date currentDay = new Date();
             Date expriessDay = riskBuyInStock.getExpireTime();
