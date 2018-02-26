@@ -239,10 +239,7 @@ public class BuyRecordService {
 		}
 		record.setState(next);
 		record.setUpdateTime(new Date());
-		BuyRecord result = buyRecordDao.update(record);
-		// 站外消息推送
-		sendOutsideMessage(record);
-		return result;
+		return buyRecordDao.update(record);
 	}
 
 	private void sendOutsideMessage(BuyRecord record) {

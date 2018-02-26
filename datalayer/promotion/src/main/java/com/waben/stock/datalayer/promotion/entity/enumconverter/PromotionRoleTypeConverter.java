@@ -10,7 +10,7 @@ import com.waben.stock.interfaces.enums.PromotionRoleType;
  * @author luomengan
  *
  */
-public class PromotionRoleTypeTypeConverter implements AttributeConverter<PromotionRoleType, Integer> {
+public class PromotionRoleTypeConverter implements AttributeConverter<PromotionRoleType, Integer> {
 
 	/**
 	 * 将枚举类型转换成数据库字段值

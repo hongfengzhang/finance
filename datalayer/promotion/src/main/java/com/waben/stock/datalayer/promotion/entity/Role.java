@@ -7,7 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.waben.stock.datalayer.promotion.entity.enumconverter.PromotionRoleTypeTypeConverter;
+import com.waben.stock.datalayer.promotion.entity.enumconverter.PromotionRoleTypeConverter;
 import com.waben.stock.interfaces.enums.PromotionRoleType;
 
 /**
@@ -34,7 +34,7 @@ public class Role {
 	/**
 	 * 角色类型
 	 */
-	@Convert(converter = PromotionRoleTypeTypeConverter.class)
+	@Convert(converter = PromotionRoleTypeConverter.class)
 	private PromotionRoleType type;
 
 	public Long getId() {

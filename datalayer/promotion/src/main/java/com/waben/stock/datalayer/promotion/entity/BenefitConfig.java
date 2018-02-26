@@ -2,11 +2,15 @@ package com.waben.stock.datalayer.promotion.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.waben.stock.datalayer.promotion.entity.enumconverter.BenefitConfigTypeConverter;
+import com.waben.stock.interfaces.enums.BenefitConfigType;
 
 /**
  * 分成配置
@@ -42,9 +46,14 @@ public class BenefitConfig {
 	 */
 	private BigDecimal softwareFeePoint;
 	/**
-	 * 是否为默认配置
+	 * 分成配置类型
 	 */
-	private Boolean isDefault;
+	@Convert(converter = BenefitConfigTypeConverter.class)
+	private BenefitConfigType type;
+	/**
+	 * 对应的资源ID，机构配置则对应结构ID，经纪人配置则对应经纪人ID
+	 */
+	private Long resourceId;
 
 	public Long getId() {
 		return id;
@@ -94,12 +103,20 @@ public class BenefitConfig {
 		this.softwareFeePoint = softwareFeePoint;
 	}
 
-	public Boolean getIsDefault() {
-		return isDefault;
+	public BenefitConfigType getType() {
+		return type;
 	}
 
-	public void setIsDefault(Boolean isDefault) {
-		this.isDefault = isDefault;
+	public void setType(BenefitConfigType type) {
+		this.type = type;
+	}
+
+	public Long getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(Long resourceId) {
+		this.resourceId = resourceId;
 	}
 
 }
