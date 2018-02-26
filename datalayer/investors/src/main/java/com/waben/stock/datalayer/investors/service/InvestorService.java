@@ -215,20 +215,6 @@ public class InvestorService {
 //                EntrustType
 //                        .SELL);
         String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
-        StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
-        //查询当前资金账户的股东账户信息
-        List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
-        String type = stockType(securitiesStockEntrust.getExponent());
-        String stockAccount = null;
-        for (StockHolder stockHolder : stockHolders) {
-            if (stockHolder.getExchangeType().equals(type)) {
-                stockAccount = stockHolder.getStockAccount();
-                break;
-            }
-        }
-        if (stockAccount == null) {
-            throw new SecuritiesStockException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
-        }
         return entrustNo;
     }
 
@@ -302,24 +288,24 @@ public class InvestorService {
      */
     public String buyRecordApplyWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
         //获取投资人信息
-        List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
-        InvestorDto investorDto = investorsContainer.get(0);
-        securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
-
-        StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
-        //查询当前资金账户的股东账户信息
-        List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(securitiesStockEntrust.getTradeSession());
-        String type = stockType(securitiesStockEntrust.getExponent());
-        String stockAccount = null;
-        for (StockHolder stockHolder : stockHolders) {
-            if (stockHolder.getExchangeType().equals(type)) {
-                stockAccount = stockHolder.getStockAccount();
-                break;
-            }
-        }
-        //开始委托撤单
-        String entrustNo = stockJyRest.withdraw(securitiesStockEntrust, stockAccount);
-
+//        List<InvestorDto> investorsContainer = investorContainer.getInvestorContainer();
+//        InvestorDto investorDto = investorsContainer.get(0);
+//        securitiesStockEntrust = buyRecordEntrust(investorDto.getId(), securitiesStockEntrust);
+//
+//        StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
+//        //查询当前资金账户的股东账户信息
+//        List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(securitiesStockEntrust.getTradeSession());
+//        String type = stockType(securitiesStockEntrust.getExponent());
+//        String stockAccount = null;
+//        for (StockHolder stockHolder : stockHolders) {
+//            if (stockHolder.getExchangeType().equals(type)) {
+//                stockAccount = stockHolder.getStockAccount();
+//                break;
+//            }
+//        }
+//        //开始委托撤单
+//        String entrustNo = stockJyRest.withdraw(securitiesStockEntrust, stockAccount);
+        String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
         return entrustNo;
     }
 
