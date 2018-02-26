@@ -161,32 +161,6 @@ public class InvestorService {
 //        String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
 //                EntrustType.BUY);
         String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
-        StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
-        StockMoney stockMoney = stockJyRest.money(tradeSession);
-        //点买交易股票数量* 单价
-        Double realStockPrice = securitiesStockEntrust.getEntrustNumber() * securitiesStockEntrust.getEntrustPrice()
-                .doubleValue();
-        //校检资金信息
-        if (stockMoney.getEnableBalance() - realStockPrice < 0) {
-            throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH);
-        }
-        //查询当前资金账户的股东账户信息
-        List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
-        String type = stockType(securitiesStockEntrust.getExponent());
-        String stockAccount = null;
-        for (StockHolder stockHolder : stockHolders) {
-            if (stockHolder.getExchangeType().equals(type)) {
-                stockAccount = stockHolder.getStockAccount();
-                break;
-            }
-        }
-        if (stockAccount == null) {
-            throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
-        }
-
-        if (securitiesStockEntrust.getBuyRecordState().equals(BuyRecordState.BUYLOCK)) {
-            throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
-        }
         return entrustNo;
     }
 
@@ -215,20 +189,6 @@ public class InvestorService {
 //                EntrustType
 //                        .SELL);
         String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
-        StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
-        //查询当前资金账户的股东账户信息
-        List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
-        String type = stockType(securitiesStockEntrust.getExponent());
-        String stockAccount = null;
-        for (StockHolder stockHolder : stockHolders) {
-            if (stockHolder.getExchangeType().equals(type)) {
-                stockAccount = stockHolder.getStockAccount();
-                break;
-            }
-        }
-        if (stockAccount == null) {
-            throw new SecuritiesStockException(ExceptionConstant.INVESTOR_STOCKACCOUNT_NOT_EXIST);
-        }
         return entrustNo;
     }
 
