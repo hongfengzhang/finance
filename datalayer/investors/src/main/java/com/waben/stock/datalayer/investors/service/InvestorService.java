@@ -410,7 +410,6 @@ public class InvestorService {
                 securitiesStockEntrust.setBuyRecordState(BuyRecordState.HASENTRUST);
                 isBuyInLock = true;
             }
-            return buyRecordDto;
         }
         String entrustNo = securitiesStockEntrust.getEntrustNo();
         BuyRecordState tempBuyRecordState = securitiesStockEntrust.getBuyRecordState();
@@ -418,7 +417,7 @@ public class InvestorService {
             //如果该订单未委托上游则进行委托，委托成功则将该订单的订单状态修改为已委托
             logger.info("执行委托操作：{}",securitiesStockEntrust.getTradeNo());
             try{
-                String afterEntrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
+                String afterEntrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
                 securitiesStockEntrust.setEntrustNo(afterEntrustNo);
                 securitiesStockEntrust.setBuyRecordState(BuyRecordState.HASENTRUST);
             }catch (SecuritiesStockException sse) {
@@ -446,6 +445,7 @@ public class InvestorService {
             securitiesStockEntrust.setEntrustNo(result.getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             securitiesStockEntrust.setEntrustTime(result.getUpdateTime());
+            securitiesStockEntrust.setBuyRecordState(BuyRecordState.BUYLOCK);
             entrustProducer.entrustApplyBuyIn(securitiesStockEntrust);
         } else {
             securitiesStockEntrust.setEntrustNo(entrustNo);
