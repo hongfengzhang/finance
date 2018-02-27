@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Created by yuyidi on 2017/12/17.
@@ -101,6 +102,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 //                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
 //                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
 //                                    .getBusinessPrice()));
+                            securitiesStockEntrust.setEntrustPrice(securitiesStockEntrust.getEntrustPrice().add(new BigDecimal(Math.random()+"")));
                             entrustProducer.entrustSellOut(entry.getValue());
                             stockEntrusts.remove(entry.getKey());
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust

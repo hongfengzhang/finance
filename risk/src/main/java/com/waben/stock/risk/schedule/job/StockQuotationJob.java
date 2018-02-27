@@ -67,7 +67,9 @@ public class StockQuotationJob implements InterruptableJob {
                 List<PositionStock> result = future.get();
                 for (PositionStock stock : result) {
                     logger.info("风控点买交易记录:{},风控类型:{}", stock.getTradeNo(), stock.getWindControlType());
-                    positionProducer.riskPositionSellOut(stock);
+                    if(stock.getWindControlType()!=null) {
+                        positionProducer.riskPositionSellOut(stock);
+                    }
                     stocks.remove(stock);
                 }
             } catch (InterruptedException e) {

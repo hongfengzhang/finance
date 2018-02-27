@@ -20,6 +20,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
     long millisOfDay = 24 * 60 * 60 * 1000;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    boolean flag = true;
     private StockMarket stockMarket;
     private List<PositionStock> positionStock;
     private Map<String, PositionStock> entrustSellOutContainer;
@@ -33,7 +34,6 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 
     @Override
     public List<PositionStock> call() {
-        boolean flag = true;
         List<PositionStock> counts = new ArrayList<>();
         logger.info("股票:{},已持仓中订单数量:{}", stockMarket.getName(), positionStock.size());
         long start = System.currentTimeMillis();
@@ -60,6 +60,15 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 //            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
+            if(flag) {
+                flag = false;
+                lossPosition = lastPrice.add(new BigDecimal("0.01"));
+                profitPosition = lastPrice.add(new BigDecimal("0.01"));
+            }else {
+                flag = true;
+                lossPosition = lastPrice.subtract(new BigDecimal("0.01"));
+                profitPosition = lastPrice.subtract(new BigDecimal("0.01"));
+            }
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             Date currentDay = new Date();
             Date expriessDay = riskBuyInStock.getExpireTime();
@@ -69,6 +78,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             logger.info("结果：{}", currentTime.compareTo(expriessTime));
             long expriessDayL = Long.parseLong(expriessDay.getTime() + "");
             long currentDayL = Long.parseLong(currentDay.getTime() + "");
+            logger.info("过期天数:{},当前天数:{}", expriessDayL, expriessDayL);
 //            //判断是否跌停或涨停
 //            if(lastPrice.compareTo(upLimitPrice)>=0||lastPrice.compareTo(downLimitPrice)<=0) {
 //                if(lastPrice.compareTo(upLimitPrice)>=0) {
@@ -87,7 +97,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价
                 if (profitPosition.compareTo(lastPrice) == -1 || profitPosition.compareTo(lastPrice) == 0 ||
                         lossPosition.compareTo(lastPrice) == 1 || lossPosition.compareTo(lastPrice) == 0) {
-                    if((currentDayL+1)-expriessDayL>=1) {
+
+                    if(((currentDayL/millisOfDay)+1)-( riskBuyInStock.getBuyingTime().getTime()/millisOfDay)>=0) {
                         if (lastPrice.compareTo(profitPosition) >= 0) {
                             //达到止盈点位
                             riskBuyInStock.setWindControlType(WindControlType.REACHPROFITPOINT.getIndex());
