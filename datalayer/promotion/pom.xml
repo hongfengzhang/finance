@@ -17,11 +17,20 @@
 	<description>推广服务</description>
 
 	<properties>
-
+		<springfox.version>2.6.1</springfox.version>
 	</properties>
 
 	<dependencies>
-		
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${springfox.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

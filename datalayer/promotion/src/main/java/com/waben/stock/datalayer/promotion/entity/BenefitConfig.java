@@ -9,8 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import com.waben.stock.datalayer.promotion.entity.enumconverter.BenefitConfigTypeConverter;
-import com.waben.stock.interfaces.enums.BenefitConfigType;
+import com.waben.stock.datalayer.promotion.entity.enumconverter.ResourceTypeConverter;
+import com.waben.stock.interfaces.enums.ResourceType;
 
 /**
  * 分成配置
@@ -48,8 +48,8 @@ public class BenefitConfig {
 	/**
 	 * 分成配置类型
 	 */
-	@Convert(converter = BenefitConfigTypeConverter.class)
-	private BenefitConfigType type;
+	@Convert(converter = ResourceTypeConverter.class)
+	private ResourceType resourceType;
 	/**
 	 * 对应的资源ID，机构配置则对应结构ID，经纪人配置则对应经纪人ID
 	 */
@@ -103,12 +103,12 @@ public class BenefitConfig {
 		this.softwareFeePoint = softwareFeePoint;
 	}
 
-	public BenefitConfigType getType() {
-		return type;
+	public ResourceType getResourceType() {
+		return resourceType;
 	}
 
-	public void setType(BenefitConfigType type) {
-		this.type = type;
+	public void setResourceType(ResourceType resourceType) {
+		this.resourceType = resourceType;
 	}
 
 	public Long getResourceId() {

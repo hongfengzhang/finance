@@ -12,7 +12,7 @@ public class CapitalFlowDto {
 
 	private Long id;
 	/**
-	 * 冻结资金
+	 * 金额
 	 */
 	private BigDecimal amount;
 	/**

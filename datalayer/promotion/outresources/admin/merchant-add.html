@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>商户添加</title>
+<link rel="stylesheet" href="js/layui/css/layui.css">
+<link rel="stylesheet" href="css/common.css">
+<style type="text/css">
+#merchant-add-from .layui-form-label {
+	width: 120px;
+}
+#merchant-add-from .layui-input-block {
+	margin-left: 150px;
+}
+#netword-dot .layui-form-checkbox {
+	float: left;
+	margin-right: 0px;
+}
+
+</style>
+</head>
+<body class="layui-layout-body">
+	<div class="layui-layout layui-layout-admin">
+		<!-- 顶部 -->
+		<div class="layui-header">
+			<div class="layui-logo">网贝金融</div>
+			<ul class="layui-nav layui-layout-right">
+				<li class="layui-nav-item"><a href="javascript:;"> 
+					<img src="img/logo.jpg" class="layui-nav-img">管理员</a>
+					<dl class="layui-nav-child">
+						<dd><a href="">修改密码</a></dd>
+						<dd><a href="">退出登陆</a></dd>
+					</dl>
+				</li>
+			</ul>
+		</div>
+		<!-- 左侧菜单 -->
+		<div class="layui-side layui-bg-black">
+			<div class="layui-side-scroll">
+				<ul class="layui-nav layui-nav-tree">
+					<li class="layui-nav-item"><a href="index.html">首页</a></li>
+					<li class="layui-nav-item"><a href="trade-sta.html">交易汇总</a></li>
+					<li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">商户管理</a>
+						<dl class="layui-nav-child">
+							<dd class="layui-this"><a href="merchant-add.html">商户添加</a></dd>
+							<dd><a href="merchant-list.html">商户列表</a></dd>
+						</dl>
+					</li>
+					<li class="layui-nav-item"><a href="">通道管理</a></li>
+					<li class="layui-nav-item"><a href="">财务管理</a></li>
+				</ul>
+			</div>
+		</div>
+		<!-- 内容主体 -->
+		<div class="layui-body">
+			<div style="padding: 25px 25px;">
+				<form class="layui-form" id="merchant-add-from">
+					<fieldset class="layui-elem-field layui-field-title">
+						<legend>企业信息</legend>
+					</fieldset>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">营业执照号</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">公司名称</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">注册资本</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">注册地址</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">公司性质</label>
+							<div class="layui-input-inline">
+								<select name="quiz1">
+									<option value="">请选择公司性质</option>
+									<option value="1">有限责任公司</option>
+									<option value="2">私营公司</option>
+									<option value="3">集体所有制公司</option>
+									<option value="4">股份制公司</option>
+								</select>
+								<div class="layui-unselect layui-form-select layui-form-selected">
+									<div class="layui-select-title">
+										<input type="text" placeholder="请选择公司性质" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+									</div>
+									<dl class="layui-anim layui-anim-upbit" style="">
+										<dd lay-value="" class="layui-select-tips">请选择公司性质</dd>
+										<dd lay-value="1" class="">有限责任公司</dd>
+										<dd lay-value="2" class="">私营公司</dd>
+										<dd lay-value="3" class="">集体所有制公司</dd>
+										<dd lay-value="4" class="">股份制公司</dd>
+									</dl>
+								</div>
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">营业执照生效时间</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input" readonly="readonly" id="business-start-time">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">税务登记证</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">组织机构代码</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">法人姓名</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">法人手机号</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">法人证件类型</label>
+							<div class="layui-input-inline">
+								<select name="quiz1">
+									<option value="">请选择法人证件类型</option>
+									<option value="1">身份证</option>
+									<option value="2">居住证</option>
+									<option value="3">签证</option>
+									<option value="4">护照</option>
+									<option value="5">军人证</option>
+								</select>
+								<div class="layui-unselect layui-form-select layui-form-selected">
+									<div class="layui-select-title">
+										<input type="text" placeholder="请选择法人证件类型" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+									</div>
+									<dl class="layui-anim layui-anim-upbit" style="">
+										<dd lay-value="" class="layui-select-tips">请选择法人证件类型</dd>
+										<dd lay-value="1" class="">身份证</dd>
+										<dd lay-value="2" class="">居住证</dd>
+										<dd lay-value="3" class="">签证</dd>
+										<dd lay-value="4" class="">护照</dd>
+										<dd lay-value="5" class="">军人证</dd>
+									</dl>
+								</div>
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">法人证件号码</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">主营业务</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">经营范围</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">身份证生效时间</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input" readonly="readonly" id="idcard-start-time">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">营业执照失效时间</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input" readonly="readonly" id="business-end-time">
+							</div>
+						</div>
+					</div>
+					<fieldset class="layui-elem-field layui-field-title">
+						<legend>商户信息</legend>
+					</fieldset>
+					<div class="layui-form-item">
+						<div class="layui-inline">
+							<label class="layui-form-label">商户简称</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">商户全称</label>
+							<div class="layui-input-inline">
+								<input type="text" class="layui-input">
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">商户类型</label>
+							<div class="layui-input-inline">
+								<select name="quiz1">
+									<option value="">请选择商户类型</option>
+									<option value="1">企业</option>
+									<option value="2">个人</option>
+								</select>
+								<div class="layui-unselect layui-form-select layui-form-selected">
+									<div class="layui-select-title">
+										<input type="text" placeholder="请选择商户类型" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+									</div>
+									<dl class="layui-anim layui-anim-upbit" style="">
+										<dd lay-value="" class="layui-select-tips">请选择商户类型</dd>
+										<dd lay-value="1" class="">企业</dd>
+										<dd lay-value="2" class="">个人</dd>
+									</dl>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<fieldset class="layui-elem-field layui-field-title">
+							<legend>支付/代付信息</legend>
+						</fieldset>
+						<div class="layui-inline">
+							<label class="layui-form-label">网关</label>
+							<div class="layui-input-inline">
+								<select name="quiz1">
+									<option value="">请选择通道</option>
+									<option value="1">齐商</option>
+									<option value="2">九派</option>
+									<option value="3">钱宝</option>
+									<option value="4">橙子</option>
+								</select>
+								<div class="layui-unselect layui-form-select layui-form-selected">
+									<div class="layui-select-title">
+										<input type="text" placeholder="请选择通道" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+									</div>
+									<dl class="layui-anim layui-anim-upbit" style="">
+										<dd lay-value="" class="layui-select-tips">请选择通道</dd>
+										<dd lay-value="1" class="">齐商</dd>
+										<dd lay-value="2" class="">九派</dd>
+										<dd lay-value="3" class="">钱宝</dd>
+										<dd lay-value="4" class="">橙子</dd>
+									</dl>
+								</div>
+							</div>
+							<div class="layui-input-inline" style="width: 100px;margin-left: 80px;">
+								<input type="checkbox" name="like[write]" title="代付权限" />
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label">费率</label>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input">
+								</div>
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">快捷</label>
+							<div class="layui-input-inline">
+								<select name="quiz1">
+									<option value="">请选择通道</option>
+									<option value="1">齐商</option>
+									<option value="2">九派</option>
+									<option value="3">钱宝</option>
+									<option value="4">橙子</option>
+								</select>
+								<div class="layui-unselect layui-form-select layui-form-selected">
+									<div class="layui-select-title">
+										<input type="text" placeholder="请选择通道" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+									</div>
+									<dl class="layui-anim layui-anim-upbit" style="">
+										<dd lay-value="" class="layui-select-tips">请选择通道</dd>
+										<dd lay-value="1" class="">齐商</dd>
+										<dd lay-value="2" class="">九派</dd>
+										<dd lay-value="3" class="">钱宝</dd>
+										<dd lay-value="4" class="">橙子</dd>
+									</dl>
+								</div>
+							</div>
+							<div class="layui-input-inline" style="width: 100px;margin-left: 80px;">
+								<input type="checkbox" name="like[write]" title="代付权限" />
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label">费率</label>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input">
+								</div>
+							</div>
+						</div>
+						<div class="layui-inline">
+							<label class="layui-form-label">扫码</label>
+							<div class="layui-input-inline">
+								<select name="quiz1">
+									<option value="">请选择通道</option>
+									<option value="1">齐商</option>
+									<option value="2">九派</option>
+									<option value="3">钱宝</option>
+									<option value="4">橙子</option>
+								</select>
+								<div class="layui-unselect layui-form-select layui-form-selected">
+									<div class="layui-select-title">
+										<input type="text" placeholder="请选择通道" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
+									</div>
+									<dl class="layui-anim layui-anim-upbit" style="">
+										<dd lay-value="" class="layui-select-tips">请选择通道</dd>
+										<dd lay-value="1" class="">齐商</dd>
+										<dd lay-value="2" class="">九派</dd>
+										<dd lay-value="3" class="">钱宝</dd>
+										<dd lay-value="4" class="">橙子</dd>
+									</dl>
+								</div>
+							</div>
+							<div class="layui-input-inline" style="width: 100px;margin-left: 80px;">
+								<input type="checkbox" name="like[write]" title="代付权限" />
+							</div>
+							<div class="layui-inline">
+								<label class="layui-form-label">费率</label>
+								<div class="layui-input-inline">
+									<input type="text" class="layui-input">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<div class="layui-input-block">
+							<button class="layui-btn">立即提交</button>
+							<button type="reset" class="layui-btn layui-btn-primary">返回商户列表</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- 底部固定 -->
+		<div class="layui-footer">
+			优股网 © 2018
+		</div>
+	</div>
+	
+	<script src="js/layui/layui.js"></script>
+	<script>
+	layui.use(['element', 'table', 'laydate'], function() {
+		var laydate = layui.laydate;
+		laydate.render({
+			elem : '#business-start-time'
+		});
+		laydate.render({
+			elem : '#business-end-time'
+		});
+		laydate.render({
+			elem : '#idcard-start-time'
+		});
+	});
+	</script>
+</body>
+</html>

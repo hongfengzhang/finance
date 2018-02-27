@@ -35,7 +35,7 @@ public class CapitalFlow {
 	@Column(name = "flow_no")
 	private String flowNo;
 	/**
-	 * 冻结资金
+	 * 金额
 	 */
 	@Column(name = "amount")
 	private BigDecimal amount;

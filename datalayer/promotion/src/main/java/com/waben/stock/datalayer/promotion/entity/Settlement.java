@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -78,6 +80,12 @@ public class Settlement {
 	 * 经纪人收入
 	 */
 	private BigDecimal agentIncome;
+	/**
+	 * 对应的经纪人
+	 */
+	@ManyToOne
+	@JoinColumn(name = "agent_id")
+	private Agent agent;
 	/**
 	 * 结算时间
 	 */
@@ -209,6 +217,14 @@ public class Settlement {
 
 	public void setSoftwareFee(BigDecimal softwareFee) {
 		this.softwareFee = softwareFee;
+	}
+
+	public Agent getAgent() {
+		return agent;
+	}
+
+	public void setAgent(Agent agent) {
+		this.agent = agent;
 	}
 
 }

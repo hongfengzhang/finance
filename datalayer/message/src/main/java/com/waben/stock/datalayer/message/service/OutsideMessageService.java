@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.message.entity.MessageReceipt;
 import com.waben.stock.datalayer.message.entity.Messaging;
+import com.waben.stock.datalayer.message.entity.OutsidePushConfig;
 import com.waben.stock.datalayer.message.repository.MessageReceiptDao;
 import com.waben.stock.datalayer.message.repository.MessagingDao;
+import com.waben.stock.datalayer.message.repository.OutsidePushConfigDao;
 import com.waben.stock.interfaces.enums.MessageType;
 import com.waben.stock.interfaces.enums.OutsideMessageType;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
@@ -26,16 +28,26 @@ public class OutsideMessageService {
 
 	@Autowired
 	private MessageReceiptDao messageReceiptDao;
+	
+	@Autowired
+	private OutsidePushConfigDao outsidePushConfigDao;
 
 	@Autowired
 	private RedisCache redisCache;
 	
 	public void send(OutsideMessage message) {
-		String registrationId = redisCache
-				.get(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), message.getPublisherId()));
-		if (registrationId != null && !"".equals(registrationId.trim())) {
+		String registrationId = redisCache.get(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), message.getPublisherId()));
+		OutsidePushConfig config = null;
+		if(registrationId.indexOf("_") > 0) {
+			String[] strArr = registrationId.split("_");
+			registrationId = strArr[2];
+			config = outsidePushConfigDao.retrieveByDeviceTypeAndShellIndex(Integer.parseInt(strArr[0]), Integer.parseInt(strArr[1]));
+		} else {
+			config = outsidePushConfigDao.getDefaultConfig();
+		}
+		if (config != null && registrationId != null && !"".equals(registrationId.trim())) {
 			jiguangService.pushSingleDevice(registrationId, message.getTitle(), message.getContent(),
-					message.getExtras());
+					message.getExtras(), config != null ? config.getAppKey() : null, config != null ? config.getMasterSecret() : null);
 			// 保存消息
 			Messaging messaging = new Messaging();
 			messaging.setIsOutside(true);
