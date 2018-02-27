@@ -412,6 +412,8 @@ public class InvestorService {
                 e.printStackTrace();
             }
             logger.info("撤单委托编号：{}", withdrawEntrustNo);
+            securitiesStockEntrust.setBuyRecordState(tempBuyRecordState);
+            securitiesStockEntrust.setEntrustNo(entrustNo);
         }
         return result;
     }
