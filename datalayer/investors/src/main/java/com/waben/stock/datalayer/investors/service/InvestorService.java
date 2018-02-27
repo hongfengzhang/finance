@@ -253,16 +253,15 @@ public class InvestorService {
         } else {
             securitiesStockEntrust.setEntrustNo(entrustNo);
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
-            String withdrawEntrustNo = null;
             try {
-                withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
+               String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
+                logger.info("撤单委托编号：{}", withdrawEntrustNo);
+                securitiesStockEntrust.setBuyRecordState(tempBuyRecordState);
+                securitiesStockEntrust.setEntrustNo(entrustNo);
             } catch (Exception e) {
                 logger.error("委托卖出撤单失败：{}", e.getMessage());
                 e.printStackTrace();
             }
-            logger.info("撤单委托编号：{}", withdrawEntrustNo);
-            securitiesStockEntrust.setBuyRecordState(tempBuyRecordState);
-            securitiesStockEntrust.setEntrustNo(entrustNo);
         }
         return result;
     }
@@ -292,7 +291,6 @@ public class InvestorService {
         }
         //开始委托撤单
         String entrustNo = stockJyRest.withdraw(securitiesStockEntrust, stockAccount);
-
         return entrustNo;
     }
 
@@ -424,16 +422,15 @@ public class InvestorService {
         } else {
             securitiesStockEntrust.setEntrustNo(entrustNo);
             securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
-            String withdrawEntrustNo = null;
             try {
-                withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
+                String withdrawEntrustNo = buyRecordApplyWithdraw(securitiesStockEntrust);
+                logger.info("撤单委托编号：{}", withdrawEntrustNo);
+                securitiesStockEntrust.setBuyRecordState(tempBuyRecordState);
+                securitiesStockEntrust.setEntrustNo(entrustNo);
             } catch (Exception e) {
                 logger.error("委托买入撤单失败：{}", e.getMessage());
                 e.printStackTrace();
             }
-            logger.info("撤单委托编号：{}", withdrawEntrustNo);
-            securitiesStockEntrust.setBuyRecordState(tempBuyRecordState);
-            securitiesStockEntrust.setEntrustNo(entrustNo);
         }
         return result;
     }

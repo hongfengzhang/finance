@@ -55,6 +55,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         continue;
                     }
                     BuyRecordDto buyRecordDto = investorService.voluntarilyApplyBuyIn(securitiesStockEntrust);
+                    logger.info("委托买入结果：{}",JacksonUtil.encode(buyRecordDto));
                     if (buyRecordDto != null) {
                         if(BuyRecordState.BUYLOCK.equals(buyRecordDto.getState())) {
                             logger.info("委托买入成功：{}",JacksonUtil.encode(buyRecordDto));
