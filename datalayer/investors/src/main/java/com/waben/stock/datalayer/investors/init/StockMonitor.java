@@ -48,8 +48,8 @@ public class StockMonitor implements CommandLineRunner {
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
         scheduler.addCalendar("workCalendar", workCalendar, false, false);
         //上午任务
-        CronScheduleBuilder scheduleEntrustBuilderAM = CronScheduleBuilder.cronSchedule("0 47 10 * * ?");
-        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilderAM = CronScheduleBuilder.cronSchedule("0 21 11 * * ?");
+        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 14 * * ?");
         //下午任务
         CronScheduleBuilder scheduleEntrustBuilderPM = CronScheduleBuilder.cronSchedule("0 17 19 * * ?");
         CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 23 * * ?");
