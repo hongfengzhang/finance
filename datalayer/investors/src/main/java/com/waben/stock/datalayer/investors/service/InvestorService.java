@@ -360,17 +360,29 @@ public class InvestorService {
         //委托前判断这个单是否是符合委托买入条件的单
         BuyRecordDto buyRecordDto = buyRecordBusiness.findById(securitiesStockEntrust.getBuyRecordId());
         logger.info("自动买入点买记录查询:{}", JacksonUtil.encode(buyRecordDto));
+        boolean isBuyInLock = false;
         if (!BuyRecordState.POSTED.equals(buyRecordDto.getState())) {
             logger.info("不符合委托买入条件:{}", JacksonUtil.encode(buyRecordDto));
+            if (buyRecordDto.getState().equals(BuyRecordState.BUYLOCK)) {
+                //第二次查询点买记录
+                securitiesStockEntrust.setBuyRecordState(BuyRecordState.HASENTRUST);
+                isBuyInLock = true;
+            }
             return buyRecordDto;
         }
         String entrustNo = securitiesStockEntrust.getEntrustNo();
-        if (!BuyRecordState.HASENTRUST.equals(securitiesStockEntrust.getBuyRecordState())) {
+        BuyRecordState tempBuyRecordState = securitiesStockEntrust.getBuyRecordState();
+        if(!BuyRecordState.HASENTRUST.equals(securitiesStockEntrust.getBuyRecordState())) {
             //如果该订单未委托上游则进行委托，委托成功则将该订单的订单状态修改为已委托
             logger.info("执行委托操作：{}",securitiesStockEntrust.getTradeNo());
-            entrustNo = entrustApplyBuyIn(securitiesStockEntrust, investorDto.getSecuritiesSession());
-            securitiesStockEntrust.setEntrustNo(entrustNo);
-            securitiesStockEntrust.setBuyRecordState(BuyRecordState.HASENTRUST);
+            try{
+                String afterEntrustNo = buyRecordApplySellOut(securitiesStockEntrust, investorDto.getSecuritiesSession());
+                securitiesStockEntrust.setEntrustNo(afterEntrustNo);
+                securitiesStockEntrust.setBuyRecordState(BuyRecordState.HASENTRUST);
+            }catch (SecuritiesStockException sse) {
+                logger.error("自动买入点买记录委托异常：{}",sse.getMessage());
+                return null;
+            }
         }
         Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
         BuyRecordDto result ;
