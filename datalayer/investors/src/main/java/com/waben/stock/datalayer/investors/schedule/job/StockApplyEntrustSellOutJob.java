@@ -44,6 +44,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                     SecuritiesStockEntrust securitiesStockEntrust = entry.getValue();
                     logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
                     BuyRecordDto buyRecordDto = investorService.voluntarilyApplySellOut(securitiesStockEntrust);
+                    logger.info("委托卖出结果：{}",buyRecordDto);
                     if (buyRecordDto != null) {
                         if (BuyRecordState.SELLLOCK.equals(buyRecordDto.getState())) {
                             logger.info("委托卖出成功：{}", JacksonUtil.encode(buyRecordDto));
