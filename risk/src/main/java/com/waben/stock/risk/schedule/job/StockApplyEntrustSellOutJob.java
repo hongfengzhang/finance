@@ -4,6 +4,7 @@ import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.risk.container.PositionStockContainer;
@@ -11,6 +12,7 @@ import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrustHttp;
+import com.waben.stock.risk.web.StockQuotationHttp;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -19,10 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Created by yuyidi on 2017/12/17.
@@ -40,7 +39,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     private SecuritiesEntrustHttp securitiesEntrust = ApplicationContextBeanFactory.getBean(SecuritiesEntrustHttp
             .class);
     private EntrustProducer entrustProducer = ApplicationContextBeanFactory.getBean(EntrustProducer.class);
-
+    private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
     private Boolean interrupted = false;
     private long millisOfDay = 24 * 60 * 60 * 1000;
 
@@ -102,7 +101,10 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 //                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
 //                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
 //                                    .getBusinessPrice()));
-                            securitiesStockEntrust.setEntrustPrice(securitiesStockEntrust.getEntrustPrice().add(new BigDecimal(Math.random()+"")));
+                            List<String> stock = new ArrayList();
+                            stock.add(securitiesStockEntrust.getStockCode());
+                            List<StockMarket> stockMarkets = stockQuotationHttp.fetQuotationByCode(stock);
+                            securitiesStockEntrust.setEntrustPrice(stockMarkets.get(0).getLastPrice());
                             entrustProducer.entrustSellOut(entry.getValue());
                             stockEntrusts.remove(entry.getKey());
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust
