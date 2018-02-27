@@ -14,6 +14,7 @@ import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -67,9 +68,11 @@ public class StockQuotationJob implements InterruptableJob {
                 List<PositionStock> result = future.get();
                 for (PositionStock stock : result) {
                     logger.info("风控点买交易记录:{},风控类型:{}", stock.getTradeNo(), stock.getWindControlType());
-                    positionProducer.riskPositionSellOut(stock);
+                    if(stock.getWindControlType()!=null) {
+                        positionProducer.riskPositionSellOut(stock);
+                        entrustSellOutContainer.remove(stock.getTradeNo());
+                    }
                     stocks.remove(stock);
-                    entrustSellOutContainer.remove(stock.getTradeNo());
                 }
             } catch (InterruptedException e) {
                 logger.error("中断异常:{}", e.getMessage());
