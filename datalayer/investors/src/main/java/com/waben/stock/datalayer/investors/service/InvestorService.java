@@ -258,7 +258,7 @@ public class InvestorService {
         if (!isSellLock) {
             Investor investor = CopyBeanUtils.copyBeanProperties(Investor.class, investorDto, false);
             try {
-                result = buyRecordBusiness.entrustApplySellOut(investor, securitiesStockEntrust, entrustNo,
+                result = buyRecordBusiness.entrustApplySellOut(investor, securitiesStockEntrust, securitiesStockEntrust.getEntrustNo(),
                         securitiesStockEntrust.getWindControlType());
             } catch (Exception ex) {
                 logger.error("卖出异常：{}", ex.getMessage());
@@ -429,7 +429,7 @@ public class InvestorService {
         if (!isBuyInLock) {
             Investor investor = CopyBeanUtils.copyBeanProperties(investorDto, new Investor(), false);
             try {
-                result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, entrustNo);
+                result = buyRecordBusiness.buyRecordApplyBuyIn(investor, securitiesStockEntrust, securitiesStockEntrust.getEntrustNo());
             } catch (Exception ex) {
                 logger.error("服务异常：{}", ex.getMessage());
                 //此时可能数据未修改成功，则将内存中的委托订单更改为已委托的状态
