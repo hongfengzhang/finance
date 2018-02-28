@@ -78,6 +78,10 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 //                    riskBuyInStock.setWindControlType(WindControlType.LIMITDOWN.getIndex());
 //                }
 //            }else
+            if (stockMarket.getStatus()==0) {
+                logger.info("股票已停牌：{}",riskBuyInStock.getStockName());
+                continue;
+            }
             if (currentDayL - expriessDayL >= 0 && currentTime.compareTo(expriessTime) >= 0) {
                 //判断持仓到期时间是否已经达到且是否达到14:40:00
                 logger.info("交易期满:{}", riskBuyInStock.getTradeNo());
