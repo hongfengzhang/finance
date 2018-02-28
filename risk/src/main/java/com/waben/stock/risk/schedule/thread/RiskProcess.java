@@ -62,12 +62,12 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
             if(flag) {
                 flag = false;
-                lossPosition = lastPrice.add(new BigDecimal("0.01"));
-                profitPosition = lastPrice.add(new BigDecimal("0.01"));
-            }else {
-                flag = true;
                 lossPosition = lastPrice.subtract(new BigDecimal("0.01"));
                 profitPosition = lastPrice.subtract(new BigDecimal("0.01"));
+            }else {
+                flag = true;
+                lossPosition = lastPrice.add(new BigDecimal("0.01"));
+                profitPosition = lastPrice.add(new BigDecimal("0.01"));
             }
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             Date currentDay = new Date();
@@ -98,7 +98,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                 if (profitPosition.compareTo(lastPrice) == -1 || profitPosition.compareTo(lastPrice) == 0 ||
                         lossPosition.compareTo(lastPrice) == 1 || lossPosition.compareTo(lastPrice) == 0) {
 
-                    if(((currentDayL/millisOfDay)+1)-( riskBuyInStock.getBuyingTime().getTime()/millisOfDay)>=0) {
+                    if(((currentDayL/millisOfDay))-( riskBuyInStock.getBuyingTime().getTime()/millisOfDay)>=1) {
                         if (lastPrice.compareTo(profitPosition) >= 0) {
                             //达到止盈点位
                             riskBuyInStock.setWindControlType(WindControlType.REACHPROFITPOINT.getIndex());
