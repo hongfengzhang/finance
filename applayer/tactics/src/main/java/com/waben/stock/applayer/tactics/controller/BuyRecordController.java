@@ -25,7 +25,6 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;

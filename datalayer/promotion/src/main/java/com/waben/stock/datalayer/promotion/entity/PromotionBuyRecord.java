@@ -2,11 +2,18 @@ package com.waben.stock.datalayer.promotion.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.waben.stock.datalayer.promotion.entity.enumconverter.BuyingRecordStatusConverter;
+import com.waben.stock.interfaces.enums.BuyRecordState;
 
 /**
  * 推广渠道产生的策略
@@ -53,6 +60,18 @@ public class PromotionBuyRecord {
 	 * 申请市值
 	 */
 	private BigDecimal applyAmount;
+	/**
+	 * 状态
+	 */
+	@Column(name = "state")
+	@Convert(converter = BuyingRecordStatusConverter.class)
+	private BuyRecordState state;
+	/**
+	 * 对应的经纪人
+	 */
+	@ManyToOne
+	@JoinColumn(name = "agent_id")
+	private Agent agent;
 
 	public Long getId() {
 		return id;
@@ -124,6 +143,22 @@ public class PromotionBuyRecord {
 
 	public void setApplyAmount(BigDecimal applyAmount) {
 		this.applyAmount = applyAmount;
+	}
+
+	public Agent getAgent() {
+		return agent;
+	}
+
+	public void setAgent(Agent agent) {
+		this.agent = agent;
+	}
+
+	public BuyRecordState getState() {
+		return state;
+	}
+
+	public void setState(BuyRecordState state) {
+		this.state = state;
 	}
 
 }

@@ -105,8 +105,8 @@ public class JiguangService {
 	/**
 	 * 推送通知
 	 */
-	private void pushNotification(PushPayload payload) {
-		JPushClient jpushClient = new JPushClient(MASTER_SECRET, APP_KEY, null, ClientConfig.getInstance());
+	private void pushNotification(PushPayload payload, String appKey, String masterSecret) {
+		JPushClient jpushClient = new JPushClient(masterSecret != null ? masterSecret : MASTER_SECRET, appKey != null ? appKey : APP_KEY, null, ClientConfig.getInstance());
 		try {
 			PushResult result = jpushClient.sendPush(payload);
 			logger.info("Got result - " + result);
@@ -124,16 +124,16 @@ public class JiguangService {
 		}
 	}
 
-	public void pushAllDevice(String title, String alert, Map<String, String> extras) {
-		pushNotification(buildPushObjectForAllDevice(title, alert, extras));
+	public void pushAllDevice(String title, String alert, Map<String, String> extras, String appKey, String masterSecret) {
+		pushNotification(buildPushObjectForAllDevice(title, alert, extras), appKey, masterSecret);
 	}
 
-	public void pushSingleDevice(String registrationId, String title, String alert, Map<String, String> extras) {
-		pushNotification(buildPushObjectForSingle(registrationId, title, alert, extras));
+	public void pushSingleDevice(String registrationId, String title, String alert, Map<String, String> extras, String appKey, String masterSecret) {
+		pushNotification(buildPushObjectForSingle(registrationId, title, alert, extras), appKey, masterSecret);
 	}
 
-	public void pushMultipleDevice(String[] registrationIdArr, String title, String alert, Map<String, String> extras) {
-		pushNotification(buildPushObjectForMultiple(registrationIdArr, title, alert, extras));
+	public void pushMultipleDevice(String[] registrationIdArr, String title, String alert, Map<String, String> extras, String appKey, String masterSecret) {
+		pushNotification(buildPushObjectForMultiple(registrationIdArr, title, alert, extras), appKey, masterSecret);
 	}
 
 }

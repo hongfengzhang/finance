@@ -194,6 +194,7 @@ public class BuyRecordBusiness {
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
 					inner.setStockCode(settlement.getBuyRecord().getStockCode());
+					inner.setNumberOfStrand(settlement.getBuyRecord().getNumberOfStrand());
 					inner.setStockName(settlement.getBuyRecord().getStockName());
 					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
@@ -205,6 +206,7 @@ public class BuyRecordBusiness {
 						TradeDynamicDto inner = new TradeDynamicDto();
 						inner.setTradeType(1);
 						inner.setPublisherId(buyRecord.getPublisherId());
+						inner.setNumberOfStrand(buyRecord.getNumberOfStrand());
 						inner.setStockCode(buyRecord.getStockCode());
 						inner.setStockName(buyRecord.getStockName());
 						inner.setPhone(buyRecord.getPublisherPhone());

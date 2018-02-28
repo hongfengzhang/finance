@@ -61,6 +61,8 @@ public class Agent {
 	/**
 	 * 审核人
 	 */
+	@ManyToOne
+	@JoinColumn(name = "audit_user")
 	private User auditUser;
 
 	public Long getId() {

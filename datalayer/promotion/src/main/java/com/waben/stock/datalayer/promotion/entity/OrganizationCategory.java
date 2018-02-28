@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 结构类别
+ * 机构类别
  * 
  * @author luomengan
  *
