@@ -33,7 +33,7 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
-		exceptionResolvers.add(new TacticsExecptionHandler());
+		exceptionResolvers.add(new PromotionExecptionHandler());
 		super.configureHandlerExceptionResolvers(exceptionResolvers);
 	}
 

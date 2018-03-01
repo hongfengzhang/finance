@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.promotion.repository;
 
+import java.util.List;
+
 import com.waben.stock.datalayer.promotion.entity.Organization;
 
 /**
@@ -9,5 +11,9 @@ import com.waben.stock.datalayer.promotion.entity.Organization;
  *
  */
 public interface OrganizationDao extends BaseDao<Organization, Long> {
+
+	List<Organization> listByParent(Organization parent);
+
+	List<Organization> listByParentOrderByCodeDesc(Organization parent);
 
 }
