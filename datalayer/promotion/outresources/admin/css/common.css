@@ -28,6 +28,10 @@ table.dataTable thead tr th:first-child:after {
 	padding-left: 0px;
 	text-align: center;
 }
+/** 一些通用样式 **/
+.width300 {
+	width: 300px!important;
+}
 .width150 {
 	width: 150px!important;
 }
@@ -55,10 +59,19 @@ table.dataTable thead tr th:first-child:after {
 .mr5 {
 	margin-right: 5px;
 }
+.mr10 {
+	margin-right: 10px;
+}
+.mr20 {
+	margin-right: 20px;
+}
 .mb5 {
 	margin-bottom: 5px;
 }
 .plr0 {
 	padding-left: 0px;
 	padding-right: 0px;
+}
+.align-center {
+	text-align: center;
 }

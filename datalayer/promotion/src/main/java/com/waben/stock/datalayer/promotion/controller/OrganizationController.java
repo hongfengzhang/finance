@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.promotion.entity.Organization;
+import com.waben.stock.datalayer.promotion.pojo.query.OrganizationForm;
+import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
 import com.waben.stock.datalayer.promotion.service.OrganizationService;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -48,19 +52,19 @@ public class OrganizationController {
 	public Response<Page<Organization>> organizations(int page, int limit) {
 		return new Response<>((Page<Organization>) organizationService.organizations(page, limit));
 	}
-	
+
 	@GetMapping("/list")
 	@ApiOperation(value = "获取机构列表")
 	public Response<List<Organization>> list() {
 		return new Response<>(organizationService.list());
 	}
-	
+
 	/******************************** 后台管理 **********************************/
-	
+
 	@PostMapping("/")
 	@ApiOperation(value = "添加机构", hidden = true)
-	public Response<Organization> addition(Organization organization) {
-		return new Response<>(organizationService.addOrganization(organization));
+	public Response<Organization> addition(OrganizationForm orgForm) {
+		return new Response<>(organizationService.addOrganization(orgForm));
 	}
 
 	@PutMapping("/")
@@ -75,18 +79,30 @@ public class OrganizationController {
 		organizationService.deleteOrganization(id);
 		return new Response<Long>(id);
 	}
-	
+
 	@PostMapping("/deletes")
 	@ApiOperation(value = "批量删除机构（多个id以逗号分割）", hidden = true)
 	public Response<Boolean> deletes(String ids) {
 		organizationService.deleteOrganizations(ids);
 		return new Response<Boolean>(true);
 	}
-	
+
 	@GetMapping("/adminList")
 	@ApiOperation(value = "获取机构列表(后台管理)", hidden = true)
 	public Response<List<Organization>> adminList() {
 		return new Response<>(organizationService.list());
+	}
+
+	@PostMapping("/adminPage")
+	@ApiOperation(value = "获取机构分页数据(后台管理)")
+	public Response<Page<Organization>> adminPage(@RequestBody OrganizationQuery query) {
+		return new Response<>((Page<Organization>) organizationService.pagesByQuery(query));
+	}
+
+	@GetMapping("/listByParentId")
+	@ApiOperation(value = "根据父机构ID获取机构")
+	public Response<List<Organization>> listByParentId(@RequestParam(required = true, defaultValue = "0") Long parentId) {
+		return new Response<>(organizationService.listByParentId(parentId));
 	}
 
 }

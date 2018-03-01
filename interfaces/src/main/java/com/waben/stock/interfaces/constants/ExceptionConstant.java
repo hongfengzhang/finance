@@ -126,4 +126,11 @@ public class ExceptionConstant {
 	public static final String INVESTOR_STOCKACCOUNT_NOT_EXIST = "7005";
 	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
 	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
+
+	// 经纪人服务异常
+	// 机构不存在
+	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
+	// 机构类别不存在
+	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
+	
 }

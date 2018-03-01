@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.promotion.entity;
 
 import java.util.Date;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import com.waben.stock.datalayer.promotion.entity.enumconverter.OrganizationStateConverter;
+import com.waben.stock.interfaces.enums.OrganizationState;
 
 /**
  * 机构
@@ -36,23 +41,45 @@ public class Organization {
 	 */
 	private Integer level;
 	/**
+	 * 机构状态
+	 */
+	@Convert(converter = OrganizationStateConverter.class)
+	private OrganizationState state;
+	/**
 	 * 所属类别
 	 */
 	@ManyToOne
 	@JoinColumn(name = "category_id")
 	private OrganizationCategory category;
 	/**
-	 * 父级类别
+	 * 父级机构
 	 */
-	private Long parentId;
+	@ManyToOne
+	@JoinColumn(name = "parent_id")
+	private Organization parent;
 	/**
 	 * 创建时间
 	 */
 	private Date createTime;
 	/**
-	 * 排序号
+	 * 备注
 	 */
-	private Integer sortNum;
+	private String remark;
+	/**
+	 * 所属类别ID
+	 */
+	@Transient
+	private Long categoryId;
+	/**
+	 * 所属类别名称
+	 */
+	@Transient
+	private String categoryName;
+	/**
+	 * 父级机构代码
+	 */
+	@Transient
+	private String parentCode;
 
 	public Long getId() {
 		return id;
@@ -86,12 +113,12 @@ public class Organization {
 		this.category = category;
 	}
 
-	public Long getParentId() {
-		return parentId;
+	public Organization getParent() {
+		return parent;
 	}
 
-	public void setParentId(Long parentId) {
-		this.parentId = parentId;
+	public void setParent(Organization parent) {
+		this.parent = parent;
 	}
 
 	public Date getCreateTime() {
@@ -110,12 +137,41 @@ public class Organization {
 		this.level = level;
 	}
 
-	public Integer getSortNum() {
-		return sortNum;
+	public OrganizationState getState() {
+		return state;
 	}
 
-	public void setSortNum(Integer sortNum) {
-		this.sortNum = sortNum;
+	public void setState(OrganizationState state) {
+		this.state = state;
+	}
+
+	public String getRemark() {
+		return remark;
+	}
+
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
+
+	public Long getCategoryId() {
+		if (category != null) {
+			return category.getId();
+		}
+		return null;
+	}
+
+	public String getCategoryName() {
+		if (category != null) {
+			return category.getName();
+		}
+		return null;
+	}
+
+	public String getParentCode() {
+		if (parent != null) {
+			return parent.getCode();
+		}
+		return null;
 	}
 
 }

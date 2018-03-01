@@ -94,7 +94,7 @@ public class BuyRecordService {
 
 	@Autowired
 	private VoluntarilyBuyInProducer producer;
-	
+
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -392,9 +392,13 @@ public class BuyRecordService {
 		buyRecord.setWindControlType(WindControlType.PUBLISHERAPPLY);
 		// 获取股票的跌停价
 		StockMarket market = RetriveStockOverHttp.stockMarket(restTemplate, buyRecord.getStockCode());
-		if(market == null || market.getDownLimitPrice() == null || market.getDownLimitPrice().compareTo(new BigDecimal(0)) <= 0) {
-			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, String.format("获取股票{}的跌停价失败!", buyRecord.getStockCode()));
+		if (market == null || market.getDownLimitPrice() == null
+				|| market.getDownLimitPrice().compareTo(new BigDecimal(0)) <= 0) {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION,
+					String.format("获取股票{}的跌停价失败!", buyRecord.getStockCode()));
 		}
+		// 修改点买记录状态
+		changeState(buyRecord, false);
 		// 放入自动卖出股票队列
 		SecuritiesStockEntrust entrust = new SecuritiesStockEntrust();
 		entrust.setBuyRecordId(buyRecord.getId());
@@ -406,8 +410,7 @@ public class BuyRecordService {
 		entrust.setEntrustPrice(market.getDownLimitPrice());
 		entrust.setWindControlType(WindControlType.PUBLISHERAPPLY.getIndex());
 		producer.voluntarilyEntrustApplySellOut(entrust);
-		// 修改点买记录状态
-		changeState(buyRecord, false);
+		// 发送站外消息
 		sendOutsideMessage(buyRecord);
 		return buyRecord;
 	}
@@ -681,7 +684,7 @@ public class BuyRecordService {
 		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
 			@Override
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
-										 CriteriaBuilder criteriaBuilder) {
+					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
 				Predicate state = criteriaBuilder.in(root.get("state")).value(BuyRecordState.WITHDRAWLOCK)
 						.value(BuyRecordState.REVOKE);
@@ -709,7 +712,7 @@ public class BuyRecordService {
 		return pages;
 	}
 
-    public BuyRecord revisionState(BuyRecord buyRecord) {
+	public BuyRecord revisionState(BuyRecord buyRecord) {
 		return changeState(buyRecord, false);
 	}
 }

@@ -28,7 +28,7 @@ import com.waben.stock.interfaces.pojo.ExceptionInformation;
  * @description 统一异常处理 第一种
  */
 // @Component
-public class TacticsExecptionHandler implements HandlerExceptionResolver {
+public class PromotionExecptionHandler implements HandlerExceptionResolver {
 	Logger logger = LoggerFactory.getLogger(getClass());
 	MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
 	Map<String, String> exceptionMap;
@@ -38,7 +38,7 @@ public class TacticsExecptionHandler implements HandlerExceptionResolver {
 		exceptionMap = ExceptionMap.exceptionMap;
 	}
 
-	public TacticsExecptionHandler() {
+	public PromotionExecptionHandler() {
 		this.exceptions
 				.add(new ExceptionInformation(NoHandlerFoundException.class, HttpServletResponse.SC_NOT_FOUND, "404"));
 		this.exceptions

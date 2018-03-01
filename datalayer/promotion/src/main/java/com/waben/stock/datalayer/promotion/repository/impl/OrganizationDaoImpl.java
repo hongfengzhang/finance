@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
@@ -58,6 +60,17 @@ public class OrganizationDaoImpl implements OrganizationDao {
 	@Override
 	public List<Organization> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<Organization> listByParent(Organization parent) {
+		List<Organization> list = repository.findByParent(parent); 
+		return list;
+	}
+
+	@Override
+	public List<Organization> listByParentOrderByCodeDesc(Organization parent) {
+		return repository.findByParent(parent, new Sort(new Sort.Order(Direction.DESC, "code")));
 	}
 
 }
