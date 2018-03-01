@@ -55,8 +55,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                 tradeSession = currTradeSession;
             }
             BigDecimal lastPrice = stockMarket.getLastPrice();
-//            BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
-//            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
+            BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
+            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
@@ -78,8 +78,17 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 //                    riskBuyInStock.setWindControlType(WindControlType.LIMITDOWN.getIndex());
 //                }
 //            }else
-            if (stockMarket.getStatus()==0) {
-                logger.info("股票已停牌：{}",riskBuyInStock.getStockName());
+
+            if(stockMarket.getStatus()==0||lastPrice.compareTo(downLimitPrice)==0||lastPrice.compareTo(upLimitPrice)==0) {
+                if(lastPrice.compareTo(upLimitPrice)==0) {
+                    logger.info("股票已涨停：{}",riskBuyInStock.getStockName());
+                }
+                if(lastPrice.compareTo(downLimitPrice)==0) {
+                    logger.info("股票已跌停：{}",riskBuyInStock.getStockName());
+                }
+                if (stockMarket.getStatus()==0) {
+                    logger.info("股票已停牌：{}",riskBuyInStock.getStockName());
+                }
                 continue;
             }
             if (currentDayL - expriessDayL >= 0 && currentTime.compareTo(expriessTime) >= 0) {
