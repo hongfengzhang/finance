@@ -11,10 +11,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.promotion.entity.PromotionBuyRecord;
+import com.waben.stock.datalayer.promotion.pojo.bean.PromotionBuyRecordBean;
+import com.waben.stock.datalayer.promotion.pojo.query.PromotionBuyRecordQuery;
 import com.waben.stock.datalayer.promotion.service.PromotionBuyRecordService;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -87,6 +90,12 @@ public class PromotionBuyRecordController {
 	@ApiOperation(value = "获取推广渠道产生的策略列表(后台管理)", hidden = true)
 	public Response<List<PromotionBuyRecord>> adminList() {
 		return new Response<>(promotionBuyRecordService.list());
+	}
+	
+	@PostMapping("/adminPage")
+	@ApiOperation(value = "获取推广渠道产生的策略分页数据(后台管理)")
+	public Response<Page<PromotionBuyRecordBean>> adminPage(@RequestBody PromotionBuyRecordQuery query) {
+		return new Response<>((Page<PromotionBuyRecordBean>) promotionBuyRecordService.pagesByQuery(query));
 	}
 
 }

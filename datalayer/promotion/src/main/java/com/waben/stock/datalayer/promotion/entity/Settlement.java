@@ -81,15 +81,21 @@ public class Settlement {
 	 */
 	private BigDecimal agentIncome;
 	/**
+	 * 结算时间
+	 */
+	private Date settlementTime;
+	/**
 	 * 对应的经纪人
 	 */
 	@ManyToOne
 	@JoinColumn(name = "agent_id")
 	private Agent agent;
 	/**
-	 * 结算时间
+	 * 对应的机构
 	 */
-	private Date settlementTime;
+	@ManyToOne
+	@JoinColumn(name = "org_id")
+	private Organization org;
 
 	public Long getId() {
 		return id;
@@ -225,6 +231,14 @@ public class Settlement {
 
 	public void setAgent(Agent agent) {
 		this.agent = agent;
+	}
+
+	public Organization getOrg() {
+		return org;
+	}
+
+	public void setOrg(Organization org) {
+		this.org = org;
 	}
 
 }

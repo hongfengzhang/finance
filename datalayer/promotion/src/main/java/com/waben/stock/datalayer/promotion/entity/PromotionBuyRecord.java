@@ -2,8 +2,6 @@ package com.waben.stock.datalayer.promotion.entity;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,9 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.waben.stock.datalayer.promotion.entity.enumconverter.BuyingRecordStatusConverter;
-import com.waben.stock.interfaces.enums.BuyRecordState;
 
 /**
  * 推广渠道产生的策略
@@ -31,7 +26,7 @@ public class PromotionBuyRecord {
 	/**
 	 * 点买记录ID
 	 */
-	private Long burRecordId;
+	private Long buyRecordId;
 	/**
 	 * 发布人ID
 	 */
@@ -61,17 +56,21 @@ public class PromotionBuyRecord {
 	 */
 	private BigDecimal applyAmount;
 	/**
-	 * 状态
+	 * 持股数
 	 */
-	@Column(name = "state")
-	@Convert(converter = BuyingRecordStatusConverter.class)
-	private BuyRecordState state;
+	private Integer numberOfStrand;
 	/**
 	 * 对应的经纪人
 	 */
 	@ManyToOne
 	@JoinColumn(name = "agent_id")
 	private Agent agent;
+	/**
+	 * 对应的机构
+	 */
+	@ManyToOne
+	@JoinColumn(name = "org_id")
+	private Organization org;
 
 	public Long getId() {
 		return id;
@@ -81,12 +80,12 @@ public class PromotionBuyRecord {
 		this.id = id;
 	}
 
-	public Long getBurRecordId() {
-		return burRecordId;
+	public Long getBuyRecordId() {
+		return buyRecordId;
 	}
 
-	public void setBurRecordId(Long burRecordId) {
-		this.burRecordId = burRecordId;
+	public void setBuyRecordId(Long buyRecordId) {
+		this.buyRecordId = buyRecordId;
 	}
 
 	public Long getPublisherId() {
@@ -153,12 +152,20 @@ public class PromotionBuyRecord {
 		this.agent = agent;
 	}
 
-	public BuyRecordState getState() {
-		return state;
+	public Organization getOrg() {
+		return org;
 	}
 
-	public void setState(BuyRecordState state) {
-		this.state = state;
+	public void setOrg(Organization org) {
+		this.org = org;
+	}
+
+	public Integer getNumberOfStrand() {
+		return numberOfStrand;
+	}
+
+	public void setNumberOfStrand(Integer numberOfStrand) {
+		this.numberOfStrand = numberOfStrand;
 	}
 
 }

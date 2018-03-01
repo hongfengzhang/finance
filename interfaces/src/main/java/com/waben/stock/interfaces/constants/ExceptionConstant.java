@@ -117,6 +117,8 @@ public class ExceptionConstant {
 	public static final String STOCK_ARRIVEUPLIMIT_EXCEPTION = "6026";
 	// 该股票已跌停，不能购买
 	public static final String STOCK_ARRIVEDOWNLIMIT_EXCEPTION = "6027";
+	// ST、*ST不能购买
+	public static final String ST_STOCK_CANNOTBUY_EXCEPTION = "6028";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
@@ -132,5 +134,5 @@ public class ExceptionConstant {
 	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
 	// 机构类别不存在
 	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
-	
+
 }

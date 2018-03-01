@@ -31,8 +31,6 @@ public enum BuyRecordState implements CommonalityEnum {
 
 	HASENTRUST("9","已委托");
 
-
-
 	BuyRecordState(String index, String status) {
 		this.index = index;
 		this.status = status;
