@@ -84,17 +84,32 @@ public class PromotionBuyRecordService {
 
 	public Page<PromotionBuyRecordBean> pagesByQuery(PromotionBuyRecordQuery query) {
 		String buyRecordIdCondition = "";
+		if(query.getBuyRecordId() != null && !"".equals(query.getBuyRecordId().trim())) {
+			buyRecordIdCondition = " and t1.buy_record_id='" + query.getBuyRecordId().trim() + "' ";
+		}
 		String stateCondition = "";
+		if(query.getState() != null && !"".equals(query.getState()) && !"0".equals(query.getState())) {
+			if("8-1".equals(stateCondition)) {
+				stateCondition = " and t2.state='8' and t2.wind_control_type is null ";
+			} else {
+				stateCondition = " and t2.state='" + query.getState() + "' ";
+			}
+		}
 		String publisherPhoneCondition = "";
+		if(query.getPublisherPhone() != null && !"".equals(query.getPublisherPhone().trim())) {
+			publisherPhoneCondition = " and t1.publisher_phone like '%" + query.getPublisherPhone() + "%' ";
+		}
 		String orgCodeCondition = "";
-		
+		if(query.getOrgCode() != null && !"".equals(query.getOrgCode())) {
+			orgCodeCondition = " and t4.code='" + query.getOrgCode() + "' ";
+		}
 		String sql = String
 				.format("select t1.buy_record_id, t1.publisher_id, t1.publisher_phone, t1.stock_code, t1.stock_name, t2.strategy_type_id, "
 						+ "t3.name as strategy_type_name, t1.apply_amount, t1.number_of_strand, t2.state, t2.wind_control_type, "
 						+ "t2.buying_time, t2.buying_price, t2.selling_price, t2.selling_time, t4.code as org_code, t4.name as org_name from p_buy_record t1 "
 						+ "LEFT JOIN buy_record t2 on t1.buy_record_id=t2.id "
 						+ "LEFT JOIN strategy_type t3 on t2.strategy_type_id=t3.id "
-						+ "LEFT JOIN p_organization t4 on t1.org_id=t4.id");
+						+ "LEFT JOIN p_organization t4 on t1.org_id=t4.id where 1=1 %s %s %s %s limit " + query.getPage() * query.getSize() + "," + query.getSize(), buyRecordIdCondition, stateCondition, publisherPhoneCondition, orgCodeCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setBuyRecordId", new Class<?>[] { Long.class }));

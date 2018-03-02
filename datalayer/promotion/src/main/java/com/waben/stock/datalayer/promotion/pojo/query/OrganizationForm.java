@@ -6,8 +6,6 @@ public class OrganizationForm {
 
 	private Long parentId;
 
-	private Long categoryId;
-
 	private String remark;
 
 	public String getName() {
@@ -24,14 +22,6 @@ public class OrganizationForm {
 
 	public void setParentId(Long parentId) {
 		this.parentId = parentId;
-	}
-
-	public Long getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(Long categoryId) {
-		this.categoryId = categoryId;
 	}
 
 	public String getRemark() {

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.promotion.entity.Organization;
+import com.waben.stock.datalayer.promotion.pojo.bean.TreeNode;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationForm;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
 import com.waben.stock.datalayer.promotion.service.OrganizationService;
@@ -97,6 +98,12 @@ public class OrganizationController {
 	@ApiOperation(value = "获取机构分页数据(后台管理)")
 	public Response<Page<Organization>> adminPage(@RequestBody OrganizationQuery query) {
 		return new Response<>((Page<Organization>) organizationService.pagesByQuery(query));
+	}
+	
+	@GetMapping("/adminTree")
+	@ApiOperation(value = "获取机构树")
+	public List<TreeNode> adminTree() {
+		return organizationService.adminTree();
 	}
 
 	@GetMapping("/listByParentId")

@@ -24,6 +24,10 @@ public class OrganizationQuery extends PageAndSortQuery {
 	 * 机构状态
 	 */
 	private String state;
+	/**
+	 * 父级机构ID
+	 */
+	private String parentId;
 
 	public String getCode() {
 		return code;
@@ -47,6 +51,14 @@ public class OrganizationQuery extends PageAndSortQuery {
 
 	public void setState(String state) {
 		this.state = state;
+	}
+
+	public String getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
 	}
 
 }

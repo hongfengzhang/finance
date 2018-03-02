@@ -12,7 +12,6 @@ $(function() {
 		var keyword = aoData[5].value.value;
 		searchData.page = (draw - 1);
 		searchData.size = 10;
-		alert(JSON.stringify(searchData));
 		$.ajax({
             type: "POST",
             url: "/promotionBuyRecord/adminPage",

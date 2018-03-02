@@ -46,12 +46,6 @@ public class Organization {
 	@Convert(converter = OrganizationStateConverter.class)
 	private OrganizationState state;
 	/**
-	 * 所属类别
-	 */
-	@ManyToOne
-	@JoinColumn(name = "category_id")
-	private OrganizationCategory category;
-	/**
 	 * 父级机构
 	 */
 	@ManyToOne
@@ -75,6 +69,11 @@ public class Organization {
 	 */
 	@Transient
 	private String categoryName;
+	/**
+	 * 父级机构ID
+	 */
+	@Transient
+	private Long parentId;
 	/**
 	 * 父级机构代码
 	 */
@@ -103,14 +102,6 @@ public class Organization {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public OrganizationCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(OrganizationCategory category) {
-		this.category = category;
 	}
 
 	public Organization getParent() {
@@ -153,16 +144,9 @@ public class Organization {
 		this.remark = remark;
 	}
 
-	public Long getCategoryId() {
-		if (category != null) {
-			return category.getId();
-		}
-		return null;
-	}
-
-	public String getCategoryName() {
-		if (category != null) {
-			return category.getName();
+	public Long getParentId() {
+		if (parent != null) {
+			return parent.getId();
 		}
 		return null;
 	}

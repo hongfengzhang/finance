@@ -22,9 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.promotion.entity.Organization;
 import com.waben.stock.datalayer.promotion.entity.OrganizationCategory;
+import com.waben.stock.datalayer.promotion.pojo.bean.TreeNode;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationForm;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
-import com.waben.stock.datalayer.promotion.repository.OrganizationCategoryDao;
 import com.waben.stock.datalayer.promotion.repository.OrganizationDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.OrganizationState;
@@ -40,9 +40,6 @@ public class OrganizationService {
 
 	@Autowired
 	private OrganizationDao organizationDao;
-	
-	@Autowired
-	private OrganizationCategoryDao orgCategoryDao;
 
 	public Organization getOrganizationInfo(Long id) {
 		return organizationDao.retrieve(id);
@@ -52,47 +49,39 @@ public class OrganizationService {
 	public Organization addOrganization(Organization organization) {
 		return organizationDao.create(organization);
 	}
-	
+
 	@Transactional
 	public Organization addOrganization(OrganizationForm orgForm) {
 		Organization parent = organizationDao.retrieve(orgForm.getParentId());
-		if(parent == null) {
+		int level = 1;
+		if (parent == null) {
 			throw new ServiceException(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION);
-		}
-		OrganizationCategory category = orgCategoryDao.retrieve(orgForm.getCategoryId());
-		if(category == null) {
-			throw new ServiceException(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION);
+		} else {
+			level = parent.getLevel() + 1;
 		}
 		// 生成机构代码
 		List<Organization> childList = organizationDao.listByParentOrderByCodeDesc(parent);
 		String code = parent.getCode();
-		if(childList != null && childList.size() > 0) {
+		if (childList != null && childList.size() > 0) {
 			Organization max = childList.get(0);
 			String suffix = max.getCode().substring(code.length());
 			Long seria = Long.parseLong(suffix) + 1;
 			String seriaStr = seria.toString();
-			if(seriaStr.length() < suffix.length()) {
+			if (seriaStr.length() < suffix.length()) {
 				int lack = suffix.length() - seriaStr.length();
-				for(int i = 0; i < lack; i++) {
+				for (int i = 0; i < lack; i++) {
 					seriaStr = "0" + seriaStr;
 				}
 			}
 			code += seriaStr;
 		} else {
-			if(category.getLevel() == 2) {
-				code += "001";
-			} else if(category.getLevel() == 3) {
-				code += "00001";
-			} else {
-				code += "001";
-			}
+			code += "001";
 		}
 		// 保存机构
 		Organization org = new Organization();
-		org.setCategory(category);
 		org.setCode(code);
 		org.setCreateTime(new Date());
-		org.setLevel(category.getLevel());
+		org.setLevel(level);
 		org.setName(orgForm.getName());
 		org.setParent(parent);
 		org.setRemark(orgForm.getRemark());
@@ -109,13 +98,13 @@ public class OrganizationService {
 	public void deleteOrganization(Long id) {
 		organizationDao.delete(id);
 	}
-	
+
 	@Transactional
 	public void deleteOrganizations(String ids) {
-		if(ids != null) {
-			String[] idArr= ids.split(",");
-			for(String id : idArr) {
-				if(!"".equals(id.trim())) {
+		if (ids != null) {
+			String[] idArr = ids.split(",");
+			for (String id : idArr) {
+				if (!"".equals(id.trim())) {
 					organizationDao.delete(Long.parseLong(id.trim()));
 				}
 			}
@@ -125,7 +114,7 @@ public class OrganizationService {
 	public Page<Organization> organizations(int page, int limit) {
 		return organizationDao.page(page, limit);
 	}
-	
+
 	public List<Organization> list() {
 		return organizationDao.list();
 	}
@@ -137,15 +126,25 @@ public class OrganizationService {
 			public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
-				Join<Organization, OrganizationCategory> join = root.join("category", JoinType.LEFT);
 				if (query.getCode() != null && !"".equals(query.getCode().trim())) {
 					predicateList.add(root.get("code").in(query.getCode()));
 				}
-				if(query.getState() != null && !"".equals(query.getState().trim()) && !"0".equals(query.getState().trim())) {
-					predicateList.add(criteriaBuilder.equal(root.get("state").as(OrganizationState.class), OrganizationState.getByIndex(query.getState().trim())));
+				if (query.getState() != null && !"".equals(query.getState().trim())
+						&& !"0".equals(query.getState().trim())) {
+					predicateList.add(criteriaBuilder.equal(root.get("state").as(OrganizationState.class),
+							OrganizationState.getByIndex(query.getState().trim())));
 				}
-				if(query.getCategoryId() != null && !"".equals(query.getCategoryId().trim()) && !"0".equals(query.getCategoryId().trim())) {
-					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), Long.parseLong(query.getCategoryId())));
+				if (query.getCategoryId() != null && !"".equals(query.getCategoryId().trim())
+						&& !"0".equals(query.getCategoryId().trim())) {
+					Join<Organization, OrganizationCategory> join = root.join("category", JoinType.LEFT);
+					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class),
+							Long.parseLong(query.getCategoryId())));
+				}
+				if (query.getParentId() != null && !"".equals(query.getParentId().trim())
+						&& !"0".equals(query.getParentId().trim())) {
+					Join<Organization, Organization> parentJoin = root.join("parent", JoinType.LEFT);
+					predicateList.add(criteriaBuilder.equal(parentJoin.get("id").as(Long.class),
+							Long.parseLong(query.getParentId())));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
@@ -160,13 +159,38 @@ public class OrganizationService {
 
 	public List<Organization> listByParentId(Long parentId) {
 		Organization parent = null;
-		if(parentId.longValue() > 0) {
+		if (parentId.longValue() > 0) {
 			parent = organizationDao.retrieve(parentId);
-			if(parent == null) {
+			if (parent == null) {
 				return new ArrayList<Organization>();
 			}
 		}
 		return organizationDao.listByParent(parent);
+	}
+
+	public List<TreeNode> adminTree() {
+		List<TreeNode> result = new ArrayList<>();
+		// 添加所有数据栏目
+		result.addAll(loopTree(null));
+		if(result.size() > 0) {
+			result.get(0).setOpen(true);
+		}
+		return result;
+	}
+
+	private List<TreeNode> loopTree(Organization parent) {
+		List<TreeNode> result = new ArrayList<>();
+		List<Organization> childList = organizationDao.listByParent(parent);
+		if (childList != null && childList.size() > 0) {
+			for (Organization child : childList) {
+				// 添加当前栏目
+				result.add(new TreeNode(child.getId(), child.getName(), child.getLevel(),
+						child.getParent() != null ? child.getParent().getId() : 0, false));
+				// 添加子栏目
+				result.addAll(loopTree(child));
+			}
+		}
+		return result;
 	}
 
 }

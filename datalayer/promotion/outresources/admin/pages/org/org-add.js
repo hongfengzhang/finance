@@ -3,6 +3,7 @@
  */
 $(function() {
 	// 加载layui
+	/*
 	layui.use(['element', 'table', 'form'], function() {
 		var form = layui.form;
 		// 获取平台select
@@ -62,6 +63,7 @@ $(function() {
 			$('input[name="parentId"]').val($("#operate-select").val());
 		});
 	});
+	*/
 	// 取消按钮
 	$("#cancel-btn").on('click', function() {
 		parent.layer.closeAll();
@@ -69,6 +71,9 @@ $(function() {
 	// 提交按钮
 	$("#submit-btn").on('click', function() {
 		var formData = $("#add-form").serialize();
+		if(formData.length > 0) {
+			formData = "parentId=" + parent.searchData.parentId + "&" + formData;
+		}
 		$.ajax({
             type: "POST",
             url: "/organization/",
@@ -80,7 +85,7 @@ $(function() {
             		parent.renderTable("#org-list-table");
             		parent.layer.closeAll();
             	} else {
-            		layer.msg(jsonResult.message);
+            		parent.layer.msg(jsonResult.message);
             	}
             }
         });

@@ -2,8 +2,8 @@
  * 机构列表
  */
 window.renderTable = function(){};
+window.searchData = { parentId: "1" };
 $(function() {
-	var searchData = {};
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -28,7 +28,6 @@ $(function() {
             	fnCallback(dtData);
             }
         });
-		searchData = {};
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -114,8 +113,38 @@ $(function() {
 			title: '添加机构',
 			shadeClose: true,
 			shade: 0.8,
-			area: ['500px', '400px'],
+			area: ['500px', '250px'],
 			content: 'org-add.html',
 		});
 	});
+	// 加载机构树
+	var setting = {
+		view: {
+			dblClickExpand: function(treeId, treeNode) {
+				return treeNode.level > 0;
+			}
+		},
+		data:{
+			simpleData:{
+				enable: true,
+				idKey: "id",
+				pIdKey: "pid",
+				rootPId: 0
+			}
+		},
+		async: {
+			enable: true,
+			url: "/organization/adminTree",
+			dataType: "json",
+			type: "get"
+		},
+		callback: {
+			// 点击节点列表显示子节点
+			onClick: function(event,treeId,treeNode) {
+				searchData.parentId = treeNode.id;
+				renderTable("#org-list-table");
+			}
+		}
+	};
+	$.fn.zTree.init($("#org-tree"), setting);
 });
