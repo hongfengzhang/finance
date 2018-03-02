@@ -18,6 +18,7 @@ import com.waben.stock.interfaces.vo.publisher.BindCardVo;
 import com.waben.stock.interfaces.vo.publisher.CapitalAccountVo;
 import com.waben.stock.interfaces.vo.publisher.PublisherVo;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;

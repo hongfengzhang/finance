@@ -35,4 +35,19 @@ public class SecurityAccountBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+
+    public SecurityAccountDto findById(Long id){
+        Response<SecurityAccountDto> response = securityAccountService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public void delete(Long id) {
+        securityAccountService.delete(id);
+    }
 }

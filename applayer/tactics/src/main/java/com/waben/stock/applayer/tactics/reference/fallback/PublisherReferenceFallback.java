@@ -10,6 +10,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 
+import java.util.List;
+
 /**
  * 发布人 reference服务接口fallback
  * 
@@ -53,6 +55,10 @@ public class PublisherReferenceFallback implements PublisherReference {
 	public Response<PageInfo<PublisherDto>> pagePromotionUser(Long id, int page, int size) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<List<PublisherDto>> fetchPublishers() {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);	}
 
 	@Override
 	public Response<PublisherDto> modiyHeadportrait(Long id, String headPortrait) {

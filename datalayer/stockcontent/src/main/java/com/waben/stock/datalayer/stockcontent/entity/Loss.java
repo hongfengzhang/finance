@@ -23,7 +23,7 @@ public class Loss {
 	private Integer multiple;
 	@JsonBackReference
 	@ManyToMany(targetEntity = StrategyType.class, mappedBy = "losses")
-	private Set<StrategyType> straegyTypes;
+	private Set<StrategyType> strategyTypes;
 
 	public Long getId() {
 		return id;
@@ -41,12 +41,12 @@ public class Loss {
 		this.point = point;
 	}
 
-	public Set<StrategyType> getStraegyTypes() {
-		return straegyTypes;
+	public Set<StrategyType> getStrategyTypes() {
+		return strategyTypes;
 	}
 
-	public void setStraegyTypes(Set<StrategyType> straegyTypes) {
-		this.straegyTypes = straegyTypes;
+	public void setStrategyTypes(Set<StrategyType> strategyTypes) {
+		this.strategyTypes = strategyTypes;
 	}
 
 	public Integer getMultiple() {

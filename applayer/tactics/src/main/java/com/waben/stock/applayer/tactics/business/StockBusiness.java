@@ -27,6 +27,7 @@ import com.waben.stock.applayer.tactics.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
@@ -194,6 +195,24 @@ public class StockBusiness {
 		return market.getStatus() == 0;
 	}
 
+	/**
+	 * 检查股票是否可以购买，停牌、涨停、跌停不能购买
+	 */
+	public void checkStock(String stockCode) {
+		List<String> codes = new ArrayList<>();
+		codes.add(stockCode);
+		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+		if (market.getStatus() == 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(0.1)) >= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(-0.1)) <= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION);
+		} else if(market.getName().toUpperCase().startsWith("ST") || market.getName().toUpperCase().startsWith("*ST")) {
+			throw new ServiceException(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION);
+		}
+	}
+
 	public List<StockMarket> ranking(String exponent, int rankType, int size) {
 		String code = "4609";
 		if ("2A01".equals(exponent)) {
@@ -215,13 +234,13 @@ public class StockBusiness {
 		if (rankType == 1) {
 			// 涨幅榜
 			Collections.sort(stockList, new SpeedUpComparator());
-		} else if(rankType == 2) {
+		} else if (rankType == 2) {
 			// 跌幅榜
 			Collections.sort(stockList, new SpeedDownComparator());
-		} else if(rankType == 3) {
+		} else if (rankType == 3) {
 			// 价格降序
 			Collections.sort(stockList, new PriceUpComparator());
-		} else if(rankType == 4) {
+		} else if (rankType == 4) {
 			// 价格升序
 			Collections.sort(stockList, new PriceDownComparator());
 		}
@@ -252,7 +271,7 @@ public class StockBusiness {
 			return upDropSpeed1.compareTo(upDropSpeed2);
 		}
 	}
-	
+
 	private class PriceUpComparator implements Comparator<StockMarket> {
 		@Override
 		public int compare(StockMarket o1, StockMarket o2) {

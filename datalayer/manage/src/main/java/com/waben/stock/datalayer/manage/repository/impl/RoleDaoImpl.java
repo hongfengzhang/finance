@@ -24,17 +24,17 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public Role create(Role role) {
-        return null;
+        return repository.save(role);
     }
 
     @Override
     public void delete(Long id) {
-
+        repository.delete(id);
     }
 
     @Override
     public Role update(Role role) {
-        return null;
+        return repository.save(role);
     }
 
     @Override
@@ -54,6 +54,6 @@ public class RoleDaoImpl implements RoleDao {
 
     @Override
     public List<Role> list() {
-        return null;
+        return repository.findAll();
     }
 }

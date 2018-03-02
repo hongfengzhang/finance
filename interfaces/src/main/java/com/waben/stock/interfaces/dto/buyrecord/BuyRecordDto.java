@@ -64,6 +64,10 @@ public class BuyRecordDto {
 	 */
 	private BigDecimal lossPoint;
 	/**
+	 * 杠杆倍数
+	 */
+	private Integer lossMultiple;
+	/**
 	 * 止损预警点位
 	 */
 	private BigDecimal lossWarnPosition;
@@ -311,6 +315,10 @@ public class BuyRecordDto {
 		return windControlType;
 	}
 
+	public String getWindControlTypes() {
+		return windControlType != null ? windControlType.getType() : null;
+	}
+
 	public void setWindControlType(WindControlType windControlType) {
 		this.windControlType = windControlType;
 	}
@@ -474,6 +482,14 @@ public class BuyRecordDto {
 
 	public void setPublisherProfitOrLoss(BigDecimal publisherProfitOrLoss) {
 		this.publisherProfitOrLoss = publisherProfitOrLoss;
+	}
+
+	public Integer getLossMultiple() {
+		return lossMultiple;
+	}
+
+	public void setLossMultiple(Integer lossMultiple) {
+		this.lossMultiple = lossMultiple;
 	}
 
 }

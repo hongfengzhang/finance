@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.publisher;
 
+import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,8 @@ import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
+
+import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/11/12.
@@ -49,5 +52,6 @@ public interface PublisherInterface {
 	@RequestMapping(value = "/{id}/promotion/userpages", method = RequestMethod.GET)
 	Response<PageInfo<PublisherDto>> pagePromotionUser(@PathVariable("id") Long id,
 			@RequestParam(name = "page") int page, @RequestParam(name = "size") int size);
-
+	@RequestMapping(value = "/")
+	Response<List<PublisherDto>> fetchPublishers();
 }

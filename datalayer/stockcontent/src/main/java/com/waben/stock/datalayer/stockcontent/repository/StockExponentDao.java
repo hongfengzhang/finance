@@ -9,5 +9,4 @@ import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
 public interface StockExponentDao extends BaseDao<StockExponent, Long> {
 
     StockExponent retrieveWithExponeneCode(String exponentCode);
-
 }

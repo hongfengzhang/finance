@@ -5,13 +5,13 @@ package com.waben.stock.interfaces.pojo.query;
  * @desc
  */
 public class StrategyTypeQuery extends PageAndSortQuery {
-    Integer type;
+    private Integer state;
 
-    public Integer getType() {
-        return type;
+    public Integer getState() {
+        return state;
     }
 
-    public void setType(Integer type) {
-        this.type = type;
+    public void setState(Integer state) {
+        this.state = state;
     }
 }

@@ -15,6 +15,8 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
+import feign.Retryer;
+
 /**
  * @author Created by yuyidi on 2017/9/19.
  * @desc
@@ -43,6 +45,11 @@ public class BeanConfigurer {
 	@Bean
 	public RestTemplate restTemplate() {
 		return new RestTemplate();
+	}
+	
+	@Bean
+	Retryer feignRetryer() {
+		return Retryer.NEVER_RETRY;
 	}
 
 }

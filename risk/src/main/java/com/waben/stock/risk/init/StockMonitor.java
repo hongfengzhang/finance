@@ -1,32 +1,48 @@
 package com.waben.stock.risk.init;
 
-import com.waben.stock.interfaces.constants.HolidayConstant;
-import com.waben.stock.risk.schedule.WorkCalendar;
-import com.waben.stock.risk.schedule.job.*;
-import org.quartz.*;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
+
+import java.util.Date;
+
+import org.quartz.CronScheduleBuilder;
+import org.quartz.DateBuilder;
+import org.quartz.JobBuilder;
+import org.quartz.JobDetail;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerFactory;
+import org.quartz.SimpleTrigger;
+import org.quartz.Trigger;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.calendar.DailyCalendar;
 import org.quartz.impl.calendar.WeeklyCalendar;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
-import static org.quartz.TriggerBuilder.newTrigger;
+import com.waben.stock.interfaces.constants.HolidayConstant;
+import com.waben.stock.risk.schedule.WorkCalendar;
+import com.waben.stock.risk.schedule.job.BuyInStopJob;
+import com.waben.stock.risk.schedule.job.SellOutStopJob;
+import com.waben.stock.risk.schedule.job.StockApplyEntrustBuyInJob;
+import com.waben.stock.risk.schedule.job.StockApplyEntrustSellOutJob;
+import com.waben.stock.risk.schedule.job.StockApplyEntrustWithdrawJob;
+import com.waben.stock.risk.schedule.job.StockQuotationJob;
+import com.waben.stock.risk.schedule.job.WithdrawStopJob;
 
 /**
  * @author Created by yuyidi on 2017/11/6.
  * @desc 股票行情监控调度器
  */
 @Component
+@Order(1)
 public class StockMonitor implements CommandLineRunner {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-
+    private Scheduler schedulerInstance;
     /***
      * @author yuyidi 2017-11-27 20:04:24
      * @method run
@@ -45,7 +61,7 @@ public class StockMonitor implements CommandLineRunner {
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
         DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:45");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:30", "15:15");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "15:15");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
@@ -68,10 +84,10 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("calendarPM")
                 .build();
 
-        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 30 9,13 * * ?");
-        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 45 11 * * ?");
-        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 15 15 * * ?");
-
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 0 9,13 * * ?");
+        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
+        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 15 * * ?");
+        //买入任务
         JobDetail jobBuyIn = JobBuilder.newJob(StockApplyEntrustBuyInJob.class).withIdentity("jobBuyIn", "groupBuyIn")
                 .storeDurably(true)
                 .build();
@@ -96,6 +112,7 @@ public class StockMonitor implements CommandLineRunner {
                 .forJob(jobBuyInStop)
                 .build();
 
+        //卖出任务
         JobDetail jobSellOut = JobBuilder.newJob(StockApplyEntrustSellOutJob.class).withIdentity("jobSellOut",
                 "groupSellOut")
                 .storeDurably(true)
@@ -121,21 +138,33 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("workCalendar")
                 .forJob(jobSellOutStop)
                 .build();
-//        ListenerManager listenerManager = scheduler.getListenerManager();
-//        JobListener listener = new BuyInJobListener();
-//        Matcher<JobKey> matcher = KeyMatcher.keyEquals(job.getKey());
-//        listenerManager.addJobListener(listener, matcher);
-//        TriggerListener triggerListener = new BuyInTriggerListener();
-//        Matcher<TriggerKey> triggerAMKeyMatcher = KeyMatcher.keyEquals(triggerAMStop.getKey());
-//        Matcher<TriggerKey> triggerPMKeyMatcher = KeyMatcher.keyEquals(triggerPMStop.getKey());
-//        listenerManager.addTriggerListener(triggerListener,triggerAMKeyMatcher);
-//        listenerManager.addTriggerListener(triggerListener,triggerPMKeyMatcher);
-//        Set<Trigger> triggers = new HashSet<>();
-//        triggers.add(trigger);
-//        triggers.add(triggerAMStop);
-//        triggers.add(triggerPMStop);
-//        sched.scheduleJob(job,triggers,true);
-//        sched.scheduleJob(job2, triggers,true);
+
+        //撤单任务
+        JobDetail jobWithdraw = JobBuilder.newJob(StockApplyEntrustWithdrawJob.class).withIdentity("jobWithdraw",
+                "groupWithdraw")
+                .storeDurably(true)
+                .build();
+        JobDetail jobWithdrawStop = JobBuilder.newJob(WithdrawStopJob.class).withIdentity("jobWithdrawStop",
+                "groupWithdraw")
+                .storeDurably(true)
+                .build();
+        Trigger withdrawTriggerBegin = newTrigger().withIdentity("withdrawTriggerBegin", "groupWithdraw").startAt(runTime)
+                .withSchedule(scheduleEntrustBuilder)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobWithdraw)
+                .build();
+        Trigger withdrawTriggerAMStop = newTrigger().withIdentity("withdrawTriggerAMStop", "groupWithdraw").startAt
+                (runTime)
+                .withSchedule(scheduleBuilderAMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobWithdrawStop)
+                .build();
+        Trigger withdrawTriggerPMStop = newTrigger().withIdentity("withdrawTriggerPMStop", "groupWithdraw").startAt
+                (runTime)
+                .withSchedule(scheduleBuilderPMStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobWithdrawStop)
+                .build();
 
         scheduler.addJob(jobQuotation, true);
         scheduler.scheduleJob(stockQuotationAM);
@@ -147,12 +176,22 @@ public class StockMonitor implements CommandLineRunner {
         scheduler.scheduleJob(buyInTriggerAMStop);
         scheduler.scheduleJob(buyInTriggerPMStop);
 
-//
         scheduler.addJob(jobSellOut, true);
         scheduler.scheduleJob(sellOutTriggerBegin);
         scheduler.addJob(jobSellOutStop, true);
         scheduler.scheduleJob(sellOutTriggerAMStop);
         scheduler.scheduleJob(sellOutTriggerPMStop);
+
+        scheduler.addJob(jobWithdraw, true);
+        scheduler.scheduleJob(withdrawTriggerBegin);
+        scheduler.addJob(jobWithdrawStop, true);
+        scheduler.scheduleJob(withdrawTriggerAMStop);
+        scheduler.scheduleJob(withdrawTriggerPMStop);
+        schedulerInstance = scheduler;
         scheduler.start();
+    }
+
+    public Scheduler getSchedulerInstance() {
+        return schedulerInstance;
     }
 }

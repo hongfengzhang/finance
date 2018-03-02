@@ -58,5 +58,10 @@ public class StockDaoImpl implements StockDao {
 		return repository.findByCode(code);
 	}
 
+	@Override
+	public Integer updateById(Boolean status, String name, String code, Long id) {
+		return repository.revisionById(status,name,code,id);
+	}
+
 
 }

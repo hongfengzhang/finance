@@ -1,6 +1,7 @@
 server:
   port: 8082
   context-path: /operation
+  connection-timeout: 60000
 management:
   port: 3032
   context-path: /turbine
@@ -13,5 +14,16 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+hystrix:
+  command:
+    default:
+     execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 10000
+ribbon:
+  OkToRetryOnAllOperations: false
+  ReadTimeout: 30000
+  ConnectTimeout: 30000
 fileSystem : ${fs.path}
 uploadFilePath : ${fs.uploaddir}

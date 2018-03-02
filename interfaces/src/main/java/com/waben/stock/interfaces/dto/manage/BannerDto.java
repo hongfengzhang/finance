@@ -12,7 +12,7 @@ public class BannerDto {
 
 	private Long id;
 	private String link;
-	private String describtion;
+	private String description;
 	private Integer sort;
 	private Boolean enable;
 	private Date createTime;
@@ -34,12 +34,12 @@ public class BannerDto {
 		this.link = link;
 	}
 
-	public String getDescribtion() {
-		return describtion;
+	public String getDescription() {
+		return description;
 	}
 
-	public void setDescribtion(String describtion) {
-		this.describtion = describtion;
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 	public Integer getSort() {

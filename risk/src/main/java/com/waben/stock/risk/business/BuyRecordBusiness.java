@@ -2,7 +2,6 @@ package com.waben.stock.risk.business;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -29,7 +28,7 @@ public class BuyRecordBusiness {
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
-        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
@@ -40,7 +39,7 @@ public class BuyRecordBusiness {
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
-        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
@@ -51,9 +50,43 @@ public class BuyRecordBusiness {
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
-        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
+
+    public List<BuyRecordDto> buyRecordsWithWithdrawStock() {
+        Response<List<BuyRecordDto>> response = buyRecordService.buyRecordsWithStatus(7);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public List<BuyRecordDto> buyRecordsWithBuyIn() {
+        Response<List<BuyRecordDto>> response = buyRecordService.buyRecordsWithStatus(1);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public List<BuyRecordDto> buyRecordsWithSellOut() {
+        Response<List<BuyRecordDto>> response = buyRecordService.buyRecordsWithStatus(4);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
 }

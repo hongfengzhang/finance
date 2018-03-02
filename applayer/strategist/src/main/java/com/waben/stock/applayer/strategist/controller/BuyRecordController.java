@@ -69,23 +69,16 @@ public class BuyRecordController {
 			@RequestParam(required = true) BigDecimal reserveFund,
 			@RequestParam(required = true) BigDecimal delegatePrice,
 			@RequestParam(required = true) BigDecimal profitPoint, @RequestParam(required = true) BigDecimal lossPoint,
-			@RequestParam(required = true) String stockCode, @RequestParam(required = true) Boolean deferred,
-			BigDecimal deferredFee, @RequestParam(required = true) String paymentPassword) {
+			Integer lossMultiple, @RequestParam(required = true) String stockCode,
+			@RequestParam(required = true) Boolean deferred, BigDecimal deferredFee,
+			@RequestParam(required = true) String paymentPassword) {
 		// 检查交易时间段
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
 		}
-		// 判断该股票是否已经停牌
-		boolean isSuspension = stockBusiness.isSuspension(stockCode);
-		if (isSuspension) {
-			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
-		}
-		// 判断该股票是否为创业板股票
-		StockDto stock = stockBusiness.findByCode(stockCode);
-		if ("4621".equals(stock.getStockExponentDto().getExponentCode())) {
-			throw new ServiceException(ExceptionConstant.DEVELOPSTOCK_NOTSUPPORT_EXCEPTION);
-		}
+		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
+		stockBusiness.checkStock(stockCode);
 		// 判断是否有资格参与该策略
 		boolean qualify = buyRecordBusiness.hasStrategyQualify(SecurityUtil.getUserId(), strategyTypeId);
 		if (!qualify) {
@@ -137,6 +130,7 @@ public class BuyRecordController {
 		dto.setApplyAmount(applyAmount);
 		dto.setServiceFee(serviceFee);
 		dto.setReserveFund(reserveFund);
+		dto.setLossMultiple(lossMultiple);
 		dto.setProfitPoint(profitPoint);
 		dto.setLossPoint(lossPoint.abs().multiply(new BigDecimal(-1)));
 		dto.setStockCode(stockCode);
@@ -167,10 +161,7 @@ public class BuyRecordController {
 	public Response<PageInfo<BuyRecordWithMarketDto>> pagesUnwind(int page, int size) {
 		BuyRecordQuery query = new BuyRecordQuery(page, size, SecurityUtil.getUserId(),
 				new BuyRecordState[] { BuyRecordState.UNWIND, BuyRecordState.REVOKE });
-		PageInfo<BuyRecordDto> pageInfo = buyRecordBusiness.pages(query);
-		List<BuyRecordWithMarketDto> content = buyRecordBusiness.wrapMarketInfo(pageInfo.getContent());
-		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
-				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
+		return new Response<>(buyRecordBusiness.pagesUnwind(query));
 	}
 
 	@GetMapping("/tradeDynamic")

@@ -1,6 +1,8 @@
 package com.waben.stock.risk;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -9,31 +11,31 @@ import java.util.Calendar;
 import java.util.Date;
 
 public class CalendarTest {
-
-    public static void main(String[] args) {
-//        Calendar c= Calendar.getInstance();
-//        c.setTime(new Date());
-//        long timeInMillis = c.getTimeInMillis()/(1000 * 60 * 60 * 24);
-//        System.out.println(timeInMillis);
-//        c.add(5,1);
-//        timeInMillis = c.getTimeInMillis()/(1000 * 60 * 60 * 24);
-//        System.out.println(timeInMillis);
-        Date date = new Date();
-        DateFormat df = DateFormat.getTimeInstance();//只显示出时分秒
+    static Logger logger = LoggerFactory.getLogger(CalendarTest.class);
+    public static void main(String[] args) throws ParseException, InterruptedException {
+//        long a = 1517821080124L;
+//        long b = 1517846400000L;
+//        logger.info("result:{}",(a-b)/1000);
+//        Date date1 = new Date();
+//        Thread.sleep(3000);
+//        Date date = new Date();
+//        logger.info("过期时间:{},当前时间:{}", date1.getTime(), date.getTime());
+//        logger.info("结果：{}",date1.getTime()-date.getTime());
+//        SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
+//        Date currentDay = new Date();
+//        Date parse = sdf.parse(DateFormat.getTimeInstance().format(currentDay));
+//        logger.info("{},{}",parse, sdf.format(parse));
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
-        String format = df.format(date);
-        Date currentTime = null;
-        Date expriessTime = null;
-        try {
-            currentTime = sdf.parse("14:40:00");
-            expriessTime = sdf.parse("14:40:00");
-        } catch (ParseException e) {
-            e.printStackTrace();
+        String parse1 = "2018-02-05 00:00:00";
+        String parse2 = "2018-02-05 00:00:00";
+        logger.info("result:{}",parse1.compareToIgnoreCase(parse2));
+        String s = "14:40:00";
+        logger.info("current:{}",s);
+        String s1 = "14:40:00";
+        logger.info("result:{}",s.compareToIgnoreCase(s1));
+        if(parse1.compareToIgnoreCase(parse2)>=0&&s.compareToIgnoreCase(s1)>=0) {
+            logger.info("ook");
         }
-        if(currentTime.getTime()>=expriessTime.getTime()) {
-            System.out.println(currentTime.getTime()+">="+expriessTime.getTime());
-        }
-        System.out.println(currentTime);
-        System.out.println(expriessTime);
     }
 }

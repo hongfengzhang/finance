@@ -39,6 +39,11 @@ public class BindCard {
 	@Column(name = "bank_card")
 	private String bankCard;
 	/**
+	 * 银行代码
+	 */
+	@Column(name = "bank_code")
+	private String bankCode;
+	/**
 	 * 银行名称
 	 */
 	@Column(name = "bank_name")
@@ -58,6 +63,11 @@ public class BindCard {
 	 */
 	@Column(name = "publisher_id")
 	private Long publisherId;
+	/**
+	 * 对应的支付平台编号
+	 */
+	@Column(name = "contract_no")
+	private String contractNo;
 
 	public Long getId() {
 		return id;
@@ -129,6 +139,22 @@ public class BindCard {
 
 	public void setBranchCode(String branchCode) {
 		this.branchCode = branchCode;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
+	}
+
+	public String getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
 	}
 
 }

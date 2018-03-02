@@ -39,6 +39,16 @@ public class ExceptionConstant {
 	public static final String PHONE_MISMATCH_EXCEPTION = "2008";
 	// 已经设置过支付密码，修改支付密码需要验证码
 	public static final String MODIFY_PAYMENTPASSWORD_NEEDVALIDCODE_EXCEPTION = "2009";
+	// 不能绑定信用卡
+	public static final String CREDITCARD_NOTSUPPORT_EXCEPTION = "2010";
+	// 未找到该卡号对应的银行，请检查输入的信息是否正确
+	public static final String BANKCARD_NOTRECOGNITION_EXCEPTION = "2011";
+	// 不支持的银行卡号
+	public static final String BANKCARD_NOTSUPPORT_EXCEPTION = "2012";
+	// 用户不匹配
+	public static final String PUBLISHERID_NOTMATCH_EXCEPTION = "2013";
+	// 银行卡信息有误，请检查输入的信息是否正确
+	public static final String BANKCARDINFO_NOTMATCH_EXCEPTION = "2014";
 
 	/* 业务异常 */
 	// 系统管理业务异常
@@ -101,6 +111,14 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_REVOKE_NOTSUPPORT_EXCEPTION = "6023";
 	// 不支持购买创业板的股票
 	public static final String DEVELOPSTOCK_NOTSUPPORT_EXCEPTION = "6024";
+	// 银联支付单笔最大额度为5000
+	public static final String UNIONPAY_SINGLELIMIT_EXCEPTION = "6025";
+	// 该股票已涨停，不能购买
+	public static final String STOCK_ARRIVEUPLIMIT_EXCEPTION = "6026";
+	// 该股票已跌停，不能购买
+	public static final String STOCK_ARRIVEDOWNLIMIT_EXCEPTION = "6027";
+	// ST、*ST不能购买
+	public static final String ST_STOCK_CANNOTBUY_EXCEPTION = "6028";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
@@ -110,4 +128,11 @@ public class ExceptionConstant {
 	public static final String INVESTOR_STOCKACCOUNT_NOT_EXIST = "7005";
 	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
 	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
+
+	// 经纪人服务异常
+	// 机构不存在
+	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
+	// 机构类别不存在
+	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
+
 }

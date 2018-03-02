@@ -89,7 +89,12 @@
                 <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
-
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label class="col-md-5"></label>
+                        <a id="add" class="btn btn-fill btn-info" href="../messaging/add">添加</a>
+                    </div>
+                </div>
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
 
@@ -165,7 +170,7 @@
                     title: '内容',
                     align: 'center'
                 }, {
-                    field: 'messageType',
+                    field: 'type',
                     title: '类型',
                     align: 'center'
                 }, {
@@ -183,27 +188,48 @@
                             '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
                             '<i class="fa fa-edit"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                            '<i class="fa fa-trash"></i>',
-                            '</a>'
+//                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+//                            '<i class="fa fa-trash"></i>',
+//                            '</a>'
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
+
                             $(location).prop('href',"../messaging/"+row.id+"/view");
-                            //swal('You click view icon, row: ', info);
-                            //console.log(info);
+
                         },
                         'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
+
                             $(location).prop('href',"../messaging/"+row.id+"/edit");
-                            //swal('You click edit icon, row: ', info);
-                            //console.log(info);
+
                         },
                         'click .remove': function (e, value, row, index) {
 
-                            demo.showSwal('warning-message-and-cancel', row);
+                            swal({
+                                title: "你确定吗?",
+                                text: "删除后,数据将不可被恢复!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 删除!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function(isConfirm) {
+                                if (isConfirm) {
+                                    $.ajax({
+                                        url:'../messaging/delete',
+                                        type:'post',
+                                        data:{"id":row.id},
+                                        success:function (response) {
+                                            swal("Deleted!", "数据删除成功.", "success");
+                                            $table.bootstrapTable('refresh');
+                                        }
+                                    })
+                                } else {
+                                    swal("Cancelled", "数据已取消删除 :)", "error");
+                                }
+                            });
 
                         }
                     }

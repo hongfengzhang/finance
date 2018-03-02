@@ -37,6 +37,10 @@ public class TradeDynamicDto {
 	 * 买入价格或者卖出价格
 	 */
 	private BigDecimal tradePrice;
+	/**
+	 * 持股数
+	 */
+	private Integer numberOfStrand;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -103,6 +107,14 @@ public class TradeDynamicDto {
 
 	public void setTradePrice(BigDecimal tradePrice) {
 		this.tradePrice = tradePrice;
+	}
+
+	public Integer getNumberOfStrand() {
+		return numberOfStrand;
+	}
+
+	public void setNumberOfStrand(Integer numberOfStrand) {
+		this.numberOfStrand = numberOfStrand;
 	}
 
 }

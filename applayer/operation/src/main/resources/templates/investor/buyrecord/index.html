@@ -9,22 +9,29 @@
         <div class="content">
             <div class="row">
                 <form class="form-horizontal">
-
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">流水号</label>
-                            <div class="col-md-8">
-                                <input type="text" name="account" class="form-control" maxlength="11"
-                                       placeholder="流水号"/>
+                            <label class="col-md-4 control-label">记录状态</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="state">
+                                    <option value="0">请选择</option>
+                                    <option value="1">买入中</option>
+                                    <option value="2">买入锁定</option>
+                                    <option value="3">持仓中</option>
+                                    <option value="4">卖出申请</option>
+                                    <option value="5">卖出锁定</option>
+                                    <option value="6">已平仓</option>
+                                    <option value="7">撤单锁定</option>
+                                    <option value="8">撤单</option>
+                                </select>
                             </div>
                         </div>
                     </div>
-
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">投资人</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="amount" maxlength="11" placeholder="投资人"/>
+                                <input type="text" class="form-control" maxlength="11" placeholder="投资人" name="investorId"/>
                             </div>
                         </div>
                     </div>
@@ -32,7 +39,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">发布人</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="amount" maxlength="11" placeholder="发布人"/>
+                                <input type="text" class="form-control" maxlength="11" placeholder="发布人" name="publisherId"/>
                             </div>
                         </div>
                     </div>
@@ -41,12 +48,12 @@
                             <label class="col-md-2 control-label">日期</label>
                             <div class="col-md-5">
                                 <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="开始日期"/>
+                                       placeholder="开始日期" name="beginTime"/>
                             </div>
                             <label></label>
                             <div class="col-md-5">
                                 <input type="text" class="form-control datetimepicker" maxlength="11"
-                                       placeholder="结束日期"/>
+                                       placeholder="结束日期" name="endTime"/>
                             </div>
                         </div>
                     </div>
@@ -54,7 +61,13 @@
                     <div class="col-md-1">
                         <div class="form-group">
                             <label class="col-md-5"></label>
-                            <input type="button" class="btn btn-fill btn-info" value="搜索"/>
+                            <input type="button" class="btn btn-fill btn-info" value="搜索" id="search"/>
+                        </div>
+                    </div>
+                    <div class="col-md-1">
+                        <div class="form-group">
+                            <label class="col-md-1"></label>
+                            <input id="reset" type="button" class="btn btn-fill btn-info" value="清空"/>
                         </div>
                     </div>
                 </form>
@@ -91,12 +104,12 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "../securityaccount/pages",
+                url: "../buyrecord/pages",
                 dataType: "json",
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
                 pagination: true, // 开启分页功能
-                search: true, // 开启搜索功能
+                search: false, // 开启搜索功能
                 showColumns: true, // 开启自定义列显示功能
                 showRefresh: true, // 开启刷新功能
                 pageSize: 10, //每页的记录行数（*）
@@ -108,10 +121,19 @@
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination:"server",
                 queryParams:function () {
-                    return {
-                        page:this.pageNumber-1,
-                        size:this.pageSize
+                    var query= {
+                        page: this.pageNumber - 1,
+                        size: this.pageSize
                     }
+                    var queryMap = {
+                        state:$("[name='state']").val(),
+                        publisherId:$("input[name='publisherId']").val(),
+                        investorId:$("input[name='investorId']").val(),
+                        beginTime:$("input[name='beginTime']").val(),
+                        endTime:$("input[name='endTime']").val()
+                    }
+                    $.extend(query,queryMap);
+                    return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
@@ -129,22 +151,74 @@
                     title: 'ID',
                     align: 'center'
                 }, {
-                    field: 'profitOrLoss',
-                    title: '盈亏',
+                    field: 'tradeNo',
+                    title: '交易编号',
                     align: 'center'
                 }, {
-                    field: 'publisherProfitOrLoss',
-                    title: '发布人盈亏',
+                    field: 'applyAmount',
+                    title: '申请资金',
                     align: 'center'
                 },{
-                    field: 'investorProfitOrLoss',
-                    title: '投资人盈亏',
+                    field: 'serviceFee',
+                    title: '服务费',
                     align: 'center'
                 },{
-                    field: 'settlementTime',
-                    title: '结算时间',
+                    field: 'reserveFund',
+                    title: '保证金',
                     align: 'center'
-                }, {
+                },{
+                    field: 'deferredStatus',
+                    title: '递延',
+                    align: 'center'
+                },{
+                    field: 'buyRecordState',
+                    title: '状态',
+                    align: 'center'
+                },{
+                    field: 'numberOfStrand',
+                    title: '持股数',
+                    align: 'center'
+                },{
+                    field: 'delegatePrice',
+                    title: '委托价格',
+                    align: 'center'
+                },{
+                    field: 'buyingPrice',
+                    title: '买入价格',
+                    align: 'center'
+                },{
+                    field: 'sellingPrice',
+                    title: '卖出价格',
+                    align: 'center'
+                },{
+                    field: 'buyingTime',
+                    title: '买入时间',
+                    align: 'center'
+                },{
+                    field: 'sellingTime',
+                    title: '卖出时间',
+                    align: 'center'
+                },{
+                    field: 'stockCode',
+                    title: '股票代码',
+                    align: 'center'
+                },{
+                    field: 'stockName',
+                    title: '股票名称',
+                    align: 'center'
+                },{
+                    field: 'investorId',
+                    title: '投资人',
+                    align: 'center'
+                },{
+                    field: 'publisherId',
+                    title: '发布人',
+                    align: 'center'
+                },{
+                    field: 'windControlType',
+                    title: '风控类型',
+                    align: 'center'
+                },{
                     title: '操作',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
@@ -152,20 +226,23 @@
                             '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
                             '<i class="fa fa-eye"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-                            '<i class="fa fa-edit"></i>',
-                            '</a>',
-                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                            '<i class="fa fa-trash"></i>',
-                            '</a>'
+//                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
+//                            '<i class="fa fa-edit"></i>',
+//                            '</a>',
+//                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+//                            '<i class="fa fa-trash"></i>',
+//                            '</a>'
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
                             info = JSON.stringify(row);
+                            if(row.buyRecordState!='已平仓') {
+                                swal('暂未平仓，没有结算信息！');
+                            }else {
+                                $(location).prop('href',"../buyrecord/view/"+row.id);
+                            }
 
-                            swal('You click view icon, row: ', info);
-                            console.log(info);
                         },
                         'click .edit': function (e, value, row, index) {
                             info = JSON.stringify(row);
@@ -173,9 +250,30 @@
                             console.log(info);
                         },
                         'click .remove': function (e, value, row, index) {
-
-                            demo.showSwal('warning-message-and-cancel', row);
-
+                            swal({
+                                title: "你确定吗?",
+                                text: "删除后,数据将不可被恢复!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 删除!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function(isConfirm) {
+                                if (isConfirm) {
+                                    $.ajax({
+                                        url:'../buyrecord/delete',
+                                        type:'post',
+                                        data:{"id":row.id},
+                                        success:function (response) {
+                                            swal("Deleted!", "数据删除成功.", "success");
+                                            $table.bootstrapTable('refresh');
+                                        }
+                                    })
+                                } else {
+                                    swal("Cancelled", "数据已取消删除 :)", "error");
+                                }
+                            });
                         }
                     }
                 }]
@@ -184,6 +282,42 @@
 
             $(window).resize(function () {
                 $table.bootstrapTable('resetView');
+            });
+
+            $('#search').click(function(){
+                var beginTime = $("input[name='beginTime']").val();
+                var endTime = $("input[name='endTime']").val();
+                var investor = $("input[name='investorId']").val();
+                var publisher = $("input[name='publisherId']").val();
+                var state = $("[name='state']").val();
+                //<![CDATA[
+                if(beginTime==''&&endTime==''&&investor==''&&publisher==''&&state==0) {
+                    swal("","请输入搜索数据", "error");
+                }
+                if(beginTime != '' && endTime == ''){
+                    swal("","请输入结束时间", "error");
+                    return false;
+                }
+                if(endTime != '' && beginTime == ''){
+                    swal("","请输入开始时间", "error");
+                    return false;
+                }
+                //]]>
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
+            });
+
+
+            $('#reset').click(function(){
+//                $("input[name='investor']").val('');
+//                $("input[name='publisher']").val('');
+                $("input[name='beginTime']").val('');
+                $("input[name='endTime']").val('');
+                $("input[name='investorId']").val('');
+                $("input[name='publisherId']").val('');
+                $("[name='state']").val(0);
+                $table.bootstrapTable('getOptions').pageNumber = 1;
+                $table.bootstrapTable('refresh');
             });
         });
     </script>

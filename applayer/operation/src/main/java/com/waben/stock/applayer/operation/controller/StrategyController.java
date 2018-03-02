@@ -73,4 +73,12 @@ public class StrategyController {
         return new Response<>(result);
     }
 
+    @GetMapping("/withdraw/pages")
+    @ResponseBody
+    public Response<PageInfo<BuyRecordVo>> withdrawPages(StrategyUnwindQuery strategyUnwindQuery) {
+        PageInfo<BuyRecordDto> pages = strategyBusiness.withdrawPages(strategyUnwindQuery);
+        List<BuyRecordVo> buyRecordVos = CopyBeanUtils.copyListBeanPropertiesToList(pages.getContent(), BuyRecordVo.class);
+        PageInfo<BuyRecordVo> result = new PageInfo<>(buyRecordVos, pages.getTotalPages(), pages.getLast(), pages.getTotalElements(), pages.getSize(), pages.getNumber(), pages.getFrist());
+        return new Response<>(result);
+    }
 }

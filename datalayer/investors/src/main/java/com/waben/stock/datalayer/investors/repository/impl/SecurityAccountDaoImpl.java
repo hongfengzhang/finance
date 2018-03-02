@@ -28,7 +28,7 @@ public class SecurityAccountDaoImpl implements SecurityAccountDao {
 
     @Override
     public void delete(Long id) {
-
+        repository.delete(id);
     }
 
     @Override

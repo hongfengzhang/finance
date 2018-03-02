@@ -15,14 +15,14 @@ public class EntrustApplyProducer extends RabbitMQProducer<SecuritiesStockEntrus
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-//    /**
-//     * 委托申请买入
-//     * @param securitiesStockEntrust
-//     */
-//    public void entrustApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
-//        logger.info("开始发送委托买入订单数据:{}",securitiesStockEntrust.getTradeNo());
-//        super.topic("buyRecord", "applyBuyIn", securitiesStockEntrust);
-//    }
+    /**
+     * 委托申请买入
+     * @param securitiesStockEntrust
+     */
+    public void entrustApplyBuyIn(SecuritiesStockEntrust securitiesStockEntrust) {
+        logger.info("开始发送委托买入订单数据:{}",securitiesStockEntrust.getTradeNo());
+        super.topic("buyRecord", "applyBuyIn", securitiesStockEntrust);
+    }
 
     /**
      * 委托申请卖出
@@ -33,4 +33,12 @@ public class EntrustApplyProducer extends RabbitMQProducer<SecuritiesStockEntrus
         super.topic("buyRecord", "applySellOut", securitiesStockEntrust);
     }
 
+    /**
+     * 委托查询撤单
+     * @param securitiesStockEntrust
+     */
+    public void entrustQueryWithdraw(SecuritiesStockEntrust securitiesStockEntrust) {
+        logger.info("开始发送委托查询撤单订单数据:{}",securitiesStockEntrust.getTradeNo());
+        super.topic("buyRecord", "queryWithdraw", securitiesStockEntrust);
+    }
 }

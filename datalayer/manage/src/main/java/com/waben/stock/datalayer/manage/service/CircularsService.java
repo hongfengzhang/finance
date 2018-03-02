@@ -9,11 +9,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -48,11 +50,33 @@ public class CircularsService {
             @Override
             public Predicate toPredicate(Root<Circulars> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
                     criteriaBuilder) {
-
+                List<Predicate> predicatesList = new ArrayList<>();
+                if (!StringUtils.isEmpty(query.getTitle())) {
+                    Predicate titleQuery = criteriaBuilder.like(root.get("title").as(String.class), "%"+query
+                            .getTitle()+"%");
+                    predicatesList.add(titleQuery);
+                }
+                criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+                criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
         return pages;
     }
 
+    public Circulars fetchById(Long id) {
+       return circularsDao.retrieve(id);
+    }
+
+    public void delete(Long id) {
+        circularsDao.delete(id);
+    }
+
+    public Integer revision(Circulars circulars) {
+        return circularsDao.updateById(circulars.getId(),circulars.getTitle(),circulars.getContent());
+    }
+
+    public Circulars save(Circulars circulars) {
+        return circularsDao.create(circulars);
+    }
 }

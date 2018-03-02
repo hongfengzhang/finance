@@ -10,4 +10,5 @@ import com.waben.stock.datalayer.buyrecord.entity.Settlement;
  */
 public interface SettlementDao extends BaseDao<Settlement, Long> {
 
+    Settlement retrieveByBuyRecord(Long id);
 }

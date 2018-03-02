@@ -1,9 +1,11 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -60,6 +62,9 @@ public class BuyRecordBusiness {
 	@Autowired
 	@Qualifier("deferredRecordReference")
 	private DeferredRecordReference deferredRecordReference;
+	
+	@Autowired
+	private StrategyTypeBusiness strategyTypeBusiness;
 
 	public BuyRecordDto findById(Long id) {
 		Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(id);
@@ -101,31 +106,25 @@ public class BuyRecordBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public PageInfo<BuyRecordWithMarketDto> pagesSettlement(SettlementQuery query) {
-		Response<PageInfo<SettlementDto>> response = settlementReference.pagesByQuery(query);
-		if ("200".equals(response.getCode())) {
-			List<BuyRecordWithMarketDto> content = new ArrayList<>();
-			List<SettlementDto> settlementContent = response.getResult().getContent();
-			if (settlementContent != null && settlementContent.size() > 0) {
-				for (SettlementDto settlement : settlementContent) {
-					BuyRecordWithMarketDto buyRecord = wrapMarketInfo(settlement.getBuyRecord());
-					buyRecord.setProfitOrLoss(settlement.getProfitOrLoss());
-					buyRecord.setPublisherProfitOrLoss(settlement.getPublisherProfitOrLoss());
-					DeferredRecordDto deferredRecordDto = deferredRecordReference
-							.fetchByPublisherIdAndBuyRecordId(buyRecord.getPublisherId(), buyRecord.getId())
-							.getResult();
-					if (deferredRecordDto != null) {
-						buyRecord.setDeferredDays(deferredRecordDto.getCycle());
-						buyRecord.setDeferredCharges(deferredRecordDto.getFee());
-					}
-					content.add(buyRecord);
+	public PageInfo<BuyRecordWithMarketDto> pagesUnwind(BuyRecordQuery buyRecordQuery) {
+		PageInfo<BuyRecordDto> pageInfo = this.pages(buyRecordQuery);
+		List<BuyRecordWithMarketDto> content = this.wrapMarketInfo(pageInfo.getContent());
+		for (BuyRecordWithMarketDto market : content) {
+			List<DeferredRecordDto> deferredRecordList = deferredRecordReference
+					.fetchByPublisherIdAndBuyRecordId(market.getPublisherId(), market.getId()).getResult();
+			Integer deferredDays = 0;
+			BigDecimal deferredCharges = new BigDecimal(0);
+			if (deferredRecordList != null && deferredRecordList.size() > 0) {
+				for (DeferredRecordDto deferredRecord : deferredRecordList) {
+					deferredDays += deferredRecord.getCycle();
+					deferredCharges = deferredCharges.add(deferredRecord.getFee().abs());
 				}
 			}
-			return new PageInfo<>(content, response.getResult().getTotalPages(), response.getResult().getLast(),
-					response.getResult().getTotalElements(), response.getResult().getSize(),
-					response.getResult().getNumber(), response.getResult().getFrist());
+			market.setDeferredDays(deferredDays);
+			market.setDeferredCharges(deferredCharges);
 		}
-		throw new ServiceException(response.getCode());
+		return new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(),
+				pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
 	}
 
 	public BuyRecordWithMarketDto wrapMarketInfo(BuyRecordDto buyRecord) {
@@ -136,10 +135,14 @@ public class BuyRecordBusiness {
 	}
 
 	public List<BuyRecordWithMarketDto> wrapMarketInfo(List<BuyRecordDto> list) {
+		Map<Long, Integer> strategyTypeMap = strategyTypeBusiness.strategyTypeMap();
 		List<BuyRecordWithMarketDto> result = CopyBeanUtils.copyListBeanPropertiesToList(list,
 				BuyRecordWithMarketDto.class);
 		List<String> codes = new ArrayList<>();
 		for (BuyRecordWithMarketDto record : result) {
+			if (record.getStrategyTypeId() != null) {
+				record.setCycle(strategyTypeMap.get(record.getStrategyTypeId()));
+			}
 			codes.add(record.getStockCode());
 		}
 		if (codes.size() > 0) {
@@ -182,39 +185,44 @@ public class BuyRecordBusiness {
 					new BuyRecordState[] { BuyRecordState.HOLDPOSITION, BuyRecordState.SELLAPPLY,
 							BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
-
 			int total = sResponse.getResult().getContent().size() + pageInfo.getContent().size();
-			int sSize = sResponse.getResult().getContent().size();
-			int bSize = pageInfo.getContent().size();
-			int i = sSize;
-			int j = bSize;
-
 			List<TradeDynamicDto> content = new ArrayList<>();
+			boolean isSettlement = true;
 			for (int n = 0; n < total; n++) {
-				TradeDynamicDto inner = new TradeDynamicDto();
-				if (n % 2 == 0 && i > 0) {
-					SettlementDto settlement = sResponse.getResult().getContent().get(sSize - i);
+				if (isSettlement && sResponse.getResult().getContent().size() > 0) {
+					SettlementDto settlement = sResponse.getResult().getContent().remove(0);
+					TradeDynamicDto inner = new TradeDynamicDto();
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
+					inner.setNumberOfStrand(settlement.getBuyRecord().getNumberOfStrand());
 					inner.setStockCode(settlement.getBuyRecord().getStockCode());
 					inner.setStockName(settlement.getBuyRecord().getStockName());
 					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
 					inner.setTradePrice(settlement.getBuyRecord().getSellingPrice());
 					inner.setTradeTime(settlement.getBuyRecord().getSellingTime());
-					i--;
+					content.add(inner);
+					isSettlement = false;
 				} else {
-					BuyRecordDto buyRecord = pageInfo.getContent().get(bSize - j);
-					inner.setTradeType(1);
-					inner.setPublisherId(buyRecord.getPublisherId());
-					inner.setStockCode(buyRecord.getStockCode());
-					inner.setStockName(buyRecord.getStockName());
-					inner.setPhone(buyRecord.getPublisherPhone());
-					inner.setTradePrice(buyRecord.getBuyingPrice());
-					inner.setTradeTime(buyRecord.getBuyingTime());
-					j--;
+					if (pageInfo.getContent().size() > 0) {
+						BuyRecordDto buyRecord = pageInfo.getContent().remove(0);
+						TradeDynamicDto inner = new TradeDynamicDto();
+						inner.setTradeType(1);
+						inner.setPublisherId(buyRecord.getPublisherId());
+						inner.setStockCode(buyRecord.getStockCode());
+						inner.setNumberOfStrand(buyRecord.getNumberOfStrand());
+						inner.setStockName(buyRecord.getStockName());
+						inner.setPhone(buyRecord.getPublisherPhone());
+						inner.setTradePrice(buyRecord.getBuyingPrice());
+						inner.setTradeTime(buyRecord.getBuyingTime());
+						content.add(inner);
+						isSettlement = true;
+					} else {
+						isSettlement = true;
+						total++;
+					}
 				}
-				content.add(inner);
+
 			}
 			return new PageInfo<TradeDynamicDto>(content, 0, false, 0L, size, page, false);
 		}

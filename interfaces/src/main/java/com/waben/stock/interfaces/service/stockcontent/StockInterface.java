@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.service.stockcontent;
 
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,4 +28,12 @@ public interface StockInterface {
 	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
 	Response<StockDto> fetchWithExponentByCode(@PathVariable("code") String code);
 
+	@RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<Integer> modify(@RequestBody StockDto stockDto);
+
+	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
+	void delete(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/save", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<StockDto> add(StockDto requestDto);
 }

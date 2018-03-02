@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.dto.investor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -66,14 +67,6 @@ public class InvestorDto {
         this.role = role;
     }
 
-    public SecurityAccountDto getSecurityAccountDto() {
-        return securityAccountDto;
-    }
-
-    public void setSecurityAccountDto(SecurityAccountDto securityAccountDto) {
-        this.securityAccountDto = securityAccountDto;
-    }
-
     public Boolean getState() {
         return state;
     }
@@ -97,4 +90,12 @@ public class InvestorDto {
     public void setSecuritiesSession(String securitiesSession) {
         this.securitiesSession = securitiesSession;
     }
+    public void setSecurityAccountDto(SecurityAccountDto securityAccountDto) {
+        this.securityAccountDto = securityAccountDto;
+    }
+
+    public SecurityAccountDto getSecurityAccountDto() {
+        return securityAccountDto;
+    }
+
 }

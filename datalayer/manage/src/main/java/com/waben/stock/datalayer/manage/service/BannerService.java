@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.manage.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -21,6 +23,7 @@ import com.waben.stock.datalayer.manage.entity.BannerForward;
 import com.waben.stock.datalayer.manage.repository.BannerDao;
 import com.waben.stock.interfaces.enums.BannerForwardCategory;
 import com.waben.stock.interfaces.pojo.query.BannerQuery;
+import org.springframework.util.StringUtils;
 
 /**
  * 轮播 Service
@@ -53,15 +56,50 @@ public class BannerService {
 			@Override
 			public Predicate toPredicate(Root<Banner> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicatesList = new ArrayList<>();
 				if (query.getCategory() != null) {
+					// APP查询
 					Join<Banner, BannerForward> join = root.join("bannerForward", JoinType.LEFT);
-					criteriaQuery.where(criteriaBuilder.equal(join.get("category").as(BannerForwardCategory.class),
-							query.getCategory()));
+					Predicate categoryQuery = criteriaBuilder
+							.equal(join.get("category").as(BannerForwardCategory.class), query.getCategory());
+					predicatesList.add(categoryQuery);
+					criteriaQuery.orderBy(criteriaBuilder.asc(root.<Date>get("sort").as(Integer.class)));
+				} else {
+					criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
 				}
+
+				if (!StringUtils.isEmpty(query.getDescription())) {
+					Predicate descriptionQuery = criteriaBuilder.equal(root.get("description").as(String.class),
+							query.getDescription());
+					predicatesList.add(descriptionQuery);
+				}
+
+				if (query.getEnable() != null && query.getEnable() != 2) {
+					Predicate enableQuery = criteriaBuilder.equal(root.get("enable").as(Integer.class),
+							query.getEnable());
+					predicatesList.add(enableQuery);
+				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
 		return pages;
 	}
 
+	public Banner fetchById(Long id) {
+		return bannerDao.retrieve(id);
+	}
+
+	public void delete(Long id) {
+		bannerDao.delete(id);
+	}
+
+	public Banner save(Banner banner) {
+		return bannerDao.create(banner);
+	}
+
+	public Banner revision(Banner banner) {
+		return bannerDao.update(banner);
+	}
 }

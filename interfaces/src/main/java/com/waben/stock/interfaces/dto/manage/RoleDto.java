@@ -63,4 +63,11 @@ public class RoleDto implements Serializable{
     public void setMenusDtos(Set<MenuDto> menusDtos) {
         this.menusDtos = menusDtos;
     }
+
+    public void setPermissions(Set<PermissionDto> permissions) {
+        this.permissionDtos = permissions;
+    }
+    public void setMenus(Set<MenuDto> Menus) {
+        this.menusDtos = Menus;
+    }
 }

@@ -6,4 +6,5 @@ public interface StockDao extends BaseDao<Stock, Long> {
 
 	Stock retrieveByCode(String code);
 
+	Integer updateById(Boolean status, String name, String code, Long id);
 }

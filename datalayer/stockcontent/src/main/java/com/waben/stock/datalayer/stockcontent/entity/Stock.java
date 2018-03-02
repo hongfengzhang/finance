@@ -11,68 +11,82 @@ import javax.persistence.*;
 @Table(name = "stock")
 public class Stock {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    /**
-     * 股票名称
-     */
-    @Column
-    private String name;
-    /**
-     * 股票代码
-     */
-    @Column(unique = true, length = 10)
-    private String code;
-    /**
-     * 股票状态(可买可卖状态 非开始闭市状态)
-     */
-    @Column
-    private Boolean status;
-    /**
-     * 所属交易指数
-     */
-    @JoinColumn(name = "exponent",referencedColumnName = "exponent_code")
-    @ManyToOne(targetEntity = StockExponent.class)
-    private StockExponent exponent;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	/**
+	 * 股票名称
+	 */
+	@Column
+	private String name;
+	/**
+	 * 股票代码
+	 */
+	@Column(unique = true, length = 10)
+	private String code;
+	/**
+	 * 缩写
+	 */
+	@Column
+	private String abbr;
+	/**
+	 * 股票状态(可买可卖状态 非开始闭市状态)
+	 */
+	@Column
+	private Boolean status;
+	/**
+	 * 所属交易指数
+	 */
+	@JoinColumn(name = "exponent", referencedColumnName = "exponent_code")
+	@ManyToOne(targetEntity = StockExponent.class)
+	private StockExponent exponent;
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getCode() {
-        return code;
-    }
+	public String getCode() {
+		return code;
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public void setCode(String code) {
+		this.code = code;
+	}
 
-    public Boolean getStatus() {
-        return status;
-    }
+	public Boolean getStatus() {
+		return status;
+	}
 
-    public void setStatus(Boolean status) {
-        this.status = status;
-    }
+	public void setStatus(Boolean status) {
+		this.status = status;
+	}
 
-    public StockExponent getExponent() {
-        return exponent;
-    }
+	public StockExponent getExponent() {
+		return exponent;
+	}
 
-    public void setExponent(StockExponent exponent) {
-        this.exponent = exponent;
-    }
+	public void setExponent(StockExponent exponent) {
+		this.exponent = exponent;
+	}
+
+	public String getAbbr() {
+		return abbr;
+	}
+
+	public void setAbbr(String abbr) {
+		this.abbr = abbr;
+	}
+
 }

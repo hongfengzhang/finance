@@ -5,6 +5,7 @@ import com.waben.stock.applayer.operation.warpper.messagequeue.rabbitmq.EntrustA
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
@@ -66,7 +67,7 @@ public class InvestorBusiness {
         StockDto stockDto = stockBusiness.fetchWithExponentByCode(buyRecordDto.getStockCode());
         securitiesStockEntrust.setStockName(stockDto.getName());
         securitiesStockEntrust.setStockCode(stockDto.getCode());
-        securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
+        securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
         securitiesStockEntrust.setEntrustNumber(buyRecordDto.getNumberOfStrand());
         securitiesStockEntrust.setEntrustPrice(entrustPrice);
         securitiesStockEntrust.setBuyRecordState(buyRecordDto.getState());
@@ -107,6 +108,7 @@ public class InvestorBusiness {
             securitiesStockEntrust.setTradeNo(response.getResult().getTradeNo());
             securitiesStockEntrust.setEntrustNo(response.getResult().getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENSUCCESS);
+            securitiesStockEntrust.setEntrustTime(response.getResult().getUpdateTime());
             entrustProducer.entrustApplySellOut(securitiesStockEntrust);
             return securitiesStockEntrust;
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
@@ -137,4 +139,28 @@ public class InvestorBusiness {
         throw new ServiceException(response.getCode());
     }
 
+    public Integer revision(InvestorDto requestDto) {
+        Response<Integer> response = investorService.modify(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+    public void delete(Long id) {
+        investorService.delete(id);
+    }
+
+    public InvestorDto findByUserName(String userName) {
+        Response<InvestorDto> response = investorService.fetchByUserName(userName);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

@@ -20,6 +20,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,10 +47,41 @@ public class RoleService {
             @Override
             public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
                     criteriaBuilder) {
-
+                List<Predicate> predicatesList = new ArrayList();
+                if (!StringUtils.isEmpty(roleQuery.getName())) {
+                    Predicate nameQuery = criteriaBuilder.equal(root.get("name").as(String.class), roleQuery
+                            .getName());
+                    predicatesList.add(nameQuery);
+                }
+                if (!StringUtils.isEmpty(roleQuery.getCode())) {
+                    Predicate codeQuery = criteriaBuilder.equal(root.get("code").as(String.class), roleQuery
+                            .getCode());
+                    predicatesList.add(codeQuery);
+                }
+                criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
         return pages;
+    }
+
+    public Role fetchById(Long id) {
+        return roleDao.retrieve(id);
+    }
+
+    public Role revision(Role role) {
+        return roleDao.update(role);
+    }
+
+    public void delete(Long id) {
+        roleDao.delete(id);
+    }
+
+    public Role save(Role role) {
+        return roleDao.create(role);
+    }
+
+    public List<Role> findRoles() {
+        return roleDao.list();
     }
 }

@@ -37,6 +37,11 @@ public class BuyRecordServiceFallback implements BuyRecordService {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
+    @Override
+    public Response<BuyRecordDto> withdrawLock(String entrustNo, Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 
     @Override
     public Response<PageInfo<BuyRecordDto>> pagesByQuery(BuyRecordQuery buyRecordQuery) {
@@ -55,6 +60,21 @@ public class BuyRecordServiceFallback implements BuyRecordService {
 
     @Override
     public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery strategyUnwindQuery) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(StrategyUnwindQuery trategyUnwindQuery) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public void delete(Long id) {
+
+    }
+
+    @Override
+    public Response<BuyRecordDto> updateState(BuyRecordDto buyRecordDto) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

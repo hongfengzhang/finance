@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.buyrecord.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,9 @@ public class DeferredRecordController implements DeferredRecordInterface {
 	private DeferredRecordService service;
 	
 	@Override
-	public Response<DeferredRecordDto> fetchByPublisherIdAndBuyRecordId(@PathVariable Long publisherId, @PathVariable Long buyRecordId) {
-		DeferredRecord record = service.findByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
-        return new Response<>(CopyBeanUtils.copyBeanProperties(DeferredRecordDto.class, record, false));
+	public Response<List<DeferredRecordDto>> fetchByPublisherIdAndBuyRecordId(@PathVariable Long publisherId, @PathVariable Long buyRecordId) {
+		List<DeferredRecord> recordList = service.findByPublisherIdAndBuyRecordId(publisherId, buyRecordId);
+        return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(recordList, DeferredRecordDto.class));
 	}
 	
 }

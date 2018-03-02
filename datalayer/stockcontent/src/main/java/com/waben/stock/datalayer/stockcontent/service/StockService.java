@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.stockcontent.service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -15,7 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
+import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
 import com.waben.stock.datalayer.stockcontent.repository.StockDao;
+import com.waben.stock.datalayer.stockcontent.repository.StockExponentDao;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
 
 /***
@@ -28,6 +33,8 @@ public class StockService {
 
 	@Autowired
 	private StockDao stockDao;
+	@Autowired
+	private StockExponentDao stockExponentDao;
 
 	@Transactional
 	public Stock saveStock(Stock stock) {
@@ -40,20 +47,44 @@ public class StockService {
 			@Override
 			public Predicate toPredicate(Root<Stock> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				if (!StringUtils.isEmpty(stockQuery.getName())) {
+				List<Predicate> predicatesList = new ArrayList();
+				if (!StringUtils.isEmpty(stockQuery.getStockName())) {
 					Predicate nameQuery = criteriaBuilder.equal(root.get("name").as(String.class),
-							stockQuery.getName());
-					criteriaQuery.where(criteriaBuilder.and(nameQuery));
-				} else if (!StringUtils.isEmpty(stockQuery.getCode())) {
+							stockQuery.getStockName());
+					predicatesList.add(criteriaBuilder.and(nameQuery));
+				} else if (!StringUtils.isEmpty(stockQuery.getStockCode())) {
 					Predicate codeQuery = criteriaBuilder.equal(root.get("code").as(String.class),
-							stockQuery.getCode());
-					criteriaQuery.where(criteriaBuilder.and(codeQuery));
+							stockQuery.getStockCode());
+					predicatesList.add(criteriaBuilder.and(codeQuery));
+				} else if (!StringUtils.isEmpty(stockQuery.getStatus()) && stockQuery.getStatus() != 2) {
+					Predicate statusQuery = criteriaBuilder.equal(root.get("status").as(Integer.class),
+							stockQuery.getStatus());
+					predicatesList.add(criteriaBuilder.and(statusQuery));
 				} else if (!StringUtils.isEmpty(stockQuery.getKeyword())) {
 					String keyword = stockQuery.getKeyword();
-					Predicate nameQuery = criteriaBuilder.like(root.get("name").as(String.class), "%" + keyword + "%");
-					Predicate codeQuery = criteriaBuilder.like(root.get("code").as(String.class), "%" + keyword + "%");
-					criteriaQuery.where(criteriaBuilder.or(nameQuery, codeQuery));
+					boolean isCode = false;
+					boolean isAbbr = false;
+					int charAscii = keyword.charAt(0);
+					if (charAscii >= 48 && charAscii <= 57) {
+						isCode = true;
+					} else if ((charAscii >= 65 && charAscii <= 90) || (charAscii >= 97 && charAscii <= 122)) {
+						isAbbr = true;
+					}
+					if (isCode) {
+						Predicate keywordQuery = criteriaBuilder.like(root.get("code").as(String.class),
+								"%" + keyword + "%");
+						predicatesList.add(criteriaBuilder.and(keywordQuery));
+					} else if (isAbbr) {
+						Predicate keywordQuery = criteriaBuilder.like(root.get("abbr").as(String.class),
+								"%" + keyword + "%");
+						predicatesList.add(criteriaBuilder.and(keywordQuery));
+					} else {
+						Predicate keywordQuery = criteriaBuilder.like(root.get("name").as(String.class),
+								"%" + keyword + "%");
+						predicatesList.add(criteriaBuilder.and(keywordQuery));
+					}
 				}
+				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
@@ -68,4 +99,31 @@ public class StockService {
 		return stockDao.retrieveByCode(code);
 	}
 
+	public Integer revision(Stock stock) {
+		return stockDao.updateById(stock.getStatus(), stock.getName(), stock.getCode(), stock.getId());
+	}
+
+	public void delete(Long id) {
+		stockDao.delete(id);
+	}
+
+	public Stock save(Stock stock) {
+		if (stockDao.retrieveByCode(stock.getCode()) == null) {
+			StockExponent stockExponent = stockExponentDao
+					.retrieveWithExponeneCode(stock.getExponent().getExponentCode());
+			stock.setExponent(stockExponent);
+			return stockDao.create(stock);
+		} else {
+			return null;
+		}
+	}
+
+	public void initStockAbbr() {
+		/*
+		 * List<Stock> stockList = stockDao.list(); for(Stock stock : stockList)
+		 * { String name = stock.getName();
+		 * stock.setAbbr(PinyinUtil.getFirstSpell(name));
+		 * stockDao.update(stock); }
+		 */
+	}
 }

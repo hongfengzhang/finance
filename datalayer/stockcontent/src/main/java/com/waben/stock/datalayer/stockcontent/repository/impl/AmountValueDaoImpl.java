@@ -34,12 +34,12 @@ public class AmountValueDaoImpl implements AmountValueDao {
 
     @Override
     public AmountValue update(AmountValue amountValue) {
-        return null;
+        return repository.save(amountValue);
     }
 
     @Override
     public AmountValue retrieve(Long id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override

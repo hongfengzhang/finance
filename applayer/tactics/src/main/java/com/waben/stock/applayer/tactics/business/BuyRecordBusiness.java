@@ -1,9 +1,11 @@
 package com.waben.stock.applayer.tactics.business;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -21,6 +23,7 @@ import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -59,6 +62,9 @@ public class BuyRecordBusiness {
 	@Autowired
 	@Qualifier("deferredRecordReference")
 	private DeferredRecordReference deferredRecordReference;
+
+	@Autowired
+	private StrategyTypeBusiness strategyTypeBusiness;
 
 	public BuyRecordDto findById(Long id) {
 		Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(id);
@@ -99,6 +105,27 @@ public class BuyRecordBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public PageInfo<BuyRecordWithMarketDto> pagesUnwind(BuyRecordQuery buyRecordQuery) {
+		PageInfo<BuyRecordDto> pageInfo = this.pages(buyRecordQuery);
+		List<BuyRecordWithMarketDto> content = this.wrapMarketInfo(pageInfo.getContent());
+		for (BuyRecordWithMarketDto market : content) {
+			List<DeferredRecordDto> deferredRecordList = deferredRecordReference
+					.fetchByPublisherIdAndBuyRecordId(market.getPublisherId(), market.getId()).getResult();
+			Integer deferredDays = 0;
+			BigDecimal deferredCharges = new BigDecimal(0);
+			if (deferredRecordList != null && deferredRecordList.size() > 0) {
+				for (DeferredRecordDto deferredRecord : deferredRecordList) {
+					deferredDays += deferredRecord.getCycle();
+					deferredCharges = deferredCharges.add(deferredRecord.getFee().abs());
+				}
+			}
+			market.setDeferredDays(deferredDays);
+			market.setDeferredCharges(deferredCharges);
+		}
+		return new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(),
+				pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
+	}
+
 	public BuyRecordWithMarketDto wrapMarketInfo(BuyRecordDto buyRecord) {
 		List<BuyRecordDto> list = new ArrayList<>();
 		list.add(buyRecord);
@@ -107,10 +134,14 @@ public class BuyRecordBusiness {
 	}
 
 	public List<BuyRecordWithMarketDto> wrapMarketInfo(List<BuyRecordDto> list) {
+		Map<Long, Integer> strategyTypeMap = strategyTypeBusiness.strategyTypeMap();
 		List<BuyRecordWithMarketDto> result = CopyBeanUtils.copyListBeanPropertiesToList(list,
 				BuyRecordWithMarketDto.class);
 		List<String> codes = new ArrayList<>();
 		for (BuyRecordWithMarketDto record : result) {
+			if (record.getStrategyTypeId() != null) {
+				record.setCycle(strategyTypeMap.get(record.getStrategyTypeId()));
+			}
 			codes.add(record.getStockCode());
 		}
 		if (codes.size() > 0) {
@@ -150,38 +181,43 @@ public class BuyRecordBusiness {
 		Response<PageInfo<SettlementDto>> sResponse = settlementReference.pagesByQuery(sQuery);
 		if ("200".equals(sResponse.getCode())) {
 			BuyRecordQuery bQuery = new BuyRecordQuery(page, size - sResponse.getResult().getContent().size(), null,
-					new BuyRecordState[] { BuyRecordState.HOLDPOSITION,
-							BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
+					new BuyRecordState[] { BuyRecordState.HOLDPOSITION, BuyRecordState.SELLAPPLY,
+							BuyRecordState.SELLLOCK });
 			PageInfo<BuyRecordDto> pageInfo = pages(bQuery);
-
 			int total = sResponse.getResult().getContent().size() + pageInfo.getContent().size();
-			int sSize = sResponse.getResult().getContent().size();
-			int bSize = pageInfo.getContent().size();
-			int i = sSize;
-			int j = bSize;
-
 			List<TradeDynamicDto> content = new ArrayList<>();
+			boolean isSettlement = true;
 			for (int n = 0; n < total; n++) {
-				TradeDynamicDto inner = new TradeDynamicDto();
-				if (n % 2 == 0 && i > 0) {
-					SettlementDto settlement = sResponse.getResult().getContent().get(sSize - i);
+				if (isSettlement && sResponse.getResult().getContent().size() > 0) {
+					SettlementDto settlement = sResponse.getResult().getContent().remove(0);
+					TradeDynamicDto inner = new TradeDynamicDto();
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
 					inner.setStockCode(settlement.getBuyRecord().getStockCode());
+					inner.setNumberOfStrand(settlement.getBuyRecord().getNumberOfStrand());
 					inner.setStockName(settlement.getBuyRecord().getStockName());
 					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
-					i--;
+					content.add(inner);
+					isSettlement = false;
 				} else {
-					BuyRecordDto buyRecord = pageInfo.getContent().get(bSize - j);
-					inner.setTradeType(1);
-					inner.setPublisherId(buyRecord.getPublisherId());
-					inner.setStockCode(buyRecord.getStockCode());
-					inner.setStockName(buyRecord.getStockName());
-					inner.setPhone(buyRecord.getPublisherPhone());
-					j--;
+					if (pageInfo.getContent().size() > 0) {
+						BuyRecordDto buyRecord = pageInfo.getContent().remove(0);
+						TradeDynamicDto inner = new TradeDynamicDto();
+						inner.setTradeType(1);
+						inner.setPublisherId(buyRecord.getPublisherId());
+						inner.setNumberOfStrand(buyRecord.getNumberOfStrand());
+						inner.setStockCode(buyRecord.getStockCode());
+						inner.setStockName(buyRecord.getStockName());
+						inner.setPhone(buyRecord.getPublisherPhone());
+						content.add(inner);
+						isSettlement = true;
+					} else {
+						isSettlement = true;
+						total++;
+					}
 				}
-				content.add(inner);
+
 			}
 			return new PageInfo<TradeDynamicDto>(content, 0, false, 0L, size, page, false);
 		}

@@ -18,7 +18,7 @@ public class Banner {
     @Column(nullable = false)
     private String link;
     @Column
-    private String describtion;
+    private String description;
     @Column
     private Integer sort;
     @Column(length = 1)
@@ -46,12 +46,12 @@ public class Banner {
         this.link = link;
     }
 
-    public String getDescribtion() {
-        return describtion;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescribtion(String describtion) {
-        this.describtion = describtion;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Integer getSort() {

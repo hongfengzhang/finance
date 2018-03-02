@@ -23,17 +23,17 @@ public class PermissionDaoImpl implements PermissionDao {
 
     @Override
     public Permission create(Permission permission) {
-        return null;
+        return repository.save(permission);
     }
 
     @Override
     public void delete(Long id) {
-
+        repository.delete(id);
     }
 
     @Override
     public Permission update(Permission permission) {
-        return null;
+        return repository.save(permission);
     }
 
     @Override
@@ -53,6 +53,6 @@ public class PermissionDaoImpl implements PermissionDao {
 
     @Override
     public List<Permission> list() {
-        return null;
+        return repository.findAll();
     }
 }

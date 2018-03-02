@@ -4,6 +4,7 @@ import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
@@ -16,7 +17,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Map;
 
@@ -41,7 +41,6 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
-        Calendar calendar = Calendar.getInstance();
         String tradeSession = "880003450508";
         while (!interrupted) {
             try {
@@ -50,7 +49,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                 // 容器中委托数据可能包含来自数据库或者消息队列
                 Map<String, SecuritiesStockEntrust> stockEntrusts = securitiesStockEntrustContainer
                         .getBuyInContainer();
-                logger.info("券商委托股票容器内剩余:{}个委托订单", stockEntrusts.size());
+                logger.info("券商委托买入股票容器内剩余:{}个委托订单", stockEntrusts.size());
                 for (Map.Entry<String, SecuritiesStockEntrust> entry : stockEntrusts.entrySet()) {
                     logger.info("此处执行HTTP，当前委托订单为：{}", entry.getKey());
                     try {
@@ -70,42 +69,37 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo(), securitiesStockEntrust.getStockCode());
-                        if (stockEntrustQueryResult == null || stockEntrustQueryResult.getEntrustStatus().equals
-                                (EntrustState.WASTEORDER.getIndex())) {
+                        logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
+                        if (stockEntrustQueryResult == null) {
+                            logger.info("委托买入轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
+                            stockEntrusts.remove(entry.getKey());
+                        } else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex
+                                ())) {
                             //废单
-                            logger.info("买入废单:{}", entry.getKey());
-                            //TODO 将点买废单放入废单处理队列中
+                            logger.info("委托买入轮询点买记录买入废单:{}", entry.getKey());
+                            // 将点买废单放入废单处理队列中
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
-                            continue;
-                        }
-                        logger.info("委托结果：{}", EntrustState.getByIndex(stockEntrustQueryResult.getEntrustStatus())
-                                .getState());
-                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED.getIndex()
-                        )) {
-                            logger.info("买入废单:{}", entry.getKey());
+                        } else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENREPORTED
+                                .getIndex())) {
+                            logger.info("委托买入轮询点买记录买入已报:{}", entry.getKey());
                             // 若当前时间大于委托买入时间1天。将点买废单放入废单处理队列中
-                            calendar.setTime(new Date());                    //当前时间
-                            long currentDay = calendar.getTime().getTime() / millisOfDay;
+                            //当前时间
+                            long currentDay = new Date().getTime() / millisOfDay;
                             //委托买入时间
-                            calendar.setTime(securitiesStockEntrust.getEntrustTime());
-                            long entrustDay = calendar.getTime().getTime() / millisOfDay;
+                            long entrustDay = securitiesStockEntrust.getEntrustTime().getTime() / millisOfDay;
                             logger.info("委托时间:{},当前时间:{},相差天数:{}", entrustDay, currentDay, currentDay - entrustDay);
                             if ((currentDay - entrustDay) >= 1) {
-                                entrustProducer.entrustWaste(securitiesStockEntrust);
+                                logger.info("委托买入轮询点买记录买入超时:{}", entry.getKey());
+                                entrustProducer.entrustWithdraw(securitiesStockEntrust);
                                 stockEntrusts.remove(entry.getKey());
                             }
-                            continue;
-                        }
-                        if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
+                        } else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
-                            logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust
-                                            .getTradeNo(),
-                                    securitiesStockEntrust.getEntrustNumber(), securitiesStockEntrust.getEntrustPrice
-                                            ());
-                            // 若执行结果为true 代表订单状态已成功，则  删除集合中的数据
-                            //发送给队列处理，提高委托单轮询处理速度
-                            logger.info("委托订单已完成:{}", entry.getKey());
+                            logger.info("委托买入轮询点买记录买入成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}",
+                                    securitiesStockEntrust.getTradeNo(),
+                                    securitiesStockEntrust.getEntrustNumber(),
+                                    securitiesStockEntrust.getEntrustPrice());
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
                             Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
                             securitiesStockEntrust.setEntrustNumber(amount.intValue());

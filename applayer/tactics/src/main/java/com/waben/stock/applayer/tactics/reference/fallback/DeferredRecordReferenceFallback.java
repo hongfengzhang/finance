@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.reference.fallback;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.reference.DeferredRecordReference;
@@ -17,7 +19,7 @@ import com.waben.stock.interfaces.pojo.Response;
 public class DeferredRecordReferenceFallback implements DeferredRecordReference {
 
 	@Override
-	public Response<DeferredRecordDto> fetchByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId) {
+	public Response<List<DeferredRecordDto>> fetchByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

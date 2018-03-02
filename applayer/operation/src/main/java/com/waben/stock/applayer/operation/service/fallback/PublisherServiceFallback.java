@@ -9,6 +9,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class PublisherServiceFallback implements PublisherService{
     @Override
@@ -47,7 +49,12 @@ public class PublisherServiceFallback implements PublisherService{
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
-	@Override
+    @Override
+    public Response<List<PublisherDto>> fetchPublishers() {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
 	public Response<PublisherDto> modiyHeadportrait(Long id, String headPortrait) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

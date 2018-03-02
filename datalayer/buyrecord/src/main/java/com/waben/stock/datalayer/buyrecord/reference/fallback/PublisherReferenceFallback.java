@@ -10,6 +10,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 
+import java.util.List;
+
 /**
  * @author Created by yuyidi on 2017/11/4.
  * @desc
@@ -49,6 +51,11 @@ public class PublisherReferenceFallback implements PublisherReference {
 
 	@Override
 	public Response<PageInfo<PublisherDto>> pagePromotionUser(Long id, int page, int size) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<List<PublisherDto>> fetchPublishers() {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

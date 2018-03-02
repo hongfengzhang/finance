@@ -36,7 +36,6 @@ public class RabbitMqConsumer {
 		logger.info("券商股票委托买入成功:{},{}", securitiesStockEntrust.getTradeNo(),securitiesStockEntrust.getBuyRecordId());
 		BuyRecord buyRecord = buyRecordService.buyInto(securitiesStockEntrust.getInvestor(), securitiesStockEntrust.getBuyRecordId(),
 			  securitiesStockEntrust.getEntrustPrice());
-		//TODO 发送短信通知用户 和发送站内消息
 		// 点买记录委托成功  点买记录状态为持仓中，则将当前订单记录放入风控消息队列
 		//风控传输对象
 		PositionStock positionStock = new PositionStock();
@@ -67,14 +66,6 @@ public class RabbitMqConsumer {
 	public void entrustWaste(SecuritiesStockEntrust securitiesStockEntrust) {
 		logger.info("处理废单:{},订单ID:{}", securitiesStockEntrust.getTradeNo(),securitiesStockEntrust.getBuyRecordId());
 		buyRecordService.revoke(securitiesStockEntrust.getBuyRecordId());
-		//EntrustType entrustType = securitiesStockEntrust.getEntrustType();
-		//判断订单是买入废单还是卖出废单
-//		if(EntrustType.BUY.equals(entrustType)) {
-		//买入废单处理，退回服务费，保证金,解冻冻结的递延费
-//		}else if(EntrustType.SELL.equals(entrustType)) {
-//			//卖出废单处理
-//		}
-
 	}
 
 }

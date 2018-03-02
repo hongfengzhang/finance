@@ -108,12 +108,18 @@ public class PublisherController {
 	}
 
 	@PostMapping("/registrationId")
-	@ApiOperation(value = "设置极光registrationId")
-	public Response<String> bindRegistrationId(String registrationId) {
+	@ApiOperation(value = "设置极光registrationId", notes = "deviceType设备类型(1IOS 2安卓),shellIndex空壳包序号")
+	public Response<String> bindRegistrationId(String registrationId, @RequestParam(defaultValue = "0") Integer deviceType,
+			@RequestParam(defaultValue = "0") Integer shellIndex) {
 		logger.info("用户{}设置极光registrationId:{}", SecurityUtil.getUserId(), registrationId);
 		if (registrationId != null && !"".equals(registrationId.trim())) {
-			redisCache.set(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), SecurityUtil.getUserId()),
-					registrationId.trim());
+			if("0".equals(shellIndex) || shellIndex == null) {
+				redisCache.set(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), SecurityUtil.getUserId()),
+						registrationId.trim());
+			} else {
+				redisCache.set(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), SecurityUtil.getUserId()),
+						deviceType + "_" + shellIndex + "_" + registrationId.trim());
+			}
 		}
 		Response<String> response = new Response<String>();
 		response.setResult(registrationId);

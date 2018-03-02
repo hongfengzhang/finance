@@ -95,6 +95,12 @@ public class BuyRecordController implements BuyRecordInterface {
     }
 
     @Override
+    public Response<BuyRecordDto> withdrawLock(@PathVariable String entrustNo, @PathVariable Long id) {
+        BuyRecord buyRecord = buyRecordService.withdrawLock(entrustNo,id);
+        return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
+    }
+
+    @Override
     public Response<BuyRecordDto> sellOut(@PathVariable Long investorId, @PathVariable Long id,
                                           BigDecimal sellingPrice) {
     	logger.info("投资人{}卖出成功，点买记录{}，卖出价格{}!", investorId, id, sellingPrice);
@@ -148,7 +154,26 @@ public class BuyRecordController implements BuyRecordInterface {
         return new Response<>(result);
     }
 
-	@Override
+    @Override
+    public Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(@RequestBody StrategyUnwindQuery trategyUnwindQuery) {
+        Page<BuyRecord> page = buyRecordService.pagesByWithdrawQuery(trategyUnwindQuery);
+        PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+        return new Response<>(result);
+    }
+
+    @Override
+    public void delete(@PathVariable Long id) {
+        buyRecordService.delete(id);
+    }
+
+    @Override
+    public Response<BuyRecordDto> updateState(@RequestBody BuyRecordDto buyRecordDto) {
+        BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
+        BuyRecordDto result = CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.revisionState(buyRecord), false);
+        return new Response<>(result);
+    }
+
+    @Override
 	public Response<BuyRecordDto> revoke(@PathVariable Long id) {
 		BuyRecord buyRecord = buyRecordService.revoke(id);
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));

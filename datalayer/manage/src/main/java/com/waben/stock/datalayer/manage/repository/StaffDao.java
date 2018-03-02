@@ -10,4 +10,5 @@ public interface StaffDao extends BaseDao<Staff, Long> {
 
     Staff findByUserName(String userName);
 
+    Integer updateById(Long id, String userName, Boolean state);
 }

@@ -8,4 +8,5 @@ import com.waben.stock.datalayer.stockcontent.entity.AmountValue;
  */
 public interface AmountValueDao extends BaseDao<AmountValue, Long> {
 
+
 }

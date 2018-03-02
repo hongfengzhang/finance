@@ -27,18 +27,23 @@ public class InvestorDaoImpl implements InvestorDao {
     }
 
     @Override
+    public Integer updateById(String userName,Boolean state,Long investorId) {
+        return repository.revisionById(investorId,state,userName);
+    }
+
+    @Override
     public Investor create(Investor investor) {
         return repository.save(investor);
     }
 
     @Override
     public void delete(Long id) {
-
+        repository.delete(id);
     }
 
     @Override
     public Investor update(Investor investor) {
-        return null;
+        return repository.save(investor);
     }
 
     @Override

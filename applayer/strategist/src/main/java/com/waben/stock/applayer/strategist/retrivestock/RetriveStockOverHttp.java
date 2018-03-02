@@ -93,7 +93,7 @@ public class RetriveStockOverHttp {
 					if (inner.getTime() != null && inner.getTime().split(" ").length == 2) {
 						String time = inner.getTime().split(" ")[1];
 						if ((time.compareTo("11:31:00") >= 0 && time.compareTo("13:00:00") < 0)
-								|| (time.compareTo("15:01:00") >= 0)) {
+								|| (time.compareTo("15:01:00") >= 0) || (time.compareTo("09:00:00") < 0)) {
 							list.remove(inner);
 						}
 					}
@@ -101,7 +101,7 @@ public class RetriveStockOverHttp {
 			}
 			return list;
 		} catch (IOException e) {
-			throw new RuntimeException("http获取K线图数据异常!", e);
+			throw new RuntimeException("http获取分时图数据异常!", e);
 		}
 	}
 

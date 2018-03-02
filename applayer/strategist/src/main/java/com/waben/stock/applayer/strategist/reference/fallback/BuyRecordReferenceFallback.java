@@ -61,6 +61,11 @@ public class BuyRecordReferenceFallback implements BuyRecordReference {
 	}
 
 	@Override
+	public Response<BuyRecordDto> withdrawLock(String entrustNo, Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
 	public Response<BuyRecordDto> sellOut(Long investorId, Long id, BigDecimal sellingPrice) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
@@ -92,6 +97,21 @@ public class BuyRecordReferenceFallback implements BuyRecordReference {
 
 	@Override
 	public Response<PageInfo<BuyRecordDto>> pagesByUnwindQuery(StrategyUnwindQuery trategyUnwindQuery) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(StrategyUnwindQuery trategyUnwindQuery) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public void delete(Long id) {
+
+	}
+
+	@Override
+	public Response<BuyRecordDto> updateState(BuyRecordDto buyRecordDto) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

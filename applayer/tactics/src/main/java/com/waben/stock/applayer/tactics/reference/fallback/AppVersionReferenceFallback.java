@@ -2,9 +2,9 @@ package com.waben.stock.applayer.tactics.reference.fallback;
 
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.tactics.reference.AppVersionReference;
+import com.waben.stock.applayer.tactics.reference.AppVersionAuditReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.manage.AppVersionDto;
+import com.waben.stock.interfaces.dto.manage.AppVersionAuditDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -14,10 +14,10 @@ import com.waben.stock.interfaces.pojo.Response;
  * @author luomengan
  */
 @Component
-public class AppVersionReferenceFallback implements AppVersionReference {
+public class AppVersionReferenceFallback implements AppVersionAuditReference {
 
 	@Override
-	public Response<AppVersionDto> getCurrentAppVersion() {
+	public Response<AppVersionAuditDto> getAppVersionAudit(Integer deviceType, Integer shellIndex) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

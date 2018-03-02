@@ -78,14 +78,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 开放接口
 		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
-				"/system/stockMarketExponent", "/system/getAppHomeTopData").permitAll();
+		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/banner/lists",
+				"/system/getEnabledCircularsList", "/system/stockMarketExponent", "/system/getAppHomeTopData")
+				.permitAll();
 		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
 		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
 		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
-				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking").permitAll();
-		http.authorizeRequests().antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn",
-				"/payment/czpaycallback", "/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge")
+				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking")
+				.permitAll();
+		http.authorizeRequests()
+				.antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn", "/payment/czpaycallback",
+						"/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge",
+						"/payment/quickpaynotify")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
 		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/applists").permitAll();
@@ -94,7 +98,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.permitAll();
 		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
 		http.authorizeRequests().antMatchers("/aliturnpay-page/**", "/paymentorder/**").permitAll();
-		http.authorizeRequests().antMatchers("/appversion/currentAppVersion").permitAll();
+		http.authorizeRequests().antMatchers("/appversion/currentAppVersion", "/appversionupgrade/checkUpgrade")
+				.permitAll();
+		http.authorizeRequests().antMatchers("/turbine/**").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
