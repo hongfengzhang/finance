@@ -14,7 +14,7 @@ $(function() {
 		searchData.size = 10;
 		$.ajax({
             type: "POST",
-            url: "/promotionBuyRecord/adminPage",
+            url: "/customer/adminPage",
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(searchData),
@@ -36,46 +36,17 @@ $(function() {
 			$(id).dataTable().fnDraw();
 		} else {
 			var columns = [
-	            { "data": "buyRecordId", "title": "策略ID", orderable: false},
-	            { "data": "publisherId", "title": "用户ID", orderable: false},
-	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
-	            { "data": "stockCode", "title": "股票代码", orderable: false},
-	            { "data": "stockName", "title": "股票名称", orderable: false},
-	            { "data": "strategyTypeName", "title": "策略类型", orderable: false},
-	            { "data": "state", "title": "策略状态", orderable: false, "render": function(data, type, full, meta) {
-	                var state = full.state;
-	                if(state == "1") {
-	                	return "买入中";
-	                } else if(state == "2") {
-	                	return "买入锁定";
-	                } else if(state == "3") {
-	                	return "持仓中";
-	                } else if(state == "4") {
-	                	return "卖出申请";
-	                } else if(state == "5") {
-	                	return "卖出锁定";
-	                } else if(state == "6") {
-	                	return "已平仓";
-	                } else if(state == "8") {
-	                	var windControlType = full.windControlType;
-	                	if(windControlType) {
-	                		return "卖出失败";
-	                	} else {
-	                		return "买入失败";
-	                	}
-	                } else {
-	                	return state;
-	                }
-	            }},
-	            { "data": "applyAmount", "title": "策略市值", orderable: false},
-	            { "data": "buyingTime", "title": "买入时间", orderable: false},
-	            { "data": "buyingPrice", "title": "买入价格", orderable: false},
-	            { "data": "numberOfStrand", "title": "买入股数", orderable: false},
-	            { "data": "sellingTime", "title": "卖出时间", orderable: false},
-	            { "data": "sellingPrice", "title": "卖出价格", orderable: false},
-	            { "data": "lastPrice", "title": "当前价格", orderable: false},
-	            { "data": "profitOrLoss", "title": "盈亏", orderable: false},
-	            { "data": "orgName", "title": "所属机构名称", orderable: false}
+	            { "data": "publisherId", "title": "客户ID", orderable: false},
+	            { "data": "publisherPhone", "title": "客户手机号", orderable: false},
+	            { "data": "orgCode", "title": "从属机构代码", orderable: false},
+	            { "data": "orgName", "title": "从属结构名称", orderable: false},
+	            { "data": "availableBalance", "title": "可用资金", orderable: false},
+	            { "data": "frozenCapital", "title": "冻结资金", orderable: false},
+	            { "data": "balance", "title": "总资金", orderable: false},
+	            { "data": "createTime", "title": "注册时间", orderable: false},
+	            { "data": "publisherId", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+	            	return "<a href='javascript:;'>查看详情</a>";
+	            }}
 	        ];
 			$(id).dataTable({
 				"responsive": true,
