@@ -60,16 +60,6 @@ public class Organization {
 	 */
 	private String remark;
 	/**
-	 * 所属类别ID
-	 */
-	@Transient
-	private Long categoryId;
-	/**
-	 * 所属类别名称
-	 */
-	@Transient
-	private String categoryName;
-	/**
 	 * 父级机构ID
 	 */
 	@Transient

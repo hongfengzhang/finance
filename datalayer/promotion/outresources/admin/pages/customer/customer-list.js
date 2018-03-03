@@ -2,8 +2,8 @@
  * 机构列表
  */
 window.renderTable = function(){};
-window.searchData = { parentId: "1" };
 $(function() {
+	var searchData = {};
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -14,7 +14,7 @@ $(function() {
 		searchData.size = 10;
 		$.ajax({
             type: "POST",
-            url: "/organization/adminPage",
+            url: "/promotionBuyRecord/adminPage",
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(searchData),
@@ -28,6 +28,7 @@ $(function() {
             	fnCallback(dtData);
             }
         });
+		searchData = {};
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -35,35 +36,46 @@ $(function() {
 			$(id).dataTable().fnDraw();
 		} else {
 			var columns = [
-	            { "data": "id", "title": "机构ID", orderable: false},
-	            { "data": "code", "title": "结构代码", orderable: false},
-	            { "data": "name", "title": "机构名称", orderable: false},
-	            { "data": "level", "title": "机构类型", orderable: false, "render": function(data, type, full, meta) {
-	                var level = full.level;
-	                return level + "级机构";
-	            }},
-	            { "data": "state", "title": "机构状态", orderable: false, "render": function(data, type, full, meta) {
+	            { "data": "buyRecordId", "title": "策略ID", orderable: false},
+	            { "data": "publisherId", "title": "用户ID", orderable: false},
+	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
+	            { "data": "stockCode", "title": "股票代码", orderable: false},
+	            { "data": "stockName", "title": "股票名称", orderable: false},
+	            { "data": "strategyTypeName", "title": "策略类型", orderable: false},
+	            { "data": "state", "title": "策略状态", orderable: false, "render": function(data, type, full, meta) {
 	                var state = full.state;
-	                if(state == "NORMAL") {
-	                	return "正常";
-	                } else if(state == "FROZEN") {
-	                	return "停用";
-	                } else if(state == "DESTROY") {
-	                	return "注销";
+	                if(state == "1") {
+	                	return "买入中";
+	                } else if(state == "2") {
+	                	return "买入锁定";
+	                } else if(state == "3") {
+	                	return "持仓中";
+	                } else if(state == "4") {
+	                	return "卖出申请";
+	                } else if(state == "5") {
+	                	return "卖出锁定";
+	                } else if(state == "6") {
+	                	return "已平仓";
+	                } else if(state == "8") {
+	                	var windControlType = full.windControlType;
+	                	if(windControlType) {
+	                		return "卖出失败";
+	                	} else {
+	                		return "买入失败";
+	                	}
 	                } else {
 	                	return state;
 	                }
 	            }},
-	            { "data": "parentCode", "title": "从属机构代码", orderable: false},
-	            { "data": "createTime", "title": "创建时间", orderable: false},
-	            { "data": "id", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
-	            	var level = full.level;
-	            	if(level == 1) {
-	            		return "<a href='javascript:;'>查看详情</a>";
-	            	} else {
-	            		return "<a class='mr20' href='javascript:;'>设置分成比例</a><a class='mr20' href='javascript:;'>权限分配</a><a href='javascript:;'>查看详情</a>";
-	            	}
-	            }}
+	            { "data": "applyAmount", "title": "策略市值", orderable: false},
+	            { "data": "buyingTime", "title": "买入时间", orderable: false},
+	            { "data": "buyingPrice", "title": "买入价格", orderable: false},
+	            { "data": "numberOfStrand", "title": "买入股数", orderable: false},
+	            { "data": "sellingTime", "title": "卖出时间", orderable: false},
+	            { "data": "sellingPrice", "title": "卖出价格", orderable: false},
+	            { "data": "lastPrice", "title": "当前价格", orderable: false},
+	            { "data": "profitOrLoss", "title": "盈亏", orderable: false},
+	            { "data": "orgName", "title": "所属机构名称", orderable: false}
 	        ];
 			$(id).dataTable({
 				"responsive": true,
@@ -91,7 +103,7 @@ $(function() {
 		}
 	}
 	// 执行
-	renderTable("#org-list-table");
+	renderTable("#customer-list-table");
 	// 加载layui
 	layui.use(['element', 'table'], function() {
 	});
@@ -107,47 +119,6 @@ $(function() {
 				searchData[name] = value;
 			}
 		}
-		renderTable("#org-list-table");
+		renderTable("#customer-list-table");
 	});
-	// 弹出添加页面
-	$('#add-btn').on('click', function(){
-		var index = layer.open({
-			type: 2,
-			title: '添加机构',
-			shadeClose: true,
-			shade: 0.8,
-			area: ['500px', '250px'],
-			content: 'org-add.html',
-		});
-	});
-	// 加载机构树
-	var setting = {
-		view: {
-			dblClickExpand: function(treeId, treeNode) {
-				return treeNode.level > 0;
-			}
-		},
-		data:{
-			simpleData:{
-				enable: true,
-				idKey: "id",
-				pIdKey: "pid",
-				rootPId: 0
-			}
-		},
-		async: {
-			enable: true,
-			url: "/organization/adminTree",
-			dataType: "json",
-			type: "get"
-		},
-		callback: {
-			// 点击节点列表显示子节点
-			onClick: function(event,treeId,treeNode) {
-				searchData.parentId = treeNode.id;
-				renderTable("#org-list-table");
-			}
-		}
-	};
-	$.fn.zTree.init($("#org-tree"), setting);
 });
