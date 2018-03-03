@@ -32,4 +32,10 @@ public class StockOptionTradeController implements StockOptionTradeInterface{
         StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, stockOptionTradeService.findById(id), false);
         return new Response<>(result);
     }
+
+    @Override
+    public Response<StockOptionTradeDto> settlement(@PathVariable Long id) {
+        StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, stockOptionTradeService.settlement(id), false);
+        return new Response<>(result);
+    }
 }

@@ -79,4 +79,12 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public CapitalAccountDto revision(CapitalAccountDto capitalAccountDto) {
+		Response<CapitalAccountDto> response = service.modifyCapitalAccount(capitalAccountDto);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

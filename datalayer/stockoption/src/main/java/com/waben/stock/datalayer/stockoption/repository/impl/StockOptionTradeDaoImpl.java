@@ -50,8 +50,4 @@ public class StockOptionTradeDaoImpl implements StockOptionTradeDao {
         return stockOptionTradeRepository.findAll();
     }
 
-    @Override
-    public StockOptionTrade retrieveByOfflineTrade(Long offlineTrade) {
-        return stockOptionTradeRepository.findByOfflineTrade(offlineTrade);
-    }
 }

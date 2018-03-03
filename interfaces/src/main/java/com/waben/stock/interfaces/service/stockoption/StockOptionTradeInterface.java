@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.stockoption;
 
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -22,4 +23,7 @@ public interface StockOptionTradeInterface {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     Response<StockOptionTradeDto> fetchById(@PathVariable("id") Long id);
+
+    @RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
+    Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id);
 }

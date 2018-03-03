@@ -1,8 +1,14 @@
 package com.waben.stock.datalayer.stockoption.service;
 
+import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
+import com.waben.stock.datalayer.stockoption.business.PublisherBusiness;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +32,11 @@ public class StockOptionTradeService {
     @Autowired
     private StockOptionTradeDao stockOptionTradeDao;
 
+    @Autowired
+    private PublisherBusiness publisherBusiness;
+
+    @Autowired
+    private CapitalAccountBusiness capitalAccountBusiness;
     public Page<StockOptionTrade> pagesByQuery(final StockOptionTradeQuery query) {
         Pageable pageable = new PageRequest(query.getPage(), query.getSize());
         Page<StockOptionTrade> pages = stockOptionTradeDao.page(new Specification<StockOptionTrade>() {
@@ -65,5 +76,13 @@ public class StockOptionTradeService {
 
     public StockOptionTrade findById(Long id) {
         return stockOptionTradeDao.retrieve(id);
+    }
+
+    public StockOptionTrade settlement(Long id) {
+        StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+        CapitalAccountDto capitalAccountDto = capitalAccountBusiness.fetchByPublisherId(stockOptionTrade.getPublisherId());
+        capitalAccountDto.getBalance().add(stockOptionTrade.getProfit());
+        //修改订单状态
+        return stockOptionTrade;
     }
 }
