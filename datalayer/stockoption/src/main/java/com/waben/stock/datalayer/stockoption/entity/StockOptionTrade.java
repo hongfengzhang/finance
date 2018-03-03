@@ -12,7 +12,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.waben.stock.datalayer.stockoption.entity.enumconverter.StockOptionBuyingTypeConverter;
 import com.waben.stock.datalayer.stockoption.entity.enumconverter.StockOptionTradeStateConverter;
+import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
 /**
@@ -33,6 +35,48 @@ public class StockOptionTrade {
 	 */
 	private String tradeNo;
 	/**
+	 * 交易状态
+	 */
+	@Convert(converter = StockOptionTradeStateConverter.class)
+	private StockOptionTradeState state;
+	/**
+	 * 股票代码
+	 */
+	private String stockCode;
+	/**
+	 * 股票名称
+	 */
+	private String stockName;
+	/**
+	 * 名义本金
+	 */
+	private BigDecimal nominalAmount;
+	/**
+	 * 权利金比例
+	 */
+	private BigDecimal rightMoneyRatio;
+	/**
+	 * 权利金
+	 */
+	private BigDecimal rightMoney;
+	/**
+	 * 周期
+	 */
+	private Integer cycle;
+	/**
+	 * 到期时间
+	 */
+	private BigDecimal expireTime;
+	/**
+	 * 申购时间
+	 */
+	private Date applyTime;
+	/**
+	 * 买入方式
+	 */
+	@Convert(converter = StockOptionBuyingTypeConverter.class)
+	private StockOptionBuyingType buyingType;
+	/**
 	 * 成交时间
 	 */
 	private Date buyingTime;
@@ -49,30 +93,13 @@ public class StockOptionTrade {
 	 */
 	private BigDecimal sellingPrice;
 	/**
-	 * 盈利
-	 */
-	private BigDecimal profit;
-	/**
-	 * 到期时间
-	 */
-	private BigDecimal expireTime;
-	/**
 	 * 行权时间
 	 */
 	private BigDecimal rightTime;
 	/**
-	 * 平台是否已成交，即是否真的买入了期权
+	 * 盈利
 	 */
-	private Boolean isPlatformTurnover;
-	/**
-	 * 第三方期权交易单号
-	 */
-	private String thirdTradeNo;
-	/**
-	 * 交易状态
-	 */
-	@Convert(converter = StockOptionTradeStateConverter.class)
-	private StockOptionTradeState state;
+	private BigDecimal profit;
 	/**
 	 * 发布人ID
 	 */
@@ -82,11 +109,11 @@ public class StockOptionTrade {
 	 */
 	private Long publisherPhone;
 	/**
-	 * 对应的申购记录
+	 * 对应的线下期权交易信息
 	 */
 	@OneToOne
-	@JoinColumn(name = "apply_id")
-	private StockOptionApply apply;
+	@JoinColumn(name = "offline_trade")
+	private OfflineStockOptionTrade offlineTrade;
 
 	public Long getId() {
 		return id;
@@ -102,6 +129,86 @@ public class StockOptionTrade {
 
 	public void setTradeNo(String tradeNo) {
 		this.tradeNo = tradeNo;
+	}
+
+	public StockOptionTradeState getState() {
+		return state;
+	}
+
+	public void setState(StockOptionTradeState state) {
+		this.state = state;
+	}
+
+	public String getStockCode() {
+		return stockCode;
+	}
+
+	public void setStockCode(String stockCode) {
+		this.stockCode = stockCode;
+	}
+
+	public String getStockName() {
+		return stockName;
+	}
+
+	public void setStockName(String stockName) {
+		this.stockName = stockName;
+	}
+
+	public BigDecimal getNominalAmount() {
+		return nominalAmount;
+	}
+
+	public void setNominalAmount(BigDecimal nominalAmount) {
+		this.nominalAmount = nominalAmount;
+	}
+
+	public BigDecimal getRightMoneyRatio() {
+		return rightMoneyRatio;
+	}
+
+	public void setRightMoneyRatio(BigDecimal rightMoneyRatio) {
+		this.rightMoneyRatio = rightMoneyRatio;
+	}
+
+	public BigDecimal getRightMoney() {
+		return rightMoney;
+	}
+
+	public void setRightMoney(BigDecimal rightMoney) {
+		this.rightMoney = rightMoney;
+	}
+
+	public Integer getCycle() {
+		return cycle;
+	}
+
+	public void setCycle(Integer cycle) {
+		this.cycle = cycle;
+	}
+
+	public BigDecimal getExpireTime() {
+		return expireTime;
+	}
+
+	public void setExpireTime(BigDecimal expireTime) {
+		this.expireTime = expireTime;
+	}
+
+	public Date getApplyTime() {
+		return applyTime;
+	}
+
+	public void setApplyTime(Date applyTime) {
+		this.applyTime = applyTime;
+	}
+
+	public StockOptionBuyingType getBuyingType() {
+		return buyingType;
+	}
+
+	public void setBuyingType(StockOptionBuyingType buyingType) {
+		this.buyingType = buyingType;
 	}
 
 	public Date getBuyingTime() {
@@ -136,12 +243,12 @@ public class StockOptionTrade {
 		this.sellingPrice = sellingPrice;
 	}
 
-	public BigDecimal getExpireTime() {
-		return expireTime;
+	public BigDecimal getProfit() {
+		return profit;
 	}
 
-	public void setExpireTime(BigDecimal expireTime) {
-		this.expireTime = expireTime;
+	public void setProfit(BigDecimal profit) {
+		this.profit = profit;
 	}
 
 	public BigDecimal getRightTime() {
@@ -150,22 +257,6 @@ public class StockOptionTrade {
 
 	public void setRightTime(BigDecimal rightTime) {
 		this.rightTime = rightTime;
-	}
-
-	public Boolean getIsPlatformTurnover() {
-		return isPlatformTurnover;
-	}
-
-	public void setIsPlatformTurnover(Boolean isPlatformTurnover) {
-		this.isPlatformTurnover = isPlatformTurnover;
-	}
-
-	public String getThirdTradeNo() {
-		return thirdTradeNo;
-	}
-
-	public void setThirdTradeNo(String thirdTradeNo) {
-		this.thirdTradeNo = thirdTradeNo;
 	}
 
 	public Long getPublisherId() {
@@ -184,28 +275,12 @@ public class StockOptionTrade {
 		this.publisherPhone = publisherPhone;
 	}
 
-	public StockOptionApply getApply() {
-		return apply;
+	public OfflineStockOptionTrade getOfflineTrade() {
+		return offlineTrade;
 	}
 
-	public void setApply(StockOptionApply apply) {
-		this.apply = apply;
-	}
-
-	public BigDecimal getProfit() {
-		return profit;
-	}
-
-	public void setProfit(BigDecimal profit) {
-		this.profit = profit;
-	}
-
-	public StockOptionTradeState getState() {
-		return state;
-	}
-
-	public void setState(StockOptionTradeState state) {
-		this.state = state;
+	public void setOfflineTrade(OfflineStockOptionTrade offlineTrade) {
+		this.offlineTrade = offlineTrade;
 	}
 
 }

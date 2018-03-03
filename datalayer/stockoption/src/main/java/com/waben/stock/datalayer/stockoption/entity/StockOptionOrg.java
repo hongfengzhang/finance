@@ -23,6 +23,14 @@ public class StockOptionOrg {
 	 * 机构名称
 	 */
 	private String name;
+	/**
+	 * 邮箱地址
+	 */
+	private String email;
+	/**
+	 * 手机号码
+	 */
+	private String phone;
 
 	public Long getId() {
 		return id;
@@ -38,6 +46,22 @@ public class StockOptionOrg {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 }
