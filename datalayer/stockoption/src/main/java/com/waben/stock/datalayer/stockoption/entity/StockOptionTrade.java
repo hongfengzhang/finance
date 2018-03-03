@@ -66,7 +66,7 @@ public class StockOptionTrade {
 	/**
 	 * 到期时间
 	 */
-	private BigDecimal expireTime;
+	private Date expireTime;
 	/**
 	 * 申购时间
 	 */
@@ -187,11 +187,11 @@ public class StockOptionTrade {
 		this.cycle = cycle;
 	}
 
-	public BigDecimal getExpireTime() {
+	public Date getExpireTime() {
 		return expireTime;
 	}
 
-	public void setExpireTime(BigDecimal expireTime) {
+	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
 	}
 

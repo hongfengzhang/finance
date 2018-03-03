@@ -15,15 +15,13 @@ public enum StockOptionTradeState implements CommonalityEnum {
 
 	FAILURE("2", "申购失败"),
 	
-	CONFIRMED("3", "已确认"),
-	
-	TURNOVER("4", "已成交"),
+	TURNOVER("3", "已成交"),
 
-	APPLYRIGHT("5", "申请行权"),
+	APPLYRIGHT("4", "申请行权"),
 
-	INSETTLEMENT("6", "结算中"),
+	INSETTLEMENT("5", "结算中"),
 
-	SETTLEMENTED("7", "已结算");
+	SETTLEMENTED("6", "已结算");
 
 	private String index;
 
