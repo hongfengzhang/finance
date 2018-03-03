@@ -5,6 +5,8 @@ import com.waben.stock.datalayer.stockoption.repository.InquiryResultDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 public class InquiryResultService {
 

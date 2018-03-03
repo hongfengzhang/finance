@@ -62,4 +62,8 @@ public class StockOptionTradeService {
         }, pageable);
         return pages;
     }
+
+    public StockOptionTrade findById(Long id) {
+        return stockOptionTradeDao.retrieve(id);
+    }
 }

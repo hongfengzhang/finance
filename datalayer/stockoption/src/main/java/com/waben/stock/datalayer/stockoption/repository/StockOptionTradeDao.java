@@ -11,4 +11,6 @@ import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 
  **/
 public interface StockOptionTradeDao extends BaseDao<StockOptionTrade, Long> {
+    StockOptionTrade retrieveByOfflineTrade(Long offlineTrade);
+
 }
