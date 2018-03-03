@@ -11,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.waben.stock.datalayer.stockoption.entity.enumconverter.OfflineStockOptionTradeStateConverter;
@@ -96,6 +97,11 @@ public class OfflineStockOptionTrade {
 	@ManyToOne
 	@JoinColumn(name = "org_id")
 	private StockOptionOrg org;
+	/**
+	 * 对应的用户股票期权交易信息
+	 */
+	@OneToOne(mappedBy = "offlineTrade")
+	private StockOptionTrade trade;
 
 	public Long getId() {
 		return id;
