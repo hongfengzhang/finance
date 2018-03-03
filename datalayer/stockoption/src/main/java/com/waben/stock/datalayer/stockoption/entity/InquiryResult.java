@@ -2,11 +2,11 @@ package com.waben.stock.datalayer.stockoption.entity;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -31,13 +31,13 @@ public class InquiryResult {
 	 * 对应的用户股票期权交易信息
 	 */
 	@ManyToOne
-	@Column(name = "trade_id")
+	@JoinColumn(name = "trade_id")
 	private StockOptionTrade trade;
 	/**
 	 * 对应的期权第三方机构
 	 */
 	@ManyToOne
-	@Column(name = "org_id")
+	@JoinColumn(name = "org_id")
 	private StockOptionOrg org;
 
 	public Long getId() {

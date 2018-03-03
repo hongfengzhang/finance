@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -64,7 +65,7 @@ public class OfflineStockOptionTrade {
 	/**
 	 * 到期时间
 	 */
-	private BigDecimal expireTime;
+	private Date expireTime;
 	/**
 	 * 成交时间
 	 */
@@ -93,7 +94,7 @@ public class OfflineStockOptionTrade {
 	 * 对应的期权第三方机构
 	 */
 	@ManyToOne
-	@Column(name = "org_id")
+	@JoinColumn(name = "org_id")
 	private StockOptionOrg org;
 
 	public Long getId() {
@@ -168,11 +169,11 @@ public class OfflineStockOptionTrade {
 		this.cycle = cycle;
 	}
 
-	public BigDecimal getExpireTime() {
+	public Date getExpireTime() {
 		return expireTime;
 	}
 
-	public void setExpireTime(BigDecimal expireTime) {
+	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
 	}
 
