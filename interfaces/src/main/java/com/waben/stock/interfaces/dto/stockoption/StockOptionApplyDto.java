@@ -1,17 +1,7 @@
-package com.waben.stock.datalayer.stockoption.entity;
+package com.waben.stock.interfaces.dto.stockoption;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import com.waben.stock.datalayer.stockoption.entity.enumconverter.StockOptionApplyStateConverter;
-import com.waben.stock.datalayer.stockoption.entity.enumconverter.StockOptionBuyingTypeConverter;
 import com.waben.stock.interfaces.enums.StockOptionApplyState;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 
@@ -21,12 +11,10 @@ import com.waben.stock.interfaces.enums.StockOptionBuyingType;
  * @author luomengan
  *
  */
-@Entity
-@Table(name = "stock_option_apply")
-public class StockOptionApply {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class StockOptionApplyDto  implements Comparable<StockOptionApplyDto>  {
+
+
 	private Long id;
 	/**
 	 * 申购单号
@@ -63,12 +51,10 @@ public class StockOptionApply {
 	/**
 	 * 买入方式
 	 */
-	@Convert(converter = StockOptionBuyingTypeConverter.class)
 	private StockOptionBuyingType buyingType;
 	/**
 	 * 申购状态
 	 */
-	@Convert(converter = StockOptionApplyStateConverter.class)
 	private StockOptionApplyState state;
 	/**
 	 * 发布人ID
@@ -183,4 +169,8 @@ public class StockOptionApply {
 		this.applyDate = applyDate;
 	}
 
+	@Override
+	public int compareTo(StockOptionApplyDto o) {
+		return 0;
+	}
 }

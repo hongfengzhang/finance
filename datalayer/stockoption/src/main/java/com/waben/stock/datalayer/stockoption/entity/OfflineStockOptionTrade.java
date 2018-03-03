@@ -29,33 +29,14 @@ public class OfflineStockOptionTrade {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 交易单号
-	 */
-	private String tradeNo;
-	/**
 	 * 对应的第三方交易单号
 	 */
 	private String thirdTradeNo;
 	/**
-	 * 成交时间
+	 * 状态
 	 */
-	private Date buyingTime;
-	/**
-	 * 成交价格
-	 */
-	private BigDecimal buyingPrice;
-	/**
-	 * 卖出时间
-	 */
-	private Date sellingTime;
-	/**
-	 * 卖出价格
-	 */
-	private BigDecimal sellingPrice;
-	/**
-	 * 盈利
-	 */
-	private BigDecimal profit;
+	@Convert(converter = OfflineStockOptionTradeStateConverter.class)
+	private OfflineStockOptionTradeState state;
 	/**
 	 * 股票代码
 	 */
@@ -81,10 +62,33 @@ public class OfflineStockOptionTrade {
 	 */
 	private Integer cycle;
 	/**
-	 * 状态
+	 * 到期时间
 	 */
-	@Convert(converter = OfflineStockOptionTradeStateConverter.class)
-	private OfflineStockOptionTradeState state;
+	private BigDecimal expireTime;
+	/**
+	 * 成交时间
+	 */
+	private Date buyingTime;
+	/**
+	 * 成交价格
+	 */
+	private BigDecimal buyingPrice;
+	/**
+	 * 卖出时间
+	 */
+	private Date sellingTime;
+	/**
+	 * 卖出价格
+	 */
+	private BigDecimal sellingPrice;
+	/**
+	 * 行权时间
+	 */
+	private BigDecimal rightTime;
+	/**
+	 * 盈利
+	 */
+	private BigDecimal profit;
 	/**
 	 * 对应的期权第三方机构
 	 */
@@ -100,14 +104,6 @@ public class OfflineStockOptionTrade {
 		this.id = id;
 	}
 
-	public String getTradeNo() {
-		return tradeNo;
-	}
-
-	public void setTradeNo(String tradeNo) {
-		this.tradeNo = tradeNo;
-	}
-
 	public String getThirdTradeNo() {
 		return thirdTradeNo;
 	}
@@ -116,44 +112,12 @@ public class OfflineStockOptionTrade {
 		this.thirdTradeNo = thirdTradeNo;
 	}
 
-	public Date getBuyingTime() {
-		return buyingTime;
+	public OfflineStockOptionTradeState getState() {
+		return state;
 	}
 
-	public void setBuyingTime(Date buyingTime) {
-		this.buyingTime = buyingTime;
-	}
-
-	public BigDecimal getBuyingPrice() {
-		return buyingPrice;
-	}
-
-	public void setBuyingPrice(BigDecimal buyingPrice) {
-		this.buyingPrice = buyingPrice;
-	}
-
-	public Date getSellingTime() {
-		return sellingTime;
-	}
-
-	public void setSellingTime(Date sellingTime) {
-		this.sellingTime = sellingTime;
-	}
-
-	public BigDecimal getSellingPrice() {
-		return sellingPrice;
-	}
-
-	public void setSellingPrice(BigDecimal sellingPrice) {
-		this.sellingPrice = sellingPrice;
-	}
-
-	public BigDecimal getProfit() {
-		return profit;
-	}
-
-	public void setProfit(BigDecimal profit) {
-		this.profit = profit;
+	public void setState(OfflineStockOptionTradeState state) {
+		this.state = state;
 	}
 
 	public String getStockCode() {
@@ -204,12 +168,68 @@ public class OfflineStockOptionTrade {
 		this.cycle = cycle;
 	}
 
-	public OfflineStockOptionTradeState getState() {
-		return state;
+	public BigDecimal getExpireTime() {
+		return expireTime;
 	}
 
-	public void setState(OfflineStockOptionTradeState state) {
-		this.state = state;
+	public void setExpireTime(BigDecimal expireTime) {
+		this.expireTime = expireTime;
+	}
+
+	public Date getBuyingTime() {
+		return buyingTime;
+	}
+
+	public void setBuyingTime(Date buyingTime) {
+		this.buyingTime = buyingTime;
+	}
+
+	public BigDecimal getBuyingPrice() {
+		return buyingPrice;
+	}
+
+	public void setBuyingPrice(BigDecimal buyingPrice) {
+		this.buyingPrice = buyingPrice;
+	}
+
+	public Date getSellingTime() {
+		return sellingTime;
+	}
+
+	public void setSellingTime(Date sellingTime) {
+		this.sellingTime = sellingTime;
+	}
+
+	public BigDecimal getSellingPrice() {
+		return sellingPrice;
+	}
+
+	public void setSellingPrice(BigDecimal sellingPrice) {
+		this.sellingPrice = sellingPrice;
+	}
+
+	public BigDecimal getRightTime() {
+		return rightTime;
+	}
+
+	public void setRightTime(BigDecimal rightTime) {
+		this.rightTime = rightTime;
+	}
+
+	public BigDecimal getProfit() {
+		return profit;
+	}
+
+	public void setProfit(BigDecimal profit) {
+		this.profit = profit;
+	}
+
+	public StockOptionOrg getOrg() {
+		return org;
+	}
+
+	public void setOrg(StockOptionOrg org) {
+		this.org = org;
 	}
 
 }
