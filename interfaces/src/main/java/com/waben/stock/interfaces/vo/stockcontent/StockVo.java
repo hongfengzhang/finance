@@ -1,7 +1,5 @@
 package com.waben.stock.interfaces.vo.stockcontent;
 
-import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
-
 public class StockVo {
     private Long id;
     /**

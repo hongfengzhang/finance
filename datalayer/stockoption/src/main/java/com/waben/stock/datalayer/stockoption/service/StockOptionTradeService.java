@@ -81,7 +81,7 @@ public class StockOptionTradeService {
     public StockOptionTrade settlement(Long id) {
         StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
         CapitalAccountDto capitalAccountDto = capitalAccountBusiness.fetchByPublisherId(stockOptionTrade.getPublisherId());
-        capitalAccountDto.getBalance().add(stockOptionTrade.getProfit());
+        //TODO 给用户结算
         //修改订单状态
         return stockOptionTrade;
     }
