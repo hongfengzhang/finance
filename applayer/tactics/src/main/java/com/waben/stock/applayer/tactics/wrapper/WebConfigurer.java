@@ -1,8 +1,7 @@
 package com.waben.stock.applayer.tactics.wrapper;
 
-import com.waben.stock.interfaces.exception.ExecptionHandler;
-import com.waben.stock.interfaces.warpper.converter.DateConverter;
-import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactory;
+import java.util.List;
+
 import org.springframework.context.annotation.Configuration;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -10,7 +9,8 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import java.util.List;
+import com.waben.stock.interfaces.warpper.converter.DateConverter;
+import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactory;
 
 /**
  * @author Created by yuyidi on 2017/6/27.

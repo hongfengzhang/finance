@@ -1,10 +1,7 @@
 package com.waben.stock.applayer.tactics.payapi.czpay.util;
 
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Random;
 
 /**
  * 

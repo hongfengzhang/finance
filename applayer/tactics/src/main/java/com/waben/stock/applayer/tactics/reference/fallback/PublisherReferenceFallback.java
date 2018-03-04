@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.reference.fallback;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
@@ -9,8 +11,6 @@ import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
-
-import java.util.List;
 
 /**
  * 发布人 reference服务接口fallback

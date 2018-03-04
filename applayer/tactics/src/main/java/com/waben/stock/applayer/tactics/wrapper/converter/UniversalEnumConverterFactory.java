@@ -1,14 +1,15 @@
 package com.waben.stock.applayer.tactics.wrapper.converter;
 
-import com.waben.stock.interfaces.enums.CommonalityEnum;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.WeakHashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.core.convert.converter.ConverterFactory;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.WeakHashMap;
+import com.waben.stock.interfaces.enums.CommonalityEnum;
 
 /**
 * @author yuyidi 2017-06-27 10:18:51

@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.stockoption.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +32,11 @@ public class StockOptionCycleController implements StockOptionCycleInterface {
 		List<StockOptionCycle> cycles = service.lists();
         List<StockOptionCycleDto> result = CopyBeanUtils.copyListBeanPropertiesToList(cycles, StockOptionCycleDto.class);
         return new Response<>(result);
+	}
+
+	@Override
+	public Response<StockOptionCycleDto> fetchById(@PathVariable Long id) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionCycleDto.class, service.findById(id), false));
 	}
 	
 }

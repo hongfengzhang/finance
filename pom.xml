@@ -292,6 +292,20 @@
                     <skip>true</skip>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <nonFilteredFileExtensions>
+                        <nonFilteredFileExtension>pdf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>swf</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>data</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>xlsx</nonFilteredFileExtension>
+                        <nonFilteredFileExtension>docx</nonFilteredFileExtension>
+                    </nonFilteredFileExtensions>
+                </configuration>
+            </plugin>
         </plugins>
         <pluginManagement>
             <plugins>

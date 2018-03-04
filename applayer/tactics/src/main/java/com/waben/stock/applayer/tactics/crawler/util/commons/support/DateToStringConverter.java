@@ -1,9 +1,9 @@
 package com.waben.stock.applayer.tactics.crawler.util.commons.support;
 
-import org.springframework.core.convert.converter.Converter;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.springframework.core.convert.converter.Converter;
 
 /**
  * Created by heavenick on 2016/5/10.

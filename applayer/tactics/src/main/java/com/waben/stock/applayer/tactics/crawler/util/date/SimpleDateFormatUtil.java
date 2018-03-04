@@ -1,12 +1,12 @@
 package com.waben.stock.applayer.tactics.crawler.util.date;
 
-import org.apache.commons.lang3.time.FastDateFormat;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import org.apache.commons.lang3.time.FastDateFormat;
 
 /**
  * Created by 12 on 2016/11/9.

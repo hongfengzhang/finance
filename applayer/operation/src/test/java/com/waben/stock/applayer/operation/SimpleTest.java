@@ -1,17 +1,24 @@
 package com.waben.stock.applayer.operation;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.sun.mail.util.MailSSLSocketFactory;
 import com.waben.stock.applayer.operation.dto.websocket.StockRequestMessage;
+import com.waben.stock.applayer.operation.util.ExcelUtil;
 import com.waben.stock.interfaces.pojo.stock.quotation.Resonse;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.web.HttpRest;
 import org.junit.Test;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Created by yuyidi on 2017/11/15.
@@ -66,5 +73,48 @@ public class SimpleTest {
                 "\"volume\":5.468197E7}],\"msg\":\"success\"}";
         Resonse<StockMarket> result = JacksonUtil.decode(json, Resonse.class, StockMarket.class);
         System.out.println(result.getData().get(0).getName());
+    }
+
+    @Test
+    public void testInquiry() {
+//        ExcelUtil.renderInquiry();
+    }
+
+    @Test
+    public void testPurchase() {
+        ExcelUtil.rendPurchase();
+    }
+
+    @Test
+    public void testSendMail() {
+        JavaMailSender mailSender = javaMailSender();
+        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
+        simpleMailMessage.setFrom("yyd@youguwang.com.cn");
+        simpleMailMessage.setTo("lzh@youguwang.com.cn");
+        simpleMailMessage.setSubject("测试邮件2222");
+        simpleMailMessage.setText("这是测试邮件111");
+        mailSender.send(simpleMailMessage);
+    }
+
+    public JavaMailSenderImpl javaMailSender() {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost("smtp.exmail.qq.com");
+        javaMailSender.setPort(465);
+        javaMailSender.setUsername("yyd@youguwang.com.cn");
+        javaMailSender.setPassword("WangBei0605");
+        Properties properties = new Properties();
+        MailSSLSocketFactory sf = null;
+        try {
+            sf = new MailSSLSocketFactory();
+            sf.setTrustAllHosts(true);
+        } catch (GeneralSecurityException e1) {
+            e1.printStackTrace();
+        }
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.socketFactory", sf);
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+        javaMailSender.setJavaMailProperties(properties);
+        return javaMailSender;
     }
 }

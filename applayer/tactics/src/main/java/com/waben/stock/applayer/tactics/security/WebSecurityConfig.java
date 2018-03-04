@@ -101,6 +101,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/appversion/currentAppVersion", "/appversionupgrade/checkUpgrade")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/turbine/**").permitAll();
+		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

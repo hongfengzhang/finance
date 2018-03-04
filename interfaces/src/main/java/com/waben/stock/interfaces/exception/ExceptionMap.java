@@ -78,5 +78,7 @@ public class ExceptionMap {
 
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "机构不存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "机构类别不存在");
+		
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 	}
 }
