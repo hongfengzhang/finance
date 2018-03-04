@@ -2,7 +2,6 @@ package com.waben.stock.interfaces.dto.stockoption;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import com.waben.stock.interfaces.enums.StockOptionApplyState;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 
 /**
@@ -55,7 +54,7 @@ public class StockOptionApplyDto  implements Comparable<StockOptionApplyDto>  {
 	/**
 	 * 申购状态
 	 */
-	private StockOptionApplyState state;
+//	private StockOptionApplyState state;
 	/**
 	 * 发布人ID
 	 */
@@ -153,13 +152,13 @@ public class StockOptionApplyDto  implements Comparable<StockOptionApplyDto>  {
 		this.applyNo = applyNo;
 	}
 
-	public StockOptionApplyState getState() {
-		return state;
-	}
-
-	public void setState(StockOptionApplyState state) {
-		this.state = state;
-	}
+//	public StockOptionApplyState getState() {
+//		return state;
+//	}
+//
+//	public void setState(StockOptionApplyState state) {
+//		this.state = state;
+//	}
 
 	public Date getApplyDate() {
 		return applyDate;

@@ -82,12 +82,7 @@
                 <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
-                <div class="col-md-1">
-                    <div class="form-group">
-                        <label class="col-md-5"></label>
-                        <a id="add" class="btn btn-fill btn-info" href="../stock/add">添加</a>
-                    </div>
-                </div>
+
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
 
@@ -108,7 +103,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "../stock/pages",
+                url: "../option/pages",
                 dataType: "json",
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
@@ -157,19 +152,43 @@
                     align: 'center'
                 }, {
                     field: 'id',
-                    title: 'ID',
+                    title: '手机号',
                     align: 'center'
                 }, {
                     field: 'name',
-                    title: '股票名称',
+                    title: '标的股票',
                     align: 'center'
                 }, {
                     field: 'code',
-                    title: '股票代码',
+                    title: '名义本金',
+                    align: 'center'
+                },{
+                    field: 'code',
+                    title: '预询价',
+                    align: 'center'
+                },{
+                    field: 'code',
+                    title: '实询价',
+                    align: 'center'
+                },{
+                    field: 'code',
+                    title: '成交价',
+                    align: 'center'
+                },{
+                    field: 'code',
+                    title: '实成价',
+                    align: 'center'
+                },{
+                    field: 'code',
+                    title: '行权周期',
+                    align: 'center'
+                },{
+                    field: 'code',
+                    title: '买入方式',
                     align: 'center'
                 },{
                     field: 'status',
-                    title: '股票状态',
+                    title: '订单状态',
                     align: 'center',
                     formatter:function(value,row,index){
                         if(value==true){
@@ -178,6 +197,14 @@
                             return '异常';
                         }
                     }
+                },{
+                    field: '订单编号',
+                    title: '买入方式',
+                    align: 'center'
+                },{
+                    field: 'code',
+                    title: '交易时间',
+                    align: 'center'
                 }, {
                     title: '操作',
                     align: 'center',

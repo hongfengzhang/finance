@@ -111,6 +111,15 @@ public class PaymentController {
 		return result;
 	}
 
+	@PostMapping("/sdquickpay")
+	@ApiOperation(value = "杉德快捷支付")
+	public Response<String> quickPay1(@RequestParam(required = true) String paymentNo,
+									 @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String validaCode) {
+		Response<String> result = new Response<String>();
+		result.setResult(paymentBusiness.quickPay(paymentNo, bindCardId, validaCode, SecurityUtil.getUserId()));
+		return result;
+	}
+
 	@PostMapping("/quickpaynotify")
 	@ApiOperation(value = "快捷支付")
 	public String quickPayNotify(HttpServletRequest request, HttpServletResponse httpResp) {
