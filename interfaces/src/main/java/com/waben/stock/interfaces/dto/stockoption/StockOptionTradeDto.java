@@ -63,6 +63,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 成交时间
 	 */
+
 	private Date buyingTime;
 	/**
 	 * 成交价格
@@ -216,6 +217,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	public void setSellingTime(Date sellingTime) {
 		this.sellingTime = sellingTime;
 	}
+
 
 	public BigDecimal getSellingPrice() {
 		return sellingPrice;

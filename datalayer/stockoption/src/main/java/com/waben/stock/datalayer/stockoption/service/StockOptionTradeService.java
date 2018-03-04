@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
+import com.waben.stock.datalayer.stockoption.business.PublisherBusiness;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -35,7 +36,67 @@ public class StockOptionTradeService {
 	private StockOptionTradeDao stockOptionTradeDao;
 
 	@Autowired
-	private CapitalAccountBusiness accountBusiness;
+	private PublisherBusiness publisherBusiness;
+
+	@Autowired
+	private CapitalAccountBusiness capitalAccountBusiness;
+
+	public Page<StockOptionTrade> pagesByUserQuery(final StockOptionTradeUserQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<StockOptionTrade> pages = stockOptionTradeDao.page(new Specification<StockOptionTrade>() {
+			@Override
+			public Predicate toPredicate(Root<StockOptionTrade> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<>();
+				if (query.getStates() != null && query.getStates().length > 0) {
+					predicateList.add(root.get("state").in(query.getStates()));
+				}
+				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
+					predicateList
+							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
+				}
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("sellingTime").as(Date.class)),
+						criteriaBuilder.desc(root.get("buyingTime").as(Date.class)),
+						criteriaBuilder.desc(root.get("applyTime").as(Date.class)));
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+	}
+
+	public StockOptionTrade save(StockOptionTrade stockOptionTrade) {
+		// 再检查一余额是否充足
+		CapitalAccountDto account = capitalAccountBusiness.fetchByPublisherId(stockOptionTrade.getPublisherId());
+		if (account.getAvailableBalance().compareTo(stockOptionTrade.getRightMoney()) < 0) {
+			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+		}
+		stockOptionTrade.setTradeNo(UniqueCodeGenerator.generateTradeNo());
+		stockOptionTrade.setState(StockOptionTradeState.WAITCONFIRMED);
+		Date date = new Date();
+		stockOptionTrade.setApplyTime(date);
+		stockOptionTrade.setUpdateTime(date);
+		stockOptionTradeDao.create(stockOptionTrade);
+		// 扣去权利金
+		try {
+			// TODO
+		} catch (ServiceException ex) {
+			if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
+				throw ex;
+			} else {
+				// 再一次确认是否已经扣款
+				try {
+					// TODO
+				} catch (ServiceException frozenEx) {
+					throw ex;
+				}
+			}
+		}
+		// TODO 站外消息推送
+		return stockOptionTrade;
+	}
 
 	public Page<StockOptionTrade> pagesByQuery(final StockOptionTradeQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -43,7 +104,7 @@ public class StockOptionTradeService {
 			@Override
 			public Predicate toPredicate(Root<StockOptionTrade> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicatesList = new ArrayList<>();
+				List<Predicate> predicatesList = new ArrayList();
 				if (query.getBeginTime() != null) {
 					predicatesList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("buyingTime").as(Date.class),
 							query.getBeginTime()));
@@ -73,64 +134,17 @@ public class StockOptionTradeService {
 		return pages;
 	}
 
-	public Page<StockOptionTrade> pagesByUserQuery(final StockOptionTradeUserQuery query) {
-		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
-		Page<StockOptionTrade> pages = stockOptionTradeDao.page(new Specification<StockOptionTrade>() {
-			@Override
-			public Predicate toPredicate(Root<StockOptionTrade> root, CriteriaQuery<?> criteriaQuery,
-					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicateList = new ArrayList<>();
-				if (query.getStates() != null && query.getStates().length > 0) {
-					predicateList.add(root.get("state").in(query.getStates()));
-				}
-				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
-					predicateList
-							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
-				}
-				if (predicateList.size() > 0) {
-					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-				}
-				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("sellingTime").as(Date.class)),
-						criteriaBuilder.desc(root.get("buyingTime").as(Date.class)),
-						criteriaBuilder.desc(root.get("applyTime").as(Date.class)));
-				return criteriaQuery.getRestriction();
-			}
-		}, pageable);
-		return pages;
-	}
-
 	public StockOptionTrade findById(Long id) {
 		return stockOptionTradeDao.retrieve(id);
 	}
 
-	public StockOptionTrade save(StockOptionTrade stockOptionTrade) {
-		// 再检查一余额是否充足
-		CapitalAccountDto account = accountBusiness.fetchByPublisherId(stockOptionTrade.getPublisherId());
-		if (account.getAvailableBalance().compareTo(stockOptionTrade.getRightMoney()) < 0) {
-			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
-		}
-		stockOptionTrade.setTradeNo(UniqueCodeGenerator.generateTradeNo());
-		stockOptionTrade.setState(StockOptionTradeState.WAITCONFIRMED);
-		Date date = new Date();
-		stockOptionTrade.setApplyTime(date);
-		stockOptionTrade.setUpdateTime(date);
-		stockOptionTradeDao.create(stockOptionTrade);
-		// 扣去权利金
-		try {
-			// TODO
-		} catch (ServiceException ex) {
-			if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
-				throw ex;
-			} else {
-				// 再一次确认是否已经扣款
-				try {
-					// TODO
-				} catch (ServiceException frozenEx) {
-					throw ex;
-				}
-			}
-		}
-		// TODO 站外消息推送
+	public StockOptionTrade settlement(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		CapitalAccountDto capitalAccountDto = capitalAccountBusiness
+				.fetchByPublisherId(stockOptionTrade.getPublisherId());
+		capitalAccountDto.getBalance().add(stockOptionTrade.getProfit());
+		// 修改订单状态
 		return stockOptionTrade;
 	}
+
 }

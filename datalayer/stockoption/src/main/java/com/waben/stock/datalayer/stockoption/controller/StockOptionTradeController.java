@@ -44,6 +44,13 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
+	public Response<StockOptionTradeDto> settlement(@PathVariable Long id) {
+		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class,
+				stockOptionTradeService.settlement(id), false);
+		return new Response<>(result);
+	}
+
+	@Override
 	public Response<StockOptionTradeDto> add(StockOptionTradeDto stockOptionTradeDto) {
 		logger.info("发布人{}申购期权{}，名义本金 {}!", stockOptionTradeDto.getPublisherId(), stockOptionTradeDto.getStockCode(),
 				stockOptionTradeDto.getNominalAmount());

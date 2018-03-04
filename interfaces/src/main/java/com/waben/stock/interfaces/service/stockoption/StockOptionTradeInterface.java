@@ -15,19 +15,6 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 public interface StockOptionTradeInterface {
 
 	/**
-	 * 分页查询期权申购信息
-	 *
-	 * @param query
-	 *            查询条件
-	 * @return 结算记录
-	 */
-	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<PageInfo<StockOptionTradeDto>> pagesByQuery(@RequestBody StockOptionTradeQuery query);
-
-	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	Response<StockOptionTradeDto> fetchById(@PathVariable("id") Long id);
-
-	/**
 	 * 添加期权申购，此时状态为“待确认”
 	 *
 	 * @param stockOptionTradeDto
@@ -40,4 +27,19 @@ public interface StockOptionTradeInterface {
 	@RequestMapping(value = "/userpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<StockOptionTradeDto>> pagesByUserQuery(@RequestBody StockOptionTradeUserQuery query);
 
+	/**
+	 * 分页查询期权申购信息
+	 *
+	 * @param query
+	 *            查询条件
+	 * @return 结算记录
+	 */
+	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<StockOptionTradeDto>> pagesByQuery(@RequestBody StockOptionTradeQuery query);
+
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	Response<StockOptionTradeDto> fetchById(@PathVariable("id") Long id);
+
+    @RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
+    Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id);
 }

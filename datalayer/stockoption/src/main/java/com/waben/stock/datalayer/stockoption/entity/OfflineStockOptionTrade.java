@@ -238,4 +238,11 @@ public class OfflineStockOptionTrade {
 		this.org = org;
 	}
 
+	public StockOptionTrade getTrade() {
+		return trade;
+	}
+
+	public void setTrade(StockOptionTrade trade) {
+		this.trade = trade;
+	}
 }
