@@ -134,5 +134,9 @@ public class ExceptionConstant {
 	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
 	// 机构类别不存在
 	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
+	
+	// 期权服务异常
+	// 名义本金20万起，且必须为10万的整数倍
+	public static final String STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION = "9001";
 
 }

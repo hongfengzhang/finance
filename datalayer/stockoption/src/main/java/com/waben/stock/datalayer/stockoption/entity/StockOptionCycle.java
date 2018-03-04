@@ -8,6 +8,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -39,6 +40,7 @@ public class StockOptionCycle {
 	 */
 	@JsonManagedReference
 	@OneToMany(targetEntity = StockOptionAmount.class, fetch = FetchType.EAGER)
+	@JoinColumn(name = "cycle_id")
 	private Set<StockOptionAmount> amountValues = new HashSet<>();
 
 	public Long getId() {

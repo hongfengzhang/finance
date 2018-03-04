@@ -107,7 +107,11 @@ public class StockOptionTrade {
 	/**
 	 * 发布人手机号码
 	 */
-	private Long publisherPhone;
+	private String publisherPhone;
+	/**
+	 * 更新时间
+	 */
+	private Date updateTime;
 	/**
 	 * 对应的线下期权交易信息
 	 */
@@ -267,11 +271,11 @@ public class StockOptionTrade {
 		this.publisherId = publisherId;
 	}
 
-	public Long getPublisherPhone() {
+	public String getPublisherPhone() {
 		return publisherPhone;
 	}
 
-	public void setPublisherPhone(Long publisherPhone) {
+	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
 	}
 
@@ -281,6 +285,14 @@ public class StockOptionTrade {
 
 	public void setOfflineTrade(OfflineStockOptionTrade offlineTrade) {
 		this.offlineTrade = offlineTrade;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 }

@@ -91,7 +91,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 发布人手机号码
 	 */
-	private Long publisherPhone;
+	private String publisherPhone;
 	/**
 	 * 对应的线下期权交易信息
 	 */
@@ -249,11 +249,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.publisherId = publisherId;
 	}
 
-	public Long getPublisherPhone() {
+	public String getPublisherPhone() {
 		return publisherPhone;
 	}
 
-	public void setPublisherPhone(Long publisherPhone) {
+	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
 	}
 

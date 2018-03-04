@@ -23,5 +23,9 @@ public class StockOptionCycleService {
 	public List<StockOptionCycle> lists() {
 		return cycleDao.list();
 	}
+
+	public StockOptionCycle findById(Long id) {
+		return cycleDao.retrieve(id);
+	}
 	
 }

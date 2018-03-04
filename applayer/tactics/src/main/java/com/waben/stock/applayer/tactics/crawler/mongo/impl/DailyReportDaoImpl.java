@@ -1,8 +1,5 @@
 package com.waben.stock.applayer.tactics.crawler.mongo.impl;
 
-import static com.waben.stock.applayer.tactics.crawler.util.StockCrawlerConstants.ANNUAL_REPORT_NAME;
-import static com.waben.stock.applayer.tactics.crawler.util.StockCrawlerConstants.getCrawlerCollections;
-
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -19,7 +16,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.mongodb.BasicDBObject;
-import com.waben.stock.applayer.tactics.crawler.model.AnnualReportModel;
 import com.waben.stock.applayer.tactics.crawler.model.news.DailyReportModel;
 import com.waben.stock.applayer.tactics.crawler.mongo.DailyReportDao;
 

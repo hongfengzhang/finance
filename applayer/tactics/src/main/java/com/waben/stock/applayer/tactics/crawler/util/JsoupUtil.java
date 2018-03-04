@@ -1,13 +1,14 @@
 package com.waben.stock.applayer.tactics.crawler.util;
 
-import com.virjar.dungproxy.client.ippool.IpPool;
-import com.virjar.dungproxy.client.model.AvProxy;
+import java.io.IOException;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
+import com.virjar.dungproxy.client.ippool.IpPool;
+import com.virjar.dungproxy.client.model.AvProxy;
 
 /**
  * jsoup 爬虫 工具类
