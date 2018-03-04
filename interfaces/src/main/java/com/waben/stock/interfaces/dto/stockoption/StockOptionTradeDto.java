@@ -1,44 +1,29 @@
-package com.waben.stock.datalayer.stockoption.entity;
+package com.waben.stock.interfaces.dto.stockoption;
 
 import java.math.BigDecimal;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
-import com.waben.stock.datalayer.stockoption.entity.enumconverter.OfflineStockOptionTradeStateConverter;
-import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
+import com.waben.stock.interfaces.enums.StockOptionBuyingType;
+import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
 /**
- * 线下期权交易信息
+ * 用户股票期权申购信息
  * 
  * @author luomengan
  *
  */
-@Entity
-@Table(name = "offline_stock_option_trade")
-public class OfflineStockOptionTrade {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
+
+
 	private Long id;
 	/**
-	 * 对应的第三方交易单号
+	 * 交易单号
 	 */
-	private String thirdTradeNo;
+	private String tradeNo;
 	/**
-	 * 状态
+	 * 交易状态
 	 */
-	@Convert(converter = OfflineStockOptionTradeStateConverter.class)
-	private OfflineStockOptionTradeState state;
+	private StockOptionTradeState state;
 	/**
 	 * 股票代码
 	 */
@@ -66,10 +51,19 @@ public class OfflineStockOptionTrade {
 	/**
 	 * 到期时间
 	 */
-	private Date expireTime;
+	private BigDecimal expireTime;
+	/**
+	 * 申购时间
+	 */
+	private Date applyTime;
+	/**
+	 * 买入方式
+	 */
+	private StockOptionBuyingType buyingType;
 	/**
 	 * 成交时间
 	 */
+
 	private Date buyingTime;
 	/**
 	 * 成交价格
@@ -92,16 +86,17 @@ public class OfflineStockOptionTrade {
 	 */
 	private BigDecimal profit;
 	/**
-	 * 对应的期权第三方机构
+	 * 发布人ID
 	 */
-	@ManyToOne
-	@JoinColumn(name = "org_id")
-	private StockOptionOrg org;
+	private Long publisherId;
 	/**
-	 * 对应的用户股票期权交易信息
+	 * 发布人手机号码
 	 */
-	@OneToOne(mappedBy = "offlineTrade")
-	private StockOptionTrade trade;
+	private Long publisherPhone;
+	/**
+	 * 对应的线下期权交易信息
+	 */
+	private OfflineStockOptionTradeDto offlineTrade;
 
 	public Long getId() {
 		return id;
@@ -111,19 +106,19 @@ public class OfflineStockOptionTrade {
 		this.id = id;
 	}
 
-	public String getThirdTradeNo() {
-		return thirdTradeNo;
+	public String getTradeNo() {
+		return tradeNo;
 	}
 
-	public void setThirdTradeNo(String thirdTradeNo) {
-		this.thirdTradeNo = thirdTradeNo;
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
 
-	public OfflineStockOptionTradeState getState() {
+	public StockOptionTradeState getState() {
 		return state;
 	}
 
-	public void setState(OfflineStockOptionTradeState state) {
+	public void setState(StockOptionTradeState state) {
 		this.state = state;
 	}
 
@@ -175,12 +170,28 @@ public class OfflineStockOptionTrade {
 		this.cycle = cycle;
 	}
 
-	public Date getExpireTime() {
+	public BigDecimal getExpireTime() {
 		return expireTime;
 	}
 
-	public void setExpireTime(Date expireTime) {
+	public void setExpireTime(BigDecimal expireTime) {
 		this.expireTime = expireTime;
+	}
+
+	public Date getApplyTime() {
+		return applyTime;
+	}
+
+	public void setApplyTime(Date applyTime) {
+		this.applyTime = applyTime;
+	}
+
+	public StockOptionBuyingType getBuyingType() {
+		return buyingType;
+	}
+
+	public void setBuyingType(StockOptionBuyingType buyingType) {
+		this.buyingType = buyingType;
 	}
 
 	public Date getBuyingTime() {
@@ -207,20 +218,13 @@ public class OfflineStockOptionTrade {
 		this.sellingTime = sellingTime;
 	}
 
+
 	public BigDecimal getSellingPrice() {
 		return sellingPrice;
 	}
 
 	public void setSellingPrice(BigDecimal sellingPrice) {
 		this.sellingPrice = sellingPrice;
-	}
-
-	public BigDecimal getRightTime() {
-		return rightTime;
-	}
-
-	public void setRightTime(BigDecimal rightTime) {
-		this.rightTime = rightTime;
 	}
 
 	public BigDecimal getProfit() {
@@ -231,19 +235,40 @@ public class OfflineStockOptionTrade {
 		this.profit = profit;
 	}
 
-	public StockOptionOrg getOrg() {
-		return org;
+	public BigDecimal getRightTime() {
+		return rightTime;
 	}
 
-	public void setOrg(StockOptionOrg org) {
-		this.org = org;
+	public void setRightTime(BigDecimal rightTime) {
+		this.rightTime = rightTime;
 	}
 
-	public StockOptionTrade getTrade() {
-		return trade;
+	public Long getPublisherId() {
+		return publisherId;
 	}
 
-	public void setTrade(StockOptionTrade trade) {
-		this.trade = trade;
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
+	}
+
+	public Long getPublisherPhone() {
+		return publisherPhone;
+	}
+
+	public void setPublisherPhone(Long publisherPhone) {
+		this.publisherPhone = publisherPhone;
+	}
+
+	public OfflineStockOptionTradeDto getOfflineTrade() {
+		return offlineTrade;
+	}
+
+	public void setOfflineTrade(OfflineStockOptionTradeDto offlineTrade) {
+		this.offlineTrade = offlineTrade;
+	}
+
+	@Override
+	public int compareTo(StockOptionTradeDto o) {
+		return 0;
 	}
 }

@@ -1,13 +1,10 @@
 package com.waben.stock.datalayer.manage.service;
 
 import com.waben.stock.datalayer.manage.entity.Role;
-import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.repository.RoleDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
-import com.waben.stock.interfaces.pojo.query.StaffQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

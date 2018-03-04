@@ -20,4 +20,5 @@ public interface LossInterface {
 
     @RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<LossDto> modify(@RequestBody LossDto lossDto);
+
 }
