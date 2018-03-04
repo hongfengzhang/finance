@@ -11,8 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.Cascade;
-
 import com.waben.stock.interfaces.dto.publisher.PublisherInformationStatisticsDto;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
@@ -59,11 +57,6 @@ public class Publisher {
 	@Column(name = "create_time", nullable = false)
 	private Date createTime;
 	/**
-	 * 角色
-	 */
-	@Column
-	private Long role;
-	/**
 	 * 是否为测试用户，测试用户不能提现
 	 */
 	@Column(name = "is_test")
@@ -78,8 +71,13 @@ public class Publisher {
 	 */
 	@Column(name = "head_portrait")
 	private String headPortrait;
-	
-	@OneToOne(mappedBy = "publisher" , cascade = CascadeType.REMOVE)
+	/**
+	 * 推广渠道机构代码
+	 */
+	@Column(name = "promotion_org_code")
+	private String promotionOrgCode;
+
+	@OneToOne(mappedBy = "publisher", cascade = CascadeType.REMOVE)
 	private PublisherInformationStatistics publisherInformationStatistics;
 
 	public Long getId() {
@@ -138,14 +136,6 @@ public class Publisher {
 		this.createTime = createTime;
 	}
 
-	public Long getRole() {
-		return role;
-	}
-
-	public void setRole(Long role) {
-		this.role = role;
-	}
-
 	public Boolean getIsTest() {
 		return isTest;
 	}
@@ -170,6 +160,14 @@ public class Publisher {
 		this.headPortrait = headPortrait;
 	}
 
+	public String getPromotionOrgCode() {
+		return promotionOrgCode;
+	}
+
+	public void setPromotionOrgCode(String promotionOrgCode) {
+		this.promotionOrgCode = promotionOrgCode;
+	}
+
 	public PublisherInformationStatistics getPublisherInformationStatistics() {
 		return publisherInformationStatistics;
 	}
@@ -177,9 +175,10 @@ public class Publisher {
 	public void setPublisherInformationStatistics(PublisherInformationStatistics publisherInformationStatistics) {
 		this.publisherInformationStatistics = publisherInformationStatistics;
 	}
-	
-	public PublisherInformationStatisticsDto getPublisherInformationStatisticsDto(){
-		return CopyBeanUtils.copyBeanProperties(PublisherInformationStatisticsDto.class, publisherInformationStatistics, false);
+
+	public PublisherInformationStatisticsDto getPublisherInformationStatisticsDto() {
+		return CopyBeanUtils.copyBeanProperties(PublisherInformationStatisticsDto.class, publisherInformationStatistics,
+				false);
 	}
 
 }

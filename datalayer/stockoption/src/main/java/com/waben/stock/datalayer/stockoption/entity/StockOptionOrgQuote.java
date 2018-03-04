@@ -6,6 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -37,6 +39,12 @@ public class StockOptionOrgQuote {
 	 * 权利金报价比例
 	 */
 	private BigDecimal rightMoneyRatio;
+	/**
+	 * 对应的期权第三方机构
+	 */
+	@ManyToOne
+	@JoinColumn(name = "org_id")
+	private StockOptionOrg org;
 
 	public Long getId() {
 		return id;
@@ -76,6 +84,14 @@ public class StockOptionOrgQuote {
 
 	public void setRightMoneyRatio(BigDecimal rightMoneyRatio) {
 		this.rightMoneyRatio = rightMoneyRatio;
+	}
+
+	public StockOptionOrg getOrg() {
+		return org;
+	}
+
+	public void setOrg(StockOptionOrg org) {
+		this.org = org;
 	}
 
 }

@@ -1,0 +1,28 @@
+package com.waben.stock.applayer.tactics.reference.fallback;
+
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockoption.StockOptionCycleInterface;
+
+/**
+ * 期权周期 reference服务接口fallback
+ *
+ * @author luomengan
+ */
+@Component
+public class StockOptionCycleReferenceFallback implements StockOptionCycleInterface {
+
+	@Override
+	public Response<List<StockOptionCycleDto>> lists() {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	
+
+}

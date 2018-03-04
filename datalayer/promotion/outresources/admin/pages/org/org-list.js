@@ -38,7 +38,10 @@ $(function() {
 	            { "data": "id", "title": "机构ID", orderable: false},
 	            { "data": "code", "title": "结构代码", orderable: false},
 	            { "data": "name", "title": "机构名称", orderable: false},
-	            { "data": "categoryName", "title": "机构类型", orderable: false},
+	            { "data": "level", "title": "机构类型", orderable: false, "render": function(data, type, full, meta) {
+	                var level = full.level;
+	                return level + "级机构";
+	            }},
 	            { "data": "state", "title": "机构状态", orderable: false, "render": function(data, type, full, meta) {
 	                var state = full.state;
 	                if(state == "NORMAL") {

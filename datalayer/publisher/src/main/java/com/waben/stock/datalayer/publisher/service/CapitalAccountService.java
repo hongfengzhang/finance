@@ -532,9 +532,8 @@ public class CapitalAccountService {
 		return pages;
 	}
 
-	public CapitalAccount revision(CapitalAccountDto accountDto) {
-		CapitalAccount request = CopyBeanUtils.copyBeanProperties(CapitalAccount.class, accountDto, false);
-		CapitalAccount response = capitalAccountDao.update(request);
+	public CapitalAccount revision(CapitalAccount capitalAccount) {
+		CapitalAccount response = capitalAccountDao.update(capitalAccount);
 		return response;
 	}
 

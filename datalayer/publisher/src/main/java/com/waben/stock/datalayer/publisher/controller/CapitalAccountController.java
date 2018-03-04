@@ -114,7 +114,8 @@ public class CapitalAccountController implements CapitalAccountInterface {
 
 	@Override
 	public Response<CapitalAccountDto> modifyCapitalAccount(@RequestBody CapitalAccountDto capitalAccountDto) {
-		CapitalAccount account = capitalAccountService.revision(capitalAccountDto);
+		CapitalAccount capitalAccount = CopyBeanUtils.copyBeanProperties(CapitalAccount.class, capitalAccountDto, false);
+		CapitalAccount account = capitalAccountService.revision(capitalAccount);
 		CapitalAccountDto accountDto = CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, account, false);
 		return new Response<CapitalAccountDto>(accountDto);
 	}
