@@ -106,9 +106,7 @@
                                    placeholder="期限"/>
                             <label>执行价:</label>
                             <select class="form-control">
-                                <option>90%</option>
-                                <option>100%</option>
-                                <option>110%</option>
+                                <option value="100%">100%</option>
                             </select>
                             <label>结构:</label>
                             <select class="form-control">
@@ -333,7 +331,22 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    在这里添加一些文本
+                    <form role="form">
+                        <div class="panel-body">
+                            <h5>机构报价单</h5>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="panel-body">
+                            <h5>机构申报单</h5>
+                        </div>
+                    </form>
+                    <form role="form">
+                        <div class="panel-body">
+                            <h5>机构清算单</h5>
+                        </div>
+                    </form>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭
@@ -397,7 +410,7 @@
                     var queryMap = {
                         publisherPhone: $("input[name='publisherPhone']").val(),
                         applyNo: $("input[name='applyNo']").val(),
-                        state: $("[name='state']").val()== '0' ? "":$("[name='status']").val(),
+                        state: $("[name='state']").val() == '0' ? "" : $("[name='status']").val(),
                         beginTime: $("[name='beginTime']").val(),
                         endTime: $("[name='endTime']").val(),
                     }
@@ -494,14 +507,14 @@
                                     url: "../option/inquiry/" + row.id,
                                     type: 'post',
                                     success: function (response) {
-                                        if(response.code ='200'){
+                                        if (response.code = '200') {
                                             $table.bootstrapTable('refresh');
                                             alert("询价成功");
-                                        }else{
+                                        } else {
                                             alert(response.message);
                                         }
                                     },
-                                    error:function () {
+                                    error: function () {
                                         alert("询价失败")
                                     }
                                 })
@@ -515,14 +528,14 @@
                                     url: "../option/purchase/" + row.id,
                                     type: 'post',
                                     success: function (response) {
-                                        if(response.code ='200'){
+                                        if (response.code = '200') {
                                             $table.bootstrapTable('refresh');
                                             alert("申购成功");
-                                        }else{
+                                        } else {
                                             alert("申购失败");
                                         }
                                     },
-                                    error:function () {
+                                    error: function () {
                                         alert("申购失败");
                                     }
                                 })
@@ -536,14 +549,14 @@
                                     url: "../option/inquiry/" + row.id,
                                     type: 'post',
                                     success: function (response) {
-                                        if(response.code ='200'){
+                                        if (response.code = '200') {
                                             $table.bootstrapTable('refresh');
                                             alert("订单状态修改成功");
-                                        }else{
+                                        } else {
                                             alert(response.message);
                                         }
                                     },
-                                    error:function () {
+                                    error: function () {
                                         alert("订单修改失败")
                                     }
                                 })
@@ -557,14 +570,14 @@
                                     url: "../option/exercise/" + row.id,
                                     type: 'post',
                                     success: function (response) {
-                                        if(response.code ='200'){
+                                        if (response.code = '200') {
                                             $table.bootstrapTable('refresh');
                                             alert("行权成功");
-                                        }else{
+                                        } else {
                                             alert(response.message);
                                         }
                                     },
-                                    error:function () {
+                                    error: function () {
                                         alert("行权失败");
                                     }
                                 })
@@ -586,14 +599,14 @@
                                     url: "../offlinestockoptiontrade/settlement/" + row.id,
                                     type: 'post',
                                     success: function (response) {
-                                        if(response.code ='200'){
+                                        if (response.code = '200') {
                                             $table.bootstrapTable('refresh');
                                             alert("结算成功");
-                                        }else{
+                                        } else {
                                             alert(response.message);
                                         }
                                     },
-                                    error:function () {
+                                    error: function () {
                                         alert("结算失败")
                                     }
                                 })
