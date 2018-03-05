@@ -64,6 +64,10 @@ public class StockOptionTrade {
 	 */
 	private Integer cycle;
 	/**
+	 * 周期名称
+	 */
+	private String cycleName;
+	/**
 	 * 到期时间
 	 */
 	private Date expireTime;
@@ -95,7 +99,7 @@ public class StockOptionTrade {
 	/**
 	 * 行权时间
 	 */
-	private BigDecimal rightTime;
+	private Date rightTime;
 	/**
 	 * 盈利
 	 */
@@ -255,11 +259,11 @@ public class StockOptionTrade {
 		this.profit = profit;
 	}
 
-	public BigDecimal getRightTime() {
+	public Date getRightTime() {
 		return rightTime;
 	}
 
-	public void setRightTime(BigDecimal rightTime) {
+	public void setRightTime(Date rightTime) {
 		this.rightTime = rightTime;
 	}
 
@@ -293,6 +297,14 @@ public class StockOptionTrade {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getCycleName() {
+		return cycleName;
+	}
+
+	public void setCycleName(String cycleName) {
+		this.cycleName = cycleName;
 	}
 
 }

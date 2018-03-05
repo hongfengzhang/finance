@@ -15,7 +15,7 @@ public enum StockOptionTradeState implements CommonalityEnum {
 
 	FAILURE("2", "申购失败"),
 	
-	TURNOVER("3", "已成交"),
+	TURNOVER("3", "持仓中"),
 
 	APPLYRIGHT("4", "申请行权"),
 

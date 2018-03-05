@@ -62,7 +62,7 @@ public class OfflineStockOptionTradeDto implements Comparable<StockOptionTradeDt
     /**
      * 行权时间
      */
-    private BigDecimal rightTime;
+    private Date rightTime;
     /**
      * 盈利
      */
@@ -185,11 +185,11 @@ public class OfflineStockOptionTradeDto implements Comparable<StockOptionTradeDt
         this.sellingPrice = sellingPrice;
     }
 
-    public BigDecimal getRightTime() {
+    public Date getRightTime() {
         return rightTime;
     }
 
-    public void setRightTime(BigDecimal rightTime) {
+    public void setRightTime(Date rightTime) {
         this.rightTime = rightTime;
     }
 
