@@ -345,13 +345,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div>
-                    <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs"/>
-                    <input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs"/>
-                    <input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs"/>
-                    <input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs"/>
-                    <input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs"/>
-                    <input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs"/>
-                    <input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs"/>
+
                 </div>
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
@@ -421,19 +415,19 @@
                     checkbox: true,
                     align: 'center'
                 }, {
-                    field: 'id',
+                    field: 'publisherPhone',
                     title: '手机号',
                     align: 'center'
                 }, {
-                    field: 'name',
+                    field: 'stockName',
                     title: '标的股票',
                     align: 'center'
                 }, {
-                    field: 'code',
+                    field: 'nominalAmount',
                     title: '名义本金',
                     align: 'center'
                 }, {
-                    field: 'code',
+                    field: 'rightMoney',
                     title: '预询价',
                     align: 'center'
                 }, {
@@ -441,7 +435,7 @@
                     title: '实询价',
                     align: 'center'
                 }, {
-                    field: 'code',
+                    field: 'buyingPrice',
                     title: '成交价',
                     align: 'center'
                 }, {
@@ -449,11 +443,11 @@
                     title: '实成价',
                     align: 'center'
                 }, {
-                    field: 'code',
-                    title: '行权周期',
+                    field: 'cycle',
+                    title: '行权周期(天)',
                     align: 'center'
                 }, {
-                    field: 'code',
+                    field: 'buyingType',
                     title: '买入方式',
                     align: 'center'
                 }, {
@@ -468,11 +462,11 @@
                         }
                     }
                 }, {
-                    field: '订单编号',
-                    title: '买入方式',
+                    field: 'tradeNo',
+                    title: '订单编号',
                     align: 'center'
                 }, {
-                    field: 'code',
+                    field: 'updateTime',
                     title: '交易时间',
                     align: 'center'
                 }, {
@@ -480,16 +474,23 @@
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
                         return [
-
-                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
-                            '<i class="fa fa-eye"></i>',
-                            '</a>',
-                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-                            '<i class="fa fa-edit"></i>',
-                            '</a>',
-                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                            '<i class="fa fa-trash"></i>',
-                            '</a>'
+                            ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs"/>\n' +
+                            '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs"/>\n' +
+                            '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs"/>\n' +
+                            '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs"/>\n' +
+                            '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs"/>\n' +
+                            '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs"/>\n' +
+                            '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs"/>'
+//
+//                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+//                            '<i class="fa fa-eye"></i>',
+//                            '</a>',
+//                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
+//                            '<i class="fa fa-edit"></i>',
+//                            '</a>',
+//                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+//                            '<i class="fa fa-trash"></i>',
+//                            '</a>'
                         ].join('');
                     },
                     events: {
