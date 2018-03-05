@@ -12,15 +12,15 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import java.util.Arrays;
-import java.util.Date;
 
 @Service
 public class StockOptionTradeBusiness {
     @Autowired
+    @Qualifier("stockoptiontradeFeignService")
     private StockOptionTradeService stockOptionTradeService;
     @Autowired
     private MailService mailService;

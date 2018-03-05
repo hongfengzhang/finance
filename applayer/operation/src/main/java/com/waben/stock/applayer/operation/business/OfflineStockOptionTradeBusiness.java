@@ -7,6 +7,7 @@ import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,6 +15,7 @@ import java.math.BigDecimal;
 @Service
 public class OfflineStockOptionTradeBusiness {
     @Autowired
+    @Qualifier("offlinestockoptiontradeFeignService")
     private OfflineStockOptionTradeService offlineStockOptionTradeService;
 
     public OfflineStockOptionTradeDto add(OfflineStockOptionTradeDto offlineStockOptionTradeDto) {

@@ -7,11 +7,13 @@ import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 @Service
 public class InquiryResultBusiness {
     @Autowired
+    @Qualifier("inquiryresultFeignService")
     private InquiryResultService inquiryResultService;
 
     public InquiryResultDto add(InquiryResultDto inquiryResultDto) {
