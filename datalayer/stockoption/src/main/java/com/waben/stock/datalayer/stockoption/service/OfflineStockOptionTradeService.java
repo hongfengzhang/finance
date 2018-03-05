@@ -53,6 +53,7 @@ public class OfflineStockOptionTradeService {
         OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
         offlineStockOptionTrade.setSellingPrice(sellingPrice);
         offlineStockOptionTrade.setSellingTime(new Date());
+        offlineStockOptionTrade.setState(OfflineStockOptionTradeState.SETTLEMENTED);
         BigDecimal profit = sellingPrice.subtract(offlineStockOptionTrade.getBuyingPrice()).divide(sellingPrice);
         offlineStockOptionTrade.setProfit(profit);
         //修改申购信息卖出价格

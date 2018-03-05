@@ -1,10 +1,10 @@
 package com.waben.stock.applayer.tactics.crawler.util.base.util;
 
+import java.util.concurrent.TimeUnit;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by 12 on 2017/5/8.

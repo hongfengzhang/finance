@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.reference.StockOptionCycleReference;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
@@ -16,6 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
  * @author luomengan
  *
  */
+@Service
 public class StockOptionCycleBusiness {
 
 	@Autowired
@@ -24,6 +26,14 @@ public class StockOptionCycleBusiness {
 
 	public List<StockOptionCycleDto> lists() {
 		Response<List<StockOptionCycleDto>> response = stockOptionCycleReference.lists();
+		if (response.getCode().equals("200")) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public StockOptionCycleDto fetchById(Long id) {
+		Response<StockOptionCycleDto> response = stockOptionCycleReference.fetchById(id);
 		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}

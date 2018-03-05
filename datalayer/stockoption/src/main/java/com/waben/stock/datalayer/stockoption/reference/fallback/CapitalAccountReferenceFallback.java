@@ -1,5 +1,9 @@
 package com.waben.stock.datalayer.stockoption.reference.fallback;
 
+import java.math.BigDecimal;
+
+import org.springframework.stereotype.Component;
+
 import com.waben.stock.datalayer.stockoption.reference.CapitalAccountReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -8,9 +12,6 @@ import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 
 @Component
 public class CapitalAccountReferenceFallback implements CapitalAccountReference {

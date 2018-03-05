@@ -27,3 +27,7 @@ ribbon:
   ConnectTimeout: 30000
 fileSystem : ${fs.path}
 uploadFilePath : ${fs.uploaddir}
+mail:
+  username: yyd@youguwang.com.cn
+  password: WangBei0605
+  contextPath: E:/

@@ -1,9 +1,9 @@
 package com.waben.stock.applayer.tactics.crawler.model;
 
+import java.util.Date;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.Date;
 
 /**
  * Created by yhj on 17/4/25.

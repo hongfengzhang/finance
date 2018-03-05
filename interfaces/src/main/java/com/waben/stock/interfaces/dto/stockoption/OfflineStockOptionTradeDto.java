@@ -42,7 +42,7 @@ public class OfflineStockOptionTradeDto implements Comparable<StockOptionTradeDt
     /**
      * 到期时间
      */
-    private BigDecimal expireTime;
+    private Date expireTime;
     /**
      * 成交时间
      */
@@ -145,11 +145,11 @@ public class OfflineStockOptionTradeDto implements Comparable<StockOptionTradeDt
         this.cycle = cycle;
     }
 
-    public BigDecimal getExpireTime() {
+    public Date getExpireTime() {
         return expireTime;
     }
 
-    public void setExpireTime(BigDecimal expireTime) {
+    public void setExpireTime(Date expireTime) {
         this.expireTime = expireTime;
     }
 

@@ -1,9 +1,13 @@
 package com.waben.stock.applayer.tactics.crawler.util.base.annotation;
 
 
-import org.springframework.web.bind.annotation.Mapping;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import java.lang.annotation.*;
+import org.springframework.web.bind.annotation.Mapping;
 
 /**
  * 所有的接口默认是使用  兼容模式  在进行处理。

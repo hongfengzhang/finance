@@ -1,12 +1,15 @@
 package com.waben.stock.applayer.tactics.crawler.util.mvc;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Random;
+
+import javax.imageio.ImageIO;
 
 /**
  * 验证码生成器

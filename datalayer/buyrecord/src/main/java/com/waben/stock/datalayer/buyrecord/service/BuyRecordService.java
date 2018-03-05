@@ -300,7 +300,7 @@ public class BuyRecordService {
 				extras.put("type", OutsideMessageType.BUY_UNWIND.getIndex());
 				break;
 			case REVOKE:
-				if (record.getWindControlType() != null) {
+				if (record.getWindControlType() == null) {
 					message.setTitle("点买通知");
 					message.setContent(String.format("您所购买的“%s %s”策略“委托第三方买入”失败，系统已发起自动退款", record.getStockName(),
 							record.getStockCode()));

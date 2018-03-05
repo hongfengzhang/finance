@@ -51,7 +51,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 到期时间
 	 */
-	private BigDecimal expireTime;
+	private Date expireTime;
 	/**
 	 * 申购时间
 	 */
@@ -80,7 +80,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 行权时间
 	 */
-	private BigDecimal rightTime;
+	private Date rightTime;
 	/**
 	 * 盈利
 	 */
@@ -92,7 +92,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 发布人手机号码
 	 */
-	private Long publisherPhone;
+	private String publisherPhone;
 	/**
 	 * 对应的线下期权交易信息
 	 */
@@ -170,11 +170,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.cycle = cycle;
 	}
 
-	public BigDecimal getExpireTime() {
+	public Date getExpireTime() {
 		return expireTime;
 	}
 
-	public void setExpireTime(BigDecimal expireTime) {
+	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
 	}
 
@@ -235,11 +235,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.profit = profit;
 	}
 
-	public BigDecimal getRightTime() {
+	public Date getRightTime() {
 		return rightTime;
 	}
 
-	public void setRightTime(BigDecimal rightTime) {
+	public void setRightTime(Date rightTime) {
 		this.rightTime = rightTime;
 	}
 
@@ -251,11 +251,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.publisherId = publisherId;
 	}
 
-	public Long getPublisherPhone() {
+	public String getPublisherPhone() {
 		return publisherPhone;
 	}
 
-	public void setPublisherPhone(Long publisherPhone) {
+	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
 	}
 

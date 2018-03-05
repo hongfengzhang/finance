@@ -5,9 +5,7 @@
 
 package com.waben.stock.applayer.tactics.payapi.czpay.util;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.Properties;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
