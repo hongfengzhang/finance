@@ -61,4 +61,12 @@ public class OptionController {
         Boolean result = stockOptionTradeBusiness.exercise(id);
         return new Response<>(result);
     }
+
+    @RequestMapping("/success/{id}")
+    @ResponseBody
+    public Response<StockOptionTradeVo> success(@PathVariable Long id){
+        StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.success(id);
+        StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
+        return new Response<>(stockOptionTradeVo);
+    }
 }

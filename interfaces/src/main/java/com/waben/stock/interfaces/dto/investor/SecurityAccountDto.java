@@ -7,7 +7,7 @@ import java.math.BigDecimal;
  * @author Created by yuyidi on 2017/11/29.
  * @desc
  */
-public class SecurityAccountDto{
+public class SecurityAccountDto implements Serializable{
 
     private Long id;
     private String name;

@@ -103,7 +103,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 对应的线下期权交易信息
 	 */
-	private OfflineStockOptionTradeDto offlineTrade;
+	private OfflineStockOptionTradeDto offlineTradeDto;
 
 	public Long getId() {
 		return id;
@@ -281,12 +281,17 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.cycleName = cycleName;
 	}
 
-	public OfflineStockOptionTradeDto getOfflineTrade() {
-		return offlineTrade;
+
+	public OfflineStockOptionTradeDto getOfflineTradeDto() {
+		return offlineTradeDto;
+	}
+
+	public void setOfflineTradeDto(OfflineStockOptionTradeDto offlineTradeDto) {
+		this.offlineTradeDto = offlineTradeDto;
 	}
 
 	public void setOfflineTrade(OfflineStockOptionTradeDto offlineTrade) {
-		this.offlineTrade = offlineTrade;
+		this.offlineTradeDto = offlineTrade;
 	}
 
 	@Override

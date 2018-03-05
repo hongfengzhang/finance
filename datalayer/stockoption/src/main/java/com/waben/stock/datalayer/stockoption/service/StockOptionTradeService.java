@@ -9,12 +9,16 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
+import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
@@ -34,7 +38,8 @@ public class StockOptionTradeService {
 
 	@Autowired
 	private StockOptionTradeDao stockOptionTradeDao;
-
+	@Autowired
+	private OfflineStockOptionTradeDao offlineStockOptionTradeDao;
 	@Autowired
 	private PublisherBusiness publisherBusiness;
 
@@ -145,4 +150,22 @@ public class StockOptionTradeService {
         //修改订单状态
         return stockOptionTrade;
     }
+
+    public StockOptionTrade success(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		stockOptionTrade.setState(StockOptionTradeState.TURNOVER);
+		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
+		return result;
+    }
+
+    @Transactional
+	public StockOptionTrade exercise(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
+		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
+		offlineStockOptionTrade.setState(OfflineStockOptionTradeState.APPLYRIGHT);
+		offlineStockOptionTradeDao.update(offlineStockOptionTrade);
+		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
+		return result;
+	}
 }

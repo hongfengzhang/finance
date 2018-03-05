@@ -43,7 +43,6 @@ public class OfflineStockOptionTradeService {
         //修改申购交易信息
         stockOptionTrade.setBuyingPrice(offlineStockOptionTrade.getBuyingPrice());
         stockOptionTrade.setOfflineTrade(result);
-        stockOptionTrade.setState(StockOptionTradeState.TURNOVER);
         stockOptionTradeDao.update(stockOptionTrade);
         return result;
     }
