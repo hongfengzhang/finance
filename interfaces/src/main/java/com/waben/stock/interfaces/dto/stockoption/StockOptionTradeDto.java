@@ -121,14 +121,14 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.tradeNo = tradeNo;
 	}
 
-	public StockOptionTradeState getState() {
+	public StockOptionTradeState getStates() {
 		return state;
 	}
 
 	public void setState(StockOptionTradeState state) {
 		this.state = state;
 	}
-	public String getStates() {
+	public String getState() {
 		return state != null ? state.getState(): null;
 	}
 	public String getStockCode() {
@@ -195,14 +195,16 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.applyTime = applyTime;
 	}
 
-	public StockOptionBuyingType getBuyingType() {
+	public StockOptionBuyingType getBuyingTypes() {
 		return buyingType;
 	}
 
 	public void setBuyingType(StockOptionBuyingType buyingType) {
 		this.buyingType = buyingType;
 	}
-
+	public String getBuyingType() {
+		return buyingType != null ? buyingType.getState(): null;
+	}
 	public Date getBuyingTime() {
 		return buyingTime;
 	}

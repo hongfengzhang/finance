@@ -51,6 +51,10 @@ public class StockOptionTradeVo{
 	 */
 	private Integer cycle;
 	/**
+	 * 周期名称
+	 */
+	private String cycleName;
+	/**
 	 * 到期时间
 	 */
 	private BigDecimal expireTime;
@@ -65,8 +69,11 @@ public class StockOptionTradeVo{
 	/**
 	 * 成交时间
 	 */
-
 	private Date buyingTime;
+	/**
+	 * 更新时间
+	 */
+	private Date updateTime;
 	/**
 	 * 成交价格
 	 */
@@ -120,7 +127,7 @@ public class StockOptionTradeVo{
 		return state;
 	}
 
-	public void setStates(String state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 
@@ -172,6 +179,14 @@ public class StockOptionTradeVo{
 		this.cycle = cycle;
 	}
 
+	public String getCycleName() {
+		return cycleName;
+	}
+
+	public void setCycleName(String cycleName) {
+		this.cycleName = cycleName;
+	}
+
 	public BigDecimal getExpireTime() {
 		return expireTime;
 	}
@@ -202,6 +217,14 @@ public class StockOptionTradeVo{
 
 	public void setBuyingTime(Date buyingTime) {
 		this.buyingTime = buyingTime;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	public BigDecimal getBuyingPrice() {
