@@ -138,16 +138,6 @@ public class StockOptionTradeService {
 		return stockOptionTradeDao.retrieve(id);
 	}
 
-	public StockOptionTrade settlement(Long id) {
-		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		CapitalAccountDto capitalAccountDto = capitalAccountBusiness
-				.fetchByPublisherId(stockOptionTrade.getPublisherId());
-		capitalAccountDto.getBalance().add(stockOptionTrade.getProfit());
-		// 修改订单状态
-		return stockOptionTrade;
-	}
-
-<<<<<<< HEAD
     public StockOptionTrade settlement(Long id) {
         StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
         CapitalAccountDto capitalAccountDto = capitalAccountBusiness.fetchByPublisherId(stockOptionTrade.getPublisherId());
@@ -155,6 +145,4 @@ public class StockOptionTradeService {
         //修改订单状态
         return stockOptionTrade;
     }
-=======
->>>>>>> b8bce26e165c530a141cc4ac52773a7999fe5e0e
 }
