@@ -42,4 +42,10 @@ public interface StockOptionTradeInterface {
 
     @RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
     Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/success/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> success(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/exercise/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> exercise(@PathVariable("id") Long id);
 }
