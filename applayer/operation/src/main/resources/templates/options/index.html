@@ -35,9 +35,13 @@
                             <label class="col-md-4 control-label">订单状态</label>
                             <div class="col-sm-8">
                                 <select class="form-control" name="state">
-                                    <option value="2">全部</option>
-                                    <option value="1">正常</option>
-                                    <option value="0">异常</option>
+                                    <option value="0">所有订单</option>
+                                    <option value="1">待确认</option>
+                                    <option value="2">申购失败</option>
+                                    <option value="3">持仓中</option>
+                                    <option value="4">申请行权</option>
+                                    <option value="5">结算中</option>
+                                    <option value="6">已结算</option>
                                 </select>
                             </div>
                         </div>
@@ -92,13 +96,13 @@
                     <form role="form">
                         <div class="form-group">
                             <label>询价日期:</label>
-                            <input type="text" class="form-control datetimepicker" maxlength="11"
-                                   placeholder="开始时间"/>
+                            <input name="inquiryDate" type="text" class="form-control datetimepicker" maxlength="11"
+                                   placeholder="询价日期"/>
                             <label>标的股票:</label>
-                            <input type="text" class="form-control"
+                            <input name="stockName" type="text" class="form-control"
                                    placeholder="标的股票"/>
                             <label>期限:</label>
-                            <input type="text" class="form-control"
+                            <input name="date" type="text" class="form-control"
                                    placeholder="期限"/>
                             <label>执行价:</label>
                             <select class="form-control">
@@ -113,15 +117,15 @@
                                 <option>OTM</option>
                             </select>
                             <label>规模:</label>
-                            <input type="text" class="form-control"
+                            <input name="inquiryamount" type="text" class="form-control"
                                    placeholder="请输入名称"/>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button id="inquiryclose" type="button" class="btn btn-default" data-dismiss="modal">关闭
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button id="inquiryaction" type="button" class="btn btn-primary">
                         确定
                     </button>
                 </div>
@@ -146,9 +150,9 @@
                     <h3>确定要申购?</h3>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="subscriptionclose">关闭
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" id="subscriptionaction">
                         确定
                     </button>
                 </div>
@@ -173,9 +177,9 @@
                     <h3>确定申购成功?</h3>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="subscriptionsuccessclose">关闭
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" id="subscriptionsuccessaction">
                         确定
                     </button>
                 </div>
@@ -200,9 +204,9 @@
                     <h3>确定行权?</h3>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="exerciserightclose">关闭
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" id="exerciserightaction">
                         确定
                     </button>
                 </div>
@@ -225,36 +229,38 @@
                 </div>
                 <div class="modal-body">
                     <form role="form" action="http://www.baidu.com">
-                        <label>标的股票:</label>
-                        <input type="text" class="form-control"
-                               placeholder="标的股票"/>
-                        <label>实际买入价:</label>
-                        <input type="text" class="form-control"
-                               placeholder="实际买入价"/>
-                        <label>名义本金:</label>
-                        <input type="text" class="form-control"
-                               placeholder="名义本金"/>
-                        <label>时机卖出价:</label>
-                        <input type="text" class="form-control"
-                               placeholder="时机卖出价"/>
-                        <label>行权周期:</label>
-                        <input type="text" class="form-control"
-                               placeholder="行权周期"/>
-                        <label>权利金:</label>
-                        <input type="text" class="form-control"
-                               placeholder="权利金"/>
-                        <label>买入方式:</label>
-                        <input type="text" class="form-control"
-                               placeholder="买入方式"/>
-                        <label>盈利:</label>
-                        <input type="text" class="form-control"
-                               placeholder="盈利"/>
+                        <form role="form">
+                            <label>标的股票:</label>
+                            <input type="text" class="form-control"
+                                   placeholder="标的股票" name="detailStock"/>
+                            <label>实际买入价:</label>
+                            <input type="text" class="form-control"
+                                   placeholder="实际买入价" name="detailAmount"/>
+                            <label>名义本金:</label>
+                            <input type="text" class="form-control"
+                                   placeholder="名义本金" name="detailnominalAmount"/>
+                            <label>实际卖出价:</label>
+                            <input type="text" class="form-control"
+                                   placeholder="实际卖出价" name="detailSellAmount"/>
+                            <label>行权周期:</label>
+                            <input type="text" class="form-control" name="detailCycleName"
+                                   placeholder="行权周期"/>
+                            <label>权利金:</label>
+                            <input type="text" class="form-control" name="detailNominalAmount"
+                                   placeholder="权利金"/>
+                            <label>买入方式:</label>
+                            <input type="text" class="form-control" name="detailBuyType"
+                                   placeholder="买入方式"/>
+                            <label>盈利:</label>
+                            <input type="text" class="form-control" name="detailProfit"
+                                   placeholder="盈利"/>
+                        </form>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="settlementclose">关闭
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" id="settlementaction">
                         确定
                     </button>
                 </div>
@@ -278,34 +284,34 @@
                     <form role="form">
                         <label>标的股票:</label>
                         <input type="text" class="form-control"
-                               placeholder="标的股票"/>
+                               placeholder="标的股票" name="detailStock"/>
                         <label>实际买入价:</label>
                         <input type="text" class="form-control"
-                               placeholder="实际买入价"/>
+                               placeholder="实际买入价" name="detailAmount"/>
                         <label>名义本金:</label>
                         <input type="text" class="form-control"
-                               placeholder="名义本金"/>
-                        <label>时机卖出价:</label>
+                               placeholder="名义本金" name="detailnominalAmount"/>
+                        <label>实际卖出价:</label>
                         <input type="text" class="form-control"
-                               placeholder="时机卖出价"/>
+                               placeholder="实际卖出价" name="detailSellAmount"/>
                         <label>行权周期:</label>
-                        <input type="text" class="form-control"
+                        <input type="text" class="form-control" name="detailCycleName"
                                placeholder="行权周期"/>
                         <label>权利金:</label>
-                        <input type="text" class="form-control"
+                        <input type="text" class="form-control" name="detailNominalAmount"
                                placeholder="权利金"/>
                         <label>买入方式:</label>
-                        <input type="text" class="form-control"
+                        <input type="text" class="form-control" name="detailBuyType"
                                placeholder="买入方式"/>
                         <label>盈利:</label>
-                        <input type="text" class="form-control"
+                        <input type="text" class="form-control" name="detailProfit"
                                placeholder="盈利"/>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    <button type="button" class="btn btn-default" data-dismiss="modal" id="detailclose">关闭
                     </button>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" id="detailaction">
                         确定
                     </button>
                 </div>
@@ -391,7 +397,7 @@
                     var queryMap = {
                         publisherPhone: $("input[name='publisherPhone']").val(),
                         applyNo: $("input[name='applyNo']").val(),
-                        state: $("[name='status']").val(),
+                        state: $("[name='state']").val()== '0' ? "":$("[name='status']").val(),
                         beginTime: $("[name='beginTime']").val(),
                         endTime: $("[name='endTime']").val(),
                     }
@@ -443,8 +449,8 @@
                     title: '实成价',
                     align: 'center'
                 }, {
-                    field: 'cycle',
-                    title: '行权周期(天)',
+                    field: 'cycleName',
+                    title: '行权周期',
                     align: 'center'
                 }, {
                     field: 'buyingType',
@@ -454,13 +460,6 @@
                     field: 'status',
                     title: '订单状态',
                     align: 'center',
-                    formatter: function (value, row, index) {
-                        if (value == true) {
-                            return '正常';
-                        } else {
-                            return '异常';
-                        }
-                    }
                 }, {
                     field: 'tradeNo',
                     title: '订单编号',
@@ -474,61 +473,174 @@
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
                         return [
-                            ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs"/>\n' +
-                            '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs"/>\n' +
-                            '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs"/>\n' +
-                            '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs"/>\n' +
-                            '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs"/>\n' +
-                            '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs"/>\n' +
-                            '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs"/>'
-//
-//                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
-//                            '<i class="fa fa-eye"></i>',
-//                            '</a>',
-//                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-//                            '<i class="fa fa-edit"></i>',
-//                            '</a>',
-//                            '<a rel="tooltip" title="删除" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-//                            '<i class="fa fa-trash"></i>',
-//                            '</a>'
+                            ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
+                            '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
+                            '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess"/>\n' +
+                            '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright"/>\n' +
+                            '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
+                            '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
+                            '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
                         ].join('');
                     },
                     events: {
-                        'click .view': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-
-                            $(location).prop('href', "../stock/view/" + row.id);
-                        },
-                        'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-                            $(location).prop('href', "../stock/edit/" + row.id);
-                        },
-                        'click .remove': function (e, value, row, index) {
-                            swal({
-                                title: "你确定吗?",
-                                text: "删除后,数据将不可被恢复!",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonText: "是的, 删除!",
-                                cancelButtonText: "不了, 取消!",
-                                closeOnConfirm: false,
-                                closeOnCancel: false
-                            }, function (isConfirm) {
-                                if (isConfirm) {
-                                    $.ajax({
-                                        url: '../stock/delete',
-                                        type: 'post',
-                                        data: {"id": row.id},
-                                        success: function (response) {
-                                            swal("Deleted!", "数据删除成功.", "success");
+                        'click .inquiry': function (e, value, row, index) {
+                            $("[name='inquiryDate']").val(new Date());
+                            $("[name='stockName']").val(row.stockName);
+                            $("[name='date']").val(row.cycle + "日");
+                            $("[name='inquiryamount']").val(row.nominalAmount);
+                            $('#inquiryaction').click(function () {
+                                $('#inquiryclose').click();
+                                $.ajax({
+                                    url: "../option/inquiry/" + row.id,
+                                    type: 'post',
+                                    success: function (response) {
+                                        if(response.code ='200'){
                                             $table.bootstrapTable('refresh');
+                                            alert("询价成功");
+                                        }else{
+                                            alert(response.message);
                                         }
-                                    })
-                                } else {
-                                    swal("Cancelled", "数据已取消删除 :)", "error");
-                                }
-                            });
-                        }
+                                    },
+                                    error:function () {
+                                        alert("询价失败")
+                                    }
+                                })
+                            })
+//                            $(location).prop('href', "../option/inquiry/" + row.id);
+                        },
+                        'click .subscription': function (e, value, row, index) {
+                            $('#subscriptionaction').click(function () {
+                                $('#subscriptionclose').click();
+                                $.ajax({
+                                    url: "../option/purchase/" + row.id,
+                                    type: 'post',
+                                    success: function (response) {
+                                        if(response.code ='200'){
+                                            $table.bootstrapTable('refresh');
+                                            alert("申购成功");
+                                        }else{
+                                            alert("申购失败");
+                                        }
+                                    },
+                                    error:function () {
+                                        alert("申购失败");
+                                    }
+                                })
+                            })
+//                            $(location).prop('href', "../stock/edit/" + row.id);
+                        },
+                        'click .subscriptionsuccess': function (e, value, row, index) {
+                            $('#subscriptionsuccessaction').click(function () {
+                                $('#subscriptionsuccessclose').click();
+                                $.ajax({
+                                    url: "../option/inquiry/" + row.id,
+                                    type: 'post',
+                                    success: function (response) {
+                                        if(response.code ='200'){
+                                            $table.bootstrapTable('refresh');
+                                            alert("订单状态修改成功");
+                                        }else{
+                                            alert(response.message);
+                                        }
+                                    },
+                                    error:function () {
+                                        alert("订单修改失败")
+                                    }
+                                })
+                            })
+//                            $(location).prop('href', "../stock/edit/" + row.id);
+                        },
+                        'click .exerciseright': function (e, value, row, index) {
+                            $('#exerciserightaction').click(function () {
+                                $('#exerciserightclose').click();
+                                $.ajax({
+                                    url: "../option/exercise/" + row.id,
+                                    type: 'post',
+                                    success: function (response) {
+                                        if(response.code ='200'){
+                                            $table.bootstrapTable('refresh');
+                                            alert("行权成功");
+                                        }else{
+                                            alert(response.message);
+                                        }
+                                    },
+                                    error:function () {
+                                        alert("行权失败");
+                                    }
+                                })
+                            })
+//                            $(location).prop('href', "../stock/edit/" + row.id);
+                        },
+                        'click .settlement': function (e, value, row, index) {
+                            $("[name='detailStock']").val(row.stockName);
+                            $("[name='detailAmount']").val(row.buyingPrice);
+                            $("[name='detailnominalAmount']").val(row.nominalAmount);
+                            $("[name='detailSellAmount']").val(row.sellingPrice);
+                            $("[name='detailCycleName']").val(row.cycleName);
+                            $("[name='detailNominalAmount']").val(row.rightMoney);
+                            $("[name='detailBuyType']").val(row.buyingType);
+                            $("[name='detailProfit']").val(row.profit);
+                            $('#settlementaction').click(function () {
+                                $('#settlementclose').click();
+                                $.ajax({
+                                    url: "../offlinestockoptiontrade/settlement/" + row.id,
+                                    type: 'post',
+                                    success: function (response) {
+                                        if(response.code ='200'){
+                                            $table.bootstrapTable('refresh');
+                                            alert("结算成功");
+                                        }else{
+                                            alert(response.message);
+                                        }
+                                    },
+                                    error:function () {
+                                        alert("结算失败")
+                                    }
+                                })
+                            })
+//                            $(location).prop('href', "../option/inquiry/" + row.id);
+                        },
+                        'click .detail': function (e, value, row, index) {
+                            $("[name='detailStock']").val(row.stockName);
+                            $("[name='detailAmount']").val(row.buyingPrice);
+                            $("[name='detailnominalAmount']").val(row.nominalAmount);
+                            $("[name='detailSellAmount']").val(row.sellingPrice);
+                            $("[name='detailCycleName']").val(row.cycleName);
+                            $("[name='detailNominalAmount']").val(row.rightMoney);
+                            $("[name='detailBuyType']").val(row.buyingType);
+                            $("[name='detailProfit']").val(row.profit);
+                            $('#detailaction').click(function () {
+                                $('#detailclose').click();
+
+                            })
+//                            $(location).prop('href', "../option/inquiry/" + row.id);
+                        },
+                        //                        'click .remove': function (e, value, row, index) {
+//                            swal({
+//                                title: "你确定吗?",
+//                                text: "删除后,数据将不可被恢复!",
+//                                type: "warning",
+//                                showCancelButton: true,
+//                                confirmButtonText: "是的, 删除!",
+//                                cancelButtonText: "不了, 取消!",
+//                                closeOnConfirm: false,
+//                                closeOnCancel: false
+//                            }, function (isConfirm) {
+//                                if (isConfirm) {
+//                                    $.ajax({
+//                                        url: '../stock/delete',
+//                                        type: 'post',
+//                                        data: {"id": row.id},
+//                                        success: function (response) {
+//                                            swal("Deleted!", "数据删除成功.", "success");
+//                                            $table.bootstrapTable('refresh');
+//                                        }
+//                                    })
+//                                } else {
+//                                    swal("Cancelled", "数据已取消删除 :)", "error");
+//                                }
+//                            });
+//                        }
                     }
                 }],
                 onLoadError: function (status) {
@@ -549,11 +661,11 @@
                 $table.bootstrapTable('resetView');
             });
             $('#search').click(function () {
-                var stockName = $("input[name='stockName']");
-                var stockCode = $("input[name='stockCode']");
-                var status = $("[name='status']");
-                var beginTime = $("input[name='beginTime']").val();
-                var endTime = $("input[name='endTime']").val();
+                var stockName = $("input[name='publisherPhone']");
+                var stockCode = $("input[name='applyNo']");
+                var status = $("[name='beginTime']");
+                var beginTime = $("input[name='endTime']").val();
+                var endTime = $("input[name='state']").val();
 
 
                 //<![CDATA[
@@ -566,11 +678,11 @@
             });
 
             $('#reset').click(function () {
+                $("input[name='publisherPhone']").val('');
+                $("input[name='applyNo']").val('');
                 $("input[name='beginTime']").val('');
                 $("input[name='endTime']").val('');
-                $("input[name='stockName']").val('');
-                $("input[name='stockCode']").val('');
-                $("[name='status']").val("2");
+                $("[name='state']").val("0");
                 $table.bootstrapTable('getOptions').pageNumber = 1;
                 $table.bootstrapTable('refresh');
             });
