@@ -128,7 +128,9 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	public void setState(StockOptionTradeState state) {
 		this.state = state;
 	}
-
+	public String getStates() {
+		return state != null ? state.getState(): null;
+	}
 	public String getStockCode() {
 		return stockCode;
 	}
