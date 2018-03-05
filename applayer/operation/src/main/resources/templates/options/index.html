@@ -24,7 +24,8 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">订单编号</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="applyNo" maxlength="11" placeholder="订单编号"/>
+                                <input type="text" class="form-control" name="applyNo" maxlength="11"
+                                       placeholder="订单编号"/>
                             </div>
                         </div>
                     </div>
@@ -75,14 +76,283 @@
     </div>
 
 
+    <!-- 询价 -->
+    <div class="modal fade" id="inquiry" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel2">
+                        询价
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <div class="form-group">
+                            <label>询价日期:</label>
+                            <input type="text" class="form-control datetimepicker" maxlength="11"
+                                   placeholder="开始时间"/>
+                            <label>标的股票:</label>
+                            <input type="text" class="form-control"
+                                   placeholder="标的股票"/>
+                            <label>期限:</label>
+                            <input type="text" class="form-control"
+                                   placeholder="期限"/>
+                            <label>执行价:</label>
+                            <select class="form-control">
+                                <option>90%</option>
+                                <option>100%</option>
+                                <option>110%</option>
+                            </select>
+                            <label>结构:</label>
+                            <select class="form-control">
+                                <option>ATM</option>
+                                <option>ITM</option>
+                                <option>OTM</option>
+                            </select>
+                            <label>规模:</label>
+                            <input type="text" class="form-control"
+                                   placeholder="请输入名称"/>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 申购 -->
+    <div class="modal fade" id="subscription" tabindex="-1" role="dialog" aria-labelledby="myModalLabel4"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel4">
+                        申购
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>确定要申购?</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 申购成功 -->
+    <div class="modal fade" id="subscriptionsuccess" tabindex="-1" role="dialog" aria-labelledby="myModalLabel5"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel5">
+                        申购成功
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>确定申购成功?</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 行权 -->
+    <div class="modal fade" id="exerciseright" tabindex="-1" role="dialog" aria-labelledby="myModalLabel6"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel6">
+                        行权
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <h3>确定行权?</h3>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 结算 -->
+    <div class="modal fade" id="settlement" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabe">
+                        结算
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form" action="http://www.baidu.com">
+                        <label>标的股票:</label>
+                        <input type="text" class="form-control"
+                               placeholder="标的股票"/>
+                        <label>实际买入价:</label>
+                        <input type="text" class="form-control"
+                               placeholder="实际买入价"/>
+                        <label>名义本金:</label>
+                        <input type="text" class="form-control"
+                               placeholder="名义本金"/>
+                        <label>时机卖出价:</label>
+                        <input type="text" class="form-control"
+                               placeholder="时机卖出价"/>
+                        <label>行权周期:</label>
+                        <input type="text" class="form-control"
+                               placeholder="行权周期"/>
+                        <label>权利金:</label>
+                        <input type="text" class="form-control"
+                               placeholder="权利金"/>
+                        <label>买入方式:</label>
+                        <input type="text" class="form-control"
+                               placeholder="买入方式"/>
+                        <label>盈利:</label>
+                        <input type="text" class="form-control"
+                               placeholder="盈利"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 详情 -->
+    <div class="modal fade" id="detail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+        <div class="modal-dialog" style="width: 700px">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel1">
+                        详情
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <form role="form">
+                        <label>标的股票:</label>
+                        <input type="text" class="form-control"
+                               placeholder="标的股票"/>
+                        <label>实际买入价:</label>
+                        <input type="text" class="form-control"
+                               placeholder="实际买入价"/>
+                        <label>名义本金:</label>
+                        <input type="text" class="form-control"
+                               placeholder="名义本金"/>
+                        <label>时机卖出价:</label>
+                        <input type="text" class="form-control"
+                               placeholder="时机卖出价"/>
+                        <label>行权周期:</label>
+                        <input type="text" class="form-control"
+                               placeholder="行权周期"/>
+                        <label>权利金:</label>
+                        <input type="text" class="form-control"
+                               placeholder="权利金"/>
+                        <label>买入方式:</label>
+                        <input type="text" class="form-control"
+                               placeholder="买入方式"/>
+                        <label>盈利:</label>
+                        <input type="text" class="form-control"
+                               placeholder="盈利"/>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+    <!-- 机构信息 -->
+    <div class="modal fade" id="orgdetail" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        &times;
+                    </button>
+                    <h4 class="modal-title" id="myModalLabe3">
+                        机构详情
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    在这里添加一些文本
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                    </button>
+                    <button type="button" class="btn btn-primary">
+                        确定
+                    </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
+
+
     <div class="row">
         <div class="col-md-12">
             <div class="card">
-
-                <div class="toolbar">
-                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                <div>
+                    <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs"/>
+                    <input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs"/>
+                    <input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs"/>
+                    <input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs"/>
+                    <input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs"/>
+                    <input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs"/>
+                    <input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs"/>
                 </div>
-
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
 
@@ -119,29 +389,29 @@
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination: "server",
-                queryParams:function () {
-                    var query= {
+                queryParams: function () {
+                    var query = {
                         page: this.pageNumber - 1,
                         size: this.pageSize
                     }
                     var queryMap = {
-                        publisherPhone:$("input[name='publisherPhone']").val(),
-                        applyNo:$("input[name='applyNo']").val(),
-                        state:$("[name='status']").val(),
-                        beginTime:$("[name='beginTime']").val(),
-                        endTime:$("[name='endTime']").val(),
+                        publisherPhone: $("input[name='publisherPhone']").val(),
+                        applyNo: $("input[name='applyNo']").val(),
+                        state: $("[name='status']").val(),
+                        beginTime: $("[name='beginTime']").val(),
+                        endTime: $("[name='endTime']").val(),
                     }
-                    $.extend(query,queryMap);
+                    $.extend(query, queryMap);
                     return query;
                 },
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        return{
+                        return {
                             total: res.result.totalElements,
                             rows: res.result.content
                         }
-                    }else{
-                        return{
+                    } else {
+                        return {
                             total: 0,
                             rows: []
                         }
@@ -162,46 +432,46 @@
                     field: 'code',
                     title: '名义本金',
                     align: 'center'
-                },{
+                }, {
                     field: 'code',
                     title: '预询价',
                     align: 'center'
-                },{
+                }, {
                     field: 'code',
                     title: '实询价',
                     align: 'center'
-                },{
+                }, {
                     field: 'code',
                     title: '成交价',
                     align: 'center'
-                },{
+                }, {
                     field: 'code',
                     title: '实成价',
                     align: 'center'
-                },{
+                }, {
                     field: 'code',
                     title: '行权周期',
                     align: 'center'
-                },{
+                }, {
                     field: 'code',
                     title: '买入方式',
                     align: 'center'
-                },{
+                }, {
                     field: 'status',
                     title: '订单状态',
                     align: 'center',
-                    formatter:function(value,row,index){
-                        if(value==true){
+                    formatter: function (value, row, index) {
+                        if (value == true) {
                             return '正常';
-                        }else{
+                        } else {
                             return '异常';
                         }
                     }
-                },{
+                }, {
                     field: '订单编号',
                     title: '买入方式',
                     align: 'center'
-                },{
+                }, {
                     field: 'code',
                     title: '交易时间',
                     align: 'center'
@@ -210,6 +480,7 @@
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
                         return [
+
                             '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
                             '<i class="fa fa-eye"></i>',
                             '</a>',
@@ -225,11 +496,11 @@
                         'click .view': function (e, value, row, index) {
                             info = JSON.stringify(row);
 
-                            $(location).prop('href',"../stock/view/"+row.id);
+                            $(location).prop('href', "../stock/view/" + row.id);
                         },
                         'click .edit': function (e, value, row, index) {
                             info = JSON.stringify(row);
-                            $(location).prop('href',"../stock/edit/"+row.id);
+                            $(location).prop('href', "../stock/edit/" + row.id);
                         },
                         'click .remove': function (e, value, row, index) {
                             swal({
@@ -241,13 +512,13 @@
                                 cancelButtonText: "不了, 取消!",
                                 closeOnConfirm: false,
                                 closeOnCancel: false
-                            }, function(isConfirm) {
+                            }, function (isConfirm) {
                                 if (isConfirm) {
                                     $.ajax({
-                                        url:'../stock/delete',
-                                        type:'post',
-                                        data:{"id":row.id},
-                                        success:function (response) {
+                                        url: '../stock/delete',
+                                        type: 'post',
+                                        data: {"id": row.id},
+                                        success: function (response) {
                                             swal("Deleted!", "数据删除成功.", "success");
                                             $table.bootstrapTable('refresh');
                                         }
@@ -259,10 +530,10 @@
                         }
                     }
                 }],
-                onLoadError:function (status) {
+                onLoadError: function (status) {
                     swal({
                         title: "数据加载异常.",
-                        text: status+"",
+                        text: status + "",
                         timer: 2000,
                         showConfirmButton: false
                     });
@@ -276,7 +547,7 @@
             $(window).resize(function () {
                 $table.bootstrapTable('resetView');
             });
-            $('#search').click(function(){
+            $('#search').click(function () {
                 var stockName = $("input[name='stockName']");
                 var stockCode = $("input[name='stockCode']");
                 var status = $("[name='status']");
@@ -285,7 +556,7 @@
 
 
                 //<![CDATA[
-                if(stockName == ""&&stockCode == ""&&status == "") {
+                if (stockName == "" && stockCode == "" && status == "") {
                     swal("请输入查询数据！");
                 }
                 //]]>
@@ -293,7 +564,7 @@
                 $table.bootstrapTable('refresh');
             });
 
-            $('#reset').click(function(){
+            $('#reset').click(function () {
                 $("input[name='beginTime']").val('');
                 $("input[name='endTime']").val('');
                 $("input[name='stockName']").val('');
