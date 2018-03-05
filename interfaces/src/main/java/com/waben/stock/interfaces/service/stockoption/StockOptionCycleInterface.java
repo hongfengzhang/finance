@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.stockoption;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -14,6 +15,6 @@ public interface StockOptionCycleInterface {
 	Response<List<StockOptionCycleDto>> lists();
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-	Response<StockOptionCycleDto> fetchById(Long id);
+	Response<StockOptionCycleDto> fetchById(@PathVariable("id") Long id);
 
 }

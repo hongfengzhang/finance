@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public enum OfflineStockOptionTradeState implements CommonalityEnum {
 
-	TURNOVER("1", "已成交"),
+	TURNOVER("1", "持仓中"),
 
 	APPLYRIGHT("2", "申请行权"),
 

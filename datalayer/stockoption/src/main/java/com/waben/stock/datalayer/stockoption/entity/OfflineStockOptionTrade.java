@@ -85,7 +85,7 @@ public class OfflineStockOptionTrade {
 	/**
 	 * 行权时间
 	 */
-	private BigDecimal rightTime;
+	private Date rightTime;
 	/**
 	 * 盈利
 	 */
@@ -214,11 +214,11 @@ public class OfflineStockOptionTrade {
 		this.sellingPrice = sellingPrice;
 	}
 
-	public BigDecimal getRightTime() {
+	public Date getRightTime() {
 		return rightTime;
 	}
 
-	public void setRightTime(BigDecimal rightTime) {
+	public void setRightTime(Date rightTime) {
 		this.rightTime = rightTime;
 	}
 

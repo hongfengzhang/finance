@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.dto.stockoption;
 
 import java.math.BigDecimal;
 import java.util.Date;
+
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
@@ -13,7 +14,6 @@ import com.waben.stock.interfaces.enums.StockOptionTradeState;
  */
 
 public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
-
 
 	private Long id;
 	/**
@@ -49,9 +49,13 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	 */
 	private Integer cycle;
 	/**
+	 * 周期名称
+	 */
+	private String cycleName;
+	/**
 	 * 到期时间
 	 */
-	private BigDecimal expireTime;
+	private Date expireTime;
 	/**
 	 * 申购时间
 	 */
@@ -63,7 +67,6 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 成交时间
 	 */
-
 	private Date buyingTime;
 	/**
 	 * 成交价格
@@ -80,7 +83,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 行权时间
 	 */
-	private BigDecimal rightTime;
+	private Date rightTime;
 	/**
 	 * 盈利
 	 */
@@ -93,6 +96,10 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	 * 发布人手机号码
 	 */
 	private String publisherPhone;
+	/**
+	 * 更新时间
+	 */
+	private Date updateTime;
 	/**
 	 * 对应的线下期权交易信息
 	 */
@@ -170,11 +177,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.cycle = cycle;
 	}
 
-	public BigDecimal getExpireTime() {
+	public Date getExpireTime() {
 		return expireTime;
 	}
 
-	public void setExpireTime(BigDecimal expireTime) {
+	public void setExpireTime(Date expireTime) {
 		this.expireTime = expireTime;
 	}
 
@@ -218,7 +225,6 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.sellingTime = sellingTime;
 	}
 
-
 	public BigDecimal getSellingPrice() {
 		return sellingPrice;
 	}
@@ -235,11 +241,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.profit = profit;
 	}
 
-	public BigDecimal getRightTime() {
+	public Date getRightTime() {
 		return rightTime;
 	}
 
-	public void setRightTime(BigDecimal rightTime) {
+	public void setRightTime(Date rightTime) {
 		this.rightTime = rightTime;
 	}
 
@@ -257,6 +263,22 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 
 	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
+	}
+
+	public String getCycleName() {
+		return cycleName;
+	}
+
+	public void setCycleName(String cycleName) {
+		this.cycleName = cycleName;
 	}
 
 	public OfflineStockOptionTradeDto getOfflineTrade() {
