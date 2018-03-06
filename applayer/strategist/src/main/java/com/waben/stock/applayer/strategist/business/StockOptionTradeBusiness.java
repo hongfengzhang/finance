@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.strategist.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,9 @@ import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeWithM
 import com.waben.stock.applayer.strategist.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -52,11 +55,18 @@ public class StockOptionTradeBusiness {
 	}
 	
 	public StockOptionTradeDto userRight(Long publisherId, Long id) {
-		Response<StockOptionTradeDto> response = tradeReference.userRight(publisherId, id);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
+		StockOptionTradeDto trade = this.findById(id);
+		// 持仓中的才能申请行权
+		if (trade.getState() == StockOptionTradeState.TURNOVER && trade.getBuyingTime() != null
+				&& !sdf.format(new Date()).equals(sdf.format(trade.getBuyingTime()))) {
+			Response<StockOptionTradeDto> response = tradeReference.userRight(publisherId, id);
+			if ("200".equals(response.getCode())) {
+				return response.getResult();
+			}
+			throw new ServiceException(response.getCode());
+		} else {
+			throw new ServiceException(ExceptionConstant.USERRIGHT_NOTMATCH_EXCEPTION);
 		}
-		throw new ServiceException(response.getCode());
 	}
 
 	public StockOptionTradeWithMarketDto wrapMarketInfo(StockOptionTradeDto trade) {

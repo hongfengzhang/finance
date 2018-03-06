@@ -15,20 +15,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.stockoption.business.PublisherBusiness;
+import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
+import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
-import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
-import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -36,7 +38,8 @@ public class StockOptionTradeService {
 
 	@Autowired
 	private StockOptionTradeDao stockOptionTradeDao;
-
+	@Autowired
+	private OfflineStockOptionTradeDao offlineStockOptionTradeDao;
 	@Autowired
 	private PublisherBusiness publisherBusiness;
 
@@ -99,6 +102,21 @@ public class StockOptionTradeService {
 		// TODO 站外消息推送
 		return stockOptionTrade;
 	}
+	
+	public StockOptionTrade userRight(Long publisherId, Long id) {
+		StockOptionTrade trade = findById(id);
+		if (trade.getState() != StockOptionTradeState.TURNOVER) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		if (!trade.getPublisherId().equals(publisherId)) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		trade.setRightTime(new Date());
+		trade.setState(StockOptionTradeState.APPLYRIGHT);
+		stockOptionTradeDao.update(trade);
+		// TODO 发送站外消息
+		return trade;
+	}
 
 	public Page<StockOptionTrade> pagesByQuery(final StockOptionTradeQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -148,19 +166,22 @@ public class StockOptionTradeService {
         return stockOptionTrade;
     }
 
-	public StockOptionTrade userRight(Long publisherId, Long id) {
-		StockOptionTrade trade = findById(id);
-		if (trade.getState() != StockOptionTradeState.TURNOVER) {
-			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
-		}
-		if (!trade.getPublisherId().equals(publisherId)) {
-			throw new ServiceException(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION);
-		}
-		trade.setRightTime(new Date());
-		trade.setState(StockOptionTradeState.APPLYRIGHT);
-		stockOptionTradeDao.update(trade);
-		// TODO 发送站外消息
-		return trade;
+    public StockOptionTrade success(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		stockOptionTrade.setState(StockOptionTradeState.TURNOVER);
+		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
+		return result;
+    }
+
+    @Transactional
+	public StockOptionTrade exercise(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
+		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
+		offlineStockOptionTrade.setState(OfflineStockOptionTradeState.APPLYRIGHT);
+		offlineStockOptionTradeDao.update(offlineStockOptionTrade);
+		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
+		return result;
 	}
-	
+
 }

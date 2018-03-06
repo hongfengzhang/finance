@@ -7,7 +7,7 @@ import java.util.Date;
  * @author Created by yuyidi on 2017/11/29.
  * @desc
  */
-public class InvestorDto {
+public class InvestorDto implements Serializable{
 
     private Long id;
     private String serialCode;
@@ -19,6 +19,7 @@ public class InvestorDto {
     private Boolean state;
     private Date createTime;
     private String securitiesSession;
+
     public Long getId() {
         return id;
     }
@@ -90,6 +91,12 @@ public class InvestorDto {
     public void setSecuritiesSession(String securitiesSession) {
         this.securitiesSession = securitiesSession;
     }
+
+
+    public void setMenus(SecurityAccountDto securityAccount) {
+        this.securityAccountDto = securityAccount;
+    }
+
     public void setSecurityAccountDto(SecurityAccountDto securityAccountDto) {
         this.securityAccountDto = securityAccountDto;
     }
@@ -97,5 +104,4 @@ public class InvestorDto {
     public SecurityAccountDto getSecurityAccountDto() {
         return securityAccountDto;
     }
-
 }

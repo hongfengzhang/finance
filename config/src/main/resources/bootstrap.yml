@@ -7,11 +7,10 @@ spring:
     config:
       server:
         git:
-          uri: git://github.com/yuyidi/config-repo/
+          uri: git://github.com/yuyidi/config-repo
           clone-on-start: true
         encrypt:
           enabled: true
-
 eureka:
   instance:
     metadata-map:

@@ -43,7 +43,7 @@ public class StockOptionTradeBusiness {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         QuotoInquiry quotoInquiry = new QuotoInquiry();
-        StockOptionOrgDto org = result.getOfflineTrade().getOrg();
+        StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
         quotoInquiry.setUnderlying(org.getName());
         quotoInquiry.setCode(result.getStockCode());
         quotoInquiry.setStrike("100%");
@@ -59,7 +59,7 @@ public class StockOptionTradeBusiness {
     public Boolean purchase(Long id) {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
-        StockOptionOrgDto org = result.getOfflineTrade().getOrg();
+        StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
         QuotoPurchase quotoPurchase = new QuotoPurchase();
         quotoPurchase.setUnderlying(org.getName());
         quotoPurchase.setCode(result.getStockCode());
@@ -76,16 +76,29 @@ public class StockOptionTradeBusiness {
     public Boolean exercise(Long id) {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
-        StockOptionOrgDto org = result.getOfflineTrade().getOrg();
+        StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
         QuotoExenise quotoExenise = new QuotoExenise();
         quotoExenise.setUnderlying(org.getName());
         quotoExenise.setCode(result.getStockCode());
         quotoExenise.setStrike("100%");
         quotoExenise.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        quotoExenise.setDueTo(result.getOfflineTrade().getExpireTime());
+        quotoExenise.setDueTo(result.getOfflineTradeDto().getExpireTime());
         quotoExenise.setExenise(result.getRightTime());
         MailMessage mailMessage = new ExeriseMessage();
         mailService.send("行权单", mailMessage.message(quotoExenise), org.getEmail());
+        //修改订单状态
+        stockOptionTradeService.exercise(id);
         return true;
+    }
+
+    public StockOptionTradeDto success(Long id) {
+        Response<StockOptionTradeDto> response = stockOptionTradeService.success(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
     }
 }

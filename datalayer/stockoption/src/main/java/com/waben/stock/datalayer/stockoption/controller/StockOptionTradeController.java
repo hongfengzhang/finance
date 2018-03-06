@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
+import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,8 @@ import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/stockoptiontrade")
 public class StockOptionTradeController implements StockOptionTradeInterface {
@@ -33,6 +37,10 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	public Response<PageInfo<StockOptionTradeDto>> pagesByQuery(@RequestBody StockOptionTradeQuery query) {
 		Page<StockOptionTrade> page = stockOptionTradeService.pagesByQuery(query);
 		PageInfo<StockOptionTradeDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionTradeDto.class);
+		for (int i = 0; i < page.getContent().size(); i++) {
+			OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, page.getContent().get(i).getOfflineTrade(), false);
+			result.getContent().get(i).setOfflineTradeDto(offlineStockOptionTradeDto);
+		}
 		return new Response<>(result);
 	}
 
@@ -49,6 +57,20 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 				stockOptionTradeService.settlement(id), false);
 		return new Response<>(result);
 	}
+
+	@Override
+	public Response<StockOptionTradeDto> success(Long id) {
+		StockOptionTrade result = stockOptionTradeService.success(id);
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
+		return new Response<>(stockOptionTradeDto);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> exercise(Long id) {
+		StockOptionTrade result = stockOptionTradeService.exercise(id);
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
+		return new Response<>(stockOptionTradeDto);	}
+
 
 	@Override
 	public Response<StockOptionTradeDto> add(@RequestBody StockOptionTradeDto stockOptionTradeDto) {

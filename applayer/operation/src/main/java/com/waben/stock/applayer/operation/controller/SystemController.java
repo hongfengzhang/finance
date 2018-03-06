@@ -33,16 +33,16 @@ public class SystemController {
 
     @GetMapping("/login")
     public String login() {
-        QuotoInquiry quotoInquiry = new QuotoInquiry();
-        quotoInquiry.setUnderlying("新湖瑞丰");
-        quotoInquiry.setCode("600208");
-        quotoInquiry.setStrike("100%");
-        quotoInquiry.setAmount("100W");
-        quotoInquiry.setPrice("7.55%");
-        quotoInquiry.setTenor(6);
-        quotoInquiry.setDate(new Date());
-        String file = ExcelUtil.renderInquiry(contextPath, quotoInquiry);
-        mailService.send("询价单", Arrays.asList(file), "lzh@youguwang.com.cn");
+//        QuotoInquiry quotoInquiry = new QuotoInquiry();
+//        quotoInquiry.setUnderlying("新湖瑞丰");
+//        quotoInquiry.setCode("600208");
+//        quotoInquiry.setStrike("100%");
+//        quotoInquiry.setAmount("100W");
+//        quotoInquiry.setPrice("7.55%");
+//        quotoInquiry.setTenor(6);
+//        quotoInquiry.setDate(new Date());
+//        String file = ExcelUtil.renderInquiry(contextPath, quotoInquiry);
+//        mailService.send("询价单", Arrays.asList(file), "lzh@youguwang.com.cn");
 //        QuotoPurchase quotoPurchase = new QuotoPurchase();
 //        quotoPurchase.setUnderlying("新湖瑞丰");
 //        quotoPurchase.setCode("600208");

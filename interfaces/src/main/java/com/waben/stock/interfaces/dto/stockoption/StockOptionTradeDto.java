@@ -103,7 +103,7 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	/**
 	 * 对应的线下期权交易信息
 	 */
-	private OfflineStockOptionTradeDto offlineTrade;
+	private OfflineStockOptionTradeDto offlineTradeDto;
 
 	public Long getId() {
 		return id;
@@ -121,14 +121,16 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.tradeNo = tradeNo;
 	}
 
-	public StockOptionTradeState getState() {
+	public StockOptionTradeState getStates() {
 		return state;
 	}
 
 	public void setState(StockOptionTradeState state) {
 		this.state = state;
 	}
-
+	public String getState() {
+		return state != null ? state.getState(): null;
+	}
 	public String getStockCode() {
 		return stockCode;
 	}
@@ -193,14 +195,16 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.applyTime = applyTime;
 	}
 
-	public StockOptionBuyingType getBuyingType() {
+	public StockOptionBuyingType getBuyingTypes() {
 		return buyingType;
 	}
 
 	public void setBuyingType(StockOptionBuyingType buyingType) {
 		this.buyingType = buyingType;
 	}
-
+	public String getBuyingType() {
+		return buyingType != null ? buyingType.getState(): null;
+	}
 	public Date getBuyingTime() {
 		return buyingTime;
 	}
@@ -281,12 +285,17 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.cycleName = cycleName;
 	}
 
-	public OfflineStockOptionTradeDto getOfflineTrade() {
-		return offlineTrade;
+
+	public OfflineStockOptionTradeDto getOfflineTradeDto() {
+		return offlineTradeDto;
+	}
+
+	public void setOfflineTradeDto(OfflineStockOptionTradeDto offlineTradeDto) {
+		this.offlineTradeDto = offlineTradeDto;
 	}
 
 	public void setOfflineTrade(OfflineStockOptionTradeDto offlineTrade) {
-		this.offlineTrade = offlineTrade;
+		this.offlineTradeDto = offlineTrade;
 	}
 
 	@Override
