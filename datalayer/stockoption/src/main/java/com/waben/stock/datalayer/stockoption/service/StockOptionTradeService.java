@@ -1,6 +1,8 @@
 package com.waben.stock.datalayer.stockoption.service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,7 +27,6 @@ import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.stockoption.business.OutsideMessageBusiness;
-import com.waben.stock.datalayer.stockoption.business.PublisherBusiness;
 import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
@@ -47,14 +48,13 @@ public class StockOptionTradeService {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 	@Autowired
 	private StockOptionTradeDao stockOptionTradeDao;
 
 	@Autowired
 	private OfflineStockOptionTradeDao offlineStockOptionTradeDao;
-
-	@Autowired
-	private PublisherBusiness publisherBusiness;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
@@ -91,6 +91,7 @@ public class StockOptionTradeService {
 		return pages;
 	}
 
+	@Transactional
 	public StockOptionTrade save(StockOptionTrade stockOptionTrade) {
 		// 再检查一余额是否充足
 		CapitalAccountDto account = accountBusiness.fetchByPublisherId(stockOptionTrade.getPublisherId());
@@ -179,32 +180,59 @@ public class StockOptionTradeService {
 		return stockOptionTradeDao.retrieve(id);
 	}
 
+	@Transactional
 	public StockOptionTrade settlement(Long id) {
-		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		CapitalAccountDto capitalAccountDto = accountBusiness.fetchByPublisherId(stockOptionTrade.getPublisherId());
-		// TODO 给用户结算
-		// 修改订单状态
-		return stockOptionTrade;
+		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		BigDecimal sellingPrice = trade.getOfflineTrade().getSellingPrice();
+		trade.setSellingPrice(sellingPrice);
+		trade.setSellingTime(new Date());
+		trade.setState(StockOptionTradeState.SETTLEMENTED);
+		BigDecimal profit = BigDecimal.ZERO;
+		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
+			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(sellingPrice)
+					.multiply(trade.getNominalAmount());
+		}
+		trade.setProfit(profit);
+		stockOptionTradeDao.update(trade);
+		if (profit.compareTo(BigDecimal.ZERO) > 0) {
+			// 用户收益
+			accountBusiness.optionProfit(trade.getPublisherId(), trade.getId(), profit);
+		}
+		// 站外消息推送
+		sendOutsideMessage(trade);
+		return trade;
 	}
 
+	@Transactional
 	public StockOptionTrade success(Long id) {
-		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		if (!StockOptionTradeState.WAITCONFIRMED.equals(stockOptionTrade.getState())) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		BigDecimal buyingPrice = trade.getOfflineTrade().getBuyingPrice();
+		if (StockOptionTradeState.WAITCONFIRMED != trade.getState()) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
-		stockOptionTrade.setState(StockOptionTradeState.TURNOVER);
-		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
-		return result;
+		trade.setState(StockOptionTradeState.TURNOVER);
+		trade.setBuyingPrice(buyingPrice);
+		Date date = new Date();
+		trade.setBuyingTime(date);
+		try {
+			// 计算到期日期
+			Date beginTime = sdf.parse(sdf.format(date));
+			Date expireTime = new Date(beginTime.getTime() + (trade.getCycle() - 1) * 24 * 60 * 60 * 1000);
+			trade.setExpireTime(expireTime);
+		} catch (ParseException e) {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		}
+		return stockOptionTradeDao.update(trade);
 	}
 
 	@Transactional
 	public StockOptionTrade exercise(Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
 		OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
-		//申购信息
+		// 申购信息
 		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
 		stockOptionTrade.setUpdateTime(new Date());
-		//线下交易信息
+		// 线下交易信息
 		offlineStockOptionTrade.setState(OfflineStockOptionTradeState.APPLYRIGHT);
 		offlineStockOptionTrade.setRightTime(new Date());
 		offlineStockOptionTradeDao.update(offlineStockOptionTrade);
@@ -212,14 +240,17 @@ public class StockOptionTradeService {
 		return result;
 	}
 
+	@Transactional
 	public StockOptionTrade fail(Long id) {
-		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		if (!StockOptionTradeState.WAITCONFIRMED.equals(stockOptionTrade.getState())) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		if (StockOptionTradeState.WAITCONFIRMED != trade.getState()) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
-		stockOptionTrade.setState(StockOptionTradeState.FAILURE);
-		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
-		return result;
+		trade.setState(StockOptionTradeState.FAILURE);
+		stockOptionTradeDao.update(trade);
+		// 退回权利金
+		accountBusiness.returnRightMoney(trade.getPublisherId(), trade.getId(), trade.getRightMoney());
+		return trade;
 	}
 
 	private void sendOutsideMessage(StockOptionTrade trade) {

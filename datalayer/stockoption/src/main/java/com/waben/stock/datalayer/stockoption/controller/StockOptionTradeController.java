@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +37,8 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		Page<StockOptionTrade> page = stockOptionTradeService.pagesByQuery(query);
 		PageInfo<StockOptionTradeDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionTradeDto.class);
 		for (int i = 0; i < page.getContent().size(); i++) {
-			OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, page.getContent().get(i).getOfflineTrade(), false);
+			OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(
+					OfflineStockOptionTradeDto.class, page.getContent().get(i).getOfflineTrade(), false);
 			result.getContent().get(i).setOfflineTradeDto(offlineStockOptionTradeDto);
 		}
 		return new Response<>(result);
@@ -58,23 +61,26 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	@Override
 	public Response<StockOptionTradeDto> success(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.success(id);
-		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result,
+				false);
 		return new Response<>(stockOptionTradeDto);
 	}
 
 	@Override
 	public Response<StockOptionTradeDto> fail(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.fail(id);
-		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result,
+				false);
 		return new Response<>(stockOptionTradeDto);
 	}
 
 	@Override
 	public Response<StockOptionTradeDto> exercise(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.exercise(id);
-		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
-		return new Response<>(stockOptionTradeDto);	}
-
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result,
+				false);
+		return new Response<>(stockOptionTradeDto);
+	}
 
 	@Override
 	public Response<StockOptionTradeDto> add(@RequestBody StockOptionTradeDto stockOptionTradeDto) {
