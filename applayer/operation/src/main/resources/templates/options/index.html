@@ -331,28 +331,63 @@
                     </h4>
                 </div>
                 <div class="modal-body">
-                    <form role="form">
-                        <div class="panel-body">
-                            <h5>机构报价单</h5>
-                        </div>
-                    </form>
-                    <form role="form">
-                        <div class="panel-body">
-                            <h5>机构申报单</h5>
-                        </div>
-                    </form>
-                    <form role="form">
-                        <div class="panel-body">
-                            <h5>机构清算单</h5>
-                        </div>
-                    </form>
+                    <div>
+                        <form role="form" id="orgPriceAction">
+                                <h5>机构报价单</h5>
+                            <div class="panel-body ">
+                                <label>新湖瑞丰:</label>
+                                <input name="rightMoneyRatio" type="text" class="form-control "
+                                       placeholder="机构报价"/>
+                            </div>
+                            <div align="center">
+                                <button type="button" class="btn btn-primary" id="orgPrice">
+                                    保存
+                                </button>
+                            </div>
 
+                        </form>
+                        <h5 class="page-header"></h5>
+                        <form role="form" id="realPriceAction">
+                                <h5>机构申报单</h5>
+                            <div class="panel-body ">
+                                <label>新湖瑞丰:</label>
+                                <input name="realRightMoneyRatio" type="text" class="form-control "
+                                       placeholder="申购实际报价"/>
+                                <label>实际成交价格:</label>
+                                <input name="realBuyingPrice" type="text" class="form-control "
+                                       placeholder="实际成交价格"/>
+                            </div>
+                            <div align="center">
+                                <button type="button" class="btn btn-primary" id="realPrice">
+                                    保存
+                                </button>
+                            </div>
+                        </form>
+                        <h5 class="page-header "></h5>
+                        <form role="form" id="orgSettleAction">
+                                <h5>机构清算单</h5>
+
+                            <div class="panel-body ">
+                                <label>卖出价(元):</label>
+                                <input name="" type="text" class="form-control"
+                                       placeholder="卖出价"/>
+                                <label>平台盈亏:</label>
+                                <input name="" type="text" class="form-control"
+                                       placeholder="平台盈亏"/>
+                                <label>用户盈亏:</label>
+                                <input name="" type="text" class="form-control"
+                                       placeholder="用户盈亏"/>
+                            </div>
+                            <div align="center">
+                                <button type="button" class="btn btn-primary" id="orgSettle">
+                                    保存
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭
-                    </button>
-                    <button type="button" class="btn btn-primary">
-                        确定
+                    <button type="button" id="orgClose" class="btn btn-default" data-dismiss="modal">关闭
                     </button>
                 </div>
             </div><!-- /.modal-content -->
@@ -470,7 +505,7 @@
                     title: '买入方式',
                     align: 'center'
                 }, {
-                    field: 'status',
+                    field: 'state',
                     title: '订单状态',
                     align: 'center',
                 }, {
@@ -518,6 +553,7 @@
                                         alert("询价失败")
                                     }
                                 })
+                                modal.find('#inquiry').attr("onclick",params[0]);
                             })
 //                            $(location).prop('href', "../option/inquiry/" + row.id);
                         },
@@ -539,6 +575,7 @@
                                         alert("申购失败");
                                     }
                                 })
+                                modal.find('#subscription').attr("onclick",params[0]);
                             })
 //                            $(location).prop('href', "../stock/edit/" + row.id);
                         },
@@ -546,7 +583,7 @@
                             $('#subscriptionsuccessaction').click(function () {
                                 $('#subscriptionsuccessclose').click();
                                 $.ajax({
-                                    url: "../option/inquiry/" + row.id,
+                                    url: "../option/success/" + row.id,
                                     type: 'post',
                                     success: function (response) {
                                         if (response.code = '200') {
@@ -560,6 +597,7 @@
                                         alert("订单修改失败")
                                     }
                                 })
+                                modal.find('#subscriptionsuccess').attr("onclick",params[0]);
                             })
 //                            $(location).prop('href', "../stock/edit/" + row.id);
                         },
@@ -581,6 +619,7 @@
                                         alert("行权失败");
                                     }
                                 })
+                                modal.find('#exerciseright').attr("onclick",params[0]);
                             })
 //                            $(location).prop('href', "../stock/edit/" + row.id);
                         },
@@ -596,7 +635,7 @@
                             $('#settlementaction').click(function () {
                                 $('#settlementclose').click();
                                 $.ajax({
-                                    url: "../offlinestockoptiontrade/settlement/" + row.id,
+                                    url: "",
                                     type: 'post',
                                     success: function (response) {
                                         if (response.code = '200') {
@@ -610,6 +649,7 @@
                                         alert("结算失败")
                                     }
                                 })
+                                modal.find('#settlement').attr("onclick",params[0]);
                             })
 //                            $(location).prop('href', "../option/inquiry/" + row.id);
                         },
@@ -626,6 +666,69 @@
                                 $('#detailclose').click();
 
                             })
+//                            $(location).prop('href', "../option/inquiry/" + row.id);
+                        },
+                        'click .orgdetail': function (e, value, row, index) {
+                            $('#orgPrice').click(function () {
+                                $('#orgClose').click();
+                                $.ajax({
+                                    url: "../offlinestockoptiontrade/add",
+                                    type: 'get',
+                                    data: {"id": row.id,"rightMoneyRatio":$("[name='rightMoneyRatio']").val()},
+                                    success: function (response) {
+                                        if (response.code = '200') {
+                                            $table.bootstrapTable('refresh');
+                                            alert("保存成功");
+                                        } else {
+                                            alert(response.message);
+                                        }
+                                    },
+                                    error: function () {
+                                        alert("保存失败")
+                                    }
+                                })
+                                modal.find('#orgdetail').attr("onclick",params[0]);
+                            })
+                            $('#realPrice').click(function () {
+                                $('#orgClose').click();
+                                $.ajax({
+                                    url: "../inquiryresult/add",
+                                    type: 'get',
+                                    data: {"id": row.id,"rightMoneyRatio":$("[name='realRightMoneyRatio']").val(),"buyingPrice":$("[name='realBuyingPrice']").val()},
+                                    success: function (response) {
+                                        if (response.code = '200') {
+                                            $table.bootstrapTable('refresh');
+                                            alert("保存成功");
+                                        } else {
+                                            alert(response.message);
+                                        }
+                                    },
+                                    error: function () {
+                                        alert("保存失败")
+                                    }
+                                })
+                                modal.find('#orgdetail').attr("onclick",params[0]);
+                            })
+                            $('#orgSettle').click(function () {
+                                $('#orgClose').click();
+                                $.ajax({
+                                    url: "../offlinestockoptiontrade/settlement/" + row.id,
+                                    type: 'get',
+                                    success: function (response) {
+                                        if (response.code = '200') {
+                                            $table.bootstrapTable('refresh');
+                                            alert("保存成功");
+                                        } else {
+                                            alert(response.message);
+                                        }
+                                    },
+                                    error: function () {
+                                        alert("保存失败")
+                                    }
+                                })
+                                modal.find('#orgdetail').attr("onclick",params[0]);
+                            })
+
 //                            $(location).prop('href', "../option/inquiry/" + row.id);
                         },
                         //                        'click .remove': function (e, value, row, index) {
@@ -701,6 +804,7 @@
             });
         });
     </script>
+
 </div>
 </body>
 </html>
