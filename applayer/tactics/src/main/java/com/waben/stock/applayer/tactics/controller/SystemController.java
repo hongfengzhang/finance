@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,9 +63,9 @@ public class SystemController {
 		PageInfo<BannerDto> pages = bannerBusiness.pages(query);
 		return new Response<>(pages.getContent());
 	}
-	
+
 	@GetMapping("/banner/lists")
-	@ApiOperation(value = "根据类别获取轮播图列表", notes="type(1:APP,2:PC,3:APP上架使用)")
+	@ApiOperation(value = "根据类别获取轮播图列表", notes = "type(1:APP,2:PC,3:APP上架使用)")
 	public Response<List<BannerDto>> getBannerListByCategory(int type) {
 		BannerQuery query = new BannerQuery();
 		query.setPage(0);
@@ -103,5 +105,13 @@ public class SystemController {
 		return result;
 	}
 
+	@GetMapping("/serverTime")
+	@ApiOperation(value = "获取服务器最新时间")
+	public Response<String> serverTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Response<String> result = new Response<>();
+		result.setResult(sdf.format(new Date()));
+		return result;
+	}
 
 }

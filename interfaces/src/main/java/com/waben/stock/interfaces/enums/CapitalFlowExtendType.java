@@ -13,7 +13,9 @@ public enum CapitalFlowExtendType implements CommonalityEnum {
 
 	BUYRECORD("1", "点买记录"),
 	
-	PUBLISHER("2", "发布人");
+	PUBLISHER("2", "发布人"),
+	
+	STOCKOPTIONTRADE("3", "期权交易信息");
 
 	private String index;
 	private String type;

@@ -1,7 +1,5 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
-import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
-import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.service.StockOptionTradeService;
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -21,8 +20,6 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/stockoptiontrade")

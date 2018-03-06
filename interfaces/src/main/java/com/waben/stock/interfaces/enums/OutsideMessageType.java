@@ -31,7 +31,17 @@ public enum OutsideMessageType implements CommonalityEnum {
 	
 	ACCOUNT_WITHDRAWALSSUCCESS("10", "提现成功"),
 	
-	ACCOUNT_WITHDRAWALFAILED("11", "提现失败");
+	ACCOUNT_WITHDRAWALFAILED("11", "提现失败"),
+	
+	OPTION_WAITCONFIRMED("12", "待确认"),
+
+	OPTION_FAILURE("13", "申购失败"),
+	
+	OPTION_TURNOVER("14", "持仓中"),
+
+	OPTION_INSETTLEMENT("15", "结算中"),
+
+	OPTION_SETTLEMENTED("16", "已结算");
 
 	private String index;
 	private String type;

@@ -114,12 +114,13 @@ public class CapitalAccountController implements CapitalAccountInterface {
 
 	@Override
 	public Response<CapitalAccountDto> modifyCapitalAccount(@RequestBody CapitalAccountDto capitalAccountDto) {
-		CapitalAccount capitalAccount = CopyBeanUtils.copyBeanProperties(CapitalAccount.class, capitalAccountDto, false);
+		CapitalAccount capitalAccount = CopyBeanUtils.copyBeanProperties(CapitalAccount.class, capitalAccountDto,
+				false);
 		CapitalAccount account = capitalAccountService.revision(capitalAccount);
 		CapitalAccountDto accountDto = CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, account, false);
 		return new Response<CapitalAccountDto>(accountDto);
 	}
-	
+
 	@Override
 	public Response<CapitalAccountDto> revoke(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
 			@PathVariable BigDecimal serviceFee, BigDecimal deferredFee) {
@@ -132,6 +133,28 @@ public class CapitalAccountController implements CapitalAccountInterface {
 			@PathVariable BigDecimal deferredFee) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.returnDeferredFee(publisherId, buyRecordId, deferredFee), false));
+	}
+
+	/**************************************** 期权相关 ***************************************/
+	@Override
+	public Response<CapitalAccountDto> rightMoney(@PathVariable Long publisherId, @PathVariable Long optionTradeId,
+			@PathVariable BigDecimal rightMoney) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.rightMoney(publisherId, optionTradeId, rightMoney), false));
+	}
+
+	@Override
+	public Response<CapitalAccountDto> returnRightMoney(@PathVariable Long publisherId,
+			@PathVariable Long optionTradeId, @PathVariable BigDecimal rightMoney) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.returnRightMoney(publisherId, optionTradeId, rightMoney), false));
+	}
+
+	@Override
+	public Response<CapitalAccountDto> optionProfit(@PathVariable Long publisherId, @PathVariable Long optionTradeId,
+			@PathVariable BigDecimal profit) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.optionProfit(publisherId, optionTradeId, profit), false));
 	}
 
 }
