@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.stockoption.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -11,7 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * 期权报价
+ * 期权第三方机构报价
  * 
  * @author luomengan
  *
@@ -38,6 +39,7 @@ public class StockOptionOrgQuote {
 	/**
 	 * 权利金报价比例
 	 */
+	@Column(scale = 4)
 	private BigDecimal rightMoneyRatio;
 	/**
 	 * 对应的期权第三方机构

@@ -36,6 +36,11 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
+	@Override
+	public Response<StockOptionTradeDto> userRight(Long publisherId, Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+	
     @Override
     public Response<StockOptionTradeDto> success(Long id) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -45,4 +50,10 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
     public Response<StockOptionTradeDto> exercise(Long id) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<StockOptionTradeDto> fail(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+    
 }

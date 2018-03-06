@@ -31,7 +31,6 @@ public class OptionController {
         return "options/index";
     }
 
-    private String contextPath;
     @RequestMapping("/pages")
     @ResponseBody
     public Response<PageInfo<StockOptionTradeVo>> pages(StockOptionTradeQuery query){
@@ -66,6 +65,14 @@ public class OptionController {
     @ResponseBody
     public Response<StockOptionTradeVo> success(@PathVariable Long id){
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.success(id);
+        StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
+        return new Response<>(stockOptionTradeVo);
+    }
+
+    @RequestMapping("/fail/{id}")
+    @ResponseBody
+    public Response<StockOptionTradeVo> fail(@PathVariable Long id){
+        StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.fail(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);
     }

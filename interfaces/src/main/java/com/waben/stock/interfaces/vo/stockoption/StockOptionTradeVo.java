@@ -127,7 +127,7 @@ public class StockOptionTradeVo{
 		return state;
 	}
 
-	public void setState(String state) {
+	public void setStates(String state) {
 		this.state = state;
 	}
 
@@ -207,7 +207,7 @@ public class StockOptionTradeVo{
 		return buyingType;
 	}
 
-	public void setBuyingType(String buyingType) {
+	public void setBuyingTypes(String buyingType) {
 		this.buyingType = buyingType;
 	}
 

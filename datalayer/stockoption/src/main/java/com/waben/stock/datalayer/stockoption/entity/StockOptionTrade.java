@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.stockoption.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -54,6 +55,7 @@ public class StockOptionTrade {
 	/**
 	 * 权利金比例
 	 */
+	@Column(scale = 4)
 	private BigDecimal rightMoneyRatio;
 	/**
 	 * 权利金

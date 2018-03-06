@@ -78,8 +78,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 开放接口
 		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/banner/lists",
-				"/system/getEnabledCircularsList", "/system/stockMarketExponent", "/system/getAppHomeTopData")
+		http.authorizeRequests()
+				.antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
+						"/system/stockMarketExponent", "/system/getAppHomeTopData", "/system/serverTime")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
 		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
@@ -107,6 +108,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //		http.authorizeRequests().antMatchers("/quickpay/sdquickpay").permitAll();
 //		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
 //		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
+		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic")
+				.permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.stockoption.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -36,6 +37,7 @@ public class StockOptionQuote {
 	/**
 	 * 权利金报价比例
 	 */
+	@Column(scale = 4)
 	private BigDecimal rightMoneyRatio;
 
 	public Long getId() {

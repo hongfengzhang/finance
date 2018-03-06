@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.dto.stockoption;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
@@ -12,7 +13,7 @@ import com.waben.stock.interfaces.enums.StockOptionTradeState;
  * @author luomengan
  *
  */
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 
 	private Long id;
@@ -121,14 +122,14 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.tradeNo = tradeNo;
 	}
 
-	public StockOptionTradeState getStates() {
+	public StockOptionTradeState getState() {
 		return state;
 	}
 
 	public void setState(StockOptionTradeState state) {
 		this.state = state;
 	}
-	public String getState() {
+	public String getStates() {
 		return state != null ? state.getState(): null;
 	}
 	public String getStockCode() {
@@ -195,14 +196,14 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.applyTime = applyTime;
 	}
 
-	public StockOptionBuyingType getBuyingTypes() {
+	public StockOptionBuyingType getBuyingType() {
 		return buyingType;
 	}
 
 	public void setBuyingType(StockOptionBuyingType buyingType) {
 		this.buyingType = buyingType;
 	}
-	public String getBuyingType() {
+	public String getBuyingTypes() {
 		return buyingType != null ? buyingType.getState(): null;
 	}
 	public Date getBuyingTime() {

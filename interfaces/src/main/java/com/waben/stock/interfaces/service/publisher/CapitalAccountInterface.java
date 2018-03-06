@@ -21,7 +21,7 @@ public interface CapitalAccountInterface {
 
 	@RequestMapping(value = "/{capitalAccountId}/view", method = RequestMethod.GET)
 	Response<CapitalAccountDto> fetchById(@PathVariable("capitalAccountId") Long capitalAccountId);
-	
+
 	@RequestMapping(value = "/publisherId/{publisherId}", method = RequestMethod.GET)
 	Response<CapitalAccountDto> fetchByPublisherId(@PathVariable("publisherId") Long publisherId);
 
@@ -65,8 +65,21 @@ public interface CapitalAccountInterface {
 	@RequestMapping(value = "/{publisherId}/modifyPaymentPassword", method = RequestMethod.PUT)
 	Response<Void> modifyPaymentPassword(@PathVariable("publisherId") Long publisherId,
 			@RequestParam(name = "paymentPassword") String paymentPassword);
-	
-	@RequestMapping(value = "/modify" , method = RequestMethod.PUT , consumes = MediaType.APPLICATION_JSON_VALUE)
+
+	@RequestMapping(value = "/modify", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<CapitalAccountDto> modifyCapitalAccount(@RequestBody CapitalAccountDto capitalAccountDto);
+
+	/**************************************** 期权相关 ***************************************/
+	@RequestMapping(value = "/{publisherId}/{optionTradeId}/rightMoney/{rightMoney}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> rightMoney(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("optionTradeId") Long optionTradeId, @PathVariable("rightMoney") BigDecimal rightMoney);
+
+	@RequestMapping(value = "/{publisherId}/{optionTradeId}/returnRightMoney/{rightMoney}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> returnRightMoney(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("optionTradeId") Long optionTradeId, @PathVariable("rightMoney") BigDecimal rightMoney);
+
+	@RequestMapping(value = "/{publisherId}/{optionTradeId}/profit/{profit}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> optionProfit(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("optionTradeId") Long optionTradeId, @PathVariable("profit") BigDecimal profit);
 
 }

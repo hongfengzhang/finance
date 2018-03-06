@@ -26,6 +26,18 @@ public interface StockOptionTradeInterface {
 
 	@RequestMapping(value = "/userpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<StockOptionTradeDto>> pagesByUserQuery(@RequestBody StockOptionTradeUserQuery query);
+	
+	/**
+	 * 用户申请提前行权，此时状态为“申请行权”
+	 *
+	 * @param publisherId
+	 *            发布人ID
+	 * @param id
+	 *            期权交易id
+	 * @return 期权交易
+	 */
+	@RequestMapping(value = "/{publisherId}/userright/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> userRight(@PathVariable("publisherId") Long publisherId, @PathVariable("id") Long id);
 
 	/**
 	 * 分页查询期权申购信息
@@ -45,6 +57,9 @@ public interface StockOptionTradeInterface {
 
 	@RequestMapping(value = "/success/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> success(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/fail/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> fail(@PathVariable("id") Long id);
 
 	@RequestMapping(value = "/exercise/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> exercise(@PathVariable("id") Long id);

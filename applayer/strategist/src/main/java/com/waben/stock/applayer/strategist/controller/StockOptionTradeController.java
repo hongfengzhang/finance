@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,6 +21,7 @@ import com.waben.stock.applayer.strategist.business.StockOptionCycleBusiness;
 import com.waben.stock.applayer.strategist.business.StockOptionQuoteBusiness;
 import com.waben.stock.applayer.strategist.business.StockOptionTradeBusiness;
 import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionQuoteWithBalanceDto;
+import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeDynamicDto;
 import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeWithMarketDto;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -79,10 +81,19 @@ public class StockOptionTradeController {
 	@ApiOperation(value = "询价")
 	public Response<StockOptionQuoteWithBalanceDto> quote(@PathVariable("stockCode") String stockCode,
 			@PathVariable("cycle") Integer cycle) {
-		StockOptionQuoteWithBalanceDto quote = new StockOptionQuoteWithBalanceDto(
-				quoteBusiness.quote(stockCode, cycle));
-		quote.setAvailableBalance(accountBusiness.findByPublisherId(SecurityUtil.getUserId()).getAvailableBalance());
-		return new Response<>(quote);
+		StockOptionQuoteDto quote = quoteBusiness.quote(stockCode, cycle);
+		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
+		if (quote == null && cycle == 14) {
+			quote = quoteBusiness.quote(stockCode, 30);
+			if (quote != null) {
+				quote.setRightMoneyRatio(
+						quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.DOWN));
+			}
+		}
+		StockOptionQuoteWithBalanceDto resultQuote = new StockOptionQuoteWithBalanceDto(quote);
+		resultQuote
+				.setAvailableBalance(accountBusiness.findByPublisherId(SecurityUtil.getUserId()).getAvailableBalance());
+		return new Response<>(resultQuote);
 	}
 
 	@PostMapping("/buy")
@@ -105,6 +116,12 @@ public class StockOptionTradeController {
 		StockDto stock = stockBusiness.findByCode(stockCode);
 		StockOptionCycleDto cycle = cycleBusiness.fetchById(cycleId);
 		StockOptionQuoteDto quote = quoteBusiness.quote(stockCode, cycle.getCycle());
+		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
+		if (quote == null && cycle.getCycle().intValue() == 14) {
+			quote = quoteBusiness.quote(stockCode, 30);
+			quote.setRightMoneyRatio(
+					quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.DOWN));
+		}
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();
@@ -157,6 +174,18 @@ public class StockOptionTradeController {
 		List<StockOptionTradeWithMarketDto> content = tradeBusiness.wrapMarketInfo(pageInfo.getContent());
 		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
 				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
+	}
+
+	@RequestMapping(value = "/userright/{id}", method = RequestMethod.POST)
+	@ApiOperation(value = "用户主动行权")
+	public Response<StockOptionTradeDto> userRight(@PathVariable("id") Long id) {
+		return new Response<>(tradeBusiness.userRight(SecurityUtil.getUserId(), id));
+	}
+
+	@GetMapping("/tradeDynamic")
+	@ApiOperation(value = "交易动态列表", notes = "tradeType:1表示买入，2表示卖出")
+	public Response<PageInfo<StockOptionTradeDynamicDto>> tradeDynamic(int page, int size) {
+		return new Response<>(tradeBusiness.tradeDynamic(page, size));
 	}
 
 }

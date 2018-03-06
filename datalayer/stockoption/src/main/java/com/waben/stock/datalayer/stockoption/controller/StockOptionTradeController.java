@@ -1,7 +1,5 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
-import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
-import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.service.StockOptionTradeService;
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -21,8 +20,6 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/stockoptiontrade")
@@ -59,14 +56,21 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> success(Long id) {
+	public Response<StockOptionTradeDto> success(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.success(id);
 		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
 		return new Response<>(stockOptionTradeDto);
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> exercise(Long id) {
+	public Response<StockOptionTradeDto> fail(@PathVariable Long id) {
+		StockOptionTrade result = stockOptionTradeService.fail(id);
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
+		return new Response<>(stockOptionTradeDto);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> exercise(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.exercise(id);
 		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
 		return new Response<>(stockOptionTradeDto);	}
@@ -87,6 +91,13 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		Page<StockOptionTrade> page = stockOptionTradeService.pagesByUserQuery(query);
 		PageInfo<StockOptionTradeDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionTradeDto.class);
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> userRight(@PathVariable Long publisherId, @PathVariable Long id) {
+		logger.info("发布人{}申请行权期权交易{}!", publisherId, id);
+		StockOptionTrade trade = stockOptionTradeService.userRight(publisherId, id);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
 	}
 
 }
