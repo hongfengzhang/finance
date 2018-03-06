@@ -9,9 +9,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
-import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
-import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +20,13 @@ import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.stockoption.business.PublisherBusiness;
+import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
+import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
@@ -101,6 +101,21 @@ public class StockOptionTradeService {
 		}
 		// TODO 站外消息推送
 		return stockOptionTrade;
+	}
+	
+	public StockOptionTrade userRight(Long publisherId, Long id) {
+		StockOptionTrade trade = findById(id);
+		if (trade.getState() != StockOptionTradeState.TURNOVER) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		if (!trade.getPublisherId().equals(publisherId)) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		trade.setRightTime(new Date());
+		trade.setState(StockOptionTradeState.APPLYRIGHT);
+		stockOptionTradeDao.update(trade);
+		// TODO 发送站外消息
+		return trade;
 	}
 
 	public Page<StockOptionTrade> pagesByQuery(final StockOptionTradeQuery query) {
@@ -185,4 +200,5 @@ public class StockOptionTradeService {
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
 		return result;
     }
+
 }
