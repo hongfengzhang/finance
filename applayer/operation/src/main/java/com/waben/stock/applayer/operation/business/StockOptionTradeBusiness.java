@@ -101,4 +101,15 @@ public class StockOptionTradeBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+
+    public StockOptionTradeDto fail(Long id) {
+        Response<StockOptionTradeDto> response = stockOptionTradeService.fail(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

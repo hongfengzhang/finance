@@ -168,6 +168,9 @@ public class StockOptionTradeService {
 
     public StockOptionTrade success(Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		if(!StockOptionTradeState.WAITCONFIRMED.equals(stockOptionTrade.getState())) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
 		stockOptionTrade.setState(StockOptionTradeState.TURNOVER);
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
 		return result;
@@ -183,5 +186,15 @@ public class StockOptionTradeService {
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
 		return result;
 	}
+
+    public StockOptionTrade fail(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		if(!StockOptionTradeState.WAITCONFIRMED.equals(stockOptionTrade.getState())) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		stockOptionTrade.setState(StockOptionTradeState.FAILURE);
+		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
+		return result;
+    }
 
 }

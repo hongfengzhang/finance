@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +32,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 @Service
 public class StockOptionTradeBusiness {
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -40,6 +43,14 @@ public class StockOptionTradeBusiness {
 
 	public StockOptionTradeDto add(StockOptionTradeDto stockOptionTradeDto) {
 		Response<StockOptionTradeDto> response = tradeReference.add(stockOptionTradeDto);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
+	public StockOptionTradeDto findById(Long id) {
+		Response<StockOptionTradeDto> response = tradeReference.fetchById(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
