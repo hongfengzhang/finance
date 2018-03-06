@@ -24,9 +24,11 @@ import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
+import com.waben.stock.interfaces.enums.WindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -145,4 +147,20 @@ public class StockOptionTradeService {
         //修改订单状态
         return stockOptionTrade;
     }
+
+	public StockOptionTrade userRight(Long publisherId, Long id) {
+		StockOptionTrade trade = findById(id);
+		if (trade.getState() != StockOptionTradeState.TURNOVER) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		if (!trade.getPublisherId().equals(publisherId)) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION);
+		}
+		trade.setRightTime(new Date());
+		trade.setState(StockOptionTradeState.APPLYRIGHT);
+		stockOptionTradeDao.update(trade);
+		// TODO 发送站外消息
+		return trade;
+	}
+	
 }

@@ -50,6 +50,14 @@ public class StockOptionTradeBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	
+	public StockOptionTradeDto userRight(Long publisherId, Long id) {
+		Response<StockOptionTradeDto> response = tradeReference.userRight(publisherId, id);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 	public StockOptionTradeWithMarketDto wrapMarketInfo(StockOptionTradeDto trade) {
 		List<StockOptionTradeDto> list = new ArrayList<>();

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -157,6 +158,12 @@ public class StockOptionTradeController {
 		List<StockOptionTradeWithMarketDto> content = tradeBusiness.wrapMarketInfo(pageInfo.getContent());
 		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
 				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist()));
+	}
+
+	@RequestMapping(value = "/userright/{id}", method = RequestMethod.POST)
+	@ApiOperation(value = "用户主动行权")
+	public Response<StockOptionTradeDto> userRight(@PathVariable("id") Long id) {
+		return new Response<>(tradeBusiness.userRight(SecurityUtil.getUserId(), id));
 	}
 
 }

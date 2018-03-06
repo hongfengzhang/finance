@@ -134,9 +134,15 @@ public class ExceptionConstant {
 	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
 	// 机构类别不存在
 	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
-	
+
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
 	public static final String STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION = "9001";
+	// 期权交易状态不匹配，不支持该操作
+	public static final String STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "9002";
+	// 自主行权发布人不匹配，不支持该操作
+	public static final String STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION = "9003";
+	// 持仓第二天之后才能申请行权
+	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
 
 }

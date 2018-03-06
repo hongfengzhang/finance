@@ -67,4 +67,11 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		return new Response<>(result);
 	}
 
+	@Override
+	public Response<StockOptionTradeDto> userRight(@PathVariable Long publisherId, @PathVariable Long id) {
+		logger.info("发布人{}申请行权期权交易{}!", publisherId, id);
+		StockOptionTrade trade = stockOptionTradeService.userRight(publisherId, id);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
+	}
+
 }
