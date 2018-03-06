@@ -715,4 +715,5 @@ public class BuyRecordService {
 	public BuyRecord revisionState(BuyRecord buyRecord) {
 		return changeState(buyRecord, false);
 	}
+
 }

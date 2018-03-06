@@ -179,14 +179,9 @@ public class StockOptionTradeService {
     @Transactional
 	public StockOptionTrade exercise(Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
 		//申购信息
 		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
 		stockOptionTrade.setUpdateTime(new Date());
-		//线下交易信息
-		offlineStockOptionTrade.setState(OfflineStockOptionTradeState.APPLYRIGHT);
-		offlineStockOptionTrade.setRightTime(new Date());
-		offlineStockOptionTradeDao.update(offlineStockOptionTrade);
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
 		return result;
 	}

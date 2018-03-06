@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
+import com.waben.stock.datalayer.stockoption.service.OfflineStockOptionTradeService;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +33,8 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 
 	@Autowired
 	private StockOptionTradeService stockOptionTradeService;
-
+	@Autowired
+	private OfflineStockOptionTradeService offlineStockOptionTradeService;
 	@Override
 	public Response<PageInfo<StockOptionTradeDto>> pagesByQuery(@RequestBody StockOptionTradeQuery query) {
 		Page<StockOptionTrade> page = stockOptionTradeService.pagesByQuery(query);
@@ -75,6 +77,7 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	@Override
 	public Response<StockOptionTradeDto> exercise(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.exercise(id);
+		offlineStockOptionTradeService.exercise(id);
 		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
 		return new Response<>(stockOptionTradeDto);	}
 

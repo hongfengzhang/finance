@@ -182,4 +182,5 @@ public interface BuyRecordInterface {
 	void delete(@PathVariable("id") Long id);
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
 	Response<BuyRecordDto> updateState(@RequestBody BuyRecordDto buyRecordDto);
+
 }

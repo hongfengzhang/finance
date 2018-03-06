@@ -64,4 +64,14 @@ public class OfflineStockOptionTradeService {
 
         return offlineStockOptionTradeDao.update(offlineStockOptionTrade);
     }
+
+    
+
+    public OfflineStockOptionTrade exercise(Long id) {
+        OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
+        offlineStockOptionTrade.setState(OfflineStockOptionTradeState.APPLYRIGHT);
+        offlineStockOptionTrade.setRightTime(new Date());
+        OfflineStockOptionTrade result = offlineStockOptionTradeDao.update(offlineStockOptionTrade);
+        return result;
+    }
 }
