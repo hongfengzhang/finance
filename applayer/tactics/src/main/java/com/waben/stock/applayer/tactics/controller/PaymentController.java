@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -106,15 +107,6 @@ public class PaymentController {
 	@ApiOperation(value = "快捷支付")
 	public Response<String> quickPay(@RequestParam(required = true) String paymentNo,
 			@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String validaCode) {
-		Response<String> result = new Response<String>();
-		result.setResult(paymentBusiness.quickPay(paymentNo, bindCardId, validaCode, SecurityUtil.getUserId()));
-		return result;
-	}
-
-	@PostMapping("/sdquickpay")
-	@ApiOperation(value = "杉德快捷支付")
-	public Response<String> quickPay1(@RequestParam(required = true) String paymentNo,
-									 @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String validaCode) {
 		Response<String> result = new Response<String>();
 		result.setResult(paymentBusiness.quickPay(paymentNo, bindCardId, validaCode, SecurityUtil.getUserId()));
 		return result;

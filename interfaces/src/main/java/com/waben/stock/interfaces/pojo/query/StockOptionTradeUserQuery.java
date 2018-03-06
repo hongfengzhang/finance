@@ -12,6 +12,10 @@ public class StockOptionTradeUserQuery extends PageAndSortQuery {
 	 * 交易状态数组
 	 */
 	private StockOptionTradeState[] states;
+	/**
+	 * 查询收益了的交易
+	 */
+	private boolean onlyProfit;
 
 	public StockOptionTradeUserQuery() {
 
@@ -38,6 +42,14 @@ public class StockOptionTradeUserQuery extends PageAndSortQuery {
 
 	public void setStates(StockOptionTradeState[] states) {
 		this.states = states;
+	}
+
+	public boolean isOnlyProfit() {
+		return onlyProfit;
+	}
+
+	public void setOnlyProfit(boolean onlyProfit) {
+		this.onlyProfit = onlyProfit;
 	}
 
 }

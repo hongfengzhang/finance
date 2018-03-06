@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.publisher.controller;
 
-import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,6 @@ import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
-
-import java.util.List;
 
 /**
  * @author Created by yuyidi on 2017/11/5.

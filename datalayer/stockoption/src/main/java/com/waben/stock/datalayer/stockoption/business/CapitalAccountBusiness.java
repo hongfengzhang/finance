@@ -79,4 +79,28 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public CapitalAccountDto rightMoney(Long publisherId, Long optionTradeId, BigDecimal rightMoney) {
+		Response<CapitalAccountDto> response = service.rightMoney(publisherId, optionTradeId, rightMoney);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public CapitalAccountDto returnRightMoney(Long publisherId, Long optionTradeId, BigDecimal rightMoney) {
+		Response<CapitalAccountDto> response = service.returnRightMoney(publisherId, optionTradeId, rightMoney);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public CapitalAccountDto optionProfit(Long publisherId, Long optionTradeId, BigDecimal profit) {
+		Response<CapitalAccountDto> response = service.optionProfit(publisherId, optionTradeId, profit);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

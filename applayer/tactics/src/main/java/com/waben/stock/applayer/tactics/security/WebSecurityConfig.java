@@ -78,8 +78,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 开放接口
 		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/banner/lists",
-				"/system/getEnabledCircularsList", "/system/stockMarketExponent", "/system/getAppHomeTopData")
+		http.authorizeRequests()
+				.antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
+						"/system/stockMarketExponent", "/system/getAppHomeTopData", "/system/serverTime")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
 		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
@@ -101,15 +102,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/appversion/currentAppVersion", "/appversionupgrade/checkUpgrade")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/turbine/**").permitAll();
-		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists").permitAll();
+		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic").permitAll();
+		//测试放权
+		http.authorizeRequests().antMatchers("/quickpay/sdquickpay").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
 		// 添加一个过滤器 所有访问 /login 的请求交给 JWTLoginFilter 来处理 这个类处理所有的JWT相关内容
 		http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		// 添加一个过滤器验证其他请求的Token是否合法
 		http.addFilterBefore(jWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
 		http.sessionManagement().maximumSessions(1);
 	}
@@ -117,6 +124,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
-		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**");
+		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**","/static/js/**");
 	}
 }

@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.dto.stockoption;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
@@ -12,7 +13,7 @@ import com.waben.stock.interfaces.enums.StockOptionTradeState;
  * @author luomengan
  *
  */
-
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 
 	private Long id;
