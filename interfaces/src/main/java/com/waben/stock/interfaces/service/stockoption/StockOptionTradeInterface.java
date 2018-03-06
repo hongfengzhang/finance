@@ -46,6 +46,9 @@ public interface StockOptionTradeInterface {
 	@RequestMapping(value = "/success/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> success(@PathVariable("id") Long id);
 
+	@RequestMapping(value = "/fail/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> fail(@PathVariable("id") Long id);
+
 	@RequestMapping(value = "/exercise/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> exercise(@PathVariable("id") Long id);
 }

@@ -59,14 +59,21 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> success(Long id) {
+	public Response<StockOptionTradeDto> success(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.success(id);
 		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
 		return new Response<>(stockOptionTradeDto);
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> exercise(Long id) {
+	public Response<StockOptionTradeDto> fail(@PathVariable Long id) {
+		StockOptionTrade result = stockOptionTradeService.fail(id);
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
+		return new Response<>(stockOptionTradeDto);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> exercise(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.exercise(id);
 		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
 		return new Response<>(stockOptionTradeDto);	}
