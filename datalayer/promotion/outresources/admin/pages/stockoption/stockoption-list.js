@@ -16,7 +16,7 @@ $(function() {
 		searchData.size = 10;
 		$.ajax({
             type: "POST",
-            url: "/promotionBuyRecord/adminPage",
+            url: "/promotionStockOptionTrade/adminPage",
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(searchData),
@@ -40,7 +40,7 @@ $(function() {
 			$(id).dataTable().fnDraw();
 		} else {
 			var columns = [
-	            { "data": "buyRecordId", "title": "策略ID", orderable: false},
+	            { "data": "tradeId", "title": "策略ID", orderable: false},
 	            { "data": "publisherId", "title": "用户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
 	            { "data": "stockCode", "title": "股票", orderable: false, "render": function(data, type, full, meta) {
@@ -110,7 +110,7 @@ $(function() {
 		}
 	}
 	// 执行
-	renderTable("#strategy-list-table");
+	renderTable("#stockoption-list-table");
 	// 加载layui
 	layui.use(['element', 'table'], function() {
 	});
@@ -126,6 +126,6 @@ $(function() {
 				searchData[name] = value;
 			}
 		}
-		renderTable("#strategy-list-table");
+		renderTable("#stockoption-list-table");
 	});
 });

@@ -41,14 +41,14 @@ public class PromotionBuyRecordService {
 	public Page<PromotionBuyRecordBean> pagesByQuery(PromotionBuyRecordQuery query) {
 		String buyRecordIdCondition = "";
 		if(query.getBuyRecordId() != null && !"".equals(query.getBuyRecordId().trim())) {
-			buyRecordIdCondition = " and t1.buy_record_id='" + query.getBuyRecordId().trim() + "' ";
+			buyRecordIdCondition = " and t1.id='" + query.getBuyRecordId().trim() + "' ";
 		}
 		String stateCondition = "";
 		if(query.getState() != null && !"".equals(query.getState()) && !"0".equals(query.getState())) {
 			if("8-1".equals(stateCondition)) {
-				stateCondition = " and t2.state='8' and t2.wind_control_type is null ";
+				stateCondition = " and t1.state='8' and t1.wind_control_type is null ";
 			} else {
-				stateCondition = " and t2.state='" + query.getState() + "' ";
+				stateCondition = " and t1.state='" + query.getState() + "' ";
 			}
 		}
 		String publisherPhoneCondition = "";
@@ -60,13 +60,13 @@ public class PromotionBuyRecordService {
 			orgCodeCondition = " and t4.code='" + query.getOrgCode() + "' ";
 		}
 		String sql = String
-				.format("select t1.buy_record_id, t1.publisher_id, t1.publisher_phone, t1.stock_code, t1.stock_name, t2.strategy_type_id, "
-						+ "t3.name as strategy_type_name, t1.apply_amount, t1.number_of_strand, t2.state, t2.wind_control_type, "
-						+ "t2.buying_time, t2.buying_price, t2.selling_price, t2.selling_time, t4.code as org_code, t4.name as org_name from p_buy_record t1 "
-						+ "LEFT JOIN buy_record t2 on t1.buy_record_id=t2.id "
-						+ "LEFT JOIN strategy_type t3 on t2.strategy_type_id=t3.id "
-						+ "LEFT JOIN p_organization t4 on t1.org_id=t4.id where 1=1 %s %s %s %s limit " + query.getPage() * query.getSize() + "," + query.getSize(), buyRecordIdCondition, stateCondition, publisherPhoneCondition, orgCodeCondition);
-		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"));
+				.format("select t1.id, t1.publisher_id, t1.publisher_phone, t1.stock_code, t1.stock_name, t1.strategy_type_id, "
+						+ "t3.name as strategy_type_name, t1.apply_amount, t1.number_of_strand, t1.state, t1.wind_control_type, "
+						+ "t1.buying_time, t1.buying_price, t1.selling_price, t1.selling_time, t4.code as org_code, t4.name as org_name from buy_record t1 "
+						+ "INNER JOIN p_organization_publisher t2 on t1.publisher_id=t2.publisher_id and t2.org_code like '%s%%' "
+						+ "LEFT JOIN strategy_type t3 on t1.strategy_type_id=t3.id "
+						+ "LEFT JOIN p_organization t4 on t4.code=t2.org_code where 1=1 %s %s %s %s limit " + query.getPage() * query.getSize() + "," + query.getSize(), query.getCurrentOrgCode(), buyRecordIdCondition, stateCondition, publisherPhoneCondition, orgCodeCondition);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setBuyRecordId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
@@ -102,7 +102,7 @@ public class PromotionBuyRecordService {
 				}
 			}
 		}
-		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()), totalElements.longValue());
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()), totalElements != null ? totalElements.longValue() : 0);
 	}
 
 }

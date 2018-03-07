@@ -4,24 +4,24 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
 /**
- * 策略查询条件
+ * 期权查询条件
  * 
  * @author luomengan
  *
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PromotionBuyRecordQuery extends PageAndSortQuery {
+public class PromotionStockOptionTradeQuery extends PageAndSortQuery {
 
 	/**
 	 * 当前机构代码
 	 */
 	private String currentOrgCode;
 	/**
-	 * 点买记录ID
+	 * 交易ID
 	 */
-	private String buyRecordId;
+	private String tradeId;
 	/**
-	 * 策略状态
+	 * 期权状态
 	 */
 	private String state;
 	/**
@@ -33,12 +33,20 @@ public class PromotionBuyRecordQuery extends PageAndSortQuery {
 	 */
 	private String orgCode;
 
-	public String getBuyRecordId() {
-		return buyRecordId;
+	public String getCurrentOrgCode() {
+		return currentOrgCode;
 	}
 
-	public void setBuyRecordId(String buyRecordId) {
-		this.buyRecordId = buyRecordId;
+	public void setCurrentOrgCode(String currentOrgCode) {
+		this.currentOrgCode = currentOrgCode;
+	}
+
+	public String getTradeId() {
+		return tradeId;
+	}
+
+	public void setTradeId(String tradeId) {
+		this.tradeId = tradeId;
 	}
 
 	public String getState() {
@@ -63,14 +71,6 @@ public class PromotionBuyRecordQuery extends PageAndSortQuery {
 
 	public void setOrgCode(String orgCode) {
 		this.orgCode = orgCode;
-	}
-
-	public String getCurrentOrgCode() {
-		return currentOrgCode;
-	}
-
-	public void setCurrentOrgCode(String currentOrgCode) {
-		this.currentOrgCode = currentOrgCode;
 	}
 
 }

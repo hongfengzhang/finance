@@ -1,14 +1,15 @@
 package com.waben.stock.datalayer.promotion.pojo.bean;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
-public class PromotionBuyRecordBean {
+public class PromotionStockOptionTradeBean {
 
 	/**
 	 * 点买记录ID
 	 */
-	private Long buyRecordId;
+	private Long tradeId;
 	/**
 	 * 发布人ID
 	 */
@@ -26,29 +27,21 @@ public class PromotionBuyRecordBean {
 	 */
 	private String stockName;
 	/**
-	 * 策略类型ID
+	 * 期权周期名称
 	 */
-	private Long strategyTypeId;
-	/**
-	 * 策略类型名称
-	 */
-	private String strategyTypeName;
-	/**
-	 * 申请市值
-	 */
-	private BigDecimal applyAmount;
-	/**
-	 * 持股数
-	 */
-	private Integer numberOfStrand;
+	private String cycleName;
 	/**
 	 * 策略状态
 	 */
 	private Integer state;
 	/**
-	 * 风控类型
+	 * 名义本金
 	 */
-	private Integer windControlType;
+	private BigDecimal nominalAmount;
+	/**
+	 * 权利金
+	 */
+	private BigDecimal rightMoney;
 	/**
 	 * 点买时间
 	 */
@@ -72,7 +65,7 @@ public class PromotionBuyRecordBean {
 	/**
 	 * 盈亏
 	 */
-	private BigDecimal profitOrLoss;
+	private BigDecimal profit;
 	/**
 	 * 所属机构代码
 	 */
@@ -81,14 +74,6 @@ public class PromotionBuyRecordBean {
 	 * 所属机构名称
 	 */
 	private String orgName;
-
-	public Long getBuyRecordId() {
-		return buyRecordId;
-	}
-
-	public void setBuyRecordId(Long buyRecordId) {
-		this.buyRecordId = buyRecordId;
-	}
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -120,38 +105,6 @@ public class PromotionBuyRecordBean {
 
 	public void setStockName(String stockName) {
 		this.stockName = stockName;
-	}
-
-	public Long getStrategyTypeId() {
-		return strategyTypeId;
-	}
-
-	public void setStrategyTypeId(Long strategyTypeId) {
-		this.strategyTypeId = strategyTypeId;
-	}
-
-	public String getStrategyTypeName() {
-		return strategyTypeName;
-	}
-
-	public void setStrategyTypeName(String strategyTypeName) {
-		this.strategyTypeName = strategyTypeName;
-	}
-
-	public BigDecimal getApplyAmount() {
-		return applyAmount;
-	}
-
-	public void setApplyAmount(BigDecimal applyAmount) {
-		this.applyAmount = applyAmount;
-	}
-
-	public Integer getNumberOfStrand() {
-		return numberOfStrand;
-	}
-
-	public void setNumberOfStrand(Integer numberOfStrand) {
-		this.numberOfStrand = numberOfStrand;
 	}
 
 	public Date getBuyingTime() {
@@ -194,21 +147,23 @@ public class PromotionBuyRecordBean {
 		this.lastPrice = lastPrice;
 	}
 
-	public BigDecimal getProfitOrLoss() {
-		if(profitOrLoss == null) {
-			if(buyingPrice != null) {
-				if(sellingPrice != null) {
-					return sellingPrice.subtract(buyingPrice).multiply(new BigDecimal(numberOfStrand));
+	public BigDecimal getProfit() {
+		if (profit == null) {
+			if (buyingPrice != null) {
+				if (sellingPrice != null) {
+					return sellingPrice.subtract(buyingPrice).divide(sellingPrice).multiply(nominalAmount).setScale(2,
+							RoundingMode.DOWN);
 				} else {
-					return lastPrice.subtract(buyingPrice).multiply(new BigDecimal(numberOfStrand));
+					return lastPrice.subtract(buyingPrice).divide(sellingPrice).multiply(nominalAmount).setScale(2,
+							RoundingMode.DOWN);
 				}
 			}
 		}
-		return profitOrLoss;
+		return profit;
 	}
 
-	public void setProfitOrLoss(BigDecimal profitOrLoss) {
-		this.profitOrLoss = profitOrLoss;
+	public void setProfit(BigDecimal profit) {
+		this.profit = profit;
 	}
 
 	public String getOrgName() {
@@ -235,12 +190,36 @@ public class PromotionBuyRecordBean {
 		this.state = state;
 	}
 
-	public Integer getWindControlType() {
-		return windControlType;
+	public Long getTradeId() {
+		return tradeId;
 	}
 
-	public void setWindControlType(Integer windControlType) {
-		this.windControlType = windControlType;
+	public void setTradeId(Long tradeId) {
+		this.tradeId = tradeId;
+	}
+
+	public String getCycleName() {
+		return cycleName;
+	}
+
+	public void setCycleName(String cycleName) {
+		this.cycleName = cycleName;
+	}
+
+	public BigDecimal getNominalAmount() {
+		return nominalAmount;
+	}
+
+	public void setNominalAmount(BigDecimal nominalAmount) {
+		this.nominalAmount = nominalAmount;
+	}
+
+	public BigDecimal getRightMoney() {
+		return rightMoney;
+	}
+
+	public void setRightMoney(BigDecimal rightMoney) {
+		this.rightMoney = rightMoney;
 	}
 
 }
