@@ -117,7 +117,7 @@ public class QuickPayBusiness {
         StringBuilder result = new StringBuilder();
         result.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>回调页面</title></head><body>");
         String paymentNo = "";
-        String stateStr = "支付成功";
+        String stateStr = "已支付";
         String scriptContent = "<script>function call() {if(window.appInterface) {window.appInterface.rechargeCallback('%s', '%s');} else {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}} call();</script>";
         result.append(String.format(scriptContent, paymentNo, stateStr, paymentNo, stateStr));
         return result.toString();
