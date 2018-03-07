@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.stockoption.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -27,13 +28,10 @@ import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.stockoption.business.OutsideMessageBusiness;
-import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
-import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.OutsideMessageType;
 import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
@@ -52,9 +50,6 @@ public class StockOptionTradeService {
 
 	@Autowired
 	private StockOptionTradeDao stockOptionTradeDao;
-
-	@Autowired
-	private OfflineStockOptionTradeDao offlineStockOptionTradeDao;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
@@ -146,7 +141,7 @@ public class StockOptionTradeService {
 			@Override
 			public Predicate toPredicate(Root<StockOptionTrade> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicatesList = new ArrayList();
+				List<Predicate> predicatesList = new ArrayList<>();
 				if (query.getBeginTime() != null) {
 					predicatesList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("buyingTime").as(Date.class),
 							query.getBeginTime()));
@@ -189,8 +184,8 @@ public class StockOptionTradeService {
 		trade.setState(StockOptionTradeState.SETTLEMENTED);
 		BigDecimal profit = BigDecimal.ZERO;
 		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
-			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(sellingPrice)
-					.multiply(trade.getNominalAmount());
+			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice())
+					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.DOWN);
 		}
 		trade.setProfit(profit);
 		stockOptionTradeDao.update(trade);
