@@ -140,6 +140,10 @@ public class CapitalAccountBusiness {
 
 		return result;
 	}
+	
+	public void paymentPasswordWrong(Long publisherId) {
+		
+	}
 
 	public BigDecimal getDeferredAmount(Long publisherId) {
 		// TODO 获取递延费用
