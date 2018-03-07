@@ -90,7 +90,7 @@ public class QuickPayController {
         }
     }
     @GetMapping("/sdpaycsa")
-    @ApiOperation(value = "杉德支付页面回调")
+    @ApiOperation(value = "杉德支付提现")
     public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
                                         @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
         // 判断是否为测试用户，测试用户不能提现
