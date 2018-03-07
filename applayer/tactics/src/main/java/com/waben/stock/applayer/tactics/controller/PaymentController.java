@@ -157,6 +157,7 @@ public class PaymentController {
 		if (bankType == null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
 		}
+
 		paymentBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
 				bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode());
 		resp.setResult("success");

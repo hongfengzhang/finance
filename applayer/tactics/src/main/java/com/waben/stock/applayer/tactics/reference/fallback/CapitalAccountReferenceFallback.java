@@ -49,6 +49,11 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 	}
 
 	@Override
+	public Response<CapitalAccountDto> csa(Long publisherId, String withdrawalsNo, BigDecimal amount) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
 			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);

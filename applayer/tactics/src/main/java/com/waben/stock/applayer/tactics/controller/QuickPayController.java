@@ -1,8 +1,18 @@
 package com.waben.stock.applayer.tactics.controller;
 
-import com.waben.stock.applayer.tactics.business.QuickPayBusiness;
+import com.waben.stock.applayer.tactics.business.*;
+import com.waben.stock.applayer.tactics.payapi.czpay.config.CzBankType;
+import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.BankType;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,8 +33,22 @@ import java.util.Map;
 @RequestMapping("/quickpay")
 public class QuickPayController {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
+
     @Autowired
     private QuickPayBusiness quickPayBusiness;
+
+    @Autowired
+    private PublisherBusiness publisherBusiness;
+
+    @Autowired
+    private BindCardBusiness bindCardBusiness;
+
+    @Autowired
+    private CapitalAccountBusiness capitalAccountBusiness;
+
+    @Autowired
+    private PaymentBusiness paymentBusiness;
 
     @RequestMapping("/sdquickpay")
     @ApiOperation(value = "杉德快捷支付")
@@ -37,7 +61,7 @@ public class QuickPayController {
 
     @PostMapping("/sdpaycallback")
     @ApiOperation(value = "杉德支付后台回调")
-    public void tbfPayCallback(HttpServletRequest request, HttpServletResponse httpResp)
+    public void sdPayCallback(HttpServletRequest request, HttpServletResponse httpResp)
             throws UnsupportedEncodingException {
         // 处理回调
         String result = quickPayBusiness.sdPaycallback(request);
@@ -53,7 +77,7 @@ public class QuickPayController {
 
     @GetMapping("/sdpayreturn")
     @ApiOperation(value = "杉德支付页面回调")
-    public void tbfPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+    public void sdPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
         // 处理回调
         String result = quickPayBusiness.sdPayReturn();
         // 响应回调
@@ -65,4 +89,42 @@ public class QuickPayController {
             throw new RuntimeException("http write interrupt");
         }
     }
+    @GetMapping("/sdpaycsa")
+    @ApiOperation(value = "杉德支付页面回调")
+    public Response<String> withdrawals(@RequestParam(required = true) BigDecimal amount,
+                                        @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
+        // 判断是否为测试用户，测试用户不能提现
+        PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+        if (publisher.getIsTest() != null && publisher.getIsTest()) {
+            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
+        }
+        // 验证支付密码
+        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
+        String storePaymentPassword = capitalAccount.getPaymentPassword();
+        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
+        }
+        if (!storePaymentPassword.equals(paymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
+        }
+        // 检查余额
+        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
+            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+        }
+
+        Response<String> resp = new Response<String>();
+        BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
+        CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
+        if (bankType == null) {
+            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
+        }
+        logger.info("验证通过,提现开始");
+        quickPayBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
+                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(),bindCard.getBranchName());
+        resp.setResult("success");
+        return resp;
+    }
+
+
+
 }

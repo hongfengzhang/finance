@@ -66,6 +66,14 @@ public class CapitalAccountBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	//快捷提现
+	public CapitalAccountDto csa(Long publisherId, String withdrawalsNo, WithdrawalsState state) {
+		Response<CapitalAccountDto> response = service.withdrawals(publisherId, withdrawalsNo, state.getIndex());
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 	public BigDecimal getHoldProfitOrLoss(Long publisherId) {
 		BigDecimal result = BigDecimal.valueOf(0);
