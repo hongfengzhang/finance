@@ -79,11 +79,19 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
+	public Response<CapitalAccountDto> csa(Long publisherId, BigDecimal amount) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.csa(publisherId, amount), false));
+	}
+
+	@Override
 	public Response<CapitalAccountDto> withdrawals(@PathVariable Long publisherId, @PathVariable String withdrawalsNo,
 			String withdrawalsStateIndex) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
 				.withdrawals(publisherId, withdrawalsNo, WithdrawalsState.getByIndex(withdrawalsStateIndex)), false));
 	}
+
+
 
 	@Override
 	public Response<CapitalAccountDto> deferredCharges(@PathVariable Long publisherId, @PathVariable Long buyRecordId,

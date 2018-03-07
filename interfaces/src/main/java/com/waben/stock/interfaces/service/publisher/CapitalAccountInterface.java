@@ -34,9 +34,8 @@ public interface CapitalAccountInterface {
 			@PathVariable("withdrawalsNo") String withdrawalsNo,
 			@RequestParam(name = "withdrawalsStateIndex") String withdrawalsStateIndex);
 
-	@RequestMapping(value = "/{publisherId}/csa/{withdrawalsNo}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{publisherId}/csa/{amount}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> csa(@PathVariable("publisherId") Long publisherId,
-											@PathVariable("withdrawalsNo") String withdrawalsNo,
 											@PathVariable("amount") BigDecimal amount);
 
 
