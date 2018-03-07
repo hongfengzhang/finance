@@ -41,11 +41,11 @@ public class SandPayConfig {
     /**
      * 回调地址
      */
-    public static final String notifyUrl = "http://egdajc.natappfree.cc/quickpay/sdpaycallback";
+    public static final String notifyUrl = "http://ekaawk.natappfree.cc/quickpay/sdpaycallback";
     /**
      * 页面通知地址
      */
-    public static final String fontUrl = "http://egdajc.natappfree.cc/quickpay/sdpayreturn";
+    public static final String fontUrl = "http://ekaawk.natappfree.cc/quickpay/sdpayreturn";
 
     //测试
 //    public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/payment/quickpaynotify";
