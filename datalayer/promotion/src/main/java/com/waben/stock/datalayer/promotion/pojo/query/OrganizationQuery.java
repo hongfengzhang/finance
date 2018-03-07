@@ -17,10 +17,6 @@ public class OrganizationQuery extends PageAndSortQuery {
 	 */
 	private String code;
 	/**
-	 * 机构类型ID
-	 */
-	private String categoryId;
-	/**
 	 * 机构状态
 	 */
 	private String state;
@@ -35,14 +31,6 @@ public class OrganizationQuery extends PageAndSortQuery {
 
 	public void setCode(String code) {
 		this.code = code;
-	}
-
-	public String getCategoryId() {
-		return categoryId;
-	}
-
-	public void setCategoryId(String categoryId) {
-		this.categoryId = categoryId;
 	}
 
 	public String getState() {

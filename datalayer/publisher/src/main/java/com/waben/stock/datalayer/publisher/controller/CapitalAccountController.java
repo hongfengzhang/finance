@@ -157,4 +157,10 @@ public class CapitalAccountController implements CapitalAccountInterface {
 				capitalAccountService.optionProfit(publisherId, optionTradeId, profit), false));
 	}
 
+	@Override
+	public Response<CapitalAccountDto> csa(Long publisherId, String withdrawalsNo, BigDecimal amount) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

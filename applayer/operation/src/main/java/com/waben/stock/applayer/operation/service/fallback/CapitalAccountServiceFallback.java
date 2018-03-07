@@ -99,5 +99,9 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 	public Response<CapitalAccountDto> optionProfit(Long publisherId, Long optionTradeId, BigDecimal profit) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+	@Override
+	public Response<CapitalAccountDto> csa(Long publisherId, String withdrawalsNo, BigDecimal amount) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
 }
