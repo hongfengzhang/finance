@@ -59,6 +59,14 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public CapitalAccountDto csa(Long publisherId, BigDecimal amount) {
+		Response<CapitalAccountDto> response = capitalAccountReference.csa(publisherId, amount);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 	public CapitalAccountDto withdrawals(Long publisherId, String withdrawalsNo, WithdrawalsState state) {
 		Response<CapitalAccountDto> response = capitalAccountReference.withdrawals(publisherId, withdrawalsNo,
 				state.getIndex());

@@ -1,8 +1,8 @@
-package com.waben.stock.applayer.tactics.controller;
+package com.waben.stock.applayer.strategist.controller;
 
-import com.waben.stock.applayer.tactics.business.*;
-import com.waben.stock.applayer.tactics.payapi.czpay.config.CzBankType;
-import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.applayer.strategist.business.*;
+import com.waben.stock.applayer.strategist.payapi.czpay.config.CzBankType;
+import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -13,15 +13,6 @@ import com.waben.stock.interfaces.pojo.Response;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -30,8 +21,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.waben.stock.applayer.tactics.business.QuickPayBusiness;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/quickpay")
@@ -115,6 +111,7 @@ public class QuickPayController {
         if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
             throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
         }
+//
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
         CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
