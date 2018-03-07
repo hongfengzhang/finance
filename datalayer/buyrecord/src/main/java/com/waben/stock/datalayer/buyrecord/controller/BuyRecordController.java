@@ -173,6 +173,7 @@ public class BuyRecordController implements BuyRecordInterface {
         return new Response<>(result);
     }
 
+
     @Override
 	public Response<BuyRecordDto> revoke(@PathVariable Long id) {
 		BuyRecord buyRecord = buyRecordService.revoke(id);

@@ -2,9 +2,12 @@ package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.InquiryResultBusiness;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.stockoption.InquiryResultVo;
+import com.waben.stock.interfaces.vo.stockoption.StockOptionOrgVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,6 +25,8 @@ public class InquiryResultController {
     @ResponseBody
     public Response<InquiryResultVo> add(InquiryResultVo inquiryResultVo) {
         InquiryResultDto inquiryResultDto = CopyBeanUtils.copyBeanProperties(InquiryResultDto.class, inquiryResultVo, false);
+        inquiryResultDto.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrgDto.class, inquiryResultVo.getOrg(), false));
+        inquiryResultDto.setTrade(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, inquiryResultVo.getTrade(), false));
         InquiryResultVo result = CopyBeanUtils.copyBeanProperties(InquiryResultVo.class, inquiryResultBusiness.add(inquiryResultDto), false);
         return new Response<>(result);
     }

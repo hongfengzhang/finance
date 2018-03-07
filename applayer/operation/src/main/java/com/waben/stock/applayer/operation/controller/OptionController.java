@@ -1,19 +1,18 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.StockOptionOrgBusiness;
 import com.waben.stock.applayer.operation.business.StockOptionTradeBusiness;
-import com.waben.stock.applayer.operation.warpper.mail.MailService;
-import com.waben.stock.interfaces.dto.stockcontent.AmountValueDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.manage.PermissionVo;
-import com.waben.stock.interfaces.vo.stockcontent.AmountValueVo;
+import com.waben.stock.interfaces.vo.stockoption.StockOptionOrgVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionTradeVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,8 +25,13 @@ public class OptionController {
 
     @Autowired
     private StockOptionTradeBusiness stockOptionTradeBusiness;
+    @Autowired
+    private StockOptionOrgBusiness stockOptionOrgBusiness;
     @RequestMapping("/index")
-    public String index(){
+    public String index(ModelMap map){
+        List<StockOptionOrgDto> stockOptionOrgDtos = stockOptionOrgBusiness.fetchStockOptionOrgs();
+        List<StockOptionOrgVo> stockOptionOrgVos = CopyBeanUtils.copyListBeanPropertiesToList(stockOptionOrgDtos, StockOptionOrgVo.class);
+        map.addAttribute("orgVo",stockOptionOrgVos);
         return "options/index";
     }
 
@@ -65,6 +69,14 @@ public class OptionController {
     @ResponseBody
     public Response<StockOptionTradeVo> success(@PathVariable Long id){
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.success(id);
+        StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
+        return new Response<>(stockOptionTradeVo);
+    }
+
+    @RequestMapping("/{id}")
+    @ResponseBody
+    public Response<StockOptionTradeVo> fetchById(@PathVariable Long id){
+        StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.findById(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);
     }

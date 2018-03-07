@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.stockoption.controller;
 
 import com.waben.stock.datalayer.stockoption.entity.InquiryResult;
 import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
+import com.waben.stock.datalayer.stockoption.entity.StockOptionOrg;
 import com.waben.stock.datalayer.stockoption.service.OfflineStockOptionTradeService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
@@ -25,6 +26,7 @@ public class OfflineStockOptionTradeController implements OfflineStockOptionTrad
     @Override
     public Response<OfflineStockOptionTradeDto> add(@RequestBody OfflineStockOptionTradeDto offlineStockOptionTradeDto) {
         OfflineStockOptionTrade offlineStockOptionTrade = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTrade.class, offlineStockOptionTradeDto, false);
+        offlineStockOptionTrade.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrg.class, offlineStockOptionTradeDto.getOrg(), false));
         OfflineStockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, offlineStockOptionTradeService.save(offlineStockOptionTrade), false);
         return new Response<>(result);
     }

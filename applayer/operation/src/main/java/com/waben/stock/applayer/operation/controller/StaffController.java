@@ -2,8 +2,6 @@ package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.RoleBusiness;
 import com.waben.stock.applayer.operation.business.StaffBusiness;
-import com.waben.stock.interfaces.dto.investor.InvestorDto;
-import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;

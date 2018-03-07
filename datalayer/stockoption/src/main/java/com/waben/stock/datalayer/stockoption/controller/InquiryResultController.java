@@ -1,6 +1,8 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
 import com.waben.stock.datalayer.stockoption.entity.InquiryResult;
+import com.waben.stock.datalayer.stockoption.entity.StockOptionOrg;
+import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.service.InquiryResultService;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
@@ -24,6 +26,8 @@ public class InquiryResultController implements InquiryResultInterface {
     @Override
     public Response<InquiryResultDto> add(@RequestBody InquiryResultDto inquiryResultDto) {
         InquiryResult inquiryResult = CopyBeanUtils.copyBeanProperties(InquiryResult.class, inquiryResultDto, false);
+        inquiryResult.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrg.class, inquiryResultDto.getOrg(), false));
+        inquiryResult.setTrade(CopyBeanUtils.copyBeanProperties(StockOptionTrade.class, inquiryResultDto.getTrade(), false));
         InquiryResultDto result = CopyBeanUtils.copyBeanProperties(InquiryResultDto.class, inquiryResultService.save(inquiryResult), false);
         return new Response<>(result);
     }

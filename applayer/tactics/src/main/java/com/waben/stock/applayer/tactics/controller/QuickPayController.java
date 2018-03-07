@@ -13,6 +13,15 @@ import com.waben.stock.interfaces.pojo.Response;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,13 +30,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.util.Map;
+import com.waben.stock.applayer.tactics.business.QuickPayBusiness;
+
+import io.swagger.annotations.ApiOperation;
 
 @Controller
 @RequestMapping("/quickpay")
@@ -50,7 +55,7 @@ public class QuickPayController {
     @Autowired
     private PaymentBusiness paymentBusiness;
 
-    @RequestMapping("/sdquickpay")
+    @GetMapping("/sdquickpay")
     @ApiOperation(value = "杉德快捷支付")
     public String quickPay1(Model model, @RequestParam(required = true) BigDecimal amount,
                             @RequestParam(required = true) Long phone) {

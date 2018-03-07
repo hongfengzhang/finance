@@ -102,14 +102,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/appversion/currentAppVersion", "/appversionupgrade/checkUpgrade")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/turbine/**").permitAll();
-		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists").permitAll();
-
-//		//测试放权
-//		http.authorizeRequests().antMatchers("/quickpay/sdquickpay").permitAll();
-//		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
-//		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
-		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic")
-				.permitAll();
+		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic").permitAll();
+		//测试放权
+		http.authorizeRequests().antMatchers("/quickpay/sdquickpay").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

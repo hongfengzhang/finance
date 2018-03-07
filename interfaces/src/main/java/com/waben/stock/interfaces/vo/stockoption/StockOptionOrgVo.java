@@ -1,6 +1,5 @@
 package com.waben.stock.interfaces.vo.stockoption;
 
-import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 
 public class StockOptionOrgVo{
     private Long id;

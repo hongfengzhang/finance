@@ -1,7 +1,9 @@
 package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.OfflineStockOptionTradeBusiness;
+import com.waben.stock.applayer.operation.business.StockOptionOrgBusiness;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.stockoption.OfflineStockOptionTradeVo;
@@ -22,6 +24,7 @@ public class OfflineStockOptionTradeController {
     @ResponseBody
     public Response<OfflineStockOptionTradeVo> add(OfflineStockOptionTradeVo offlineStockOptionTradeVo) {
         OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, offlineStockOptionTradeVo, false);
+        offlineStockOptionTradeDto.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrgDto.class, offlineStockOptionTradeVo.getOrg(), false));
         OfflineStockOptionTradeVo result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeVo.class, offlineStockOptionTradeBusiness.add(offlineStockOptionTradeDto), false);
         return new Response<>(result);
     }
