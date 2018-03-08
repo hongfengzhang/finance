@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.strategist.business;
 
 import com.alibaba.fastjson.JSONObject;
+import com.waben.stock.applayer.strategist.payapi.czpay.bean.CzPayReturn;
+import com.waben.stock.applayer.strategist.payapi.czpay.config.CzPayConfig;
 import com.waben.stock.applayer.strategist.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.strategist.payapi.shande.config.SandPayConfig;
 import com.waben.stock.applayer.strategist.payapi.shande.utils.FormRequest;
@@ -26,7 +28,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -107,14 +111,14 @@ public class QuickPayBusiness {
     }
 
     public String sdPayReturn() {
-
-        StringBuilder result = new StringBuilder();
-        result.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>回调页面</title></head><body>");
         String paymentNo = "";
-        String stateStr = "已支付";
-        String scriptContent = "<script>function call() {if(window.appInterface) {window.appInterface.rechargeCallback('%s', '%s');} else {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}} call();</script>";
-        result.append(String.format(scriptContent, paymentNo, stateStr, paymentNo, stateStr));
-        return result.toString();
+        String stateStr = "";
+        String code = "";
+        try {
+            return CzPayConfig.webReturnUrl + "?paymentNo" + paymentNo + "&code=" + code + "&message=" + URLEncoder.encode(stateStr, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("utf-8 not supported?");
+        }
     }
 
     public String sdPaycallback(HttpServletRequest request) {

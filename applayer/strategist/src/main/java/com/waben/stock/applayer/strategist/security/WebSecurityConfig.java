@@ -86,6 +86,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
 		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic")
 				.permitAll();
+
+		//测试放权
+		http.authorizeRequests().antMatchers("/quickpay/sdquickpay").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpaycsa").permitAll();
+
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
@@ -100,6 +107,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
-		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**");
+		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**","/static/js/**");
 	}
 }
