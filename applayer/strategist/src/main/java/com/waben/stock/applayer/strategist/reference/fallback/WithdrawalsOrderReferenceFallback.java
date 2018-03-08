@@ -27,6 +27,13 @@ public class WithdrawalsOrderReferenceFallback implements WithdrawalsOrderRefere
 	}
 
 	@Override
+	public Response<WithdrawalsOrderDto> saveWithdrawalsOrders(WithdrawalsOrderDto withdrawalsOrderDto, String withdrawalsNo) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+
+	}
+
+
+	@Override
 	public Response<WithdrawalsOrderDto> modifyWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

@@ -172,7 +172,7 @@ public class QuickPayBusiness {
         map.put("bankType", SandPayConfig.bankType);
         map.put("accNo", bankCard);
         map.put("accName", name);
-        map.put("bankName", branchName);
+        map.put("bankName", "中国银行");
         map.put("timeStamp", time.format(new Date()));
         //签名
         String toSign = "";
@@ -191,7 +191,9 @@ public class QuickPayBusiness {
         logger.info("代付请求的结果是:{}", jsStr);
 //        CzWithholdResponse resp = CzWithholdOverSocket.withhold(withdrawalsNo, name, bankCard, phone, bankCode, amount);
 //        // 提现异常
-        if ("SUCCESS".equals(jsStr.getString("result"))) {
+        JSONObject jsonData = jsStr.getJSONObject("data");
+        String resultFlag = jsonData.getString("resultFlag");
+        if ("SUCCESS".equals(jsStr.getString("result"))||"0".equals(resultFlag)||"2".equals(resultFlag)) {
             WithdrawalsOrderDto origin = findWithdrawalsOrder(withdrawalsNo);
             accountBusiness.csa(origin.getPublisherId(), origin.getAmount());
             if (origin.getState() != WithdrawalsState.PROCESSED) {
@@ -252,7 +254,7 @@ public class QuickPayBusiness {
     }
 
     public WithdrawalsOrderDto saveWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
-        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.addWithdrawalsOrder(withdrawalsOrderDto);
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.saveWithdrawalsOrders(withdrawalsOrderDto,withdrawalsOrderDto.getWithdrawalsNo());
         if ("200".equals(orderResp.getCode())) {
             return orderResp.getResult();
         }
