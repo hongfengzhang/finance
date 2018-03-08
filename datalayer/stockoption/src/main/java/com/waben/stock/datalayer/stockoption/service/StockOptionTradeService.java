@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,6 +166,7 @@ public class StockOptionTradeService {
 					predicatesList.add(stateQuery);
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("updateTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
@@ -184,7 +186,7 @@ public class StockOptionTradeService {
 		trade.setState(StockOptionTradeState.SETTLEMENTED);
 		BigDecimal profit = BigDecimal.ZERO;
 		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
-			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice())
+			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice(), 10, RoundingMode.DOWN)
 					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.DOWN);
 		}
 		trade.setProfit(profit);
@@ -201,6 +203,7 @@ public class StockOptionTradeService {
 	@Transactional
 	public StockOptionTrade success(Long id) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		logger.info("查询结果：{}", JacksonUtil.encode(trade));
 		BigDecimal buyingPrice = trade.getOfflineTrade().getBuyingPrice();
 		if (StockOptionTradeState.WAITCONFIRMED != trade.getState()) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
@@ -217,13 +220,15 @@ public class StockOptionTradeService {
 		} catch (ParseException e) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 		}
-		return stockOptionTradeDao.update(trade);
+		StockOptionTrade result = stockOptionTradeDao.update(trade);
+		logger.info("修改结果：{}", JacksonUtil.encode(result));
+		return result;
 	}
 
 	@Transactional
 	public StockOptionTrade exercise(Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		//申购信息
+		// 申购信息
 		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
 		stockOptionTrade.setUpdateTime(new Date());
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);

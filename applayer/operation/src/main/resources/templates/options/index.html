@@ -477,8 +477,8 @@
                 minimumCountColumns: 1, // 设置最少显示列个数
                 clickToSelect: true, // 单击行即可以选中
                 uniqueId: "id", //每一行的唯一标识，一般为主键列
-                sortName: 'id', // 设置默认排序为 name
-                sortOrder: 'asc', // 设置排序为反序 desc
+                sortName: 'updateTime', // 设置默认排序为 name
+                sortOrder: 'desc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination: "server",
                 queryParams: function () {
@@ -816,7 +816,7 @@
                             $('#settlementaction').click(function () {
                                 $('#settlementclose').click();
                                 $.ajax({
-                                    url: "",
+                                    url: "../option/settlement/"+row.id,
                                     type: 'post',
                                     success: function (response) {
                                         if (response.code = '200') {
@@ -894,9 +894,8 @@
                             $('#orgSettle').click(function () {
                                 $('#orgClose').click();
                                 $.ajax({
-                                    url: "../offlinestockoptiontrade/settlement/" + row.id,
+                                    url: "../offlinestockoptiontrade/settlement/" + row.id+"/"+$("[name='sellingPrice']").val(),
                                     type: 'get',
-                                    data: {"sellingPrice": $("[name='sellingPrice']").val()},
                                     success: function (response) {
                                         if (response.code = '200') {
                                             $table.bootstrapTable('refresh');

@@ -59,9 +59,9 @@ $(function() {
 	            { "data": "id", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
 	            	var level = full.level;
 	            	if(level == 1) {
-	            		return "<a href='javascript:;'>查看详情</a>";
+	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            	} else {
-	            		return "<a class='mr20' href='javascript:;'>设置分成比例</a><a class='mr20' href='javascript:;'>权限分配</a><a href='javascript:;'>查看详情</a>";
+	            		return "<a class='benefit mr20' orgid='" + full.id + "' href='javascript:;'>设置分成比例</a><a class='authority mr20' orgid='" + full.id + "' href='javascript:;'>权限分配</a><a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            	}
 	            }}
 	        ];
@@ -109,17 +109,6 @@ $(function() {
 		}
 		renderTable("#org-list-table");
 	});
-	// 弹出添加页面
-	$('#add-btn').on('click', function(){
-		var index = layer.open({
-			type: 2,
-			title: '添加机构',
-			shadeClose: true,
-			shade: 0.8,
-			area: ['500px', '250px'],
-			content: 'org-add.html',
-		});
-	});
 	// 加载机构树
 	var setting = {
 		view: {
@@ -150,4 +139,34 @@ $(function() {
 		}
 	};
 	$.fn.zTree.init($("#org-tree"), setting);
+	// 弹出添加页面
+	$('#add-btn').on('click', function(){
+		var index = layer.open({
+			type: 2,
+			title: '添加机构',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['500px', '250px'],
+			content: 'org-add.html',
+		});
+	});
+	// 弹出页面_设置分成比例
+	$('#org-list-table').on('click', 'a.benefit', function(){
+		var index = layer.open({
+			type: 2,
+			title: '设置分成比例',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['60%', '80%'],
+			content: 'benefit-config.html',
+		});
+	});
+	// 弹出页面_权限分配
+	$('#org-list-table').on('click', 'a.authority', function(){
+		alert('权限分配');
+	});
+	// 弹出页面_查看详情
+	$('#org-list-table').on('click', 'a.detail', function(){
+		alert('查看详情');
+	});
 });
