@@ -12,5 +12,9 @@ public interface OfflineStockOptionTradeInterface {
     Response<OfflineStockOptionTradeDto> add(@RequestBody OfflineStockOptionTradeDto offlineStockOptionTradeDto);
 
     @RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
-    Response<OfflineStockOptionTradeDto> settlement(@PathVariable("id") Long id, @RequestParam(name = "sellingPrice") BigDecimal sellingPrice);
+    Response<OfflineStockOptionTradeDto> settlement(@PathVariable("id") Long id, @RequestParam(name = "sellingPrice")
+            BigDecimal sellingPrice);
+
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    Response<OfflineStockOptionTradeDto> find(@PathVariable Long id);
 }

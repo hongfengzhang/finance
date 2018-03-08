@@ -27,8 +27,10 @@ public class InquiryResultController implements InquiryResultInterface {
     public Response<InquiryResultDto> add(@RequestBody InquiryResultDto inquiryResultDto) {
         InquiryResult inquiryResult = CopyBeanUtils.copyBeanProperties(InquiryResult.class, inquiryResultDto, false);
         inquiryResult.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrg.class, inquiryResultDto.getOrg(), false));
-        inquiryResult.setTrade(CopyBeanUtils.copyBeanProperties(StockOptionTrade.class, inquiryResultDto.getTrade(), false));
-        InquiryResultDto result = CopyBeanUtils.copyBeanProperties(InquiryResultDto.class, inquiryResultService.save(inquiryResult), false);
+        inquiryResult.setTrade(CopyBeanUtils.copyBeanProperties(StockOptionTrade.class, inquiryResultDto.getTrade(),
+                false));
+        InquiryResult inquiry = inquiryResultService.save(inquiryResult);
+        InquiryResultDto result = CopyBeanUtils.copyBeanProperties(InquiryResultDto.class, inquiry, false);
         return new Response<>(result);
     }
 
