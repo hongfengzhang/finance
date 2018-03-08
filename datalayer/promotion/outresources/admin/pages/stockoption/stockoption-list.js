@@ -46,40 +46,31 @@ $(function() {
 	            { "data": "stockCode", "title": "股票", orderable: false, "render": function(data, type, full, meta) {
 	            	return full.stockCode + "/" + full.stockName;
 	            }},
-	            { "data": "strategyTypeName", "title": "策略类型", orderable: false},
+	            { "data": "cycleName", "title": "持仓时间", orderable: false},
 	            { "data": "state", "title": "策略状态", orderable: false, "render": function(data, type, full, meta) {
 	                var state = full.state;
 	                if(state == "1") {
-	                	return "买入中";
+	                	return "待确认";
 	                } else if(state == "2") {
-	                	return "买入锁定";
+	                	return "申购失败";
 	                } else if(state == "3") {
 	                	return "持仓中";
-	                } else if(state == "4") {
-	                	return "卖出申请";
-	                } else if(state == "5") {
-	                	return "卖出锁定";
+	                } else if(state == "4" || state == "5") {
+	                	return "结算中";
 	                } else if(state == "6") {
-	                	return "已平仓";
-	                } else if(state == "8") {
-	                	var windControlType = full.windControlType;
-	                	if(windControlType) {
-	                		return "卖出失败";
-	                	} else {
-	                		return "买入失败";
-	                	}
+	                	return "已结算";
 	                } else {
 	                	return state;
 	                }
 	            }},
-	            { "data": "applyAmount", "title": "策略市值", orderable: false},
+	            { "data": "nominalAmount", "title": "名义本金", orderable: false},
+	            { "data": "rightMoney", "title": "权利金", orderable: false},
 	            { "data": "buyingTime", "title": "买入时间", orderable: false},
 	            { "data": "buyingPrice", "title": "买入价格", orderable: false},
-	            { "data": "numberOfStrand", "title": "买入股数", orderable: false},
 	            { "data": "sellingTime", "title": "卖出时间", orderable: false},
 	            { "data": "sellingPrice", "title": "卖出价格", orderable: false},
 	            { "data": "lastPrice", "title": "当前价格", orderable: false},
-	            { "data": "profitOrLoss", "title": "盈亏", orderable: false},
+	            { "data": "profit", "title": "盈利（浮动）", orderable: false},
 	            { "data": "orgName", "title": "所属机构代码/名称", orderable: false, "render": function(data, type, full, meta) {
 	            	return full.orgCode + "/" + full.orgName;
 	            }}

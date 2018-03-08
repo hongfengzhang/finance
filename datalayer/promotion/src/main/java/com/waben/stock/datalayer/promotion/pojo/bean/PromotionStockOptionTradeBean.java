@@ -151,11 +151,11 @@ public class PromotionStockOptionTradeBean {
 		if (profit == null) {
 			if (buyingPrice != null) {
 				if (sellingPrice != null) {
-					return sellingPrice.subtract(buyingPrice).divide(sellingPrice).multiply(nominalAmount).setScale(2,
-							RoundingMode.DOWN);
+					return sellingPrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN)
+							.multiply(nominalAmount).setScale(2, RoundingMode.DOWN);
 				} else {
-					return lastPrice.subtract(buyingPrice).divide(sellingPrice).multiply(nominalAmount).setScale(2,
-							RoundingMode.DOWN);
+					return lastPrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN)
+							.multiply(nominalAmount).setScale(2, RoundingMode.DOWN);
 				}
 			}
 		}

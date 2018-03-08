@@ -1,4 +1,4 @@
-package com.waben.stock.datalayer.promotion.pojo.query;
+package com.waben.stock.datalayer.promotion.pojo.form;
 
 public class OrganizationForm {
 

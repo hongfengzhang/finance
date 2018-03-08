@@ -57,7 +57,7 @@ public class PromotionBuyRecordService {
 		}
 		String orgCodeCondition = "";
 		if(query.getOrgCode() != null && !"".equals(query.getOrgCode())) {
-			orgCodeCondition = " and t4.code='" + query.getOrgCode() + "' ";
+			orgCodeCondition = " and t4.code like '%" + query.getOrgCode() + "%' ";
 		}
 		String sql = String
 				.format("select t1.id, t1.publisher_id, t1.publisher_phone, t1.stock_code, t1.stock_name, t1.strategy_type_id, "

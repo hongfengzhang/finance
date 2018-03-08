@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.promotion.entity.Organization;
 import com.waben.stock.datalayer.promotion.pojo.bean.TreeNode;
-import com.waben.stock.datalayer.promotion.pojo.query.OrganizationForm;
+import com.waben.stock.datalayer.promotion.pojo.form.OrganizationForm;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
 import com.waben.stock.datalayer.promotion.repository.OrganizationDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;

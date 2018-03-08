@@ -184,7 +184,7 @@ public class StockOptionTradeService {
 		trade.setState(StockOptionTradeState.SETTLEMENTED);
 		BigDecimal profit = BigDecimal.ZERO;
 		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
-			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice())
+			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice(), 10, RoundingMode.DOWN)
 					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.DOWN);
 		}
 		trade.setProfit(profit);
@@ -223,7 +223,7 @@ public class StockOptionTradeService {
 	@Transactional
 	public StockOptionTrade exercise(Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		//申购信息
+		// 申购信息
 		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
 		stockOptionTrade.setUpdateTime(new Date());
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);

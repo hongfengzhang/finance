@@ -45,7 +45,7 @@ public class SandPayConfig {
     /**
      * 页面通知地址
      */
-    public static final String fontUrl = "http://ekaawk.natappfree.cc/quickpay/sdpayreturn";
+    public static final String fontUrl = "http://www.youguwang.com.cn/#/myaccount/capital";
 
     //测试
 //    public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/payment/quickpaynotify";
