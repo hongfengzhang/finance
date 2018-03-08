@@ -52,10 +52,10 @@ public interface StockOptionTradeInterface {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Response<StockOptionTradeDto> fetchById(@PathVariable("id") Long id);
 
-    @RequestMapping(value = "/settlement/{id}/{sellingPrice}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
     Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id);
 
-	@RequestMapping(value = "/success/{id}/{buyingPrice}", method = RequestMethod.PUT)
+	@RequestMapping(value = "/success/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> success(@PathVariable("id") Long id);
 
 	@RequestMapping(value = "/fail/{id}", method = RequestMethod.PUT)

@@ -44,6 +44,14 @@ public class OptionController {
         return new Response<>(response);
     }
 
+    @RequestMapping("/settlement/{id}")
+    @ResponseBody
+    public Response<StockOptionTradeVo> settlement(@PathVariable Long id){
+        StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.settlement(id);
+        StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
+        return new Response<>(stockOptionTradeVo);
+    }
+
     @RequestMapping("/inquiry/{id}")
     @ResponseBody
     public Response<Boolean> inquiry(@PathVariable Long id){
@@ -88,4 +96,6 @@ public class OptionController {
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);
     }
+
+
 }

@@ -29,9 +29,9 @@ public class OfflineStockOptionTradeController {
         return new Response<>(result);
     }
 
-    @RequestMapping("/settlement/{id}")
+    @RequestMapping("/settlement/{id}/{sellingPrice}")
     @ResponseBody
-    public Response<OfflineStockOptionTradeVo> settlement(@PathVariable Long id, BigDecimal sellingPrice) {
+    public Response<OfflineStockOptionTradeVo> settlement(@PathVariable Long id, @PathVariable BigDecimal sellingPrice) {
         OfflineStockOptionTradeVo result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeVo.class, offlineStockOptionTradeBusiness.settlement(id,sellingPrice), false);
         return new Response<>(result);
     }

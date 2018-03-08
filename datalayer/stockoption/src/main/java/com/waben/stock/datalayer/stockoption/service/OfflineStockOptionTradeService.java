@@ -41,7 +41,6 @@ public class OfflineStockOptionTradeService {
         //将线下交易信息添加到数据库
         OfflineStockOptionTrade result = offlineStockOptionTradeDao.create(offlineStockOptionTrade);
         //修改申购交易信息
-        stockOptionTrade.setBuyingPrice(offlineStockOptionTrade.getBuyingPrice());
         stockOptionTrade.setOfflineTrade(result);
         stockOptionTradeDao.update(stockOptionTrade);
         return result;
@@ -49,19 +48,12 @@ public class OfflineStockOptionTradeService {
     @Transactional
     public OfflineStockOptionTrade settlement(Long id, BigDecimal sellingPrice) {
         //机构结算
-        OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
+        StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+        OfflineStockOptionTrade offlineStockOptionTrade = stockOptionTrade.getOfflineTrade();
         offlineStockOptionTrade.setSellingPrice(sellingPrice);
         offlineStockOptionTrade.setSellingTime(new Date());
         offlineStockOptionTrade.setState(OfflineStockOptionTradeState.SETTLEMENTED);
-        BigDecimal profit = sellingPrice.subtract(offlineStockOptionTrade.getBuyingPrice()).divide(sellingPrice);
-        offlineStockOptionTrade.setProfit(profit);
-        //修改申购信息卖出价格
-        StockOptionTrade stockOptionTrade = offlineStockOptionTrade.getTrade();
-        stockOptionTrade.setSellingTime(new Date());
-        stockOptionTrade.setSellingPrice(sellingPrice);
-        stockOptionTrade.setProfit(profit);
-        stockOptionTradeDao.update(stockOptionTrade);
-
+        offlineStockOptionTrade.setProfit(stockOptionTrade.getRightMoney());
         return offlineStockOptionTradeDao.update(offlineStockOptionTrade);
     }
 
