@@ -107,6 +107,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/quickpay/sdquickpay").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpaycsa").permitAll();
+
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

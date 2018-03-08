@@ -54,8 +54,8 @@ public class StockOptionTradeWithMarketDto extends StockOptionTradeDto {
 		BigDecimal profit = super.getProfit();
 		if (profit == null && getLastPrice() != null && getBuyingPrice() != null) {
 			if (getLastPrice().compareTo(getBuyingPrice()) > 0) {
-				return getLastPrice().subtract(getBuyingPrice()).divide(getBuyingPrice()).multiply(getNominalAmount())
-						.setScale(2, RoundingMode.DOWN);
+				return getLastPrice().subtract(getBuyingPrice()).divide(getBuyingPrice(), 10, RoundingMode.DOWN)
+						.multiply(getNominalAmount()).setScale(2, RoundingMode.DOWN);
 			}
 		}
 		return profit != null ? profit : new BigDecimal(0);

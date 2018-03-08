@@ -7,10 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.waben.stock.datalayer.promotion.entity.enumconverter.ResourceTypeConverter;
-import com.waben.stock.interfaces.enums.ResourceType;
+import com.waben.stock.datalayer.promotion.entity.enumconverter.BenefitConfigTypeConverter;
+import com.waben.stock.interfaces.enums.BenefitConfigType;
 
 /**
  * 分成配置
@@ -26,34 +28,36 @@ public class BenefitConfig {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 策略类型ID
-	 */
-	private Long strategyTypeId;
-	/**
-	 * 策略类型名称
-	 */
-	private String strategyTypeName;
-	/**
-	 * 信息服务费分成比例
-	 */
-	private BigDecimal serviceFeePoint;
-	/**
-	 * 递延费分成比例
-	 */
-	private BigDecimal deferredFeePoint;
-	/**
-	 * 软件服务费分成比例
-	 */
-	private BigDecimal softwareFeePoint;
-	/**
 	 * 分成配置类型
 	 */
-	@Convert(converter = ResourceTypeConverter.class)
-	private ResourceType resourceType;
+	@Convert(converter = BenefitConfigTypeConverter.class)
+	private BenefitConfigType type;
 	/**
-	 * 对应的资源ID，机构配置则对应结构ID，经纪人配置则对应经纪人ID
+	 * 分成比例
+	 */
+	private BigDecimal ratio;
+	/**
+	 * 对应的资源类型
+	 * <ul>
+	 * <li>1策略分成</li>
+	 * <li>2期权分成</li>
+	 * </ul>
+	 */
+	private Integer resourceType;
+	/**
+	 * 对应的资源ID
+	 * <ul>
+	 * <li>如果是策略分成，对应策略类型ID</li>
+	 * <li>如果期权分成，对应期权周期ID</li>
+	 * </ul>
 	 */
 	private Long resourceId;
+	/**
+	 * 对应的机构
+	 */
+	@OneToOne
+	@JoinColumn(name = "org_id")
+	private Organization org;
 
 	public Long getId() {
 		return id;
@@ -63,51 +67,27 @@ public class BenefitConfig {
 		this.id = id;
 	}
 
-	public Long getStrategyTypeId() {
-		return strategyTypeId;
+	public BenefitConfigType getType() {
+		return type;
 	}
 
-	public void setStrategyTypeId(Long strategyTypeId) {
-		this.strategyTypeId = strategyTypeId;
+	public void setType(BenefitConfigType type) {
+		this.type = type;
 	}
 
-	public String getStrategyTypeName() {
-		return strategyTypeName;
+	public BigDecimal getRatio() {
+		return ratio;
 	}
 
-	public void setStrategyTypeName(String strategyTypeName) {
-		this.strategyTypeName = strategyTypeName;
+	public void setRatio(BigDecimal ratio) {
+		this.ratio = ratio;
 	}
 
-	public BigDecimal getServiceFeePoint() {
-		return serviceFeePoint;
-	}
-
-	public void setServiceFeePoint(BigDecimal serviceFeePoint) {
-		this.serviceFeePoint = serviceFeePoint;
-	}
-
-	public BigDecimal getDeferredFeePoint() {
-		return deferredFeePoint;
-	}
-
-	public void setDeferredFeePoint(BigDecimal deferredFeePoint) {
-		this.deferredFeePoint = deferredFeePoint;
-	}
-
-	public BigDecimal getSoftwareFeePoint() {
-		return softwareFeePoint;
-	}
-
-	public void setSoftwareFeePoint(BigDecimal softwareFeePoint) {
-		this.softwareFeePoint = softwareFeePoint;
-	}
-
-	public ResourceType getResourceType() {
+	public Integer getResourceType() {
 		return resourceType;
 	}
 
-	public void setResourceType(ResourceType resourceType) {
+	public void setResourceType(Integer resourceType) {
 		this.resourceType = resourceType;
 	}
 

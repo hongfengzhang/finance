@@ -13,6 +13,10 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 public class PromotionBuyRecordQuery extends PageAndSortQuery {
 
 	/**
+	 * 当前机构代码
+	 */
+	private String currentOrgCode;
+	/**
 	 * 点买记录ID
 	 */
 	private String buyRecordId;
@@ -59,6 +63,14 @@ public class PromotionBuyRecordQuery extends PageAndSortQuery {
 
 	public void setOrgCode(String orgCode) {
 		this.orgCode = orgCode;
+	}
+
+	public String getCurrentOrgCode() {
+		return currentOrgCode;
+	}
+
+	public void setCurrentOrgCode(String currentOrgCode) {
+		this.currentOrgCode = currentOrgCode;
 	}
 
 }

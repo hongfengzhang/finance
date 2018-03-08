@@ -1,20 +1,32 @@
 package com.waben.stock.applayer.tactics.business;
 
+import com.alibaba.fastjson.JSONObject;
+import com.waben.stock.applayer.tactics.payapi.czpay.CzWithholdOverSocket;
+import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzPayReturn;
+import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzWithholdResponse;
 import com.waben.stock.applayer.tactics.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.tactics.payapi.shande.config.SandPayConfig;
+import com.waben.stock.applayer.tactics.payapi.shande.utils.FormRequest;
 import com.waben.stock.applayer.tactics.payapi.tfbpay.util.RSAUtils;
 import com.waben.stock.applayer.tactics.payapi.tfbpay.util.RequestUtils;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
+import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
+import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -27,12 +39,17 @@ import java.util.*;
 @Service
 public class QuickPayBusiness {
 
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     @Qualifier("paymentOrderReference")
     private PaymentOrderReference paymentOrderReference;
     @Autowired
     @Qualifier("publisherReference")
     private PublisherReference publisherReference;
+    @Autowired
+    @Qualifier("withdrawalsOrderReference")
+    private WithdrawalsOrderReference withdrawalsOrderReference;
+
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
     @Autowired
@@ -55,7 +72,7 @@ public class QuickPayBusiness {
         //创建订单
         PaymentOrderDto paymentOrder = new PaymentOrderDto();
         paymentOrder.setAmount(amount);
-        String paymentNo=UniqueCodeGenerator.generatePaymentNo();
+        String paymentNo = UniqueCodeGenerator.generatePaymentNo();
         paymentOrder.setPaymentNo(paymentNo);
         paymentOrder.setType(PaymentType.QuickPay);
         paymentOrder.setState(PaymentState.Unpaid);
@@ -88,23 +105,21 @@ public class QuickPayBusiness {
         for (String key : sortParamMap.keySet()) {
             toSign += key + "=" + sortParamMap.get(key) + "&";
         }
-        toSign+="key=" + SandPayConfig.key;
-         System.out.println(toSign);
+        toSign += "key=" + SandPayConfig.key;
+        System.out.println(toSign);
         String sign = DigestUtils.md5Hex(toSign);
         sortParamMap.put("sign", sign);
         return sortParamMap;
     }
 
     public String sdPayReturn() {
+
         StringBuilder result = new StringBuilder();
         result.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>回调页面</title></head><body>");
         String paymentNo = "";
-        String stateStr = "";
-        String scriptContent = "<script>function call() {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});} call();</script>";
-        String bodyContent = "<p>%s</p>";
-        result.append(String.format(scriptContent, paymentNo, stateStr));
-        result.append(String.format(bodyContent, stateStr));
-        result.append("<button type=\"button\" id=\"myBtn\" onclick=\"call()\">返回APP</button></body></html>");
+        String stateStr = "已支付";
+        String scriptContent = "<script>function call() {if(window.appInterface) {window.appInterface.rechargeCallback('%s', '%s');} else {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}} call();</script>";
+        result.append(String.format(scriptContent, paymentNo, stateStr, paymentNo, stateStr));
         return result.toString();
     }
 
@@ -112,7 +127,7 @@ public class QuickPayBusiness {
         Map<String, String> responseResult = paramter2Map(request);
         //{timeStamp=20180306175446, extend=, result=SUCCESS, msg=支付成功|,|goodsName:支付|,|goodsDesc:快捷, amount=0.01, orderNo=2012181112, sign=9104c4c61cc8d590db123f3e6ab3fe07, tradeNo3rd=, gwTradeNo=2018030617540800715215054, mchNo=MER1000157, status=1}
         String result = responseResult.get("result");
-        String paymentNo =responseResult.get("orderNo");
+        String paymentNo = responseResult.get("orderNo");
         String thirdPaymentNo = responseResult.get("gwTradeNo");
         try {
             // 解码
@@ -131,6 +146,65 @@ public class QuickPayBusiness {
         } catch (Exception ex) {
             return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><retcode>207267</retcode><retmsg></retmsg>校验签名失败</root>";
         }
+    }
+
+    public void withdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
+                            String bankCard, String bankCode,String branchName) {
+        //生成提现订单
+        logger.info("保存提现订单");
+        WithdrawalsOrderDto order = new WithdrawalsOrderDto();
+        String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+        order.setWithdrawalsNo(withdrawalsNo);
+        order.setAmount(amount);
+        order.setState(WithdrawalsState.PROCESSING);
+        order.setName(name);
+        order.setIdCard(idCard);
+        order.setBankCard(bankCard);
+        order.setPublisherId(publisherId);
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
+        this.saveWithdrawalsOrder(order);
+        // 请求提现
+        SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
+        Map<String, String> map = new TreeMap();
+        map.put("mchNo", SandPayConfig.mchNo);
+        map.put("payChannel", SandPayConfig.payChannel);
+        map.put("orderNo", withdrawalsNo);
+        map.put("amount", amount.toString());
+        map.put("bankType", SandPayConfig.bankType);
+        map.put("accNo", bankCard);
+        map.put("accName", name);
+        map.put("bankName", branchName);
+        map.put("timeStamp", time.format(new Date()));
+        //签名
+        String toSign = "";
+        for (String key : map.keySet()) {
+            toSign += key + "=" + map.get(key) + "&";
+        }
+        toSign += "key=" + SandPayConfig.key;
+        logger.info("代付签名的参数是:{}",toSign);
+        String sign = DigestUtils.md5Hex(toSign);
+        map.put("sign", sign);
+        logger.info("代付的参数是:{}",map.toString());
+        logger.info("代付请求发起");
+        String result = FormRequest.doPost(map, SandPayConfig.csaUrl);
+        JSONObject jsStr = JSONObject.parseObject(result);
+        System.out.println(jsStr.toString());
+        logger.info("代付请求的结果是:{}", jsStr);
+//        CzWithholdResponse resp = CzWithholdOverSocket.withhold(withdrawalsNo, name, bankCard, phone, bankCode, amount);
+//        // 提现异常
+        if ("SUCCESS".equals(jsStr.getString("result"))) {
+            WithdrawalsOrderDto origin = findWithdrawalsOrder(withdrawalsNo);
+            accountBusiness.csa(origin.getPublisherId(), origin.getAmount());
+            if (origin.getState() != WithdrawalsState.PROCESSED) {
+                // 更新代付订单的状态
+                withdrawalsOrderReference.changeState(withdrawalsNo, WithdrawalsState.PROCESSED.getIndex());
+            }
+        } else {
+            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("msg"));
+        }
+
+
     }
 
     private Map<String, String> paramter2Map(HttpServletRequest request) {
@@ -173,6 +247,22 @@ public class QuickPayBusiness {
 
     public PaymentOrderDto changeState(String paymentNo, PaymentState state) {
         Response<PaymentOrderDto> orderResp = paymentOrderReference.changeState(paymentNo, state.getIndex());
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+
+    public WithdrawalsOrderDto saveWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.addWithdrawalsOrder(withdrawalsOrderDto);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+
+    public WithdrawalsOrderDto findWithdrawalsOrder(String withdrawalsNo) {
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.fetchByWithdrawalsNo(withdrawalsNo);
         if ("200".equals(orderResp.getCode())) {
             return orderResp.getResult();
         }

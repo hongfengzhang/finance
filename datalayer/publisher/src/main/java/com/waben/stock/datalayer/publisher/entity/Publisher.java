@@ -71,11 +71,6 @@ public class Publisher {
 	 */
 	@Column(name = "head_portrait")
 	private String headPortrait;
-	/**
-	 * 推广渠道机构代码
-	 */
-	@Column(name = "promotion_org_code")
-	private String promotionOrgCode;
 
 	@OneToOne(mappedBy = "publisher", cascade = CascadeType.REMOVE)
 	private PublisherInformationStatistics publisherInformationStatistics;
@@ -158,14 +153,6 @@ public class Publisher {
 
 	public void setHeadPortrait(String headPortrait) {
 		this.headPortrait = headPortrait;
-	}
-
-	public String getPromotionOrgCode() {
-		return promotionOrgCode;
-	}
-
-	public void setPromotionOrgCode(String promotionOrgCode) {
-		this.promotionOrgCode = promotionOrgCode;
 	}
 
 	public PublisherInformationStatistics getPublisherInformationStatistics() {

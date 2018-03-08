@@ -58,8 +58,24 @@ public class CapitalAccountBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+
+	public CapitalAccountDto csa(Long publisherId, BigDecimal amount) {
+		Response<CapitalAccountDto> response = service.csa(publisherId, amount);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 	
 	public CapitalAccountDto withdrawals(Long publisherId, String withdrawalsNo, WithdrawalsState state) {
+		Response<CapitalAccountDto> response = service.withdrawals(publisherId, withdrawalsNo, state.getIndex());
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	//快捷提现
+	public CapitalAccountDto csa(Long publisherId, String withdrawalsNo, WithdrawalsState state) {
 		Response<CapitalAccountDto> response = service.withdrawals(publisherId, withdrawalsNo, state.getIndex());
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -123,6 +139,10 @@ public class CapitalAccountBusiness {
 		}
 
 		return result;
+	}
+	
+	public void paymentPasswordWrong(Long publisherId) {
+		
 	}
 
 	public BigDecimal getDeferredAmount(Long publisherId) {

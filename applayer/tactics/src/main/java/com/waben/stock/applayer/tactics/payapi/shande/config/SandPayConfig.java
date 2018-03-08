@@ -49,4 +49,9 @@ public class SandPayConfig {
 
     //测试
 //    public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/payment/quickpaynotify";
+    //提现类型  0对私 1对公
+    public static final String bankType = "0";
+    public static final String csaUrl = "http://211.149.180.207/gateWay/service/another/pay";
+
+
 }

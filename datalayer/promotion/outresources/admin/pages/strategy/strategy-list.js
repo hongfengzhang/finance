@@ -3,7 +3,9 @@
  */
 window.renderTable = function(){};
 $(function() {
-	var searchData = {};
+	var searchData = {
+		currentOrgCode: '01'
+	};
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -28,7 +30,9 @@ $(function() {
             	fnCallback(dtData);
             }
         });
-		searchData = {};
+		searchData = {
+			currentOrgCode: searchData.currentOrgCode
+		};
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -39,8 +43,9 @@ $(function() {
 	            { "data": "buyRecordId", "title": "策略ID", orderable: false},
 	            { "data": "publisherId", "title": "用户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
-	            { "data": "stockCode", "title": "股票代码", orderable: false},
-	            { "data": "stockName", "title": "股票名称", orderable: false},
+	            { "data": "stockCode", "title": "股票", orderable: false, "render": function(data, type, full, meta) {
+	            	return full.stockCode + "/" + full.stockName;
+	            }},
 	            { "data": "strategyTypeName", "title": "策略类型", orderable: false},
 	            { "data": "state", "title": "策略状态", orderable: false, "render": function(data, type, full, meta) {
 	                var state = full.state;
@@ -75,7 +80,9 @@ $(function() {
 	            { "data": "sellingPrice", "title": "卖出价格", orderable: false},
 	            { "data": "lastPrice", "title": "当前价格", orderable: false},
 	            { "data": "profitOrLoss", "title": "盈亏", orderable: false},
-	            { "data": "orgName", "title": "所属机构名称", orderable: false}
+	            { "data": "orgName", "title": "所属机构代码/名称", orderable: false, "render": function(data, type, full, meta) {
+	            	return full.orgCode + "/" + full.orgName;
+	            }}
 	        ];
 			$(id).dataTable({
 				"responsive": true,

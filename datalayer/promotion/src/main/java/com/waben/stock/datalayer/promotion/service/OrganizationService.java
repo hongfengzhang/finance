@@ -21,9 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.promotion.entity.Organization;
-import com.waben.stock.datalayer.promotion.entity.OrganizationCategory;
 import com.waben.stock.datalayer.promotion.pojo.bean.TreeNode;
-import com.waben.stock.datalayer.promotion.pojo.query.OrganizationForm;
+import com.waben.stock.datalayer.promotion.pojo.form.OrganizationForm;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
 import com.waben.stock.datalayer.promotion.repository.OrganizationDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -133,12 +132,6 @@ public class OrganizationService {
 						&& !"0".equals(query.getState().trim())) {
 					predicateList.add(criteriaBuilder.equal(root.get("state").as(OrganizationState.class),
 							OrganizationState.getByIndex(query.getState().trim())));
-				}
-				if (query.getCategoryId() != null && !"".equals(query.getCategoryId().trim())
-						&& !"0".equals(query.getCategoryId().trim())) {
-					Join<Organization, OrganizationCategory> join = root.join("category", JoinType.LEFT);
-					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class),
-							Long.parseLong(query.getCategoryId())));
 				}
 				if (query.getParentId() != null && !"".equals(query.getParentId().trim())
 						&& !"0".equals(query.getParentId().trim())) {

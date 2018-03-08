@@ -204,7 +204,7 @@ public class PromotionBuyRecordBean {
 				}
 			}
 		}
-		return null;
+		return profitOrLoss;
 	}
 
 	public void setProfitOrLoss(BigDecimal profitOrLoss) {

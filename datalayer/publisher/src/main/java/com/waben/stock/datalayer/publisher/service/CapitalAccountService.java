@@ -171,6 +171,19 @@ public class CapitalAccountService {
 	}
 
 	/**
+	 * 提现改变资金
+	 */
+	@Transactional
+	public synchronized CapitalAccount csa(Long publisherId, BigDecimal amount) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		Date date = new Date();
+		reduceAmount(account, amount, date);
+		flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Withdrawals, amount.abs(), date);
+		sendWithdrawalsOutsideMessage(publisherId, amount,true);
+		return findByPublisherId(publisherId);
+	}
+
+	/**
 	 * 提现
 	 */
 	@Transactional
@@ -463,6 +476,8 @@ public class CapitalAccountService {
 		account.setUpdateTime(date);
 		capitalAccountDao.update(account);
 	}
+
+
 
 	/**
 	 * 账户减少金额
