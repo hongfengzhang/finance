@@ -36,6 +36,7 @@ public class OfflineStockOptionTradeDaoImpl implements OfflineStockOptionTradeDa
         return offlineStockOptionTradeRepository.findById(id);
     }
 
+
     @Override
     public Page<OfflineStockOptionTrade> page(int page, int limit) {
         return null;
@@ -45,6 +46,8 @@ public class OfflineStockOptionTradeDaoImpl implements OfflineStockOptionTradeDa
     public Page<OfflineStockOptionTrade> page(Specification<OfflineStockOptionTrade> specification, Pageable pageable) {
         return offlineStockOptionTradeRepository.findAll(specification,pageable);
     }
+
+
 
     @Override
     public List<OfflineStockOptionTrade> list() {

@@ -2,10 +2,13 @@ package com.waben.stock.applayer.operation.util;
 
 import com.deepoove.poi.XWPFTemplate;
 import com.waben.stock.applayer.operation.warpper.mail.QuotoInquiry;
+import com.waben.stock.interfaces.exception.ServiceException;
 import net.sf.jett.transform.ExcelTransformer;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -19,12 +22,17 @@ import java.util.Map;
  */
 public class ExcelUtil {
 
+    static Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
+
     /**
      * 渲染询价单模板
      */
     public static String renderInquiry(String contextPath, QuotoInquiry quotoInquiry) {
         String file = null;
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("officetemplate/excel/inquiry.xlsx")) {
+        try (InputStream is = ExcelUtil.class.getResourceAsStream("/officetemplate/excel/inquiry.xlsx")) {
+            if (is == null) {
+                logger.error("模板文件找不到");
+            }
             Date date = new Date();
             String path = contextPath + new SimpleDateFormat("yyyy/MM/dd/").format(date);
             File f = new File(path);

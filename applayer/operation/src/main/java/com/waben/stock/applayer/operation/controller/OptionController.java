@@ -50,6 +50,15 @@ public class OptionController {
         return new Response<>(response);
     }
 
+
+    @RequestMapping("/settlement/{id}")
+    @ResponseBody
+    public Response<StockOptionTradeVo> settlement(@PathVariable Long id){
+        StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.settlement(id);
+        StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
+        return new Response<>(stockOptionTradeVo);
+    }
+
     /**
      * 询价  根据订单信息，发送询价单邮件
      * @param id

@@ -37,14 +37,13 @@ public class OfflineStockOptionTradeController implements OfflineStockOptionTrad
     }
 
     @Override
-    public Response<OfflineStockOptionTradeDto> settlement(@PathVariable Long id, BigDecimal sellingPrice) {
-        OfflineStockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class,
-                offlineStockOptionTradeService.settlement(id, sellingPrice), false);
+    public Response<OfflineStockOptionTradeDto> settlement(@PathVariable Long id,@PathVariable BigDecimal sellingPrice) {
+        OfflineStockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, offlineStockOptionTradeService.settlement(id,sellingPrice), false);
         return new Response<>(result);
     }
 
     @Override
-    public Response<OfflineStockOptionTradeDto> find(Long id) {
+    public Response<OfflineStockOptionTradeDto> find(@PathVariable Long id) {
         OfflineStockOptionTrade result = offlineStockOptionTradeService.findById(id);
         OfflineStockOptionTradeDto response = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class,
                 result, false);

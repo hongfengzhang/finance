@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.operation.business;
 
+import com.waben.stock.applayer.operation.service.stockoption.StockOptionOrgService;
 import com.waben.stock.applayer.operation.service.stockoption.StockOptionTradeService;
 import com.waben.stock.applayer.operation.util.ExcelUtil;
 import com.waben.stock.applayer.operation.warpper.mail.*;
@@ -11,20 +12,28 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
+import com.waben.stock.interfaces.util.JacksonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class StockOptionTradeBusiness {
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     @Qualifier("stockoptiontradeFeignService")
     private StockOptionTradeService stockOptionTradeService;
     @Autowired
     private MailService mailService;
-
+    @Autowired
+    private StockOptionOrgService stockOptionOrgService;
     @Value("${mail.contextPath}")
     private String contextPath;
 
@@ -43,14 +52,16 @@ public class StockOptionTradeBusiness {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         QuotoInquiry quotoInquiry = new QuotoInquiry();
-        StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
+        Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
+        StockOptionOrgDto org = lists.getResult().get(0);
         quotoInquiry.setUnderlying(org.getName());
         quotoInquiry.setCode(result.getStockCode());
         quotoInquiry.setStrike("100%");
         quotoInquiry.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        quotoInquiry.setPrice(String.valueOf(result.getRightMoneyRatio().intValue()));
+        quotoInquiry.setPrice(String.valueOf(result.getRightMoneyRatio()));
         quotoInquiry.setTenor(result.getCycle());
-        quotoInquiry.setDate(result.getBuyingTime());
+        quotoInquiry.setDate(new Date());
+        logger.info("数据组装成功:{}", JacksonUtil.encode(quotoInquiry));
         String file = ExcelUtil.renderInquiry(contextPath, quotoInquiry);
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
         return true;
@@ -59,15 +70,21 @@ public class StockOptionTradeBusiness {
     public Boolean purchase(Long id) {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
-        StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
+        Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
+        StockOptionOrgDto org = lists.getResult().get(0);
         QuotoPurchase quotoPurchase = new QuotoPurchase();
         quotoPurchase.setUnderlying(org.getName());
         quotoPurchase.setCode(result.getStockCode());
         quotoPurchase.setStrike("100%");
         quotoPurchase.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        quotoPurchase.setBegin(result.getBuyingTime());
-        quotoPurchase.setEnd(result.getExpireTime());
-        quotoPurchase.setRate(String.valueOf(result.getRightMoneyRatio().intValue()));
+        Date date = new Date();
+        quotoPurchase.setBegin(date);
+        //到期时间
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH,result.getCycle());
+        quotoPurchase.setEnd(calendar.getTime());
+        quotoPurchase.setRate(String.valueOf(result.getRightMoneyRatio()));
         MailMessage mailMessage = new PurchaseMessage();
         mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
         return true;
@@ -92,7 +109,9 @@ public class StockOptionTradeBusiness {
     }
 
     public StockOptionTradeDto success(Long id) {
+        logger.info("操作id:{}",id);
         Response<StockOptionTradeDto> response = stockOptionTradeService.success(id);
+        logger.info("修改结果:{}",JacksonUtil.encode(response));
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
@@ -115,6 +134,17 @@ public class StockOptionTradeBusiness {
 
     public StockOptionTradeDto findById(Long id) {
         Response<StockOptionTradeDto> response = stockOptionTradeService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public StockOptionTradeDto settlement(Long id) {
+        Response<StockOptionTradeDto> response = stockOptionTradeService.settlement(id);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
