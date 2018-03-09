@@ -37,6 +37,9 @@ public class Role {
                     "permission_id")})
     private Set<Permission> permissions = new HashSet<>();
 
+    @Column
+    private Long institution;
+
     public Long getId() {
         return id;
     }
@@ -85,4 +88,11 @@ public class Role {
         this.code = code;
     }
 
+    public Long getInstitution() {
+        return institution;
+    }
+
+    public void setInstitution(Long institution) {
+        this.institution = institution;
+    }
 }
