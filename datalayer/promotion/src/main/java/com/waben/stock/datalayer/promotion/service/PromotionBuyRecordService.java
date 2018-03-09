@@ -31,7 +31,6 @@ import com.waben.stock.datalayer.promotion.retrivestock.bean.StockMarket;
 @Service
 public class PromotionBuyRecordService {
 
-
 	@Autowired
 	private DynamicQuerySqlDao dynamicQuerySqlDao;
 	

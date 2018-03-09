@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.promotion.pojo.bean;
 
+import java.math.BigDecimal;
+
 public class BenefitConfigBean {
 
 	/**
@@ -22,6 +24,18 @@ public class BenefitConfigBean {
 	 * 对应的资源名称
 	 */
 	private String resourceName;
+	/**
+	 * 服务费分成比例
+	 */
+	private BigDecimal serviceFeeRatio;
+	/**
+	 * 递延费分成比例
+	 */
+	private BigDecimal deferredFeeRatio;
+	/**
+	 * 权利金分成比例
+	 */
+	private BigDecimal rightMoneyRatio;
 	/**
 	 * 对应的机构ID
 	 */
@@ -57,6 +71,30 @@ public class BenefitConfigBean {
 
 	public void setResourceName(String resourceName) {
 		this.resourceName = resourceName;
+	}
+
+	public BigDecimal getServiceFeeRatio() {
+		return serviceFeeRatio;
+	}
+
+	public void setServiceFeeRatio(BigDecimal serviceFeeRatio) {
+		this.serviceFeeRatio = serviceFeeRatio;
+	}
+
+	public BigDecimal getDeferredFeeRatio() {
+		return deferredFeeRatio;
+	}
+
+	public void setDeferredFeeRatio(BigDecimal deferredFeeRatio) {
+		this.deferredFeeRatio = deferredFeeRatio;
+	}
+
+	public BigDecimal getRightMoneyRatio() {
+		return rightMoneyRatio;
+	}
+
+	public void setRightMoneyRatio(BigDecimal rightMoneyRatio) {
+		this.rightMoneyRatio = rightMoneyRatio;
 	}
 
 	public Long getOrgId() {

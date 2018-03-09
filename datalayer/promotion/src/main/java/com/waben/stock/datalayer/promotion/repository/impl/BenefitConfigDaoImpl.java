@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.promotion.entity.BenefitConfig;
+import com.waben.stock.datalayer.promotion.entity.Organization;
 import com.waben.stock.datalayer.promotion.repository.BenefitConfigDao;
 import com.waben.stock.datalayer.promotion.repository.impl.jpa.BenefitConfigRepository;
+import com.waben.stock.interfaces.enums.BenefitConfigType;
 
 /**
  * 分成配置 Dao实现
@@ -58,6 +62,18 @@ public class BenefitConfigDaoImpl implements BenefitConfigDao {
 	@Override
 	public List<BenefitConfig> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<BenefitConfig> retrieveByOrgAndResourceType(Organization org, Integer resourceType) {
+		Sort sort = new Sort(new Sort.Order(Direction.ASC, "resourceId"));
+		return repository.findByOrgAndResourceType(org, resourceType, sort);
+	}
+
+	@Override
+	public List<BenefitConfig> retrieveByOrgAndTypeAndResourceTypeAndResourceId(Organization org,
+			BenefitConfigType type, Integer resourceType, Long resourceId) {
+		return repository.findByOrgAndTypeAndResourceTypeAndResourceId(org, type, resourceType, resourceId);
 	}
 
 }

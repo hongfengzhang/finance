@@ -1,11 +1,11 @@
-package com.waben.stock.applayer.strategist.payapi.juhe;
+package com.waben.stock.interfaces.commonapi.juhe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
-import com.waben.stock.applayer.strategist.payapi.juhe.bean.BankVerifyBean;
-import com.waben.stock.applayer.strategist.payapi.juhe.bean.JuheResponse;
+import com.waben.stock.interfaces.commonapi.juhe.bean.BankVerifyBean;
+import com.waben.stock.interfaces.commonapi.juhe.bean.JuheResponse;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.util.JacksonUtil;

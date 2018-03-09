@@ -23,7 +23,11 @@ public class OrganizationQuery extends PageAndSortQuery {
 	/**
 	 * 父级机构ID
 	 */
-	private String parentId;
+	private Long parentId;
+
+	private Long loginOrgId;
+
+	private boolean onlyLoginOrg;
 
 	public String getCode() {
 		return code;
@@ -41,12 +45,28 @@ public class OrganizationQuery extends PageAndSortQuery {
 		this.state = state;
 	}
 
-	public String getParentId() {
+	public Long getParentId() {
 		return parentId;
 	}
 
-	public void setParentId(String parentId) {
+	public void setParentId(Long parentId) {
 		this.parentId = parentId;
+	}
+
+	public Long getLoginOrgId() {
+		return loginOrgId;
+	}
+
+	public void setLoginOrgId(Long loginOrgId) {
+		this.loginOrgId = loginOrgId;
+	}
+
+	public boolean isOnlyLoginOrg() {
+		return onlyLoginOrg;
+	}
+
+	public void setOnlyLoginOrg(boolean onlyLoginOrg) {
+		this.onlyLoginOrg = onlyLoginOrg;
 	}
 
 }

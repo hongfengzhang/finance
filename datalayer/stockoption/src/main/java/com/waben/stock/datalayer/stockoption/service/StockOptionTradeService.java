@@ -188,6 +188,7 @@ public class StockOptionTradeService {
 					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.DOWN);
 		}
 		trade.setProfit(profit);
+		trade.setUpdateTime(new Date());
 		stockOptionTradeDao.update(trade);
 		if (profit.compareTo(BigDecimal.ZERO) > 0) {
 			// 用户收益
@@ -217,6 +218,7 @@ public class StockOptionTradeService {
 		} catch (ParseException e) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 		}
+		trade.setUpdateTime(new Date());
 		return stockOptionTradeDao.update(trade);
 	}
 

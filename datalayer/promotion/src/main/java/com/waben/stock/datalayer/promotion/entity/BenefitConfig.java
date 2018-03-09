@@ -99,4 +99,12 @@ public class BenefitConfig {
 		this.resourceId = resourceId;
 	}
 
+	public Organization getOrg() {
+		return org;
+	}
+
+	public void setOrg(Organization org) {
+		this.org = org;
+	}
+
 }
