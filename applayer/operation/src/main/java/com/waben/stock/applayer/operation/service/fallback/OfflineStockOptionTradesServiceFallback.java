@@ -27,8 +27,5 @@ public class OfflineStockOptionTradesServiceFallback implements OfflineStockOpti
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
-	@Override
-	public Response<OfflineStockOptionTradeDto> find(Long id) {
-		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+
 }

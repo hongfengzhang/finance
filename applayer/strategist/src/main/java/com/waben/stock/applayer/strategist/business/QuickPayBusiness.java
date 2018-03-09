@@ -203,8 +203,6 @@ public class QuickPayBusiness {
         } else {
             throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("msg"));
         }
-
-
     }
 
     private Map<String, String> paramter2Map(HttpServletRequest request) {
