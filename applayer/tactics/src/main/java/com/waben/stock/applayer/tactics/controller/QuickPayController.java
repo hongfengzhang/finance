@@ -93,6 +93,7 @@ public class QuickPayController {
     }
     @PostMapping("/sdpaycsa")
     @ApiOperation(value = "杉德支付提现")
+    @ResponseBody
     public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
                                         @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
 //        // 判断是否为测试用户，测试用户不能提现
@@ -140,6 +141,7 @@ public class QuickPayController {
 
     @GetMapping("/jdh5")
     @ApiOperation(value = "彩拓京东h5")
+    @ResponseBody
     public Map<String, String> jdh5(@RequestParam(required = true) BigDecimal amount,
                        @RequestParam(required = true) Long phone) {
         String result = quickPayBusiness.jdh5(amount, phone.toString());
