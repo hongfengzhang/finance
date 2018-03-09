@@ -43,7 +43,7 @@ public class BankCardInfoVerifier {
 		} else if (responseObj.getError_code() == 10012) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "验证接口可用次数不足!");
 		} else {
-			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, responseObj.getReason());
+			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION, responseObj.getReason());
 		}
 	}
 

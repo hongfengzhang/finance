@@ -134,8 +134,10 @@ public class RetriveStockOptionQuoteSchedule {
 							StockOptionOrgQuote quoteEntity = quoteDao.findByOrgAndStockCodeAndCycle(org, stockCode,
 									Integer.parseInt(days));
 							if (quoteEntity != null) {
-								quoteEntity.setRightMoneyRatio(rightMoneyRatio);
-								quoteDao.update(quoteEntity);
+								if (quoteEntity.getRightMoneyRatio().compareTo(rightMoneyRatio) != 0) {
+									quoteEntity.setRightMoneyRatio(rightMoneyRatio);
+									quoteDao.update(quoteEntity);
+								}
 							} else {
 								quoteEntity = new StockOptionOrgQuote();
 								quoteEntity.setCycle(Integer.parseInt(days));
