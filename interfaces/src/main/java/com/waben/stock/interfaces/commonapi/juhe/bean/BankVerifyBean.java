@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.tactics.payapi.juhe.bean;
+package com.waben.stock.interfaces.commonapi.juhe.bean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 

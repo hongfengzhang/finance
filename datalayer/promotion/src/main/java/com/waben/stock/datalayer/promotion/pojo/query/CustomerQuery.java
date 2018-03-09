@@ -21,11 +21,15 @@ public class CustomerQuery extends PageAndSortQuery {
 	 */
 	private String publisherPhone;
 	/**
-	 * 从属机构代码
+	 * 当前机构代码
+	 */
+	private String currentOrgCode;
+	/**
+	 * 查询的机构代码
 	 */
 	private String orgCode;
 	/**
-	 * 从属机构名称
+	 * 查询的机构名称
 	 */
 	private String orgName;
 
@@ -59,6 +63,14 @@ public class CustomerQuery extends PageAndSortQuery {
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public String getCurrentOrgCode() {
+		return currentOrgCode;
+	}
+
+	public void setCurrentOrgCode(String currentOrgCode) {
+		this.currentOrgCode = currentOrgCode;
 	}
 
 }

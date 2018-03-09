@@ -1,14 +1,14 @@
 package com.waben.stock.datalayer.promotion.repository.impl.jpa;
 
+import java.io.Serializable;
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
-
-import java.io.Serializable;
-import java.util.List;
 
 @NoRepositoryBean
 public interface CustomJpaRepository<T,S extends Serializable> extends Repository<T,S> {

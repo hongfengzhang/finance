@@ -43,7 +43,7 @@ $(function() {
 	            { "data": "buyRecordId", "title": "策略ID", orderable: false},
 	            { "data": "publisherId", "title": "用户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
-	            { "data": "stockCode", "title": "股票", orderable: false, "render": function(data, type, full, meta) {
+	            { "data": "stockCode", "title": "股票代码/名称", orderable: false, "render": function(data, type, full, meta) {
 	            	return full.stockCode + "/" + full.stockName;
 	            }},
 	            { "data": "strategyTypeName", "title": "策略类型", orderable: false},
@@ -73,9 +73,9 @@ $(function() {
 	                }
 	            }},
 	            { "data": "applyAmount", "title": "策略市值", orderable: false},
+	            { "data": "numberOfStrand", "title": "买入股数", orderable: false},
 	            { "data": "buyingTime", "title": "买入时间", orderable: false},
 	            { "data": "buyingPrice", "title": "买入价格", orderable: false},
-	            { "data": "numberOfStrand", "title": "买入股数", orderable: false},
 	            { "data": "sellingTime", "title": "卖出时间", orderable: false},
 	            { "data": "sellingPrice", "title": "卖出价格", orderable: false},
 	            { "data": "lastPrice", "title": "当前价格", orderable: false},

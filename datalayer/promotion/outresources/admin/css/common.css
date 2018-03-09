@@ -78,3 +78,9 @@ table.dataTable thead tr th:first-child:after {
 .align-center {
 	text-align: center;
 }
+.align-left {
+	text-align: left;
+}
+.align-right {
+	text-align: right;
+}

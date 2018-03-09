@@ -1,11 +1,15 @@
 package com.waben.stock.datalayer.publisher.entity;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.waben.stock.datalayer.publisher.entity.enumconverter.BindCardResourceTypeConverter;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 
 /**
  * @author Created by yuyidi on 2017/11/10.
@@ -59,10 +63,16 @@ public class BindCard {
 	@Column(name = "branch_code")
 	private String branchCode;
 	/**
-	 * 策略发布人ID
+	 * 绑卡对象的资源类型
 	 */
-	@Column(name = "publisher_id")
-	private Long publisherId;
+	@Convert(converter = BindCardResourceTypeConverter.class)
+	@Column(name = "resource_type")
+	private BindCardResourceType resourceType;
+	/**
+	 * 绑卡对象的ID
+	 */
+	@Column(name = "resource_id")
+	private Long resourceId;
 	/**
 	 * 对应的支付平台编号
 	 */
@@ -125,14 +135,6 @@ public class BindCard {
 		this.branchName = branchName;
 	}
 
-	public Long getPublisherId() {
-		return publisherId;
-	}
-
-	public void setPublisherId(Long publisherId) {
-		this.publisherId = publisherId;
-	}
-
 	public String getBranchCode() {
 		return branchCode;
 	}
@@ -155,6 +157,22 @@ public class BindCard {
 
 	public void setBankCode(String bankCode) {
 		this.bankCode = bankCode;
+	}
+
+	public BindCardResourceType getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(BindCardResourceType resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	public Long getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(Long resourceId) {
+		this.resourceId = resourceId;
 	}
 
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.promotion.entity.Organization;
+import com.waben.stock.datalayer.promotion.pojo.bean.OrganizationDetailBean;
 import com.waben.stock.datalayer.promotion.pojo.bean.TreeNode;
 import com.waben.stock.datalayer.promotion.pojo.form.OrganizationForm;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
@@ -99,17 +100,31 @@ public class OrganizationController {
 	public Response<Page<Organization>> adminPage(@RequestBody OrganizationQuery query) {
 		return new Response<>((Page<Organization>) organizationService.pagesByQuery(query));
 	}
-	
+
 	@GetMapping("/adminTree")
 	@ApiOperation(value = "获取机构树")
-	public List<TreeNode> adminTree() {
-		return organizationService.adminTree();
+	public List<TreeNode> adminTree(@RequestParam(required = true) Long orgId) {
+		return organizationService.adminTree(orgId);
 	}
 
 	@GetMapping("/listByParentId")
 	@ApiOperation(value = "根据父机构ID获取机构")
-	public Response<List<Organization>> listByParentId(@RequestParam(required = true, defaultValue = "0") Long parentId) {
+	public Response<List<Organization>> listByParentId(
+			@RequestParam(required = true, defaultValue = "0") Long parentId) {
 		return new Response<>(organizationService.listByParentId(parentId));
+	}
+
+	@GetMapping("/detail")
+	@ApiOperation(value = "获取机构详情")
+	public Response<OrganizationDetailBean> detail(@RequestParam(required = true) Long orgId) {
+		return new Response<>(organizationService.detail(orgId));
+	}
+
+	@PostMapping("/modifyName")
+	@ApiOperation(value = "修改机构名称")
+	public Response<Organization> modifyName(@RequestParam(required = true) Long id,
+			@RequestParam(required = true) String name) {
+		return new Response<>(organizationService.modifyName(id, name));
 	}
 
 }

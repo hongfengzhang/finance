@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -129,20 +130,22 @@ public class QuickPayController {
     @GetMapping("/qqh5")
     @ApiOperation(value = "彩拓QQh5")
     @ResponseBody
-    public String qqh5(Model model, @RequestParam(required = true) BigDecimal amount,
+    public Map<String, String> qqh5(@RequestParam(required = true) BigDecimal amount,
                             @RequestParam(required = true) Long phone) {
-        Map<String, String> map = quickPayBusiness.quickpay(amount, phone.toString());
-        model.addAttribute("result", map);
-        return "shandepay/payment";
+        String result = quickPayBusiness.ctQQh5(amount, phone.toString());
+        Map<String,String> urlResult= new HashMap<>();
+        urlResult.put("url",result);
+        return urlResult;
     }
 
     @GetMapping("/jdh5")
     @ApiOperation(value = "彩拓京东h5")
-    public String jdh5(Model model, @RequestParam(required = true) BigDecimal amount,
+    public Map<String, String> jdh5(@RequestParam(required = true) BigDecimal amount,
                        @RequestParam(required = true) Long phone) {
-        Map<String, String> map = quickPayBusiness.quickpay(amount, phone.toString());
-        model.addAttribute("result", map);
-        return "shandepay/payment";
+        String result = quickPayBusiness.jdh5(amount, phone.toString());
+        Map<String,String> urlResult= new HashMap<>();
+        urlResult.put("url",result);
+        return urlResult;
     }
 
 }

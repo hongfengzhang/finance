@@ -25,78 +25,44 @@
 		</ul>
 		<div class="layui-tab-content">
 			<div class="layui-tab-item layui-show">
-				<table class="layui-table">
-					<colgroup>
-						<col>
-						<col>
-					</colgroup>
-					<thead>
-						<tr>
-							<th>策略持仓时间</th>
-							<th>信息服务费分成比例</th>
-							<th>递延费分成比例</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>T+1</td>
-							<td class="align-center"><input type="text" name="serviceFeeRatio" class="layui-input">&nbsp;%</td>
-							<td class="align-center"><input type="text" name="deferredFeeRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-						<tr>
-							<td>T+5</td>
-							<td class="align-center"><input type="text" name="serviceFeeRatio" class="layui-input">&nbsp;%</td>
-							<td class="align-center"><input type="text" name="deferredFeeRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-						<tr>
-							<td>T+15</td>
-							<td class="align-center"><input type="text" name="serviceFeeRatio" class="layui-input">&nbsp;%</td>
-							<td class="align-center"><input type="text" name="deferredFeeRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-						<tr>
-							<td>T+30</td>
-							<td class="align-center"><input type="text" name="serviceFeeRatio" class="layui-input">&nbsp;%</td>
-							<td class="align-center"><input type="text" name="deferredFeeRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-					</tbody>
-				</table>
+				<form id="strategy-config-form">
+					<table class="layui-table" id="strategy-config-table">
+						<colgroup>
+							<col>
+							<col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th>策略持仓时间</th>
+								<th>信息服务费分成比例</th>
+								<th>递延费分成比例</th>
+							</tr>
+						</thead>
+						<tbody id="strategy-config-tbody"></tbody>
+					</table>
+				</form>
 				<div class="btn-list align-center">
 					<button type="button" id="strategy-submit-btn" class="layui-btn mb5 mr20">提　交</button>
 					<button type="button" id="strategy-cancel-btn" class="layui-btn layui-btn-primary mb5">取　消</button>
 				</div>
 			</div>
 			<div class="layui-tab-item">
-				<table class="layui-table">
-					<colgroup>
-						<col>
-						<col>
-						<col>
-					</colgroup>
-					<thead>
-						<tr>
-							<th>期权周期</th>
-							<th>权利金收益分成比例</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td>二周</td>
-							<td class="align-center"><input type="text" name="rightMoneyRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-						<tr>
-							<td>一个月</td>
-							<td class="align-center"><input type="text" name="rightMoneyRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-						<tr>
-							<td>两个月</td>
-							<td class="align-center"><input type="text" name="rightMoneyRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-						<tr>
-							<td>三个月</td>
-							<td class="align-center"><input type="text" name="rightMoneyRatio" class="layui-input">&nbsp;%</td>
-						</tr>
-					</tbody>
-				</table>
+				<form id="stockoption-config-form">
+					<table class="layui-table" id="stockoption-config-table">
+						<colgroup>
+							<col>
+							<col>
+							<col>
+						</colgroup>
+						<thead>
+							<tr>
+								<th>期权周期</th>
+								<th>权利金收益分成比例</th>
+							</tr>
+						</thead>
+						<tbody id="stockoption-config-tbody"></tbody>
+					</table>
+				</form>
 				<div class="btn-list align-center">
 					<button type="button" id="stockoption-submit-btn" class="layui-btn mb5 mr20">提　交</button>
 					<button type="button" id="stockoption-cancel-btn" class="layui-btn layui-btn-primary mb5">取　消</button>

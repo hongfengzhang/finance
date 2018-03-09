@@ -32,7 +32,7 @@ public class BindCardServiceFallback implements BindCardService {
 	}
 
 	@Override
-	public Response<List<BindCardDto>> listsByPublisherId(Long publisherId) {
+	public Response<List<BindCardDto>> listsByResourceTypeAndResourceId(String resourceType, Long resourceId) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.publisher.repository.impl.jpa;
 import java.util.List;
 
 import com.waben.stock.datalayer.publisher.entity.BindCard;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 
 /**
  * 绑卡 Jpa
@@ -12,8 +13,9 @@ import com.waben.stock.datalayer.publisher.entity.BindCard;
  */
 public interface BindCardRepository extends CustomJpaRepository<BindCard, Long> {
 
-	List<BindCard> findByPublisherId(Long publisherId);
+	List<BindCard> findByResourceTypeAndResourceId(BindCardResourceType resourceType, Long resourceId);
 
-	BindCard findByPublisherIdAndBankCard(Long publisherId, String bankCard);
+	BindCard findByResourceTypeAndResourceIdAndBankCard(BindCardResourceType resourceType, Long resourceId,
+			String bankCard);
 
 }

@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.dto.publisher;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BindCardDto {
@@ -39,9 +40,13 @@ public class BindCardDto {
 	 */
 	private String branchName;
 	/**
-	 * 策略发布人ID
+	 * 绑卡对象的资源类型
 	 */
-	private Long publisherId;
+	private BindCardResourceType resourceType;
+	/**
+	 * 绑卡对象的ID
+	 */
+	private Long resourceId;
 	/**
 	 * 对应的支付平台编号
 	 */
@@ -103,14 +108,6 @@ public class BindCardDto {
 		this.branchName = branchName;
 	}
 
-	public Long getPublisherId() {
-		return publisherId;
-	}
-
-	public void setPublisherId(Long publisherId) {
-		this.publisherId = publisherId;
-	}
-
 	public String getBranchCode() {
 		return branchCode;
 	}
@@ -133,6 +130,22 @@ public class BindCardDto {
 
 	public void setBankCode(String bankCode) {
 		this.bankCode = bankCode;
+	}
+
+	public BindCardResourceType getResourceType() {
+		return resourceType;
+	}
+
+	public void setResourceType(BindCardResourceType resourceType) {
+		this.resourceType = resourceType;
+	}
+
+	public Long getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(Long resourceId) {
+		this.resourceId = resourceId;
 	}
 
 }
