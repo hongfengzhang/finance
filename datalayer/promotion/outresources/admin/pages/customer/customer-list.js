@@ -3,7 +3,9 @@
  */
 window.renderTable = function(){};
 $(function() {
-	var searchData = {};
+	var searchData = {
+		currentOrgCode: '01'
+	};
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -28,7 +30,9 @@ $(function() {
             	fnCallback(dtData);
             }
         });
-		searchData = {};
+		searchData = {
+			currentOrgCode: searchData.currentOrgCode
+		};
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -38,15 +42,13 @@ $(function() {
 			var columns = [
 	            { "data": "publisherId", "title": "客户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "客户手机号", orderable: false},
-	            { "data": "orgCode", "title": "从属机构代码", orderable: false},
-	            { "data": "orgName", "title": "从属结构名称", orderable: false},
+	            { "data": "orgName", "title": "所属机构代码/名称", orderable: false, "render": function(data, type, full, meta) {
+	            	return full.orgCode + "/" + full.orgName;
+	            }},
 	            { "data": "availableBalance", "title": "可用资金", orderable: false},
 	            { "data": "frozenCapital", "title": "冻结资金", orderable: false},
 	            { "data": "balance", "title": "总资金", orderable: false},
-	            { "data": "createTime", "title": "注册时间", orderable: false},
-	            { "data": "publisherId", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
-	            	return "<a href='javascript:;'>查看详情</a>";
-	            }}
+	            { "data": "createTime", "title": "注册时间", orderable: false}
 	        ];
 			$(id).dataTable({
 				"responsive": true,

@@ -2,7 +2,8 @@
  * 机构列表
  */
 window.renderTable = function(){};
-window.searchData = { parentId: "1" };
+window.searchData = { parentId: "1", loginOrgId: "1", onlyLoginOrg: true };
+window.currentOrgId = "1";
 $(function() {
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
@@ -56,12 +57,12 @@ $(function() {
 	            }},
 	            { "data": "parentCode", "title": "从属机构代码", orderable: false},
 	            { "data": "createTime", "title": "创建时间", orderable: false},
-	            { "data": "id", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
-	            	var level = full.level;
-	            	if(level == 1) {
-	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            { "data": "id", "width": "230", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+	            	var id = full.id;
+	            	if(id == searchData.loginOrgId) {
+	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>详情</a>";
 	            	} else {
-	            		return "<a class='benefit mr20' orgid='" + full.id + "' href='javascript:;'>设置分成比例</a><a class='authority mr20' orgid='" + full.id + "' href='javascript:;'>权限分配</a><a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            		return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='authority mr10' orgid='" + full.id + "' href='javascript:;'>权限分配</a><a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            	}
 	            }}
 	        ];
@@ -126,13 +127,18 @@ $(function() {
 		},
 		async: {
 			enable: true,
-			url: "/organization/adminTree",
+			url: "/organization/adminTree?orgId=" + currentOrgId,
 			dataType: "json",
 			type: "get"
 		},
 		callback: {
 			// 点击节点列表显示子节点
 			onClick: function(event,treeId,treeNode) {
+				if(treeNode.id == 0) {
+					searchData.onlyLoginOrg = true;
+				} else {
+					searchData.onlyLoginOrg = false;
+				}
 				searchData.parentId = treeNode.id;
 				renderTable("#org-list-table");
 			}
@@ -152,9 +158,10 @@ $(function() {
 	});
 	// 弹出页面_设置分成比例
 	$('#org-list-table').on('click', 'a.benefit', function(){
-		var index = layer.open({
+		currentOrgId = $(this).attr("orgid");
+		layer.open({
 			type: 2,
-			title: '设置分成比例',
+			title: '查看机构详情',
 			shadeClose: true,
 			shade: 0.8,
 			area: ['60%', '80%'],
@@ -163,10 +170,19 @@ $(function() {
 	});
 	// 弹出页面_权限分配
 	$('#org-list-table').on('click', 'a.authority', function(){
+		currentOrgId = $(this).attr("orgid");
 		alert('权限分配');
 	});
 	// 弹出页面_查看详情
 	$('#org-list-table').on('click', 'a.detail', function(){
-		alert('查看详情');
+		currentOrgId = $(this).attr("orgid");
+		layer.open({
+			type: 2,
+			title: '设置分成比例',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['60%', '80%'],
+			content: 'org-detail.html',
+		});
 	});
 });

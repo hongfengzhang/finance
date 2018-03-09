@@ -15,7 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +39,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -190,6 +190,7 @@ public class StockOptionTradeService {
 					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.DOWN);
 		}
 		trade.setProfit(profit);
+		trade.setUpdateTime(new Date());
 		stockOptionTradeDao.update(trade);
 		if (profit.compareTo(BigDecimal.ZERO) > 0) {
 			// 用户收益
@@ -220,6 +221,7 @@ public class StockOptionTradeService {
 		} catch (ParseException e) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 		}
+		trade.setUpdateTime(new Date());
 		StockOptionTrade result = stockOptionTradeDao.update(trade);
 		logger.info("修改结果：{}", JacksonUtil.encode(result));
 		return result;

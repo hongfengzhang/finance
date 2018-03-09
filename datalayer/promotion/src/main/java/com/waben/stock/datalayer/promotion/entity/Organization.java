@@ -69,6 +69,11 @@ public class Organization {
 	 */
 	@Transient
 	private String parentCode;
+	/**
+	 * 父级机构代码
+	 */
+	@Transient
+	private String parentName;
 
 	public Long getId() {
 		return id;
@@ -144,6 +149,13 @@ public class Organization {
 	public String getParentCode() {
 		if (parent != null) {
 			return parent.getCode();
+		}
+		return null;
+	}
+
+	public String getParentName() {
+		if (parent != null) {
+			return parent.getName();
 		}
 		return null;
 	}

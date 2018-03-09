@@ -12,7 +12,7 @@ import com.waben.stock.interfaces.service.stockoption.StockOptionQuoteInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
- * 期权周期
+ * 期权报价
  * 
  * @author luomengan
  *

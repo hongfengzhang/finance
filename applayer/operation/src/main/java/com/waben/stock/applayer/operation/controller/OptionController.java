@@ -11,6 +11,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.stockoption.OfflineStockOptionTradeVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionOrgVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionTradeVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,14 @@ public class OptionController {
         PageInfo<StockOptionTradeDto> pageInfo = stockOptionTradeBusiness.pages(query);
         List<StockOptionTradeVo> stockOptionTradeVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), StockOptionTradeVo.class);
         PageInfo<StockOptionTradeVo> response = new PageInfo<>(stockOptionTradeVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
+        for (int i = 0; i < pageInfo.getContent().size(); i++) {
+            OfflineStockOptionTradeDto offlineTradeDto = pageInfo.getContent().get(i).getOfflineTradeDto();
+            if(offlineTradeDto!=null) {
+                OfflineStockOptionTradeVo offlineStockOptionTradeVo = CopyBeanUtils.copyBeanProperties(
+                        OfflineStockOptionTradeVo.class,offlineTradeDto , false);
+                response.getContent().get(i).setOfflineTrade(offlineStockOptionTradeVo);
+            }
+        }
         return new Response<>(response);
     }
 

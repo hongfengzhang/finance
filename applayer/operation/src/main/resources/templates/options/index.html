@@ -808,11 +808,11 @@
                             $("[name='detailStock']").val(row.stockName);
                             $("[name='detailAmount']").val(row.buyingPrice);
                             $("[name='detailnominalAmount']").val(row.nominalAmount);
-                            $("[name='detailSellAmount']").val(row.sellingPrice);
+                            $("[name='detailSellAmount']").val(row.offlineTrade.sellingPrice);
                             $("[name='detailCycleName']").val(row.cycleName);
                             $("[name='detailNominalAmount']").val(row.rightMoney);
                             $("[name='detailBuyType']").val(row.buyingType);
-                            $("[name='detailProfit']").val(row.profit);
+                            $("[name='detailProfit']").val( $("#user_profitAndLoss").val());
                             $('#settlementaction').click(function () {
                                 $('#settlementclose').click();
                                 $.ajax({
@@ -997,6 +997,10 @@
                             var nominalAmount = result.nominalAmount;
                             var profitAndLoss  = ((sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
                             if(profitAndLoss>0) {
+                                var flag = profitAndLoss.indexOf(".");
+                                if(flag!=-1) {
+                                    profitAndLoss = profitAndLoss.substring(0,flag+3);
+                                }
                                 $("#user_profitAndLoss").text(profitAndLoss);
                             }else {
                                 $("#user_profitAndLoss").text(0);

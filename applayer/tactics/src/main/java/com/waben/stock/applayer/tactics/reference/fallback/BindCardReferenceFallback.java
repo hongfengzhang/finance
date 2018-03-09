@@ -34,12 +34,12 @@ public class BindCardReferenceFallback implements BindCardReference {
 	}
 
 	@Override
-	public Response<List<BindCardDto>> listsByPublisherId(Long publisherId) {
+	public Response<Long> dropBankCard(Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
-	public Response<Long> dropBankCard(Long id) {
+	public Response<List<BindCardDto>> listsByResourceTypeAndResourceId(String resourceType, Long resourceId) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

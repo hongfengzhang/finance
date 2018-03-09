@@ -14,6 +14,7 @@ import com.waben.stock.applayer.strategist.business.BindCardBusiness;
 import com.waben.stock.applayer.strategist.dto.publisher.BindCardFullDto;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
@@ -47,7 +48,8 @@ public class BindCardController {
 		bindCardDto.setPhone(phone);
 		bindCardDto.setBranchCode(branchCode);
 		bindCardDto.setBranchName(branchName);
-		bindCardDto.setPublisherId(SecurityUtil.getUserId());
+		bindCardDto.setResourceId(SecurityUtil.getUserId());
+		bindCardDto.setResourceType(BindCardResourceType.PUBLISHER);
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, bindCardBusiness.save(bindCardDto), false));
 	}

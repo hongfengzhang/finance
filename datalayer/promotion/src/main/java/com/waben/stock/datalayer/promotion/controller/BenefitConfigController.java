@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.promotion.entity.BenefitConfig;
+import com.waben.stock.datalayer.promotion.pojo.bean.BenefitConfigBean;
+import com.waben.stock.datalayer.promotion.pojo.form.BenefitConfigForm;
 import com.waben.stock.datalayer.promotion.service.BenefitConfigService;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -48,15 +52,15 @@ public class BenefitConfigController {
 	public Response<Page<BenefitConfig>> benefitConfigs(int page, int limit) {
 		return new Response<>((Page<BenefitConfig>) benefitConfigService.benefitConfigs(page, limit));
 	}
-	
+
 	@GetMapping("/list")
 	@ApiOperation(value = "获取分成配置列表")
 	public Response<List<BenefitConfig>> list() {
 		return new Response<>(benefitConfigService.list());
 	}
-	
+
 	/******************************** 后台管理 **********************************/
-	
+
 	@PostMapping("/")
 	@ApiOperation(value = "添加分成配置", hidden = true)
 	public Response<BenefitConfig> addition(BenefitConfig benefitConfig) {
@@ -75,18 +79,43 @@ public class BenefitConfigController {
 		benefitConfigService.deleteBenefitConfig(id);
 		return new Response<Long>(id);
 	}
-	
+
 	@PostMapping("/deletes")
 	@ApiOperation(value = "批量删除分成配置（多个id以逗号分割）", hidden = true)
 	public Response<Boolean> deletes(String ids) {
 		benefitConfigService.deleteBenefitConfigs(ids);
 		return new Response<Boolean>(true);
 	}
-	
+
 	@GetMapping("/adminList")
 	@ApiOperation(value = "获取分成配置列表(后台管理)", hidden = true)
 	public Response<List<BenefitConfig>> adminList() {
 		return new Response<>(benefitConfigService.list());
+	}
+
+	@GetMapping("/benefitConfigList")
+	@ApiOperation(value = "获取分成配置列表(后台管理)", hidden = true, notes = "1策略分成,2期权分成")
+	public Response<List<BenefitConfigBean>> benefitConfigList(@RequestParam(required = true) Long orgId,
+			@RequestParam(required = true) Integer resourceType) {
+		return new Response<>(benefitConfigService.benefitConfigList(orgId, resourceType));
+	}
+	
+	@PostMapping("/strategy/config")
+	@ApiOperation(value = "保存策略分成配置", hidden = true)
+	public Response<String> strategyBenefitConfig(@RequestBody List<BenefitConfigForm>  configFormList) {
+		benefitConfigService.strategyBenefitConfig(configFormList);
+		Response<String> result = new Response<>();
+		result.setResult("success");
+		return result;
+	}
+	
+	@PostMapping("/stockoption/config")
+	@ApiOperation(value = "保存期权分成配置", hidden = true)
+	public Response<String> stockoptionBenefitConfig(@RequestBody List<BenefitConfigForm>  configFormList) {
+		benefitConfigService.stockoptionBenefitConfig(configFormList);
+		Response<String> result = new Response<>();
+		result.setResult("success");
+		return result;
 	}
 
 }

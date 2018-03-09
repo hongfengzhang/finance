@@ -1,6 +1,10 @@
 package com.waben.stock.datalayer.promotion.repository;
 
+import java.util.List;
+
 import com.waben.stock.datalayer.promotion.entity.BenefitConfig;
+import com.waben.stock.datalayer.promotion.entity.Organization;
+import com.waben.stock.interfaces.enums.BenefitConfigType;
 
 /**
  * 分成配置 Dao
@@ -9,5 +13,10 @@ import com.waben.stock.datalayer.promotion.entity.BenefitConfig;
  *
  */
 public interface BenefitConfigDao extends BaseDao<BenefitConfig, Long> {
+
+	List<BenefitConfig> retrieveByOrgAndResourceType(Organization org, Integer resourceType);
+
+	List<BenefitConfig> retrieveByOrgAndTypeAndResourceTypeAndResourceId(Organization org, BenefitConfigType type,
+			Integer resourceType, Long resourceId);
 
 }
