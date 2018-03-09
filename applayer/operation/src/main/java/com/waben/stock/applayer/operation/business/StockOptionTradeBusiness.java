@@ -54,7 +54,7 @@ public class StockOptionTradeBusiness {
         QuotoInquiry quotoInquiry = new QuotoInquiry();
         Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
         StockOptionOrgDto org = lists.getResult().get(0);
-        quotoInquiry.setUnderlying(org.getName());
+        quotoInquiry.setUnderlying(result.getStockName());
         quotoInquiry.setCode(result.getStockCode());
         quotoInquiry.setStrike("100%");
         quotoInquiry.setAmount(String.valueOf(result.getNominalAmount().intValue()));
@@ -73,7 +73,7 @@ public class StockOptionTradeBusiness {
         Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
         StockOptionOrgDto org = lists.getResult().get(0);
         QuotoPurchase quotoPurchase = new QuotoPurchase();
-        quotoPurchase.setUnderlying(org.getName());
+        quotoPurchase.setUnderlying(result.getStockName());
         quotoPurchase.setCode(result.getStockCode());
         quotoPurchase.setStrike("100%");
         quotoPurchase.setAmount(String.valueOf(result.getNominalAmount().intValue()));
@@ -95,7 +95,7 @@ public class StockOptionTradeBusiness {
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
         QuotoExenise quotoExenise = new QuotoExenise();
-        quotoExenise.setUnderlying(org.getName());
+        quotoExenise.setUnderlying(result.getStockName());
         quotoExenise.setCode(result.getStockCode());
         quotoExenise.setStrike("100%");
         quotoExenise.setAmount(String.valueOf(result.getNominalAmount().intValue()));
