@@ -90,6 +90,9 @@ public class StockOptionTradeController {
 						quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.DOWN));
 			}
 		}
+		if (quote == null) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION);
+		}
 		StockOptionQuoteWithBalanceDto resultQuote = new StockOptionQuoteWithBalanceDto(quote);
 		resultQuote
 				.setAvailableBalance(accountBusiness.findByPublisherId(SecurityUtil.getUserId()).getAvailableBalance());

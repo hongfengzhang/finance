@@ -27,5 +27,4 @@ public class OfflineStockOptionTradesServiceFallback implements OfflineStockOpti
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
-
 }

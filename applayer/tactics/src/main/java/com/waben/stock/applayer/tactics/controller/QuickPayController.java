@@ -79,23 +79,10 @@ public class QuickPayController {
         }
     }
 
-    @GetMapping("/sdpayreturn")
-    @ApiOperation(value = "杉德支付页面回调")
-    public void sdPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
-        // 处理回调
-        String result = quickPayBusiness.sdPayReturn();
-        // 响应回调
-        httpResp.setContentType("text/html;charset=UTF-8");
-        try {
-            PrintWriter writer = httpResp.getWriter();
-            writer.write(result);
-        } catch (IOException e) {
-            throw new RuntimeException("http write interrupt");
-        }
-    }
 
     @PostMapping("/sdpaycsa")
     @ApiOperation(value = "杉德支付提现")
+    @ResponseBody
     public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
                                           @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
 //        // 判断是否为测试用户，测试用户不能提现
