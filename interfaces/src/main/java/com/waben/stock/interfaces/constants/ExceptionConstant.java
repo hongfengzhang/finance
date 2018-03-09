@@ -144,5 +144,7 @@ public class ExceptionConstant {
 	public static final String STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION = "9003";
 	// 持仓第二天之后才能申请行权
 	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
+	// 未查询到该期权的报价
+	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
 
 }
