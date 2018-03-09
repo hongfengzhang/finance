@@ -2,19 +2,13 @@ package com.waben.stock.applayer.tactics.business;
 
 import com.alibaba.fastjson.JSONObject;
 import com.waben.stock.applayer.tactics.payapi.caituopay.config.PayConfig;
-import com.waben.stock.applayer.tactics.payapi.czpay.CzWithholdOverSocket;
-import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzPayReturn;
-import com.waben.stock.applayer.tactics.payapi.czpay.bean.CzWithholdResponse;
 import com.waben.stock.applayer.tactics.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.tactics.payapi.shande.config.SandPayConfig;
 import com.waben.stock.applayer.tactics.payapi.shande.utils.FormRequest;
-import com.waben.stock.applayer.tactics.payapi.tfbpay.util.RSAUtils;
-import com.waben.stock.applayer.tactics.payapi.tfbpay.util.RequestUtils;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
@@ -26,12 +20,12 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
@@ -149,8 +143,43 @@ public class QuickPayBusiness {
         }
     }
 
+
+    public String qqPaycallback(HttpServletRequest request) {
+        Map<String, String> responseResult = paramter2Map(request);
+        logger.info("QQ支付回调的结果是{}:",responseResult.toString());
+        String result = responseResult.get("result");
+        String paymentNo = responseResult.get("Out_trade_no");
+        String message = responseResult.get("message");
+        String thirdPaymentNo = responseResult.get("order_no");
+        String code = responseResult.get("code");
+        if (paymentNo != null && !"".equals(paymentNo) && "1".equals(code)) {
+            // 支付成功
+            payCallback(paymentNo, PaymentState.Paid);
+            return "success";
+        }
+        return "false";
+    }
+
+
+    public String jdPaycallback(HttpServletRequest request) {
+        Map<String, String> responseResult = paramter2Map(request);
+        logger.info("京东支付回调的结果是{}:",responseResult.toString());
+        String result = responseResult.get("result");
+        String paymentNo = responseResult.get("Out_trade_no");
+        String message = responseResult.get("message");
+        String thirdPaymentNo = responseResult.get("order_no");
+        String code = responseResult.get("code");
+        if (paymentNo != null && !"".equals(paymentNo) && "1".equals(code)) {
+            // 支付成功
+            payCallback(paymentNo, PaymentState.Paid);
+            return "success";
+        }
+        return "false";
+    }
+
+
     public void withdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
-                            String bankCard, String bankCode,String branchName) {
+                            String bankCard, String bankCode, String branchName) {
         //生成提现订单
         logger.info("保存提现订单");
         WithdrawalsOrderDto order = new WithdrawalsOrderDto();
@@ -183,10 +212,10 @@ public class QuickPayBusiness {
             toSign += key + "=" + map.get(key) + "&";
         }
         toSign += "key=" + SandPayConfig.key;
-        logger.info("代付签名的参数是:{}",toSign);
+        logger.info("代付签名的参数是:{}", toSign);
         String sign = DigestUtils.md5Hex(toSign);
         map.put("sign", sign);
-        logger.info("代付的参数是:{}",map.toString());
+        logger.info("代付的参数是:{}", map.toString());
         logger.info("代付请求发起");
         String result = FormRequest.doPost(map, SandPayConfig.csaUrl);
         JSONObject jsStr = JSONObject.parseObject(result);
@@ -196,7 +225,7 @@ public class QuickPayBusiness {
 //        // 提现异常
         JSONObject jsonData = jsStr.getJSONObject("data");
         String resultFlag = jsonData.getString("resultFlag");
-        if ("SUCCESS".equals(jsStr.getString("result"))||"0".equals(resultFlag)||"2".equals(resultFlag)) {
+        if ("SUCCESS".equals(jsStr.getString("result")) || "0".equals(resultFlag) || "2".equals(resultFlag)) {
             WithdrawalsOrderDto origin = findWithdrawalsOrder(withdrawalsNo);
             accountBusiness.csa(origin.getPublisherId(), origin.getAmount());
             if (origin.getState() != WithdrawalsState.PROCESSED) {
@@ -211,7 +240,7 @@ public class QuickPayBusiness {
     }
 
 
-    public String ctQQh5(BigDecimal amount, String phone) {
+    public Response<Map> ctQQh5(BigDecimal amount, String phone) {
         Response<PublisherDto> response = publisherReference.fetchByPhone(phone);
         if (!"200".equals(response.getCode())) {
             throw new ServiceException(response.getCode());
@@ -231,36 +260,47 @@ public class QuickPayBusiness {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
         String timeStamp = format.format(date);
-        Map<String,String> map = new TreeMap<>();
-        String appId= PayConfig.appId;
-        String appSecret=PayConfig.appSecret;
+        Map<String, String> map = new TreeMap<>();
+        String appId = PayConfig.appId;
+        String appSecret = PayConfig.appSecret;
         String url = PayConfig.qqurl;
-        map.put("appId",appId);
-        map.put("version",PayConfig.version);
-        map.put("return_url",PayConfig.return_url);
-        map.put("device_info",PayConfig.device_info);
-        map.put("mch_app_name",PayConfig.mch_app_name);
-        map.put("mch_app_id",PayConfig.mch_app_id);
-        map.put("total_fee",amount.toString());
-        map.put("front_skip_url",PayConfig.front_skip_url);
-        map.put("subject",PayConfig.subject);
-        map.put("body",PayConfig.qqbody);
-        map.put("out_order_no",paymentNo);
-        map.put("timestamp",timeStamp);
-        String sign = DigestUtils.md5Hex(appId+appSecret+timeStamp+paymentNo);
-        map.put("sign",sign);
-        logger.info("请求的参数是{}:",map.toString());
-        String result=FormRequest.doPost(map,url);
+        map.put("appId", appId);
+        map.put("version", PayConfig.version);
+        map.put("return_url", PayConfig.qq_return_url);
+        map.put("device_info", PayConfig.device_info);
+        map.put("mch_app_name", PayConfig.mch_app_name);
+        map.put("mch_app_id", PayConfig.mch_app_id);
+        map.put("total_fee", amount.toString());
+        map.put("front_skip_url", PayConfig.qq_front_skip_url);
+        map.put("subject", PayConfig.subject);
+        map.put("body", PayConfig.qqbody);
+        map.put("out_order_no", paymentNo);
+        map.put("timestamp", timeStamp);
+        String sign = DigestUtils.md5Hex(appId + appSecret + timeStamp + paymentNo);
+        map.put("sign", sign);
+        logger.info("请求的参数是{}:", map.toString());
+        String result = FormRequest.doPost(map, url);
         JSONObject jsStr = JSONObject.parseObject(result);
         String payUrl = jsStr.getString("payUrl");
-        logger.info("请求的结果是{}:",jsStr.toString());
-        if (StringUtils.isEmpty(payUrl)){
+        logger.info("请求的结果是{}:", jsStr.toString());
+        Response<Map> resp = new Response<Map>();
+        if ("1".equals(jsStr.getString("code"))){
+            resp.setCode("200");
+            resp.setMessage(jsStr.getString("message"));
+            Map<String,String> resultUrl = new HashMap<>();
+            resultUrl.put("url",payUrl);
+            resp.setResult(resultUrl);
+        }else {
+            resp.setCode(jsStr.getString("code"));
+            resp.setMessage(jsStr.getString("message"));
+        }
+        if (StringUtils.isBlank(payUrl)) {
             throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, jsStr.getString("message"));
         }
-        return payUrl;
+        return resp;
     }
 
-    public String jdh5(BigDecimal amount, String phone) {
+    public  Response<Map> jdh5(BigDecimal amount, String phone) {
         Response<PublisherDto> response = publisherReference.fetchByPhone(phone);
         if (!"200".equals(response.getCode())) {
             throw new ServiceException(response.getCode());
@@ -280,34 +320,44 @@ public class QuickPayBusiness {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
         String timeStamp = format.format(date);
-        Map<String,String> map = new TreeMap<>();
-        String appId= PayConfig.appId;
-        String appSecret=PayConfig.appSecret;
+        Map<String, String> map = new TreeMap<>();
+        String appId = PayConfig.appId;
+        String appSecret = PayConfig.appSecret;
         String url = PayConfig.jdurl;
 //        String appId="96060";
 //        String appSecret="476B8780C91D099753E0";
-        map.put("appId",appId);
-        map.put("version",PayConfig.version);
-        map.put("return_url",PayConfig.return_url);
-        map.put("total_fee",amount.toString());
-        map.put("front_skip_url",PayConfig.front_skip_url);
-        map.put("subject",PayConfig.subject);
-        map.put("body",PayConfig.jdbody);
-        map.put("out_order_no",paymentNo);
-        map.put("timestamp",timeStamp);
-        String sign = DigestUtils.md5Hex(appId+appSecret+timeStamp+paymentNo);
-        map.put("sign",sign);
-        logger.info("请求的参数是{}:",map.toString());
-        String result=FormRequest.doPost(map,url);
+        map.put("appId", appId);
+        map.put("version", PayConfig.version);
+        map.put("return_url", PayConfig.jd_return_url);
+        map.put("total_fee", amount.toString());
+        map.put("front_skip_url", PayConfig.jd_front_skip_url);
+        map.put("subject", PayConfig.subject);
+        map.put("body", PayConfig.jdbody);
+        map.put("out_order_no", paymentNo);
+        map.put("timestamp", timeStamp);
+        String sign = DigestUtils.md5Hex(appId + appSecret + timeStamp + paymentNo);
+        map.put("sign", sign);
+        logger.info("请求的参数是{}:", map.toString());
+        String result = FormRequest.doPost(map, url);
         JSONObject jsStr = JSONObject.parseObject(result);
         String payUrl = jsStr.getString("payUrl");
-        logger.info("请求的结果是{}:",jsStr.toString());
-        if (StringUtils.isEmpty(payUrl)){
+        logger.info("请求的结果是{}:", jsStr.toString());
+        Response<Map> resp = new Response();
+        if ("1".equals(jsStr.getString("code"))){
+            resp.setCode("200");
+            resp.setMessage(jsStr.getString("message"));
+            Map<String,String> resultUrl = new HashMap<>();
+            resultUrl.put("url",payUrl);
+            resp.setResult(resultUrl);
+        }else {
+            resp.setCode(jsStr.getString("code"));
+            resp.setMessage(jsStr.getString("message"));
+        }
+        if (StringUtils.isBlank(payUrl)) {
             throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, jsStr.getString("message"));
         }
-        return payUrl;
+        return resp;
     }
-
 
 
     private Map<String, String> paramter2Map(HttpServletRequest request) {

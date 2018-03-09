@@ -24,7 +24,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">订单编号</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="applyNo" maxlength="20"
+                                <input type="text" class="form-control" name="tradeNo" maxlength="20"
                                        placeholder="订单编号"/>
                             </div>
                         </div>
@@ -488,7 +488,7 @@
                     }
                     var queryMap = {
                         publisherPhone: $("input[name='publisherPhone']").val(),
-                        applyNo: $("input[name='applyNo']").val(),
+                        tradeNo: $("input[name='tradeNo']").val(),
                         state: $("[name='state']").val() == '0' ? "" : $("[name='state']").val(),
                         beginTime: $("[name='beginTime']").val(),
                         endTime: $("[name='endTime']").val(),
@@ -529,10 +529,6 @@
                     title: '预询价',
                     align: 'center'
                 }, {
-                    field: 'code',
-                    title: '实询价',
-                    align: 'center'
-                }, {
                     field: 'buyingPrice',
                     title: '成交价',
                     align: 'center'
@@ -564,7 +560,7 @@
                     title: '操作',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
-                        if(row.state="待确认"){
+                        if(row.state=="待确认"){
                             return [
                                 ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
@@ -576,31 +572,9 @@
                             ].join('');
                         }
 
-                        if(row.state="持仓中"){
+                        if(row.state=="持仓中"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" />\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state="申请行权"){
-                            return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state="结算中"){
-                            return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
@@ -609,14 +583,46 @@
                                 '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
                             ].join('');
                         }
-                        if(row.state="已结算"){
+                        if(row.state=="申请行权"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
+                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
+                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
+                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright"/>\n' +
+                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
+                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
+                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
+                            ].join('');
+                        }
+                        if(row.state=="结算中"){
+                            return [
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
+                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
+                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
+                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
+                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
+                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
+                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
+                            ].join('');
+                        }
+                        if(row.state=="已结算"){
+                            return [
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
                                 '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
                                 '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
+                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail" disabled="disabled"/>'
+                            ].join('');
+                        }else{
+                            return [
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
+                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
+                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
+                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
+                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
+                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail" />\n' +
                                 '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail" disabled="disabled"/>'
                             ].join('');
                         }
@@ -894,7 +900,7 @@
                             $('#orgSettle').click(function () {
                                 $('#orgClose').click();
                                 $.ajax({
-                                    url: "../offlinestockoptiontrade/settlement/" + row.id+"/"+$("[name='sellingPrice']").val(),
+                                    url: "../offlinestockoptiontrade/settlement/" + $("[name='sellingPrice']").val()+"/"+row.id,
                                     type: 'get',
                                     success: function (response) {
                                         if (response.code = '200') {
@@ -960,7 +966,7 @@
             });
             $('#search').click(function () {
                 var stockName = $("input[name='publisherPhone']");
-                var stockCode = $("input[name='applyNo']");
+                var stockCode = $("input[name='tradeNo']");
                 var status = $("[name='beginTime']");
                 var beginTime = $("input[name='endTime']").val();
                 var endTime = $("input[name='state']").val();
@@ -977,7 +983,7 @@
 
             $('#reset').click(function () {
                 $("input[name='publisherPhone']").val('');
-                $("input[name='applyNo']").val('');
+                $("input[name='tradeNo']").val('');
                 $("input[name='beginTime']").val('');
                 $("input[name='endTime']").val('');
                 $("[name='state']").val("0");
@@ -997,6 +1003,7 @@
                             var nominalAmount = result.nominalAmount;
                             var profitAndLoss  = ((sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
                             if(profitAndLoss>0) {
+                                profitAndLoss = profitAndLoss.toFixed(2) + "";
                                 var flag = profitAndLoss.indexOf(".");
                                 if(flag!=-1) {
                                     profitAndLoss = profitAndLoss.substring(0,flag+3);

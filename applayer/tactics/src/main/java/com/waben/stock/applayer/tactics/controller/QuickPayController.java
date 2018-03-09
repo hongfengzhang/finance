@@ -13,6 +13,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -29,6 +30,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.applayer.tactics.business.QuickPayBusiness;
+import retrofit2.http.POST;
 
 
 @Controller
@@ -61,6 +63,8 @@ public class QuickPayController {
         return "shandepay/payment";
     }
 
+
+
     @PostMapping("/sdpaycallback")
     @ApiOperation(value = "杉德支付后台回调")
     public void sdPayCallback(HttpServletRequest request, HttpServletResponse httpResp)
@@ -78,7 +82,7 @@ public class QuickPayController {
     }
 
     @GetMapping("/sdpayreturn")
-    @ApiOperation(value = "杉德支付页面回调")
+    @ApiOperation(value = "杉德页面回调")
     public void sdPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
         // 处理回调
         String result = quickPayBusiness.sdPayReturn();
@@ -91,10 +95,13 @@ public class QuickPayController {
             throw new RuntimeException("http write interrupt");
         }
     }
-    @GetMapping("/sdpaycsa")
-    @ApiOperation(value = "杉德支付页面回调")
+
+
+    @PostMapping("/sdpaycsa")
+    @ApiOperation(value = "杉德支付提现")
+    @ResponseBody
     public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
-                                        @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
+                                          @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
 //        // 判断是否为测试用户，测试用户不能提现
         PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
         if (publisher.getIsTest() != null && publisher.getIsTest()) {
@@ -121,7 +128,7 @@ public class QuickPayController {
         }
         logger.info("验证通过,提现开始");
         quickPayBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
-                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(),bindCard.getBranchName());
+                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bindCard.getBranchName());
         resp.setResult("success");
         return resp;
     }
@@ -130,22 +137,77 @@ public class QuickPayController {
     @GetMapping("/qqh5")
     @ApiOperation(value = "彩拓QQh5")
     @ResponseBody
-    public Map<String, String> qqh5(@RequestParam(required = true) BigDecimal amount,
-                            @RequestParam(required = true) Long phone) {
-        String result = quickPayBusiness.ctQQh5(amount, phone.toString());
-        Map<String,String> urlResult= new HashMap<>();
-        urlResult.put("url",result);
-        return urlResult;
+    public  Response<Map> qqh5(@RequestParam(required = true) BigDecimal amount,
+                                    @RequestParam(required = true) Long phone) {
+        Response<Map> result = quickPayBusiness.ctQQh5(amount, phone.toString());
+
+        return result;
     }
 
     @GetMapping("/jdh5")
     @ApiOperation(value = "彩拓京东h5")
-    public Map<String, String> jdh5(@RequestParam(required = true) BigDecimal amount,
-                       @RequestParam(required = true) Long phone) {
-        String result = quickPayBusiness.jdh5(amount, phone.toString());
-        Map<String,String> urlResult= new HashMap<>();
-        urlResult.put("url",result);
-        return urlResult;
+    @ResponseBody
+    public  Response<Map> jdh5(@RequestParam(required = true) BigDecimal amount,
+                                    @RequestParam(required = true) Long phone) {
+        Response<Map> result= quickPayBusiness.jdh5(amount, phone.toString());
+        return result;
     }
+
+
+
+    @GetMapping("/qqcallback")
+    @ApiOperation(value = "彩拓QQ后台回调")
+    @ResponseBody
+    public String qqPayCallback(HttpServletRequest request, HttpServletResponse httpResp)
+            throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.qqPaycallback(request);
+        // 响应回调
+        logger.info("回调响应的结果是:{}", result);
+        return result;
+    }
+
+    @GetMapping("/jdcallback")
+    @ApiOperation(value = "彩拓京东后台回调")
+    @ResponseBody
+    public String jdPayCallback(HttpServletRequest request, HttpServletResponse httpResp)
+            throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.jdPaycallback(request);
+        // 响应回调
+        logger.info("回调响应的结果是:{}", result);
+        return result;
+    }
+
+    @GetMapping("/qqpayreturn")
+    @ApiOperation(value = "彩拓QQ支付页面回调")
+    public void qqPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.sdPayReturn();
+        // 响应回调
+        httpResp.setContentType("text/html;charset=UTF-8");
+        try {
+            PrintWriter writer = httpResp.getWriter();
+            writer.write(result);
+        } catch (IOException e) {
+            throw new RuntimeException("http write interrupt");
+        }
+    }
+
+    @GetMapping("/jdpayreturn")
+    @ApiOperation(value = "彩拓京东页面回调")
+    public void jdPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.sdPayReturn();
+        // 响应回调
+        httpResp.setContentType("text/html;charset=UTF-8");
+        try {
+            PrintWriter writer = httpResp.getWriter();
+            writer.write(result);
+        } catch (IOException e) {
+            throw new RuntimeException("http write interrupt");
+        }
+    }
+
 
 }
