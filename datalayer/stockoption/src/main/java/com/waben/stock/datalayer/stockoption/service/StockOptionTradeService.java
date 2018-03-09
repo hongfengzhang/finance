@@ -204,7 +204,6 @@ public class StockOptionTradeService {
 	@Transactional
 	public StockOptionTrade success(Long id) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
-		logger.info("查询结果：{}", JacksonUtil.encode(trade));
 		BigDecimal buyingPrice = trade.getOfflineTrade().getBuyingPrice();
 		if (StockOptionTradeState.WAITCONFIRMED != trade.getState()) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
@@ -216,14 +215,15 @@ public class StockOptionTradeService {
 		try {
 			// 计算到期日期
 			Date beginTime = sdf.parse(sdf.format(date));
-			Date expireTime = new Date(beginTime.getTime() + (trade.getCycle() - 1) * 24 * 60 * 60 * 1000);
+			long after = 24 * 60 * 60 * 1000;
+			after *= (trade.getCycle() - 1);
+			Date expireTime = new Date(beginTime.getTime() + after);
 			trade.setExpireTime(expireTime);
 		} catch (ParseException e) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 		}
 		trade.setUpdateTime(new Date());
 		StockOptionTrade result = stockOptionTradeDao.update(trade);
-		logger.info("修改结果：{}", JacksonUtil.encode(result));
 		return result;
 	}
 
@@ -297,6 +297,7 @@ public class StockOptionTradeService {
 				break;
 			}
 			if (message.getContent() != null) {
+				System.out.println(JacksonUtil.encode(message));
 				outsideMessageBusiness.send(message);
 			}
 		} catch (Exception ex) {

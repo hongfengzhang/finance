@@ -109,12 +109,11 @@ public class QuickPayBusiness {
     }
 
     public String sdPayReturn() {
-
         StringBuilder result = new StringBuilder();
         result.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>回调页面</title></head><body>");
         String paymentNo = "";
         String stateStr = "已支付";
-        String scriptContent = "<script>function call() {if(window.appInterface) {window.appInterface.rechargeCallback('%s', '%s');} else {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}} call();</script>";
+        String scriptContent = "<script>function call() {if(window.appInterface) {window.appInterface.rechargeCallback('%s', '%s');} else {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}} call();</script></body></html>";
         result.append(String.format(scriptContent, paymentNo, stateStr, paymentNo, stateStr));
         return result.toString();
     }
@@ -241,7 +240,7 @@ public class QuickPayBusiness {
     }
 
 
-    public String ctQQh5(BigDecimal amount, String phone) {
+    public Response<Map> ctQQh5(BigDecimal amount, String phone) {
         Response<PublisherDto> response = publisherReference.fetchByPhone(phone);
         if (!"200".equals(response.getCode())) {
             throw new ServiceException(response.getCode());
@@ -284,13 +283,24 @@ public class QuickPayBusiness {
         JSONObject jsStr = JSONObject.parseObject(result);
         String payUrl = jsStr.getString("payUrl");
         logger.info("请求的结果是{}:", jsStr.toString());
+        Response<Map> resp = new Response<Map>();
+        if ("1".equals(jsStr.getString("code"))){
+            resp.setCode("200");
+            resp.setMessage(jsStr.getString("message"));
+            Map<String,String> resultUrl = new HashMap<>();
+            resultUrl.put("url",payUrl);
+            resp.setResult(resultUrl);
+        }else {
+            resp.setCode(jsStr.getString("code"));
+            resp.setMessage(jsStr.getString("message"));
+        }
         if (StringUtils.isBlank(payUrl)) {
             throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, jsStr.getString("message"));
         }
-        return payUrl;
+        return resp;
     }
 
-    public String jdh5(BigDecimal amount, String phone) {
+    public  Response<Map> jdh5(BigDecimal amount, String phone) {
         Response<PublisherDto> response = publisherReference.fetchByPhone(phone);
         if (!"200".equals(response.getCode())) {
             throw new ServiceException(response.getCode());
@@ -332,10 +342,21 @@ public class QuickPayBusiness {
         JSONObject jsStr = JSONObject.parseObject(result);
         String payUrl = jsStr.getString("payUrl");
         logger.info("请求的结果是{}:", jsStr.toString());
+        Response<Map> resp = new Response();
+        if ("1".equals(jsStr.getString("code"))){
+            resp.setCode("200");
+            resp.setMessage(jsStr.getString("message"));
+            Map<String,String> resultUrl = new HashMap<>();
+            resultUrl.put("url",payUrl);
+            resp.setResult(resultUrl);
+        }else {
+            resp.setCode(jsStr.getString("code"));
+            resp.setMessage(jsStr.getString("message"));
+        }
         if (StringUtils.isBlank(payUrl)) {
             throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, jsStr.getString("message"));
         }
-        return payUrl;
+        return resp;
     }
 
 

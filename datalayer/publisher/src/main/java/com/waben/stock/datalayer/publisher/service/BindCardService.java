@@ -50,6 +50,12 @@ public class BindCardService {
 	}
 
 	public BindCard revision(BindCard bindCard) {
+		// 判断四要素
+		boolean isValid = BankCardInfoVerifier.verify(bindCard.getName(), bindCard.getIdCard(), bindCard.getPhone(),
+				bindCard.getBankCard());
+		if (!isValid) {
+			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
+		}
 		return bindCardDao.update(bindCard);
 	}
 

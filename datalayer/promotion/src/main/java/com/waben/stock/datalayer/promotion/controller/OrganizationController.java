@@ -22,6 +22,7 @@ import com.waben.stock.datalayer.promotion.pojo.bean.TreeNode;
 import com.waben.stock.datalayer.promotion.pojo.form.OrganizationForm;
 import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
 import com.waben.stock.datalayer.promotion.service.OrganizationService;
+import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
 
 import io.swagger.annotations.Api;
@@ -125,6 +126,18 @@ public class OrganizationController {
 	public Response<Organization> modifyName(@RequestParam(required = true) Long id,
 			@RequestParam(required = true) String name) {
 		return new Response<>(organizationService.modifyName(id, name));
+	}
+
+	@GetMapping("/{orgid}/bindcard")
+	@ApiOperation(value = "获取机构绑卡信息")
+	public Response<BindCardDto> fetchBindCard(@PathVariable("orgid") Long orgId) {
+		return new Response<>(organizationService.getBindCard(orgId));
+	}
+
+	@PostMapping("/{orgid}/bindcard")
+	@ApiOperation(value = "保存机构绑卡信息")
+	public Response<BindCardDto> saveBindCard(@PathVariable("orgid") Long orgId, BindCardDto bindCardDto) {
+		return new Response<>(organizationService.bindCard(orgId, bindCardDto));
 	}
 
 }

@@ -97,7 +97,7 @@ public class BindCardBusiness {
 		}
 		bindCard.setBankName(bankInfoDto.getBankName());
 		bindCard.setBankCode(bankInfoDto.getBankCode());
-		bindCard.setContractNo(this.getWabenContractNo(bindCard));
+		// bindCard.setContractNo(this.getWabenContractNo(bindCard));
 		// 执行绑卡操作
 		Response<BindCardDto> response = service.addBankCard(bindCard);
 		if ("200".equals(response.getCode())) {

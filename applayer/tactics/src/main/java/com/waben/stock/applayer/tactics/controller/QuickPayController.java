@@ -63,6 +63,8 @@ public class QuickPayController {
         return "shandepay/payment";
     }
 
+
+
     @PostMapping("/sdpaycallback")
     @ApiOperation(value = "杉德支付后台回调")
     public void sdPayCallback(HttpServletRequest request, HttpServletResponse httpResp)
@@ -71,6 +73,21 @@ public class QuickPayController {
         String result = quickPayBusiness.sdPaycallback(request);
         // 响应回调
         httpResp.setContentType("text/xml;charset=UTF-8");
+        try {
+            PrintWriter writer = httpResp.getWriter();
+            writer.write(result);
+        } catch (IOException e) {
+            throw new RuntimeException("http write interrupt");
+        }
+    }
+
+    @GetMapping("/sdpayreturn")
+    @ApiOperation(value = "杉德页面回调")
+    public void sdPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.sdPayReturn();
+        // 响应回调
+        httpResp.setContentType("text/html;charset=UTF-8");
         try {
             PrintWriter writer = httpResp.getWriter();
             writer.write(result);
@@ -120,24 +137,23 @@ public class QuickPayController {
     @GetMapping("/qqh5")
     @ApiOperation(value = "彩拓QQh5")
     @ResponseBody
-    public Map<String, String> qqh5(@RequestParam(required = true) BigDecimal amount,
+    public  Response<Map> qqh5(@RequestParam(required = true) BigDecimal amount,
                                     @RequestParam(required = true) Long phone) {
-        String result = quickPayBusiness.ctQQh5(amount, phone.toString());
-        Map<String, String> urlResult = new HashMap<>();
-        urlResult.put("url", result);
-        return urlResult;
+        Response<Map> result = quickPayBusiness.ctQQh5(amount, phone.toString());
+
+        return result;
     }
 
     @GetMapping("/jdh5")
     @ApiOperation(value = "彩拓京东h5")
     @ResponseBody
-    public Map<String, String> jdh5(@RequestParam(required = true) BigDecimal amount,
+    public  Response<Map> jdh5(@RequestParam(required = true) BigDecimal amount,
                                     @RequestParam(required = true) Long phone) {
-        String result = quickPayBusiness.jdh5(amount, phone.toString());
-        Map<String, String> urlResult = new HashMap<>();
-        urlResult.put("url", result);
-        return urlResult;
+        Response<Map> result= quickPayBusiness.jdh5(amount, phone.toString());
+        return result;
     }
+
+
 
     @GetMapping("/qqcallback")
     @ApiOperation(value = "彩拓QQ后台回调")
@@ -192,4 +208,6 @@ public class QuickPayController {
             throw new RuntimeException("http write interrupt");
         }
     }
+
+
 }
