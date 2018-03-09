@@ -21,6 +21,7 @@
         <module>financial</module><!--8006-->
         <module>buyrecord</module><!--8007-->
         <module>message</module><!--8008-->
+        <module>stockoption</module> <!--8009-->
     </modules>
 
     <properties>

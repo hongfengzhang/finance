@@ -10,7 +10,7 @@ public class ExeriseMessage implements MailMessage {
 
     @Override
     public String message(QuotoInfo quotoInfo) {
-        QuotoExenise quotoExenise = new QuotoExenise();
+        QuotoExenise quotoExenise = (QuotoExenise) quotoInfo;
         StringBuilder sb = new StringBuilder();
         sb.append("标的名称：").append(quotoExenise.getUnderlying()).append("\n");
         sb.append("标的代码：").append(quotoExenise.getCode()).append("\n");

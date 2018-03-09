@@ -13,6 +13,7 @@ import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.service.OfflineStockOptionTradeService;
 import com.waben.stock.datalayer.stockoption.service.StockOptionTradeService;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -46,8 +47,15 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 
 	@Override
 	public Response<StockOptionTradeDto> fetchById(@PathVariable Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeService.findById(id);
 		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class,
-				stockOptionTradeService.findById(id), false);
+				stockOptionTrade, false);
+		if(stockOptionTrade.getOfflineTrade()!=null) {
+			OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, stockOptionTrade.getOfflineTrade(), false);
+			StockOptionOrgDto stockOptionOrgDto = CopyBeanUtils.copyBeanProperties(StockOptionOrgDto.class, stockOptionTrade.getOfflineTrade().getOrg(), false);
+			offlineStockOptionTradeDto.setOrg(stockOptionOrgDto);
+			result.setOfflineTradeDto(offlineStockOptionTradeDto);
+		}
 		return new Response<>(result);
 	}
 

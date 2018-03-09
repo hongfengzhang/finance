@@ -27,7 +27,8 @@ public class InquiryResultController {
         InquiryResultDto inquiryResultDto = CopyBeanUtils.copyBeanProperties(InquiryResultDto.class, inquiryResultVo, false);
         inquiryResultDto.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrgDto.class, inquiryResultVo.getOrg(), false));
         inquiryResultDto.setTrade(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, inquiryResultVo.getTrade(), false));
-        InquiryResultVo result = CopyBeanUtils.copyBeanProperties(InquiryResultVo.class, inquiryResultBusiness.add(inquiryResultDto), false);
+        InquiryResultDto inquiry =  inquiryResultBusiness.add(inquiryResultDto);
+        InquiryResultVo result = CopyBeanUtils.copyBeanProperties(InquiryResultVo.class, inquiry, false);
         return new Response<>(result);
     }
 }

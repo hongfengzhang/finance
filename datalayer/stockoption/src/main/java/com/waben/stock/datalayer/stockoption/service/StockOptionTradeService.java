@@ -39,6 +39,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -165,6 +166,7 @@ public class StockOptionTradeService {
 					predicatesList.add(stateQuery);
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("updateTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
@@ -202,6 +204,7 @@ public class StockOptionTradeService {
 	@Transactional
 	public StockOptionTrade success(Long id) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		logger.info("查询结果：{}", JacksonUtil.encode(trade));
 		BigDecimal buyingPrice = trade.getOfflineTrade().getBuyingPrice();
 		if (StockOptionTradeState.WAITCONFIRMED != trade.getState()) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
@@ -219,7 +222,9 @@ public class StockOptionTradeService {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
 		}
 		trade.setUpdateTime(new Date());
-		return stockOptionTradeDao.update(trade);
+		StockOptionTrade result = stockOptionTradeDao.update(trade);
+		logger.info("修改结果：{}", JacksonUtil.encode(result));
+		return result;
 	}
 
 	@Transactional

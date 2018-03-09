@@ -25,10 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.applayer.tactics.business.QuickPayBusiness;
 
@@ -98,36 +95,54 @@ public class QuickPayController {
     public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
                                         @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
 //        // 判断是否为测试用户，测试用户不能提现
-//        PublisherDto publisher = publisherBusiness.findById(10l);
-//        if (publisher.getIsTest() != null && publisher.getIsTest()) {
-//            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
-//        }
-//        // 验证支付密码
-//        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
-//        String storePaymentPassword = capitalAccount.getPaymentPassword();
-//        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
-//            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
-//        }
-//        if (!storePaymentPassword.equals(paymentPassword)) {
-//            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
-//        }
-//        // 检查余额
-//        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
-//            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
-//        }
+        PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+        if (publisher.getIsTest() != null && publisher.getIsTest()) {
+            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
+        }
+        // 验证支付密码
+        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
+        String storePaymentPassword = capitalAccount.getPaymentPassword();
+        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
+        }
+        if (!storePaymentPassword.equals(paymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
+        }
+        // 检查余额
+        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
+            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+        }
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
-//        CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
-//        if (bankType == null) {
-//            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
-//        }
+        CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
+        if (bankType == null) {
+            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
+        }
         logger.info("验证通过,提现开始");
-        quickPayBusiness.withdrawals(10l, amount, bindCard.getName(), bindCard.getPhone(),
-                bindCard.getIdCard(), bindCard.getBankCard(), "CCB",bindCard.getBranchName());
+        quickPayBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
+                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(),bindCard.getBranchName());
         resp.setResult("success");
         return resp;
     }
 
 
+    @GetMapping("/qqh5")
+    @ApiOperation(value = "彩拓QQh5")
+    @ResponseBody
+    public String qqh5(Model model, @RequestParam(required = true) BigDecimal amount,
+                            @RequestParam(required = true) Long phone) {
+        Map<String, String> map = quickPayBusiness.quickpay(amount, phone.toString());
+        model.addAttribute("result", map);
+        return "shandepay/payment";
+    }
+
+    @GetMapping("/jdh5")
+    @ApiOperation(value = "彩拓京东h5")
+    public String jdh5(Model model, @RequestParam(required = true) BigDecimal amount,
+                       @RequestParam(required = true) Long phone) {
+        Map<String, String> map = quickPayBusiness.quickpay(amount, phone.toString());
+        model.addAttribute("result", map);
+        return "shandepay/payment";
+    }
 
 }

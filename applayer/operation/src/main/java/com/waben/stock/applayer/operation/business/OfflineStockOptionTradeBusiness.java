@@ -23,18 +23,29 @@ public class OfflineStockOptionTradeBusiness {
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
-        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
 
     public OfflineStockOptionTradeDto settlement(Long id, BigDecimal sellingPrice) {
-        Response<OfflineStockOptionTradeDto> response = offlineStockOptionTradeService.settlement(id,sellingPrice);
+        Response<OfflineStockOptionTradeDto> response = offlineStockOptionTradeService.settlement(id, sellingPrice);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
-        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public OfflineStockOptionTradeDto find(Long id) {
+        Response<OfflineStockOptionTradeDto> response = offlineStockOptionTradeService.find(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());

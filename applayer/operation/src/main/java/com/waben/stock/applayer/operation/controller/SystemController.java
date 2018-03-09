@@ -25,34 +25,12 @@ public class SystemController {
 
     @Autowired
     private MenuBusiness systemManageBusiness;
-    @Autowired
-    private MailService mailService;
 
     @Value("${mail.contextPath}")
     private String contextPath;
 
     @GetMapping("/login")
     public String login() {
-//        QuotoInquiry quotoInquiry = new QuotoInquiry();
-//        quotoInquiry.setUnderlying("新湖瑞丰");
-//        quotoInquiry.setCode("600208");
-//        quotoInquiry.setStrike("100%");
-//        quotoInquiry.setAmount("100W");
-//        quotoInquiry.setPrice("7.55%");
-//        quotoInquiry.setTenor(6);
-//        quotoInquiry.setDate(new Date());
-//        String file = ExcelUtil.renderInquiry(contextPath, quotoInquiry);
-//        mailService.send("询价单", Arrays.asList(file), "lzh@youguwang.com.cn");
-//        QuotoPurchase quotoPurchase = new QuotoPurchase();
-//        quotoPurchase.setUnderlying("新湖瑞丰");
-//        quotoPurchase.setCode("600208");
-//        quotoPurchase.setStrike("100%");
-//        quotoPurchase.setAmount("100W");
-//        quotoPurchase.setBegin(new Date());
-//        quotoPurchase.setEnd(new Date());
-//        quotoPurchase.setRate("7.55%");
-//        MailMessage mailMessage = new PurchaseMessage();
-//        mailService.send("申购单", mailMessage.message(quotoPurchase), "lzh@youguwang.com.cn");
         return "login";
     }
 
