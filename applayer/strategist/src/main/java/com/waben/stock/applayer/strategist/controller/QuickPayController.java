@@ -16,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -91,10 +88,11 @@ public class QuickPayController {
     }
     @GetMapping("/sdpaycsa")
     @ApiOperation(value = "杉德支付提现")
+    @ResponseBody
     public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
                                         @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
         // 判断是否为测试用户，测试用户不能提现
-        PublisherDto publisher = publisherBusiness.findById(10l);
+        PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
         if (publisher.getIsTest() != null && publisher.getIsTest()) {
             throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
         }
@@ -111,7 +109,6 @@ public class QuickPayController {
         if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
             throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
         }
-//
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
         CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
@@ -119,12 +116,9 @@ public class QuickPayController {
             throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
         }
         logger.info("验证通过,提现开始");
-        quickPayBusiness.withdrawals(10l, amount, bindCard.getName(), bindCard.getPhone(),
-                bindCard.getIdCard(), bindCard.getBankCard(), "CCB",bindCard.getBranchName());
+        quickPayBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
+                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(),bindCard.getBranchName());
         resp.setResult("success");
         return resp;
     }
-
-
-
 }

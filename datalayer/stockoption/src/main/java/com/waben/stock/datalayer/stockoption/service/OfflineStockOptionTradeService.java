@@ -5,9 +5,14 @@ import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
+import com.waben.stock.interfaces.exception.DataNotFoundException;
+import com.waben.stock.interfaces.exception.ExceptionMap;
+import com.waben.stock.interfaces.exception.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ConstantException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +26,7 @@ public class OfflineStockOptionTradeService {
     private OfflineStockOptionTradeDao offlineStockOptionTradeDao;
     @Autowired
     private StockOptionTradeDao stockOptionTradeDao;
+
     @Transactional
     public OfflineStockOptionTrade save(OfflineStockOptionTrade offlineStockOptionTrade) {
         StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(offlineStockOptionTrade.getId());
@@ -30,13 +36,14 @@ public class OfflineStockOptionTradeService {
         offlineStockOptionTrade.setStockCode(stockOptionTrade.getStockCode());
         offlineStockOptionTrade.setStockName(stockOptionTrade.getStockName());
         offlineStockOptionTrade.setNominalAmount(stockOptionTrade.getNominalAmount());
-        offlineStockOptionTrade.setRightMoney(stockOptionTrade.getNominalAmount().multiply(offlineStockOptionTrade.getRightMoneyRatio()));
+        offlineStockOptionTrade.setRightMoney(stockOptionTrade.getNominalAmount().multiply(offlineStockOptionTrade
+                .getRightMoneyRatio()));
         offlineStockOptionTrade.setCycle(stockOptionTrade.getCycle());
         offlineStockOptionTrade.setBuyingTime(new Date());
         //到期时间
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
-        calendar.add(Calendar.DAY_OF_MONTH,stockOptionTrade.getCycle());
+        calendar.add(Calendar.DAY_OF_MONTH, stockOptionTrade.getCycle());
         offlineStockOptionTrade.setExpireTime(calendar.getTime());
         //将线下交易信息添加到数据库
         OfflineStockOptionTrade result = offlineStockOptionTradeDao.create(offlineStockOptionTrade);
@@ -45,6 +52,7 @@ public class OfflineStockOptionTradeService {
         stockOptionTradeDao.update(stockOptionTrade);
         return result;
     }
+
     @Transactional
     public OfflineStockOptionTrade settlement(Long id, BigDecimal sellingPrice) {
         //机构结算
@@ -57,13 +65,20 @@ public class OfflineStockOptionTradeService {
         return offlineStockOptionTradeDao.update(offlineStockOptionTrade);
     }
 
-    
 
     public OfflineStockOptionTrade exercise(Long id) {
         OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
         offlineStockOptionTrade.setState(OfflineStockOptionTradeState.APPLYRIGHT);
         offlineStockOptionTrade.setRightTime(new Date());
         OfflineStockOptionTrade result = offlineStockOptionTradeDao.update(offlineStockOptionTrade);
+        return result;
+    }
+
+    public OfflineStockOptionTrade findById(Long id) {
+        OfflineStockOptionTrade result = offlineStockOptionTradeDao.retrieve(id);
+        if (result == null) {
+            throw new DataNotFoundException("机构期权信息未找到");
+        }
         return result;
     }
 }

@@ -79,7 +79,7 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> csa(Long publisherId, BigDecimal amount) {
+	public Response<CapitalAccountDto> csa(@PathVariable Long publisherId,@PathVariable BigDecimal amount) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.csa(publisherId, amount), false));
 	}

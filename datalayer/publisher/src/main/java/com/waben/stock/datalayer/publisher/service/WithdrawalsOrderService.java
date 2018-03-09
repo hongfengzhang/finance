@@ -58,6 +58,11 @@ public class WithdrawalsOrderService {
 		return withdrawalsOrderDao.create(withdrawalsOrder);
 	}
 
+	public WithdrawalsOrder add(WithdrawalsOrder withdrawalsOrder) {
+		withdrawalsOrder.setCreateTime(new Date());
+		return withdrawalsOrderDao.create(withdrawalsOrder);
+	}
+
 	public WithdrawalsOrder changeState(String withdrawalsNo, WithdrawalsState state) {
 		WithdrawalsOrder withdrawalsOrder = withdrawalsOrderDao.retrieveByWithdrawalsNo(withdrawalsNo);
 		withdrawalsOrder.setState(state);

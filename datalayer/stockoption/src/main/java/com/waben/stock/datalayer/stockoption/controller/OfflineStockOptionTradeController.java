@@ -23,16 +23,30 @@ import java.math.BigDecimal;
 public class OfflineStockOptionTradeController implements OfflineStockOptionTradeInterface {
     @Autowired
     private OfflineStockOptionTradeService offlineStockOptionTradeService;
+
     @Override
-    public Response<OfflineStockOptionTradeDto> add(@RequestBody OfflineStockOptionTradeDto offlineStockOptionTradeDto) {
-        OfflineStockOptionTrade offlineStockOptionTrade = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTrade.class, offlineStockOptionTradeDto, false);
-        offlineStockOptionTrade.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrg.class, offlineStockOptionTradeDto.getOrg(), false));
-        OfflineStockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, offlineStockOptionTradeService.save(offlineStockOptionTrade), false);
+    public Response<OfflineStockOptionTradeDto> add(@RequestBody OfflineStockOptionTradeDto
+                                                                offlineStockOptionTradeDto) {
+        OfflineStockOptionTrade offlineStockOptionTrade = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTrade
+                .class, offlineStockOptionTradeDto, false);
+        offlineStockOptionTrade.setOrg(CopyBeanUtils.copyBeanProperties(StockOptionOrg.class,
+                offlineStockOptionTradeDto.getOrg(), false));
+        OfflineStockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class,
+                offlineStockOptionTradeService.save(offlineStockOptionTrade), false);
         return new Response<>(result);
     }
+
     @Override
     public Response<OfflineStockOptionTradeDto> settlement(@PathVariable Long id,@PathVariable BigDecimal sellingPrice) {
         OfflineStockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, offlineStockOptionTradeService.settlement(id,sellingPrice), false);
         return new Response<>(result);
+    }
+
+    @Override
+    public Response<OfflineStockOptionTradeDto> find(@PathVariable Long id) {
+        OfflineStockOptionTrade result = offlineStockOptionTradeService.findById(id);
+        OfflineStockOptionTradeDto response = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class,
+                result, false);
+        return new Response<>(response);
     }
 }

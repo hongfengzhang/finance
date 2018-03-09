@@ -1,10 +1,12 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.OfflineStockOptionTradeBusiness;
 import com.waben.stock.applayer.operation.business.StockOptionOrgBusiness;
 import com.waben.stock.applayer.operation.business.StockOptionTradeBusiness;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
@@ -15,6 +17,7 @@ import com.waben.stock.interfaces.vo.stockoption.StockOptionTradeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -29,6 +32,8 @@ public class OptionController {
     private StockOptionTradeBusiness stockOptionTradeBusiness;
     @Autowired
     private StockOptionOrgBusiness stockOptionOrgBusiness;
+    @Autowired
+    private OfflineStockOptionTradeBusiness offlineStockOptionTradeBusiness;
     @RequestMapping("/index")
     public String index(ModelMap map){
         List<StockOptionOrgDto> stockOptionOrgDtos = stockOptionOrgBusiness.fetchStockOptionOrgs();
@@ -54,6 +59,7 @@ public class OptionController {
         return new Response<>(response);
     }
 
+
     @RequestMapping("/settlement/{id}")
     @ResponseBody
     public Response<StockOptionTradeVo> settlement(@PathVariable Long id){
@@ -62,6 +68,11 @@ public class OptionController {
         return new Response<>(stockOptionTradeVo);
     }
 
+    /**
+     * 询价  根据订单信息，发送询价单邮件
+     * @param id
+     * @return
+     */
     @RequestMapping("/inquiry/{id}")
     @ResponseBody
     public Response<Boolean> inquiry(@PathVariable Long id){
@@ -69,6 +80,11 @@ public class OptionController {
         return new Response<>(result);
     }
 
+    /**
+     * 申购
+     * @param id
+     * @return
+     */
     @RequestMapping("/purchase/{id}")
     @ResponseBody
     public Response<Boolean> purchase(@PathVariable Long id){
@@ -76,6 +92,11 @@ public class OptionController {
         return new Response<>(result);
     }
 
+    /**
+     * 行权
+     * @param id
+     * @return
+     */
     @RequestMapping("/exercise/{id}")
     @ResponseBody
     public Response<Boolean> exercise(@PathVariable Long id){
@@ -107,5 +128,20 @@ public class OptionController {
         return new Response<>(stockOptionTradeVo);
     }
 
-
+    /**
+     * 机构单确认
+     * @param id 机构单号
+     */
+    @GetMapping("/institution/{id}")
+    @ResponseBody
+    public Response<Boolean> confirm(@PathVariable Long id) {
+        OfflineStockOptionTradeDto offlineStockOptionTradeDto = offlineStockOptionTradeBusiness.find(id);
+        OfflineStockOptionTradeState state = offlineStockOptionTradeDto.getState();
+        if (state.equals(OfflineStockOptionTradeState.TURNOVER)) {
+            //询价状态下，点击确认
+        } else if (state.equals(OfflineStockOptionTradeState.APPLYRIGHT)) {
+            //申购状态下 点击确认
+        }
+        return null;
+    }
 }
