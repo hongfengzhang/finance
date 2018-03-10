@@ -55,20 +55,15 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             } else {
                 tradeSession = currTradeSession;
             }
+
+
+
             BigDecimal lastPrice = stockMarket.getLastPrice();
-//            BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
-//            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
+            BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
+            BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
-            if(flag) {
-                flag = false;
-                lossPosition = lastPrice.subtract(new BigDecimal("0.01"));
-                profitPosition = lastPrice.subtract(new BigDecimal("0.01"));
-            }else {
-                flag = true;
-                lossPosition = lastPrice.add(new BigDecimal("0.01"));
-                profitPosition = lastPrice.add(new BigDecimal("0.01"));
-            }
+
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             Date currentDay = new Date();
             Date expriessDay = riskBuyInStock.getExpireTime();
@@ -78,7 +73,6 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             logger.info("结果：{}", currentTime.compareTo(expriessTime));
             long expriessDayL = Long.parseLong(expriessDay.getTime() + "");
             long currentDayL = Long.parseLong(currentDay.getTime() + "");
-            logger.info("过期天数:{},当前天数:{}", expriessDayL, expriessDayL);
 //            //判断是否跌停或涨停
 //            if(lastPrice.compareTo(upLimitPrice)>=0||lastPrice.compareTo(downLimitPrice)<=0) {
 //                if(lastPrice.compareTo(upLimitPrice)>=0) {
@@ -89,6 +83,19 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 //                    riskBuyInStock.setWindControlType(WindControlType.LIMITDOWN.getIndex());
 //                }
 //            }else
+            upLimitPrice = lastPrice;
+            if(stockMarket.getStatus()==0||lastPrice.compareTo(downLimitPrice)==0||lastPrice.compareTo(upLimitPrice)==0) {
+                if(lastPrice.compareTo(upLimitPrice)==0) {
+                    logger.info("股票已涨停：{}",riskBuyInStock.getStockName());
+                }
+                if(lastPrice.compareTo(downLimitPrice)==0) {
+                    logger.info("股票已跌停：{}",riskBuyInStock.getStockName());
+                }
+                if (stockMarket.getStatus()==0) {
+                    logger.info("股票已停牌：{}",riskBuyInStock.getStockName());
+                }
+                continue;
+            }
             if (currentDayL - expriessDayL >= 0 && currentTime.compareTo(expriessTime) >= 0) {
                 //判断持仓到期时间是否已经达到且是否达到14:40:00
                 logger.info("交易期满:{}", riskBuyInStock.getTradeNo());
@@ -107,6 +114,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                             riskBuyInStock.setWindControlType(WindControlType.REACHLOSSPOINT.getIndex());
                         }
                         logger.info("满足止损止盈条件:{}", riskBuyInStock.getTradeNo());
+                    } else {
+                        continue;
                     }
                 } else {
                     logger.info("当前持仓订单未满足止损或止盈条件,不执行风控强制平仓：{}", riskBuyInStock.getTradeNo());

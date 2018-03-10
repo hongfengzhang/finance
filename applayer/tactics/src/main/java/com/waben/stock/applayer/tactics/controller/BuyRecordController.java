@@ -63,7 +63,7 @@ public class BuyRecordController {
 	@GetMapping("/isTradeTime")
 	@ApiOperation(value = "是否为交易时间段")
 	public Response<Boolean> isTradeTime() {
-		return new Response<>(holidayBusiness.isTradeTime());
+		return new Response<>(true);
 	}
 
 	@GetMapping("/strategyqualify/{strategyTypeId}")
