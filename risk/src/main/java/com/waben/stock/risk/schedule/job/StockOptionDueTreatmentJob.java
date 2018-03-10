@@ -24,9 +24,8 @@ public class StockOptionDueTreatmentJob implements InterruptableJob {
         for (StockOptionTradeDto stockOptionTradeDto : stockOptionTradeDtos) {
             Date expireTime = stockOptionTradeDto.getExpireTime();
             Date currentTime = new Date();
-            BigDecimal buyingPrice = stockOptionTradeDto.getBuyingPrice();
             if(fmt.format(expireTime).equals(fmt.format(currentTime))) {
-
+                stockOptionTradeBusiness.stockOptionDueTreatment(stockOptionTradeDto.getId());
             }
         }
     }

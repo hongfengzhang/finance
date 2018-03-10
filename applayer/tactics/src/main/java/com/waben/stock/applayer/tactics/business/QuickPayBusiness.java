@@ -407,7 +407,7 @@ public class QuickPayBusiness {
     }
 
     public WithdrawalsOrderDto saveWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
-        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.addWithdrawalsOrder(withdrawalsOrderDto);
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.saveWithdrawalsOrders(withdrawalsOrderDto, withdrawalsOrderDto.getWithdrawalsNo());
         if ("200".equals(orderResp.getCode())) {
             return orderResp.getResult();
         }

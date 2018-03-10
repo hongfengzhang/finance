@@ -29,23 +29,23 @@ public class SandPayConfig {
      * 商品描述
      */
     public static final String goodsDesc = "快捷";
-//    /**
-//     * 回调地址
-//     */
-//    public static final String notifyUrl = "https://m.youguwang.com.cn/strategist/quickpay/sdpaycallback";
-//    /**
-//     * 页面通知地址
-//     */
-//    public static final String fontUrl = "https://m.youguwang.com.cn/strategist/quickpay/sdpayreturn";
-
     /**
      * 回调地址
      */
-    public static final String notifyUrl = "http://ekaawk.natappfree.cc/quickpay/sdpaycallback";
+    public static final String notifyUrl = "https://m.youguwang.com.cn/strategist/quickpay/sdpaycallback";
     /**
      * 页面通知地址
      */
-    public static final String fontUrl = "http://www.youguwang.com.cn/#/myaccount/capital";
+    public static final String fontUrl = "https://m.youguwang.com.cn/strategist/quickpay/sdpayreturn";
+
+//    /**
+//     * 回调地址
+//     */
+//    public static final String notifyUrl = "http://ekaawk.natappfree.cc/quickpay/sdpaycallback";
+//    /**
+//     * 页面通知地址
+//     */
+//    public static final String fontUrl = "http://www.youguwang.com.cn/#/myaccount/capital";
 
     //测试
 //    public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/payment/quickpaynotify";

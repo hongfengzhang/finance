@@ -64,6 +64,4 @@ public class WebSocketController {
             messagingTemplate.convertAndSendToUser(entry.getKey(), "/callback", stockMarkets);
         }
     }
-
-
 }

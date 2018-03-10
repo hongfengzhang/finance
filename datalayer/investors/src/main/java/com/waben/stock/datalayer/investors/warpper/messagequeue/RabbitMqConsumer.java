@@ -88,4 +88,11 @@ public class RabbitMqConsumer {
 		logger.info("自动卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
 		voluntarilyApplyEntrustSellOutContainer.add(securitiesStockEntrust);
 	}
+
+	@RabbitListener(queues = {"againEntrust"})
+	public void againEntrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) throws InterruptedException {
+		logger.info("重新委托卖出订单数据:{}", JacksonUtil.encode(securitiesStockEntrust));
+		investorService.againEntrustApplySellOut(securitiesStockEntrust);
+		logger.info("重新委托成功：{}",JacksonUtil.encode(securitiesStockEntrust));
+	}
 }

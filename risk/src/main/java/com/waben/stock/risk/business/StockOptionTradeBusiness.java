@@ -33,4 +33,16 @@ public class StockOptionTradeBusiness {
         throw new ServiceException(response.getCode());
     }
 
+
+    public StockOptionTradeDto stockOptionDueTreatment(Long id) {
+        Response<StockOptionTradeDto> response = stockOptionTradeService.exercise(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
 }
