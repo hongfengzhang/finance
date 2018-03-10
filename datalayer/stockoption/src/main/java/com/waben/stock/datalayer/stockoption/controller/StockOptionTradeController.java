@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,8 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/stockoptiontrade")
@@ -89,6 +94,15 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
 		return new Response<>(stockOptionTradeDto);
 	}
+
+	@Override
+	public Response<List<StockOptionTradeDto>> stockOptionsWithState(Integer state) {
+		StockOptionTradeState stockOptionTradeState = StockOptionTradeState.getByIndex(String.valueOf(state));
+		List<StockOptionTrade> stockOptionTrades = stockOptionTradeService.fetchByState(stockOptionTradeState);
+		List<StockOptionTradeDto> result = CopyBeanUtils.copyListBeanPropertiesToList(stockOptionTrades, StockOptionTradeDto.class);
+		return new Response<>(result);
+	}
+
 	@Override
 	public Response<StockOptionTradeDto> add(@RequestBody StockOptionTradeDto stockOptionTradeDto) {
 		logger.info("发布人{}申购期权{}，名义本金 {}!", stockOptionTradeDto.getPublisherId(), stockOptionTradeDto.getStockCode(),

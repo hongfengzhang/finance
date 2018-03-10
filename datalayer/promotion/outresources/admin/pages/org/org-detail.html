@@ -7,9 +7,12 @@
 <link rel="stylesheet" href="../../js/layui/css/layui.css">
 <link rel="stylesheet" href="../../css/common.css">
 <style type="text/css">
-.detail {
+.detail, .bindcard {
 	line-height: 50px;
 	margin-top: 20px;
+}
+.bindcard {
+	padding-left: 150px;
 }
 .fielddiv {
 	padding-left: 10%;
@@ -86,8 +89,38 @@
 					</div>
 				</div>
 			</div>
-			<div class="layui-tab-item">
-				
+			<div class="layui-tab-item bindcard">
+				<form class="layui-form" action="" id="bind-card-form">
+					<div class="layui-form-item">
+						<label class="layui-form-label width90">姓名</label>
+						<div class="layui-input-inline width300">
+							<input type="text" data="name" name="name" placeholder="请输入姓名" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label width90">身份证号</label>
+						<div class="layui-input-inline width300">
+							<input type="text" data="idCard" name="idCard" placeholder="请输入身份证号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label width90">银行卡号</label>
+						<div class="layui-input-inline width300">
+							<input type="text" data="bankCard" name="bankCard" placeholder="请输入银行卡号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label width90">手机号</label>
+						<div class="layui-input-inline width300">
+							<input type="text" data="phone" name="phone" placeholder="请输入手机号" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label width90"></label>
+						<button type="button" id="bind-card-submit-btn" class="layui-btn mb5">修　改</button>
+						<button type="button" id="bind-card-cancel-btn" class="layui-btn layui-btn-primary mb5">取　消</button>
+					</div>
+				</form>
 			</div>
 			<div class="layui-tab-item">
 				

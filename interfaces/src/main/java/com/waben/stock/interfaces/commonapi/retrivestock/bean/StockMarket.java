@@ -16,6 +16,9 @@ public class StockMarket {
 	private String exchangeId;
 	private String instrumentId;
 	private String name;
+	/**
+	 * 0停牌，1正常
+	 */
 	private int status;
 	private long upTime;
 	private String upTimeFormat;

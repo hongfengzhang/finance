@@ -48,6 +48,10 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 	 * 周期
 	 */
 	private Integer cycle;
+	/**
+	 * 0停牌，1正常
+	 */
+	private Integer stockStatus;
 
 	public String getStockName() {
 		return stockName;
@@ -128,6 +132,14 @@ public class BuyRecordWithMarketDto extends BuyRecordDto {
 
 	public void setCycle(Integer cycle) {
 		this.cycle = cycle;
+	}
+
+	public Integer getStockStatus() {
+		return stockStatus;
+	}
+
+	public void setStockStatus(Integer stockStatus) {
+		this.stockStatus = stockStatus;
 	}
 
 }

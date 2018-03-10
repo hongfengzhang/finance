@@ -12,7 +12,6 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +20,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waben.stock.datalayer.promotion.business.BindCardBusiness;
 import com.waben.stock.datalayer.promotion.entity.Organization;
 import com.waben.stock.datalayer.promotion.pojo.bean.OrganizationDetailBean;
 import com.waben.stock.datalayer.promotion.pojo.bean.TreeNode;
@@ -29,7 +29,10 @@ import com.waben.stock.datalayer.promotion.pojo.query.OrganizationQuery;
 import com.waben.stock.datalayer.promotion.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.promotion.repository.OrganizationDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.enums.OrganizationState;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
@@ -43,6 +46,9 @@ public class OrganizationService {
 
 	@Autowired
 	private OrganizationDao organizationDao;
+
+	@Autowired
+	private BindCardBusiness bindCardBusiness;
 
 	@Autowired
 	private DynamicQuerySqlDao dynamicQuerySqlDao;
@@ -225,6 +231,29 @@ public class OrganizationService {
 		Organization org = organizationDao.retrieve(id);
 		org.setName(name);
 		return organizationDao.update(org);
+	}
+
+	public BindCardDto getBindCard(Long orgId) {
+		List<BindCardDto> bindCardList = bindCardBusiness.listsByOrgId(orgId);
+		if (bindCardList != null && bindCardList.size() > 0) {
+			return bindCardList.get(bindCardList.size() - 1);
+		}
+		return null;
+	}
+
+	public BindCardDto bindCard(Long orgId, BindCardDto bindCardDto) {
+		if (bindCardDto.getId() != null && bindCardDto.getId() > 0) {
+			if (bindCardDto.getResourceType() == BindCardResourceType.ORGANIZATION
+					&& bindCardDto.getResourceId().longValue() == orgId.longValue()) {
+				return bindCardBusiness.revision(bindCardDto);
+			} else {
+				throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "错误的绑卡信息!");
+			}
+		} else {
+			bindCardDto.setResourceType(BindCardResourceType.ORGANIZATION);
+			bindCardDto.setResourceId(orgId);
+			return bindCardBusiness.save(bindCardDto);
+		}
 	}
 
 }

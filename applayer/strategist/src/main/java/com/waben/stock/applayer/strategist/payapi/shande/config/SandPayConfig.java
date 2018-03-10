@@ -32,11 +32,11 @@ public class SandPayConfig {
 //    /**
 //     * 回调地址
 //     */
-//    public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/quickpay/sdpaycallback";
+//    public static final String notifyUrl = "https://m.youguwang.com.cn/strategist/quickpay/sdpaycallback";
 //    /**
 //     * 页面通知地址
 //     */
-//    public static final String fontUrl = "https://m.youguwang.com.cn/tactics/quickpay/sdpayreturn";
+//    public static final String fontUrl = "https://m.youguwang.com.cn/strategist/quickpay/sdpayreturn";
 
     /**
      * 回调地址
