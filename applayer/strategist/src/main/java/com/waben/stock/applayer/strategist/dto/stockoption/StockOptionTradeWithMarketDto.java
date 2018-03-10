@@ -25,6 +25,10 @@ public class StockOptionTradeWithMarketDto extends StockOptionTradeDto {
 	 * 涨跌幅度
 	 */
 	private BigDecimal upDropSpeed;
+	/**
+	 * 0停牌，1正常
+	 */
+	private Integer stockStatus;
 
 	public BigDecimal getLastPrice() {
 		return lastPrice;
@@ -59,6 +63,14 @@ public class StockOptionTradeWithMarketDto extends StockOptionTradeDto {
 			}
 		}
 		return profit != null ? profit : new BigDecimal(0);
+	}
+
+	public Integer getStockStatus() {
+		return stockStatus;
+	}
+
+	public void setStockStatus(Integer stockStatus) {
+		this.stockStatus = stockStatus;
 	}
 
 }

@@ -105,6 +105,7 @@ public class StockOptionTradeBusiness {
 					record.setLastPrice(market.getLastPrice());
 					record.setUpDropPrice(market.getUpDropPrice());
 					record.setUpDropSpeed(market.getUpDropSpeed());
+					record.setStockStatus(market.getStatus());
 				}
 			}
 		}

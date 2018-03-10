@@ -1,7 +1,7 @@
 server:
-  port: 8008
+  port: 8010
 management:
-  port: 3008
+  port: 3010
   context-path: /turbine
 spring:
   mvc:

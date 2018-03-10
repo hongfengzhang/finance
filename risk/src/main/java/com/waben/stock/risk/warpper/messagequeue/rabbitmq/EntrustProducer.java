@@ -52,4 +52,12 @@ public class EntrustProducer extends RabbitMQProducer<SecuritiesStockEntrust> {
         super.topic("buyRecord", "waste", securitiesStockEntrust);
     }
 
+    /**
+     * 重新委托卖出
+     * @param securitiesStockEntrust
+     */
+    public void againEntrust(SecuritiesStockEntrust securitiesStockEntrust) {
+        logger.info("开始发送重新委托订单数据:{}",securitiesStockEntrust.getTradeNo());
+        super.topic("buyRecord", "again", securitiesStockEntrust);
+    }
 }

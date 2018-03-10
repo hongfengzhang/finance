@@ -87,7 +87,7 @@ public class StockOptionTradeController {
 			quote = quoteBusiness.quote(stockCode, 30);
 			if (quote != null) {
 				quote.setRightMoneyRatio(
-						quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.DOWN));
+						quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.HALF_UP));
 			}
 		}
 		if (quote == null) {
@@ -123,7 +123,7 @@ public class StockOptionTradeController {
 		if (quote == null && cycle.getCycle().intValue() == 14) {
 			quote = quoteBusiness.quote(stockCode, 30);
 			quote.setRightMoneyRatio(
-					quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.DOWN));
+					quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.HALF_UP));
 		}
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
@@ -135,7 +135,7 @@ public class StockOptionTradeController {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
-		BigDecimal rightMoney = nominalAmount.multiply(quote.getRightMoneyRatio()).setScale(2, RoundingMode.DOWN);
+		BigDecimal rightMoney = nominalAmount.multiply(quote.getRightMoneyRatio()).setScale(2, RoundingMode.HALF_UP);
 		if (rightMoney.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
