@@ -30,24 +30,24 @@ public class SandPayConfig {
      */
     public static final String goodsDesc = "快捷";
     //正式
-//    /**
-//     * 回调地址
-//     */
-//    public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/quickpay/sdpaycallback";
-//    /**
-//     * 页面通知地址
-//     */
-//    public static final String fontUrl = "https://m.youguwang.com.cn/tactics/quickpay/sdpayreturn";
-
-    //测试
     /**
      * 回调地址
      */
-    public static final String notifyUrl = "http://egdajc.natappfree.cc/quickpay/sdpaycallback";
+    public static final String notifyUrl = "https://m.youguwang.com.cn/tactics/quickpay/sdpaycallback";
     /**
      * 页面通知地址
      */
-    public static final String fontUrl = "http://egdajc.natappfree.cc/quickpay/sdpayreturn";
+    public static final String fontUrl = "https://m.youguwang.com.cn/tactics/quickpay/sdpayreturn";
+
+    //测试
+//    /**
+//     * 回调地址
+//     */
+//    public static final String notifyUrl = "http://egdajc.natappfree.cc/quickpay/sdpaycallback";
+//    /**
+//     * 页面通知地址
+//     */
+//    public static final String fontUrl = "http://egdajc.natappfree.cc/quickpay/sdpayreturn";
 
     //提现类型  0对私 1对公
     public static final String bankType = "0";
