@@ -79,6 +79,7 @@ public class StockOptionTradeService {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
 				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("sellingTime").as(Date.class)),
+						criteriaBuilder.desc(root.get("rightTime").as(Date.class)),
 						criteriaBuilder.desc(root.get("buyingTime").as(Date.class)),
 						criteriaBuilder.desc(root.get("applyTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
