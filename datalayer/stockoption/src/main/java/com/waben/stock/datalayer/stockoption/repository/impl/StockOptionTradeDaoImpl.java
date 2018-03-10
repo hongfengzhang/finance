@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.stockoption.repository.impl;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.repository.impl.jpa.StockOptionTradeRepository;
+import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,4 +51,8 @@ public class StockOptionTradeDaoImpl implements StockOptionTradeDao {
         return stockOptionTradeRepository.findAll();
     }
 
+    @Override
+    public List<StockOptionTrade> retieveByState(StockOptionTradeState stockOptionTradeState) {
+        return stockOptionTradeRepository.findByState(stockOptionTradeState);
+    }
 }

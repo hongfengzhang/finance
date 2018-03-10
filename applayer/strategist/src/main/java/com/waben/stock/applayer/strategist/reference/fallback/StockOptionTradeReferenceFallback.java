@@ -11,6 +11,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 
+import java.util.List;
+
 /**
  * 期权交易 reference服务接口fallback
  *
@@ -64,4 +66,8 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<List<StockOptionTradeDto>> stockOptionsWithState(Integer state) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

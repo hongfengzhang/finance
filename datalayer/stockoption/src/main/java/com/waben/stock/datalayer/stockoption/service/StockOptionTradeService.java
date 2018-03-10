@@ -306,4 +306,8 @@ public class StockOptionTradeService {
 		}
 	}
 
+	public List<StockOptionTrade> fetchByState(StockOptionTradeState stockOptionTradeState) {
+		List<StockOptionTrade> result = stockOptionTradeDao.retieveByState(stockOptionTradeState);
+		return result;
+	}
 }

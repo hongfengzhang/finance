@@ -9,6 +9,8 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class StockOptionTradeServiceFallback implements StockOptionTradeService{
     @Override
@@ -51,7 +53,12 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
-	@Override
+    @Override
+    public Response<List<StockOptionTradeDto>> stockOptionsWithState(Integer state) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
 	public Response<StockOptionTradeDto> fail(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

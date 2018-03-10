@@ -12,6 +12,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 
+import java.util.List;
+
 public interface StockOptionTradeInterface {
 
 	/**
@@ -63,4 +65,7 @@ public interface StockOptionTradeInterface {
 
 	@RequestMapping(value = "/exercise/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> exercise(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
+	Response<List<StockOptionTradeDto>> stockOptionsWithState(@PathVariable("state") Integer state);
 }
