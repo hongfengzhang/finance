@@ -38,7 +38,7 @@ public class Role {
     private Set<Permission> permissions = new HashSet<>();
 
     @Column
-    private Long institution;
+    private Long organization;
 
     public Long getId() {
         return id;
@@ -88,11 +88,11 @@ public class Role {
         this.code = code;
     }
 
-    public Long getInstitution() {
-        return institution;
+    public Long getOrganization() {
+        return organization;
     }
 
-    public void setInstitution(Long institution) {
-        this.institution = institution;
+    public void setOrganization(Long organization) {
+        this.organization = organization;
     }
 }
