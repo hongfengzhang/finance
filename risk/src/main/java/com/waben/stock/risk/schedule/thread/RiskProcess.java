@@ -83,7 +83,9 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 //                    riskBuyInStock.setWindControlType(WindControlType.LIMITDOWN.getIndex());
 //                }
 //            }else
-            upLimitPrice = lastPrice;
+//            upLimitPrice = lastPrice;
+//            stockMarket.setStatus(0);
+//            downLimitPrice = lastPrice;
             if(stockMarket.getStatus()==0||lastPrice.compareTo(downLimitPrice)==0||lastPrice.compareTo(upLimitPrice)==0) {
                 if(lastPrice.compareTo(upLimitPrice)==0) {
                     logger.info("股票已涨停：{}",riskBuyInStock.getStockName());
