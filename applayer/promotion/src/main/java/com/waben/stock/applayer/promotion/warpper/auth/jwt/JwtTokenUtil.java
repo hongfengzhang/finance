@@ -1,6 +1,6 @@
 package com.waben.stock.applayer.promotion.warpper.auth.jwt;
 
-import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
+import com.waben.stock.applayer.promotion.warpper.auth.AccountCredentials;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
