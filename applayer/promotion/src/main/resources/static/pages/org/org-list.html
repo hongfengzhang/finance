@@ -77,69 +77,6 @@
 		<!-- 内容主体 -->
 		<div class="layui-body">
 			<div style="padding: 25px 25px;">
-				<!-- 
-				<div class="layui-form">
-					<form id="search-form">
-						<div class="layui-form-item mb5">
-							<div class="layui-inline">
-								<label class="layui-form-label width60 plr0 mr5 blue-color">机构代码</label>
-								<div class="layui-input-inline width150">
-									<input name="code" type="text" class="layui-input">
-								</div>
-							</div>
-							<div class="layui-inline">
-								<label class="layui-form-label width60 plr0 mr5 blue-color">机构类型</label>
-								<div class="layui-input-inline">
-									<select name="categoryId">
-										<option value="0" selected>全部</option>
-										<option value="1">平台</option>
-										<option value="2">运营中心</option>
-										<option value="3">会员</option>
-									</select>
-									<div class="layui-unselect layui-form-select layui-form-selected">
-										<div class="layui-select-title">
-											<input type="text" placeholder="请选择机构类型" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
-										</div>
-										<dl class="layui-anim layui-anim-upbit" style="">
-											<dd lay-value="0" class="">全部</dd>
-											<dd lay-value="1" class="">平台</dd>
-											<dd lay-value="2" class="">运营中心</dd>
-											<dd lay-value="3" class="">会员</dd>
-										</dl>
-									</div>
-								</div>
-							</div>
-							<div class="layui-inline">
-								<label class="layui-form-label width60 plr0 mr5 blue-color">机构状态</label>
-								<div class="layui-input-inline">
-									<select name="state">
-										<option value="0">全部</option>
-										<option value="1" selected>正常</option>
-										<option value="2">冻结</option>
-										<option value="3">注销</option>
-									</select>
-									<div class="layui-unselect layui-form-select layui-form-selected">
-										<div class="layui-select-title">
-											<input type="text" placeholder="请选择机构状态" readonly="" class="layui-input layui-unselect"><i class="layui-edge"></i>
-										</div>
-										<dl class="layui-anim layui-anim-upbit" style="">
-											<dd lay-value="0" class="">全部</dd>
-											<dd lay-value="1" class="">正常</dd>
-											<dd lay-value="2" class="">冻结</dd>
-											<dd lay-value="3" class="">注销</dd>
-										</dl>
-									</div>
-								</div>
-							</div>
-							<div class="layui-inline">
-								<button type="button" id="search-btn" class="layui-btn mb5">查　询</button>
-								<button type="button" id="add-btn" class="layui-btn mb5">添　加</button>
-								<button class="layui-btn mb5">导　出</button>
-							</div>		
-						</div>
-					</form>
-				</div>
-				 -->
 				<div class="layui-row">
 					<div class="layui-col-md2">
 						<div style="height: 550px; border: 1px solid #ddd;margin-right: 20px;">
@@ -147,11 +84,9 @@
 						</div>
 					</div>
 					<div class="layui-col-md10">
-						<div class="layui-form-item mb5">
-							<div class="layui-inline">
-								<button type="button" id="add-btn" class="layui-btn mb5">添　加</button>
-								<!-- <button class="layui-btn mb5">导　出</button>  -->
-							</div>
+						<div class="layui-inline" id="top-btn-list" style="display: none;">
+							<button type="button" id="add-btn" class="layui-btn mb5">添　加</button>
+							<!-- <button class="layui-btn mb5">导　出</button>  -->
 						</div>
 						<table id="org-list-table" class="table table-striped table-bordered" width="100%"></table>
 					</div>

@@ -11,7 +11,7 @@ $(function() {
 	// 初始化配资分成比例表格
 	$.ajax({
         type: "GET",
-        url: "/benefitConfig/benefitConfigList?orgId=" + parent.currentOrgId + "&resourceType=1",
+        url: "/promotion/benefitConfig/benefitConfigList?orgId=" + parent.currentOrgId + "&resourceType=1",
         dataType: "json",
         success: function (jsonResult) {
         	if(jsonResult.code == "200") {
@@ -32,7 +32,7 @@ $(function() {
 	// 初始化期权分成比例表格
 	$.ajax({
         type: "GET",
-        url: "/benefitConfig/benefitConfigList?orgId=" + parent.currentOrgId + "&resourceType=2",
+        url: "/promotion/benefitConfig/benefitConfigList?orgId=" + parent.currentOrgId + "&resourceType=2",
         dataType: "json",
         success: function (jsonResult) {
         	if(jsonResult.code == "200") {
@@ -78,7 +78,7 @@ $(function() {
 		// 发送请求
 		$.ajax({
             type: "POST",
-            url: "/benefitConfig/strategy/config",
+            url: "/promotion/benefitConfig/strategy/config",
             contentType: "application/json;charset=UTF-8",
             dataType: "json",
             data: JSON.stringify(configFormList),
@@ -109,7 +109,7 @@ $(function() {
 		// 发送请求
 		$.ajax({
             type: "POST",
-            url: "/benefitConfig/stockoption/config",
+            url: "/promotion/benefitConfig/stockoption/config",
             contentType: "application/json;charset=UTF-8",
             dataType: "json",
             data: JSON.stringify(configFormList),

@@ -18,4 +18,6 @@ public interface OrganizationRepository extends CustomJpaRepository<Organization
 
 	List<Organization> findByParent(Organization parent, Sort sort);
 
+	Organization findByCode(String orgCode);
+
 }

@@ -15,7 +15,7 @@ $(function() {
 		var formData = $("#name-modify-form").serialize();
 		$.ajax({
             type: "POST",
-            url: "/organization/modifyName",
+            url: "/promotion/organization/modifyName",
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             dataType: "json",
             data: formData,
@@ -40,7 +40,7 @@ $(function() {
 	// 初始加载结构信息
 	$.ajax({
         type: "GET",
-        url: "/organization/detail?orgId=" + currentOrgId,
+        url: "/promotion/organization/detail?orgId=" + currentOrgId,
         dataType: "json",
         success: function (jsonResult) {
         	if("200" == jsonResult.code) {
@@ -63,15 +63,15 @@ $(function() {
 	// 初始加载绑卡信息
 	$.ajax({
         type: "GET",
-        url: "/organization/" + currentOrgId + "/bindcard",
+        url: "/promotion/organization/" + currentOrgId + "/bindcard",
         dataType: "json",
         success: function (jsonResult) {
         	if("200" == jsonResult.code) {
         		var bindcard = jsonResult.result;
         		if(bindcard) {
-        			for(var prop in org) {
+        			for(var prop in bindcard) {
             			$('.bindcard input[data="' + prop + '"]').each(function(i){
-            				$(this).val(org[prop]);
+            				$(this).val(bindcard[prop]);
             			});
             		}
         		}
@@ -85,7 +85,7 @@ $(function() {
 		var formData = $("#bind-card-form").serialize();
 		$.ajax({
             type: "POST",
-            url: "/organization/" + currentOrgId + "/bindcard",
+            url: "/promotion/organization/" + currentOrgId + "/bindcard",
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             dataType: "json",
             data: formData,

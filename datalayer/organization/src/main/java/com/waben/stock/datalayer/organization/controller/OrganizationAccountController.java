@@ -54,7 +54,7 @@ public class OrganizationAccountController {
 	public Response<List<OrganizationAccount>> list() {
 		return new Response<>(organizationAccountService.list());
 	}
-	
+
 	/******************************** 后台管理 **********************************/
 	
 	@PostMapping("/")
