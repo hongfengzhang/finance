@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.manage.service;
 
+import com.waben.stock.datalayer.manage.entity.Menu;
+import com.waben.stock.datalayer.manage.entity.Permission;
 import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.repository.RoleDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -80,5 +82,31 @@ public class RoleService {
 
     public List<Role> findRoles() {
         return roleDao.list();
+    }
+
+    public Role saveRoleMenu(Long id, Long[] menuIds) {
+        Role role = roleDao.retrieve(id);
+        Menu menu = new Menu();
+        if (role == null) {
+            throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
+        }
+        for(Long menuId : menuIds) {
+            menu.setId(menuId);
+            role.getMenus().add(menu);
+        }
+        return roleDao.update(role);
+    }
+
+    public Role saveRolePermission(Long id, Long[] permissionIds) {
+        Role role = roleDao.retrieve(id);
+        Permission permission = new Permission();
+        if (role == null) {
+            throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
+        }
+        for(Long permissionId : permissionIds) {
+            permission.setId(permissionId);
+            role.getPermissions().add(permission);
+        }
+        return roleDao.update(role);
     }
 }

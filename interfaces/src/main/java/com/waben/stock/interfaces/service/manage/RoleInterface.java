@@ -41,4 +41,10 @@ public interface RoleInterface {
     Response<RoleDto> add(RoleDto roleDto);
     @RequestMapping(value = "/")
     Response<List<RoleDto>> fetchRoles();
+
+    @RequestMapping(value = "/menu/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<RoleDto> addRoleMenu(@PathVariable("id") Long id,@RequestBody Long[] menuIds);
+
+    @RequestMapping(value = "/permission/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<RoleDto> addRolePermission(Long id, Long[] permissionIds);
 }
