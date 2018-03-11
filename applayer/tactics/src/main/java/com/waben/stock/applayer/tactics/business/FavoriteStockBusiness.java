@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.publisher.FavoriteStockWithMarketDto;
 import com.waben.stock.applayer.tactics.reference.FavoriteStockReference;
-import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;

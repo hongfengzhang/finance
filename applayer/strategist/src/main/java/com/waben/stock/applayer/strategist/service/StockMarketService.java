@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.strategist.dto.system.StockMarketExponentDto;
-import com.waben.stock.applayer.strategist.retrivestock.RetriveStockOverHttp;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockExponentVariety;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockExponentVariety;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 
 /**
  * 股票行情 Service

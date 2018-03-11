@@ -7,7 +7,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.strategist.dto.system.StockMarketExponentDto;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockTimeLine;
 
 @Component
 public class StockMarketWebsocket {

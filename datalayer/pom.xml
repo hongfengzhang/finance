@@ -22,7 +22,7 @@
         <module>buyrecord</module><!--8007-->
         <module>message</module><!--8008-->
         <module>stockoption</module> <!--8009-->
-        <module>institution</module><!--8010-->
+        <module>organization</module><!--8010-->
     </modules>
 
     <properties>
