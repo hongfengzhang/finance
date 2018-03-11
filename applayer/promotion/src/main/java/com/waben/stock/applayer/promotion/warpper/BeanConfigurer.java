@@ -60,13 +60,14 @@ public class BeanConfigurer {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
-	@Bean
-	public ManagerAuthenticationProvider managerAuthenticationProvider() {
-		ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider
-				(passwordEncoder());
-		managerAuthenticationProvider.setUserDetailsService(null);
-		return managerAuthenticationProvider;
-	}
+	
+//	@Bean
+//	public ManagerAuthenticationProvider managerAuthenticationProvider() {
+//		ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider
+//				(passwordEncoder());
+//		managerAuthenticationProvider.setUserDetailsService(null);
+//		return managerAuthenticationProvider;
+//	}
 
 
 	@Bean

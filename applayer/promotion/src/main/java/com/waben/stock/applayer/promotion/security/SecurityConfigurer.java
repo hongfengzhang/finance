@@ -41,8 +41,8 @@ import javax.annotation.Resource;
 public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     private static final String LOGIN_ENTRY_POINT = "/login";
-    @Autowired
-    private ManagerAuthenticationProvider managerAuthenticationProvider;
+//    @Autowired
+//    private ManagerAuthenticationProvider managerAuthenticationProvider;
     @Autowired
     private LoginSuccessHandler successHandler;
     @Autowired
@@ -78,8 +78,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/file/upload", "/websocket/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .antMatchers(HttpMethod.POST, "/file/**").permitAll()
-                .anyRequest().authenticated()
-//                .anyRequest().permitAll()
+//                .anyRequest().authenticated()
+                .anyRequest().permitAll()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
 //                    .successForwardUrl("/index")
                 .and().logout().invalidateHttpSession(false).logoutUrl("/logout").logoutSuccessHandler(new LogoutSuccessHandler())
@@ -117,7 +117,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(managerAuthenticationProvider);
+//        auth.authenticationProvider(managerAuthenticationProvider);
         auth.eraseCredentials(false);
     }
 
