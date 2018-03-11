@@ -16,7 +16,7 @@ $(function() {
 		searchData.size = 10;
 		$.ajax({
             type: "POST",
-            url: "/promotionBuyRecord/adminPage",
+            url: "/promotion/promotionBuyRecord/adminPage",
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(searchData),
