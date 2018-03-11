@@ -20,13 +20,13 @@ import com.waben.stock.applayer.strategist.dto.stockcontent.StockMarketWithFavor
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.strategist.reference.FavoriteStockReference;
 import com.waben.stock.applayer.strategist.reference.StockReference;
-import com.waben.stock.applayer.strategist.retrivestock.RetriveStockOverHttp;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockKLine;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.applayer.strategist.service.RedisCache;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
+import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockKLine;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockTimeLine;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;

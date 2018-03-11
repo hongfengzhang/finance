@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
-import com.waben.stock.applayer.strategist.retrivestock.RetriveStockOverHttp;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.strategist.websocket.StockMarketWebsocket;
 import com.waben.stock.applayer.strategist.websocket.config.Cache;
+import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockTimeLine;
 
 /**
  * 推送股票分时图作业

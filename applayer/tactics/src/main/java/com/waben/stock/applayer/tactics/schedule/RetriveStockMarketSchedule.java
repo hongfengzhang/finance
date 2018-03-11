@@ -10,9 +10,9 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
 import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.applayer.tactics.service.StockMarketService;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 import com.waben.stock.interfaces.util.JacksonUtil;
 

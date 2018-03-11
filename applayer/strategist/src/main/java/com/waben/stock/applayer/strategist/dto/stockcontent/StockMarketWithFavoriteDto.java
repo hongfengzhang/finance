@@ -1,6 +1,6 @@
 package com.waben.stock.applayer.strategist.dto.stockcontent;
 
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 
 /**
  * 股票行情和是否收藏
