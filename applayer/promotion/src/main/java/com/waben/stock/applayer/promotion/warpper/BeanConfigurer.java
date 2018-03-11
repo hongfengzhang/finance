@@ -64,7 +64,7 @@ public class BeanConfigurer {
 	public ManagerAuthenticationProvider managerAuthenticationProvider() {
 		ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider
 				(passwordEncoder());
-//		managerAuthenticationProvider.setUserDetailsService(managerUserDetailService);
+		managerAuthenticationProvider.setUserDetailsService(null);
 		return managerAuthenticationProvider;
 	}
 
