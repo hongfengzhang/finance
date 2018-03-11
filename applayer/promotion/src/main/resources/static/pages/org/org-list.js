@@ -15,7 +15,7 @@ $(function() {
 		searchData.size = 10;
 		$.ajax({
             type: "POST",
-            url: "/organization/adminPage",
+            url: "/promotion/organization/adminPage",
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(searchData),
@@ -127,7 +127,7 @@ $(function() {
 		},
 		async: {
 			enable: true,
-			url: "/organization/adminTree?orgId=" + currentOrgId,
+			url: "/promotion/organization/adminTree?orgId=" + currentOrgId,
 			dataType: "json",
 			type: "get"
 		},
@@ -136,8 +136,10 @@ $(function() {
 			onClick: function(event,treeId,treeNode) {
 				if(treeNode.id == 0) {
 					searchData.onlyLoginOrg = true;
+					$("#top-btn-list").css("display", "none");
 				} else {
 					searchData.onlyLoginOrg = false;
+					$("#top-btn-list").css("display", "");
 				}
 				searchData.parentId = treeNode.id;
 				renderTable("#org-list-table");

@@ -80,4 +80,16 @@ public class RoleController implements RoleInterface {
                 RoleDto.class);
         return new Response<>(roleDtos);
     }
+
+    @Override
+    public Response<RoleDto> addRoleMenu(@PathVariable Long id, @RequestBody Long[] menuIds) {
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.saveRoleMenu(id,menuIds),false);
+        return new Response<>(result);
+    }
+
+    @Override
+    public Response<RoleDto> addRolePermission(Long id, Long[] permissionIds) {
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.saveRolePermission(id,permissionIds),false);
+        return new Response<>(result);
+    }
 }

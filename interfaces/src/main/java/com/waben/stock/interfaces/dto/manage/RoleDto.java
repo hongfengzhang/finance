@@ -15,7 +15,7 @@ public class RoleDto implements Serializable{
     private String description;
     private Set<PermissionDto> permissionDtos;
     private Set<MenuDto> menusDtos;
-
+    private Long organization;
     public Long getId() {
         return id;
     }
@@ -72,4 +72,11 @@ public class RoleDto implements Serializable{
         this.menusDtos = menus;
     }
 
+    public Long getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(Long organization) {
+        this.organization = organization;
+    }
 }

@@ -16,4 +16,6 @@ public interface OrganizationDao extends BaseDao<Organization, Long> {
 
 	List<Organization> listByParentOrderByCodeDesc(Organization parent);
 
+	Organization retrieveByCode(String orgCode);
+
 }

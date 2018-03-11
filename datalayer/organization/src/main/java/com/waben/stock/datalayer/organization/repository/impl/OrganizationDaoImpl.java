@@ -73,4 +73,9 @@ public class OrganizationDaoImpl implements OrganizationDao {
 		return repository.findByParent(parent, new Sort(new Sort.Order(Direction.DESC, "code")));
 	}
 
+	@Override
+	public Organization retrieveByCode(String orgCode) {
+		return repository.findByCode(orgCode);
+	}
+
 }

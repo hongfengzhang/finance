@@ -96,7 +96,7 @@ public class OrganizationController implements OrganizationInterface {
 	}
 
 	@Override
-	public Response<OrganizationDto> addition(OrganizationForm orgForm) {
+	public Response<OrganizationDto> addition(@RequestBody OrganizationForm orgForm) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,
 				organizationService.addOrganization(orgForm), false));
 	}
@@ -121,13 +121,12 @@ public class OrganizationController implements OrganizationInterface {
 	}
 
 	@Override
-	public Response<OrganizationDetailDto> detail(@RequestParam(required = true) Long orgId) {
+	public Response<OrganizationDetailDto> detail(Long orgId) {
 		return new Response<>(organizationService.detail(orgId));
 	}
 
 	@Override
-	public Response<OrganizationDto> modifyName(@RequestParam(required = true) Long id,
-			@RequestParam(required = true) String name) {
+	public Response<OrganizationDto> modifyName(Long id, String name) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,
 				organizationService.modifyName(id, name), false));
 	}
