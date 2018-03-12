@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
+import com.waben.stock.interfaces.service.organization.OrganizationAccountFlowInterface;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,8 +21,13 @@ public class OrganizationAccountFlowController {
     @Autowired
     public OrganizationAccountFlowBusiness organizationAccountFlowBusiness;
 
-    @RequestMapping(value = "/pages", method = RequestMethod.GET)
-    public Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query) {
+    @RequestMapping("/pages")
+    public Response<PageInfo<OrganizationAccountFlowDto>> pages(OrganizationAccountFlowQuery query) {
         return new Response<>(organizationAccountFlowBusiness.pages(query));
+    }
+
+    @RequestMapping("/childpages")
+    public Response<PageInfo<OrganizationAccountFlowDto>> childPages(OrganizationAccountFlowQuery query) {
+        return new Response<>(organizationAccountFlowBusiness.childPages(query));
     }
 }
