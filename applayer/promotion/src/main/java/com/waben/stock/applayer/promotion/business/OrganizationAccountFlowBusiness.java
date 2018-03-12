@@ -11,6 +11,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 
+import java.util.List;
+
 @Service
 public class OrganizationAccountFlowBusiness {
 
@@ -28,6 +30,14 @@ public class OrganizationAccountFlowBusiness {
 
     public PageInfo<OrganizationAccountFlowDto> childPages(OrganizationAccountFlowQuery query) {
         Response<PageInfo<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.childpages(query);
+        if ("200".equals(response.getCode())) {
+            return response.getResult();
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public List<OrganizationAccountFlowDto> list(){
+        Response<List<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.list();
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }

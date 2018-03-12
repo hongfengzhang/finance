@@ -10,6 +10,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 
+import java.util.List;
+
 @Component
 public class OrganizationAccountFlowFallback implements OrganizationAccountFlowReference {
     @Override
@@ -21,4 +23,10 @@ public class OrganizationAccountFlowFallback implements OrganizationAccountFlowR
     public Response<PageInfo<OrganizationAccountFlowDto>> childpages(OrganizationAccountFlowQuery query) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<List<OrganizationAccountFlowDto>> list() {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 }

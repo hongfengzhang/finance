@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlowDao;
 
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 
 /**
@@ -52,23 +54,18 @@ public class OrganizationAccountFlowService {
         Page<OrganizationAccountFlow> pages = organizationAccountFlowDao.page(new Specification<OrganizationAccountFlow>() {
             @Override
             public Predicate toPredicate(Root<OrganizationAccountFlow> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicateList = new ArrayList<>();
+                List<Predicate> predicates = new ArrayList<>();
                 if (query.getOrgId() != null) {
                     Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
-                    predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrgId()));
+                    predicates.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrgId()));
                 }
-//                Organization organization = new Organization();
-//                organization.setId(query.getOrgId());
-//                if (query.getOrgId() != null) {
-//                    predicateList.add(criteriaBuilder.equal(root.get("org"), organization));
-//                }
                 if (!StringUtils.isBlank(query.getFlowNo())) {
-                    predicateList.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
+                    predicates.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
                 }
-                if (query.getStrategyTypeId() != null) {
-                    predicateList.add(criteriaBuilder.equal(root.get("resourceType"), query.getStrategyTypeId()));
+                if (query.getResourceType() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("resourceType"), query.getResourceType()));
                 }
-                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);
@@ -78,20 +75,21 @@ public class OrganizationAccountFlowService {
     //查询所有流水
     @Transactional
     public Page<OrganizationAccountFlow> pagesByOrgParentQuery(final OrganizationAccountFlowQuery query) {
-        Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+        final Pageable pageable = new PageRequest(query.getPage(), query.getSize());
         Page<OrganizationAccountFlow> pages = organizationAccountFlowDao.page(new Specification<OrganizationAccountFlow>() {
             @Override
             public Predicate toPredicate(Root<OrganizationAccountFlow> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-                List<Predicate> predicateList = new ArrayList<>();
+                List<Predicate> predicates = new ArrayList<>();
                 if (!StringUtils.isBlank(query.getFlowNo())) {
-                    predicateList.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
+                    predicates.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
                 }
-                if (query.getStrategyTypeId() != null) {
-                    predicateList.add(criteriaBuilder.equal(root.get("resourceType"), query.getStrategyTypeId()));
+                if (query.getResourceType() != null) {
+                    predicates.add(criteriaBuilder.equal(root.get("resourceType"), query.getResourceType()));
                 }
+//                criteriaQuery.select(root.<Long>get("amount"));
+//                criteriaQuery.multiselect(criteriaBuilder.tuple(criteriaBuilder.sum(root.get("amount")),""));
                 criteriaQuery.groupBy(root.get("org"));
-//                criteriaQuery.select(criteriaBuilder.sumAsDouble(root.get("amount")));
-                criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+                criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
                 return criteriaQuery.getRestriction();
             }
         }, pageable);

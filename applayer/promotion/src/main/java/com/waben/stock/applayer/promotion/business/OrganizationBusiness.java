@@ -2,6 +2,7 @@ package com.waben.stock.applayer.promotion.business;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,14 @@ public class OrganizationBusiness {
 
 	public PageInfo<OrganizationDto> adminPage(OrganizationQuery query) {
 		Response<PageInfo<OrganizationDto>> response = reference.adminPage(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<OrganizationVo> pages(OrganizationQuery query) {
+		Response<PageInfo<OrganizationVo>> response = reference.pages(query);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
