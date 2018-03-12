@@ -26,6 +26,7 @@ public class PayConfig {
      */
 //    public static final String qq_return_url = "http://egdajc.natappfree.cc/quickpay/qqcallback";
 //    public static final String jd_return_url = "http://egdajc.natappfree.cc/quickpay/jdcallback";
+
     public static final String qq_return_url = "https://m.youguwang.com.cn/tactics/quickpay/qqcallback";
     public static final String jd_return_url = "https://m.youguwang.com.cn/tactics/quickpay/jdcallback";
     /**
@@ -45,6 +46,7 @@ public class PayConfig {
      */
 //    public static final String qq_front_skip_url = "http://egdajc.natappfree.cc/quickpay/qqpayreturn";
 //    public static final String jd_front_skip_url = "http://egdajc.natappfree.cc/quickpay/jdpayreturn";
+
     public static final String qq_front_skip_url = "https://m.youguwang.com.cn/tactics/quickpay/qqpayreturn";
     public static final String jd_front_skip_url = "https://m.youguwang.com.cn/tactics/quickpay/jdpayreturn";
     /**

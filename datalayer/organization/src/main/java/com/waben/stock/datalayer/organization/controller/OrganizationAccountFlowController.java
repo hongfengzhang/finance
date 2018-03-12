@@ -6,6 +6,8 @@ import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationAccountFlowInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,8 +51,10 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
 
     @GetMapping("/list")
     @ApiOperation(value = "获取机构账户流水列表")
-    public Response<List<OrganizationAccountFlow>> list() {
-        return new Response<>(organizationAccountFlowService.list());
+    public Response<List<OrganizationAccountFlowDto>> list() {
+//        System.out.println(JacksonUtil.encode(organizationAccountFlowService.list()));
+        return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(organizationAccountFlowService.list(),
+                OrganizationAccountFlowDto.class));
     }
 
     /**
@@ -59,6 +63,13 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
     @Override
     public Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query) {
         Page<OrganizationAccountFlow> page = organizationAccountFlowService.pagesByQuery(query);
+        PageInfo<OrganizationAccountFlowDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountFlowDto.class);
+        return new Response<>(result);
+    }
+
+    @Override
+    public Response<PageInfo<OrganizationAccountFlowDto>> childpages(@RequestBody OrganizationAccountFlowQuery query) {
+        Page<OrganizationAccountFlow> page = organizationAccountFlowService.pagesByOrgParentQuery(query);
         PageInfo<OrganizationAccountFlowDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountFlowDto.class);
         return new Response<>(result);
     }
@@ -96,4 +107,5 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
     public Response<List<OrganizationAccountFlow>> adminList() {
         return new Response<>(organizationAccountFlowService.list());
     }
+
 }

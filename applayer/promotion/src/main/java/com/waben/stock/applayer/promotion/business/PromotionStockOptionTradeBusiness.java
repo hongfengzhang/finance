@@ -1,15 +1,14 @@
 package com.waben.stock.applayer.promotion.business;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
 import com.waben.stock.applayer.promotion.service.organization.PromotionStockOptionTradeService;
 import com.waben.stock.interfaces.dto.organization.PromotionStockOptionTradeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.PromotionStockOptionTradeQuery;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 /**
  * 推广渠道产生的期权交易 Business

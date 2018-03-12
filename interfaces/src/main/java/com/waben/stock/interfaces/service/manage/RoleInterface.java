@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/16.
@@ -28,6 +27,7 @@ public interface RoleInterface {
 
     @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<RoleDto>> pages(@RequestBody RoleQuery query);
+
     @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
     Response<RoleDto> fetchById(@PathVariable("id") Long id);
 

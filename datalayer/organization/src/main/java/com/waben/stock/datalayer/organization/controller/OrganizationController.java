@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.organization.controller;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +62,8 @@ public class OrganizationController implements OrganizationInterface {
 		return new Response<>((Page<Organization>) organizationService.organizations(page, limit));
 	}
 
+
+
 	@GetMapping("/list")
 	@ApiOperation(value = "获取机构列表")
 	public Response<List<Organization>> list() {
@@ -108,6 +111,8 @@ public class OrganizationController implements OrganizationInterface {
 		return new Response<>(result);
 	}
 
+
+
 	@Override
 	public List<TreeNode> adminTree(@RequestParam(required = true) Long orgId) {
 		return organizationService.adminTree(orgId);
@@ -141,4 +146,10 @@ public class OrganizationController implements OrganizationInterface {
 		return new Response<>(organizationService.bindCard(orgId, bindCardDto));
 	}
 
+	@Override
+	public Response<PageInfo<OrganizationVo>> pages(@RequestBody OrganizationQuery query) {
+		Page<Organization> page = organizationService.pagesByQuery(query);
+		PageInfo<OrganizationVo> result = PageToPageInfo.pageToPageInfo(page, OrganizationVo.class);
+		return new Response<>(result);
+	}
 }

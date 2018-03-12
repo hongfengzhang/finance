@@ -16,7 +16,7 @@ import com.waben.stock.interfaces.service.organization.OrganizationSettlementInt
 import io.swagger.annotations.Api;
 
 /**
- * 结算 Controller
+ * 机构结算 Controller
  * 
  * @author luomengan
  *

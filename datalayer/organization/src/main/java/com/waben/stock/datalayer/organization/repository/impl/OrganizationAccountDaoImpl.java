@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccount;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountDao;
 import com.waben.stock.datalayer.organization.repository.impl.jpa.OrganizationAccountRepository;
@@ -58,6 +59,11 @@ public class OrganizationAccountDaoImpl implements OrganizationAccountDao {
 	@Override
 	public List<OrganizationAccount> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public OrganizationAccount retrieveByOrg(Organization org) {
+		return repository.findByOrg(org);
 	}
 
 }

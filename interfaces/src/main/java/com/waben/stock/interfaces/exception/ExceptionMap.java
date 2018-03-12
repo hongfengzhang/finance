@@ -80,6 +80,8 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "机构类别不存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND, "机构用户不存在");
 
+		exceptionMap.put(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION, "原始支付密码不匹配");
+
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION, "期权交易状态不匹配，不支持该操作");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION, "自主行权发布人不匹配，不支持该操作");

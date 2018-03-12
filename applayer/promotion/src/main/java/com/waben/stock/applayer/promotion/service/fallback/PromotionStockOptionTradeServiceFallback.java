@@ -1,7 +1,5 @@
 package com.waben.stock.applayer.promotion.service.fallback;
 
-import org.springframework.stereotype.Component;
-
 import com.waben.stock.applayer.promotion.service.organization.PromotionStockOptionTradeService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.PromotionStockOptionTradeDto;
@@ -9,6 +7,7 @@ import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.PromotionStockOptionTradeQuery;
+import org.springframework.stereotype.Component;
 
 /**
  * 推广渠道产生的期权交易 reference服务接口fallback
