@@ -1,5 +1,4 @@
 package com.waben.stock.applayer.promotion.reference.manage;
-
 import com.waben.stock.applayer.promotion.reference.fallback.MenuReferenceFallback;
 import com.waben.stock.interfaces.service.manage.MenuInterface;
 import org.springframework.cloud.netflix.feign.FeignClient;

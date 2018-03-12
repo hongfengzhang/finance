@@ -72,6 +72,32 @@ public class OrganizationAccountFlowService {
 		},pageable);
 		return pages;
 	}
+
+	@Transactional
+	public Page<OrganizationAccountFlow> pagesByQuery1(final OrganizationAccountFlowQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<OrganizationAccountFlow> pages = organizationAccountFlowDao.page(new Specification<OrganizationAccountFlow>() {
+			@Override
+			public Predicate toPredicate(Root<OrganizationAccountFlow> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<>();
+				Organization organization = new Organization();
+				Organization organization1 = new Organization();
+				organization1.setId(query.getOrgId());
+				organization.setParent(organization1);
+				if (query.getOrgId()!=null){
+					predicateList.add(criteriaBuilder.equal(root.get("org"), organization));
+				}
+				if (!StringUtils.isBlank(query.getFlowNo())){
+					predicateList.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
+				}
+				if (query.getStrategyTypeId()!=null){
+					predicateList.add(criteriaBuilder.equal(root.get("resourceType"), query.getStrategyTypeId()));
+				}
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+		return pages;
+	}
 	@Transactional
 	public void deleteOrganizationAccountFlow(Long id) {
 		organizationAccountFlowDao.delete(id);

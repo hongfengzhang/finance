@@ -31,7 +31,7 @@ public class UserController {
         return new Response<>(userVo);
     }
 
-    @RequestMapping("/role/{id}")
+    @RequestMapping("/{id}/role")
     @ResponseBody
     public Response<UserVo> addRoleMenu(@PathVariable Long id, Long[] roleIds){
         UserDto userDto = userBusiness.saveUserRole(id,roleIds);
