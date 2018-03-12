@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.service.organization.CustomerService;
+import com.waben.stock.applayer.promotion.reference.organization.CustomerReference;
 import com.waben.stock.interfaces.dto.organization.CustomerDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -22,7 +22,7 @@ public class CustomerBusiness {
 
 	@Autowired
 	@Qualifier("customerReference")
-	private CustomerService reference;
+	private CustomerReference reference;
 
 	public PageInfo<CustomerDto> adminPage(CustomerQuery query) {
 		Response<PageInfo<CustomerDto>> response = reference.adminPage(query);

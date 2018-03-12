@@ -1,18 +1,19 @@
-package com.waben.stock.applayer.promotion.service.fallback;
+package com.waben.stock.applayer.promotion.reference.fallback;
 
-import com.waben.stock.applayer.promotion.service.manage.PermissionService;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.waben.stock.applayer.promotion.reference.manage.PermissionReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PermissionQuery;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
-public class PermissionServiceFallback implements PermissionService {
+public class PermissionReferenceFallback implements PermissionReference {
 
     @Override
     public Response<PermissionDto> permission(Long id) {

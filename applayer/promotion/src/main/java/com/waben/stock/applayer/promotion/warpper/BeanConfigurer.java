@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.waben.stock.applayer.promotion.business.securitity.UserDetailService;
+import com.waben.stock.applayer.promotion.business.security.UserDetailService;
 import com.waben.stock.applayer.promotion.warpper.auth.provider.ManagerAuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

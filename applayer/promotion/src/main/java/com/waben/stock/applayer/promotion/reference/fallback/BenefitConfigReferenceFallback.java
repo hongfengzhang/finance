@@ -1,10 +1,10 @@
-package com.waben.stock.applayer.promotion.service.fallback;
+package com.waben.stock.applayer.promotion.reference.fallback;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.promotion.service.organization.BenefitConfigService;
+import com.waben.stock.applayer.promotion.reference.organization.BenefitConfigReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.BenefitConfigDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -17,7 +17,7 @@ import com.waben.stock.interfaces.pojo.form.organization.BenefitConfigForm;
  * @author luomengan
  */
 @Component
-public class BenefitConfigServiceFallback implements BenefitConfigService {
+public class BenefitConfigReferenceFallback implements BenefitConfigReference {
 
 	@Override
 	public Response<List<BenefitConfigDto>> benefitConfigList(Long orgId, Integer resourceType) {

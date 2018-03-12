@@ -1,12 +1,10 @@
-package com.waben.stock.applayer.promotion.service.fallback;
+package com.waben.stock.applayer.promotion.reference.fallback;
 
 import java.util.List;
 
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.promotion.service.organization.OrganizationService;
-
+import com.waben.stock.applayer.promotion.reference.organization.OrganizationReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -17,6 +15,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 
 /**
  * 机构 reference服务接口fallback
@@ -24,7 +23,7 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
  * @author luomengan
  */
 @Component
-public class OrganizationServiceFallback implements OrganizationService {
+public class OrganizationReferenceFallback implements OrganizationReference {
 
 	@Override
 	public Response<OrganizationDto> addition(OrganizationForm orgForm) {

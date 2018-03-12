@@ -1,21 +1,22 @@
-package com.waben.stock.applayer.promotion.service.fallback;
+package com.waben.stock.applayer.promotion.reference.fallback;
 
-import com.waben.stock.applayer.promotion.service.organization.UserService;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.waben.stock.applayer.promotion.reference.organization.UserReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Created by yuyidi on 2018/3/12.
  * @desc
  */
 @Component
-public class UserServiceFallback implements UserService {
+public class UserReferenceFallback implements UserReference {
 
     @Override
     public Response<UserDto> fetchById(Long id) {

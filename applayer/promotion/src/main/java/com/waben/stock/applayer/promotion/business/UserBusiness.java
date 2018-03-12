@@ -1,21 +1,22 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.service.organization.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.waben.stock.applayer.promotion.reference.organization.UserReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserBusiness {
 
     @Autowired
     @Qualifier("userFeignService")
-    private UserService userReference;
+    private UserReference userReference;
 
     public UserDto fetchByUserName(String userName) {
         Response<UserDto> response = userReference.fetchByUserName(userName);

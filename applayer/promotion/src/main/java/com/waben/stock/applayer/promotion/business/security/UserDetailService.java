@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.promotion.business.securitity;
+package com.waben.stock.applayer.promotion.business.security;
 
 import com.waben.stock.applayer.promotion.business.UserBusiness;
 import com.waben.stock.applayer.promotion.warpper.auth.AccountCredentials;

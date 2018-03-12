@@ -1,20 +1,21 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.service.manage.RoleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import com.waben.stock.applayer.promotion.reference.manage.RoleReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
 
 @Service
 public class RoleBusiness {
     @Autowired
     @Qualifier("roleReference")
-    private RoleService roleReference;
+    private RoleReference roleReference;
 
     public RoleDto save(RoleDto requestDto) {
         Response<RoleDto> response = roleReference.add(requestDto);
