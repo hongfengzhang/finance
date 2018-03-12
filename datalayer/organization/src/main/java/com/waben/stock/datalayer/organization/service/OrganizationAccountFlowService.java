@@ -1,12 +1,16 @@
 package com.waben.stock.datalayer.organization.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.datalayer.organization.entity.Organization;
-import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
-import com.waben.stock.interfaces.util.JacksonUtil;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,10 +20,11 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlowDao;
-
-import javax.persistence.criteria.*;
+import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 
 /**
  * 机构账户流水 Service
@@ -57,17 +62,23 @@ public class OrganizationAccountFlowService {
                     Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
                     predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrgId()));
                 }
-//                Organization organization = new Organization();
-//                organization.setId(query.getOrgId());
-//                if (query.getOrgId() != null) {
-//                    predicateList.add(criteriaBuilder.equal(root.get("org"), organization));
-//                }
                 if (!StringUtils.isBlank(query.getFlowNo())) {
                     predicateList.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
                 }
                 if (query.getStrategyTypeId() != null) {
                     predicateList.add(criteriaBuilder.equal(root.get("resourceType"), query.getStrategyTypeId()));
                 }
+                if(query.getFlowType() != null && !"0".equals(query.getFlowType())) {
+                	predicateList.add(criteriaBuilder.equal(root.get("type"), OrganizationAccountFlowType.getByIndex(query.getFlowType())));
+                }
+                if (query.getStartTime() != null) {
+					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("occurrenceTime").as(Date.class),
+							query.getStartTime()));
+				}
+				if (query.getEndTime() != null) {
+					predicateList.add(criteriaBuilder.lessThan(root.get("occurrenceTime").as(Date.class),
+							query.getEndTime()));
+				}
                 criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
                 return criteriaQuery.getRestriction();
             }
