@@ -1,6 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.reference.manage.RoleReference;
+import com.waben.stock.applayer.promotion.service.manage.RoleService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 public class RoleBusiness {
     @Autowired
     @Qualifier("roleReference")
-    private RoleReference roleReference;
+    private RoleService roleReference;
 
     public RoleDto save(RoleDto requestDto) {
         Response<RoleDto> response = roleReference.add(requestDto);

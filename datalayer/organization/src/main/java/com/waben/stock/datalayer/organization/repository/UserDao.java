@@ -10,4 +10,5 @@ import com.waben.stock.datalayer.organization.entity.User;
  */
 public interface UserDao extends BaseDao<User, Long> {
 
+    User retrieveByUserName(String userName);
 }

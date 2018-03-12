@@ -9,16 +9,16 @@ import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
-@SpringBootApplication(exclude = { SpringBootWebSecurityConfiguration.class, SecurityFilterAutoConfiguration.class })
-// 服务发现客户端
+
+@SpringBootApplication
+//服务发现客户端
 @EnableDiscoveryClient
-// 服务调用
+//服务调用
 @EnableFeignClients
-// 断路器
+//断路器
 @EnableHystrix
-// 扫描包
-@EnableScheduling
 @ComponentScan(basePackages = { "com.waben.stock" })
 public class PromotionApplication {
 

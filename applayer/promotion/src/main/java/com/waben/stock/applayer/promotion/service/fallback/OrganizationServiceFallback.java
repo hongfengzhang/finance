@@ -1,10 +1,12 @@
-package com.waben.stock.applayer.promotion.reference.fallback;
+package com.waben.stock.applayer.promotion.service.fallback;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.promotion.reference.organization.OrganizationReference;
+import com.waben.stock.applayer.promotion.service.organization.OrganizationService;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -22,7 +24,7 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
  * @author luomengan
  */
 @Component
-public class OrganizationReferenceFallback implements OrganizationReference {
+public class OrganizationServiceFallback implements OrganizationService {
 
 	@Override
 	public Response<OrganizationDto> addition(OrganizationForm orgForm) {
@@ -61,6 +63,11 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 
 	@Override
 	public Response<BindCardDto> saveBindCard(Long orgId, BindCardDto bindCardDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<OrganizationVo>> pages(OrganizationQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

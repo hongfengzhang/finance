@@ -170,7 +170,7 @@ EventTarget.prototype.dispatchEvent = function() {
     this['on' + t].apply(this, args);
   }
   if (t in this._listeners) {
-    // Grab a reference to the listeners list. removeEventListener may alter the list.
+    // Grab a service to the listeners list. removeEventListener may alter the list.
     var listeners = this._listeners[t];
     for (var i = 0; i < listeners.length; i++) {
       listeners[i].apply(this, args);
@@ -2530,7 +2530,7 @@ JsonpReceiver.prototype._createScript = function(url) {
   // script code will be installed as 'onclick' handler for the
   // script object. Later, onreadystatechange, manually execute this
   // code. FF and Chrome doesn't work with 'event' and 'htmlFor'
-  // set. For reference see:
+  // set. For service see:
   //   http://jaubourg.net/2010/07/loading-script-as-onclick-handler-of.html
   // Also, read on that about script ordering:
   //   http://wiki.whatwg.org/wiki/Dynamic_Script_Execution_Order
@@ -4542,7 +4542,7 @@ if (typeof Object.create === 'function') {
               return result;
             };
           } else {
-            // Capture a reference to the top-level `Object` constructor.
+            // Capture a service to the top-level `Object` constructor.
             constructor = members.constructor;
             // Use the `constructor` property to simulate `Object#hasOwnProperty` in
             // other environments.
@@ -5176,7 +5176,7 @@ if (typeof Object.create === 'function') {
 
     var JSON3 = runInContext(root, (root["JSON3"] = {
       // Public: Restores the original value of the global `JSON` object and
-      // returns a reference to the `JSON3` object.
+      // returns a service to the `JSON3` object.
       "noConflict": function () {
         if (!isRestored) {
           isRestored = true;

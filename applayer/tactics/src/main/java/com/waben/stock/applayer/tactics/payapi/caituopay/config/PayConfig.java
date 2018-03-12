@@ -24,10 +24,11 @@ public class PayConfig {
     /**
      * 回调地址
      */
-    public static final String qq_return_url = "http://r7x2uw.natappfree.cc/quickpay/qqcallback";
-    public static final String jd_return_url = "http://r7x2uw.natappfree.cc/quickpay/jdcallback";
-//    public static final String qq_return_url = "https://m.youguwang.com.cn/quickpay/qqcallback";
-//    public static final String jd_return_url = "https://m.youguwang.com.cn/quickpay/jdcallback";
+//    public static final String qq_return_url = "http://egdajc.natappfree.cc/quickpay/qqcallback";
+//    public static final String jd_return_url = "http://egdajc.natappfree.cc/quickpay/jdcallback";
+
+    public static final String qq_return_url = "https://m.youguwang.com.cn/tactics/quickpay/qqcallback";
+    public static final String jd_return_url = "https://m.youguwang.com.cn/tactics/quickpay/jdcallback";
     /**
      * 应用类型
      */
@@ -43,10 +44,11 @@ public class PayConfig {
     /**
      * 前台支付完成跳转地址
      */
-//    public static final String qq_front_skip_url = "http://r7x2uw.natappfree.cc/quickpay/qqpayreturn";
-//    public static final String jd_front_skip_url = "http://r7x2uw.natappfree.cc/quickpay/jdpayreturn";
-    public static final String qq_front_skip_url = "https://m.youguwang.com.cn/quickpay/qqpayreturn";
-    public static final String jd_front_skip_url = "https://m.youguwang.com.cn/quickpay/jdpayreturn";
+//    public static final String qq_front_skip_url = "http://egdajc.natappfree.cc/quickpay/qqpayreturn";
+//    public static final String jd_front_skip_url = "http://egdajc.natappfree.cc/quickpay/jdpayreturn";
+
+    public static final String qq_front_skip_url = "https://m.youguwang.com.cn/tactics/quickpay/qqpayreturn";
+    public static final String jd_front_skip_url = "https://m.youguwang.com.cn/tactics/quickpay/jdpayreturn";
     /**
      * 商品名称
      */

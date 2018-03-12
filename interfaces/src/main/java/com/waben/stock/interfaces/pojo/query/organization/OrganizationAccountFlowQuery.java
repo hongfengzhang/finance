@@ -6,19 +6,21 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
 public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 
-	private Long strategyTypeId;
+    private Long  resourceType;
 	private String flowNo;
 	private Long orgId;
 	private String flowType;
 	private Date startTime;
 	private Date endTime;
 
-	public Long getStrategyTypeId() {
-		return strategyTypeId;
+
+
+	public Long getResourceType() {
+		return resourceType;
 	}
 
-	public void setStrategyTypeId(Long strategyTypeId) {
-		this.strategyTypeId = strategyTypeId;
+	public void setResourceType(Long resourceType) {
+		this.resourceType = resourceType;
 	}
 
 	public String getFlowNo() {

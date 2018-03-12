@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.organization;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -104,4 +105,13 @@ public interface OrganizationInterface {
 	@RequestMapping(value = "/{orgId}/bindcard", method = RequestMethod.POST)
 	Response<BindCardDto> saveBindCard(@PathVariable("orgId") Long orgId, BindCardDto bindCardDto);
 
+	/**
+			* 获取机构分页数据
+	 *
+			 * @param query
+	 *            查询条件
+	 * @return 带有总分成机构分页数据
+	 */
+	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<OrganizationVo>> pages(@RequestBody OrganizationQuery query);
 }
