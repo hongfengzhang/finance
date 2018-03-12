@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.PromotionBuyRecordReference;
+import com.waben.stock.applayer.promotion.service.organization.PromotionBuyRecordService;
 import com.waben.stock.interfaces.dto.organization.PromotionBuyRecordDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -22,7 +22,7 @@ public class PromotionBuyRecordBusiness {
 
 	@Autowired
 	@Qualifier("promotionBuyRecordReference")
-	private PromotionBuyRecordReference reference;
+	private PromotionBuyRecordService reference;
 
 	public PageInfo<PromotionBuyRecordDto> adminPage(PromotionBuyRecordQuery query) {
 		Response<PageInfo<PromotionBuyRecordDto>> response = reference.adminPage(query);

@@ -1,6 +1,6 @@
-package com.waben.stock.applayer.promotion.reference.fallback;
+package com.waben.stock.applayer.promotion.service.fallback;
 
-import com.waben.stock.applayer.promotion.reference.manage.MenuReference;
+import com.waben.stock.applayer.promotion.service.manage.MenuService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class MenuReferenceFallback implements MenuReference {
+public class MenuServiceFallback implements MenuService {
 
     @Override
     public Response<List<MenuDto>> menusByRole(Long role) {

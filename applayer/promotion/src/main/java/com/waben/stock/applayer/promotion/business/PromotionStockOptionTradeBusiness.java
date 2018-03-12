@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.PromotionStockOptionTradeReference;
+import com.waben.stock.applayer.promotion.service.organization.PromotionStockOptionTradeService;
 import com.waben.stock.interfaces.dto.organization.PromotionStockOptionTradeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -22,7 +22,7 @@ public class PromotionStockOptionTradeBusiness {
 
 	@Autowired
 	@Qualifier("promotionStockOptionTradeReference")
-	private PromotionStockOptionTradeReference reference;
+	private PromotionStockOptionTradeService reference;
 
 	public PageInfo<PromotionStockOptionTradeDto> adminPage(PromotionStockOptionTradeQuery query) {
 		Response<PageInfo<PromotionStockOptionTradeDto>> response = reference.adminPage(query);

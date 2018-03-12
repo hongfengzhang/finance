@@ -1,8 +1,8 @@
-package com.waben.stock.applayer.promotion.reference.fallback;
+package com.waben.stock.applayer.promotion.service.fallback;
 
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.promotion.reference.PromotionBuyRecordReference;
+import com.waben.stock.applayer.promotion.service.organization.PromotionBuyRecordService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.PromotionBuyRecordDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -16,7 +16,7 @@ import com.waben.stock.interfaces.pojo.query.organization.PromotionBuyRecordQuer
  * @author luomengan
  */
 @Component
-public class PromotionBuyRecordReferenceFallback implements PromotionBuyRecordReference {
+public class PromotionBuyRecordServiceFallback implements PromotionBuyRecordService {
 
 	@Override
 	public Response<PageInfo<PromotionBuyRecordDto>> adminPage(PromotionBuyRecordQuery query) {

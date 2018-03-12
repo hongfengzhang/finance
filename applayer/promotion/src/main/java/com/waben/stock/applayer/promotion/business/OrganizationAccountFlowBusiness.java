@@ -1,6 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.reference.OrganizationAccountFlowReference;
+import com.waben.stock.applayer.promotion.service.organization.OrganizationAccountFlowService;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -15,7 +15,7 @@ public class OrganizationAccountFlowBusiness {
 
     @Autowired
     @Qualifier("organizationAccountFlowReference")
-    private OrganizationAccountFlowReference organizationAccountFlowReference;
+    private OrganizationAccountFlowService organizationAccountFlowReference;
 
     public PageInfo<OrganizationAccountFlowDto> pages(OrganizationAccountFlowQuery query) {
         Response<PageInfo<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.pages(query);

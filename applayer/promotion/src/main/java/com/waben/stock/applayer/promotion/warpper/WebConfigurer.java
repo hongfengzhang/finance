@@ -21,9 +21,6 @@ import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactor
 @Configuration
 public class WebConfigurer extends WebMvcConfigurerAdapter {
 
-	@Value("${custom.outer.resources}")
-	private String outerResources;
-
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		super.addFormatters(registry);

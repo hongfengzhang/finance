@@ -10,4 +10,5 @@ import com.waben.stock.datalayer.organization.entity.User;
  */
 public interface UserRepository extends CustomJpaRepository<User, Long> {
 
+    User findByUsername(String userName);
 }

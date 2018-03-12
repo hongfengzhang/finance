@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.OrganizationReference;
+import com.waben.stock.applayer.promotion.service.organization.OrganizationService;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
@@ -28,7 +28,7 @@ public class OrganizationBusiness {
 
 	@Autowired
 	@Qualifier("organizationReference")
-	private OrganizationReference reference;
+	private OrganizationService reference;
 
 	public OrganizationDto addition(OrganizationForm orgForm) {
 		Response<OrganizationDto> response = reference.addition(orgForm);

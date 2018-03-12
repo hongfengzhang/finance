@@ -42,7 +42,7 @@ public class OrganizationSettlementService {
 //			// 获取服务费配置列表
 //			List<BenefitConfig> benefitConfig = new ArrayList<>();
 //			for (int i = orgTreeList.size() - 2; i >= 0; i--) {
-//				Organization org = orgTreeList.get(i);
+//				organization org = orgTreeList.get(i);
 //				benefitConfigDao.retrieveByOrgAndTypeAndResourceTypeAndResourceId(org, type, resourceType, resourceId);
 //			}
 

@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.BenefitConfigReference;
+import com.waben.stock.applayer.promotion.service.organization.BenefitConfigService;
 import com.waben.stock.interfaces.dto.organization.BenefitConfigDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -23,7 +23,7 @@ public class BenefitConfigBusiness {
 
 	@Autowired
 	@Qualifier("benefitConfigReference")
-	private BenefitConfigReference reference;
+	private BenefitConfigService reference;
 
 	public List<BenefitConfigDto> benefitConfigList(Long orgId, Integer resourceType) {
 		Response<List<BenefitConfigDto>> response = reference.benefitConfigList(orgId, resourceType);
