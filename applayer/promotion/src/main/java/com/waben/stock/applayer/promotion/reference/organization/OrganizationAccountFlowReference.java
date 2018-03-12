@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.promotion.reference;
+package com.waben.stock.applayer.promotion.reference.organization;
 
 import com.waben.stock.applayer.promotion.reference.fallback.OrganizationAccountFlowFallback;
 import com.waben.stock.interfaces.service.organization.OrganizationAccountFlowInterface;

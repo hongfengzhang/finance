@@ -62,6 +62,10 @@ public class StockOptionTrade {
 	 */
 	private BigDecimal rightMoney;
 	/**
+	 * 周期ID
+	 */
+	private Long cycleId;
+	/**
 	 * 周期
 	 */
 	private Integer cycle;
@@ -307,6 +311,14 @@ public class StockOptionTrade {
 
 	public void setCycleName(String cycleName) {
 		this.cycleName = cycleName;
+	}
+
+	public Long getCycleId() {
+		return cycleId;
+	}
+
+	public void setCycleId(Long cycleId) {
+		this.cycleId = cycleId;
 	}
 
 }

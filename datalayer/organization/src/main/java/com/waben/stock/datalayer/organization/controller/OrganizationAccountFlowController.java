@@ -105,4 +105,10 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
     public Response<List<OrganizationAccountFlow>> adminList() {
         return new Response<>(organizationAccountFlowService.list());
     }
+
+	@Override
+	public Response<PageInfo<OrganizationAccountFlowDto>> childpages(OrganizationAccountFlowQuery query) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

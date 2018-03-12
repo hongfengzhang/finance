@@ -15,7 +15,7 @@ public enum OrganizationAccountFlowType implements CommonalityEnum {
 
 	DeferredChargesAssign("2", "递延费分成"),
 
-	SoftwareFeeAssign("3", "软件服务费分成");
+	RightMoneyAssign("3", "期权权利金分成");
 
 	private String index;
 

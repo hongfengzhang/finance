@@ -2,7 +2,7 @@ package com.waben.stock.applayer.promotion.reference.fallback;
 
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.promotion.reference.PromotionBuyRecordReference;
+import com.waben.stock.applayer.promotion.reference.organization.PromotionBuyRecordReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.PromotionBuyRecordDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
