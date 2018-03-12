@@ -46,6 +46,10 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	 */
 	private BigDecimal rightMoney;
 	/**
+	 * 周期ID
+	 */
+	private Long cycleId;
+	/**
 	 * 周期
 	 */
 	private Integer cycle;
@@ -129,9 +133,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	public void setState(StockOptionTradeState state) {
 		this.state = state;
 	}
+
 	public String getStates() {
-		return state != null ? state.getState(): null;
+		return state != null ? state.getState() : null;
 	}
+
 	public String getStockCode() {
 		return stockCode;
 	}
@@ -203,9 +209,11 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	public void setBuyingType(StockOptionBuyingType buyingType) {
 		this.buyingType = buyingType;
 	}
+
 	public String getBuyingTypes() {
-		return buyingType != null ? buyingType.getState(): null;
+		return buyingType != null ? buyingType.getState() : null;
 	}
+
 	public Date getBuyingTime() {
 		return buyingTime;
 	}
@@ -286,7 +294,6 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 		this.cycleName = cycleName;
 	}
 
-
 	public OfflineStockOptionTradeDto getOfflineTradeDto() {
 		return offlineTradeDto;
 	}
@@ -297,6 +304,14 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 
 	public void setOfflineTrade(OfflineStockOptionTradeDto offlineTrade) {
 		this.offlineTradeDto = offlineTrade;
+	}
+
+	public Long getCycleId() {
+		return cycleId;
+	}
+
+	public void setCycleId(Long cycleId) {
+		this.cycleId = cycleId;
 	}
 
 	@Override

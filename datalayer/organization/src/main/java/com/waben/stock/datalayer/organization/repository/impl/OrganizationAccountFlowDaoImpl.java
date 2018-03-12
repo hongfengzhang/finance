@@ -12,6 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlowDao;
 import com.waben.stock.datalayer.organization.repository.impl.jpa.OrganizationAccountFlowRepository;
+import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
+import com.waben.stock.interfaces.enums.ResourceType;
 
 /**
  * 机构账户流水 Dao实现
@@ -58,6 +60,12 @@ public class OrganizationAccountFlowDaoImpl implements OrganizationAccountFlowDa
 	@Override
 	public List<OrganizationAccountFlow> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<OrganizationAccountFlow> retrieveByTypeAndResourceTypeAndResourceId(
+			OrganizationAccountFlowType flowType, ResourceType resourceType, Long resourceId) {
+		return repository.findByTypeAndResourceTypeAndResourceId(flowType, resourceType, resourceId);
 	}
 
 }
