@@ -1,5 +1,11 @@
 package com.waben.stock.applayer.promotion.controller;
 
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.waben.stock.applayer.promotion.business.OrganizationAccountFlowBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
@@ -10,13 +16,7 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlo
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationAccountFlowInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class OrganizationAccountFlowController {
 
     @Autowired
     public OrganizationBusiness organizationBusiness;
-    @RequestMapping("/pages")
+    @RequestMapping(value = "/pages", method = RequestMethod.GET)
     public Response<PageInfo<OrganizationAccountFlowDto>> pages(OrganizationAccountFlowQuery query) {
         return new Response<>(organizationAccountFlowBusiness.pages(query));
     }

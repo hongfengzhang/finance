@@ -2,10 +2,25 @@
  * 资金概览
  */
 window.renderTable = function(){};
+window.currentOrgId = "17";
 $(function() {
 	var searchData = {
-		currentOrgCode: '01'
+		orgId: window.currentOrgId
 	};
+	// 获取机构账户信息
+	$.ajax({
+        type: "GET",
+        url: "/promotion/organizationAccount/orgId/" + searchData.orgId,
+        dataType: "json",
+        success: function (jsonResult) {
+        	if("200" == jsonResult.code) {
+        		var account = jsonResult.result;
+        		$("#balance").html(account.availableBalance);
+        	} else {
+        		parent.layer.msg(jsonResult.message);
+        	}
+        }
+    });
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -15,11 +30,11 @@ $(function() {
 		searchData.page = (draw - 1);
 		searchData.size = 10;
 		$.ajax({
-            type: "POST",
-            url: "/promotion/promotionBuyRecord/adminPage",
-            contentType: "application/json",
+            type: "GET",
+            url: "/promotion/orgflow/pages",
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             dataType: "json",
-            data: JSON.stringify(searchData),
+            data: $.param(searchData),
             success: function (jsonResult) {
             	var dtData = {
             		"draw": draw,
@@ -31,7 +46,7 @@ $(function() {
             }
         });
 		searchData = {
-			currentOrgCode: searchData.currentOrgCode
+				orgId: searchData.orgId
 		};
 	}
 	// 渲染表格
@@ -40,49 +55,23 @@ $(function() {
 			$(id).dataTable().fnDraw();
 		} else {
 			var columns = [
-	            { "data": "buyRecordId", "title": "策略ID", orderable: false},
-	            { "data": "publisherId", "title": "用户ID", orderable: false},
-	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
-	            { "data": "stockCode", "title": "股票代码/名称", orderable: false, "render": function(data, type, full, meta) {
-	            	return full.stockCode + "/" + full.stockName;
-	            }},
-	            { "data": "strategyTypeName", "title": "策略类型", orderable: false},
-	            { "data": "state", "title": "策略状态", orderable: false, "render": function(data, type, full, meta) {
-	                var state = full.state;
-	                if(state == "1") {
-	                	return "买入中";
-	                } else if(state == "2") {
-	                	return "买入锁定";
-	                } else if(state == "3") {
-	                	return "持仓中";
-	                } else if(state == "4") {
-	                	return "卖出申请";
-	                } else if(state == "5") {
-	                	return "卖出锁定";
-	                } else if(state == "6") {
-	                	return "已平仓";
-	                } else if(state == "8") {
-	                	var windControlType = full.windControlType;
-	                	if(windControlType) {
-	                		return "卖出失败";
-	                	} else {
-	                		return "买入失败";
-	                	}
+	            { "data": "flowNo", "title": "流水号", orderable: false},
+	            { "data": "amount", "title": "金额", orderable: false},
+	            { "data": "state", "title": "资金流水类型", orderable: false, "render": function(data, type, full, meta) {
+	                var type = full.type;
+	                if(type == "ServiceFeeAssign") {
+	                	return "信息服务费分成";
+	                } else if(type == "DeferredChargesAssign") {
+	                	return "递延费分成";
+	                } else if(type == "RightMoneyAssign") {
+	                	return "期权权利金收益分成";
+	                } else if(type == "Withdrawals") {
+	                	return "提现";
 	                } else {
-	                	return state;
+	                	return type;
 	                }
 	            }},
-	            { "data": "applyAmount", "title": "策略市值", orderable: false},
-	            { "data": "numberOfStrand", "title": "买入股数", orderable: false},
-	            { "data": "buyingTime", "title": "买入时间", orderable: false},
-	            { "data": "buyingPrice", "title": "买入价格", orderable: false},
-	            { "data": "sellingTime", "title": "卖出时间", orderable: false},
-	            { "data": "sellingPrice", "title": "卖出价格", orderable: false},
-	            { "data": "lastPrice", "title": "当前价格", orderable: false},
-	            { "data": "profitOrLoss", "title": "盈亏", orderable: false},
-	            { "data": "orgName", "title": "所属机构代码/名称", orderable: false, "render": function(data, type, full, meta) {
-	            	return full.orgCode + "/" + full.orgName;
-	            }}
+	            { "data": "occurrenceTime", "title": "流水时间", orderable: false}
 	        ];
 			$(id).dataTable({
 				"responsive": true,
@@ -110,22 +99,55 @@ $(function() {
 		}
 	}
 	// 执行
-	renderTable("#strategy-list-table");
+	renderTable("#account-flow-table");
 	// 加载layui
-	layui.use(['element', 'table'], function() {
+	layui.use(['element', 'table','laydate'], function() {
+		var laydate = layui.laydate;
+		laydate.render({
+			elem : '#start-time'
+		});
+		laydate.render({
+			elem : '#end-time'
+		});
 	});
 	// 搜索
 	$('#search-btn').on('click', function(){
 		var formDataArr = $("#search-form").serializeArray();
+		
 		for(var i = 0; i < formDataArr.length; i++) {
 			var name = formDataArr[i].name;
 			var value = formDataArr[i].value;
+			if((name == "startTime" || name == "endTime") && value) {
+				value += " 00:00:00"
+			}
 			if(searchData[name]) {
 				searchData[name] = searchData[name] + "," + value;
 			} else {
 				searchData[name] = value;
 			}
 		}
-		renderTable("#strategy-list-table");
+		renderTable("#account-flow-table");
+	});
+	// 弹出申请提现页面
+	$('#withdrawals-apply-btn').on('click', function(){
+		var index = layer.open({
+			type: 2,
+			title: '申请提现',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['500px', '225px'],
+			content: 'withdrawals-apply.html',
+		});
+	});
+	// 弹出设置提现密码页面
+	$('#payment-password-btn').on('click', function(){
+		var index = layer.open({
+			type: 2,
+			title: '设置提现密码',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['500px', '280px'],
+			content: 'payment-password.html',
+		});
 	});
 });

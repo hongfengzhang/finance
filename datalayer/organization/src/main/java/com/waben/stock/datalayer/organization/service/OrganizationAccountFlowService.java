@@ -1,12 +1,16 @@
 package com.waben.stock.datalayer.organization.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.datalayer.organization.entity.Organization;
-import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
-import com.waben.stock.interfaces.util.JacksonUtil;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,12 +20,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlowDao;
-
-import javax.persistence.Tuple;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.*;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 
 /**
  * 机构账户流水 Service

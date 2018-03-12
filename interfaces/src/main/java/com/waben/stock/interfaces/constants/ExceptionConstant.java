@@ -134,6 +134,8 @@ public class ExceptionConstant {
 	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
 	// 机构类别不存在
 	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
+	// 原始支付密码不匹配
+	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8003";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍

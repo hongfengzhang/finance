@@ -14,8 +14,12 @@ import com.waben.stock.datalayer.organization.entity.OrganizationAccount;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountDao;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlowDao;
+import com.waben.stock.datalayer.organization.repository.OrganizationDao;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
 import com.waben.stock.interfaces.enums.ResourceType;
+import com.waben.stock.interfaces.exception.DataNotFoundException;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
@@ -31,6 +35,9 @@ public class OrganizationAccountService {
 
 	@Autowired
 	private OrganizationAccountFlowDao flowDao;
+
+	@Autowired
+	private OrganizationDao organizationDao;
 
 	public OrganizationAccount getOrganizationAccountInfo(Long id) {
 		return organizationAccountDao.retrieve(id);
@@ -71,6 +78,36 @@ public class OrganizationAccountService {
 		return organizationAccountDao.list();
 	}
 
+	public OrganizationAccount getByOrgId(Long orgId) {
+		Organization org = organizationDao.retrieve(orgId);
+		if (org == null) {
+			throw new DataNotFoundException();
+		}
+		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
+		if (account == null) {
+			account = initAccount(org, null);
+		}
+		return account;
+	}
+
+	public void modifyPaymentPassword(Long orgId, String oldPaymentPassword, String paymentPassword) {
+		Organization org = organizationDao.retrieve(orgId);
+		if (org == null) {
+			throw new DataNotFoundException();
+		}
+		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
+		if (account != null) {
+			String dbOldPaymentPassword = account.getPaymentPassword();
+			if (dbOldPaymentPassword != null && !dbOldPaymentPassword.equals(oldPaymentPassword)) { 
+				throw new ServiceException(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION);
+			}
+			account.setPaymentPassword(paymentPassword);
+			organizationAccountDao.update(account);
+		} else {
+			account = initAccount(org, paymentPassword);
+		}
+	}
+
 	public synchronized OrganizationAccount benefit(Organization org, BigDecimal amount,
 			OrganizationAccountFlowType flowType, ResourceType resourceType, Long resourceId) {
 		Date date = new Date();
@@ -78,13 +115,7 @@ public class OrganizationAccountService {
 		if (org != null) {
 			account = organizationAccountDao.retrieveByOrg(org);
 			if (account == null) {
-				account = new OrganizationAccount();
-				account.setAvailableBalance(new BigDecimal("0"));
-				account.setBalance(new BigDecimal("0"));
-				account.setFrozenCapital(new BigDecimal("0"));
-				account.setOrg(org);
-				account.setUpdateTime(new Date());
-				organizationAccountDao.create(account);
+				account = initAccount(org, null);
 			}
 			increaseAmount(account, amount, date);
 		}
@@ -100,6 +131,17 @@ public class OrganizationAccountService {
 		flow.setRemark(flowType.getType());
 		flowDao.create(flow);
 		return account;
+	}
+
+	private OrganizationAccount initAccount(Organization org, String paymentPassword) {
+		OrganizationAccount account = new OrganizationAccount();
+		account.setAvailableBalance(new BigDecimal("0"));
+		account.setBalance(new BigDecimal("0"));
+		account.setFrozenCapital(new BigDecimal("0"));
+		account.setOrg(org);
+		account.setPaymentPassword(paymentPassword);
+		account.setUpdateTime(new Date());
+		return organizationAccountDao.create(account);
 	}
 
 	/**
