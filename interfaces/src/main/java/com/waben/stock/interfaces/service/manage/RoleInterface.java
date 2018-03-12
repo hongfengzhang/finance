@@ -28,6 +28,7 @@ public interface RoleInterface {
 
     @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<RoleDto>> pages(@RequestBody RoleQuery query);
+
     @RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
     Response<RoleDto> fetchById(@PathVariable("id") Long id);
 

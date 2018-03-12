@@ -74,7 +74,7 @@ public class OrganizationAccountFlowService {
 	}
 
 	@Transactional
-	public Page<OrganizationAccountFlow> pagesByQuery1(final OrganizationAccountFlowQuery query) {
+	public Page<OrganizationAccountFlow> pagesByOrgParentQuery(final OrganizationAccountFlowQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<OrganizationAccountFlow> pages = organizationAccountFlowDao.page(new Specification<OrganizationAccountFlow>() {
 			@Override

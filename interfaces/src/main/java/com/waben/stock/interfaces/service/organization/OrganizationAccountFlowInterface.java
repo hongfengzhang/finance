@@ -18,6 +18,9 @@ public interface OrganizationAccountFlowInterface {
      *            查询条件
      * @return 结算流水
      */
-    @RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query);
+
+    @RequestMapping(value = "/childpages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<PageInfo<OrganizationAccountFlowDto>> childpages(@RequestBody OrganizationAccountFlowQuery query);
 }
