@@ -26,7 +26,7 @@ public class OrganizationAccountFlowBusiness {
     }
 
     public PageInfo<OrganizationAccountFlowDto> childPages(OrganizationAccountFlowQuery query) {
-        Response<PageInfo<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.pages(query);
+        Response<PageInfo<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.childpages(query);
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }

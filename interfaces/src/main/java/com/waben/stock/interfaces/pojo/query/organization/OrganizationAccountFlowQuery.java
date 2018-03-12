@@ -1,6 +1,5 @@
 package com.waben.stock.interfaces.pojo.query.organization;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
 public class OrganizationAccountFlowQuery extends PageAndSortQuery {

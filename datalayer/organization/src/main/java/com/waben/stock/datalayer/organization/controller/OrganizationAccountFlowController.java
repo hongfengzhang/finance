@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationAccountFlowInterface;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,14 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
     @Override
     public Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query) {
         Page<OrganizationAccountFlow> page = organizationAccountFlowService.pagesByQuery(query);
+        System.out.println(JacksonUtil.encode(page));
+        PageInfo<OrganizationAccountFlowDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountFlowDto.class);
+        return new Response<>(result);
+    }
+
+    @Override
+    public Response<PageInfo<OrganizationAccountFlowDto>> childpages(@RequestBody OrganizationAccountFlowQuery query) {
+        Page<OrganizationAccountFlow> page = organizationAccountFlowService.pagesByOrgParentQuery(query);
         PageInfo<OrganizationAccountFlowDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountFlowDto.class);
         return new Response<>(result);
     }
