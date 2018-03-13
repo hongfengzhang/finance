@@ -152,10 +152,16 @@ public class QuickPayBusiness {
         String message = responseResult.get("message");
         String thirdPaymentNo = responseResult.get("order_no");
         String code = responseResult.get("code");
+        String sign = responseResult.get("sign");
+        String resultSign = DigestUtils.md5Hex(PayConfig.appId+thirdPaymentNo+PayConfig.appSecret).toUpperCase();
         if (paymentNo != null && !"".equals(paymentNo) && "1".equals(code)) {
             // 支付成功
-            payCallback(paymentNo, PaymentState.Paid);
-            return "success";
+            //验证签名
+            if (sign.equals(resultSign)) {
+                payCallback(paymentNo, PaymentState.Paid);
+                return "success";
+            }
+            return "false";
         }
         return "false";
     }
@@ -169,10 +175,15 @@ public class QuickPayBusiness {
         String message = responseResult.get("message");
         String thirdPaymentNo = responseResult.get("order_no");
         String code = responseResult.get("code");
+        String sign = responseResult.get("sign");
+        String resultSign = DigestUtils.md5Hex(PayConfig.appId+thirdPaymentNo+PayConfig.appSecret).toUpperCase();
         if (paymentNo != null && !"".equals(paymentNo) && "1".equals(code)) {
-            // 支付成功
-            payCallback(paymentNo, PaymentState.Paid);
-            return "success";
+            // 支付成功,验证签名
+            if (sign.equals(resultSign)) {
+                payCallback(paymentNo, PaymentState.Paid);
+                return "success";
+            }
+           return "false";
         }
         return "false";
     }

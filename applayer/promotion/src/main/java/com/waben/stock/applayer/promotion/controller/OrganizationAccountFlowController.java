@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.promotion.controller;
 
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ public class OrganizationAccountFlowController {
 
     @RequestMapping("/childpages")
     public Response<PageInfo<OrganizationVo>> childPages(OrganizationAccountFlowQuery query) {
+        OrganizationAccountQuery organizationAccountQuery = new OrganizationAccountQuery();
         OrganizationQuery organizationQuery = new OrganizationQuery();
         organizationQuery.setParentId(query.getOrgId());
         PageInfo<OrganizationVo> organizations = organizationBusiness.pages(organizationQuery);

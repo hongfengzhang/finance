@@ -2,17 +2,14 @@ package com.waben.stock.datalayer.organization.controller;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.datalayer.organization.entity.OrganizationAccount;
 import com.waben.stock.datalayer.organization.service.OrganizationAccountService;
@@ -50,6 +47,19 @@ public class OrganizationAccountController implements OrganizationAccountInterfa
 	@ApiOperation(value = "获取机构账户分页数据")
 	public Response<Page<OrganizationAccount>> organizationAccounts(int page, int limit) {
 		return new Response<>((Page<OrganizationAccount>) organizationAccountService.organizationAccounts(page, limit));
+	}
+
+	@Override
+	public Response<PageInfo<OrganizationAccountDto>> pages(@RequestBody OrganizationAccountQuery query) {
+		Page<OrganizationAccount> page = organizationAccountService.pagesByQuery(query);
+		PageInfo<OrganizationAccountDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<OrganizationAccountDto> fetchByOrgId(@PathVariable Long orgId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class,
+				organizationAccountService.getByOrgId(orgId), false));
 	}
 
 	@GetMapping("/list")
@@ -96,12 +106,6 @@ public class OrganizationAccountController implements OrganizationAccountInterfa
 	public Response<Void> modifyPaymentPassword(@PathVariable Long orgId, String oldPaymentPassword, String paymentPassword) {
 		organizationAccountService.modifyPaymentPassword(orgId, oldPaymentPassword, paymentPassword);
 		return new Response<>();
-	}
-
-	@Override
-	public Response<OrganizationAccountDto> fetchByOrgId(@PathVariable Long orgId) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class,
-				organizationAccountService.getByOrgId(orgId), false));
 	}
 
 }
