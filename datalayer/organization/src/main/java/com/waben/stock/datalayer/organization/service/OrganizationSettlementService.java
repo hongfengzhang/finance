@@ -25,7 +25,7 @@ import com.waben.stock.interfaces.enums.ResourceType;
 
 /**
  * 机构结算 Service
- * 
+ *
  * @author luomengan
  *
  */
@@ -49,7 +49,7 @@ public class OrganizationSettlementService {
 
 	@Transactional
 	public void strategySettlement(Long publisherId, Long buyRecordId, Long strategyTypeId, BigDecimal serviceFee,
-			BigDecimal deferredFee) {
+								   BigDecimal deferredFee) {
 		// 结算服务费
 		if (serviceFee != null && serviceFee.compareTo(BigDecimal.ZERO) > 0) {
 			List<OrganizationAccountFlow> checkFlowList = flowDao.retrieveByTypeAndResourceTypeAndResourceId(
@@ -71,7 +71,7 @@ public class OrganizationSettlementService {
 	}
 
 	public void stockoptionSettlement(Long publisherId, Long stockOptionTradeId, Long cycleId,
-			BigDecimal rightMoneyProfit) {
+									  BigDecimal rightMoneyProfit) {
 		// 结算权利金收益
 		if (rightMoneyProfit != null && rightMoneyProfit.compareTo(BigDecimal.ZERO) > 0) {
 			List<OrganizationAccountFlow> checkFlowList = flowDao.retrieveByTypeAndResourceTypeAndResourceId(
@@ -84,7 +84,7 @@ public class OrganizationSettlementService {
 	}
 
 	private void settlement(Long publisherId, BenefitConfigType benefitConfigType, BigDecimal amount,
-			Long benefitResourceId, Long flowResourceId) {
+							Long benefitResourceId, Long flowResourceId) {
 		OrganizationAccountFlowType flowType = null;
 		ResourceType flowResourceType = null;
 		Integer benefitResourceType = null;
@@ -132,7 +132,7 @@ public class OrganizationSettlementService {
 	}
 
 	private List<BenefitConfig> getBenefitConfigList(List<Organization> orgTreeList, BenefitConfigType type,
-			Integer resourceType, Long resourceId) {
+													 Integer resourceType, Long resourceId) {
 		List<BenefitConfig> result = new ArrayList<>();
 		for (int i = 1; i < orgTreeList.size(); i++) {
 			Organization org = orgTreeList.get(i);

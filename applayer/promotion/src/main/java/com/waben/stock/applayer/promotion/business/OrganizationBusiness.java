@@ -2,7 +2,6 @@ package com.waben.stock.applayer.promotion.business;
 
 import java.util.List;
 
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -17,6 +16,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 
 /**
  * 机构 Business

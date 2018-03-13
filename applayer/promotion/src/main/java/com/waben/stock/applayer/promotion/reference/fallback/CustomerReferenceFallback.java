@@ -18,9 +18,9 @@ import com.waben.stock.interfaces.pojo.query.organization.CustomerQuery;
 @Component
 public class CustomerReferenceFallback implements CustomerReference {
 
-	@Override
-	public Response<PageInfo<CustomerDto>> adminPage(CustomerQuery query) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<PageInfo<CustomerDto>> adminPage(CustomerQuery query) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
 }

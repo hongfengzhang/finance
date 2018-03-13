@@ -34,8 +34,8 @@ public class StockOptionTradeBusiness {
     }
 
 
-    public StockOptionTradeDto stockOptionDueTreatment(Long id) {
-        Response<StockOptionTradeDto> response = stockOptionTradeService.exercise(id);
+    public StockOptionTradeDto stockOptionDueTreatment(Long publisherId,Long id) {
+        Response<StockOptionTradeDto> response = stockOptionTradeService.userRight(publisherId,id);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
@@ -45,4 +45,14 @@ public class StockOptionTradeBusiness {
         throw new ServiceException(response.getCode());
     }
 
+    public StockOptionTradeDto findById(Long id) {
+        Response<StockOptionTradeDto> response = stockOptionTradeService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

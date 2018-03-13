@@ -4,11 +4,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.waben.stock.applayer.promotion.business.security.UserDetailService;
 import com.waben.stock.applayer.promotion.warpper.auth.provider.ManagerAuthenticationProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.security.core.session.SessionRegistry;
@@ -30,6 +33,9 @@ import feign.Retryer;
 public class BeanConfigurer {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
+
+	@Autowired
+	private UserDetailService userDetailService;
 
 	@Bean
 	public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
@@ -56,23 +62,31 @@ public class BeanConfigurer {
 	Retryer feignRetryer() {
 		return Retryer.NEVER_RETRY;
 	}
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
 	
-//	@Bean
-//	public ManagerAuthenticationProvider managerAuthenticationProvider() {
-//		ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider
-//				(passwordEncoder());
-//		managerAuthenticationProvider.setUserDetailsService(null);
-//		return managerAuthenticationProvider;
-//	}
+	@Bean
+	public ManagerAuthenticationProvider managerAuthenticationProvider() {
+		ManagerAuthenticationProvider managerAuthenticationProvider = new ManagerAuthenticationProvider
+				(passwordEncoder());
+		managerAuthenticationProvider.setUserDetailsService(userDetailService);
+		return managerAuthenticationProvider;
+	}
 
 
 	@Bean
 	public SessionRegistry sessionRegistry() {
 		return new SessionRegistryImpl();
+	}
+
+	@Bean
+	public ResourceBundleMessageSource messageSource() {
+		ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+		messageSource.setBasename("messages/messages_zh_CN");
+		return messageSource;
 	}
 
 }

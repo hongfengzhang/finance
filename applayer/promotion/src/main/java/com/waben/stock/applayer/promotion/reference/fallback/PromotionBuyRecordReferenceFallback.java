@@ -18,9 +18,9 @@ import com.waben.stock.interfaces.pojo.query.organization.PromotionBuyRecordQuer
 @Component
 public class PromotionBuyRecordReferenceFallback implements PromotionBuyRecordReference {
 
-	@Override
-	public Response<PageInfo<PromotionBuyRecordDto>> adminPage(PromotionBuyRecordQuery query) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<PageInfo<PromotionBuyRecordDto>> adminPage(PromotionBuyRecordQuery query) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
 }

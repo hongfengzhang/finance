@@ -26,6 +26,11 @@ public class UserDaoImpl implements UserDao {
 	private UserRepository repository;
 
 	@Override
+	public User retrieveByUserName(String userName) {
+		return repository.findByUsername(userName);
+	}
+
+	@Override
 	public User create(User t) {
 		return repository.save(t);
 	}

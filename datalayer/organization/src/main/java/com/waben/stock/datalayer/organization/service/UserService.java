@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.organization.service;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -61,4 +63,12 @@ public class UserService {
 		return userDao.list();
 	}
 
+
+	public User findByUserName(String userName) {
+		User result = userDao.retrieveByUserName(userName);
+		if (result == null) {
+			throw new DataNotFoundException(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND);
+		}
+		return result;
+	}
 }

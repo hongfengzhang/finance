@@ -134,8 +134,10 @@ public class ExceptionConstant {
 	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
 	// 机构类别不存在
 	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
+	//机构用户不存在
+	public static final String ORGANIZATION_USER_NOT_FOUND = "8003";
 	// 原始支付密码不匹配
-	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8003";
+	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8004";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
@@ -148,5 +150,8 @@ public class ExceptionConstant {
 	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
 	// 该只股票暂时没有机构报价，请更换一只股票
 	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
+
+
+
 
 }
