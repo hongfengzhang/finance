@@ -32,6 +32,10 @@ public class OrganizationAccountDto {
 	 * 更新时间
 	 */
 	private Date updateTime;
+	/**
+	 * 账户对应的机构
+	 */
+	private OrganizationDto org;
 
 	public Long getId() {
 		return id;
@@ -81,4 +85,11 @@ public class OrganizationAccountDto {
 		this.updateTime = updateTime;
 	}
 
+	public OrganizationDto getOrg() {
+		return org;
+	}
+
+	public void setOrg(OrganizationDto org) {
+		this.org = org;
+	}
 }

@@ -61,11 +61,10 @@ public class OrganizationAccountController implements OrganizationAccountInterfa
 		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class,
 				organizationAccountService.getByOrgId(orgId), false));
 	}
-
-	@GetMapping("/list")
-	@ApiOperation(value = "获取机构账户列表")
-	public Response<List<OrganizationAccount>> list() {
-		return new Response<>(organizationAccountService.list());
+	@Override
+	public Response<List<OrganizationAccountDto>> list() {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(organizationAccountService.list(),
+				OrganizationAccountDto.class));
 	}
 
 	/******************************** 后台管理 **********************************/
