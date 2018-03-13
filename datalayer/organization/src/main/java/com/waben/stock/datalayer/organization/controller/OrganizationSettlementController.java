@@ -32,19 +32,19 @@ public class OrganizationSettlementController implements OrganizationSettlementI
 	public OrganizationSettlementService service;
 
 	public Response<String> strategySettlement(@PathVariable Long publisherId, @PathVariable Long buyRecordId,
-			@PathVariable Long strategyTypeId, @PathVariable BigDecimal serviceFee,
+			@PathVariable String tradeNo, @PathVariable Long strategyTypeId, @PathVariable BigDecimal serviceFee,
 			@PathVariable BigDecimal deferredFee) {
 		logger.info("机构结算配资交易{}，策略类型{}，服务费{}，递延费{}!", buyRecordId, strategyTypeId, serviceFee, deferredFee);
-		service.strategySettlement(publisherId, buyRecordId, strategyTypeId, serviceFee, deferredFee);
+		service.strategySettlement(publisherId, buyRecordId, tradeNo, strategyTypeId, serviceFee, deferredFee);
 		Response<String> response = new Response<String>();
 		response.setResult("success");
 		return response;
 	}
 
 	public Response<String> stockoptionSettlement(@PathVariable Long publisherId, @PathVariable Long stockOptionTradeId,
-			@PathVariable Long cycleId, @PathVariable BigDecimal rightMoneyProfit) {
+			@PathVariable String tradeNo, @PathVariable Long cycleId, @PathVariable BigDecimal rightMoneyProfit) {
 		logger.info("机构结算期权交易{}，周期{}，平台权利金收益{}!", stockOptionTradeId, cycleId, rightMoneyProfit);
-		service.stockoptionSettlement(publisherId, stockOptionTradeId, cycleId, rightMoneyProfit);
+		service.stockoptionSettlement(publisherId, stockOptionTradeId, tradeNo, cycleId, rightMoneyProfit);
 		Response<String> response = new Response<String>();
 		response.setResult("success");
 		return response;

@@ -13,6 +13,7 @@ import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.security.jwt.JWTTokenUtil;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
@@ -25,6 +26,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
 		CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
 		String password = authentication.getCredentials().toString();
+		password = PasswordCrypt.crypt(password);
 		if (!(password != null && password.equals(customUserDetails.getPassword()))) {
 			throw new BadCredentialsException("密码错误");
 		}

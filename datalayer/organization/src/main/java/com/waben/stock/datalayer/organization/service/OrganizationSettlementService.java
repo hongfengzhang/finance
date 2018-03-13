@@ -48,15 +48,15 @@ public class OrganizationSettlementService {
 	private OrganizationAccountFlowDao flowDao;
 
 	@Transactional
-	public void strategySettlement(Long publisherId, Long buyRecordId, Long strategyTypeId, BigDecimal serviceFee,
-								   BigDecimal deferredFee) {
+	public void strategySettlement(Long publisherId, Long buyRecordId, String tradeNo, Long strategyTypeId,
+			BigDecimal serviceFee, BigDecimal deferredFee) {
 		// 结算服务费
 		if (serviceFee != null && serviceFee.compareTo(BigDecimal.ZERO) > 0) {
 			List<OrganizationAccountFlow> checkFlowList = flowDao.retrieveByTypeAndResourceTypeAndResourceId(
 					OrganizationAccountFlowType.ServiceFeeAssign, ResourceType.BUYRECORD, buyRecordId);
 			// 判断之前是否结算过
 			if (checkFlowList == null || checkFlowList.size() == 0) {
-				settlement(publisherId, BenefitConfigType.ServiceFee, serviceFee, strategyTypeId, buyRecordId);
+				settlement(publisherId, BenefitConfigType.ServiceFee, serviceFee, strategyTypeId, buyRecordId, tradeNo);
 			}
 		}
 		// 结算递延费
@@ -65,26 +65,28 @@ public class OrganizationSettlementService {
 					OrganizationAccountFlowType.DeferredChargesAssign, ResourceType.BUYRECORD, buyRecordId);
 			// 判断之前是否结算过
 			if (checkFlowList == null || checkFlowList.size() == 0) {
-				settlement(publisherId, BenefitConfigType.DeferredFee, deferredFee, strategyTypeId, buyRecordId);
+				settlement(publisherId, BenefitConfigType.DeferredFee, deferredFee, strategyTypeId, buyRecordId,
+						tradeNo);
 			}
 		}
 	}
 
-	public void stockoptionSettlement(Long publisherId, Long stockOptionTradeId, Long cycleId,
-									  BigDecimal rightMoneyProfit) {
+	public void stockoptionSettlement(Long publisherId, Long stockOptionTradeId, String tradeNo, Long cycleId,
+			BigDecimal rightMoneyProfit) {
 		// 结算权利金收益
 		if (rightMoneyProfit != null && rightMoneyProfit.compareTo(BigDecimal.ZERO) > 0) {
 			List<OrganizationAccountFlow> checkFlowList = flowDao.retrieveByTypeAndResourceTypeAndResourceId(
 					OrganizationAccountFlowType.RightMoneyAssign, ResourceType.STOCKOPTIONTRADE, stockOptionTradeId);
 			// 判断之前是否结算过
 			if (checkFlowList == null || checkFlowList.size() == 0) {
-				settlement(publisherId, BenefitConfigType.RightMoney, rightMoneyProfit, cycleId, stockOptionTradeId);
+				settlement(publisherId, BenefitConfigType.RightMoney, rightMoneyProfit, cycleId, stockOptionTradeId,
+						tradeNo);
 			}
 		}
 	}
 
 	private void settlement(Long publisherId, BenefitConfigType benefitConfigType, BigDecimal amount,
-							Long benefitResourceId, Long flowResourceId) {
+			Long benefitResourceId, Long flowResourceId, String tradeNo) {
 		OrganizationAccountFlowType flowType = null;
 		ResourceType flowResourceType = null;
 		Integer benefitResourceType = null;
@@ -117,22 +119,22 @@ public class OrganizationSettlementService {
 							.setScale(2, RoundingMode.DOWN);
 					// 先给上级结算
 					BigDecimal parentServiceFee = currentServiceFee.subtract(childServiceFee);
-					accountService.benefit(orgTreeList.get(i), parentServiceFee, flowType, flowResourceType,
-							flowResourceId);
+					accountService.benefit(orgTreeList.get(i), amount, parentServiceFee, flowType, flowResourceType,
+							flowResourceId, tradeNo);
 					// 最后一个给最低级机构结算
 					if (i == benefitConfigList.size() - 1) {
-						accountService.benefit(orgTreeList.get(i + 1), childServiceFee, flowType, flowResourceType,
-								flowResourceId);
+						accountService.benefit(orgTreeList.get(i + 1), amount, childServiceFee, flowType,
+								flowResourceType, flowResourceId, tradeNo);
 					}
 					currentServiceFee = childServiceFee;
 				}
 			}
 		}
-		accountService.benefit(null, amount, flowType, flowResourceType, flowResourceId);
+		accountService.benefit(null, amount, amount, flowType, flowResourceType, flowResourceId, tradeNo);
 	}
 
 	private List<BenefitConfig> getBenefitConfigList(List<Organization> orgTreeList, BenefitConfigType type,
-													 Integer resourceType, Long resourceId) {
+			Integer resourceType, Long resourceId) {
 		List<BenefitConfig> result = new ArrayList<>();
 		for (int i = 1; i < orgTreeList.size(); i++) {
 			Organization org = orgTreeList.get(i);

@@ -36,6 +36,10 @@ public class StockOptionCycle {
 	 */
 	private Integer cycle;
 	/**
+	 * 周期月数
+	 */
+	private String cycleMonth;
+	/**
 	 * 名义本金集合
 	 */
 	@JsonManagedReference
@@ -73,6 +77,14 @@ public class StockOptionCycle {
 
 	public void setAmountValues(Set<StockOptionAmount> amountValues) {
 		this.amountValues = amountValues;
+	}
+
+	public String getCycleMonth() {
+		return cycleMonth;
+	}
+
+	public void setCycleMonth(String cycleMonth) {
+		this.cycleMonth = cycleMonth;
 	}
 
 }

@@ -508,7 +508,7 @@ public class BuyRecordService {
 			}
 		}
 		// 给机构结算
-		orgSettlementBusiness.strategySettlement(buyRecord.getPublisherId(), buyRecord.getId(),
+		orgSettlementBusiness.strategySettlement(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getTradeNo(),
 				buyRecord.getStrategyTypeId(), buyRecord.getServiceFee(), deferredFee);
 		// 修改点买记录状态
 		changeState(buyRecord, false);

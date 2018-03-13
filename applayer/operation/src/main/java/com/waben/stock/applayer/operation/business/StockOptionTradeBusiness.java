@@ -2,7 +2,7 @@ package com.waben.stock.applayer.operation.business;
 
 import com.waben.stock.applayer.operation.service.stockoption.StockOptionOrgService;
 import com.waben.stock.applayer.operation.service.stockoption.StockOptionTradeService;
-import com.waben.stock.applayer.operation.util.ExcelUtil;
+import com.waben.stock.applayer.operation.warpper.mail.ExcelUtil;
 import com.waben.stock.applayer.operation.warpper.mail.*;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
@@ -33,6 +33,7 @@ public class StockOptionTradeBusiness {
     @Autowired
     private MailService mailService;
     @Autowired
+    @Qualifier("stockoptionorgFeignService")
     private StockOptionOrgService stockOptionOrgService;
     @Value("${mail.contextPath}")
     private String contextPath;
@@ -58,8 +59,8 @@ public class StockOptionTradeBusiness {
         quotoInquiry.setCode(result.getStockCode());
         quotoInquiry.setStrike("100%");
         quotoInquiry.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        quotoInquiry.setPrice(String.valueOf(result.getRightMoneyRatio()));
-        quotoInquiry.setTenor(result.getCycle());
+        quotoInquiry.setPrice(null);/*String.valueOf(result.getRightMoneyRatio())*/
+        quotoInquiry.setTenor(result.getCycleMonth());
         quotoInquiry.setDate(new Date());
         logger.info("数据组装成功:{}", JacksonUtil.encode(quotoInquiry));
         String file = ExcelUtil.renderInquiry(contextPath, quotoInquiry);
@@ -82,7 +83,7 @@ public class StockOptionTradeBusiness {
         //到期时间
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH,result.getCycle());
+        calendar.add(Calendar.DAY_OF_MONTH,result.getCycle()-1);
         quotoPurchase.setEnd(calendar.getTime());
         quotoPurchase.setRate(String.valueOf(result.getRightMoneyRatio()));
         MailMessage mailMessage = new PurchaseMessage();
@@ -104,7 +105,9 @@ public class StockOptionTradeBusiness {
         MailMessage mailMessage = new ExeriseMessage();
         mailService.send("行权单", mailMessage.message(quotoExenise), org.getEmail());
         //修改订单状态
-        stockOptionTradeService.exercise(id);
+        if(result.getRightTime()!=null) {
+            stockOptionTradeService.exercise(id);
+        }
         return true;
     }
 

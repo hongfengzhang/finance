@@ -211,6 +211,11 @@ public class StockBusiness {
 		} else if(market.getName().toUpperCase().startsWith("ST") || market.getName().toUpperCase().startsWith("*ST")) {
 			throw new ServiceException(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION);
 		}
+		// 判断数据库中的状态是否可用
+		StockDto stock = findByCode(stockCode);
+		if(!stock.getStatus()) {
+			throw new ServiceException(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION);
+		}
 	}
 
 	public List<StockMarket> ranking(String exponent, int rankType, int size) {
