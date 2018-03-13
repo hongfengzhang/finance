@@ -55,9 +55,9 @@ public class RoleController implements RoleInterface {
     }
 
     @Override
-    public Response<RoleDto> modify(@RequestBody  RoleDto roleDto) {
+    public Response<RoleDto> modify(@RequestBody RoleDto roleDto) {
         Role role = CopyBeanUtils.copyBeanProperties(Role.class, roleDto, false);
-        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.revision(role),false);
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class, roleService.revision(role), false);
         return new Response<>(result);
     }
 
@@ -69,7 +69,7 @@ public class RoleController implements RoleInterface {
     @Override
     public Response<RoleDto> add(@RequestBody RoleDto roleDto) {
         Role role = CopyBeanUtils.copyBeanProperties(Role.class, roleDto, false);
-        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.save(role),false);
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class, roleService.save(role), false);
         return new Response<>(result);
     }
 
@@ -83,18 +83,28 @@ public class RoleController implements RoleInterface {
 
     @Override
     public Response<RoleDto> addRoleMenu(@PathVariable Long id, @RequestBody Long[] menuIds) {
-        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.saveRoleMenu(id,menuIds),false);
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class, roleService.saveRoleMenu(id, menuIds), false);
         return new Response<>(result);
     }
 
     @Override
     public Response<RoleDto> addRolePermission(@PathVariable Long id, @RequestBody Long[] permissionIds) {
-        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.saveRolePermission(id,permissionIds),false);
+        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class, roleService.saveRolePermission(id,
+                permissionIds), false);
         return new Response<>(result);
     }
 
     @Override
-    public Response<RoleDto> bindAdminRoleWithRoleAndMenu(Long id) {
-        return null ;
+    public Response<RoleDto> bindAdminRoleWithPermissionAndMenu(Long id,Long variety) {
+        Role result = roleService.bindRoleWithPermissionAndMenu(id,variety);
+        RoleDto roleDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, result, false);
+        return new Response<>(roleDto);
+    }
+
+    @Override
+    public Response<RoleDto> fetchByOrganizationAdmin(Long organization) {
+        Role result = roleService.findByOrganizationAdmin(organization);
+        RoleDto roleDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, result, false);
+        return new Response<>(roleDto);
     }
 }

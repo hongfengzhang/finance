@@ -104,7 +104,9 @@ public class StockOptionTradeBusiness {
         MailMessage mailMessage = new ExeriseMessage();
         mailService.send("行权单", mailMessage.message(quotoExenise), org.getEmail());
         //修改订单状态
-        stockOptionTradeService.exercise(id);
+        if(result.getRightTime()!=null) {
+            stockOptionTradeService.exercise(id);
+        }
         return true;
     }
 

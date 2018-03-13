@@ -21,5 +21,8 @@ public class MenuService {
         return menuDao.retrieveByRole(role);
     }
 
+    public List<Menu> findMenusByVariety(Long variety) {
+        return menuDao.retrieveAllByVariety(variety);
+    }
 
 }

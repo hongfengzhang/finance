@@ -38,6 +38,9 @@ public class Menu {
     @ManyToMany(targetEntity = Role.class,mappedBy = "menus",fetch = FetchType.LAZY)
     private Set<Role> roles;
 
+    @Column
+    private Long variety;
+
     public Long getId() {
         return id;
     }
@@ -100,5 +103,13 @@ public class Menu {
 
     public void setIcon(String icon) {
         this.icon = icon;
+    }
+
+    public Long getVariety() {
+        return variety;
+    }
+
+    public void setVariety(Long variety) {
+        this.variety = variety;
     }
 }

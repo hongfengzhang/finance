@@ -82,4 +82,8 @@ public class PermissionService {
     public List<Permission> findPermissions() {
         return permissionDao.list();
     }
+
+    public List<Permission> findPermissionsByVariety(Long variety) {
+        return permissionDao.retrieveAllByVariety(variety);
+    }
 }
