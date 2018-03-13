@@ -10,6 +10,8 @@ import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 
+import java.util.List;
+
 /**
  * 机构账户 reference服务接口fallback
  *
@@ -30,6 +32,11 @@ public class OrganizationAccountReferenceFallback implements OrganizationAccount
 
 	@Override
 	public Response<PageInfo<OrganizationAccountDto>> pages(OrganizationAccountQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<List<OrganizationAccountDto>> list() {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

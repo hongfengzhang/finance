@@ -2,6 +2,8 @@ package com.waben.stock.applayer.promotion.controller;
 
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
+import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +46,7 @@ public class OrganizationAccountController {
 	}
 
 	@RequestMapping(value = "/pages",method = RequestMethod.GET)
-	public Response<PageInfo<OrganizationAccountDto>> pages(OrganizationAccountQuery query){
+	public Response<PageInfo<OrganizationVo>> pages(OrganizationAccountQuery query){
 		return new Response<>(accountBusiness.pages(query));
 	}
 }

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.pojo.Response;
 
+import java.util.List;
+
 public interface OrganizationAccountInterface {
 
 	@RequestMapping(value = "/orgId/{orgId}", method = RequestMethod.GET)
@@ -21,4 +23,7 @@ public interface OrganizationAccountInterface {
 
 	@RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<OrganizationAccountDto>> pages(@RequestBody OrganizationAccountQuery query);
+
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	Response<List<OrganizationAccountDto>> list();
 }
