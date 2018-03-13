@@ -41,6 +41,7 @@ import javax.management.relation.Role;
 @RestController
 @RequestMapping("/user")
 @Api(description = "机构管理用户接口列表")
+
 public class UserController implements UserInterface {
 
 
@@ -131,6 +132,7 @@ public class UserController implements UserInterface {
     public Response<UserDto> fetchByUserName(String userName) {
         User user = userService.findByUserName(userName);
         UserDto response = CopyBeanUtils.copyBeanProperties(user, new UserDto(), false);
+        response.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,user.getOrg(),false));
         return new Response<>(response);
     }
 

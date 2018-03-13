@@ -50,6 +50,10 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	 */
 	private Long cycleId;
 	/**
+	 * 周期月数
+	 */
+	private String cycleMonth;
+	/**
 	 * 周期
 	 */
 	private Integer cycle;
@@ -312,6 +316,14 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 
 	public void setCycleId(Long cycleId) {
 		this.cycleId = cycleId;
+	}
+
+	public String getCycleMonth() {
+		return cycleMonth;
+	}
+
+	public void setCycleMonth(String cycleMonth) {
+		this.cycleMonth = cycleMonth;
 	}
 
 	@Override

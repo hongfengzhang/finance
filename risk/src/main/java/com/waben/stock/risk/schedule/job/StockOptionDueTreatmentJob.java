@@ -33,7 +33,6 @@ public class StockOptionDueTreatmentJob implements InterruptableJob {
             try {
                 stockOptionTradeDtos = stockOptionTradeBusiness.stockOptionsWithTurnover();
                 flag = true;
-                logger.info("结果：{}", JacksonUtil.encode(stockOptionTradeDtos));
             }catch (Exception e) {
                 logger.info("错误信息：{}",e.getMessage());
             }
@@ -41,10 +40,11 @@ public class StockOptionDueTreatmentJob implements InterruptableJob {
         for (StockOptionTradeDto stockOptionTradeDto : stockOptionTradeDtos) {
             Date expireTime = stockOptionTradeDto.getExpireTime();
             Date currentTime = new Date();
+            flag = true;
             if(fmt.format(expireTime).equals(fmt.format(currentTime))) {
                 while (flag) {
                     try {
-                        StockOptionTradeDto result = stockOptionTradeBusiness.stockOptionDueTreatment(stockOptionTradeDto.getPublisherId(), stockOptionTradeDto.getId());
+                        StockOptionTradeDto result = stockOptionTradeBusiness.stockOptionDueTreatment(stockOptionTradeDto.getId());
                         logger.info("结果：{}", JacksonUtil.encode(result));
                         flag = false;
                     }catch (Exception e) {

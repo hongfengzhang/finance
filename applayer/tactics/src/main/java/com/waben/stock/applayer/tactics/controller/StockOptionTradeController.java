@@ -147,6 +147,7 @@ public class StockOptionTradeController {
 		dto.setPublisherPhone(SecurityUtil.getUsername());
 		dto.setRightMoney(rightMoney);
 		dto.setCycleId(cycleId);
+		dto.setCycleMonth(cycle.getCycleMonth());
 		dto.setCycle(cycle.getCycle());
 		dto.setCycleName(cycle.getName());
 		dto.setRightMoneyRatio(quote.getRightMoneyRatio());
