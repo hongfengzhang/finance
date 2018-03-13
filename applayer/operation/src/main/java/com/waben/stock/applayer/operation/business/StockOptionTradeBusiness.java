@@ -59,7 +59,7 @@ public class StockOptionTradeBusiness {
         quotoInquiry.setCode(result.getStockCode());
         quotoInquiry.setStrike("100%");
         quotoInquiry.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        quotoInquiry.setPrice(String.valueOf(result.getRightMoneyRatio()));
+        quotoInquiry.setPrice(null);/*String.valueOf(result.getRightMoneyRatio())*/
         quotoInquiry.setTenor(result.getCycleMonth());
         quotoInquiry.setDate(new Date());
         logger.info("数据组装成功:{}", JacksonUtil.encode(quotoInquiry));
