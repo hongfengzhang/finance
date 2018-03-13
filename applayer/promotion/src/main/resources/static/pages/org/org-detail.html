@@ -122,8 +122,39 @@
 					</div>
 				</form>
 			</div>
-			<div class="layui-tab-item">
-				
+			<div class="layui-tab-item admin">
+				<form class="layui-form" action="" id="add-form">
+					<input type="text" name="org.id" class="layui-input" style="display: none;">
+					<div class="layui-form-item">
+						<label class="layui-form-label width100">用户名</label>
+						<div class="layui-input-inline width300">
+							<input type="text" name="username" placeholder="请输入用户名" class="layui-input" maxlength="8">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label width100">登陆密码</label>
+						<div class="layui-input-inline width300">
+							<input type="password" name="password" placeholder="请输入密码" class="layui-input" maxlength="16">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label width100">请再次输入密码</label>
+						<div class="layui-input-inline width300">
+							<input type="password" name="again-password" placeholder="请输入密码" class="layui-input" maxlength="16">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label width100">昵称</label>
+						<div class="layui-input-inline width300">
+							<input type="text" name="nickname" placeholder="请输入用户昵称" class="layui-input" maxlength="8">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label width100"></label>
+						<button type="button" id="admin-submit-btn" class="layui-btn mb5">提　交</button>
+						<button type="button" id="admin-cancel-btn" class="layui-btn layui-btn-primary mb5">取　消</button>
+					</div>
+				</form>
 			</div>
 		</div>
 	</div>

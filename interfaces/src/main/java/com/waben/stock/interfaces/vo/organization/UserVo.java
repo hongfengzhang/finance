@@ -27,6 +27,9 @@ public class UserVo {
      */
     private OrganizationVo org;
 
+    private Long role;
+    private String roleName;
+
     public Long getId() {
         return id;
     }
@@ -73,5 +76,21 @@ public class UserVo {
 
     public void setOrg(OrganizationVo org) {
         this.org = org;
+    }
+
+    public void setRole(Long role) {
+        this.role = role;
+    }
+
+    public Long getRole() {
+        return role;
+    }
+
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }

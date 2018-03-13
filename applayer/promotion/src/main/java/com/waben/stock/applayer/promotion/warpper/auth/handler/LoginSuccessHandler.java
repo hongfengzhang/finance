@@ -31,6 +31,6 @@ public class LoginSuccessHandler extends ResponseHandler implements Authenticati
         Response<Object> result = new Response<>();
         result.setMessage("登陆成功");
         result.setCode("200");
-        response(result,request,response,"/index");
+        response(result,request,response,"/pages/org/org-list.html");
     }
 }
