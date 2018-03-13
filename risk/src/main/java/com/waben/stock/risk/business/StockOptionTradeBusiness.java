@@ -34,8 +34,8 @@ public class StockOptionTradeBusiness {
     }
 
 
-    public StockOptionTradeDto stockOptionDueTreatment(Long publisherId,Long id) {
-        Response<StockOptionTradeDto> response = stockOptionTradeService.userRight(publisherId,id);
+    public StockOptionTradeDto stockOptionDueTreatment(Long id) {
+        Response<StockOptionTradeDto> response = stockOptionTradeService.exercise(id);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
