@@ -19,9 +19,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author Created by yuyidi on 2017/11/16.
@@ -32,6 +30,10 @@ public class RoleService {
 
     @Autowired
     private RoleDao roleDao;
+    @Autowired
+    private PermissionService permissionService;
+    @Autowired
+    private MenuService menuService;
 
     public Role findById(Long id) {
         Role role = roleDao.retrieve(id);
@@ -88,7 +90,16 @@ public class RoleService {
     }
 
     public Role save(Role role) {
-        return roleDao.create(role);
+        Role result = roleDao.create(role);
+        if (result != null) {
+            if (result.getCode().equals("ADMIN")) {
+                //添加渠道管理员
+                if (result.getDescription().equals("渠道管理员")) {
+                    bindRoleWithPermissionAndMenu(result.getId(), 4L);
+                }
+            }
+        }
+        return result;
     }
 
     public List<Role> findRoles() {
@@ -110,7 +121,6 @@ public class RoleService {
 
     public Role saveRolePermission(Long id, Long[] permissionIds) {
         Role role = roleDao.retrieve(id);
-
         if (role == null) {
             throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
         }
@@ -122,5 +132,23 @@ public class RoleService {
         }
         role.setPermissions(permissions);
         return roleDao.update(role);
+    }
+
+    public Role findByOrganizationAdmin(Long organization) {
+        Role role = roleDao.retrieveRoleAdminByOrganization(organization);
+        if (role == null) {
+            throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
+        }
+        return role;
+    }
+
+    public Role bindRoleWithPermissionAndMenu(Long id,Long variety) {
+        Role role = findById(id);
+        List<Permission> permissions = permissionService.findPermissionsByVariety(variety);
+        List<Menu> menus = menuService.findMenusByVariety(variety);
+        role.setMenus(new HashSet(menus));
+        role.setPermissions(new HashSet(permissions));
+        Role result = roleDao.update(role);
+        return result;
     }
 }

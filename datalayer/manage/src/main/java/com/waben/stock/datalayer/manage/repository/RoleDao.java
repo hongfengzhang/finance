@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface RoleDao extends BaseDao<Role, Long> {
 
+    Role retrieveRoleAdminByOrganization(Long organization);
 }

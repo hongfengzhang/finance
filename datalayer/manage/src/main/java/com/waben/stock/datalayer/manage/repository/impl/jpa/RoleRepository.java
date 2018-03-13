@@ -12,6 +12,8 @@ import java.util.List;
  */
 public interface RoleRepository extends CustomJpaRepository<Role, Long> {
 
+    Role findByOrganizationAndCode(Long organization, String admin);
+
 //    @Query("select r from Role as r join r.staffs as staffs where staffs.id=:staffId")
 //    List<Role> findAllByStaffId(@Param("staffId") Long staffId);
 

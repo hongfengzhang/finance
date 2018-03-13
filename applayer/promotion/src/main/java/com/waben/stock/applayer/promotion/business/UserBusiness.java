@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.waben.stock.applayer.promotion.reference.manage.RoleReference;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -18,6 +20,8 @@ public class UserBusiness {
     @Autowired
     @Qualifier("userReference")
     private UserReference userReference;
+    @Autowired
+    private RoleBusiness roleBusiness;
 
     public UserDto fetchByUserName(String userName) {
         Response<UserDto> response = userReference.fetchByUserName(userName);
@@ -32,12 +36,13 @@ public class UserBusiness {
 
 
     public UserDto save(UserDto userDto, OrganizationDto organizationDto) {
+        //获取用户所属机构的管理员角色并绑定给当前用户
+        RoleDto roleDto = roleBusiness.findByOrganization(organizationDto);
         userDto.setOrg(organizationDto);
+        userDto.setRoleDto(roleDto);
         Response<UserDto> response = userReference.addition(userDto);
         String code = response.getCode();
         if ("200".equals(code)) {
-            //获取用户所属机构的管理员角色并绑定给当前用户
-
             return response.getResult();
         } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);

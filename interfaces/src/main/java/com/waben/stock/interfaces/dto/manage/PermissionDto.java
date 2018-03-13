@@ -12,6 +12,8 @@ public class PermissionDto implements Serializable {
     private String name;
     private Long pid;
     private String expression;
+    private Long variety;
+
 
     public Long getId() {
         return id;
@@ -43,5 +45,13 @@ public class PermissionDto implements Serializable {
 
     public void setExpression(String expression) {
         this.expression = expression;
+    }
+
+    public Long getVariety() {
+        return variety;
+    }
+
+    public void setVariety(Long variety) {
+        this.variety = variety;
     }
 }

@@ -25,9 +25,10 @@ public class Permission {
     private Long pid;
     @Column
     private String expression;
-
+    @Column
+    private Long variety;
     @JsonIgnore
-    @ManyToMany(targetEntity = Role.class,mappedBy = "permissions",fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = Role.class, mappedBy = "permissions", fetch = FetchType.LAZY)
     private Set<Role> roles = new HashSet<>();
 
     public Long getId() {
@@ -68,5 +69,13 @@ public class Permission {
 
     public void setPid(Long pid) {
         this.pid = pid;
+    }
+
+    public Long getVariety() {
+        return variety;
+    }
+
+    public void setVariety(Long variety) {
+        this.variety = variety;
     }
 }
