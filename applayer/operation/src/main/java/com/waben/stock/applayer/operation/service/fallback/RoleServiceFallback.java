@@ -44,19 +44,18 @@ public class RoleServiceFallback implements RoleService {
 	}
 
 	@Override
-	public Response<List<RoleDto>> fetchRoles() {
-		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
 	public void delete(Long id) {
 		return;
 	}
 
-	@Override
-	public Response<RoleDto> addRoleMenu(Long id, Long[] menuIds) {
-		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<List<RoleDto>> fetchRoles() {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+
+    @Override
+    public Response<RoleDto> addRoleMenu(Long id, Long[] menuIds) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
 	@Override
 	public Response<RoleDto> addRolePermission(Long id, Long[] permissionIds) {

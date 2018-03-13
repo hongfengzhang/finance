@@ -96,7 +96,7 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<List<StockOptionTradeDto>> stockOptionsWithState(Integer state) {
+	public Response<List<StockOptionTradeDto>> stockOptionsWithState(@PathVariable Integer state) {
 		StockOptionTradeState stockOptionTradeState = StockOptionTradeState.getByIndex(String.valueOf(state));
 		List<StockOptionTrade> stockOptionTrades = stockOptionTradeService.fetchByState(stockOptionTradeState);
 		List<StockOptionTradeDto> result = CopyBeanUtils.copyListBeanPropertiesToList(stockOptionTrades, StockOptionTradeDto.class);

@@ -21,6 +21,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author Created by yuyidi on 2017/11/16.
@@ -47,6 +48,16 @@ public class RoleService {
             public Predicate toPredicate(Root<Role> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder
                     criteriaBuilder) {
                 List<Predicate> predicatesList = new ArrayList();
+                if(!StringUtils.isEmpty(roleQuery.getId())) {
+                    Predicate idQuery = criteriaBuilder.equal(root.get("id").as(Long.class), roleQuery
+                            .getId());
+                    predicatesList.add(idQuery);
+                }
+                if(!StringUtils.isEmpty(roleQuery.getOrganization())) {
+                    Predicate organizationQuery = criteriaBuilder.equal(root.get("organization").as(Long.class), roleQuery
+                            .getOrganization());
+                    predicatesList.add(organizationQuery);
+                }
                 if (!StringUtils.isEmpty(roleQuery.getName())) {
                     Predicate nameQuery = criteriaBuilder.equal(root.get("name").as(String.class), roleQuery
                             .getName());
@@ -99,14 +110,17 @@ public class RoleService {
 
     public Role saveRolePermission(Long id, Long[] permissionIds) {
         Role role = roleDao.retrieve(id);
-        Permission permission = new Permission();
+
         if (role == null) {
             throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
         }
+        Set<Permission> permissions = role.getPermissions();
         for(Long permissionId : permissionIds) {
+            Permission permission = new Permission();
             permission.setId(permissionId);
-            role.getPermissions().add(permission);
+            permissions.add(permission);
         }
+        role.setPermissions(permissions);
         return roleDao.update(role);
     }
 }
