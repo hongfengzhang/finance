@@ -46,9 +46,9 @@ public interface RoleInterface {
     Response<RoleDto> addRoleMenu(@PathVariable("id") Long id,@RequestBody Long[] menuIds);
 
     @RequestMapping(value = "/permission/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-    Response<RoleDto> addRolePermission(@PathVariable("id") Long id,@RequestBody Long[] permissionIds);git
+    Response<RoleDto> addRolePermission(@PathVariable("id") Long id,@RequestBody Long[] permissionIds);
 
-    @RequestMapping(value = "/{role}/bind")
+    @RequestMapping(value = "/{role}/bind")git
     Response<RoleDto> bindAdminRoleWithRoleAndMenu(@PathVariable("id") Long id);
 
 
