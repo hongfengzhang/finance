@@ -62,7 +62,7 @@ $(function() {
 	            	if(id == searchData.loginOrgId) {
 	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>详情</a>";
 	            	} else {
-	            		return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='authority mr10' orgid='" + full.id + "' href='javascript:;'>权限分配</a><a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            		return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            	}
 	            }}
 	        ];

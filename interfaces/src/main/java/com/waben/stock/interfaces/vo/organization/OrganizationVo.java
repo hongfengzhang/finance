@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.vo.organization;
 
 import com.waben.stock.interfaces.enums.OrganizationState;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class OrganizationVo {
@@ -43,6 +44,19 @@ public class OrganizationVo {
 	 * 父级机构代码
 	 */
 	private String parentName;
+
+	/**
+	 * 机构对应累计分成收入
+	 * */
+	private BigDecimal amount;
+
+	public BigDecimal getAmount() {
+		return amount;
+	}
+
+	public void setAmount(BigDecimal amount) {
+		this.amount = amount;
+	}
 
 	public Long getId() {
 		return id;

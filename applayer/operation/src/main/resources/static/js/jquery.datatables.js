@@ -966,7 +966,7 @@
 			allSettings.push( oSettings );
 
 			// Need to add the instance after the instance after the settings object has been added
-			// to the settings array, so we can self reference the table instance if more than one
+			// to the settings array, so we can self service the table instance if more than one
 			oSettings.oInstance = (_that.length===1) ? _that : $this.dataTable();
 
 			// Backwards compatibility, before we apply all the defaults
@@ -2877,7 +2877,7 @@
 		var cellWrite = function ( cell, col ) {
 			// This is very frustrating, but in IE if you just write directly
 			// to innerHTML, and elements that are overwritten are GC'ed,
-			// even if there is a reference to them elsewhere
+			// even if there is a service to them elsewhere
 			while ( cell.childNodes.length ) {
 				cell.removeChild( cell.firstChild );
 			}
@@ -3693,7 +3693,7 @@
 
 	/**
 	 * Use the DOM source to create up an array of header cells. The idea here is to
-	 * create a layout grid (array) of rows x columns, which contains a reference
+	 * create a layout grid (array) of rows x columns, which contains a service
 	 * to the cell that that point in the grid (regardless of col/rowspan), such that
 	 * any column / row could be removed and the new grid constructed
 	 *  @param array {object} aLayout Array to store the calculated layout in
@@ -4317,7 +4317,7 @@
 				}
 			}
 
-			// So the array reference doesn't break set the results into the
+			// So the array service doesn't break set the results into the
 			// existing array
 			displayRows.length = 0;
 			$.merge( displayRows, rows );
@@ -4813,7 +4813,7 @@
 		);
 
 		// Can't use `select` variable as user might provide their own and the
-		// reference is broken by the use of outerHTML
+		// service is broken by the use of outerHTML
 		$('select', div)
 			.val( settings._iDisplayLength )
 			.bind( 'change.DT', function(e) {
@@ -6712,7 +6712,7 @@
 
 
 	/**
-	 * `Array.prototype` reference.
+	 * `Array.prototype` service.
 	 *
 	 * @type object
 	 * @ignore
@@ -8000,7 +8000,7 @@
 			// Check for an 'overflow' they case for displaying the table
 			_fnLengthOverflow( settings );
 
-			// Remove the row's ID reference if there is one
+			// Remove the row's ID service if there is one
 			var id = settings.rowIdFn( rowData._aData );
 			if ( id !== undefined ) {
 				delete settings.aIds[ id ];
@@ -9687,7 +9687,7 @@
 
 		/**
 		 * Unique footer TH/TD element for this column (if there is one). Not used
-		 * in DataTables as such, but can be used for plug-ins to reference the
+		 * in DataTables as such, but can be used for plug-ins to service the
 		 * footer for each column.
 		 *  @type node
 		 *  @default null
@@ -9724,7 +9724,7 @@
 		"sDefaultContent": null,
 
 		/**
-		 * Name for the column, allowing reference to the column by name as well as
+		 * Name for the column, allowing service to the column by name as well as
 		 * by index (needs a lookup to work by name).
 		 *  @type string
 		 */
@@ -10862,7 +10862,7 @@
 		 *    this will be an empty array, for server-side processing there will be a
 		 *    significant number of parameters!
 		 *  @returns {undefined} Ensure that you modify the data array passed in,
-		 *    as this is passed by reference.
+		 *    as this is passed by service.
 		 *
 		 *  @dtopt Callbacks
 		 *  @dtopt Server-side
@@ -13443,14 +13443,14 @@
 		"aoStateLoad": [],
 
 		/**
-		 * State that was saved. Useful for back reference
+		 * State that was saved. Useful for back service
 		 *  @type object
 		 *  @default null
 		 */
 		"oSavedState": null,
 
 		/**
-		 * State that was loaded. Useful for back reference
+		 * State that was loaded. Useful for back service
 		 *  @type object
 		 *  @default null
 		 */
@@ -15096,7 +15096,7 @@
 	// jQuery access
 	$.fn.dataTable = DataTable;
 
-	// Provide access to the host jQuery object (circulars reference)
+	// Provide access to the host jQuery object (circulars service)
 	DataTable.$ = $;
 
 	// Legacy aliases

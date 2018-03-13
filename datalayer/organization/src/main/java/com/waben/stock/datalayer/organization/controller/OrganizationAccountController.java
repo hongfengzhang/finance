@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.organization.entity.OrganizationAccount;
 import com.waben.stock.datalayer.organization.service.OrganizationAccountService;
+import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.organization.OrganizationAccountInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +33,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/organizationAccount")
 @Api(description = "机构账户接口列表")
-public class OrganizationAccountController {
+public class OrganizationAccountController implements OrganizationAccountInterface {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -48,7 +51,7 @@ public class OrganizationAccountController {
 	public Response<Page<OrganizationAccount>> organizationAccounts(int page, int limit) {
 		return new Response<>((Page<OrganizationAccount>) organizationAccountService.organizationAccounts(page, limit));
 	}
-	
+
 	@GetMapping("/list")
 	@ApiOperation(value = "获取机构账户列表")
 	public Response<List<OrganizationAccount>> list() {
@@ -56,7 +59,7 @@ public class OrganizationAccountController {
 	}
 
 	/******************************** 后台管理 **********************************/
-	
+
 	@PostMapping("/")
 	@ApiOperation(value = "添加机构账户", hidden = true)
 	public Response<OrganizationAccount> addition(OrganizationAccount organizationAccount) {
@@ -75,18 +78,30 @@ public class OrganizationAccountController {
 		organizationAccountService.deleteOrganizationAccount(id);
 		return new Response<Long>(id);
 	}
-	
+
 	@PostMapping("/deletes")
 	@ApiOperation(value = "批量删除机构账户（多个id以逗号分割）", hidden = true)
 	public Response<Boolean> deletes(String ids) {
 		organizationAccountService.deleteOrganizationAccounts(ids);
 		return new Response<Boolean>(true);
 	}
-	
+
 	@GetMapping("/adminList")
 	@ApiOperation(value = "获取机构账户列表(后台管理)", hidden = true)
 	public Response<List<OrganizationAccount>> adminList() {
 		return new Response<>(organizationAccountService.list());
+	}
+
+	@Override
+	public Response<Void> modifyPaymentPassword(@PathVariable Long orgId, String oldPaymentPassword, String paymentPassword) {
+		organizationAccountService.modifyPaymentPassword(orgId, oldPaymentPassword, paymentPassword);
+		return new Response<>();
+	}
+
+	@Override
+	public Response<OrganizationAccountDto> fetchByOrgId(@PathVariable Long orgId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class,
+				organizationAccountService.getByOrgId(orgId), false));
 	}
 
 }

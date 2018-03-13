@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import com.waben.stock.datalayer.buyrecord.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.buyrecord.business.HolidayBusiness;
 import com.waben.stock.datalayer.buyrecord.business.InvestorBusiness;
+import com.waben.stock.datalayer.buyrecord.business.OrganizationSettlementBusiness;
 import com.waben.stock.datalayer.buyrecord.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.buyrecord.business.StrategyTypeBusiness;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
@@ -94,6 +95,9 @@ public class BuyRecordService {
 
 	@Autowired
 	private VoluntarilyBuyInProducer producer;
+
+	@Autowired
+	private OrganizationSettlementBusiness orgSettlementBusiness;
 
 	@Autowired
 	private RestTemplate restTemplate;
@@ -479,6 +483,7 @@ public class BuyRecordService {
 		}
 		// 如果点买记录勾选了递延，判断是否递延了，如果没递延，退回递延费，递延了则产生递延记录
 		Date expireTime = buyRecord.getExpireTime();
+		BigDecimal deferredFee = buyRecord.getDeferred() ? buyRecord.getDeferredFee() : BigDecimal.ZERO;
 		if (buyRecord.getDeferred() && buyRecord.getDeferredFee() != null
 				&& buyRecord.getDeferredFee().compareTo(new BigDecimal(0)) > 0 && expireTime != null) {
 			String nowStr = sdf.format(new Date());
@@ -487,6 +492,7 @@ public class BuyRecordService {
 				// 退回递延费
 				accountBusiness.returnDeferredFee(buyRecord.getPublisherId(), buyRecord.getId(),
 						buyRecord.getDeferredFee());
+				deferredFee = BigDecimal.ZERO;
 			} else {
 				// 生成递延记录
 				StrategyTypeDto strategyType = strategyTypeBusiness.fetchById(buyRecord.getStrategyTypeId());
@@ -501,6 +507,9 @@ public class BuyRecordService {
 				deferredRecordDao.create(deferredRecord);
 			}
 		}
+		// 给机构结算
+		orgSettlementBusiness.strategySettlement(buyRecord.getPublisherId(), buyRecord.getId(),
+				buyRecord.getStrategyTypeId(), buyRecord.getServiceFee(), deferredFee);
 		// 修改点买记录状态
 		changeState(buyRecord, false);
 		sendOutsideMessage(buyRecord);

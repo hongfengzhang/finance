@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
+import com.waben.stock.datalayer.stockoption.business.OrganizationSettlementBusiness;
 import com.waben.stock.datalayer.stockoption.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
@@ -57,6 +58,9 @@ public class StockOptionTradeService {
 
 	@Autowired
 	private OutsideMessageBusiness outsideMessageBusiness;
+
+	@Autowired
+	private OrganizationSettlementBusiness orgSettlementBusiness;
 
 	public Page<StockOptionTrade> pagesByUserQuery(final StockOptionTradeUserQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -196,6 +200,12 @@ public class StockOptionTradeService {
 		if (profit.compareTo(BigDecimal.ZERO) > 0) {
 			// 用户收益
 			accountBusiness.optionProfit(trade.getPublisherId(), trade.getId(), profit);
+		}
+		// 给机构结算
+		if (trade.getOfflineTrade().getRightMoney() != null) {
+			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
+			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getCycleId(),
+					rightMoneyProfit);
 		}
 		// 站外消息推送
 		sendOutsideMessage(trade);

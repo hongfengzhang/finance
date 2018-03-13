@@ -9,7 +9,6 @@ import com.waben.stock.applayer.operation.service.security.InvestorUserDetailSer
 import com.waben.stock.applayer.operation.service.security.ManagerUserDetailService;
 import com.waben.stock.applayer.operation.warpper.auth.provider.InvestorAuthenticationProvider;
 import com.waben.stock.applayer.operation.warpper.auth.provider.ManagerAuthenticationProvider;
-import com.waben.stock.applayer.operation.warpper.mail.MailAuthenricator;
 import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.pojo.ExceptionInformation;
 import org.slf4j.Logger;
@@ -31,15 +30,12 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
-import javax.mail.Session;
-import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletResponse;
 import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;

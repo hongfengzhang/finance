@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.promotion.reference;
+package com.waben.stock.applayer.promotion.reference.organization;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 
