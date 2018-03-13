@@ -461,7 +461,8 @@
     <script th:src="@{/static/js/bootstrap-table.js}" type="text/javascript"></script>
     <script th:src="@{/static/js/bootstrap-table-zh-CN.js}" type="text/javascript"></script>
 
-    <script type="text/javascript">
+    <script type="text/javascript" >
+        //<![CDATA[
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
@@ -614,12 +615,13 @@
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright"/>\n' +
+                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
                                 '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
                                 '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
                                 '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
                             ].join('');
                         }
+
                         if(row.state=="已结算"){
                             return [
                                 ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
@@ -927,24 +929,29 @@
                             $("#id").val(row.id);
                             $('#orgPrice').click(function () {
                                 $('#orgClose').click();
-                                $.ajax({
-                                    url: "../inquiryresult/add",
-                                    type: 'get',
-                                    data: {"trade.id": row.id,"rightMoneyRatio":$("[name='rightMoneyRatio']").val(),"org.id":$("[name='orgId']").val()},
-                                    success: function (response) {
-                                        if (response.code = '200') {
-                                            $table.bootstrapTable('refresh');
-                                            alert("保存成功");
-                                        } else {
-                                            alert(response.message);
+                                var patt = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;
+                                if(!patt.test($("[name='rightMoneyRatio']").val())) {
+                                    alert("数据格式错误，请重新输入！");
+                                }else {
+                                    $.ajax({
+                                        url: "../inquiryresult/add",
+                                        type: 'get',
+                                        data: {"trade.id": row.id,"rightMoneyRatio":$("[name='rightMoneyRatio']").val(),"org.id":$("[name='orgId']").val()},
+                                        success: function (response) {
+                                            if (response.code = '200') {
+                                                $table.bootstrapTable('refresh');
+                                                alert("保存成功");
+                                            } else {
+                                                alert(response.message);
+                                            }
+                                            $("[name='rightMoneyRatio']").val('');
+                                        },
+                                        error: function () {
+                                            alert("保存失败")
+                                            $("[name='rightMoneyRatio']").val('');
                                         }
-                                        $("[name='rightMoneyRatio']").val('');
-                                    },
-                                    error: function () {
-                                        alert("保存失败")
-                                        $("[name='rightMoneyRatio']").val('');
-                                    }
-                                })
+                                    })
+                                }
                                 modal.find('#orgdetail').attr("onclick",params[0]);
                             })
                             $('#realPrice').click(function () {
@@ -969,7 +976,6 @@
                                         $("[name='realBuyingPrice']").val('');
                                     }
                                 })
-                                modal.find('#orgdetail').attr("onclick",params[0]);
                             })
                             $('#orgSettle').click(function () {
                                 $('#orgClose').click();
@@ -990,7 +996,6 @@
                                         $("[name='sellingPrice']").val('');
                                     }
                                 })
-                                modal.find('#orgdetail').attr("onclick",params[0]);
                             })
 
                         },
@@ -1019,13 +1024,9 @@
                 var status = $("[name='beginTime']");
                 var beginTime = $("input[name='endTime']").val();
                 var endTime = $("input[name='state']").val();
-
-
-                //<![CDATA[
                 if (stockName == "" && stockCode == "" && status == "") {
                     swal("请输入查询数据！");
                 }
-                //]]>
                 $table.bootstrapTable('getOptions').pageNumber = 1;
                 $table.bootstrapTable('refresh');
             });
@@ -1069,7 +1070,7 @@
                 })
             })
         });
-
+        //]]>
     </script>
 
 </div>
