@@ -31,110 +31,112 @@ import com.waben.stock.interfaces.pojo.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import javax.management.relation.Role;
+
 /**
  * 机构管理用户 Controller
- * 
- * @author luomengan
  *
+ * @author luomengan
  */
 @RestController
 @RequestMapping("/user")
 @Api(description = "机构管理用户接口列表")
-public  class UserController implements UserInterface {
 
-	Logger logger = LoggerFactory.getLogger(getClass());
+public class UserController implements UserInterface {
 
-	@Autowired
-	public UserService userService;
 
-	@GetMapping("/{id}")
-	@ApiOperation(value = "根据id获取机构管理用户")
-	public Response<UserDto> fetchById(@PathVariable Long id) {
-		User result = userService.getUserInfo(id);
-		UserDto resposne = CopyBeanUtils.copyBeanProperties(UserDto.class, result, false);
-		return new Response<>(resposne);
-	}
+    Logger logger = LoggerFactory.getLogger(getClass());
 
-	@GetMapping("/page")
-	@ApiOperation(value = "获取机构管理用户分页数据")
-	public Response<PageInfo<UserDto>> users(int page, int limit) {
-		Page<User> result = userService.users(page, limit);
-		PageInfo<UserDto> response = PageToPageInfo.pageToPageInfo(result, UserDto.class);
-		return new Response<>(response);
-	}
-	
-	@GetMapping("/list")
-	@ApiOperation(value = "获取机构管理用户列表")
-	public Response<List<UserDto>> list() {
-		List<User> result = userService.list();
-		List<UserDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, UserDto.class);
-		return new Response<>(response);
-	}
+    @Autowired
+    public UserService userService;
 
-	@Override
-	public Response<PageInfo<UserDto>> pages(UserQuery query) {
-		Page<User> page = userService.pagesByQuery(query);
-		PageInfo<UserDto> result = PageToPageInfo.pageToPageInfo(page, UserDto.class);
-		for (int i = 0; i < page.getContent().size(); i++) {
-			OrganizationDto organizationDto = CopyBeanUtils.copyBeanProperties(
-					OrganizationDto.class, page.getContent().get(i).getOrg(), false);
-			result.getContent().get(i).setOrg(organizationDto);
-		}
-		return new Response<>(result);
-	}
+    @Override
+    @ApiOperation(value = "根据id获取机构管理用户")
+    public Response<UserDto> fetchById(@PathVariable Long id) {
+        User result = userService.getUserInfo(id);
+        UserDto resposne = CopyBeanUtils.copyBeanProperties(UserDto.class, result, false);
+        return new Response<>(resposne);
+    }
 
-	/******************************** 后台管理 **********************************/
-	
-	@PostMapping("/")
-	@ApiOperation(value = "添加机构管理用户", hidden = true)
-	public Response<UserDto> addition(UserDto user) {
-		User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
-		User result = userService.addUser(request);
-		UserDto response = CopyBeanUtils.copyBeanProperties(UserDto.class, result, false);
-		return new Response<>(response);
-	}
+    @Override
+    @ApiOperation(value = "获取机构管理用户分页数据")
+    public Response<PageInfo<UserDto>> users(int page, int limit) {
+        Page<User> result = userService.users(page, limit);
+        PageInfo<UserDto> response = PageToPageInfo.pageToPageInfo(result, UserDto.class);
+        return new Response<>(response);
+    }
 
-	@PutMapping("/")
-	@ApiOperation(value = "修改机构管理用户", hidden = true)
-	public Response<UserDto> modification(UserDto user) {
-		User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
-		User result = userService.addUser(request);
-		UserDto response = CopyBeanUtils.copyBeanProperties(result, new UserDto(), false);
-		return new Response<>(response);
-	}
+    @Override
+    @ApiOperation(value = "获取机构管理用户列表")
+    public Response<List<UserDto>> list() {
+        List<User> result = userService.list();
+        List<UserDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, UserDto.class);
+        return new Response<>(response);
+    }
 
-	@DeleteMapping("/{id}")
-	@ApiOperation(value = "删除机构管理用户", hidden = true)
-	public Response<Long> delete(@PathVariable Long id) {
-		userService.deleteUser(id);
-		return new Response<>(id);
-	}
-	
-	@PostMapping("/deletes")
-	@ApiOperation(value = "批量删除机构管理用户（多个id以逗号分割）", hidden = true)
-	public Response<Boolean> deletes(String ids) {
-		userService.deleteUsers(ids);
-		return new Response<>(true);
-	}
-	
-	@GetMapping("/adminList")
-	@ApiOperation(value = "获取机构管理用户列表(后台管理)", hidden = true)
-	public Response<List<UserDto>> adminList() {
-		List<User> result = userService.list();
-		List<UserDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, UserDto.class);
-		return new Response<>(response);
-	}
+    @Override
+    public Response<PageInfo<UserDto>> pages(UserQuery query) {
+        Page<User> page = userService.pagesByQuery(query);
+        PageInfo<UserDto> result = PageToPageInfo.pageToPageInfo(page, UserDto.class);
+        for (int i = 0; i < page.getContent().size(); i++) {
+            OrganizationDto organizationDto = CopyBeanUtils.copyBeanProperties(
+                    OrganizationDto.class, page.getContent().get(i).getOrg(), false);
+            result.getContent().get(i).setOrg(organizationDto);
+        }
+        return new Response<>(result);
+    }
 
-	@Override
-	public Response<UserDto> fetchByUserName(String userName) {
-		User user = userService.findByUserName(userName);
-		UserDto response = CopyBeanUtils.copyBeanProperties(user, new UserDto(), false);
-		response.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class, user.getOrg(), false));
-		return new Response<>(response);
-	}
+    /******************************** 后台管理 **********************************/
+    @Override
+    @ApiOperation(value = "添加机构管理用户", hidden = true)
+    public Response<UserDto> addition(UserDto user) {
+        User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
+        request.setRole(user.getRoleDto().getId());
+        User result = userService.addUser(request);
+        UserDto response = CopyBeanUtils.copyBeanProperties(UserDto.class, result, false);
+        return new Response<>(response);
+    }
 
-	@Override
-	public Response<UserDto> bindRole(Long user, Long role) {
-		return null;
-	}
+    @Override
+    @ApiOperation(value = "修改机构管理用户", hidden = true)
+    public Response<UserDto> modification(UserDto user) {
+        User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
+        User result = userService.addUser(request);
+        UserDto response = CopyBeanUtils.copyBeanProperties(result, new UserDto(), false);
+        return new Response<>(response);
+    }
+
+    @Override
+    @ApiOperation(value = "删除机构管理用户", hidden = true)
+    public Response<Long> delete(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return new Response<>(id);
+    }
+
+    @Override
+    @ApiOperation(value = "批量删除机构管理用户（多个id以逗号分割）", hidden = true)
+    public Response<Boolean> deletes(String ids) {
+        userService.deleteUsers(ids);
+        return new Response<>(true);
+    }
+
+    @Override
+    @ApiOperation(value = "获取机构管理用户列表(后台管理)", hidden = true)
+    public Response<List<UserDto>> adminList() {
+        List<User> result = userService.list();
+        List<UserDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, UserDto.class);
+        return new Response<>(response);
+    }
+
+    @Override
+    public Response<UserDto> fetchByUserName(String userName) {
+        User user = userService.findByUserName(userName);
+        UserDto response = CopyBeanUtils.copyBeanProperties(user, new UserDto(), false);
+        return new Response<>(response);
+    }
+
+    @Override
+    public Response<UserDto> bindRole(Long user, Long role) {
+        return null;
+    }
 }

@@ -15,6 +15,8 @@ public interface MenuRepository extends CustomJpaRepository<Menu, Long> {
     @Query("select m from Menu as m join m.roles as r where r.id =:role order by m.id")
     List<Menu> findAllByRolesOrderById(@Param("role") Long role);
 
+    List<Menu> findAllByVariety(Long variety);
+
 //    @Query("select m from Menu m join m.roles r join r.staffs staff where staff.id =:staff order by  m.id")
 //    List<Menu> findAllByStaff(@Param("staff") Long staff);
 

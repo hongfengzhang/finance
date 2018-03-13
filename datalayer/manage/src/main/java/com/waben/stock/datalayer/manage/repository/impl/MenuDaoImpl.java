@@ -23,6 +23,11 @@ public class MenuDaoImpl implements MenuDao {
     private MenuRepository repository;
 
     @Override
+    public List<Menu> retrieveAllByVariety(Long variety) {
+        return repository.findAllByVariety(variety);
+    }
+
+    @Override
     public List<Menu> retrieveByRole(Long role) {
         return repository.findAllByRolesOrderById(role);
     }

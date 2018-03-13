@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.service.fallback;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.operation.service.manage.RoleService;
@@ -63,7 +64,12 @@ public class RoleServiceFallback implements RoleService {
 	}
 
 	@Override
-	public Response<RoleDto> bindAdminRoleWithRoleAndMenu(Long id) {
+	public Response<RoleDto> bindAdminRoleWithPermissionAndMenu(Long id, Long variety) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<RoleDto> fetchByOrganizationAdmin(Long organization) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }

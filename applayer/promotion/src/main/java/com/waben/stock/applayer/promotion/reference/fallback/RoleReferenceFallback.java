@@ -60,7 +60,12 @@ public class RoleReferenceFallback implements RoleReference {
     }
 
     @Override
-    public Response<RoleDto> bindAdminRoleWithRoleAndMenu(Long id) {
+    public Response<RoleDto> bindAdminRoleWithPermissionAndMenu(Long id,Long variety ) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<RoleDto> fetchByOrganizationAdmin(Long organization) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

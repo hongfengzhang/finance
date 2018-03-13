@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.dto.organization;
 
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+
 import java.util.Date;
 
 public class UserDto {
@@ -24,6 +26,8 @@ public class UserDto {
      * 所属机构
      */
     private OrganizationDto org;
+
+    private RoleDto roleDto;
 
     public Long getId() {
         return id;
@@ -71,5 +75,13 @@ public class UserDto {
 
     public void setOrg(OrganizationDto org) {
         this.org = org;
+    }
+
+    public RoleDto getRoleDto() {
+        return roleDto;
+    }
+
+    public void setRoleDto(RoleDto roleDto) {
+        this.roleDto = roleDto;
     }
 }

@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,9 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
+
+import javax.management.relation.Role;
+
 @Service
 public class RoleBusiness {
     @Autowired
@@ -64,6 +68,28 @@ public class RoleBusiness {
 
     public RoleDto findById(Long id) {
         Response<RoleDto> response = roleReference.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public RoleDto findByOrganization(OrganizationDto organizationDto) {
+        Response<RoleDto> response = roleReference.fetchByOrganizationAdmin(organizationDto.getId());
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public RoleDto bindAdminRoleWithPermissionAndMenu(Long id) {
+        Response<RoleDto> response = roleReference.bindAdminRoleWithPermissionAndMenu(id, 4L);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
