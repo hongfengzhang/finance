@@ -44,4 +44,7 @@ public interface UserInterface {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     Response<UserDto> fetchByUserName(@RequestParam("userName") String userName);
+
+    @RequestMapping(value = "/user/{user}/role/{role}", method = RequestMethod.PUT)
+    Response<UserDto> bindRole(@PathVariable("user") Long user, @PathVariable("role") Long role);
 }

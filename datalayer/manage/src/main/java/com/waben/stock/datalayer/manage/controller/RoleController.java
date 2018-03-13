@@ -92,4 +92,9 @@ public class RoleController implements RoleInterface {
         RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class,roleService.saveRolePermission(id,permissionIds),false);
         return new Response<>(result);
     }
+
+    @Override
+    public Response<RoleDto> bindAdminRoleWithRoleAndMenu(Long id) {
+        return null ;
+    }
 }

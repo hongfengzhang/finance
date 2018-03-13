@@ -46,6 +46,9 @@ public class User {
 	@JoinColumn(name = "org_id")
 	private Organization org;
 
+	private Long role;
+
+
 	public Long getId() {
 		return id;
 	}
@@ -94,4 +97,11 @@ public class User {
 		this.org = org;
 	}
 
+	public Long getRole() {
+		return role;
+	}
+
+	public void setRole(Long role) {
+		this.role = role;
+	}
 }

@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,7 +16,7 @@ import com.waben.stock.interfaces.pojo.Response;
 public class UserBusiness {
 
     @Autowired
-    @Qualifier("userFeignService")
+    @Qualifier("userReference")
     private UserReference userReference;
 
     public UserDto fetchByUserName(String userName) {
@@ -30,8 +31,18 @@ public class UserBusiness {
     }
 
 
-    public UserDto save(UserDto requestDto) {
-        return null;
+    public UserDto save(UserDto userDto, OrganizationDto organizationDto) {
+        userDto.setOrg(organizationDto);
+        Response<UserDto> response = userReference.addition(userDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            //获取用户所属机构的管理员角色并绑定给当前用户
+
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
     }
 
     public UserDto saveUserRole(Long id, Long[] roleIds) {
