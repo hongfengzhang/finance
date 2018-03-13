@@ -14,6 +14,7 @@ import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowExtendDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -43,6 +44,9 @@ public class CapitalFlowBusiness {
 	@Autowired
 	@Qualifier("strategyTypeReference")
 	private StrategyTypeReference strategyTypeReference;
+	
+	@Autowired
+	private StockOptionTradeBusiness tradeBusiness;
 
 	public PageInfo<CapitalFlowWithExtendDto> pages(CapitalFlowQuery query) {
 		Response<PageInfo<CapitalFlowDto>> response = service.pagesByQuery(query);
@@ -78,6 +82,16 @@ public class CapitalFlowBusiness {
 									if (strategyType.getId() == buyRecord.getStrategyTypeId()) {
 										flowWithExtend.setStrategyTypeName(strategyType.getName());
 									}
+								}
+							}
+						} else if(extend.getExtendType() == CapitalFlowExtendType.STOCKOPTIONTRADE) {
+							StockOptionTradeDto stockOption = tradeBusiness.findById(extend.getExtendId());
+							if (stockOption != null) {
+								// 设置股票代码和股票名称
+								flowWithExtend.setStockCode(stockOption.getStockCode());
+								StockDto stock = stockBusiness.findByCode(stockOption.getStockCode());
+								if (stock != null) {
+									flowWithExtend.setStockName(stock.getName());
 								}
 							}
 						}

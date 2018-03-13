@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.promotion.warpper.auth.handler;
 
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.JacksonUtil;
+
 import org.springframework.http.MediaType;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -21,7 +23,7 @@ public abstract class ResponseHandler {
     public void response(Response<Object> result, HttpServletRequest request, HttpServletResponse response, String
             view) {
         if (request.getContentType() != null
-                && request.getContentType().indexOf("application/json") > -1) {
+                && (request.getContentType().indexOf("application/json") > -1 || request.getContentType().indexOf("application/x-www-form-urlencoded") > -1)) {
             response.setContentType(MediaType.APPLICATION_JSON_VALUE); //设置ContentType
             response.setCharacterEncoding("UTF-8"); //避免乱码
             PrintWriter writer = null;
@@ -30,7 +32,8 @@ public abstract class ResponseHandler {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            writer.print(result);
+            result.setResult(view);
+            writer.print(JacksonUtil.encode(result));
             writer.flush();
             writer.close();
         } else {
