@@ -4,7 +4,7 @@ package com.waben.stock.risk;
 import org.springframework.util.StringUtils;
 
 /**
- * Created by admin on 2017/12/14.
+ * Created by user on 2017/12/14.
  */
 
 public class IdCardUtil {

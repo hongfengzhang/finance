@@ -2,8 +2,13 @@ package com.waben.stock.datalayer.organization.controller;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 import com.waben.stock.interfaces.service.organization.UserInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -26,6 +31,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import javax.management.relation.Role;
+
 /**
  * 机构管理用户 Controller
  *
@@ -36,12 +43,13 @@ import io.swagger.annotations.ApiOperation;
 @Api(description = "机构管理用户接口列表")
 public class UserController implements UserInterface {
 
+
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public UserService userService;
 
-    @GetMapping("/{id}")
+    @Override
     @ApiOperation(value = "根据id获取机构管理用户")
     public Response<UserDto> fetchById(@PathVariable Long id) {
         User result = userService.getUserInfo(id);
@@ -49,7 +57,7 @@ public class UserController implements UserInterface {
         return new Response<>(resposne);
     }
 
-    @GetMapping("/page")
+    @Override
     @ApiOperation(value = "获取机构管理用户分页数据")
     public Response<PageInfo<UserDto>> users(int page, int limit) {
         Page<User> result = userService.users(page, limit);
@@ -57,7 +65,7 @@ public class UserController implements UserInterface {
         return new Response<>(response);
     }
 
-    @GetMapping("/list")
+    @Override
     @ApiOperation(value = "获取机构管理用户列表")
     public Response<List<UserDto>> list() {
         List<User> result = userService.list();
@@ -65,9 +73,20 @@ public class UserController implements UserInterface {
         return new Response<>(response);
     }
 
-    /******************************** 后台管理 **********************************/
+    @Override
+    public Response<PageInfo<UserDto>> pages(UserQuery query) {
+        Page<User> page = userService.pagesByQuery(query);
+        PageInfo<UserDto> result = PageToPageInfo.pageToPageInfo(page, UserDto.class);
+        for (int i = 0; i < page.getContent().size(); i++) {
+            OrganizationDto organizationDto = CopyBeanUtils.copyBeanProperties(
+                    OrganizationDto.class, page.getContent().get(i).getOrg(), false);
+            result.getContent().get(i).setOrg(organizationDto);
+        }
+        return new Response<>(result);
+    }
 
-    @PostMapping("/")
+    /******************************** 后台管理 **********************************/
+    @Override
     @ApiOperation(value = "添加机构管理用户", hidden = true)
     public Response<UserDto> addition(UserDto user) {
         User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
@@ -77,7 +96,7 @@ public class UserController implements UserInterface {
         return new Response<>(response);
     }
 
-    @PutMapping("/")
+    @Override
     @ApiOperation(value = "修改机构管理用户", hidden = true)
     public Response<UserDto> modification(UserDto user) {
         User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
@@ -86,21 +105,21 @@ public class UserController implements UserInterface {
         return new Response<>(response);
     }
 
-    @DeleteMapping("/{id}")
+    @Override
     @ApiOperation(value = "删除机构管理用户", hidden = true)
     public Response<Long> delete(@PathVariable Long id) {
         userService.deleteUser(id);
         return new Response<>(id);
     }
 
-    @PostMapping("/deletes")
+    @Override
     @ApiOperation(value = "批量删除机构管理用户（多个id以逗号分割）", hidden = true)
     public Response<Boolean> deletes(String ids) {
         userService.deleteUsers(ids);
         return new Response<>(true);
     }
 
-    @GetMapping("/adminList")
+    @Override
     @ApiOperation(value = "获取机构管理用户列表(后台管理)", hidden = true)
     public Response<List<UserDto>> adminList() {
         List<User> result = userService.list();

@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.vo.organization;
 
+import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.enums.OrganizationState;
 
 import java.math.BigDecimal;
@@ -49,7 +50,10 @@ public class OrganizationVo {
 	 * 机构对应累计分成收入
 	 * */
 	private BigDecimal amount;
-
+	/**
+	 * 机构对应账户信息
+	 * */
+	private OrganizationAccountDto orgDto;
 	public BigDecimal getAmount() {
 		return amount;
 	}
@@ -138,4 +142,11 @@ public class OrganizationVo {
 		this.parentName = parentName;
 	}
 
+	public OrganizationAccountDto getOrgDto() {
+		return orgDto;
+	}
+
+	public void setOrgDto(OrganizationAccountDto orgDto) {
+		this.orgDto = orgDto;
+	}
 }

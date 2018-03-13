@@ -848,24 +848,29 @@
                             });
                         },
                         'click .settlement': function (e, value, row, index) {
-                            var buyingPrice = row.buyingPrice;
-                            var nominalAmount = row.nominalAmount;
-                            var profitAndLoss  = ((row.offlineTrade.sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
-                            if(profitAndLoss>0) {
-                                profitAndLoss = profitAndLoss.toFixed(2) + "";
-                                var flag = profitAndLoss.indexOf(".");
-                                if(flag!=-1) {
-                                    profitAndLoss = profitAndLoss.substring(0,flag+3);
-                                }
-                                $("#user_profitAndLoss").text(profitAndLoss);
+                            var sellingPrice = row.offlineTrade.sellingPrice;
+                            if(sellingPrice==null||sellingPrice=='') {
+                                sellingPrice = 0;
+                                profitAndLoss = 0;
                             }else {
-                                $("#user_profitAndLoss").text(0);
+                                var buyingPrice = row.buyingPrice;
+                                var nominalAmount = row.nominalAmount;
+                                var profitAndLoss  = ((sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
+                                if(profitAndLoss>0) {
+                                    profitAndLoss = profitAndLoss.toFixed(2) + "";
+                                    var flag = profitAndLoss.indexOf(".");
+                                    if(flag!=-1) {
+                                        profitAndLoss = profitAndLoss.substring(0,flag+3);
+                                    }
+                                }else {
+                                    profitAndLoss = 0;
+                                }
                             }
 
                             $("[name='detailStock']").val(row.stockName);
                             $("[name='detailAmount']").val(row.buyingPrice);
                             $("[name='detailnominalAmount']").val(row.nominalAmount);
-                            $("[name='detailSellAmount']").val(row.offlineTrade.sellingPrice);
+                            $("[name='detailSellAmount']").val(sellingPrice);
                             $("[name='detailCycleName']").val(row.cycleName);
                             $("[name='detailNominalAmount']").val(row.rightMoney);
                             $("[name='detailBuyType']").val(row.buyingType);
@@ -921,9 +926,11 @@
                                         } else {
                                             alert(response.message);
                                         }
+                                        $("[name='rightMoneyRatio']").val('');
                                     },
                                     error: function () {
                                         alert("保存失败")
+                                        $("[name='rightMoneyRatio']").val('');
                                     }
                                 })
                                 modal.find('#orgdetail').attr("onclick",params[0]);
@@ -941,9 +948,13 @@
                                         } else {
                                             alert(response.message);
                                         }
+                                        $("[name='realRightMoneyRatio']").val('');
+                                        $("[name='realBuyingPrice']").val('');
                                     },
                                     error: function () {
                                         alert("保存失败")
+                                        $("[name='realRightMoneyRatio']").val('');
+                                        $("[name='realBuyingPrice']").val('');
                                     }
                                 })
                                 modal.find('#orgdetail').attr("onclick",params[0]);
@@ -960,42 +971,17 @@
                                         } else {
                                             alert(response.message);
                                         }
+                                        $("[name='sellingPrice']").val('');
                                     },
                                     error: function () {
                                         alert("保存失败")
+                                        $("[name='sellingPrice']").val('');
                                     }
                                 })
                                 modal.find('#orgdetail').attr("onclick",params[0]);
                             })
 
-//                            $(location).prop('href', "../option/inquiry/" + row.id);
                         },
-                        //                        'click .remove': function (e, value, row, index) {
-//                            swal({
-//                                title: "你确定吗?",
-//                                text: "删除后,数据将不可被恢复!",
-//                                type: "warning",
-//                                showCancelButton: true,
-//                                confirmButtonText: "是的, 删除!",
-//                                cancelButtonText: "不了, 取消!",
-//                                closeOnConfirm: false,
-//                                closeOnCancel: false
-//                            }, function (isConfirm) {
-//                                if (isConfirm) {
-//                                    $.ajax({
-//                                        url: '../stock/delete',
-//                                        type: 'post',
-//                                        data: {"id": row.id},
-//                                        success: function (response) {
-//                                            swal("Deleted!", "数据删除成功.", "success");
-//                                            $table.bootstrapTable('refresh');
-//                                        }
-//                                    })
-//                                } else {
-//                                    swal("Cancelled", "数据已取消删除 :)", "error");
-//                                }
-//                            });
-//                        }
                     }
                 }],
                 onLoadError: function (status) {
