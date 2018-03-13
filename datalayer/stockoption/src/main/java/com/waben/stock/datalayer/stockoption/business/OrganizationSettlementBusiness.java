@@ -29,11 +29,11 @@ public class OrganizationSettlementBusiness {
 	@Qualifier("organizationSettlementReference")
 	private OrganizationSettlementReference service;
 
-	public void strategySettlement(Long publisherId, Long buyRecordId, Long strategyTypeId, BigDecimal serviceFee,
-			BigDecimal deferredFee) {
+	public void strategySettlement(Long publisherId, Long buyRecordId, String tradeNo, Long strategyTypeId,
+			BigDecimal serviceFee, BigDecimal deferredFee) {
 		try {
-			Response<String> response = service.strategySettlement(publisherId, buyRecordId, strategyTypeId, serviceFee,
-					deferredFee);
+			Response<String> response = service.strategySettlement(publisherId, buyRecordId, tradeNo, strategyTypeId,
+					serviceFee, deferredFee);
 			String code = response.getCode();
 			if ("200".equals(code)) {
 				return;
@@ -46,10 +46,10 @@ public class OrganizationSettlementBusiness {
 		}
 	}
 
-	public void stockoptionSettlement(Long publisherId, Long stockOptionTradeId, Long cycleId,
+	public void stockoptionSettlement(Long publisherId, Long stockOptionTradeId, String tradeNo, Long cycleId,
 			BigDecimal rightMoneyProfit) {
 		try {
-			Response<String> response = service.stockoptionSettlement(publisherId, stockOptionTradeId, cycleId,
+			Response<String> response = service.stockoptionSettlement(publisherId, stockOptionTradeId, tradeNo, cycleId,
 					rightMoneyProfit);
 			String code = response.getCode();
 			if ("200".equals(code)) {

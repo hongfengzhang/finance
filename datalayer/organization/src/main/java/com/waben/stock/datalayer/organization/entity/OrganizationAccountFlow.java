@@ -42,6 +42,11 @@ public class OrganizationAccountFlow {
 	@Column(name = "amount")
 	private BigDecimal amount;
 	/**
+	 * 原始资金
+	 */
+	@Column(name = "origin_amount")
+	private BigDecimal originAmount;
+	/**
 	 * 流水类型
 	 */
 	@Convert(converter = OrganizationAccountFlowTypeConverter.class)
@@ -49,12 +54,10 @@ public class OrganizationAccountFlow {
 	/**
 	 * 备注
 	 */
-	@Column(name = "remark")
 	private String remark;
 	/**
 	 * 产生时间
 	 */
-	@Column(name = "occurrence_time")
 	private Date occurrenceTime;
 	/**
 	 * 对应的机构
@@ -71,6 +74,10 @@ public class OrganizationAccountFlow {
 	 * 对应的资源ID
 	 */
 	private Long resourceId;
+	/**
+	 * 对应的资源交易单号
+	 */
+	private String resourceTradeNo;
 
 	public Long getId() {
 		return id;
@@ -142,6 +149,22 @@ public class OrganizationAccountFlow {
 
 	public void setResourceId(Long resourceId) {
 		this.resourceId = resourceId;
+	}
+
+	public BigDecimal getOriginAmount() {
+		return originAmount;
+	}
+
+	public void setOriginAmount(BigDecimal originAmount) {
+		this.originAmount = originAmount;
+	}
+
+	public String getResourceTradeNo() {
+		return resourceTradeNo;
+	}
+
+	public void setResourceTradeNo(String resourceTradeNo) {
+		this.resourceTradeNo = resourceTradeNo;
 	}
 
 }

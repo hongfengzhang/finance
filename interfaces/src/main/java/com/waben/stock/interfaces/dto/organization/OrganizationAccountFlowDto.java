@@ -24,6 +24,10 @@ public class OrganizationAccountFlowDto {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 原始资金
+	 */
+	private BigDecimal originAmount;
+	/**
 	 * 流水类型
 	 */
 	private OrganizationAccountFlowType type;
@@ -47,6 +51,10 @@ public class OrganizationAccountFlowDto {
 	 * 对应的资源ID
 	 */
 	private Long resourceId;
+	/**
+	 * 对应的资源交易单号
+	 */
+	private String resourceTradeNo;
 
 	public Long getId() {
 		return id;
@@ -118,6 +126,22 @@ public class OrganizationAccountFlowDto {
 
 	public void setResourceId(Long resourceId) {
 		this.resourceId = resourceId;
+	}
+
+	public BigDecimal getOriginAmount() {
+		return originAmount;
+	}
+
+	public void setOriginAmount(BigDecimal originAmount) {
+		this.originAmount = originAmount;
+	}
+
+	public String getResourceTradeNo() {
+		return resourceTradeNo;
+	}
+
+	public void setResourceTradeNo(String resourceTradeNo) {
+		this.resourceTradeNo = resourceTradeNo;
 	}
 
 }

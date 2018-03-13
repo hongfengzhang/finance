@@ -29,6 +29,10 @@ public class AppVersionAuditDto {
 	 */
 	private Boolean isOnlineForAudit;
 	/**
+	 * 是否上线，用于苹果人员审核1
+	 */
+	private Boolean isOnlineForAudit1;
+	/**
 	 * 设备类型，1IOS 2安卓
 	 */
 	private Integer deviceType;
@@ -91,6 +95,14 @@ public class AppVersionAuditDto {
 
 	public void setShellIndex(Integer shellIndex) {
 		this.shellIndex = shellIndex;
+	}
+
+	public Boolean getIsOnlineForAudit1() {
+		return isOnlineForAudit1;
+	}
+
+	public void setIsOnlineForAudit1(Boolean isOnlineForAudit1) {
+		this.isOnlineForAudit1 = isOnlineForAudit1;
 	}
 
 }

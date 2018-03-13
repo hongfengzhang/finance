@@ -47,6 +47,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowExtendQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 @Service
 public class CapitalAccountService {
@@ -100,7 +101,7 @@ public class CapitalAccountService {
 	 */
 	public void modifyPaymentPassword(Long publisherId, String paymentPassword) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
-		account.setPaymentPassword(paymentPassword);
+		account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
 		capitalAccountDao.update(account);
 	}
 

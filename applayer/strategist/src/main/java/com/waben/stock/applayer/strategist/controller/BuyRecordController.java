@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.strategist.business.BuyRecordBusiness;
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.strategist.business.ExperienceBusiness;
 import com.waben.stock.applayer.strategist.business.HolidayBusiness;
 import com.waben.stock.applayer.strategist.business.StockBusiness;
 import com.waben.stock.applayer.strategist.dto.buyrecord.BuyRecordWithMarketDto;
@@ -23,7 +24,6 @@ import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -55,6 +55,9 @@ public class BuyRecordController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
+	
+	@Autowired
+	private ExperienceBusiness experienceBusiness;
 
 	@GetMapping("/isTradeTime")
 	@ApiOperation(value = "是否为交易时间段")
@@ -124,6 +127,9 @@ public class BuyRecordController {
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
+		if(strategyTypeId.longValue() == 3) {
+			experienceBusiness.join();
+		} 
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();
 		dto.setStrategyTypeId(strategyTypeId);

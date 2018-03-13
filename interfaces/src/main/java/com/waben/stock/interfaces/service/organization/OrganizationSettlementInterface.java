@@ -10,14 +10,15 @@ import com.waben.stock.interfaces.pojo.Response;
 
 public interface OrganizationSettlementInterface {
 
-	@RequestMapping(value = "/strategysettlement/{publisherId}/{buyRecordId}/{strategyTypeId}/{serviceFee}/{deferredFee}", method = RequestMethod.POST)
+	@RequestMapping(value = "/strategysettlement/{publisherId}/{buyRecordId}/{tradeNo}/{strategyTypeId}/{serviceFee}/{deferredFee}", method = RequestMethod.POST)
 	public Response<String> strategySettlement(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("strategyTypeId") Long strategyTypeId,
-			@PathVariable("serviceFee") BigDecimal serviceFee, @PathVariable("deferredFee") BigDecimal deferredFee);
+			@PathVariable("buyRecordId") Long buyRecordId, @PathVariable("tradeNo") String tradeNo,
+			@PathVariable("strategyTypeId") Long strategyTypeId, @PathVariable("serviceFee") BigDecimal serviceFee,
+			@PathVariable("deferredFee") BigDecimal deferredFee);
 
-	@RequestMapping(value = "stockoptionsettlement/{publisherId}/{stockOptionTradeId}/{cycleId}/{rightMoneyProfit}", method = RequestMethod.POST)
+	@RequestMapping(value = "stockoptionsettlement/{publisherId}/{stockOptionTradeId}/{tradeNo}/{cycleId}/{rightMoneyProfit}", method = RequestMethod.POST)
 	public Response<String> stockoptionSettlement(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("stockOptionTradeId") Long stockOptionTradeId, @PathVariable("cycleId") Long cycleId,
-			@PathVariable("rightMoneyProfit") BigDecimal rightMoneyProfit);
+			@PathVariable("stockOptionTradeId") Long stockOptionTradeId, @PathVariable("tradeNo") String tradeNo,
+			@PathVariable("cycleId") Long cycleId, @PathVariable("rightMoneyProfit") BigDecimal rightMoneyProfit);
 
 }
