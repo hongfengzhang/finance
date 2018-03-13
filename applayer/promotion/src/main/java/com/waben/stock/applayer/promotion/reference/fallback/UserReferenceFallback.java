@@ -2,6 +2,7 @@ package com.waben.stock.applayer.promotion.reference.fallback;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.promotion.reference.organization.UserReference;
@@ -30,6 +31,11 @@ public class UserReferenceFallback implements UserReference {
 
     @Override
     public Response<List<UserDto>> list() {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<PageInfo<UserDto>> pages(UserQuery query) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
