@@ -30,16 +30,16 @@ public enum WithdrawalsApplyState implements CommonalityEnum {
 
 	private String state;
 
-	private static Map<String, WithdrawalsState> valueMap = new HashMap<String, WithdrawalsState>();
+	private static Map<String, WithdrawalsApplyState> valueMap = new HashMap<String, WithdrawalsApplyState>();
 
 	static {
-		for (WithdrawalsState _enum : WithdrawalsState.values()) {
+		for (WithdrawalsApplyState _enum : WithdrawalsApplyState.values()) {
 			valueMap.put(_enum.getIndex(), _enum);
 		}
 	}
 
-	public static WithdrawalsState getByIndex(String index) {
-		WithdrawalsState result = valueMap.get(index);
+	public static WithdrawalsApplyState getByIndex(String index) {
+		WithdrawalsApplyState result = valueMap.get(index);
 		if (result == null) {
 			throw new IllegalArgumentException("No element matches " + index);
 		}

@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
-import com.waben.stock.interfaces.util.JacksonUtil;
-import org.apache.commons.lang.StringUtils;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,12 +29,8 @@ import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
 import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 /**
  * 机构账户 Service
