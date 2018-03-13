@@ -848,24 +848,29 @@
                             });
                         },
                         'click .settlement': function (e, value, row, index) {
-                            var buyingPrice = row.buyingPrice;
-                            var nominalAmount = row.nominalAmount;
-                            var profitAndLoss  = ((row.offlineTrade.sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
-                            if(profitAndLoss>0) {
-                                profitAndLoss = profitAndLoss.toFixed(2) + "";
-                                var flag = profitAndLoss.indexOf(".");
-                                if(flag!=-1) {
-                                    profitAndLoss = profitAndLoss.substring(0,flag+3);
-                                }
-                                $("#user_profitAndLoss").text(profitAndLoss);
+                            var sellingPrice = row.offlineTrade.sellingPrice;
+                            if(sellingPrice==null||sellingPrice=='') {
+                                sellingPrice = 0;
+                                profitAndLoss = 0;
                             }else {
-                                $("#user_profitAndLoss").text(0);
+                                var buyingPrice = row.buyingPrice;
+                                var nominalAmount = row.nominalAmount;
+                                var profitAndLoss  = ((sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
+                                if(profitAndLoss>0) {
+                                    profitAndLoss = profitAndLoss.toFixed(2) + "";
+                                    var flag = profitAndLoss.indexOf(".");
+                                    if(flag!=-1) {
+                                        profitAndLoss = profitAndLoss.substring(0,flag+3);
+                                    }
+                                }else {
+                                    profitAndLoss = 0;
+                                }
                             }
 
                             $("[name='detailStock']").val(row.stockName);
                             $("[name='detailAmount']").val(row.buyingPrice);
                             $("[name='detailnominalAmount']").val(row.nominalAmount);
-                            $("[name='detailSellAmount']").val(row.offlineTrade.sellingPrice);
+                            $("[name='detailSellAmount']").val(sellingPrice);
                             $("[name='detailCycleName']").val(row.cycleName);
                             $("[name='detailNominalAmount']").val(row.rightMoney);
                             $("[name='detailBuyType']").val(row.buyingType);

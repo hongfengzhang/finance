@@ -40,8 +40,8 @@ public class RoleController {
     @RequestMapping("/save")
     @ResponseBody
     public Response<RoleVo> add(RoleVo vo){
-//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-//        vo.setId(userDto.getId());
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        vo.setOrganization(userDto.getOrg().getId());
         RoleDto requestDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, vo, false);
         RoleDto roleDto = roleBusiness.save(requestDto);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
@@ -67,8 +67,8 @@ public class RoleController {
     @RequestMapping("/pages")
     @ResponseBody
     public Response<PageInfo<RoleVo>> pages(@RequestBody RoleQuery roleQuery) {
-//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-//        roleQuery.setOrganization(userDto.getOrg().getId());
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        roleQuery.setOrganization(userDto.getOrg().getId());
         PageInfo<RoleDto> pageInfo = roleBusiness.pages(roleQuery);
         List<RoleVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), RoleVo.class);
         PageInfo<RoleVo> response = new PageInfo<>(roleVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
