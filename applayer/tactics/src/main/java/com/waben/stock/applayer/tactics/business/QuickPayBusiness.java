@@ -119,23 +119,36 @@ public class QuickPayBusiness {
     }
 
     public String sdPaycallback(HttpServletRequest request) {
+        logger.info("回调开始");
         Map<String, String> responseResult = paramter2Map(request);
-        //{timeStamp=20180306175446, extend=, result=SUCCESS, msg=支付成功|,|goodsName:支付|,|goodsDesc:快捷, amount=0.01, orderNo=2012181112, sign=9104c4c61cc8d590db123f3e6ab3fe07, tradeNo3rd=, gwTradeNo=2018030617540800715215054, mchNo=MER1000157, status=1}
+        Map<String,String> resultMap = new TreeMap<>(responseResult);
+        logger.info("通知的参数是:{}",resultMap.toString());
+        String toSign = "";
+        for (String key : resultMap.keySet()) {
+            if (!"msg".equals(key)&&!"result".equals(key)&&!"sign".equals(key)){
+                if(!StringUtils.isBlank(resultMap.get(key))){
+                    toSign += key + "=" + resultMap.get(key) + "&";
+                }
+            }
+        }
+        toSign+="key="+SandPayConfig.key;
+        logger.info("回调签名验证原串:{}",toSign);
+        String resultSign = DigestUtils.md5Hex(toSign);
+        logger.info("回调签名验证加密串:{}",resultSign);
         String result = responseResult.get("result");
+        String sign = responseResult.get("sign");
+        logger.info("通知签名串:{}",sign);
         String paymentNo = responseResult.get("orderNo");
         String thirdPaymentNo = responseResult.get("gwTradeNo");
         try {
-            // 解码
-//            HashMap<String, String> dataMap = RequestUtils.parseString(data);
-            // 验签
-//            boolean isSuccess = RSAUtils.verify(data, dataMap.get("sign"));
-//            if (!isSuccess) {
-//                return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><retcode>207267</retcode><retmsg></retmsg>校验签名失败</root>";
-//            }
             if (paymentNo != null && !"".equals(paymentNo) && "SUCCESS".equals(result)) {
-                // 支付成功
-                payCallback(paymentNo, PaymentState.Paid);
-                return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><retcode>00</retcode></root>";
+                //验证签名
+                if(sign.equals(resultSign)){
+                    logger.info("快捷移动验证签名成功");
+                    // 支付成功
+                    payCallback(paymentNo, PaymentState.Paid);
+                }
+                return "success";
             }
             return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><retcode>207267</retcode><retmsg></retmsg>支付失败</root>";
         } catch (Exception ex) {
@@ -155,8 +168,8 @@ public class QuickPayBusiness {
         String sign = responseResult.get("sign");
         String resultSign = DigestUtils.md5Hex(PayConfig.appId+thirdPaymentNo+PayConfig.appSecret).toUpperCase();
         if (paymentNo != null && !"".equals(paymentNo) && "1".equals(code)) {
-            // 支付成功
             //验证签名
+            logger.info("QQ验证签名通过");
             if (sign.equals(resultSign)) {
                 payCallback(paymentNo, PaymentState.Paid);
                 return "success";
@@ -180,6 +193,7 @@ public class QuickPayBusiness {
         if (paymentNo != null && !"".equals(paymentNo) && "1".equals(code)) {
             // 支付成功,验证签名
             if (sign.equals(resultSign)) {
+                logger.info("京东验证签名通过");
                 payCallback(paymentNo, PaymentState.Paid);
                 return "success";
             }
@@ -393,9 +407,11 @@ public class QuickPayBusiness {
         PaymentOrderDto origin = findByPaymentNo(paymentNo);
         if (origin.getState() != state) {
             // 更新支付订单的状态
+            logger.info("更新支付订单的状态");
             changeState(paymentNo, state);
             // 给发布人账号中充值
             if (state == PaymentState.Paid) {
+                logger.info("给发布人账号中充值");
                 accountBusiness.recharge(origin.getPublisherId(), origin.getAmount());
             }
         }
