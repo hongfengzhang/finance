@@ -9,7 +9,7 @@ import java.util.Date;
 public class QuotoInquiry extends QuotoInfo{
 
     private Date date;
-    private Integer tenor;
+    private String tenor;
     private String price;
 
     public Date getDate() {
@@ -20,11 +20,11 @@ public class QuotoInquiry extends QuotoInfo{
         this.date = date;
     }
 
-    public Integer getTenor() {
+    public String getTenor() {
         return tenor;
     }
 
-    public void setTenor(Integer tenor) {
+    public void setTenor(String tenor) {
         this.tenor = tenor;
     }
 
