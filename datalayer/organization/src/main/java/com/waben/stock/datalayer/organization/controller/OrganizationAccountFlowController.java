@@ -1,8 +1,11 @@
 package com.waben.stock.datalayer.organization.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationAccountFlowInterface;
@@ -58,11 +61,16 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
     }
 
     /**
-     *按照查询条件分页查询机构流水
-    */
+     * 按照查询条件分页查询机构流水
+     */
     @Override
     public Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query) {
         Page<OrganizationAccountFlow> page = organizationAccountFlowService.pagesByQuery(query);
+        List<OrganizationAccountFlow> organizationAccountFlows = page.getContent();
+        for (OrganizationAccountFlow organizationAccountFlow : organizationAccountFlows) {
+            OrganizationDto organizationDto =CopyBeanUtils.copyBeanProperties(OrganizationDto.class, organizationAccountFlow.getOrg(), false);
+            organizationAccountFlow.setOrgDto(organizationDto);
+        }
         PageInfo<OrganizationAccountFlowDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountFlowDto.class);
         return new Response<>(result);
     }

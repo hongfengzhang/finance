@@ -61,8 +61,8 @@ public class OrganizationBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public PageInfo<OrganizationVo> pages(OrganizationQuery query) {
-        Response<PageInfo<OrganizationVo>> response = reference.pages(query);
+    public PageInfo<OrganizationDto> pages(OrganizationQuery query) {
+        Response<PageInfo<OrganizationDto>> response = reference.pages(query);
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }
