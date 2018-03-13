@@ -63,6 +63,11 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
         return new Response<>(result);
     }
 
+    @Override
+    public Response<PageInfo<OrganizationAccountFlowDto>> childpages(OrganizationAccountFlowQuery query) {
+        return null;
+    }
+
     /******************************** 后台管理 **********************************/
 
     @PostMapping("/")
