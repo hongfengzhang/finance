@@ -1,9 +1,10 @@
 package com.waben.stock.interfaces.service.organization;
 
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -18,4 +19,6 @@ public interface OrganizationAccountInterface {
 			@RequestParam(name = "oldPaymentPassword") String oldPaymentPassword,
 			@RequestParam(name = "paymentPassword") String paymentPassword);
 
+	@RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<OrganizationAccountDto>> pages(@RequestBody OrganizationAccountQuery query);
 }

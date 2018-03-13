@@ -40,14 +40,16 @@ public class UserController {
     public Response<UserVo> add(UserVo vo){
         UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
         requestDto.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false));
-        UserDto userDto = userBusiness.save(requestDto);
+        UserDto current = (UserDto) SecurityAccount.current().getSecurity();
+        UserDto userDto = userBusiness.save(requestDto, current.getOrg());
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }
 
+    @Deprecated
     @RequestMapping("/{id}/role")
     @ResponseBody
-    public Response<UserVo> addRoleMenu(@PathVariable Long id, Long[] roleIds){
+    public Response<UserVo> bindRole(@PathVariable Long id, Long[] roleIds){
         UserDto userDto = userBusiness.saveUserRole(id,roleIds);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);

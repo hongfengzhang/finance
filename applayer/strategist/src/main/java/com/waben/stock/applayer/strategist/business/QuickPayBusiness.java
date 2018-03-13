@@ -21,6 +21,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,22 +124,30 @@ public class QuickPayBusiness {
 
     public String sdPaycallback(HttpServletRequest request) {
         Map<String, String> responseResult = paramter2Map(request);
-        //{timeStamp=20180306175446, extend=, result=SUCCESS, msg=支付成功|,|goodsName:支付|,|goodsDesc:快捷, amount=0.01, orderNo=2012181112, sign=9104c4c61cc8d590db123f3e6ab3fe07, tradeNo3rd=, gwTradeNo=2018030617540800715215054, mchNo=MER1000157, status=1}
+        Map<String,String> resultMap = new TreeMap<>(responseResult);
+        String toSign = "";
+        for (String key : resultMap.keySet()) {
+            if (!"msg".equals(key)&&!"result".equals(key)&&!"sign".equals(key)){
+                if(!StringUtils.isBlank(resultMap.get(key))){
+                    toSign += key + "=" + resultMap.get(key) + "&";
+                }
+            }
+        }
+        toSign+="key="+SandPayConfig.key;
+        String resultSign = DigestUtils.md5Hex(toSign);
         String result = responseResult.get("result");
+        String sign = responseResult.get("sign");
         String paymentNo = responseResult.get("orderNo");
         String thirdPaymentNo = responseResult.get("gwTradeNo");
         try {
-            // 解码
-//            HashMap<String, String> dataMap = RequestUtils.parseString(data);
-            // 验签
-//            boolean isSuccess = RSAUtils.verify(data, dataMap.get("sign"));
-//            if (!isSuccess) {
-//                return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><retcode>207267</retcode><retmsg></retmsg>校验签名失败</root>";
-//            }
             if (paymentNo != null && !"".equals(paymentNo) && "SUCCESS".equals(result)) {
-                // 支付成功
-                payCallback(paymentNo, PaymentState.Paid);
-                return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><retcode>00</retcode></root>";
+                //验证签名
+                if(sign.equals(resultSign)){
+                    // 支付成功
+                    logger.info("PC快捷异步通知签名验证通过");
+                    payCallback(paymentNo, PaymentState.Paid);
+                }
+                return "success";
             }
             return "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><root><retcode>207267</retcode><retmsg></retmsg>支付失败</root>";
         } catch (Exception ex) {

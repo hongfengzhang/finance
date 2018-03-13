@@ -2,6 +2,8 @@ package com.waben.stock.applayer.promotion.business;
 
 import java.util.List;
 
+import com.waben.stock.applayer.promotion.reference.manage.RoleReference;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -30,11 +32,25 @@ public class OrganizationBusiness {
 	@Autowired
 	@Qualifier("organizationReference")
 	private OrganizationReference reference;
+	@Autowired
+	@Qualifier("roleReference")
+	private RoleReference roleReference;
 
 	public OrganizationDto addition(OrganizationForm orgForm) {
 		Response<OrganizationDto> response = reference.addition(orgForm);
+		//创建机构后为机构默认创建一个管理员角色
 		if ("200".equals(response.getCode())) {
-			return response.getResult();
+			RoleDto orgAdminRole = new RoleDto();
+			orgAdminRole.setCode("ADMIN");
+			orgAdminRole.setName("管理员");
+			orgAdminRole.setDescription("渠道管理员");
+			orgAdminRole.setOrganization(response.getResult().getId());
+			Response<RoleDto> roleDtoResponse = roleReference.add(orgAdminRole);
+			if ("200".equals(roleDtoResponse.getCode())) {
+				//管理员角色添加成功后，关联权限，菜单
+
+				return response.getResult();
+			}
 		}
 		throw new ServiceException(response.getCode());
 	}

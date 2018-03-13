@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -38,4 +40,11 @@ public class OrganizationAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public PageInfo<OrganizationAccountDto> pages(OrganizationAccountQuery query) {
+		Response<PageInfo<OrganizationAccountDto>> response =  reference.pages(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 }

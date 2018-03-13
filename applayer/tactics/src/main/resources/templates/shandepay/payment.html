@@ -4,7 +4,7 @@
     <title>Title</title>
 </head>
 <body>
-<script type="text/javascript" th:src="@{/static/js/jquery.min.js}"></script>
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
 <form id="topay" action="http://211.149.180.207/gateWay/service/bankOnline/fastPay" method="post" style="display:none">
     <div>
         userId:<input type="text" name="userId" th:value="${result.userId}"/><br/>

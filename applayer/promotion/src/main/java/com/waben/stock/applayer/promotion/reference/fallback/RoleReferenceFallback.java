@@ -58,4 +58,9 @@ public class RoleReferenceFallback implements RoleReference {
     public Response<RoleDto> addRolePermission(Long id, Long[] permissionIds) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<RoleDto> bindAdminRoleWithRoleAndMenu(Long id) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

@@ -9,7 +9,7 @@ import com.waben.stock.interfaces.service.organization.UserInterface;
  * @author Created by yuyidi on 2018/3/12.
  * @desc
  */
-@FeignClient(name = "organization", path = "user", fallback = UserReferenceFallback.class, qualifier = "userFeignService")
+@FeignClient(name = "organization", path = "user", fallback = UserReferenceFallback.class, qualifier = "userReference")
 public interface UserReference extends UserInterface {
 
 }

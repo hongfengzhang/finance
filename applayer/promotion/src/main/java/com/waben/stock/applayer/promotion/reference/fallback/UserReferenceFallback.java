@@ -62,4 +62,9 @@ public class UserReferenceFallback implements UserReference {
     public Response<UserDto> fetchByUserName(String userName) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<UserDto> bindRole(Long user, Long role) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }
