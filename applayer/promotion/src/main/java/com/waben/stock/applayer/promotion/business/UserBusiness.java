@@ -1,5 +1,8 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -36,5 +39,16 @@ public class UserBusiness {
 
     public UserDto saveUserRole(Long id, Long[] roleIds) {
         return null;
+    }
+
+    public PageInfo<UserDto> pages(UserQuery userQuery) {
+        Response<PageInfo<UserDto>> response = userReference.pages(userQuery);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
     }
 }

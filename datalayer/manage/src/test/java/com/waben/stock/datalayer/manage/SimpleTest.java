@@ -23,7 +23,7 @@ public class SimpleTest {
         staff.setPassword("1234566");
         staff.setCreateTime(new Date());
         Role role = new Role();
-        role.setCode("admin");
+        role.setCode("user");
         role.setName("管理员");
         staff.setRole(role);
 //        StaffDto staffDto = staff.copy();

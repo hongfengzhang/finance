@@ -1,16 +1,27 @@
 package com.waben.stock.datalayer.organization.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.enums.OrganizationState;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.organization.entity.User;
 import com.waben.stock.datalayer.organization.repository.UserDao;
+import org.springframework.util.StringUtils;
+
+import javax.persistence.criteria.*;
 
 /**
  * 机构管理用户 Service
@@ -71,4 +82,33 @@ public class UserService {
 		}
 		return result;
 	}
+
+    public Page<User> pagesByQuery(final UserQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<User> pages = userDao.page(new Specification<User>() {
+			@Override
+			public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery,
+										 CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<>();
+				if(!StringUtils.isEmpty(query.getOrganization())) {
+					Predicate organizationQuery = criteriaBuilder.equal(root.get("org").as(Long.class), query
+							.getOrganization());
+					predicateList.add(organizationQuery);
+				}
+				if(!StringUtils.isEmpty(query.getUserName())) {
+					Predicate userNameQuery = criteriaBuilder.equal(root.get("username").as(String.class), query
+							.getUserName());
+					predicateList.add(userNameQuery);
+				}
+				if(!StringUtils.isEmpty(query.getNickName())) {
+					Predicate nickNameQuery = criteriaBuilder.equal(root.get("nickname").as(Long.class), query
+							.getNickName());
+					predicateList.add(nickNameQuery);
+				}
+				criteriaQuery.orderBy(criteriaBuilder.asc(root.get("createTime").as(Date.class)));
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+    }
 }

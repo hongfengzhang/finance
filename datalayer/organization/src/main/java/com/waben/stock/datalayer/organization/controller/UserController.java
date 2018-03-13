@@ -2,8 +2,13 @@ package com.waben.stock.datalayer.organization.controller;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 import com.waben.stock.interfaces.service.organization.UserInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -35,7 +40,7 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/user")
 @Api(description = "机构管理用户接口列表")
-public class UserController implements UserInterface {
+public  class UserController implements UserInterface {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -65,7 +70,19 @@ public class UserController implements UserInterface {
 		List<UserDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, UserDto.class);
 		return new Response<>(response);
 	}
-	
+
+	@Override
+	public Response<PageInfo<UserDto>> pages(UserQuery query) {
+		Page<User> page = userService.pagesByQuery(query);
+		PageInfo<UserDto> result = PageToPageInfo.pageToPageInfo(page, UserDto.class);
+		for (int i = 0; i < page.getContent().size(); i++) {
+			OrganizationDto organizationDto = CopyBeanUtils.copyBeanProperties(
+					OrganizationDto.class, page.getContent().get(i).getOrg(), false);
+			result.getContent().get(i).setOrg(organizationDto);
+		}
+		return new Response<>(result);
+	}
+
 	/******************************** 后台管理 **********************************/
 	
 	@PostMapping("/")
