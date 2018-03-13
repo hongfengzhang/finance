@@ -10,7 +10,7 @@ public class StockOptionTradeQuery extends PageAndSortQuery {
     /**
      * 申购单号
      */
-    private String applyNo;
+    private String tradeNo;
     /**
      * 申购状态
      */
@@ -25,12 +25,12 @@ public class StockOptionTradeQuery extends PageAndSortQuery {
         this.publisherPhone = publisherPhone;
     }
 
-    public String getApplyNo() {
-        return applyNo;
+    public String getTradeNo() {
+        return tradeNo;
     }
 
-    public void setApplyNo(String applyNo) {
-        this.applyNo = applyNo;
+    public void setTradeNo(String tradeNo) {
+        this.tradeNo = tradeNo;
     }
 
     public Integer getState() {

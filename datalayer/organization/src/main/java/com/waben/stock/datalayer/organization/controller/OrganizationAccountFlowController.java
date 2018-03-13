@@ -67,7 +67,6 @@ public class OrganizationAccountFlowController implements OrganizationAccountFlo
         return new Response<>(result);
     }
 
-    @Override
     public Response<PageInfo<OrganizationAccountFlowDto>> childpages(@RequestBody OrganizationAccountFlowQuery query) {
         Page<OrganizationAccountFlow> page = organizationAccountFlowService.pagesByOrgParentQuery(query);
         PageInfo<OrganizationAccountFlowDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountFlowDto.class);

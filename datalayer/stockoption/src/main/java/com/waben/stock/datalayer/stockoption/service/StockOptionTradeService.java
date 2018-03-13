@@ -161,9 +161,9 @@ public class StockOptionTradeService {
 							query.getPublisherPhone());
 					predicatesList.add(publisherPhoneQuery);
 				}
-				if (!StringUtils.isEmpty(query.getApplyNo())) {
-					Predicate applyNoQuery = criteriaBuilder.equal(root.get("applyNo").as(String.class),
-							query.getApplyNo());
+				if (!StringUtils.isEmpty(query.getTradeNo())) {
+					Predicate applyNoQuery = criteriaBuilder.equal(root.get("tradeNo").as(String.class),
+							query.getTradeNo());
 					predicatesList.add(applyNoQuery);
 				}
 				if (!StringUtils.isEmpty(query.getState())) {

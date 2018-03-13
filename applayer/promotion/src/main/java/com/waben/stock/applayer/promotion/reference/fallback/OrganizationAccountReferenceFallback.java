@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.promotion.reference.fallback;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.promotion.reference.organization.OrganizationAccountReference;
@@ -23,6 +25,11 @@ public class OrganizationAccountReferenceFallback implements OrganizationAccount
 
 	@Override
 	public Response<Void> modifyPaymentPassword(Long orgId, String oldPaymentPassword, String paymentPassword) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<OrganizationAccountDto>> pages(OrganizationAccountQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

@@ -10,7 +10,8 @@ import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.RoleQuery;
 @Service
 public class RoleBusiness {
     @Autowired
@@ -41,6 +42,28 @@ public class RoleBusiness {
 
     public RoleDto saveRolePermission(Long id, Long[] permissionIds) {
         Response<RoleDto> response = roleReference.addRolePermission(id,permissionIds);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public PageInfo<RoleDto> pages(RoleQuery roleQuery) {
+        Response<PageInfo<RoleDto>> response = roleReference.pages(roleQuery);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public RoleDto findById(Long id) {
+        Response<RoleDto> response = roleReference.fetchById(id);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

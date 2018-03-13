@@ -115,4 +115,8 @@ public class UserController implements UserInterface {
 		return new Response<>(response);
 	}
 
+	@Override
+	public Response<UserDto> bindRole(Long user, Long role) {
+		return null;
+	}
 }

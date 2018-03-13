@@ -1,11 +1,18 @@
 package com.waben.stock.datalayer.organization.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
+import com.waben.stock.interfaces.util.JacksonUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +28,11 @@ import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  * 机构账户 Service
@@ -157,6 +169,21 @@ public class OrganizationAccountService {
 		account.setAvailableBalance(account.getAvailableBalance().add(amount));
 		account.setUpdateTime(date);
 		organizationAccountDao.update(account);
+	}
+
+
+	@Transactional
+	public Page<OrganizationAccount> pagesByQuery(final OrganizationAccountQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<OrganizationAccount> pages = organizationAccountDao.page(new Specification<OrganizationAccount>() {
+			@Override
+			public Predicate toPredicate(Root<OrganizationAccount> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicates = new ArrayList<>();
+				criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
+				return criteriaQuery.getRestriction();
+			}
+		},pageable);
+		return pages;
 	}
 
 }
