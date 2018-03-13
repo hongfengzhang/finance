@@ -61,4 +61,9 @@ public class RoleServiceFallback implements RoleService {
 	public Response<RoleDto> addRolePermission(Long id, Long[] permissionIds) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<RoleDto> bindAdminRoleWithRoleAndMenu(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }
