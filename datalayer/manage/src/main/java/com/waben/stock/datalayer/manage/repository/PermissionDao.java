@@ -11,4 +11,5 @@ import java.util.List;
 public interface PermissionDao extends BaseDao<Permission,Long> {
 
     List<Permission> retrieveAllByVariety(Long variety);
+    List<Permission> retrieveAllByRole(Long role);
 }
