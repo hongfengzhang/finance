@@ -204,8 +204,8 @@ public class StockOptionTradeService {
 		// 给机构结算
 		if (trade.getOfflineTrade().getRightMoney() != null) {
 			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
-			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getCycleId(),
-					rightMoneyProfit);
+			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
+					trade.getCycleId(), rightMoneyProfit);
 		}
 		// 站外消息推送
 		sendOutsideMessage(trade);

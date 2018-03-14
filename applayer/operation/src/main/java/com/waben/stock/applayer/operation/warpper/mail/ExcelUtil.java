@@ -1,8 +1,6 @@
-package com.waben.stock.applayer.operation.util;
+package com.waben.stock.applayer.operation.warpper.mail;
 
 import com.deepoove.poi.XWPFTemplate;
-import com.waben.stock.applayer.operation.warpper.mail.QuotoInquiry;
-import com.waben.stock.interfaces.exception.ServiceException;
 import net.sf.jett.transform.ExcelTransformer;
 import org.apache.http.client.utils.DateUtils;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;

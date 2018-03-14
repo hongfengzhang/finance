@@ -119,6 +119,8 @@ public class ExceptionConstant {
 	public static final String STOCK_ARRIVEDOWNLIMIT_EXCEPTION = "6027";
 	// ST、*ST不能购买
 	public static final String ST_STOCK_CANNOTBUY_EXCEPTION = "6028";
+	// 不支持的股票，请更换股票
+	public static final String BLACKLIST_STOCK_EXCEPTION = "6029";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";

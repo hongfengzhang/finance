@@ -66,8 +66,9 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 	}
 
 	@Override
-	public Response<PageInfo<OrganizationVo>> pages(OrganizationQuery query) {
+	public Response<PageInfo<OrganizationDto>> pages(OrganizationQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 
 }

@@ -113,5 +113,5 @@ public interface OrganizationInterface {
 	 * @return 带有总分成机构分页数据
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<PageInfo<OrganizationVo>> pages(@RequestBody OrganizationQuery query);
+	Response<PageInfo<OrganizationDto>> pages(@RequestBody OrganizationQuery query);
 }

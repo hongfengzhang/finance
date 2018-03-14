@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.BuyRecordBusiness;
+import com.waben.stock.applayer.tactics.business.ExperienceBusiness;
 import com.waben.stock.applayer.tactics.dto.analogdata.ExperienceSta;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -27,12 +28,15 @@ public class WebJsonpController {
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
 
+	@Autowired
+	private ExperienceBusiness experienceBusiness;
+
 	@GetMapping("/experienceSta")
 	@ApiOperation(value = "体验活动统计")
 	public void lists(HttpServletRequest request, HttpServletResponse response) {
 		ExperienceSta sta = new ExperienceSta();
-		sta.setTotalJoin(9348);
-		sta.setTodayLeftOver(5000);
+		sta.setTotalJoin(experienceBusiness.getTotalJoin());
+		sta.setTodayLeftOver(experienceBusiness.getTodayLeftOver());
 		Response<ExperienceSta> result = new Response<>(sta);
 		String callback = request.getParameter("callback");
 		String jsonp = callback + "(" + JacksonUtil.encode(result) + ");";

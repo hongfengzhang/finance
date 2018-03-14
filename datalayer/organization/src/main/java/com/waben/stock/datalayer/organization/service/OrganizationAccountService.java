@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
-import com.waben.stock.interfaces.util.JacksonUtil;
-import org.apache.commons.lang.StringUtils;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,12 +29,9 @@ import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
 import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 /**
  * 机构账户 Service
@@ -113,15 +112,15 @@ public class OrganizationAccountService {
 			if (dbOldPaymentPassword != null && !dbOldPaymentPassword.equals(oldPaymentPassword)) { 
 				throw new ServiceException(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION);
 			}
-			account.setPaymentPassword(paymentPassword);
+			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
 			organizationAccountDao.update(account);
 		} else {
 			account = initAccount(org, paymentPassword);
 		}
 	}
 
-	public synchronized OrganizationAccount benefit(Organization org, BigDecimal amount,
-			OrganizationAccountFlowType flowType, ResourceType resourceType, Long resourceId) {
+	public synchronized OrganizationAccount benefit(Organization org, BigDecimal originAmount, BigDecimal amount,
+			OrganizationAccountFlowType flowType, ResourceType resourceType, Long resourceId, String resourceTradeNo) {
 		Date date = new Date();
 		OrganizationAccount account = null;
 		if (org != null) {
@@ -134,12 +133,14 @@ public class OrganizationAccountService {
 		// 产生流水
 		OrganizationAccountFlow flow = new OrganizationAccountFlow();
 		flow.setAmount(amount);
+		flow.setOriginAmount(originAmount);
 		flow.setFlowNo(UniqueCodeGenerator.generateFlowNo());
 		flow.setOccurrenceTime(date);
 		flow.setOrg(org);
 		flow.setResourceType(resourceType);
 		flow.setResourceId(resourceId);
 		flow.setType(flowType);
+		flow.setResourceTradeNo(resourceTradeNo);
 		flow.setRemark(flowType.getType());
 		flowDao.create(flow);
 		return account;
@@ -151,7 +152,7 @@ public class OrganizationAccountService {
 		account.setBalance(new BigDecimal("0"));
 		account.setFrozenCapital(new BigDecimal("0"));
 		account.setOrg(org);
-		account.setPaymentPassword(paymentPassword);
+		account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
 		account.setUpdateTime(new Date());
 		return organizationAccountDao.create(account);
 	}

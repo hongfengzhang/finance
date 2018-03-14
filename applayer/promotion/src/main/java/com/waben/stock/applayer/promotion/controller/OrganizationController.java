@@ -49,7 +49,10 @@ public class OrganizationController {
 	public Response<PageInfo<OrganizationDto>> adminPage(@RequestBody OrganizationQuery query) {
 		return new Response<>(business.adminPage(query));
 	}
-
+	@RequestMapping(value = "/pages", method = RequestMethod.POST)
+	public Response<PageInfo<OrganizationDto>> pages(OrganizationQuery query) {
+		return new Response<>(business.adminPage(query));
+	}
 	@RequestMapping(value = "/adminTree", method = RequestMethod.GET)
 	public List<TreeNode> adminTree(Long orgId) {
 		return business.adminTree(orgId);
