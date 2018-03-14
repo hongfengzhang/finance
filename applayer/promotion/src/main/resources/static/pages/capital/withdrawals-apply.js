@@ -42,6 +42,7 @@ $(function() {
             	if("200" == jsonResult.code) {
             		parent.layer.closeAll();
             		parent.layer.msg("申请已提交");
+            		parent.renderTable("#account-flow-table");
             	} else {
             		parent.layer.msg(jsonResult.message);
             	}

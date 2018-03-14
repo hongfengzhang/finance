@@ -3,11 +3,19 @@ package com.waben.stock.datalayer.organization.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.waben.stock.datalayer.organization.entity.enumconverter.OrganizationAccountFlowTypeConverter;
 import com.waben.stock.datalayer.organization.entity.enumconverter.ResourceTypeConverter;
-import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
 import com.waben.stock.interfaces.enums.ResourceType;
@@ -60,7 +68,7 @@ public class OrganizationAccountFlow {
 	@JoinColumn(name = "org_id")
 	private Organization org;
 	/**
-	 * 分成配置类型
+	 * 对应的资源类型
 	 */
 	@Convert(converter = ResourceTypeConverter.class)
 	private ResourceType resourceType;

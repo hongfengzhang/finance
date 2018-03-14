@@ -67,13 +67,13 @@
                 <form id="search-form">
                     <div class="layui-form-item mb5">
                         <div class="layui-inline">
-                            <label class="layui-form-label width60 plr0 mr5 blue-color">交易ID</label>
+                            <label class="layui-form-label width60 plr0 mr5 blue-color">流水号</label>
                             <div class="layui-input-inline width150">
-                                <input name="tradeId" type="number" class="layui-input">
+                                <input name="flowNo" type="number" class="layui-input">
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label width60 plr0 mr5 blue-color">策略状态</label>
+                            <label class="layui-form-label width60 plr0 mr5 blue-color">佣金类型</label>
                             <div class="layui-input-inline">
                                 <select name="state">
                                     <option value="0" selected>全部</option>
@@ -86,15 +86,16 @@
                             </div>
                         </div>
                         <div class="layui-inline">
-                            <label class="layui-form-label width60 plr0 mr5 blue-color">手机号码</label>
-                            <div class="layui-input-inline width150">
-                                <input name="publisherPhone" type="number" class="layui-input">
-                            </div>
-                        </div>
-                        <div class="layui-inline">
-                            <label class="layui-form-label width60 plr0 mr5 blue-color">机构代码</label>
-                            <div class="layui-input-inline width150">
-                                <input name="orgCode" type="text" class="layui-input">
+                            <label class="layui-form-label width60 plr0 mr5 blue-color">业务类型</label>
+                            <div class="layui-input-inline">
+                                <select name="state">
+                                    <option value="0" selected>全部</option>
+                                    <option value="1">待确认</option>
+                                    <option value="2">申购失败</option>
+                                    <option value="3">持仓中</option>
+                                    <option value="4-5">结算中</option>
+                                    <option value="6">已结算</option>
+                                </select>
                             </div>
                         </div>
                         <div class="layui-inline">

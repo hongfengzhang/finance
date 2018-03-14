@@ -2,6 +2,8 @@ package com.waben.stock.applayer.promotion.controller;
 
 import java.util.List;
 
+import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.interfaces.dto.organization.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,8 +53,10 @@ public class OrganizationController {
 	public Response<PageInfo<OrganizationDto>> adminPage(@RequestBody OrganizationQuery query) {
 		return new Response<>(business.adminPage(query));
 	}
-	@RequestMapping(value = "/pages", method = RequestMethod.GET)
+	@RequestMapping(value = "/pages", method = RequestMethod.POST)
 	public Response<PageInfo<OrganizationDto>> pages(OrganizationQuery query) {
+		UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+		query.setParentId(userDto.getOrg().getId());
 		return new Response<>(business.pages(query));
 	}
 	@RequestMapping(value = "/adminTree", method = RequestMethod.GET)

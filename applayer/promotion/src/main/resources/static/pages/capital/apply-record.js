@@ -4,10 +4,24 @@
 window.renderTable = function(){};
 window.currentOrgId = "17";
 $(function() {
-	var searchData = {
-		orgId: window.currentOrgId,
-		states: ['1', '2']
-	};
+	// 获取当前登陆的用户信息
+	$.ajax({
+        type: "GET",
+        url: "/promotion/user/getCurrent",
+        dataType: "json",
+        async: false,
+        success: function (jsonResult) {
+        	window.currentOrgId = jsonResult.result.org.id;
+        	window.level = jsonResult.result.org.level;
+        	window.currentOrgCode = jsonResult.result.org.code;
+        	window.searchData = { 
+        		states: ['1', '2']
+        	}
+        	if(level > 1) {
+        		searchData.orgId = window.currentOrgId;
+        	}
+        }
+    });
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -33,9 +47,11 @@ $(function() {
             }
         });
 		searchData = {
-			orgId: searchData.orgId,
 			states: searchData.states
 		};
+		if(window.level > 1) {
+    		searchData.orgId = window.currentOrgId;
+    	}
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -140,6 +156,7 @@ $(function() {
             success: function (jsonResult) {
             	if("200" == jsonResult.code) {
             		layer.msg("操作成功");
+            		renderTable("#apply-record-list-table");
             	} else {
             		layer.msg(jsonResult.message);
             	}

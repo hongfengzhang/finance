@@ -91,7 +91,9 @@ public class UserController {
     @ResponseBody
 	public Response<UserDto> getCurrent() {
     	AccountCredentials details = SecurityAccount.current();
-		return new Response<>((UserDto)details.getSecurity());
+    	UserDto result = (UserDto)details.getSecurity();
+    	result.setPassword(null);
+		return new Response<>(result);
 	}
     
 }
