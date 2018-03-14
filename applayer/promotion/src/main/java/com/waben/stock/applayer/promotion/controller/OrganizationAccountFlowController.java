@@ -26,7 +26,7 @@ public class OrganizationAccountFlowController {
 
     @Autowired
     public OrganizationBusiness organizationBusiness;
-    @RequestMapping(value = "/pages", method = RequestMethod.POST)
+    @RequestMapping(value = "/pages", method = RequestMethod.GET)
     public Response<PageInfo<OrganizationAccountFlowDto>> pages(OrganizationAccountFlowQuery query) {
         return new Response<>(organizationAccountFlowBusiness.pages(query));
     }
