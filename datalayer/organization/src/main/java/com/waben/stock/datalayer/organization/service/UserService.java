@@ -91,7 +91,7 @@ public class UserService {
 										 CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
 				if(!StringUtils.isEmpty(query.getOrganization())) {
-					Predicate organizationQuery = criteriaBuilder.equal(root.get("org").as(Long.class), query
+					Predicate organizationQuery = criteriaBuilder.equal(root.get("org_id").as(Long.class), query
 							.getOrganization());
 					predicateList.add(organizationQuery);
 				}

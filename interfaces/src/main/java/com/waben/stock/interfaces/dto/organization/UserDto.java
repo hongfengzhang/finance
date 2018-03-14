@@ -27,7 +27,8 @@ public class UserDto {
      */
     private OrganizationDto org;
 
-    private RoleDto roleDto;
+
+    private Long role;
 
     public Long getId() {
         return id;
@@ -77,11 +78,12 @@ public class UserDto {
         this.org = org;
     }
 
-    public RoleDto getRoleDto() {
-        return roleDto;
+
+    public Long getRole() {
+        return role;
     }
 
-    public void setRoleDto(RoleDto roleDto) {
-        this.roleDto = roleDto;
+    public void setRole(Long role) {
+        this.role = role;
     }
 }

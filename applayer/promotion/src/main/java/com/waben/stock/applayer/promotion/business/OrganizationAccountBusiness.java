@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.promotion.business;
 
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
@@ -50,22 +51,6 @@ public class OrganizationAccountBusiness {
 
 	public PageInfo<OrganizationVo> pages(OrganizationAccountQuery query) {
 		OrganizationQuery organizationQuery = new OrganizationQuery();
-		organizationQuery.setParentId(query.getId());
-		PageInfo<OrganizationVo> organizationPageInfo = organizationBusiness.pages(organizationQuery);
-		List<OrganizationVo> organizations = organizationPageInfo.getContent();
-		Response<List<OrganizationAccountDto>> response  =  reference.list();
-		if (!"200".equals(response.getCode())) {
-			throw new ServiceException(response.getCode());
-		}
-		List<OrganizationAccountDto> organizationAccountDtos = response.getResult();
-		for (OrganizationVo org : organizations) {
-			for (OrganizationAccountDto oad:organizationAccountDtos){
-				if (oad.getOrg().getId() == org.getId()){
-					org.setOrgDto(oad);
-				}
-			}
-		}
-		organizationPageInfo.setContent(organizations);
-		return organizationPageInfo;
+		return null;
 	}
 }

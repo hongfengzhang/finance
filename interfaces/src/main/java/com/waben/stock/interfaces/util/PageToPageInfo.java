@@ -15,4 +15,12 @@ public class PageToPageInfo {
         PageInfo<T> result = new PageInfo<>(page, targetType);
         return result;
     }
+
+    public static <T> PageInfo<T> pageToPageInfo(List<T> content, Integer totalPages, Boolean last, Long totalElements, Integer size, Integer
+            number, Boolean frist) {
+        PageInfo<T> result = new PageInfo(content, totalPages, last, totalElements, size, number, frist);
+        return result;
+    }
+
+
 }

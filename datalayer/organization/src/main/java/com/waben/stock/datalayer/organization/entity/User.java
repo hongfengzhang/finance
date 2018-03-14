@@ -38,7 +38,7 @@ public class User {
 	/**
 	 * 创建时间
 	 */
-	private Date createTime;
+	private Date createTime = new Date();
 	/**
 	 * 所属机构
 	 */

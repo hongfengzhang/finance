@@ -40,12 +40,30 @@ public class UserController {
     @ResponseBody
     public Response<UserVo> add(UserVo vo){
         UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
-        requestDto.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false));
+        OrganizationDto org = null;
+        if(vo.getOrg()!=null) {
+            org = CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false);
+        }else{
         UserDto current = (UserDto) SecurityAccount.current().getSecurity();
-        UserDto userDto = userBusiness.save(requestDto, current.getOrg());
+            org = current.getOrg();
+        }
+        requestDto.setOrg(org);
+        UserDto userDto = userBusiness.save(requestDto, org);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }
+
+//    @RequestMapping("/save/{currentOrgId}")
+//    @ResponseBody
+//    public Response<UserVo> add(UserVo vo){
+//        UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
+//        requestDto.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false));
+//        OrganizationDto organizationDto = new OrganizationDto();
+//        organizationDto.setId(currentOrgId);
+//        UserDto userDto = userBusiness.save(requestDto, organizationDto);
+//        UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
+//        return new Response<>(userVo);
+//    }
 
     @Deprecated
     @RequestMapping("/{id}/role")
@@ -63,17 +81,15 @@ public class UserController {
         userQuery.setOrganization(userDto.getOrg().getId());
         PageInfo<UserDto> pageInfo = userBusiness.pages(userQuery);
         List<UserVo> userVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), UserVo.class);
-        for (int i = 0; i < userVoContent.size(); i++) {
-            OrganizationVo organizationDto = CopyBeanUtils.copyBeanProperties(
-                    OrganizationVo.class, userVoContent.get(i).getOrg(), false);
-            userVoContent.get(i).setOrg(organizationDto);
-        }
         PageInfo<UserVo> response = new PageInfo<>(userVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
-
-        for (UserVo userVo : response.getContent()) {
-            if(userVo.getRole()!=null) {
-                RoleDto roleDto = roleBusiness.findById(userVo.getRole());
-                userVo.setRoleName(roleDto.getName());
+        for (int i = 0; i < pageInfo.getContent().size(); i++) {
+            OrganizationVo organizationVo = CopyBeanUtils.copyBeanProperties(
+                    OrganizationVo.class, pageInfo.getContent().get(i).getOrg(), false);
+            userVoContent.get(i).setOrg(organizationVo);
+            Long role = pageInfo.getContent().get(i).getRole();
+            if(role!=null) {
+                RoleDto roleDto = roleBusiness.findById(role);
+                userVoContent.get(i).setRoleName(roleDto.getName());
             }
         }
         return new Response<>(response);

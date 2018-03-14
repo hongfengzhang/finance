@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.dto.organization;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -9,7 +10,7 @@ import java.util.Date;
  * @author luomengan
  *
  */
-public class OrganizationAccountDto {
+public class OrganizationAccountDto implements Serializable{
 
 	private Long id;
 	/**

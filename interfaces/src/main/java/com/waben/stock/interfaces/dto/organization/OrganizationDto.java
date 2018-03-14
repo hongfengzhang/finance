@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.dto.organization;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.waben.stock.interfaces.enums.OrganizationState;
@@ -10,7 +11,7 @@ import com.waben.stock.interfaces.enums.OrganizationState;
  * @author luomengan
  *
  */
-public class OrganizationDto {
+public class OrganizationDto implements Serializable{
 
 	private Long id;
 	/**
@@ -49,6 +50,10 @@ public class OrganizationDto {
 	 * 父级机构代码
 	 */
 	private String parentName;
+	/**
+	 * 机构对应的账户信息
+	 */
+	private OrganizationAccountDto accountDto;
 
 	public Long getId() {
 		return id;
@@ -130,4 +135,11 @@ public class OrganizationDto {
 		this.parentName = parentName;
 	}
 
+	public OrganizationAccountDto getAccountDto() {
+		return accountDto;
+	}
+
+	public void setAccountDto(OrganizationAccountDto accountDto) {
+		this.accountDto = accountDto;
+	}
 }

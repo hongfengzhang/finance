@@ -2,17 +2,10 @@ package com.waben.stock.datalayer.organization.entity;
 
 import java.util.Date;
 
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 import com.waben.stock.datalayer.organization.entity.enumconverter.OrganizationStateConverter;
+import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.enums.OrganizationState;
 
 /**
@@ -48,7 +41,7 @@ public class Organization {
 	/**
 	 * 父级机构
 	 */
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id")
 	private Organization parent;
 	/**
@@ -74,6 +67,12 @@ public class Organization {
 	 */
 	@Transient
 	private String parentName;
+
+	@OneToOne(mappedBy = "org")
+	private  OrganizationAccount account;
+
+	@Transient
+	private OrganizationAccountDto accountDto;
 
 	public Long getId() {
 		return id;
@@ -160,4 +159,20 @@ public class Organization {
 		return null;
 	}
 
+
+	public OrganizationAccount getAccount() {
+		return account;
+	}
+
+	public void setAccount(OrganizationAccount account) {
+		this.account = account;
+	}
+
+	public OrganizationAccountDto getAccountDto() {
+		return accountDto;
+	}
+
+	public void setAccountDto(OrganizationAccountDto accountDto) {
+		this.accountDto = accountDto;
+	}
 }

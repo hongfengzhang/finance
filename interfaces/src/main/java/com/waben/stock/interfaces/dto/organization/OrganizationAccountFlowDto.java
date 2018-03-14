@@ -42,7 +42,7 @@ public class OrganizationAccountFlowDto {
 	/**
 	 * 对应的机构
 	 */
-	private OrganizationDto org;
+	private OrganizationDto orgDto;
 	/**
 	 * 分成配置类型
 	 */
@@ -104,12 +104,12 @@ public class OrganizationAccountFlowDto {
 		this.occurrenceTime = occurrenceTime;
 	}
 
-	public OrganizationDto getOrg() {
-		return org;
+	public OrganizationDto getOrgDto() {
+		return orgDto;
 	}
 
-	public void setOrg(OrganizationDto org) {
-		this.org = org;
+	public void setOrgDto(OrganizationDto orgDto) {
+		this.orgDto = orgDto;
 	}
 
 	public ResourceType getResourceType() {

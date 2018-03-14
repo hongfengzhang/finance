@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.organization.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -47,6 +49,7 @@ public class OrganizationAccount {
 	/**
 	 * 对应的机构
 	 */
+	@JsonBackReference
 	@OneToOne
 	@JoinColumn(name = "org_id")
 	private Organization org;
