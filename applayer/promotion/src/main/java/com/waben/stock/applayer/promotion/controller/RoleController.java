@@ -15,14 +15,13 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.manage.PermissionVo;
 import com.waben.stock.interfaces.vo.manage.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/role")
@@ -34,9 +33,7 @@ public class RoleController {
     @Autowired
     private OrganizationBusiness organizationBusiness;
 
-    @Autowired
-    private PermissionBusiness permissionBusiness;
-
+    @PreAuthorize("hasAnyAuthority('ROLE_SAVE')")
     @RequestMapping("/save")
     @ResponseBody
     public Response<RoleVo> add(RoleVo vo){
@@ -44,6 +41,18 @@ public class RoleController {
         vo.setOrganization(userDto.getOrg().getId());
         RoleDto requestDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, vo, false);
         RoleDto roleDto = roleBusiness.save(requestDto);
+        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
+        return new Response<>(roleVo);
+    }
+
+    @PreAuthorize("hasAnyAuthority('ROLE_REVISION')")
+    @RequestMapping("/modify")
+    @ResponseBody
+    public Response<RoleVo> modify(RoleVo vo){
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        vo.setOrganization(userDto.getOrg().getId());
+        RoleDto requestDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, vo, false);
+        RoleDto roleDto = roleBusiness.modify(requestDto);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
@@ -56,6 +65,7 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
+    @PreAuthorize("hasRole('ROLE_AUTHORIZE')")
     @RequestMapping("/permission/{id}")
     @ResponseBody
     public Response<RoleVo> addRolePermission(@PathVariable Long id,final Long[] permissionIds){
@@ -84,11 +94,15 @@ public class RoleController {
     @RequestMapping("/permissions")
     @ResponseBody
     public Response<List<PermissionVo>> permissions() {
-        List<PermissionDto> permissionDtos = permissionBusiness.fetchPermissions();
-        List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissionDtos, PermissionVo.class);
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        Set<PermissionDto> permissionDtos = roleBusiness.findById(userDto.getRole()).getPermissionDtos();
+        List<PermissionDto> permissions = new ArrayList<>();
+        permissions.addAll(permissionDtos);
+        List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissions, PermissionVo.class);
         return new Response<>(permissionVos);
     }
 
+    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
     @RequestMapping("/{id}")
     @ResponseBody
     public Response<RoleVo> fetchById(@PathVariable Long id){
@@ -105,4 +119,6 @@ public class RoleController {
         List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
         return new Response<>(roleVos);
     }
+
+
 }

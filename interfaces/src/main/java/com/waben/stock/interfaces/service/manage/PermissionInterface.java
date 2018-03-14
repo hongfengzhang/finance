@@ -36,8 +36,8 @@ public interface PermissionInterface {
     @RequestMapping(value = "/save", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PermissionDto> add(PermissionDto requestDto);
 
-    @RequestMapping(value = "/")
-    Response<List<PermissionDto>> fetchPermissions();
+    @RequestMapping(value = "/variety/{variety}")
+    Response<List<PermissionDto>> fetchPermissionsByVariety(@PathVariable("variety") Long variety);
 
     @RequestMapping(value = "/role/{role}", method = RequestMethod.GET)
     Response<List<PermissionDto>> fetchByRole(@PathVariable("role") Long role);

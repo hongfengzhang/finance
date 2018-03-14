@@ -7,6 +7,11 @@ $(function() {
     var searchData = {
         currentOrgCode: '01'
     };
+
+    //初始化菜单加载
+
+
+
     // 加载数据
     function retrieveData(sSource, aoData, fnCallback, oSettings) {
         var draw = (aoData[3].value / 10) + 1;

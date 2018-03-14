@@ -16,7 +16,7 @@ $(function() {
         var formData = $("#edit-form").serialize();
         $.ajax({
             type: "POST",
-            url: "/promotion/role/save",
+            url: "/promotion/role/modify",
             dataType: "json",
             data: formData,
             traditional: true,
@@ -26,8 +26,11 @@ $(function() {
                     parent.layer.closeAll();
                     parent.renderTable("#role-list-table");
                 } else {
-                    parent.layer.msg(jsonResult.message);
+                    parent.layer.msg(jsonResult.responseJSON.message)
                 }
+            },
+            error: function (jsonResult) {
+                parent.layer.msg(jsonResult.responseJSON.message)
             }
         });
     });
