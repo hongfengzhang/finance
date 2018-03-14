@@ -41,10 +41,16 @@ $(function() {
 	            { "data": "name", "title": "机构名称", orderable: false},
 	            { "data": "code", "title": "机构代码", orderable: false},
 	            { "data": "accountDto", "title": "可用余额", orderable: false, "render": function(data, type, full, meta) {
-	            	return data.availableBalance;
+	            	if(full.accountDto!=null) {
+                        return data.availableBalance;
+                    }
+                    return '';
 	            }},
                 { "data": "accountDto", "title": "冻结金额", orderable: false, "render": function(data, type, full, meta) {
-                    return data.frozenCapital;
+                    if(full.accountDto!=null) {
+                        return data.frozenCapital;
+                    }
+                    return '';
                 }},
 	        ];
 			$(id).dataTable({
@@ -73,7 +79,7 @@ $(function() {
 		}
 	}
 	// 执行
-	renderTable("#stockoption-list-table");
+	renderTable("#channeloverview-list-table");
 	// 加载layui
 	layui.use(['element', 'table'], function() {
 	});
@@ -89,6 +95,6 @@ $(function() {
 				searchData[name] = value;
 			}
 		}
-		renderTable("#stockoption-list-table");
+		renderTable("#channeloverview-list-table");
 	});
 });

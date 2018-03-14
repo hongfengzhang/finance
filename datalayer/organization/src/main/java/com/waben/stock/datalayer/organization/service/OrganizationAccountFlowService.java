@@ -57,10 +57,8 @@ public class OrganizationAccountFlowService {
             @Override
             public Predicate toPredicate(Root<OrganizationAccountFlow> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
-                if (query.getOrgId() != null) {
-                    Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
-                    predicates.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrgId()));
-                }
+                Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
+                predicates.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrgId()));
                 if (!StringUtils.isBlank(query.getFlowNo())) {
                     predicates.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
                 }
