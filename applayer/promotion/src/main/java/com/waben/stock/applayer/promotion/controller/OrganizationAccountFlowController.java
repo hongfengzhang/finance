@@ -1,7 +1,5 @@
 package com.waben.stock.applayer.promotion.controller;
 
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,6 +11,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
+
 import io.swagger.annotations.Api;
 
 

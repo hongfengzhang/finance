@@ -85,8 +85,8 @@ public class WithdrawalsApplyService {
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
-				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("state").as(Integer.class)),
-						criteriaBuilder.desc(root.get("updateTime").as(Date.class)));
+				criteriaQuery.orderBy(criteriaBuilder.asc(root.get("state").as(Integer.class)),
+						criteriaBuilder.desc(root.get("applyTime").as(Date.class)));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
