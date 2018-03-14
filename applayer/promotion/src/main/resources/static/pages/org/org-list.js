@@ -5,6 +5,15 @@ window.renderTable = function(){};
 window.searchData = { parentId: "1", loginOrgId: "1", onlyLoginOrg: true };
 window.currentOrgId = "1";
 $(function() {
+	// 获取当前登陆的用户信息
+//	$.ajax({
+//        type: "GET",
+//        url: "/promotion/user/getCurrent",
+//        dataType: "json",
+//        success: function (jsonResult) {
+//        	window.currentOrgId = jsonResult.result.org.id;
+//        }
+//    });
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;

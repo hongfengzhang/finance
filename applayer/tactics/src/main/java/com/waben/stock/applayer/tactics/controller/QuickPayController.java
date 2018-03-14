@@ -10,6 +10,8 @@ import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.BankType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.PasswordCrypt;
+
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,7 +113,7 @@ public class QuickPayController {
         if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
             throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
         }
-        if (!storePaymentPassword.equals(paymentPassword)) {
+        if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
             throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
         }
         // 检查余额

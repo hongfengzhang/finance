@@ -26,9 +26,8 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 		String password = null;
 		if(authentication != null && authentication.getCredentials() != null) {
 			password = authentication.getCredentials().toString();
-			password = PasswordCrypt.crypt(password);
 		}
-		if (!(password != null && password.equals(customUserDetails.getPassword()))) {
+		if (!PasswordCrypt.match(password, customUserDetails.getPassword())) {
 			throw new BadCredentialsException("密码错误");
 		}
 	}
