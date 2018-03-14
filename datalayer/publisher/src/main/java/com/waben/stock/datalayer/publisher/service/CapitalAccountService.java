@@ -179,7 +179,7 @@ public class CapitalAccountService {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
-		flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Withdrawals, amount.abs(), date);
+		flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Withdrawals, amount.abs().multiply(new BigDecimal(-1)), date);
 		sendWithdrawalsOutsideMessage(publisherId, amount,true);
 		return findByPublisherId(publisherId);
 	}

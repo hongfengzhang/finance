@@ -1,6 +1,4 @@
-/**
- * 机构列表
- */
+
 window.renderTable = function(){};
 $(function() {
 	var searchData = {
@@ -40,40 +38,35 @@ $(function() {
 			$(id).dataTable().fnDraw();
 		} else {
 			var columns = [
-	            { "data": "id", "title": "机构ID", orderable: false},
-	            { "data": "flowNo", "title": "流水号", orderable: false}
-	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
-	            { "data": "stockCode", "title": "股票", orderable: false, "render": function(data, type, full, meta) {
-	            	return full.stockCode + "/" + full.stockName;
-	            }},
-	            { "data": "cycleName", "title": "持仓时间", orderable: false},
-	            { "data": "state", "title": "策略状态", orderable: false, "render": function(data, type, full, meta) {
-	                var state = full.state;
-	                if(state == "1") {
-	                	return "待确认";
-	                } else if(state == "2") {
-	                	return "申购失败";
-	                } else if(state == "3") {
-	                	return "持仓中";
-	                } else if(state == "4" || state == "5") {
-	                	return "结算中";
-	                } else if(state == "6") {
-	                	return "已结算";
-	                } else {
-	                	return state;
-	                }
-	            }},
-	            { "data": "nominalAmount", "title": "名义本金", orderable: false},
-	            { "data": "rightMoney", "title": "权利金", orderable: false},
-	            { "data": "buyingTime", "title": "买入时间", orderable: false},
-	            { "data": "buyingPrice", "title": "买入价格", orderable: false},
-	            { "data": "sellingTime", "title": "卖出时间", orderable: false},
-	            { "data": "sellingPrice", "title": "卖出价格", orderable: false},
-	            { "data": "lastPrice", "title": "当前价格", orderable: false},
-	            { "data": "profit", "title": "盈利（浮动）", orderable: false},
-	            { "data": "orgName", "title": "所属机构代码/名称", orderable: false, "render": function(data, type, full, meta) {
-	            	return full.orgCode + "/" + full.orgName;
-	            }}
+	            { "data": "id", "title": "订单ID", orderable: false},
+	            { "data": "flowNo", "title": "用户ID", orderable: false},
+	            { "data": "resourceType", "title": "业务类型", orderable: false,"render": function(data, type, full, meta) {
+                    var resourceType = full.resourceType;
+                    if(resourceType=="BUYRECORD"){
+                    	return "配资";
+					}
+                    if(resourceType=="STOCKOPTIONTRADE"){
+                        return "期权";
+                    }
+                }},
+	            { "data": "originAmount", "title": "原始收入", orderable: false},
+	            { "data": "amount", "title": "平台收入", orderable: false},
+	            { "data": "type", "title": "佣金类型", orderable: false,"render": function(data, type, full, meta) {
+                    var type = full.type;
+                    if(type =="ServiceFeeAssign"){
+						return "信息服务费";
+					}
+                    if(type =="DeferredChargesAssign"){
+                        return "递延费";
+                    }
+                    if(type =="RightMoneyAssign"){
+                        return "期权收益";
+                    }
+                    if(type =="Withdrawals"){
+                        return "提现";
+                    }
+                }},
+	            { "data": "occurrenceTime", "title": "结算时间", orderable: false}
 	        ];
 			$(id).dataTable({
 				"responsive": true,
@@ -106,17 +99,17 @@ $(function() {
 	layui.use(['element', 'table'], function() {
 	});
 	// 搜索
-	// $('#search-btn').on('click', function(){
-	// 	var formDataArr = $("#search-form").serializeArray();
-	// 	for(var i = 0; i < formDataArr.length; i++) {
-	// 		var name = formDataArr[i].name;
-	// 		var value = formDataArr[i].value;
-	// 		if(searchData[name]) {
-	// 			searchData[name] = searchData[name] + "," + value;
-	// 		} else {
-	// 			searchData[name] = value;
-	// 		}
-	// 	}
-	// 	renderTable("#commission-list-table");
-	// });
+	$('#search-btn').on('click', function(){
+		var formDataArr = $("#search-form").serializeArray();
+		for(var i = 0; i < formDataArr.length; i++) {
+			var name = formDataArr[i].name;
+			var value = formDataArr[i].value;
+			if(searchData[name]) {
+				searchData[name] = searchData[name] + "," + value;
+			} else {
+				searchData[name] = value;
+			}
+		}
+		renderTable("#commission-list-table");
+	});
 });
