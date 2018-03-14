@@ -1,9 +1,10 @@
 package com.waben.stock.interfaces.dto.organization;
 
-import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.Date;
 
+@JsonIgnoreProperties
 public class UserDto {
     private Long id;
     /**
@@ -26,7 +27,6 @@ public class UserDto {
      * 所属机构
      */
     private OrganizationDto org;
-
 
     private Long role;
 
@@ -77,7 +77,6 @@ public class UserDto {
     public void setOrg(OrganizationDto org) {
         this.org = org;
     }
-
 
     public Long getRole() {
         return role;

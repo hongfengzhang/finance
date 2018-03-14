@@ -75,4 +75,13 @@ public class PermissionController implements PermissionInterface {
                 PermissionDto.class);
         return new Response<>(permissionDtos);
     }
+
+    @Override
+    public Response<List<PermissionDto>> fetchByRole(@PathVariable Long role) {
+        List<Permission> permissions = permissionService.findPermissionsByRole(role);
+        List<PermissionDto> permissionDtos = CopyBeanUtils.copyListBeanPropertiesToList(permissions,
+                PermissionDto.class);
+        System.out.println(JacksonUtil.encode(permissionDtos));
+        return new Response<>(permissionDtos);
+    }
 }

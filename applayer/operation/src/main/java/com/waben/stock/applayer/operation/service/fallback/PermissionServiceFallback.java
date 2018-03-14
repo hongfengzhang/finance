@@ -20,17 +20,17 @@ public class PermissionServiceFallback implements PermissionService {
 
     @Override
     public Response<PermissionDto> permission(Long id) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PageInfo<PermissionDto>> pages(PermissionQuery query) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
     @Override
     public Response<PermissionDto> modify(PermissionDto requestDto) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
 
     @Override
     public void delete(Long id) {
@@ -39,9 +39,14 @@ public class PermissionServiceFallback implements PermissionService {
 
     @Override
     public Response<PermissionDto> add(PermissionDto requestDto) {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);   }
 
     @Override
     public Response<List<PermissionDto>> fetchPermissions() {
-        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+
+    @Override
+    public Response<List<PermissionDto>> fetchByRole(Long role) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

@@ -24,7 +24,7 @@ public interface PermissionInterface {
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     Response<PermissionDto> permission(@PathVariable("id") Long id);
 
-    @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<PermissionDto>> pages(@RequestBody PermissionQuery query);
 
     @RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -32,8 +32,13 @@ public interface PermissionInterface {
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     void delete(@PathVariable("id") Long id);
+
     @RequestMapping(value = "/save", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PermissionDto> add(PermissionDto requestDto);
+
     @RequestMapping(value = "/")
     Response<List<PermissionDto>> fetchPermissions();
+
+    @RequestMapping(value = "/role/{role}", method = RequestMethod.GET)
+    Response<List<PermissionDto>> fetchByRole(@PathVariable("role") Long role);
 }
