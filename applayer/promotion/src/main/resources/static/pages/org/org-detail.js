@@ -109,6 +109,7 @@ $(function() {
     });
     // 提交按钮
     $("#user-submit-btn").on('click', function() {
+    	$("[name='org.id']").val(currentOrgId);
         var password = $('[name="password"]').val();
         var againPassword = $('[name="again-password"]').val();
         var userName = $('[name="username"]').val();
@@ -125,15 +126,14 @@ $(function() {
             var formData = $("#add-form").serialize();
             $.ajax({
                 type: "POST",
-                url: "/promotion/role/save",
-                contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+                url: "/promotion/user/save",
                 dataType: "json",
                 data: formData,
                 success: function (jsonResult) {
                     if("200" == jsonResult.code) {
-                        parent.layer.msg("添加成功");
+                        alert("添加成功");
                         parent.layer.closeAll();
-                        parent.renderTable("#role-list-table");
+                        parent.renderTable("#user-list-table");
                     } else {
                         parent.layer.msg(jsonResult.message);
                     }

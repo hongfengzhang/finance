@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -16,13 +18,16 @@ import com.waben.stock.applayer.strategist.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.manage.AnalogDataDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.AnalogDataType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 
 /**
  * 期权交易 Business
@@ -32,6 +37,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
  */
 @Service
 public class StockOptionTradeBusiness {
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -41,6 +48,9 @@ public class StockOptionTradeBusiness {
 	@Autowired
 	@Qualifier("stockOptionTradeReference")
 	private StockOptionTradeReference tradeReference;
+	
+	@Autowired
+	private AnalogDataBusiness analogDataBusiness;
 
 	public StockOptionTradeDto add(StockOptionTradeDto stockOptionTradeDto) {
 		Response<StockOptionTradeDto> response = tradeReference.add(stockOptionTradeDto);
@@ -162,6 +172,26 @@ public class StockOptionTradeBusiness {
 					}
 				}
 
+			}
+			if (content.size() < size) {
+				PageInfo<AnalogDataDto> analogDataPage = analogDataBusiness
+						.pagesByType(AnalogDataType.STOCKOPTIONTRADEDYNAMIC, 0, size - content.size());
+				if (analogDataPage.getContent().size() > 0) {
+					for (AnalogDataDto analogData : analogDataPage.getContent()) {
+						try {
+							StockOptionTradeDynamicDto dynamic = JacksonUtil.decode(analogData.getData(),
+									StockOptionTradeDynamicDto.class);
+							if (content.size() > 0 && content.get(content.size() - 1).getTradeType() == 2) {
+								dynamic.setTradeType(1);
+							} else {
+								dynamic.setTradeType(2);
+							}
+							content.add(dynamic);
+						} catch (Exception ex) {
+							logger.error("期权交易动态模拟数据格式错误?" + analogData.getData());
+						}
+					}
+				}
 			}
 			return new PageInfo<StockOptionTradeDynamicDto>(content, 0, false, 0L, size, page, false);
 		}

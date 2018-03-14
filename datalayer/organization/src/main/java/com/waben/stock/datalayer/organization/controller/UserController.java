@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.organization.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import com.waben.stock.datalayer.organization.entity.Organization;
@@ -16,13 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.datalayer.organization.entity.User;
 import com.waben.stock.datalayer.organization.service.UserService;
@@ -75,7 +70,7 @@ public class UserController implements UserInterface {
     }
 
     @Override
-    public Response<PageInfo<UserDto>> pages(UserQuery query) {
+    public Response<PageInfo<UserDto>> pages(@RequestBody UserQuery query) {
         Page<User> page = userService.pagesByQuery(query);
         PageInfo<UserDto> result = PageToPageInfo.pageToPageInfo(page, UserDto.class);
         for (int i = 0; i < page.getContent().size(); i++) {
@@ -88,10 +83,13 @@ public class UserController implements UserInterface {
 
     /******************************** 后台管理 **********************************/
     @Override
-    @ApiOperation(value = "添加机构管理用户", hidden = true)
-    public Response<UserDto> addition(UserDto user) {
+//    @ApiOperation(value = "添加机构管理用户", hidden = true)
+    public Response<UserDto> addition(@RequestBody UserDto user) {
+
         User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
-        request.setRole(user.getRoleDto().getId());
+        request.setOrg(CopyBeanUtils.copyBeanProperties(Organization.class,user.getOrg(),false));
+        request.setRole(user.getRole());
+        request.setCreateTime(new Date());
         User result = userService.addUser(request);
         UserDto response = CopyBeanUtils.copyBeanProperties(UserDto.class, result, false);
         return new Response<>(response);
@@ -99,7 +97,7 @@ public class UserController implements UserInterface {
 
     @Override
     @ApiOperation(value = "修改机构管理用户", hidden = true)
-    public Response<UserDto> modification(UserDto user) {
+    public Response<UserDto> modification(@RequestBody UserDto user) {
         User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
         User result = userService.addUser(request);
         UserDto response = CopyBeanUtils.copyBeanProperties(result, new UserDto(), false);
@@ -137,7 +135,10 @@ public class UserController implements UserInterface {
     }
 
     @Override
-    public Response<UserDto> bindRole(Long user, Long role) {
-        return null;
+    public Response<UserDto> bindRole(@PathVariable Long user, @PathVariable Long role) {
+        User result = userService.bindRole(user,role);
+        UserDto response = CopyBeanUtils.copyBeanProperties(result, new UserDto(), false);
+        response.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,result.getOrg(),false));
+        return new Response<>(response);
     }
 }

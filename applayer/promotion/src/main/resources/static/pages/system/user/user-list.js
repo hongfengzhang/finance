@@ -2,7 +2,7 @@
  * 角色列表
  */
 window.renderTable = function(){};
-window.currentRoleId = "";
+window.currentUserId = "";
 $(function() {
     var searchData = {
         currentOrgCode: '01'
@@ -46,13 +46,14 @@ $(function() {
                 { "data": "nickname", "title": "用户名", orderable: false},
                 { "data": "createTime", "title": "创建时间", orderable: false},
                 { "data": "organizationName", "title": "所属机构", orderable: false, "render": function(data, type, full, meta) {
-                    return full.org.name;
+                    if(full.org!=null) {
+                        return full.org.name;
+                    }
+                    return '';
                 }},
-                { "data": "role", "title": "所拥角色", orderable: false},
+                { "data": "roleName", "title": "所拥角色", orderable: false},
                 { "data": "id", "width": "230", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
-                    return "<a class='edit mr10' userId='" + full.id + "' href='javascript:;'>修改角色</a>" +
-                            "<a class='delete mr10' userId='" + full.id + "' href='javascript:;'>删除管理员</a>"+
-                            "<a class='password mr10' userId='" + full.id + "' href='javascript:;'>修改密码</a>";
+                    return "<a class='edit mr10' userId='" + full.id + "' href='javascript:;'>修改角色</a>";
                 }}
             ];
             $(id).dataTable({
@@ -104,29 +105,29 @@ $(function() {
         $("[name='id']").val("");
         renderTable("#user-list-table");
     });
-    //
-    // $('#add-btn').on('click', function(){
-    //     var index = layer.open({
-    //         type: 2,
-    //         title: '添加角色',
-    //         shadeClose: true,
-    //         shade: 0.8,
-    //         area: ['500px', '500px'],
-    //         content: 'role-add.html',
-    //     });
-    // });
-    //
-    // $('#role-list-table').on('click','a.authority', function(){
-    //     currentRoleId = $(this).attr("roleId");
-    //     layer.open({
-    //         type: 2,
-    //         title: '设置权限',
-    //         shadeClose: true,
-    //         shade: 0.8,
-    //         area: ['60%', '80%'],
-    //         content: 'role-authorize.html',
-    //     });
-    // });
+
+    $('#add-btn').on('click', function(){
+        var index = layer.open({
+            type: 2,
+            title: '添加用户',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['60%', '80%'],
+            content: 'user-add.html',
+        });
+    });
+
+    $('#user-list-table').on('click','a.edit', function(){
+        currentUserId = $(this).attr("userId");
+        layer.open({
+            type: 2,
+            title: '设置角色',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['60%', '80%'],
+            content: 'user-role.html',
+        });
+    });
     //
     // $('#role-list-table').on('click','a.detail', function(){
     //     currentRoleId = $(this).attr("roleId");

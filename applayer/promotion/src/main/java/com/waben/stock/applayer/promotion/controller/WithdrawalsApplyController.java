@@ -23,6 +23,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
 
@@ -54,7 +55,7 @@ public class WithdrawalsApplyController {
 		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
 		}
-		if (!storePaymentPassword.equals(paymentPassword)) {
+		if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额

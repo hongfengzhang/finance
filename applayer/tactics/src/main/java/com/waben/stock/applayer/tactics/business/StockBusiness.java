@@ -217,6 +217,13 @@ public class StockBusiness {
 			throw new ServiceException(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION);
 		}
 	}
+	
+	/**
+	 * 检查股票是否连续两个涨停
+	 */
+	public void check2LimitUp() {
+		
+	}
 
 	public List<StockMarket> ranking(String exponent, int rankType, int size) {
 		String code = "4609";
