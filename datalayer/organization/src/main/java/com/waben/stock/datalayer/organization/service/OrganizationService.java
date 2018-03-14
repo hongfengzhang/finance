@@ -167,6 +167,42 @@ public class OrganizationService {
 		return pages;
 	}
 
+	public Page<Organization> pagesByOrgQuery(final OrganizationQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<Organization> pages = organizationDao.page(new Specification<Organization>() {
+			@Override
+			public Predicate toPredicate(Root<Organization> root, CriteriaQuery<?> criteriaQuery,
+										 CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<>();
+				if (query.isOnlyLoginOrg()) {
+					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getLoginOrgId()));
+				} else {
+					if (query.getCode() != null && !"".equals(query.getCode().trim())) {
+						predicateList.add(
+								criteriaBuilder.like(root.get("code").as(String.class), "%" + query.getCode() + "%"));
+					}
+					if (query.getState() != null && !"".equals(query.getState().trim())
+							&& !"0".equals(query.getState().trim())) {
+						predicateList.add(criteriaBuilder.equal(root.get("state").as(OrganizationState.class),
+								OrganizationState.getByIndex(query.getState().trim())));
+					}
+					if (query.getParentId() != null && query.getParentId() != 0) {
+						Join<Organization, Organization> parentJoin = root.join("parent", JoinType.LEFT);
+						predicateList
+								.add(criteriaBuilder.equal(parentJoin.get("id").as(Long.class), query.getParentId()));
+					}
+				}
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+				criteriaQuery.orderBy(criteriaBuilder.asc(root.get("level").as(Integer.class)),
+						criteriaBuilder.asc(root.get("createTime").as(Date.class)));
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+	}
+
 	public List<Organization> listByParentId(Long parentId) {
 		Organization parent = null;
 		if (parentId.longValue() > 0) {

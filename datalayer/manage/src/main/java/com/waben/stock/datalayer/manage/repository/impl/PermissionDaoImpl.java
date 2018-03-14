@@ -22,6 +22,11 @@ public class PermissionDaoImpl implements PermissionDao {
     private PermissionRepository repository;
 
     @Override
+    public List<Permission> retrieveAllByRole(Long role) {
+        return repository.findAllByRolesOrderById(role);
+    }
+
+    @Override
     public List<Permission> retrieveAllByVariety(Long variety) {
         return repository.findAllByVariety(variety);
     }

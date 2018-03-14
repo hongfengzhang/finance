@@ -63,4 +63,6 @@ public class PublisherServiceFallback implements PublisherService{
 	public Response<PublisherDto> modify(PublisherDto publisherDto) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+
 }

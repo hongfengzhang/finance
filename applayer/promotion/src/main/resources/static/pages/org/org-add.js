@@ -27,6 +27,8 @@ $(function() {
             	} else {
             		parent.layer.msg(jsonResult.message);
             	}
+            },error:function (jsonResult) {
+                parent.layer.msg(jsonResult.responseJSON.message);
             }
         });
 	});

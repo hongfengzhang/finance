@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -49,6 +50,7 @@ public class PromotionExecptionHandler implements HandlerExceptionResolver {
 				HttpServletResponse.SC_SERVICE_UNAVAILABLE, "503"));
 		this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_OK, "500"));
 		this.exceptions.add(new ExceptionInformation(HystrixRuntimeException.class, HttpServletResponse.SC_OK, "500"));
+		this.exceptions.add(new ExceptionInformation(AccessDeniedException.class, HttpServletResponse.SC_FORBIDDEN, "403"));
 	}
 
 	@Override
@@ -108,7 +110,7 @@ public class PromotionExecptionHandler implements HandlerExceptionResolver {
 				return serviceException.getCustomMessage();
 			}
 		}
-		String message = null;
+		String message;
 		if (exceptionMap.containsKey(type)) {
 			message = exceptionMap.get(type);
 		} else {
