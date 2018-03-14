@@ -96,4 +96,13 @@ public class RoleController {
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
+
+    @RequestMapping("/")
+    @ResponseBody
+    public Response<List<RoleVo>> fetchByOrganization(){
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
+        List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
+        return new Response<>(roleVos);
+    }
 }

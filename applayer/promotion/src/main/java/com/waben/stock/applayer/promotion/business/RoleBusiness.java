@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +16,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
 
 import javax.management.relation.Role;
+import java.util.List;
 
 @Service
 public class RoleBusiness {
@@ -94,6 +96,19 @@ public class RoleBusiness {
         if ("200".equals(code)) {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public List<RoleDto> findByOrganization(Long id) {
+        RoleQuery roleQuery = new RoleQuery();
+        roleQuery.setOrganization(id);
+        Response<PageInfo<RoleDto>> response = roleReference.pages(roleQuery);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult().getContent();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());

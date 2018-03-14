@@ -59,8 +59,15 @@ public class UserBusiness {
         }
     }
 
-    public UserDto saveUserRole(Long id, Long[] roleIds) {
-        return null;
+    public UserDto saveUserRole(Long id, Long roleId) {
+        Response<UserDto> response = userReference.bindRole(id,roleId);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
     }
 
     public PageInfo<UserDto> pages(UserQuery userQuery) {
