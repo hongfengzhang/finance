@@ -17,7 +17,9 @@ public enum OrganizationAccountFlowType implements CommonalityEnum {
 
 	RightMoneyAssign("3", "期权权利金收益分成"),
 	
-	Withdrawals("4", "提现");
+	Withdrawals("4", "提现"),
+	
+	WithdrawalsFailure("5", "提现失败退回");
 
 	private String index;
 

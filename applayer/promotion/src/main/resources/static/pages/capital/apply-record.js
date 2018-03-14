@@ -140,6 +140,7 @@ $(function() {
             success: function (jsonResult) {
             	if("200" == jsonResult.code) {
             		layer.msg("操作成功");
+            		renderTable("#apply-record-list-table");
             	} else {
             		layer.msg(jsonResult.message);
             	}

@@ -2,11 +2,19 @@
  * 资金概览
  */
 window.renderTable = function(){};
-window.currentOrgId = "17";
 $(function() {
-	var searchData = {
-		orgId: window.currentOrgId
-	};
+	// 获取当前登陆的用户信息
+	$.ajax({
+        type: "GET",
+        url: "/promotion/user/getCurrent",
+        dataType: "json",
+        async: false,
+        success: function (jsonResult) {
+        	window.currentOrgId = jsonResult.result.org.id;
+        	window.currentOrgCode = jsonResult.result.org.code;
+        	window.searchData = { orgId: currentOrgId }
+        }
+    });
 	// 获取机构账户信息
 	$.ajax({
         type: "GET",
@@ -30,7 +38,7 @@ $(function() {
 		searchData.page = (draw - 1);
 		searchData.size = 10;
 		$.ajax({
-            type: "GET",
+            type: "POST",
             url: "/promotion/orgflow/pages",
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             dataType: "json",
@@ -67,6 +75,8 @@ $(function() {
 	                	return "期权权利金收益分成";
 	                } else if(type == "Withdrawals") {
 	                	return "提现";
+	                } else if(type == "WithdrawalsFailure") {
+	                	return "提现失败退回";
 	                } else {
 	                	return type;
 	                }

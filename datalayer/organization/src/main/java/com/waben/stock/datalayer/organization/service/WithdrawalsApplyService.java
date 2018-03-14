@@ -43,6 +43,9 @@ public class WithdrawalsApplyService {
 	@Autowired
 	private WithdrawalsApplyDao withdrawalsApplyDao;
 
+	@Autowired
+	private OrganizationAccountService accountService;
+
 	@Transactional
 	public WithdrawalsApply addWithdrawalsApply(WithdrawalsApply withdrawalsApply, Long orgId) {
 		Organization org = organizationDao.retrieve(orgId);
@@ -54,6 +57,7 @@ public class WithdrawalsApplyService {
 		withdrawalsApply.setApplyTime(date);
 		withdrawalsApply.setUpdateTime(date);
 		withdrawalsApply.setState(WithdrawalsApplyState.TOBEAUDITED);
+		accountService.withdrawals(org, withdrawalsApply.getAmount());
 		return withdrawalsApplyDao.create(withdrawalsApply);
 	}
 
@@ -91,9 +95,16 @@ public class WithdrawalsApplyService {
 
 	public WithdrawalsApply changeState(Long applyId, WithdrawalsApplyState state) {
 		WithdrawalsApply withdrawalsApply = withdrawalsApplyDao.retrieve(applyId);
-		withdrawalsApply.setState(state);
-		withdrawalsApply.setUpdateTime(new Date());
-		return withdrawalsApplyDao.update(withdrawalsApply);
+		WithdrawalsApplyState oldState = withdrawalsApply.getState();
+		if (oldState != state) {
+			withdrawalsApply.setState(state);
+			withdrawalsApply.setUpdateTime(new Date());
+			if (state == WithdrawalsApplyState.REFUSED || state == WithdrawalsApplyState.FAILURE) {
+				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount());
+			}
+			withdrawalsApplyDao.update(withdrawalsApply);
+		}
+		return withdrawalsApply;
 	}
 
 }

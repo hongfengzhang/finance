@@ -109,7 +109,7 @@ public class OrganizationAccountService {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		if (account != null) {
 			String dbOldPaymentPassword = account.getPaymentPassword();
-			if (dbOldPaymentPassword != null && !dbOldPaymentPassword.equals(oldPaymentPassword)) { 
+			if (dbOldPaymentPassword != null && !dbOldPaymentPassword.equals(oldPaymentPassword)) {
 				throw new ServiceException(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION);
 			}
 			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
@@ -157,6 +157,40 @@ public class OrganizationAccountService {
 		return organizationAccountDao.create(account);
 	}
 
+	public synchronized OrganizationAccount withdrawals(Organization org, BigDecimal amount) {
+		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
+		Date date = new Date();
+		reduceAmount(account, amount, date);
+		// 生成流水
+		OrganizationAccountFlow flow = new OrganizationAccountFlow();
+		flow.setAmount(amount.abs().multiply(new BigDecimal("-1")));
+		flow.setOriginAmount(amount.abs().multiply(new BigDecimal("-1")));
+		flow.setFlowNo(UniqueCodeGenerator.generateFlowNo());
+		flow.setOccurrenceTime(date);
+		flow.setOrg(org);
+		flow.setType(OrganizationAccountFlowType.Withdrawals);
+		flow.setRemark(OrganizationAccountFlowType.Withdrawals.getType());
+		flowDao.create(flow);
+		return account;
+	}
+
+	public synchronized OrganizationAccount withdrawalsFailure(Organization org, BigDecimal amount) {
+		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
+		Date date = new Date();
+		increaseAmount(account, amount, date);
+		// 生成流水
+		OrganizationAccountFlow flow = new OrganizationAccountFlow();
+		flow.setAmount(amount.abs());
+		flow.setOriginAmount(amount.abs());
+		flow.setFlowNo(UniqueCodeGenerator.generateFlowNo());
+		flow.setOccurrenceTime(date);
+		flow.setOrg(org);
+		flow.setType(OrganizationAccountFlowType.WithdrawalsFailure);
+		flow.setRemark(OrganizationAccountFlowType.WithdrawalsFailure.getType());
+		flowDao.create(flow);
+		return account;
+	}
+
 	/**
 	 * 账户增加金额
 	 * 
@@ -172,18 +206,38 @@ public class OrganizationAccountService {
 		organizationAccountDao.update(account);
 	}
 
+	/**
+	 * 账户减少金额
+	 * 
+	 * @param account
+	 *            资金账户
+	 * @param amount
+	 *            金额
+	 */
+	private synchronized void reduceAmount(OrganizationAccount account, BigDecimal amount, Date date) {
+		BigDecimal amountAbs = amount.abs();
+		// 判断账余额是否足够
+		if (account.getAvailableBalance().compareTo(amountAbs) < 0) {
+			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+		}
+		account.setBalance(account.getBalance().subtract(amount));
+		account.setAvailableBalance(account.getAvailableBalance().subtract(amount));
+		account.setUpdateTime(date);
+		organizationAccountDao.update(account);
+	}
 
 	@Transactional
 	public Page<OrganizationAccount> pagesByQuery(final OrganizationAccountQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<OrganizationAccount> pages = organizationAccountDao.page(new Specification<OrganizationAccount>() {
 			@Override
-			public Predicate toPredicate(Root<OrganizationAccount> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<OrganizationAccount> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicates = new ArrayList<>();
 				criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
 				return criteriaQuery.getRestriction();
 			}
-		},pageable);
+		}, pageable);
 		return pages;
 	}
 
