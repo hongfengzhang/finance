@@ -5,9 +5,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class TestBCrypt {
 	
-	public static void main(String[] args) {
+	public static void testMain(String[] args) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		System.out.println(encoder.encode("957171"));
+		System.out.println(encoder.encode("841212"));
 	}
 	
 	@Test

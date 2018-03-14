@@ -1,6 +1,4 @@
-/**
- * 机构列表
- */
+
 window.renderTable = function(){};
 $(function() {
 	var searchData = {

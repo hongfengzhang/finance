@@ -118,9 +118,24 @@ public class OrganizationController implements OrganizationInterface {
         }
         List<OrganizationDto> organizationDtos = CopyBeanUtils.copyListBeanPropertiesToList(content, OrganizationDto.class);
         PageInfo<OrganizationDto> result = PageToPageInfo.pageToPageInfo(organizationDtos, page.getTotalPages(), page.isLast(), page.getTotalElements(), page.getSize(), page.getNumber(), page.isFirst());
+        System.out.println(JacksonUtil.encode(result));
         return new Response<>(result);
     }
 
+    @Override
+    public Response<PageInfo<OrganizationDto>> pages(@RequestBody OrganizationQuery query) {
+        Page<Organization> page = organizationService.pagesByOrgQuery(query);
+        List<Organization> organizations = page.getContent();
+        List<Organization> content = new ArrayList<>();
+        for (Organization organization : organizations) {
+            OrganizationAccountDto organizationAccountDto = CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class, organization.getAccount(), false);
+            organization.setAccountDto(organizationAccountDto);
+            content.add(organization);
+        }
+        List<OrganizationDto> organizationDtos = CopyBeanUtils.copyListBeanPropertiesToList(content, OrganizationDto.class);
+        PageInfo<OrganizationDto> result = PageToPageInfo.pageToPageInfo(organizationDtos, page.getTotalPages(), page.isLast(), page.getTotalElements(), page.getSize(), page.getNumber(), page.isFirst());
+        return new Response<>(result);
+    }
 
     @Override
     public List<TreeNode> adminTree(@RequestParam(required = true) Long orgId) {
@@ -155,11 +170,5 @@ public class OrganizationController implements OrganizationInterface {
         return new Response<>(organizationService.bindCard(orgId, bindCardDto));
     }
 
-    @Override
-    public Response<PageInfo<OrganizationDto>> pages(@RequestBody OrganizationQuery query) {
-        Page<Organization> page = organizationService.pagesByQuery(query);
-        System.out.println(JacksonUtil.encode(page));
-        PageInfo<OrganizationDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationDto.class);
-        return new Response<>(result);
-    }
+
 }
