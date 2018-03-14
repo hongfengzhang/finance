@@ -1,10 +1,12 @@
 package com.waben.stock.datalayer.organization.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.OrganizationState;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
@@ -84,15 +86,24 @@ public class UserService {
 	}
 
     public Page<User> pagesByQuery(final UserQuery query) {
+
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<User> pages = userDao.page(new Specification<User>() {
 			@Override
 			public Predicate toPredicate(Root<User> root, CriteriaQuery<?> criteriaQuery,
 										 CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
+				if(!StringUtils.isEmpty(query.getId())) {
+					Predicate idQuery = criteriaBuilder.equal(root.get("id").as(Long.class), query
+							.getId());
+					predicateList.add(idQuery);
+				}
 				if(!StringUtils.isEmpty(query.getOrganization())) {
-					Predicate organizationQuery = criteriaBuilder.equal(root.get("org_id").as(Long.class), query
-							.getOrganization());
+//					Join<User, Organization> join = root.join("org", JoinType.LEFT);
+//					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrganization()));
+					Organization organization = new Organization();
+					organization.setId(query.getOrganization());
+					Predicate organizationQuery = criteriaBuilder.equal(root.get("org").as(Organization.class), organization);
 					predicateList.add(organizationQuery);
 				}
 				if(!StringUtils.isEmpty(query.getUserName())) {
@@ -101,14 +112,21 @@ public class UserService {
 					predicateList.add(userNameQuery);
 				}
 				if(!StringUtils.isEmpty(query.getNickName())) {
-					Predicate nickNameQuery = criteriaBuilder.equal(root.get("nickname").as(Long.class), query
+					Predicate nickNameQuery = criteriaBuilder.equal(root.get("nickname").as(String.class), query
 							.getNickName());
 					predicateList.add(nickNameQuery);
 				}
 				criteriaQuery.orderBy(criteriaBuilder.asc(root.get("createTime").as(Date.class)));
+				criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
 		return pages;
     }
+
+	public User bindRole(Long id, Long role) {
+		User user = userDao.retrieve(id);
+		user.setRole(role);
+		return userDao.update(user);
+	}
 }

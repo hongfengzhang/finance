@@ -52,23 +52,12 @@ public class UserController {
         return new Response<>(userVo);
     }
 
-//    @RequestMapping("/save/{currentOrgId}")
-//    @ResponseBody
-//    public Response<UserVo> add(UserVo vo){
-//        UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
-//        requestDto.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false));
-//        OrganizationDto organizationDto = new OrganizationDto();
-//        organizationDto.setId(currentOrgId);
-//        UserDto userDto = userBusiness.save(requestDto, organizationDto);
-//        UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
-//        return new Response<>(userVo);
-//    }
 
     @Deprecated
     @RequestMapping("/{id}/role")
     @ResponseBody
-    public Response<UserVo> bindRole(@PathVariable Long id, Long[] roleIds){
-        UserDto userDto = userBusiness.saveUserRole(id,roleIds);
+    public Response<UserVo> bindRole(@PathVariable Long id, Long roleId){
+        UserDto userDto = userBusiness.saveUserRole(id,roleId);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }

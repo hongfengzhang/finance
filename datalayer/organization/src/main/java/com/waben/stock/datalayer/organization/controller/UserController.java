@@ -135,7 +135,10 @@ public class UserController implements UserInterface {
     }
 
     @Override
-    public Response<UserDto> bindRole(Long user, Long role) {
-        return null;
+    public Response<UserDto> bindRole(@PathVariable Long user, @PathVariable Long role) {
+        User result = userService.bindRole(user,role);
+        UserDto response = CopyBeanUtils.copyBeanProperties(result, new UserDto(), false);
+        response.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,result.getOrg(),false));
+        return new Response<>(response);
     }
 }
