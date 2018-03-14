@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +35,7 @@ import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -143,7 +143,7 @@ public class PaymentController {
 		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
 		}
-		if (!storePaymentPassword.equals(paymentPassword)) {
+		if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额

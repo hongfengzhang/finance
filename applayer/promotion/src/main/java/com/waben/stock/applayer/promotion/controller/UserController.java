@@ -1,29 +1,30 @@
 package com.waben.stock.applayer.promotion.controller;
 
-import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
-import com.waben.stock.applayer.promotion.business.RoleBusiness;
-import com.waben.stock.applayer.promotion.business.UserBusiness;
-import com.waben.stock.applayer.promotion.util.SecurityAccount;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
-import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
-import com.waben.stock.interfaces.dto.organization.OrganizationDto;
-import com.waben.stock.interfaces.dto.organization.UserDto;
-import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.RoleQuery;
-import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
-import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.manage.RoleVo;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
-import com.waben.stock.interfaces.vo.organization.UserVo;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.List;
+import com.waben.stock.applayer.promotion.business.RoleBusiness;
+import com.waben.stock.applayer.promotion.business.UserBusiness;
+import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.applayer.promotion.warpper.auth.AccountCredentials;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
+import com.waben.stock.interfaces.dto.organization.UserDto;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.organization.OrganizationVo;
+import com.waben.stock.interfaces.vo.organization.UserVo;
 
 @Controller
 @RequestMapping("/user")
@@ -82,4 +83,12 @@ public class UserController {
         }
         return new Response<>(response);
     }
+    
+    @RequestMapping(value = "/getCurrent", method = RequestMethod.GET)
+    @ResponseBody
+	public Response<UserDto> getCurrent() {
+    	AccountCredentials details = SecurityAccount.current();
+		return new Response<>((UserDto)details.getSecurity());
+	}
+    
 }

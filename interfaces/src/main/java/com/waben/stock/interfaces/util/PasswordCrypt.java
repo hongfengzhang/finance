@@ -9,4 +9,9 @@ public class PasswordCrypt {
 		return encoder.encode(password);
 	}
 
+	public static boolean match(String password, String encodedPassword) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		return encoder.matches(password, encodedPassword);
+	}
+
 }
