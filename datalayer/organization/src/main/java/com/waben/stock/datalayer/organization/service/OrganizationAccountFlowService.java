@@ -65,6 +65,18 @@ public class OrganizationAccountFlowService {
                 if (query.getResourceType() != null) {
                     predicates.add(criteriaBuilder.equal(root.get("resourceType"), query.getResourceType()));
                 }
+                if(query.getFlowType() != null && !"0".equals(query.getFlowType())) {
+                	predicates.add(criteriaBuilder.equal(root.get("type"), query.getFlowType()));
+                }
+                if (query.getStartTime() != null) {
+                	predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("occurrenceTime").as(Date.class),
+							query.getStartTime()));
+				}
+				if (query.getEndTime() != null) {
+					predicates.add(criteriaBuilder.lessThan(root.get("occurrenceTime").as(Date.class),
+							query.getEndTime()));
+				}
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("occurrenceTime").as(Date.class)));
                 criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
                 return criteriaQuery.getRestriction();
             }

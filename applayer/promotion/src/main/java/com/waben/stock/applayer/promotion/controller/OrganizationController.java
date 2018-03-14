@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +43,7 @@ public class OrganizationController {
 	@Autowired
 	public OrganizationBusiness business;
 
+	@PreAuthorize("hasRole('ORG_MANAGE')")
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public Response<OrganizationDto> addition(OrganizationForm orgForm) {
 		return new Response<>(business.addition(orgForm));

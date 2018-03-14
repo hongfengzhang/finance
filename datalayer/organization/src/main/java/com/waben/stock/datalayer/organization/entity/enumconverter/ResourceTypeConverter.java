@@ -17,6 +17,9 @@ public class ResourceTypeConverter implements AttributeConverter<ResourceType, I
 	 */
 	@Override
 	public Integer convertToDatabaseColumn(ResourceType attribute) {
+		if (attribute == null) {
+			return null;
+		}
 		return Integer.parseInt(attribute.getIndex());
 	}
 
@@ -25,6 +28,9 @@ public class ResourceTypeConverter implements AttributeConverter<ResourceType, I
 	 */
 	@Override
 	public ResourceType convertToEntityAttribute(Integer dbData) {
+		if (dbData == null) {
+			return null;
+		}
 		return ResourceType.getByIndex(String.valueOf(dbData));
 	}
 }
