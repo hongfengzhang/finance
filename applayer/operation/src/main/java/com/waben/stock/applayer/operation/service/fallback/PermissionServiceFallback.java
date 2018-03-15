@@ -18,38 +18,39 @@ import java.util.List;
 @Component
 public class PermissionServiceFallback implements PermissionService {
 
-	@Override
-	public Response<PermissionDto> permission(Long id) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<PermissionDto> permission(Long id) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
-	@Override
-	public Response<PageInfo<PermissionDto>> pages(PermissionQuery query) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<PageInfo<PermissionDto>> pages(PermissionQuery query) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
-	@Override
-	public Response<PermissionDto> modify(PermissionDto requestDto) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<PermissionDto> modify(PermissionDto requestDto) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
 
-	@Override
-	public void delete(Long id) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public void delete(Long id) {
 
-	@Override
-	public Response<PermissionDto> add(PermissionDto requestDto) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    }
 
-	@Override
-	public Response<List<PermissionDto>> fetchByRole(Long role) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<PermissionDto> add(PermissionDto requestDto) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);   }
 
-	@Override
-	public Response<List<PermissionDto>> fetchPermissionsByVariety(Long variety) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
+    @Override
+    public Response<List<PermissionDto>> fetchPermissionsByVariety(Long variety) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);   }
+
+    @Override
+    public Response<List<PermissionDto>> fetchPermissions() {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+
+    @Override
+    public Response<List<PermissionDto>> fetchByRole(Long role) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }
