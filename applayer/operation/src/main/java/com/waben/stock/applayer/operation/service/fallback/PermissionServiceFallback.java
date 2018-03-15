@@ -44,7 +44,6 @@ public class PermissionServiceFallback implements PermissionService {
     @Override
     public Response<List<PermissionDto>> fetchPermissionsByVariety(Long variety) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);   }
-    }
 
     @Override
     public Response<List<PermissionDto>> fetchPermissions() {
