@@ -2,9 +2,8 @@ package com.waben.stock.applayer.promotion.controller;
 
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
 import com.waben.stock.interfaces.dto.organization.UserDto;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,15 +29,17 @@ public class OrganizationAccountFlowController {
     @Autowired
     public OrganizationBusiness organizationBusiness;
     @RequestMapping(value = "/pages", method = RequestMethod.POST)
-    public Response<PageInfo<OrganizationAccountFlowDto>> pages(OrganizationAccountFlowQuery query) {
+    public Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query) {
         UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
         query.setOrgId(userDto.getOrg().getId());
         return new Response<>(organizationAccountFlowBusiness.pages(query));
     }
 
+
+
     //渠道分成报表
     @RequestMapping(value = "/childpages", method = RequestMethod.POST)
-    public Response<PageInfo<OrganizationAccountFlowDto>> childPages(OrganizationAccountFlowQuery query) {
+    public Response<PageInfo<OrganizationAccountFlowDto>> childPages(@RequestBody OrganizationAccountFlowQuery query) {
         return new Response<>(organizationAccountFlowBusiness.pages(query));
     }
 

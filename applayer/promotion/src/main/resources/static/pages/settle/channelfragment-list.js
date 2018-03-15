@@ -39,7 +39,7 @@ $(function() {
 		} else {
 			var columns = [
                 { "data": "id", "title": "订单ID", orderable: false},
-                { "data": "flowNo", "title": "用户ID", orderable: false},
+                { "data": "flowNo", "title": "流水号", orderable: false},
                 { "data": "resourceType", "title": "业务类型", orderable: false,"render": function(data, type, full, meta) {
                     var resourceType = full.resourceType;
                     if(resourceType=="BUYRECORD"){
