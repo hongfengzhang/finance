@@ -56,7 +56,7 @@ public class StockMonitor implements CommandLineRunner {
         CronScheduleBuilder scheduleEntrustBuilderAM = CronScheduleBuilder.cronSchedule("0 21 9 * * ?");
         CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 14 * * ?");
         //下午任务
-        CronScheduleBuilder scheduleEntrustBuilderPM = CronScheduleBuilder.cronSchedule("0 25 18 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilderPM = CronScheduleBuilder.cronSchedule("0 45 14 * * ?");
         CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 23 * * ?");
         //买入任务
         JobDetail jobBuyIn = JobBuilder.newJob(StockApplyEntrustBuyInJob.class).withIdentity("jobBuyIn", "groupBuyIn")
