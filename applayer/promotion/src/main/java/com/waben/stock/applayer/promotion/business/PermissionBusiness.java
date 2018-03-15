@@ -18,8 +18,8 @@ public class PermissionBusiness {
     @Qualifier("permissionReference")
     private PermissionReference permissionReference;
 
-    public List<PermissionDto> fetchPermissions() {
-        Response<List<PermissionDto>> response = permissionReference.fetchPermissions();
+    public List<PermissionDto> findPermissionsByVariety() {
+        Response<List<PermissionDto>> response = permissionReference.fetchPermissionsByVariety(4L);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

@@ -9,7 +9,7 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
     private Long  resourceType;
 	private String flowNo;
 	private Long orgId;
-	private String flowType;
+	private Long flowType;
 	private Date startTime;
 	private Date endTime;
 
@@ -39,11 +39,11 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 		this.orgId = orgId;
 	}
 
-	public String getFlowType() {
+	public Long getFlowType() {
 		return flowType;
 	}
 
-	public void setFlowType(String flowType) {
+	public void setFlowType(Long flowType) {
 		this.flowType = flowType;
 	}
 

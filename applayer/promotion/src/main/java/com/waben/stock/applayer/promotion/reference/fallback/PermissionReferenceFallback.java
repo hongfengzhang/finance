@@ -42,7 +42,7 @@ public class PermissionReferenceFallback implements PermissionReference {
     }
 
     @Override
-    public Response<List<PermissionDto>> fetchPermissions() {
+    public Response<List<PermissionDto>> fetchPermissionsByVariety(Long variety) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

@@ -3,6 +3,7 @@ package com.waben.stock.applayer.promotion.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,7 @@ public class UserController {
     @Autowired
     private RoleBusiness roleBusiness;
 
+    @PreAuthorize("hasRole('USER_SAVE')")
     @RequestMapping("/save")
     @ResponseBody
     public Response<UserVo> add(UserVo vo){
@@ -55,6 +57,7 @@ public class UserController {
 
 
     @Deprecated
+    @PreAuthorize("hasRole('USER_ROLE_REVISION')")
     @RequestMapping("/{id}/role")
     @ResponseBody
     public Response<UserVo> bindRole(@PathVariable Long id, Long roleId){

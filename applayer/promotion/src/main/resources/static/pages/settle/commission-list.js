@@ -101,6 +101,7 @@ $(function() {
 	// 搜索
 	$('#search-btn').on('click', function(){
 		var formDataArr = $("#search-form").serializeArray();
+
 		for(var i = 0; i < formDataArr.length; i++) {
 			var name = formDataArr[i].name;
 			var value = formDataArr[i].value;
