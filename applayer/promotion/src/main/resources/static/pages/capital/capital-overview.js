@@ -25,7 +25,7 @@ $(function() {
         		var account = jsonResult.result;
         		$("#balance").html(account.availableBalance);
         	} else {
-        		parent.layer.msg(jsonResult.message);
+        		layer.msg(jsonResult.message);
         	}
         }
     });

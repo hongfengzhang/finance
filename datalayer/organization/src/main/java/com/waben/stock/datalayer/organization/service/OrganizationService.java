@@ -218,7 +218,7 @@ public class OrganizationService {
         TreeNode root = new TreeNode();
         root.setId(0L);
         root.setLevel(0);
-        root.setName("根节点");
+        root.setName("所有机构");
         root.setOpen(true);
         root.setPid(-1L);
         result.add(root);
