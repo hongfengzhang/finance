@@ -60,4 +60,5 @@ public enum StockOptionTradeState implements CommonalityEnum {
 		this.state = state;
 	}
 
+
 }

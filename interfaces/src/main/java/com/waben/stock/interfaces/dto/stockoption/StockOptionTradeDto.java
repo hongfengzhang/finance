@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
@@ -113,6 +114,10 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	 * 对应的线下期权交易信息
 	 */
 	private OfflineStockOptionTradeDto offlineTradeDto;
+	/**
+	 * 对应的线下期权交易状态
+	 */
+	private OfflineStockOptionTradeState status;
 
 	public Long getId() {
 		return id;
@@ -329,5 +334,13 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	@Override
 	public int compareTo(StockOptionTradeDto o) {
 		return 0;
+	}
+
+	public OfflineStockOptionTradeState getStatus() {
+		return status;
+	}
+
+	public void setStatus(OfflineStockOptionTradeState status) {
+		this.status = status;
 	}
 }
