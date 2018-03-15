@@ -7,7 +7,7 @@ public class TestBCrypt {
 	
 	public static void testMain(String[] args) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		System.out.println(encoder.encode("12345678n"));
+		System.out.println(encoder.encode("123456"));
 	}
 	
 	@Test

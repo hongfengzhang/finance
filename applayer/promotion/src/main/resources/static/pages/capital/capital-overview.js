@@ -38,7 +38,7 @@ $(function() {
 		searchData.page = (draw - 1);
 		searchData.size = 10;
 		$.ajax({
-            type: "GET",
+            type: "POST",
             url: "/promotion/orgflow/pages",
             contentType: "application/x-www-form-urlencoded;charset=UTF-8",
             dataType: "json",

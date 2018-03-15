@@ -18,7 +18,6 @@ public class AccountCredentials extends User implements Serializable {
     private List<MenuDto> menus;
     private Long role;
     private Object security;
-
     public AccountCredentials(String username, String password, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, authorities);
     }
