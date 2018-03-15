@@ -41,4 +41,7 @@ public interface PermissionInterface {
 
     @RequestMapping(value = "/role/{role}", method = RequestMethod.GET)
     Response<List<PermissionDto>> fetchByRole(@PathVariable("role") Long role);
+
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    Response<List<PermissionDto>> fetchPermissions();
 }

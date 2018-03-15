@@ -51,5 +51,10 @@ public class PermissionReferenceFallback implements PermissionReference {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
+    @Override
+    public Response<List<PermissionDto>> fetchPermissions() {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 
 }
