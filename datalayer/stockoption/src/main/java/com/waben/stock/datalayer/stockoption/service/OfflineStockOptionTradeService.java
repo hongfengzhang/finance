@@ -11,6 +11,9 @@ import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.util.JacksonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ConstantException;
 import org.springframework.stereotype.Service;
@@ -26,10 +29,12 @@ public class OfflineStockOptionTradeService {
     private OfflineStockOptionTradeDao offlineStockOptionTradeDao;
     @Autowired
     private StockOptionTradeDao stockOptionTradeDao;
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Transactional
     public OfflineStockOptionTrade save(OfflineStockOptionTrade offlineStockOptionTrade) {
         StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(offlineStockOptionTrade.getId());
+        logger.info("用户申购信息：{}",JacksonUtil.encode(stockOptionTrade));
         //组装线下交易信息
         offlineStockOptionTrade.setId(null);
         offlineStockOptionTrade.setState(OfflineStockOptionTradeState.TURNOVER);
@@ -47,6 +52,7 @@ public class OfflineStockOptionTradeService {
         offlineStockOptionTrade.setExpireTime(calendar.getTime());
         //将线下交易信息添加到数据库
         OfflineStockOptionTrade result = offlineStockOptionTradeDao.create(offlineStockOptionTrade);
+        logger.info("添加线下交易信息结果：{}", JacksonUtil.encode(result));
         //修改申购交易信息
         stockOptionTrade.setOfflineTrade(result);
         stockOptionTradeDao.update(stockOptionTrade);
