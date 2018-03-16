@@ -6,19 +6,19 @@ package com.waben.stock.interfaces.constants;
  */
 public class ExceptionConstant {
 
-	// 系统内部异常
-	public static final String NETFLIX_CIRCUIT_EXCEPTION = "1000";
-	public static final String UNKNOW_EXCEPTION = "1001";
-	public static final String DATETIME_ERROR = "1002";
-	public static final String DATANOTFOUND_EXCEPTION = "1003";
-	public static final String ARGUMENT_EXCEPTION = "1004";
+    // 系统内部异常
+    public static final String NETFLIX_CIRCUIT_EXCEPTION = "1000";
+    public static final String UNKNOW_EXCEPTION = "1001";
+    public static final String DATETIME_ERROR = "1002";
+    public static final String DATANOTFOUND_EXCEPTION = "1003";
+    public static final String ARGUMENT_EXCEPTION = "1004";
 
-	// 发送短信失败
-	public static final String SENDMESSAGE_FAILED_EXCEPTION = "1005";
-	// 短信发送间隔时间太短
-	public static final String SENDMESSAGE_INTERVAL_TOOSHORT_EXCEPTION = "1006";
-	// 验证码错误或者验证码已过期
-	public static final String VERIFICATIONCODE_INVALID_EXCEPTION = "1007";
+    // 发送短信失败
+    public static final String SENDMESSAGE_FAILED_EXCEPTION = "1005";
+    // 短信发送间隔时间太短
+    public static final String SENDMESSAGE_INTERVAL_TOOSHORT_EXCEPTION = "1006";
+    // 验证码错误或者验证码已过期
+    public static final String VERIFICATIONCODE_INVALID_EXCEPTION = "1007";
 
 	// 发布人服务异常
 	// 该手机号已被注册
@@ -52,17 +52,17 @@ public class ExceptionConstant {
 	// 信息输入有误
 	public static final String BANKCARDINFO_WRONG_EXCEPTION = "2015";
 
-	/* 业务异常 */
-	// 系统管理业务异常
-	// 菜单服务异常
-	public static final String MENU_SERVICE_EXCEPTION = "3001";
-	// 权限服务异常
-	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "3002";
-	// 员工服务异常
-	public static final String STAFF_NOT_FOUND_EXCEPTION = "3003";
-	// 角色服务异常
-	public static final String ROLE_NOT_FOUND_EXCEPTION = "3004";
-	public static final String PERMISSION_NOT_FOUND_EXCEPTION = "3005";
+    /* 业务异常 */
+    // 系统管理业务异常
+    // 菜单服务异常
+    public static final String MENU_SERVICE_EXCEPTION = "3001";
+    // 权限服务异常
+    public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "3002";
+    // 员工服务异常
+    public static final String STAFF_NOT_FOUND_EXCEPTION = "3003";
+    // 角色服务异常
+    public static final String ROLE_NOT_FOUND_EXCEPTION = "3004";
+    public static final String PERMISSION_NOT_FOUND_EXCEPTION = "3005";
 
 	// 点买服务、股票异常
 	// 账户可用余额不足
@@ -158,8 +158,7 @@ public class ExceptionConstant {
 	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
 	// 该只股票暂时没有机构报价，请更换一只股票
 	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
-
-
-
+	//期权询价结果不存在
+    public static final String INQUIRY_RESULT_NOT_FOUND = "9006";
 
 }

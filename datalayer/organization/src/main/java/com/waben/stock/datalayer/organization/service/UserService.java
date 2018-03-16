@@ -14,14 +14,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.entity.User;
+import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.repository.UserDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
@@ -40,7 +39,10 @@ public class UserService {
 
 	@Autowired
 	private UserDao userDao;
-	
+
+	@Autowired
+	private OrganizationDao organizationDao;
+
 	public User getUserInfo(Long id) {
 		return userDao.retrieve(id);
 	}
@@ -103,12 +105,13 @@ public class UserService {
 					predicateList.add(idQuery);
 				}
 				if(!StringUtils.isEmpty(query.getOrganization())) {
-//					Join<User, Organization> join = root.join("org", JoinType.LEFT);
-//					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrganization()));
 					Organization organization = new Organization();
 					organization.setId(query.getOrganization());
 					Predicate organizationQuery = criteriaBuilder.equal(root.get("org").as(Organization.class), organization);
 					predicateList.add(organizationQuery);
+					organization.setParent(organization);
+					List<Organization> organizations = organizationDao.listByParent(organization);
+					predicateList.add(root.get("org").in(organizations));
 				}
 				if(!StringUtils.isEmpty(query.getUserName())) {
 					Predicate userNameQuery = criteriaBuilder.equal(root.get("username").as(String.class), query

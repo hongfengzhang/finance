@@ -880,7 +880,7 @@
                                     $.ajax({
                                         url: "../inquiryresult/add",
                                         type: 'get',
-                                        data: {"id": $("#id").val(),"rightMoneyRatio":$("[name='rightMoneyRatio']").val(),"org.id":$("[name='orgId']").val()},
+                                        data: {"trade.id": $("#id").val(),"rightMoneyRatio":$("[name='rightMoneyRatio']").val(),"org.id":$("[name='orgId']").val()},
                                         success: function (response) {
                                             if (response.code = '200') {
                                                 $table.bootstrapTable('refresh');
