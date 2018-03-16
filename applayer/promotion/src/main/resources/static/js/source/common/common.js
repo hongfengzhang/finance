@@ -2,6 +2,7 @@
  * 公共方法，公共操作
  */
 $(function() {
+	// 退出登陆
 	$("#logout-link").on("click", function(){
 		$.ajax({
             type: "GET",
@@ -12,7 +13,7 @@ $(function() {
             }
         });
 	});
-
+	// 初始化菜单
     $.ajax({
         type: "GET",
         url: "/promotion/menus",
@@ -39,7 +40,6 @@ $(function() {
             });
         }
     });
-    
     // 获取当前登陆的用户信息
 	$.ajax({
         type: "GET",
@@ -50,6 +50,18 @@ $(function() {
         	window.currentOrgId = jsonResult.result.org.id;
         	window.currentOrgCode = jsonResult.result.org.code;
         	window.level = jsonResult.result.org.level;
+        	$("#nickname").html(jsonResult.result.nickname);
         }
     });
+	// 弹出修改登陆密码页面
+	$('#modify-pwd-link').on('click', function(){
+		var index = layer.open({
+			type: 2,
+			title: '修改登陆密码',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['500px', '310px'],
+			content: '/promotion/pages/user/modify-password.html',
+		});
+	});
 });

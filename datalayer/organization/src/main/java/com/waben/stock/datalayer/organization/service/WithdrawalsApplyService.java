@@ -27,6 +27,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.WithdrawalsApplyState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
  * 提现申请 Service
@@ -57,8 +58,10 @@ public class WithdrawalsApplyService {
 		withdrawalsApply.setApplyTime(date);
 		withdrawalsApply.setUpdateTime(date);
 		withdrawalsApply.setState(WithdrawalsApplyState.TOBEAUDITED);
-		accountService.withdrawals(org, withdrawalsApply.getAmount());
-		return withdrawalsApplyDao.create(withdrawalsApply);
+		withdrawalsApply.setApplyNo(UniqueCodeGenerator.generateWithdrawalsNo());
+		withdrawalsApplyDao.create(withdrawalsApply);
+		accountService.withdrawals(org, withdrawalsApply.getAmount(), withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
+		return withdrawalsApply;
 	}
 
 	public Page<WithdrawalsApply> pagesByQuery(final WithdrawalsApplyQuery query) {
@@ -100,7 +103,7 @@ public class WithdrawalsApplyService {
 			withdrawalsApply.setState(state);
 			withdrawalsApply.setUpdateTime(new Date());
 			if (state == WithdrawalsApplyState.REFUSED || state == WithdrawalsApplyState.FAILURE) {
-				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount());
+				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount(), withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
 			}
 			withdrawalsApplyDao.update(withdrawalsApply);
 		}

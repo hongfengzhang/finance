@@ -49,6 +49,8 @@ public class ExceptionConstant {
 	public static final String PUBLISHERID_NOTMATCH_EXCEPTION = "2013";
 	// 银行卡信息有误，请检查输入的信息是否正确
 	public static final String BANKCARDINFO_NOTMATCH_EXCEPTION = "2014";
+	// 信息输入有误
+	public static final String BANKCARDINFO_WRONG_EXCEPTION = "2015";
 
 	/* 业务异常 */
 	// 系统管理业务异常
@@ -142,6 +144,8 @@ public class ExceptionConstant {
 	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8004";
 	//机构用户不存在
 	public static final String ORGANIZATION_USER_EXIST = "8005";
+	// 原始登陆密码不匹配
+	public static final String ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION = "8006";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍

@@ -32,7 +32,7 @@ $(function() {
 		searchData.size = 10;
 		$.ajax({
             type: "POST",
-            url: "/promotion/orgflow/pages",
+            url: "/promotion/orgflow/pagesWithTradeInfo",
             contentType: "application/json",
             dataType: "json",
             data: JSON.stringify(searchData),
@@ -56,19 +56,22 @@ $(function() {
 			$(id).dataTable().fnDraw();
 		} else {
 			var columns = [
-	            { "data": "flowNo", "title": "流水号", orderable: false},
+	            { "data": "resourceTradeNo", "title": "交易单号", orderable: false},
+	            { "data": "publisherId", "title": "发布人ID", orderable: false},
+	            { "data": "stockCode", "title": "股票代码", orderable: false},
+	            { "data": "stockName", "title": "股票名称", orderable: false},
 	            { "data": "amount", "title": "金额", orderable: false},
 	            { "data": "state", "title": "资金流水类型", orderable: false, "render": function(data, type, full, meta) {
 	                var type = full.type;
-	                if(type == "ServiceFeeAssign") {
+	                if(type == "1") {
 	                	return "信息服务费分成";
-	                } else if(type == "DeferredChargesAssign") {
+	                } else if(type == "2") {
 	                	return "递延费分成";
-	                } else if(type == "RightMoneyAssign") {
+	                } else if(type == "3") {
 	                	return "期权权利金收益分成";
-	                } else if(type == "Withdrawals") {
+	                } else if(type == "4") {
 	                	return "提现";
-	                } else if(type == "WithdrawalsFailure") {
+	                } else if(type == "5") {
 	                	return "提现失败退回";
 	                } else {
 	                	return type;
@@ -149,7 +152,7 @@ $(function() {
 			title: '设置提现密码',
 			shadeClose: true,
 			shade: 0.8,
-			area: ['500px', '280px'],
+			area: ['500px', '310px'],
 			content: 'payment-password.html',
 		});
 	});

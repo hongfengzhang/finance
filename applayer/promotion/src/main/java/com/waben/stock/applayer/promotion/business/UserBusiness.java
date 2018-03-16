@@ -1,19 +1,20 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.interfaces.dto.manage.RoleDto;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
-import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.waben.stock.applayer.promotion.reference.organization.UserReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 
 @Service
 public class UserBusiness {
@@ -80,4 +81,16 @@ public class UserBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+    
+    public void modifyPassword(Long userId, String oldPassword, String password) {
+    	Response<Void> response = userReference.modifyPassword(userId, oldPassword, password);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return;
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+    
 }

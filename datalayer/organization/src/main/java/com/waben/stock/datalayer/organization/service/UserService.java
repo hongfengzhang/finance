@@ -1,29 +1,33 @@
 package com.waben.stock.datalayer.organization.service;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.datalayer.organization.entity.Organization;
-import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
-import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.enums.OrganizationState;
-import com.waben.stock.interfaces.exception.DataNotFoundException;
-import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.waben.stock.datalayer.organization.entity.User;
-import com.waben.stock.datalayer.organization.repository.UserDao;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.*;
+import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.datalayer.organization.entity.User;
+import com.waben.stock.datalayer.organization.repository.UserDao;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.exception.DataNotFoundException;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 /**
  * 机构管理用户 Service
@@ -36,7 +40,7 @@ public class UserService {
 
 	@Autowired
 	private UserDao userDao;
-
+	
 	public User getUserInfo(Long id) {
 		return userDao.retrieve(id);
 	}
@@ -128,5 +132,17 @@ public class UserService {
 		User user = userDao.retrieve(id);
 		user.setRole(role);
 		return userDao.update(user);
+	}
+
+	public void modifyPassword(Long userId, String oldPassword, String password) {
+		User user = userDao.retrieve(userId);
+		if (user == null) {
+			throw new DataNotFoundException();
+		}
+		if (!PasswordCrypt.match(oldPassword, user.getPassword())) {
+			throw new ServiceException(ExceptionConstant.ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION);
+		}
+		user.setPassword(PasswordCrypt.crypt(password));
+		userDao.update(user);
 	}
 }

@@ -65,18 +65,26 @@ public class BindCardBusiness {
 			init();
 		}
 		// 判断是哪个银行
-		BankInfoDto bankInfoDto = cnapsBusiness.findBankInfo(bindCard.getBankCard());
-		if (bankInfoDto == null) {
-			throw new ServiceException(ExceptionConstant.BANKCARD_NOTRECOGNITION_EXCEPTION);
+		try {
+			BankInfoDto bankInfoDto = cnapsBusiness.findBankInfo(bindCard.getBankCard());
+			if (bankInfoDto == null) {
+				throw new ServiceException(ExceptionConstant.BANKCARD_NOTRECOGNITION_EXCEPTION);
+			}
+			bindCard.setBankName(bankInfoDto.getBankName());
+			bindCard.setBankCode(bankInfoDto.getBankCode());
+			// 执行绑卡操作
+			Response<BindCardDto> response = service.addBankCard(bindCard);
+			if ("200".equals(response.getCode())) {
+				return response.getResult();
+			}
+			throw new ServiceException(response.getCode());
+		} catch(ServiceException ex) {
+			String type = ex.getType();
+			if(type.equals("2014") || type.equals("1003")) {
+				throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION); 
+			}
+			throw ex;
 		}
-		bindCard.setBankName(bankInfoDto.getBankName());
-		bindCard.setBankCode(bankInfoDto.getBankCode());
-		// 执行绑卡操作
-		Response<BindCardDto> response = service.addBankCard(bindCard);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
-		}
-		throw new ServiceException(response.getCode());
 	}
 
 	public Long remove(Long id) {
@@ -88,11 +96,30 @@ public class BindCardBusiness {
 	}
 
 	public BindCardDto revision(BindCardDto bindCard) {
-		Response<BindCardDto> response = service.modifyBankCard(bindCard);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
+		if (bankIconMap.size() == 0) {
+			init();
 		}
-		throw new ServiceException(response.getCode());
+		// 判断是哪个银行
+		try {
+			BankInfoDto bankInfoDto = cnapsBusiness.findBankInfo(bindCard.getBankCard());
+			if (bankInfoDto == null) {
+				throw new ServiceException(ExceptionConstant.BANKCARD_NOTRECOGNITION_EXCEPTION);
+			}
+			bindCard.setBankName(bankInfoDto.getBankName());
+			bindCard.setBankCode(bankInfoDto.getBankCode());
+			// 执行绑卡操作
+			Response<BindCardDto> response = service.modifyBankCard(bindCard);
+			if ("200".equals(response.getCode())) {
+				return response.getResult();
+			}
+			throw new ServiceException(response.getCode());
+		} catch(ServiceException ex) {
+			String type = ex.getType();
+			if(type.equals("2014") || type.equals("1003")) {
+				throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION); 
+			}
+			throw ex;
+		}
 	}
 
 	public List<BindCardDto> listsByOrgId(Long orgId) {
@@ -121,7 +148,7 @@ public class BindCardBusiness {
                     && bindCardDto.getResourceId().longValue() == orgId.longValue()) {
                 return this.revision(bindCardDto);
             } else {
-                throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "错误的绑卡信息!");
+                throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION);
             }
         } else {
             bindCardDto.setResourceType(BindCardResourceType.ORGANIZATION);

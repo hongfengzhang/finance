@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.promotion.reference.organization.OrganizationAccountFlowReference;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowWithTradeInfoDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -22,6 +23,14 @@ public class OrganizationAccountFlowBusiness {
 
     public PageInfo<OrganizationAccountFlowDto> pages(OrganizationAccountFlowQuery query) {
         Response<PageInfo<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.pages(query);
+        if ("200".equals(response.getCode())) {
+            return response.getResult();
+        }
+        throw new ServiceException(response.getCode());
+    }
+    
+    public PageInfo<OrganizationAccountFlowWithTradeInfoDto> pagesWithTradeInfo(OrganizationAccountFlowQuery query) {
+        Response<PageInfo<OrganizationAccountFlowWithTradeInfoDto>> response = organizationAccountFlowReference.pagesWithTradeInfo(query);
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }
