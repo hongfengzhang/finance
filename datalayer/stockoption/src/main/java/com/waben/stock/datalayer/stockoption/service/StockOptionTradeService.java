@@ -150,12 +150,11 @@ public class StockOptionTradeService {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicatesList = new ArrayList<>();
 				if (query.getBeginTime() != null) {
-					predicatesList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("buyingTime").as(Date.class),
+					predicatesList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("updateTime").as(Date.class),
 							query.getBeginTime()));
 				}
 				if (query.getEndTime() != null) {
-					predicatesList
-							.add(criteriaBuilder.lessThan(root.get("buyingTime").as(Date.class), query.getEndTime()));
+					predicatesList.add(criteriaBuilder.lessThan(root.get("updateTimegit").as(Date.class), query.getEndTime()));
 				}
 				if (!StringUtils.isEmpty(query.getPublisherPhone())) {
 					Predicate publisherPhoneQuery = criteriaBuilder.equal(root.get("publisherPhone").as(Long.class),
