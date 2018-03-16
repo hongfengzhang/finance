@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.stockoption.repository.impl;
 
 import com.waben.stock.datalayer.stockoption.entity.InquiryResult;
+import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.InquiryResultDao;
 import com.waben.stock.datalayer.stockoption.repository.impl.jpa.InquiryResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,14 @@ import java.util.List;
 public class InquiryResultDaoImpl implements InquiryResultDao {
     @Autowired
     private InquiryResultRepository inquiryResultRepository;
+
+    @Override
+    public InquiryResult retrieveByTrade(Long trade) {
+        StockOptionTrade tradeInfo = new StockOptionTrade();
+        tradeInfo.setId(trade);
+        return inquiryResultRepository.findByTrade(tradeInfo);
+    }
+
     @Override
     public InquiryResult create(InquiryResult inquiryResult) {
         return inquiryResultRepository.save(inquiryResult);
@@ -42,7 +51,7 @@ public class InquiryResultDaoImpl implements InquiryResultDao {
 
     @Override
     public Page<InquiryResult> page(Specification<InquiryResult> specification, Pageable pageable) {
-        return inquiryResultRepository.findAll(specification,pageable);
+        return inquiryResultRepository.findAll(specification, pageable);
     }
 
     @Override
