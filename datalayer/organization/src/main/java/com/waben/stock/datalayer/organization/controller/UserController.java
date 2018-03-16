@@ -45,6 +45,7 @@ public class UserController implements UserInterface {
     @Autowired
     public UserService userService;
 
+
     @Override
     @ApiOperation(value = "根据id获取机构管理用户")
     public Response<UserDto> fetchById(@PathVariable Long id) {
