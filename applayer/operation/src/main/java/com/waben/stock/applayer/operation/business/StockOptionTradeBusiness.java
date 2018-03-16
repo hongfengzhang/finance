@@ -5,6 +5,7 @@ import com.waben.stock.applayer.operation.service.stockoption.StockOptionTradeSe
 import com.waben.stock.applayer.operation.warpper.mail.ExcelUtil;
 import com.waben.stock.applayer.operation.warpper.mail.*;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -35,6 +36,8 @@ public class StockOptionTradeBusiness {
     @Autowired
     @Qualifier("stockoptionorgFeignService")
     private StockOptionOrgService stockOptionOrgService;
+    @Autowired
+    private InquiryResultBusiness inquiryResultBusiness;
     @Value("${mail.contextPath}")
     private String contextPath;
 
@@ -69,26 +72,35 @@ public class StockOptionTradeBusiness {
     }
 
     public Boolean purchase(Long id) {
-        Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
-        StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
-        Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
-        StockOptionOrgDto org = lists.getResult().get(0);
-        QuotoPurchase quotoPurchase = new QuotoPurchase();
-        quotoPurchase.setUnderlying(result.getStockName());
-        quotoPurchase.setCode(result.getStockCode());
-        quotoPurchase.setStrike("100%");
-        quotoPurchase.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        Date date = new Date();
-        quotoPurchase.setBegin(date);
-        //到期时间
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH,result.getCycle()-1);
-        quotoPurchase.setEnd(calendar.getTime());
-        quotoPurchase.setRate(String.valueOf(result.getRightMoneyRatio()));
-        MailMessage mailMessage = new PurchaseMessage();
-        mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
-        return true;
+        Response<StockOptionTradeDto> response = stockOptionTradeService.fetchById(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            StockOptionTradeDto result = response.getResult();
+            Long tradeId = result.getId();
+            InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(tradeId);
+            Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
+            StockOptionOrgDto org = lists.getResult().get(0);
+            QuotoPurchase quotoPurchase = new QuotoPurchase();
+            quotoPurchase.setUnderlying(result.getStockName());
+            quotoPurchase.setCode(result.getStockCode());
+            quotoPurchase.setStrike("100%");
+            quotoPurchase.setAmount(String.valueOf(result.getNominalAmount().intValue()));
+            Date date = new Date();
+            quotoPurchase.setBegin(date);
+            //到期时间
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.DAY_OF_MONTH,result.getCycle()-1);
+            quotoPurchase.setEnd(calendar.getTime());
+            quotoPurchase.setRate(String.valueOf(inquiryResultDto.getRightMoneyRatio()));
+            MailMessage mailMessage = new PurchaseMessage();
+            mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
+
+            return true;
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
     }
 
     public Boolean exercise(Long id) {

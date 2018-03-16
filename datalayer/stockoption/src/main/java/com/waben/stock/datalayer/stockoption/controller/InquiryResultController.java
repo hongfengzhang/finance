@@ -34,4 +34,10 @@ public class InquiryResultController implements InquiryResultInterface {
         return new Response<>(result);
     }
 
+    @Override
+    public Response<InquiryResultDto> findByTrade(@PathVariable Long trade) {
+        InquiryResult inquiry = inquiryResultService.fetchByTrade(trade);
+        InquiryResultDto result = CopyBeanUtils.copyBeanProperties(InquiryResultDto.class, inquiry, false);
+        return new Response<>(result);
+    }
 }
