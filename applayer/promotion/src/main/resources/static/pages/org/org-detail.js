@@ -135,8 +135,11 @@ $(function() {
                         parent.layer.closeAll();
                         parent.renderTable("#user-list-table");
                     } else {
-                        parent.layer.msg(jsonResult.message);
+                        parent.layer.msg(jsonResult.responseJSON.message)
                     }
+                },
+				error: function (jsonResult) {
+                    parent.layer.msg(jsonResult.responseJSON.message)
                 }
             });
         }
