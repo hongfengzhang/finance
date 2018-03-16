@@ -166,7 +166,7 @@ public class OrganizationController implements OrganizationInterface {
     }
 
     @Override
-    public Response<BindCardDto> saveBindCard(@PathVariable Long orgId, BindCardDto bindCardDto) {
+    public Response<BindCardDto> saveBindCard(@PathVariable Long orgId, @RequestBody BindCardDto bindCardDto) {
         return new Response<>(organizationService.bindCard(orgId, bindCardDto));
     }
 

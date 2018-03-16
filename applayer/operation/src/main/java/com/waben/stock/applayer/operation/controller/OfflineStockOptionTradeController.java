@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.OfflineStockOptionTradeBusiness;
+import com.waben.stock.applayer.operation.business.StockOptionTradeBusiness;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -21,6 +22,9 @@ public class OfflineStockOptionTradeController {
     @Autowired
     private OfflineStockOptionTradeBusiness offlineStockOptionTradeBusiness;
     Logger logger = LoggerFactory.getLogger(getClass());
+    @Autowired
+    private StockOptionTradeBusiness stockOptionTradeBusiness;
+
     @GetMapping("/add")
     @ResponseBody
     public Response<OfflineStockOptionTradeVo> add(OfflineStockOptionTradeVo offlineStockOptionTradeVo) {
@@ -34,7 +38,8 @@ public class OfflineStockOptionTradeController {
     @RequestMapping("/settlement/{sellingPrice}/{id}")
     @ResponseBody
     public Response<OfflineStockOptionTradeVo> settlement(@PathVariable Long id, @PathVariable BigDecimal sellingPrice) {
-        OfflineStockOptionTradeVo result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeVo.class, offlineStockOptionTradeBusiness.settlement(id,sellingPrice), false);
+        OfflineStockOptionTradeVo result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeVo.class, offlineStockOptionTradeBusiness.settlement(id, sellingPrice), false);
+        stockOptionTradeBusiness.modify(id);
         return new Response<>(result);
     }
 }

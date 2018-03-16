@@ -13,7 +13,7 @@ public class TestBCrypt {
 	@Test
 	public void test() {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-		System.out.println(encoder.encode("aaa123"));
+		System.out.println(encoder.encode("123456"));
 		System.out.println(encoder.matches("aaa123", "$2a$10$CCBeqGvfjmlOgX5UFVzrw.qhn6QwPqv7sT.ZT.DghrwFxMMtocD1a"));
 	}
 	

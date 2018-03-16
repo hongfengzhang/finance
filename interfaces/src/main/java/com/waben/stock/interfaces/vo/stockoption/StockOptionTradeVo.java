@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.vo.stockoption;
 
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
@@ -107,6 +108,7 @@ public class StockOptionTradeVo{
 	 */
 	private OfflineStockOptionTradeVo offlineTrade;
 
+	private OfflineStockOptionTradeState status;
 	public Long getId() {
 		return id;
 	}
@@ -290,5 +292,13 @@ public class StockOptionTradeVo{
 
 	public void setOfflineTrade(OfflineStockOptionTradeVo offlineTrade) {
 		this.offlineTrade = offlineTrade;
+	}
+
+	public OfflineStockOptionTradeState getStatus() {
+		return status;
+	}
+
+	public void setStatus(OfflineStockOptionTradeState status) {
+		this.status = status;
 	}
 }

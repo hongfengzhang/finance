@@ -13,8 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import com.waben.stock.datalayer.stockoption.entity.enumconverter.OfflineStockOptionTradeStateConverter;
 import com.waben.stock.datalayer.stockoption.entity.enumconverter.StockOptionBuyingTypeConverter;
 import com.waben.stock.datalayer.stockoption.entity.enumconverter.StockOptionTradeStateConverter;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 
@@ -132,6 +134,12 @@ public class StockOptionTrade {
 	@OneToOne
 	@JoinColumn(name = "offline_trade")
 	private OfflineStockOptionTrade offlineTrade;
+
+	/**
+	 * 线下期权交易状态
+	 * */
+	@Convert(converter = OfflineStockOptionTradeStateConverter.class)
+	private OfflineStockOptionTradeState status;
 
 	public Long getId() {
 		return id;
@@ -333,4 +341,11 @@ public class StockOptionTrade {
 		this.cycleMonth = cycleMonth;
 	}
 
+	public OfflineStockOptionTradeState getStatus() {
+		return status;
+	}
+
+	public void setStatus(OfflineStockOptionTradeState status) {
+		this.status = status;
+	}
 }

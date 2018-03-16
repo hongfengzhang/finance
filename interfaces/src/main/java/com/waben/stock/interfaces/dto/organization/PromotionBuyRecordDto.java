@@ -10,6 +10,10 @@ public class PromotionBuyRecordDto {
 	 */
 	private Long buyRecordId;
 	/**
+	 * 交易单号
+	 */
+	private String tradeNo;
+	/**
 	 * 发布人ID
 	 */
 	private Long publisherId;
@@ -195,9 +199,9 @@ public class PromotionBuyRecordDto {
 	}
 
 	public BigDecimal getProfitOrLoss() {
-		if(profitOrLoss == null) {
-			if(buyingPrice != null) {
-				if(sellingPrice != null) {
+		if (profitOrLoss == null) {
+			if (buyingPrice != null) {
+				if (sellingPrice != null) {
 					return sellingPrice.subtract(buyingPrice).multiply(new BigDecimal(numberOfStrand));
 				} else {
 					return lastPrice.subtract(buyingPrice).multiply(new BigDecimal(numberOfStrand));
@@ -241,6 +245,14 @@ public class PromotionBuyRecordDto {
 
 	public void setWindControlType(Integer windControlType) {
 		this.windControlType = windControlType;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
 
 }

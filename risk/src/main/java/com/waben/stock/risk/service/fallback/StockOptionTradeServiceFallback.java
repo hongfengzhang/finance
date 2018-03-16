@@ -62,4 +62,9 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService 
     public Response<List<StockOptionTradeDto>> stockOptionsWithState(Integer state) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<StockOptionTradeDto> modify(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

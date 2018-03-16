@@ -30,7 +30,8 @@ public class PermissionServiceFallback implements PermissionService {
 
     @Override
     public Response<PermissionDto> modify(PermissionDto requestDto) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);    }
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
     @Override
     public void delete(Long id) {
@@ -39,11 +40,14 @@ public class PermissionServiceFallback implements PermissionService {
 
     @Override
     public Response<PermissionDto> add(PermissionDto requestDto) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);   }
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 
     @Override
     public Response<List<PermissionDto>> fetchPermissionsByVariety(Long variety) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);   }
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 
     @Override
     public Response<List<PermissionDto>> fetchPermissions() {

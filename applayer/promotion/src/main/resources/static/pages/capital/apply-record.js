@@ -80,8 +80,10 @@ $(function() {
 	                } else {
 	                	return state;
 	                }
-	            }},
-	            { "data": "id", "width": "200", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+	            }}
+	        ];
+			if(window.level > 1) {
+				columns.push({ "data": "id", "width": "200", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
 	            	var id = full.id;
 	            	var state = full.state;
 	            	if(state == "TOBEAUDITED") {
@@ -89,8 +91,8 @@ $(function() {
 	            	} else {
 	            		return "";
 	            	}
-	            }}
-	        ];
+	            }});
+			}
 			$(id).dataTable({
 				"responsive": true,
 		        "processing": true,

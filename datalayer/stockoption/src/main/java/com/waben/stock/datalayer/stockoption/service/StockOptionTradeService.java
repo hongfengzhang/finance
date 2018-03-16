@@ -15,6 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -244,6 +245,38 @@ public class StockOptionTradeService {
 		// 申购信息
 		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
 		stockOptionTrade.setUpdateTime(new Date());
+		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
+		return result;
+	}
+//	TURNOVER("1", "持仓中"),
+//	APPLYRIGHT("2", "申请行权"),
+//	INSETTLEMENT("3", "结算中"),
+//	SETTLEMENTED("4", "已结算"),
+//	INQUIRY("5","已询价"),
+//	PURCHASE("6","已申购");
+	@Transactional
+	public StockOptionTrade modify(Long id){
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		OfflineStockOptionTradeState next = OfflineStockOptionTradeState.INQUIRY;
+		if(stockOptionTrade.getStatus()==null){
+			next =OfflineStockOptionTradeState.INQUIRY;
+		}
+		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.INQUIRY){
+			next =OfflineStockOptionTradeState.PURCHASE;
+		}
+		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.PURCHASE){
+			next =OfflineStockOptionTradeState.TURNOVER;
+		}
+		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.TURNOVER){
+			next =OfflineStockOptionTradeState.APPLYRIGHT;
+		}
+		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.APPLYRIGHT){
+			next =OfflineStockOptionTradeState.INSETTLEMENT;
+		}
+		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.INSETTLEMENT){
+			next =OfflineStockOptionTradeState.SETTLEMENTED;
+		}
+		stockOptionTrade.setStatus(next);
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
 		return result;
 	}
