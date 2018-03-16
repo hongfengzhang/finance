@@ -54,6 +54,9 @@ public interface StockOptionTradeInterface {
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Response<StockOptionTradeDto> fetchById(@PathVariable("id") Long id);
 
+	@RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
+	Response<StockOptionTradeDto> modify(@PathVariable("id") Long id);
+
     @RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
     Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id);
 

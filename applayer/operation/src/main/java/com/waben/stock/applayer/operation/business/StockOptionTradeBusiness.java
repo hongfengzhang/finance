@@ -156,4 +156,12 @@ public class StockOptionTradeBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+
+    public StockOptionTradeDto modify(Long id){
+        Response<StockOptionTradeDto> response  =   stockOptionTradeService.modify(id);
+        if ("200".equals(response.getCode())){
+            return response.getResult();
+        }
+        throw new ServiceException(response.getCode());
+    }
 }
