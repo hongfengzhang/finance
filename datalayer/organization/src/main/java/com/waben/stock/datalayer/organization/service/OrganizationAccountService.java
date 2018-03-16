@@ -152,7 +152,9 @@ public class OrganizationAccountService {
 		account.setBalance(new BigDecimal("0"));
 		account.setFrozenCapital(new BigDecimal("0"));
 		account.setOrg(org);
-		account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
+		if(paymentPassword != null) {
+			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
+		}
 		account.setUpdateTime(new Date());
 		return organizationAccountDao.create(account);
 	}
