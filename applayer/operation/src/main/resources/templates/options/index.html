@@ -348,7 +348,7 @@
                                         <td><p>机构报价:</p></td>
                                         <td>
                                             <input name="rightMoneyRatio" type="text" class="form-control "
-                                                   placeholder="机构报价"/>
+                                                   placeholder="机构报价（请填写0-1之间的小数）"/>
                                         </td>
                                     </tr>
                                 </table>
@@ -377,14 +377,14 @@
                                         <td><p>申购实际报价:</p></td>
                                         <td>
                                             <input name="realRightMoneyRatio" type="text" class="form-control "
-                                                   placeholder="申购实际报价"/>
+                                                   placeholder="申购实际报价（请填写0-1之间的小数）"/>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td><p>实际成交价格:</p></td>
                                         <td>
                                             <input name="realBuyingPrice" type="text" class="form-control "
-                                                   placeholder="实际成交价格"/>
+                                                   placeholder="实际成交价格（请输入数字）"/>
                                         </td>
                                     </tr>
                                 </table>
@@ -663,39 +663,19 @@
                                     success: function (response) {
                                         if (response.code = '200') {
                                             $table.bootstrapTable('refresh');
-                                            alert("询价成功");
+                                            alert("询价邮件发送成功");
                                         } else {
                                             alert(response.message);
                                         }
                                     },
                                     error: function () {
-                                        alert("询价失败")
+                                        alert("询价邮件发送失败")
                                     }
                                 })
                                 modal.find('#inquiry').attr("onclick",params[0]);
                             })
-//                            $(location).prop('href', "../option/inquiry/" + row.id);
                         },
                         'click .subscription': function (e, value, row, index) {
-//                            $('#subscriptionaction').click(function () {
-//                                $('#subscriptionclose').click();
-//                                $.ajax({
-//                                    url: "../option/purchase/" + row.id,
-//                                    type: 'post',
-//                                    success: function (response) {
-//                                        if (response.code = '200') {
-//                                            $table.bootstrapTable('refresh');
-//                                            alert("申购成功");
-//                                        } else {
-//                                            alert("申购失败");
-//                                        }
-//                                    },
-//                                    error: function () {
-//                                        alert("申购失败");
-//                                    }
-//                                })
-//                                modal.find('#subscription').attr("onclick",params[0]);
-//                            })
                             swal({
                                 title: "你确定吗?",
                                 text: "申购后,数据将不可被恢复!",
@@ -713,42 +693,21 @@
                                         success: function (response) {
                                             if (response.code = '200') {
                                                 $table.bootstrapTable('refresh');
-                                                swal("申购成功！");
+                                                swal("申购邮件发送成功！");
                                             } else {
-                                                swal("申购失败！");
+                                                swal("申购邮件发送失败！");
                                             }
                                         },
                                         error: function () {
-                                            swal("申购失败！");
+                                            swal("申购邮件发送失败！");
                                         }
                                     })
                                 } else {
                                     swal("已取消申购！");
                                 }
                             });
-//                            $(location).prop('href', "../stock/edit/" + row.id);
                         },
                         'click .subscriptionsuccess': function (e, value, row, index) {
-//                            $('#subscriptionsuccessaction').click(function () {
-//                                $('#subscriptionsuccessclose').click();
-//                                $.ajax({
-//                                    url: "../option/success/" + row.id,
-//                                    type: 'post',
-//                                    success: function (response) {
-//                                        if (response.code = '200') {
-//                                            $table.bootstrapTable('refresh');
-//                                            alert("订单状态修改成功");
-//                                        } else {
-//                                            alert(response.message);
-//                                        }
-//                                    },
-//                                    error: function () {
-//                                        alert("订单修改失败")
-//                                    }
-//                                })
-//                                modal.find('#subscriptionsuccess').attr("onclick",params[0]);
-//                            })
-//                            $(location).prop('href', "../stock/edit/" + row.id);
                             swal({
                                 title: "你确定吗?",
                                 text: "申购成功后,数据将不可被恢复!",
@@ -813,26 +772,6 @@
                             });
                         },
                         'click .exerciseright': function (e, value, row, index) {
-//                            $('#exerciserightaction').click(function () {
-//                                $('#exerciserightclose').click();
-//                                $.ajax({
-//                                    url: "../option/exercise/" + row.id,
-//                                    type: 'post',
-//                                    success: function (response) {
-//                                        if (response.code = '200') {
-//                                            $table.bootstrapTable('refresh');
-//                                            alert("行权成功");
-//                                        } else {
-//                                            alert(response.message);
-//                                        }
-//                                    },
-//                                    error: function () {
-//                                        alert("行权失败");
-//                                    }
-//                                })
-//                                modal.find('#exerciseright').attr("onclick",params[0]);
-//                            })
-//                            $(location).prop('href', "../stock/edit/" + row.id);
                             swal({
                                 title: "你确定吗?",
                                 text: "行权后,数据将不可被恢复!",
@@ -911,7 +850,6 @@
                                 })
                                 modal.find('#settlement').attr("onclick",params[0]);
                             })
-//                            $(location).prop('href', "../option/inquiry/" + row.id);
                         },
                         'click .detail': function (e, value, row, index) {
                             $("[name='detailStock']").val(row.stockName);
@@ -930,16 +868,19 @@
                         },
                         'click .orgdetail': function (e, value, row, index) {
                             $("#id").val(row.id);
+                            $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio);
+                            $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
+                            $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
                             $('#orgPrice').click(function () {
-                                $('#orgClose').click();
                                 var patt = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;
                                 if(!patt.test($("[name='rightMoneyRatio']").val())) {
                                     alert("数据格式错误，请重新输入！");
                                 }else {
+                                    $('#orgClose').click();
                                     $.ajax({
                                         url: "../inquiryresult/add",
                                         type: 'get',
-                                        data: {"trade.id": row.id,"rightMoneyRatio":$("[name='rightMoneyRatio']").val(),"org.id":$("[name='orgId']").val()},
+                                        data: {"id": $("#id").val(),"rightMoneyRatio":$("[name='rightMoneyRatio']").val(),"org.id":$("[name='orgId']").val()},
                                         success: function (response) {
                                             if (response.code = '200') {
                                                 $table.bootstrapTable('refresh');
@@ -947,7 +888,6 @@
                                             } else {
                                                 alert(response.message);
                                             }
-                                            $("[name='rightMoneyRatio']").val('');
                                         },
                                         error: function () {
                                             alert("保存失败")
@@ -958,48 +898,59 @@
                                 modal.find('#orgdetail').attr("onclick",params[0]);
                             })
                             $('#realPrice').click(function () {
-                                $('#orgClose').click();
-                                $.ajax({
-                                    url: "../offlinestockoptiontrade/add",
-                                    type: 'get',
-                                    data: {"id": row.id,"rightMoneyRatio":$("[name='realRightMoneyRatio']").val(),"buyingPrice":$("[name='realBuyingPrice']").val(),"org.id":$("[name='orgId']").val()},
-                                    success: function (response) {
-                                        if (response.code = '200') {
-                                            $table.bootstrapTable('refresh');
-                                            alert("保存成功");
-                                        } else {
-                                            alert(response.message);
+                                var pattRaito = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;
+                                var pattPrice = /^[1-9]{1}\d*(\.\d{1,2})?$/
+                                if(!pattRaito.test($("[name='realRightMoneyRatio']").val())||!pattPrice.test($("[name='realBuyingPrice']").val())) {
+                                    alert("数据格式错误，请重新输入！");
+                                }else {
+                                    $('#orgClose').click();
+                                    $.ajax({
+                                        url: "../offlinestockoptiontrade/add",
+                                        type: 'get',
+                                        data: {"id": $("#id").val(),"rightMoneyRatio":$("[name='realRightMoneyRatio']").val(),"buyingPrice":$("[name='realBuyingPrice']").val(),"org.id":$("[name='orgId']").val()},
+                                        success: function (response) {
+                                            if (response.code = '200') {
+                                                $table.bootstrapTable('refresh');
+                                                alert("保存成功");
+                                            } else {
+                                                alert(response.message);
+                                            }
+                                            $("[name='realRightMoneyRatio']").val('');
+                                            $("[name='realBuyingPrice']").val('');
+                                        },
+                                        error: function () {
+                                            alert("保存失败")
+                                            $("[name='realRightMoneyRatio']").val('');
+                                            $("[name='realBuyingPrice']").val('');
                                         }
-                                        $("[name='realRightMoneyRatio']").val('');
-                                        $("[name='realBuyingPrice']").val('');
-                                    },
-                                    error: function () {
-                                        alert("保存失败")
-                                        $("[name='realRightMoneyRatio']").val('');
-                                        $("[name='realBuyingPrice']").val('');
-                                    }
-                                })
+                                    })
+                                }
                                 modal.find('#orgdetail').attr("onclick",params[0]);
                             })
                             $('#orgSettle').click(function () {
-                                $('#orgClose').click();
-                                $.ajax({
-                                    url: "../offlinestockoptiontrade/settlement/" + $("[name='sellingPrice']").val()+"/"+row.id,
-                                    type: 'get',
-                                    success: function (response) {
-                                        if (response.code = '200') {
-                                            $table.bootstrapTable('refresh');
-                                            alert("保存成功");
-                                        } else {
-                                            alert(response.message);
+                                var pattPrice = /^[1-9]{1}\d*(\.\d{1,2})?$/;
+                                if(!pattPrice.test($("[name='sellingPrice']").val())) {
+                                    alert("数据格式错误，请重新输入！");
+                                }else {
+                                    $('#orgClose').click();
+                                    $.ajax({
+                                        url: "../offlinestockoptiontrade/settlement/" + $("[name='sellingPrice']").val()+"/"+$("#id").val(),
+                                        type: 'get',
+                                        success: function (response) {
+                                            if (response.code = '200') {
+                                                $table.bootstrapTable('refresh');
+                                                alert("保存成功");
+                                            } else {
+                                                alert(response.message);
+                                            }
+                                            $("[name='sellingPrice']").val('');
+                                        },
+                                        error: function () {
+                                            alert("保存失败")
+                                            $("[name='sellingPrice']").val('');
                                         }
-                                        $("[name='sellingPrice']").val('');
-                                    },
-                                    error: function () {
-                                        alert("保存失败")
-                                        $("[name='sellingPrice']").val('');
-                                    }
-                                })
+                                    })
+                                }
                                 modal.find('#orgdetail').attr("onclick",params[0]);
                             })
                             modal.find('#orgdetail').attr("onclick",params[0]);
