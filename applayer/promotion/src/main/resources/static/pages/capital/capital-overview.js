@@ -4,18 +4,7 @@
 window.renderTable = function(){};
 window.refreshAccount = function(){};
 $(function() {
-	// 获取当前登陆的用户信息
-	$.ajax({
-        type: "GET",
-        url: "/promotion/user/getCurrent",
-        dataType: "json",
-        async: false,
-        success: function (jsonResult) {
-        	window.currentOrgId = jsonResult.result.org.id;
-        	window.currentOrgCode = jsonResult.result.org.code;
-        	window.searchData = { orgId: currentOrgId }
-        }
-    });
+	window.searchData = { orgId: currentOrgId }
 	// 获取机构账户信息
 	refreshAccount = function() {
 		$.ajax({
