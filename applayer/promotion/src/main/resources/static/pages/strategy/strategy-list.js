@@ -50,6 +50,7 @@ $(function() {
 		} else {
 			var columns = [
 	            { "data": "buyRecordId", "title": "策略ID", orderable: false},
+	            { "data": "tradeNo", "title": "交易单号", orderable: false},
 	            { "data": "publisherId", "title": "用户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
 	            { "data": "stockCode", "title": "股票代码/名称", orderable: false, "render": function(data, type, full, meta) {

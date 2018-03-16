@@ -19,9 +19,6 @@ import com.waben.stock.interfaces.warpper.converter.UniversalEnumConverterFactor
 @Configuration
 public class WebConfigurer extends WebMvcConfigurerAdapter {
 
-//	@Value("${custom.outer.resources}")
-//	private String outerResources;
-
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		super.addFormatters(registry);
@@ -38,20 +35,6 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
-
-//		File dir = new File(outerResources);
-//		if (dir.exists()) {
-//			File[] files = dir.listFiles();
-//			if (files != null && files.length > 0) {
-//				for (File file : files) {
-//					if (file.isDirectory()) {
-//						String fileName = file.getName();
-//						String fileDir = "file:" + outerResources + fileName + "/";
-//						registry.addResourceHandler("/" + fileName + "/**").addResourceLocations(fileDir);
-//					}
-//				}
-//			}
-//		}
 		super.addResourceHandlers(registry);
 	}
 

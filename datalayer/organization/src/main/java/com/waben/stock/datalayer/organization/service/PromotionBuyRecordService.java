@@ -61,10 +61,10 @@ public class PromotionBuyRecordService {
 		String sql = String
 				.format("select t1.id, t1.publisher_id, t1.publisher_phone, t1.stock_code, t1.stock_name, t1.strategy_type_id, "
 						+ "t3.name as strategy_type_name, t1.apply_amount, t1.number_of_strand, t1.state, t1.wind_control_type, "
-						+ "t1.buying_time, t1.buying_price, t1.selling_price, t1.selling_time, t4.code as org_code, t4.name as org_name from buy_record t1 "
+						+ "t1.buying_time, t1.buying_price, t1.selling_price, t1.selling_time, t4.code as org_code, t4.name as org_name, t1.trade_no from buy_record t1 "
 						+ "INNER JOIN p_organization_publisher t2 on t1.publisher_id=t2.publisher_id and t2.org_code like '%s%%' "
 						+ "LEFT JOIN strategy_type t3 on t1.strategy_type_id=t3.id "
-						+ "LEFT JOIN p_organization t4 on t4.code=t2.org_code where 1=1 %s %s %s %s limit " + query.getPage() * query.getSize() + "," + query.getSize(), query.getCurrentOrgCode(), buyRecordIdCondition, stateCondition, publisherPhoneCondition, orgCodeCondition);
+						+ "LEFT JOIN p_organization t4 on t4.code=t2.org_code where 1=1 %s %s %s %s order by t1.buying_time desc limit " + query.getPage() * query.getSize() + "," + query.getSize(), query.getCurrentOrgCode(), buyRecordIdCondition, stateCondition, publisherPhoneCondition, orgCodeCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setBuyRecordId", new Class<?>[] { Long.class }));
@@ -84,6 +84,7 @@ public class PromotionBuyRecordService {
 		setMethodMap.put(new Integer(14), new MethodDesc("setSellingTime", new Class<?>[] { Date.class }));
 		setMethodMap.put(new Integer(15), new MethodDesc("setOrgCode", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(16), new MethodDesc("setOrgName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(17), new MethodDesc("setTradeNo", new Class<?>[] { String.class }));
 		List<PromotionBuyRecordDto> content = dynamicQuerySqlDao.execute(PromotionBuyRecordDto.class, sql, setMethodMap);
 		BigInteger totalElements = dynamicQuerySqlDao.executeComputeSql(countSql);
 		// 获取股票的最新价

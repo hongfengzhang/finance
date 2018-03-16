@@ -67,7 +67,7 @@ public class OrganizationAccountFlowService {
                 if (query.getResourceType() != null) {
                     predicates.add(criteriaBuilder.equal(root.get("resourceType").as(Long.class), query.getResourceType()));
                 }
-                if (query.getFlowType() != null && !"0".equals(query.getFlowType())) {
+                if (query.getFlowType() != null && query.getFlowType().longValue() != 0) {
                     predicates.add(criteriaBuilder.equal(root.get("type").as(Long.class), query.getFlowType()));
                 }
                 if (query.getStartTime() != null) {

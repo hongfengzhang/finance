@@ -2,6 +2,7 @@
  * 资金概览
  */
 window.renderTable = function(){};
+window.refreshAccount = function(){};
 $(function() {
 	// 获取当前登陆的用户信息
 	$.ajax({
@@ -16,19 +17,22 @@ $(function() {
         }
     });
 	// 获取机构账户信息
-	$.ajax({
-        type: "GET",
-        url: "/promotion/organizationAccount/orgId/" + searchData.orgId,
-        dataType: "json",
-        success: function (jsonResult) {
-        	if("200" == jsonResult.code) {
-        		var account = jsonResult.result;
-        		$("#balance").html(account.availableBalance);
-        	} else {
-        		layer.msg(jsonResult.message);
-        	}
-        }
-    });
+	refreshAccount = function() {
+		$.ajax({
+	        type: "GET",
+	        url: "/promotion/organizationAccount/orgId/" + searchData.orgId,
+	        dataType: "json",
+	        success: function (jsonResult) {
+	        	if("200" == jsonResult.code) {
+	        		var account = jsonResult.result;
+	        		$("#balance").html(account.availableBalance);
+	        	} else {
+	        		layer.msg(jsonResult.message);
+	        	}
+	        }
+	    });
+	}
+	refreshAccount();
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -40,9 +44,9 @@ $(function() {
 		$.ajax({
             type: "POST",
             url: "/promotion/orgflow/pages",
-            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            contentType: "application/json",
             dataType: "json",
-            data: $.param(searchData),
+            data: JSON.stringify(searchData),
             success: function (jsonResult) {
             	var dtData = {
             		"draw": draw,

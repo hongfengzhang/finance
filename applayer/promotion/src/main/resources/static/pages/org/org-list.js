@@ -47,7 +47,7 @@ $(function() {
 		} else {
 			var columns = [
 	            { "data": "id", "title": "机构ID", orderable: false},
-	            { "data": "code", "title": "结构代码", orderable: false},
+	            { "data": "code", "title": "机构代码", orderable: false},
 	            { "data": "name", "title": "机构名称", orderable: false},
 	            { "data": "level", "title": "机构类型", orderable: false, "render": function(data, type, full, meta) {
 	                var level = full.level;
@@ -173,24 +173,19 @@ $(function() {
 		currentOrgId = $(this).attr("orgid");
 		layer.open({
 			type: 2,
-			title: '查看机构详情',
+			title: '设置分成比例',
 			shadeClose: true,
 			shade: 0.8,
 			area: ['60%', '80%'],
 			content: 'benefit-config.html',
 		});
 	});
-	// 弹出页面_权限分配
-	$('#org-list-table').on('click', 'a.authority', function(){
-		currentOrgId = $(this).attr("orgid");
-		alert('权限分配');
-	});
 	// 弹出页面_查看详情
 	$('#org-list-table').on('click', 'a.detail', function(){
 		currentOrgId = $(this).attr("orgid");
 		layer.open({
 			type: 2,
-			title: '设置分成比例',
+			title: '查看机构详情',
 			shadeClose: true,
 			shade: 0.8,
 			area: ['60%', '80%'],

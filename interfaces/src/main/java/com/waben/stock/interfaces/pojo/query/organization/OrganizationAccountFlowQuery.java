@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.pojo.query.organization;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
 public class OrganizationAccountFlowQuery extends PageAndSortQuery {
@@ -10,10 +11,10 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 	private String flowNo;
 	private Long orgId;
 	private Long flowType;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
+	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date endTime;
-
-
 
 	public Long getResourceType() {
 		return resourceType;
