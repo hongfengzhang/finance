@@ -4,24 +4,12 @@
 window.renderTable = function(){};
 window.currentOrgId = "17";
 $(function() {
-	// 获取当前登陆的用户信息
-	$.ajax({
-        type: "GET",
-        url: "/promotion/user/getCurrent",
-        dataType: "json",
-        async: false,
-        success: function (jsonResult) {
-        	window.currentOrgId = jsonResult.result.org.id;
-        	window.level = jsonResult.result.org.level;
-        	window.currentOrgCode = jsonResult.result.org.code;
-        	window.searchData = { 
-        		states: ['3', '4', '5']
-        	}
-        	if(level > 1) {
-        		searchData.orgId = window.currentOrgId;
-        	}
-        }
-    });
+	window.searchData = { 
+		states: ['3', '4', '5']
+	}
+	if(level > 1) {
+		searchData.orgId = window.currentOrgId;
+	}
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;

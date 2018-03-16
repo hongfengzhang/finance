@@ -61,9 +61,9 @@ public class PromotionStockOptionTradeService {
 		String sql = String.format(
 				"select t1.id, t1.publisher_id, t1.publisher_phone, t1.stock_code, t1.stock_name, t1.cycle_name, "
 						+ "t1.state, t1.nominal_amount, t1.right_money, t1.buying_time, t1.buying_price, t1.selling_price, "
-						+ "t1.selling_time, t1.profit, t3.code as org_code, t3.name as org_name from stock_option_trade t1 "
+						+ "t1.selling_time, t1.profit, t3.code as org_code, t3.name as org_name, t1.trade_no from stock_option_trade t1 "
 						+ "INNER JOIN p_organization_publisher t2 on t1.publisher_id=t2.publisher_id and t2.org_code like '%s%%' "
-						+ "LEFT JOIN p_organization t3 on t3.code=t2.org_code, t1.trade_no where 1=1 %s %s %s %s order by t1.buying_time desc limit "
+						+ "LEFT JOIN p_organization t3 on t3.code=t2.org_code where 1=1 %s %s %s %s order by t1.buying_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
 				query.getCurrentOrgCode(), tradeIdCondition, stateCondition, publisherPhoneCondition, orgCodeCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
@@ -84,7 +84,7 @@ public class PromotionStockOptionTradeService {
 		setMethodMap.put(new Integer(13), new MethodDesc("setProfit", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(14), new MethodDesc("setOrgCode", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(15), new MethodDesc("setOrgName", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(17), new MethodDesc("setTradeNo", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(16), new MethodDesc("setTradeNo", new Class<?>[] { String.class }));
 		List<PromotionStockOptionTradeDto> content = dynamicQuerySqlDao.execute(PromotionStockOptionTradeDto.class, sql,
 				setMethodMap);
 		BigInteger totalElements = dynamicQuerySqlDao.executeComputeSql(countSql);
