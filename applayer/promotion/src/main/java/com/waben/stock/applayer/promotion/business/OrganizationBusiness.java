@@ -2,25 +2,20 @@ package com.waben.stock.applayer.promotion.business;
 
 import java.util.List;
 
-import com.waben.stock.applayer.promotion.reference.manage.RoleReference;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.promotion.reference.organization.OrganizationReference;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
-import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
-
-import javax.management.relation.Role;
 
 /**
  * 机构 Business
@@ -91,22 +86,6 @@ public class OrganizationBusiness {
 
     public OrganizationDto modifyName(Long id, String name) {
         Response<OrganizationDto> response = reference.modifyName(id, name);
-        if ("200".equals(response.getCode())) {
-            return response.getResult();
-        }
-        throw new ServiceException(response.getCode());
-    }
-
-    public BindCardDto fetchBindCard(Long orgId) {
-        Response<BindCardDto> response = reference.fetchBindCard(orgId);
-        if ("200".equals(response.getCode())) {
-            return response.getResult();
-        }
-        throw new ServiceException(response.getCode());
-    }
-
-    public BindCardDto saveBindCard(Long orgId, BindCardDto bindCardDto) {
-        Response<BindCardDto> response = reference.saveBindCard(orgId, bindCardDto);
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }

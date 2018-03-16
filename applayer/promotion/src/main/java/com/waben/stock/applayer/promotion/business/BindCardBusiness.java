@@ -1,4 +1,4 @@
-package com.waben.stock.datalayer.organization.business;
+package com.waben.stock.applayer.promotion.business;
 
 import java.util.HashMap;
 import java.util.List;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.organization.reference.BindCardReference;
+import com.waben.stock.applayer.promotion.reference.publisher.BindCardReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
@@ -107,4 +107,27 @@ public class BindCardBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
+	public BindCardDto getOrgBindCard(Long orgId) {
+        List<BindCardDto> bindCardList = this.listsByOrgId(orgId);
+        if (bindCardList != null && bindCardList.size() > 0) {
+            return bindCardList.get(bindCardList.size() - 1);
+        }
+        return null;
+    }
+
+    public BindCardDto orgBindCard(Long orgId, BindCardDto bindCardDto) {
+        if (bindCardDto.getId() != null && bindCardDto.getId() > 0) {
+            if (bindCardDto.getResourceType() == BindCardResourceType.ORGANIZATION
+                    && bindCardDto.getResourceId().longValue() == orgId.longValue()) {
+                return this.revision(bindCardDto);
+            } else {
+                throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "错误的绑卡信息!");
+            }
+        } else {
+            bindCardDto.setResourceType(BindCardResourceType.ORGANIZATION);
+            bindCardDto.setResourceId(orgId);
+            return this.save(bindCardDto);
+        }
+    }
+
 }
