@@ -58,10 +58,10 @@ $(function() {
 	            { "data": "createTime", "title": "创建时间", orderable: false},
 	            { "data": "id", "width": "230", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
 	            	var id = full.id;
-	            	if(id == searchData.loginOrgId) {
-	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>详情</a>";
-	            	} else {
+	            	if(window.level == 1) {
 	            		return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            	} else {
+	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>详情</a>";
 	            	}
 	            }}
 	        ];

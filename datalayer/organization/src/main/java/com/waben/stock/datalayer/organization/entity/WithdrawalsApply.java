@@ -34,6 +34,10 @@ public class WithdrawalsApply {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 申请单号
+	 */
+	private String applyNo;
+	/**
 	 * 申请时间
 	 */
 	private Date applyTime;
@@ -118,24 +122,32 @@ public class WithdrawalsApply {
 	}
 
 	public Long getOrgId() {
-		if(org != null) {
+		if (org != null) {
 			return org.getId();
 		}
 		return orgId;
 	}
 
 	public String getOrgCode() {
-		if(org != null) {
+		if (org != null) {
 			return org.getCode();
 		}
 		return orgCode;
 	}
 
 	public String getOrgName() {
-		if(org != null) {
+		if (org != null) {
 			return org.getName();
 		}
 		return orgName;
+	}
+
+	public String getApplyNo() {
+		return applyNo;
+	}
+
+	public void setApplyNo(String applyNo) {
+		this.applyNo = applyNo;
 	}
 
 }

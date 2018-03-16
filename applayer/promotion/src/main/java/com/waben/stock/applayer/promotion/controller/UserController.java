@@ -96,4 +96,13 @@ public class UserController {
 		return new Response<>(result);
 	}
     
+    @RequestMapping(value = "/password", method = RequestMethod.PUT)
+    @ResponseBody
+	public Response<Void> modifyPassword(String oldPassword, String password) {
+    	AccountCredentials details = SecurityAccount.current();
+    	UserDto result = (UserDto)details.getSecurity();
+    	userBusiness.modifyPassword(result.getId(), oldPassword, password);
+		return new Response<>();
+	}
+    
 }

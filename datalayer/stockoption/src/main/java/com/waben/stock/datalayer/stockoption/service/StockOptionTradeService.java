@@ -235,6 +235,8 @@ public class StockOptionTradeService {
 		}
 		trade.setUpdateTime(new Date());
 		StockOptionTrade result = stockOptionTradeDao.update(trade);
+		// 站外消息推送
+		sendOutsideMessage(result);
 		return result;
 	}
 
@@ -245,14 +247,11 @@ public class StockOptionTradeService {
 		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
 		stockOptionTrade.setUpdateTime(new Date());
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
+		// 站外消息推送
+		sendOutsideMessage(result);
 		return result;
 	}
-//	TURNOVER("1", "持仓中"),
-//	APPLYRIGHT("2", "申请行权"),
-//	INSETTLEMENT("3", "结算中"),
-//	SETTLEMENTED("4", "已结算"),
-//	INQUIRY("5","已询价"),
-//	PURCHASE("6","已申购");
+
 	@Transactional
 	public StockOptionTrade modify(Long id){
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
@@ -290,6 +289,8 @@ public class StockOptionTradeService {
 		stockOptionTradeDao.update(trade);
 		// 退回权利金
 		accountBusiness.returnRightMoney(trade.getPublisherId(), trade.getId(), trade.getRightMoney());
+		// 站外消息推送
+		sendOutsideMessage(trade);
 		return trade;
 	}
 
@@ -313,8 +314,8 @@ public class StockOptionTradeService {
 				extras.put("type", OutsideMessageType.OPTION_WAITCONFIRMED.getIndex());
 				break;
 			case FAILURE:
-				message.setContent(String.format("您申购的“%s %s”申购失败", trade.getStockName(), trade.getStockCode()));
-				extras.put("content", String.format("您申购的“<span id=\"stock\">%s %s</span>”申购失败", trade.getStockName(),
+				message.setContent(String.format("您申购的“%s %s”申购失败，权利金已退回至您的账户，请留意账户余额", trade.getStockName(), trade.getStockCode()));
+				extras.put("content", String.format("您申购的“<span id=\"stock\">%s %s</span>”申购失败，权利金已退回至您的账户，请留意账户余额", trade.getStockName(),
 						trade.getStockCode()));
 				extras.put("type", OutsideMessageType.OPTION_FAILURE.getIndex());
 				break;
@@ -324,7 +325,7 @@ public class StockOptionTradeService {
 						trade.getStockName(), trade.getStockCode()));
 				extras.put("type", OutsideMessageType.OPTION_TURNOVER.getIndex());
 				break;
-			case APPLYRIGHT:
+			case INSETTLEMENT:
 				message.setContent(String.format("您申购的“%s %s”已进入“结算中”状态", trade.getStockName(), trade.getStockCode()));
 				extras.put("content", String.format("您申购的“<span id=\"stock\">%s %s</span>”已进入“结算中”状态",
 						trade.getStockName(), trade.getStockCode()));

@@ -19,6 +19,10 @@ public class WithdrawalsApplyDto {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 申请单号
+	 */
+	private String applyNo;
+	/**
 	 * 申请时间
 	 */
 	private Date applyTime;
@@ -105,6 +109,14 @@ public class WithdrawalsApplyDto {
 
 	public void setOrgName(String orgName) {
 		this.orgName = orgName;
+	}
+
+	public String getApplyNo() {
+		return applyNo;
+	}
+
+	public void setApplyNo(String applyNo) {
+		this.applyNo = applyNo;
 	}
 
 }

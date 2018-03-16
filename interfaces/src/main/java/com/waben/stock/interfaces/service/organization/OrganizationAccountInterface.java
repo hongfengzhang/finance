@@ -1,15 +1,18 @@
 package com.waben.stock.interfaces.service.organization;
 
-import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import java.util.List;
+
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.pojo.Response;
-
-import java.util.List;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 
 public interface OrganizationAccountInterface {
 
