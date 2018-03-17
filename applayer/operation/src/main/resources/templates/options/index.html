@@ -490,7 +490,7 @@
                     var queryMap = {
                         publisherPhone: $("input[name='publisherPhone']").val(),
                         tradeNo: $("input[name='tradeNo']").val(),
-                        state: $("[name='state']").val() == '0' ? "" : $("[name='state']").val(),
+                        state: $("[name='state']").val() == '0' ? null : $("[name='state']").val(),
                         beginTime: $("[name='beginTime']").val(),
                         endTime: $("[name='endTime']").val(),
                     }

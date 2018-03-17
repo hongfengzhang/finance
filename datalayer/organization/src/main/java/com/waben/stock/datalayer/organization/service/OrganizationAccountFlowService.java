@@ -61,6 +61,14 @@ public class OrganizationAccountFlowService {
                     Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
                     predicates.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrgId()));
                 }
+                if (!StringUtils.isBlank(query.getOrgName())){
+                    Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
+                    predicates.add(criteriaBuilder.equal(join.get("name"), query.getOrgName()));
+                }
+                if (!StringUtils.isBlank(query.getOrgCode())){
+                    Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
+                    predicates.add(criteriaBuilder.equal(join.get("code"), query.getOrgCode()));
+                }
                 if (!StringUtils.isBlank(query.getFlowNo())) {
                     predicates.add(criteriaBuilder.equal(root.get("flowNo"), query.getFlowNo()));
                 }
@@ -77,6 +85,14 @@ public class OrganizationAccountFlowService {
                 if (query.getEndTime() != null) {
                     predicates.add(criteriaBuilder.lessThan(root.get("occurrenceTime").as(Date.class),
                             query.getEndTime()));
+                }
+                if (query.getOrgIds()!= null && query.getOrgIds().size() > 0) {
+                    Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
+                    CriteriaBuilder.In<Object> in = criteriaBuilder.in(join.get("id"));
+                    for (Long id : query.getOrgIds()) {
+                        in.value(id);
+                    }
+                    predicates.add(in);
                 }
                 criteriaQuery.orderBy(criteriaBuilder.desc(root.get("occurrenceTime").as(Date.class)));
                 criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));

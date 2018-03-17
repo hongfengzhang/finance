@@ -1,9 +1,9 @@
-package com.waben.stock.applayer.tactics.payapi.shande.utils;
+package com.waben.stock.applayer.tactics.payapi.paypal.utils;
 
 import org.apache.commons.httpclient.*;
 import org.apache.commons.httpclient.methods.PostMethod;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Map;
 
 public class FormRequest {
@@ -49,7 +49,7 @@ public class FormRequest {
             } else {
                 System.err.println("当前文件值为空");
             }
-            return location;
+            return "";
         } else {
             try {
                 str = postMethod.getResponseBodyAsString();

@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.promotion.controller;
 
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +17,9 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 
 import io.swagger.annotations.Api;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @RestController
@@ -40,7 +44,15 @@ public class OrganizationAccountFlowController {
     //渠道分成报表
     @RequestMapping(value = "/childpages", method = RequestMethod.POST)
     public Response<PageInfo<OrganizationAccountFlowDto>> childPages(@RequestBody OrganizationAccountFlowQuery query) {
-        return new Response<>(organizationAccountFlowBusiness.pages(query));
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(userDto.getOrg().getId());
+        List<Long> orgIds = new ArrayList<>();
+        for (OrganizationDto orgDto:organizationDtos){
+            orgIds.add(orgDto.getId());
+        }
+        query.setOrgIds(orgIds);
+        PageInfo<OrganizationAccountFlowDto> organizationAccountFlowDtoPageInfo = organizationAccountFlowBusiness.pages(query);
+        return new Response<>(organizationAccountFlowDtoPageInfo);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.pojo.query.organization;
 
 import java.util.Date;
+import java.util.List;
 
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
@@ -12,7 +13,9 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 	private Long flowType;
 	private Date startTime;
 	private Date endTime;
-
+	private String orgName;
+	private String orgCode;
+	private List<Long> orgIds;
 
 
 	public Long getResourceType() {
@@ -63,4 +66,27 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 		this.endTime = endTime;
 	}
 
+	public List<Long> getOrgIds() {
+		return orgIds;
+	}
+
+	public void setOrgIds(List<Long> orgIds) {
+		this.orgIds = orgIds;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getOrgCode() {
+		return orgCode;
+	}
+
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode;
+	}
 }
