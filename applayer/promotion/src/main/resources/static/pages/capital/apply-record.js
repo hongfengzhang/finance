@@ -4,24 +4,12 @@
 window.renderTable = function(){};
 window.currentOrgId = "17";
 $(function() {
-	// 获取当前登陆的用户信息
-	$.ajax({
-        type: "GET",
-        url: "/promotion/user/getCurrent",
-        dataType: "json",
-        async: false,
-        success: function (jsonResult) {
-        	window.currentOrgId = jsonResult.result.org.id;
-        	window.level = jsonResult.result.org.level;
-        	window.currentOrgCode = jsonResult.result.org.code;
-        	window.searchData = { 
-        		states: ['1', '2']
-        	}
-        	if(level > 1) {
-        		searchData.orgId = window.currentOrgId;
-        	}
-        }
-    });
+	window.searchData = { 
+		states: ['1', '2']
+	}
+	if(level > 1) {
+		searchData.orgId = window.currentOrgId;
+	}
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -80,8 +68,10 @@ $(function() {
 	                } else {
 	                	return state;
 	                }
-	            }},
-	            { "data": "id", "width": "200", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+	            }}
+	        ];
+			if(window.level == 1) {
+				columns.push({ "data": "id", "width": "200", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
 	            	var id = full.id;
 	            	var state = full.state;
 	            	if(state == "TOBEAUDITED") {
@@ -89,8 +79,8 @@ $(function() {
 	            	} else {
 	            		return "";
 	            	}
-	            }}
-	        ];
+	            }});
+			}
 			$(id).dataTable({
 				"responsive": true,
 		        "processing": true,

@@ -73,4 +73,9 @@ public class UserReferenceFallback implements UserReference {
     public Response<UserDto> bindRole(Long user, Long role) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<Void> modifyPassword(Long userId, String oldPassword, String password) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

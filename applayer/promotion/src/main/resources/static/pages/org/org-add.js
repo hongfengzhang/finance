@@ -24,6 +24,14 @@ $(function() {
             	if("200" == jsonResult.code) {
             		parent.renderTable("#org-list-table");
             		parent.layer.closeAll();
+            		var newNode = {
+        				"id": jsonResult.result.id,
+        				"name": jsonResult.result.name,
+        				"level": jsonResult.result.level,
+        				"pid": jsonResult.result.parentId,
+        				"open": false
+        			};
+            		parent.ztreeObj.addNodes(parent.selectedNode, newNode); 
             	} else {
             		parent.layer.msg(jsonResult.message);
             	}

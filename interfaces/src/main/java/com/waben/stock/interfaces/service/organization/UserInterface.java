@@ -1,18 +1,18 @@
 package com.waben.stock.interfaces.service.organization;
 
+import java.util.List;
+
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.RoleQuery;
 import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
-import io.swagger.annotations.ApiOperation;
-import org.apache.catalina.User;
-import org.springframework.data.domain.Page;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-
-import javax.management.Query;
-import java.util.List;
 
 /**
  * @author Created by yuyidi on 2018/3/12.
@@ -54,4 +54,8 @@ public interface UserInterface {
 
     @RequestMapping(value = "/user/{user}/role/{role}", method = RequestMethod.PUT)
     Response<UserDto> bindRole(@PathVariable("user") Long user, @PathVariable("role") Long role);
+    
+    @RequestMapping(value = "/{userId}/password", method = RequestMethod.PUT)
+	Response<Void> modifyPassword(@PathVariable("userId") Long userId, @RequestParam(name = "oldPassword") String oldPassword,
+			@RequestParam(name = "password") String password);
 }

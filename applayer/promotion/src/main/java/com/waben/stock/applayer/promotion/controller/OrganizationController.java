@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.promotion.business.BindCardBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -42,6 +43,9 @@ public class OrganizationController {
 
 	@Autowired
 	public OrganizationBusiness business;
+	
+	@Autowired
+	public BindCardBusiness bindCardBusiness;
 
 	@PreAuthorize("hasRole('ORG_MANAGE')")
 	@RequestMapping(value = "/", method = RequestMethod.POST)
@@ -81,12 +85,12 @@ public class OrganizationController {
 
 	@RequestMapping(value = "/{orgid}/bindcard", method = RequestMethod.GET)
 	public Response<BindCardDto> fetchBindCard(@PathVariable("orgid") Long orgId) {
-		return new Response<>(business.fetchBindCard(orgId));
+		return new Response<>(bindCardBusiness.getOrgBindCard(orgId));
 	}
 
 	@RequestMapping(value = "/{orgid}/bindcard", method = RequestMethod.POST)
 	public Response<BindCardDto> saveBindCard(@PathVariable("orgid") Long orgId, BindCardDto bindCardDto) {
-		return new Response<>(business.saveBindCard(orgId, bindCardDto));
+		return new Response<>(bindCardBusiness.orgBindCard(orgId, bindCardDto));
 	}
 
 }

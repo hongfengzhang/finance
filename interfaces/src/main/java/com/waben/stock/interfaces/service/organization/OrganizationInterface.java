@@ -103,7 +103,7 @@ public interface OrganizationInterface {
 	 * @return 绑卡信息
 	 */
 	@RequestMapping(value = "/{orgId}/bindcard", method = RequestMethod.POST)
-	Response<BindCardDto> saveBindCard(@PathVariable("orgId") Long orgId, BindCardDto bindCardDto);
+	Response<BindCardDto> saveBindCard(@PathVariable("orgId") Long orgId, @RequestBody BindCardDto bindCardDto);
 
 	/**
 			* 获取机构分页数据

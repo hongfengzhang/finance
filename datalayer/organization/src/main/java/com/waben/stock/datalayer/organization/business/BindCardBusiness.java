@@ -106,5 +106,5 @@ public class BindCardBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-
+	
 }

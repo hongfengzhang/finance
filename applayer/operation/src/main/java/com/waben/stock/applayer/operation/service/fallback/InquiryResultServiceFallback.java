@@ -12,4 +12,9 @@ public class InquiryResultServiceFallback implements InquiryResultService{
     public Response<InquiryResultDto> add(InquiryResultDto inquiryResultDto) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<InquiryResultDto> findByTrade(Long trade) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

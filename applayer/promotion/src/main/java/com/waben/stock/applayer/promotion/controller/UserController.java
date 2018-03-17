@@ -37,7 +37,7 @@ public class UserController {
     @Autowired
     private RoleBusiness roleBusiness;
 
-    @PreAuthorize("hasRole('USER_SAVE')")
+//    @PreAuthorize("hasRole('USER_SAVE')")
     @RequestMapping("/save")
     @ResponseBody
     public Response<UserVo> add(UserVo vo){
@@ -57,7 +57,7 @@ public class UserController {
 
 
     @Deprecated
-    @PreAuthorize("hasRole('USER_ROLE_REVISION')")
+//    @PreAuthorize("hasRole('USER_ROLE_REVISION')")
     @RequestMapping("/{id}/role")
     @ResponseBody
     public Response<UserVo> bindRole(@PathVariable Long id, Long roleId){
@@ -94,6 +94,15 @@ public class UserController {
     	UserDto result = (UserDto)details.getSecurity();
     	result.setPassword(null);
 		return new Response<>(result);
+	}
+    
+    @RequestMapping(value = "/password", method = RequestMethod.PUT)
+    @ResponseBody
+	public Response<Void> modifyPassword(String oldPassword, String password) {
+    	AccountCredentials details = SecurityAccount.current();
+    	UserDto result = (UserDto)details.getSecurity();
+    	userBusiness.modifyPassword(result.getId(), oldPassword, password);
+		return new Response<>();
 	}
     
 }

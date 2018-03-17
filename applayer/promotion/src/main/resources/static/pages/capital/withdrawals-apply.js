@@ -43,6 +43,7 @@ $(function() {
             		parent.layer.closeAll();
             		parent.layer.msg("申请已提交");
             		parent.renderTable("#account-flow-table");
+            		parent.refreshAccount();
             	} else {
             		parent.layer.msg(jsonResult.message);
             	}

@@ -11,6 +11,10 @@ public class PromotionStockOptionTradeDto {
 	 */
 	private Long tradeId;
 	/**
+	 * 交易单号
+	 */
+	private String tradeNo;
+	/**
 	 * 发布人ID
 	 */
 	private Long publisherId;
@@ -150,12 +154,11 @@ public class PromotionStockOptionTradeDto {
 	public BigDecimal getProfit() {
 		if (profit == null) {
 			if (buyingPrice != null) {
-				if (sellingPrice != null) {
-					return sellingPrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN)
-							.multiply(nominalAmount).setScale(2, RoundingMode.DOWN);
+				BigDecimal settlePrice = sellingPrice != null ? sellingPrice : lastPrice;
+				if (settlePrice != null && settlePrice.compareTo(buyingPrice) > 0) {
+					return settlePrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN).multiply(nominalAmount).setScale(2, RoundingMode.HALF_UP);
 				} else {
-					return lastPrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN)
-							.multiply(nominalAmount).setScale(2, RoundingMode.DOWN);
+					return BigDecimal.ZERO;
 				}
 			}
 		}
@@ -220,6 +223,14 @@ public class PromotionStockOptionTradeDto {
 
 	public void setRightMoney(BigDecimal rightMoney) {
 		this.rightMoney = rightMoney;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
 
 }

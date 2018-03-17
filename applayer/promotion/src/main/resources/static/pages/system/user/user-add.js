@@ -10,11 +10,14 @@ $(function() {
     });
     // 提交按钮
     $("#submit-btn").on('click', function() {
+        var uPattern = /^[a-zA-Z0-9_-]{4,10}$/;
         var password = $('[name="password"]').val();
         var againPassword = $('[name="again-password"]').val();
         var userName = $('[name="username"]').val();
         var nickName = $('[name="nickname"]').val();
-        if(userName=="") {
+        if (!uPattern.test(userName)||!uPattern.test(nickName)) {
+            alert("用户名或昵称有误，请重新输入！");
+        }else if(userName=="") {
             alert("用户名不能为空！");
         }else if(nickName=="") {
             alert("昵称不能为空");

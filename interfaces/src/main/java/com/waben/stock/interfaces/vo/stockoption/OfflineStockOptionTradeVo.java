@@ -1,7 +1,5 @@
 package com.waben.stock.interfaces.vo.stockoption;
 
-import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
-import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 
 import java.math.BigDecimal;

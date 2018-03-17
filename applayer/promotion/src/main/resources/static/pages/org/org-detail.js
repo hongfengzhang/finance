@@ -31,6 +31,10 @@ $(function() {
         			});
             		$("#name-display").css("display", "");
             		$("#name-modify").css("display", "none");
+            		// 更新树节点名称
+            		var node = parent.ztreeObj.getNodeByParam("id", currentOrgId, null);
+            		node.name = jsonResult.result.name;
+            		parent.ztreeObj.updateNode(node);
             	} else {
             		parent.layer.msg(jsonResult.message);
             	}
@@ -110,11 +114,14 @@ $(function() {
     // 提交按钮
     $("#user-submit-btn").on('click', function() {
     	$("[name='org.id']").val(currentOrgId);
+        var uPattern = /^[a-zA-Z0-9_-]{4,10}$/;
         var password = $('[name="password"]').val();
         var againPassword = $('[name="again-password"]').val();
         var userName = $('[name="username"]').val();
         var nickName = $('[name="nickname"]').val();
-        if(userName=="") {
+        if (!uPattern.test(userName)||!uPattern.test(nickName)) {
+            alert("用户名或昵称有误，请重新输入！");
+        }else if(userName=="") {
             alert("用户名不能为空！");
         }else if(nickName=="") {
             alert("昵称不能为空");
@@ -135,8 +142,11 @@ $(function() {
                         parent.layer.closeAll();
                         parent.renderTable("#user-list-table");
                     } else {
-                        parent.layer.msg(jsonResult.message);
+                        parent.layer.msg(jsonResult.responseJSON.message)
                     }
+                },
+				error: function (jsonResult) {
+                    parent.layer.msg(jsonResult.responseJSON.message)
                 }
             });
         }

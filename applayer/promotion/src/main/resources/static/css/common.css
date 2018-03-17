@@ -11,6 +11,9 @@
 .layui-nav-child a:hover {
 	text-decoration: none;
 }
+.layui-nav-tree a:hover, .layui-nav-tree a:visited {
+	text-decoration: none;
+}
 .layui-nav dl {
 	margin-bottom: 0px;
 }

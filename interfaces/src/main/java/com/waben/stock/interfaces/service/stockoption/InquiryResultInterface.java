@@ -11,4 +11,7 @@ import java.math.BigDecimal;
 public interface InquiryResultInterface {
     @RequestMapping(value = "/add", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<InquiryResultDto> add(@RequestBody InquiryResultDto inquiryResultDto);
+
+    @RequestMapping(value = "/findByTrade/{trade}", method = RequestMethod.GET)
+    Response<InquiryResultDto> findByTrade(@PathVariable("trade") Long trade);
 }

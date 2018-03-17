@@ -109,7 +109,7 @@ public class OrganizationAccountService {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		if (account != null) {
 			String dbOldPaymentPassword = account.getPaymentPassword();
-			if (dbOldPaymentPassword != null && !dbOldPaymentPassword.equals(oldPaymentPassword)) {
+			if (!PasswordCrypt.match(oldPaymentPassword, dbOldPaymentPassword)) {
 				throw new ServiceException(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION);
 			}
 			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
@@ -152,12 +152,14 @@ public class OrganizationAccountService {
 		account.setBalance(new BigDecimal("0"));
 		account.setFrozenCapital(new BigDecimal("0"));
 		account.setOrg(org);
-		account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
+		if(paymentPassword != null) {
+			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
+		}
 		account.setUpdateTime(new Date());
 		return organizationAccountDao.create(account);
 	}
 
-	public synchronized OrganizationAccount withdrawals(Organization org, BigDecimal amount) {
+	public synchronized OrganizationAccount withdrawals(Organization org, BigDecimal amount, Long applyId, String applyNo) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
@@ -168,13 +170,16 @@ public class OrganizationAccountService {
 		flow.setFlowNo(UniqueCodeGenerator.generateFlowNo());
 		flow.setOccurrenceTime(date);
 		flow.setOrg(org);
+		flow.setResourceId(applyId);
+		flow.setResourceType(ResourceType.ORGWITHDRAWALSAPPLY);
+		flow.setResourceTradeNo(applyNo);
 		flow.setType(OrganizationAccountFlowType.Withdrawals);
 		flow.setRemark(OrganizationAccountFlowType.Withdrawals.getType());
 		flowDao.create(flow);
 		return account;
 	}
 
-	public synchronized OrganizationAccount withdrawalsFailure(Organization org, BigDecimal amount) {
+	public synchronized OrganizationAccount withdrawalsFailure(Organization org, BigDecimal amount, Long applyId, String applyNo) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		Date date = new Date();
 		increaseAmount(account, amount, date);
@@ -185,6 +190,9 @@ public class OrganizationAccountService {
 		flow.setFlowNo(UniqueCodeGenerator.generateFlowNo());
 		flow.setOccurrenceTime(date);
 		flow.setOrg(org);
+		flow.setResourceId(applyId);
+		flow.setResourceType(ResourceType.ORGWITHDRAWALSAPPLY);
+		flow.setResourceTradeNo(applyNo);
 		flow.setType(OrganizationAccountFlowType.WithdrawalsFailure);
 		flow.setRemark(OrganizationAccountFlowType.WithdrawalsFailure.getType());
 		flowDao.create(flow);

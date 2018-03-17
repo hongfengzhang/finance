@@ -1,10 +1,12 @@
 package com.waben.stock.applayer.promotion.warpper;
 
-import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
@@ -26,6 +28,23 @@ public class WebConfigurer extends WebMvcConfigurerAdapter {
 		super.addFormatters(registry);
 		registry.addConverterFactory(new UniversalEnumConverterFactory());
 		registry.addConverter(new DateConverter());
+	}
+	
+	@Bean
+	public Converter<String, Date> addNewConvert() {
+		return new Converter<String, Date>() {
+			@Override
+			public Date convert(String source) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date date = null;
+				try {
+					date = sdf.parse((String) source);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				return date;
+			}
+		};
 	}
 
 	@Override

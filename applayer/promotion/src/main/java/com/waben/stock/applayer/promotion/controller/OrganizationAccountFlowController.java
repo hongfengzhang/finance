@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.promotion.business.OrganizationAccountFlowBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowWithTradeInfoDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
@@ -32,14 +33,20 @@ public class OrganizationAccountFlowController {
 
     @Autowired
     public OrganizationBusiness organizationBusiness;
+    
     @RequestMapping(value = "/pages", method = RequestMethod.POST)
     public Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query) {
         UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
         query.setOrgId(userDto.getOrg().getId());
         return new Response<>(organizationAccountFlowBusiness.pages(query));
     }
-
-
+    
+    @RequestMapping(value = "/pagesWithTradeInfo", method = RequestMethod.POST)
+    public Response<PageInfo<OrganizationAccountFlowWithTradeInfoDto>> pagesWithTradeInfo(@RequestBody OrganizationAccountFlowQuery query) {
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        query.setOrgId(userDto.getOrg().getId());
+        return new Response<>(organizationAccountFlowBusiness.pagesWithTradeInfo(query));
+    }
 
     //渠道分成报表
     @RequestMapping(value = "/childpages", method = RequestMethod.POST)

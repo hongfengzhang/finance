@@ -33,7 +33,7 @@ public class RoleController {
     @Autowired
     private OrganizationBusiness organizationBusiness;
 
-    @PreAuthorize("hasAnyAuthority('ROLE_SAVE')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_SAVE')")
     @RequestMapping("/save")
     @ResponseBody
     public Response<RoleVo> add(RoleVo vo){
@@ -45,7 +45,7 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-    @PreAuthorize("hasAnyAuthority('ROLE_REVISION')")
+//    @PreAuthorize("hasAnyAuthority('ROLE_REVISION')")
     @RequestMapping("/modify")
     @ResponseBody
     public Response<RoleVo> modify(RoleVo vo){
@@ -65,7 +65,7 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-    @PreAuthorize("hasRole('ROLE_AUTHORIZE')")
+//    @PreAuthorize("hasRole('ROLE_AUTHORIZE')")
     @RequestMapping("/permission/{id}")
     @ResponseBody
     public Response<RoleVo> addRolePermission(@PathVariable Long id,final Long[] permissionIds){
@@ -102,7 +102,7 @@ public class RoleController {
         return new Response<>(permissionVos);
     }
 
-    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
+//    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
     @RequestMapping("/{id}")
     @ResponseBody
     public Response<RoleVo> fetchById(@PathVariable Long id){

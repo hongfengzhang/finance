@@ -38,6 +38,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION, "不支持的银行卡号");
 		exceptionMap.put(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION, "用户不匹配");
 		exceptionMap.put(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION, "银行卡信息有误，请检查输入的信息是否正确");
+		exceptionMap.put(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION, "信息输入有误");
 
 		exceptionMap.put(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION, "账户可用余额不足");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION, "买入或者卖出前需进行锁定操作");
@@ -81,13 +82,15 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "机构类别不存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND, "机构用户不存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_EXIST, "用户名已存在");
-
 		exceptionMap.put(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION, "原始支付密码不匹配");
+		exceptionMap.put(ExceptionConstant.ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION, "原始登陆密码不匹配");
+		exceptionMap.put(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION, "该发布人已绑定过机构码");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION, "期权交易状态不匹配，不支持该操作");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION, "自主行权发布人不匹配，不支持该操作");
 		exceptionMap.put(ExceptionConstant.USERRIGHT_NOTMATCH_EXCEPTION, "持仓第二天之后才能申请行权");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION, "该只股票暂时没有机构报价，请更换一只股票");
+		exceptionMap.put(ExceptionConstant.INQUIRY_RESULT_NOT_FOUND, "期权询价结果不存在");
 	}
 }

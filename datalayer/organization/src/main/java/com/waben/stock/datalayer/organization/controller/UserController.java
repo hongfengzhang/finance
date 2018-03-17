@@ -45,6 +45,7 @@ public class UserController implements UserInterface {
     @Autowired
     public UserService userService;
 
+
     @Override
     @ApiOperation(value = "根据id获取机构管理用户")
     public Response<UserDto> fetchById(@PathVariable Long id) {
@@ -141,4 +142,10 @@ public class UserController implements UserInterface {
         response.setOrg(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,result.getOrg(),false));
         return new Response<>(response);
     }
+
+	@Override
+	public Response<Void> modifyPassword(@PathVariable Long userId, String oldPassword, String password) {
+		userService.modifyPassword(userId, oldPassword, password);
+		return new Response<>();
+	}
 }

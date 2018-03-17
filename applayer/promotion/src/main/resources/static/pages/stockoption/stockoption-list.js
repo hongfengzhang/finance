@@ -3,18 +3,7 @@
  */
 window.renderTable = function(){};
 $(function() {
-	// 获取当前登陆的用户信息
-	$.ajax({
-        type: "GET",
-        url: "/promotion/user/getCurrent",
-        dataType: "json",
-        async: false,
-        success: function (jsonResult) {
-        	window.currentOrgId = jsonResult.result.org.id;
-        	window.currentOrgCode = jsonResult.result.org.code;
-        	window.searchData = { currentOrgCode: currentOrgCode }
-        }
-    });
+	window.searchData = { currentOrgCode: currentOrgCode }
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -50,6 +39,7 @@ $(function() {
 		} else {
 			var columns = [
 	            { "data": "tradeId", "title": "策略ID", orderable: false},
+	            { "data": "tradeNo", "title": "交易单号", orderable: false},
 	            { "data": "publisherId", "title": "用户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
 	            { "data": "stockCode", "title": "股票", orderable: false, "render": function(data, type, full, meta) {
