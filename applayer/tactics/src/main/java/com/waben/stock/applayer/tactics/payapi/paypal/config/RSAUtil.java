@@ -186,18 +186,4 @@ public class RSAUtil{
         return false;
     }
 
-    public static void main(String[] args)
-    {
-        // 商户（RSA）私钥 TODO 强烈建议将私钥
-        String RSA_PRIVATE = "MIICdwIBADANBgkqhkiG9w0BAQEFAASCAmEwggJdAgEAAoGBAMhKNA1Ws0H6PrZ8t1lQxhQjERj0hYf8QWBlF2DtlMajYU52WsiGIvid6iQQhJGc+aPNTf3MfWCWSHk2XRIYRpjoVPQ8Oz8sLF8j3pT3I2h2gDRNvO2xqX+x+jyFDMnAXm4uMyBYS9wabuhUchF5JkHT1A3rZZFYapPqMTj/zeEFAgMBAAECgYB+uPwwCFAIiYVOPqBe4U1CBmHV8TffLwpKLAvbptX/y/VQCHAt+Th9JqSyxsSpwLDuI4KZ9tzI1KzsDCpcvYFEMuoPNgwjZBFBsmTdXD+nxUTKVbTII6kITyzMMWDBnF8LxAicMKpYcRKaVOULCg/AHPGV32Efd4pH8cyJGcJ6TQJBAP+7+YygfcJLvxI9kk/2Se+dI//mX6WVh1V0RFgSl0cWry+xq9xTQofy0wU++TiXkA05aCJbwY0EjyodUOcpHkMCQQDIf3r3WVpW4Fx6t6B2geew4mllckFEHHDf0pXE5GWymccQHHxo6knFrzZ8F/97XwAIGTabNBXQiWd9G1DfEyMXAkEAow/84wpCpe0efEb+UDY+lqagGb+PJUne7UIhgfb4tr9kHQkxCF+egIj4vNOWndsmYwhDugS/uWc60iO3Pm4deQJAC3qA57hN27tsj/oDTcWSJiZQMmagJe4a6DV+LY+F4vu60clPthHzt0WYsPIOxllh/xSyc6A/v3ieXCM8Ngk6cQJBAJiX6nzlyLyHrHQ0jIdQ97bYtJTqh0ZC6bZ3PShCj3we/Cu+5v6L5Rmwx0s+OJ84OnWIopuuc5QwmOT53VRIntE=";
-        // 银通支付（RSA）公钥
-        String RSA_YT_PUBLIC = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDISjQNVrNB+j62fLdZUMYUIxEY9IWH/EFgZRdg7ZTGo2FOdlrIhiL4neokEISRnPmjzU39zH1glkh5Nl0SGEaY6FT0PDs/LCxfI96U9yNodoA0Tbztsal/sfo8hQzJwF5uLjMgWEvcGm7oVHIReSZB09QN62WRWGqT6jE4/83hBQIDAQAB";
-
-        // RSAUtil.getInstance().generateKeyPair("D:\\CertFiles\\inpour\\",
-        // "ll_yt");
-        String sign = RSAUtil.sign(RSA_PRIVATE, "busi_partner=101001&dt_order=20130521175800&money_order=12.10&name_goods=%E5%95%86%E5%93%81%E5%90%8D%E7%A7%B0&notify_url=http%3A%2F%2Fwww.baidu.com&no_order=20130521175800&oid_partner=201103171000000000&sign_type=RSA");
-        
-        System.out.println(sign);
-        System.out.println(RSAUtil.checksign(RSA_YT_PUBLIC, "busi_partner=101001&dt_order=20130521175800&money_order=12.10&name_goods=%E5%95%86%E5%93%81%E5%90%8D%E7%A7%B0&notify_url=http%3A%2F%2Fwww.baidu.com&no_order=20130521175800&oid_partner=201103171000000000&sign_type=RSA", sign));
-    }
 }
