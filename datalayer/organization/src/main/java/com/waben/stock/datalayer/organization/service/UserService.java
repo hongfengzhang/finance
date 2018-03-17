@@ -107,10 +107,9 @@ public class UserService {
 				if(!StringUtils.isEmpty(query.getOrganization())) {
 					Organization organization = new Organization();
 					organization.setId(query.getOrganization());
-					Predicate organizationQuery = criteriaBuilder.equal(root.get("org").as(Organization.class), organization);
-					predicateList.add(organizationQuery);
 					organization.setParent(organization);
 					List<Organization> organizations = organizationDao.listByParent(organization);
+					organizations.add(organization);
 					predicateList.add(root.get("org").in(organizations));
 				}
 				if(!StringUtils.isEmpty(query.getUserName())) {
