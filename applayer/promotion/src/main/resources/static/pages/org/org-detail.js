@@ -31,6 +31,10 @@ $(function() {
         			});
             		$("#name-display").css("display", "");
             		$("#name-modify").css("display", "none");
+            		// 更新树节点名称
+            		var node = parent.ztreeObj.getNodeByParam("id", currentOrgId, null);
+            		node.name = jsonResult.result.name;
+            		parent.ztreeObj.updateNode(node);
             	} else {
             		parent.layer.msg(jsonResult.message);
             	}

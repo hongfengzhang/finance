@@ -146,6 +146,8 @@ public class ExceptionConstant {
 	public static final String ORGANIZATION_USER_EXIST = "8005";
 	// 原始登陆密码不匹配
 	public static final String ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION = "8006";
+	// 该发布人已绑定过机构码
+	public static final String ORGPUBLISHER_EXIST_EXCEPTION = "8007";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
