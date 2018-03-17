@@ -179,8 +179,8 @@ public class CapitalAccountService {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
-		flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Withdrawals, amount.abs().multiply(new BigDecimal(-1)), date);
-		sendWithdrawalsOutsideMessage(publisherId, amount,true);
+		flowDao.create(account.getPublisher(), account.getPublisherSerialCode(), CapitalFlowType.Withdrawals, amount.abs().multiply(new BigDecimal(-1)), date);
+		sendWithdrawalsOutsideMessage(publisherId, amount, true);
 		return findByPublisherId(publisherId);
 	}
 
@@ -349,6 +349,15 @@ public class CapitalAccountService {
 		frozen.setStatus(FrozenCapitalStatus.Thaw);
 		frozen.setThawTime(new Date());
 		frozenCapitalDao.update(frozen);
+		// promoterShareBenefit(publisherId, buyRecordId, date);
+		return findByPublisherId(publisherId);
+	}
+
+	/**
+	 * 给推广人提成
+	 */
+	@SuppressWarnings("unused")
+	private void promoterShareBenefit(Long publisherId, Long buyRecordId, Date date) {
 		// 是否为被推广人的第一笔单，如果是，推广人赚取10%的服务费
 		Publisher publisher = publisherDao.retrieve(publisherId);
 		if (publisher.getPromoter() != null && !"".equals(publisher.getPromoter().trim())) {
@@ -387,7 +396,6 @@ public class CapitalAccountService {
 				}
 			}
 		}
-		return findByPublisherId(publisherId);
 	}
 
 	@Transactional
@@ -477,8 +485,6 @@ public class CapitalAccountService {
 		account.setUpdateTime(date);
 		capitalAccountDao.update(account);
 	}
-
-
 
 	/**
 	 * 账户减少金额

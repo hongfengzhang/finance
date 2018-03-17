@@ -2,6 +2,8 @@
  * 机构列表
  */
 window.renderTable = function(){};
+window.ztreeObj = {};
+window.selectedNode = {};
 $(function() {
 	window.searchData = { parentId: currentOrgId, loginOrgId: currentOrgId, onlyLoginOrg: true }
 	// 加载数据
@@ -133,6 +135,7 @@ $(function() {
 		callback: {
 			// 点击节点列表显示子节点
 			onClick: function(event,treeId,treeNode) {
+				selectedNode = treeNode;
 				if(treeNode.id == 0) {
 					searchData.onlyLoginOrg = true;
 					$("#top-btn-list").css("display", "none");
@@ -145,7 +148,7 @@ $(function() {
 			}
 		}
 	};
-	$.fn.zTree.init($("#org-tree"), setting);
+	ztreeObj = $.fn.zTree.init($("#org-tree"), setting);
 	// 弹出添加页面
 	$('#add-btn').on('click', function(){
 		var index = layer.open({

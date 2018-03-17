@@ -26,7 +26,7 @@
     <!-- 左侧菜单 -->
     <div class="layui-side layui-bg-black">
         <div class="layui-side-scroll">
-            <ul class="layui-nav layui-nav-tree">
+            <ul class="layui-nav layui-nav-tree" lay-filter="promotion-nav">
                 <!--<li class="layui-nav-item"><a href="../org/org-list.html">机构管理</a></li>-->
                 <!--<li class="layui-nav-item layui-nav-itemed"><a href="javascript:;">交易管理</a>-->
                     <!--<dl class="layui-nav-child">-->
@@ -66,6 +66,18 @@
             <div class="layui-form">
                 <form id="search-form">
                     <div class="layui-form-item mb5">
+                        <div class="layui-inline">
+                            <label class="layui-form-label width60 plr0 mr5 blue-color">机构名称</label>
+                            <div class="layui-input-inline width150">
+                                <input name="orgName" type="text" class="layui-input">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label width60 plr0 mr5 blue-color">机构编号</label>
+                            <div class="layui-input-inline width150">
+                                <input name="orgCode" type="number" class="layui-input">
+                            </div>
+                        </div>
                         <div class="layui-inline">
                             <label class="layui-form-label width60 plr0 mr5 blue-color">流水号</label>
                             <div class="layui-input-inline width150">

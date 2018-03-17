@@ -3,12 +3,7 @@ package com.waben.stock.datalayer.publisher.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 
@@ -61,6 +56,10 @@ public class CapitalAccount {
 	 */
 	@Column(name = "publisher_serial_code")
 	private String publisherSerialCode;
+
+	@JoinColumn(name = "publisher_id",updatable = false,insertable = false)
+	@OneToOne
+	private Publisher publisher;
 
 	public Long getId() {
 		return id;
@@ -126,11 +125,11 @@ public class CapitalAccount {
 		this.publisherSerialCode = publisherSerialCode;
 	}
 
-	public CapitalAccountDto copy() {
-		CapitalAccountDto result = new CapitalAccountDto();
-		BeanCopier copier = BeanCopier.create(CapitalAccount.class, CapitalAccountDto.class, false);
-		copier.copy(this, result, null);
-		return result;
+	public Publisher getPublisher() {
+		return publisher;
 	}
 
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
+	}
 }

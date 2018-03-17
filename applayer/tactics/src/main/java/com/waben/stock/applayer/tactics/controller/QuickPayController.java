@@ -210,4 +210,34 @@ public class QuickPayController {
     }
 
 
+    @RequestMapping("/paypal")
+    @ApiOperation(value = "连连快捷支付")
+    @ResponseBody
+    public Response<Map> paypal(@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) BigDecimal amount) {
+        Response<Map> result= quickPayBusiness.payPal(amount, bindCardId,15l);
+        return result;
+    }
+    @RequestMapping("/paypalcallback")
+    @ApiOperation(value = "连连快捷支付后台回调")
+    @ResponseBody
+    public String payPalPayCallback(HttpServletRequest request) throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.sdPayReturn();
+        // 响应回调
+        return  result;
+    }
+    @RequestMapping("/paypalreturn")
+    @ApiOperation(value = "连连快捷支付页面回调")
+    public void payPalPayReturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.sdPayReturn();
+        // 响应回调
+        httpResp.setContentType("text/html;charset=UTF-8");
+        try {
+            PrintWriter writer = httpResp.getWriter();
+            writer.write(result);
+        } catch (IOException e) {
+            throw new RuntimeException("http write interrupt");
+        }
+    }
 }
