@@ -868,9 +868,11 @@
                         },
                         'click .orgdetail': function (e, value, row, index) {
                             $("#id").val(row.id);
-                            $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio);
-                            $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
-                            $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
+                            if(row.offlineTrade!=null) {
+                                $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio);
+                                $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
+                                $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
+                            }
                             $('#orgPrice').click(function () {
                                 var patt = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;
                                 if(!patt.test($("[name='rightMoneyRatio']").val())) {
