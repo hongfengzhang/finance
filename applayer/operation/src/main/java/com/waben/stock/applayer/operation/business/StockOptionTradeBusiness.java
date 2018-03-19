@@ -9,6 +9,7 @@ import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.MailUrlInfoDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -84,6 +85,9 @@ public class StockOptionTradeBusiness {
             e.printStackTrace();
         }
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
+        if(!OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
+            modify(id);
+        }
         return true;
     }
 
