@@ -39,7 +39,6 @@ public class OfflineStockOptionTradeController {
     @ResponseBody
     public Response<OfflineStockOptionTradeVo> settlement(@PathVariable Long id, @PathVariable BigDecimal sellingPrice) {
         OfflineStockOptionTradeVo result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeVo.class, offlineStockOptionTradeBusiness.settlement(id, sellingPrice), false);
-        stockOptionTradeBusiness.modify(id);
         return new Response<>(result);
     }
 }

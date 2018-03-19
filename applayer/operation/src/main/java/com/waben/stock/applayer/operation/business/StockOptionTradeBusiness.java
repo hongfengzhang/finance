@@ -85,7 +85,7 @@ public class StockOptionTradeBusiness {
             e.printStackTrace();
         }
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
-        if(!OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
+        if(result.getStatus()==null) {
             modify(id);
         }
         return true;
@@ -127,7 +127,9 @@ public class StockOptionTradeBusiness {
                 e.printStackTrace();
             }
             mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
-
+            if(OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
+                modify(id);
+            }
             return true;
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
@@ -164,6 +166,9 @@ public class StockOptionTradeBusiness {
         if(result.getRightTime()!=null) {
             stockOptionTradeService.exercise(id);
         }
+        if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
+            modify(id);
+        }
         return true;
     }
 
@@ -176,6 +181,10 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
+        }
+
+        if(OfflineStockOptionTradeState.PURCHASE.equals(response.getResult().getStatus())) {
+            modify(id);
         }
         throw new ServiceException(response.getCode());
     }
@@ -209,6 +218,9 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
+        }
+        if(OfflineStockOptionTradeState.INSETTLEMENT.equals(response.getResult().getStatus())) {
+            modify(id);
         }
         throw new ServiceException(response.getCode());
     }

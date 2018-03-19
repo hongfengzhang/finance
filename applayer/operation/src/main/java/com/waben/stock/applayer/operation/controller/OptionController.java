@@ -64,7 +64,6 @@ public class OptionController {
     @ResponseBody
     public Response<StockOptionTradeVo> settlement(@PathVariable Long id){
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.settlement(id);
-        stockOptionTradeBusiness.modify(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);
     }
@@ -78,10 +77,6 @@ public class OptionController {
     @ResponseBody
     public Response<Boolean> inquiry(@PathVariable Long id){
         Boolean result = stockOptionTradeBusiness.inquiry(id);
-        //修改订单状态status
-        if (result){
-            stockOptionTradeBusiness.modify(id);
-        }
         return new Response<>(result);
     }
 
@@ -94,9 +89,6 @@ public class OptionController {
     @ResponseBody
     public Response<Boolean> purchase(@PathVariable Long id){
         Boolean result = stockOptionTradeBusiness.purchase(id);
-        if (result){
-            stockOptionTradeBusiness.modify(id);
-        }
         return new Response<>(result);
     }
 
@@ -109,9 +101,6 @@ public class OptionController {
     @ResponseBody
     public Response<Boolean> exercise(@PathVariable Long id){
         Boolean result = stockOptionTradeBusiness.exercise(id);
-        if (result){
-            stockOptionTradeBusiness.modify(id);
-        }
         return new Response<>(result);
     }
 
@@ -119,7 +108,6 @@ public class OptionController {
     @ResponseBody
     public Response<StockOptionTradeVo> success(@PathVariable Long id){
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.success(id);
-        stockOptionTradeBusiness.modify(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);
     }
