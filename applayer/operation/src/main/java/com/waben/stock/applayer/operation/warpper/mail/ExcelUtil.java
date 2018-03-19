@@ -23,11 +23,14 @@ public class ExcelUtil {
     static Logger logger = LoggerFactory.getLogger(ExcelUtil.class);
 
     /**
-     * 渲染询价单模板
+     * 询价单生成Excel模板
+     * @param quotoInquiry
+     * @return
      */
-    public static String renderInquiry(String contextPath, QuotoInquiry quotoInquiry) {
+    private static String renderInquiry(QuotoInquiry quotoInquiry, String contextPath) {
         String file = null;
-        try (InputStream is = ExcelUtil.class.getResourceAsStream("/officetemplate/excel/inquiry.xlsx")) {
+        String url = "/officetemplate/excel/inquiry.xlsx";
+        try (InputStream is = ExcelUtil.class.getResourceAsStream(url)) {
             if (is == null) {
                 logger.error("模板文件找不到");
             }
@@ -39,41 +42,97 @@ public class ExcelUtil {
             }
             String fileName = System.currentTimeMillis() + ".xlsx";
             file = path + fileName;
+
+            Map<String, Object> model = new HashMap<>();
+            model.put("date", DateUtils.formatDate(quotoInquiry.getDate(), "yyyy/MM/dd"));
+            model.put("tenor", quotoInquiry.getTenor());
+            model.put("structure", "ATM Call");
+            model.put("underlying", quotoInquiry.getUnderlying());
+            model.put("code", quotoInquiry.getCode());
+            model.put("strike", quotoInquiry.getStrike());
+            model.put("amount", quotoInquiry.getAmount());
+            model.put("price", quotoInquiry.getPrice());
             try (OutputStream os = new FileOutputStream(file)) {
-                Map<String, Object> model = new HashMap<>();
-                model.put("date", DateUtils.formatDate(quotoInquiry.getDate(), "yyyy/MM/dd"));
-                model.put("tenor", quotoInquiry.getTenor());
-                model.put("structure", "ATM Call");
-                model.put("underlying", quotoInquiry.getUnderlying());
-                model.put("code", quotoInquiry.getCode());
-                model.put("strike", quotoInquiry.getStrike());
-                model.put("amount", quotoInquiry.getAmount());
-                model.put("price", quotoInquiry.getPrice());
                 Workbook workbook = new ExcelTransformer().transform(is, model);
                 workbook.write(os);
             } catch (IOException | InvalidFormatException e) {
                 e.printStackTrace();
             }
-        } catch (IOException e) {
+        }catch (IOException e) {
             e.printStackTrace();
         }
         return file;
     }
 
-    @Deprecated
-    public static void rendPurchase() {
-        Map<String, Object> datas = new HashMap<String, Object>() {{
-            put("underlying", "新湖瑞丰");
-            put("code", "600208");
-            put("begin", "2018/03/03");
-            put("end", "2018/04/03");
-            put("strike", "9.88");
-            put("amount", "100W");
-            put("rate", "7.5%");
-        }};
+    /**
+     * 申购单生成Excel模板
+     * @param quotoPurchase
+     * @return
+     */
+    private static String renderPurchase(QuotoPurchase quotoPurchase, String contextPath) {
+        Map<String, Object> model = new HashMap<String, Object>();
+        model.put("underlying", quotoPurchase.getUnderlying());
+        model.put("code", quotoPurchase.getCode());
+        model.put("begin", DateUtils.formatDate(quotoPurchase.getBegin(), "yyyy/MM/dd"));
+        model.put("end", DateUtils.formatDate(quotoPurchase.getEnd(), "yyyy/MM/dd"));
+        model.put("strike", quotoPurchase.getStrike());
+        model.put("amount", quotoPurchase.getAmount());
+        model.put("rate", quotoPurchase.getRate());
+        return commonWordRender(model, "purchase", contextPath);
+    }
+
+    /**
+     * 行权单生成Excel模板
+     * @param quotoExenise
+     * @return
+     */
+    private static String renderExenise(QuotoExenise quotoExenise, String contextPath) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("exenise", DateUtils.formatDate(quotoExenise.getExenise(), "yyyy/MM/dd"));
+        model.put("dueTo", DateUtils.formatDate(quotoExenise.getDueTo(), "yyyy/MM/dd"));
+        model.put("underlying", quotoExenise.getUnderlying());
+        model.put("code", quotoExenise.getCode());
+        model.put("strike", quotoExenise.getStrike());
+        model.put("amount", quotoExenise.getAmount());
+        return commonWordRender(model, "exercise", contextPath);
+    }
+
+
+    /**
+     * 模板公共处理方法
+     * @param contextPath 模板上下文路径
+     * @param obj 模板实体类 QuotoInquiry，QuotoPurchase，QuotoExenise
+     * @return
+     */
+    public static String commonRender(String contextPath, Object obj) {
+        String file = "";
+        if (null == obj) {
+            return "";
+        }
+        if (obj instanceof QuotoInquiry) {
+            file = renderInquiry((QuotoInquiry) obj, contextPath);
+        } else if (obj instanceof QuotoPurchase) {
+            file = renderPurchase((QuotoPurchase) obj, contextPath);
+        } else if (obj instanceof QuotoExenise) {
+            file = renderExenise((QuotoExenise) obj, contextPath);
+        }
+        return file;
+    }
+
+    /**
+     * Word模板公共处理方法
+     * @param templateName 模板名称“inquiry”，“purchase”，“exenise”
+     * @param datas 模板数据
+     * @return
+     */
+    public static String commonWordRender(Map<String, Object> datas, String templateName, String contextPath){
         XWPFTemplate template = null;
-        try (InputStream is = ClassLoader.getSystemResourceAsStream("officetemplate/world/purchase.docx");
-             FileOutputStream out = new FileOutputStream("E:/out.docx")) {
+        Date date = new Date();
+        String path = contextPath + new SimpleDateFormat("yyyy/MM/dd/").format(date)
+                + File.separator + templateName + File.separator + System.currentTimeMillis()  + ".docx";
+        String url = "officetemplate/world/" + templateName + ".docx";
+        try (InputStream is = ClassLoader.getSystemResourceAsStream(url);
+             FileOutputStream out = new FileOutputStream(path)) {
             template = XWPFTemplate.compile(is).render(datas);
             template.write(out);
         } catch (FileNotFoundException e) {
@@ -89,5 +148,7 @@ public class ExcelUtil {
                 e.printStackTrace();
             }
         }
+        return path;
     }
+
 }
