@@ -212,16 +212,16 @@ public class QuickPayController {
     @ApiOperation(value = "连连快捷支付")
     @ResponseBody
     public Response<Map> paypal(@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) BigDecimal amount) {
-        Response<Map> result = quickPayBusiness.payPal(amount, bindCardId, 15l);
+        Response<Map> result = quickPayBusiness.payPal(amount, bindCardId, SecurityUtil.getUserId());
         return result;
     }
 
     @RequestMapping("/paypalcallback")
     @ApiOperation(value = "连连快捷支付后台回调")
     @ResponseBody
-    public String payPalPayCallback(HttpServletRequest request) throws UnsupportedEncodingException {
+    public JSONObject payPalPayCallback(HttpServletRequest request) throws UnsupportedEncodingException {
         // 处理回调
-        String result = quickPayBusiness.payPalcallback(request);
+        JSONObject result = quickPayBusiness.payPalcallback(request);
         // 响应回调
         return result;
     }
@@ -246,32 +246,32 @@ public class QuickPayController {
     @ResponseBody
     public Response<String> paypalcsa(@RequestParam(required = true) BigDecimal amount,
                                       @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
-//        // 判断是否为测试用户，测试用户不能提现
-//        PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
-//        if (publisher.getIsTest() != null && publisher.getIsTest()) {
-//            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
-//        }
-//        // 验证支付密码
-//        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
-//        String storePaymentPassword = capitalAccount.getPaymentPassword();
-//        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
-//            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
-//        }
-//        if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
-//            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
-//        }
-//        // 检查余额
-//        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
-//            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
-//        }
+        // 判断是否为测试用户，测试用户不能提现
+        PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+        if (publisher.getIsTest() != null && publisher.getIsTest()) {
+            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
+        }
+        // 验证支付密码
+        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
+        String storePaymentPassword = capitalAccount.getPaymentPassword();
+        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
+        }
+        if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
+        }
+        // 检查余额
+        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
+            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+        }
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
         CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
-//        if (bankType == null) {
-//            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
-//        }
+        if (bankType == null) {
+            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
+        }
         logger.info("验证通过,提现开始");
-        quickPayBusiness.payPalCSA(15l, amount, bindCard.getName(), bindCard.getPhone(),
+        quickPayBusiness.payPalCSA(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
                 bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bindCard.getBranchName());
         resp.setResult("success");
         return resp;
@@ -281,7 +281,7 @@ public class QuickPayController {
     @RequestMapping("/paypalnotify")
     @ApiOperation(value = "连连支付代付回调接口")
     @ResponseBody
-    public void payPalWithholdCallback(HttpServletRequest request, HttpServletResponse httpResp) throws IOException {
+    public JSONObject payPalWithholdCallback(HttpServletRequest request, HttpServletResponse httpResp) throws IOException {
         logger.info("异步调用");
         String result = "";
         try {
@@ -302,6 +302,7 @@ public class QuickPayController {
         String no_order = jsonObject.getString("no_order");//流水号
         String result_pay = jsonObject.getString("result_pay");//付款结果
         String settle_date = jsonObject.getString("settle_date");//付款日期
+        JSONObject  returnObject= new JSONObject();
         // TODO 签名校验
         // 处理回调result_pay settle_date
         logger.info("receive paypalpay withhold notify result: {},{}", jsonObject.get("no_order"), jsonObject.get("result_pay"));
@@ -309,9 +310,13 @@ public class QuickPayController {
             quickPayBusiness.payPalWithholdCallback(no_order,
                     "SUCCESS".equals(result_pay) ? WithdrawalsState.PROCESSED : WithdrawalsState.FAILURE, settle_date,
                     result_pay);
+        }else{
+            returnObject.put("ret_code","1001");
+            returnObject.put("ret_msg","交易失败");
         }
         // 响应回调
-        PrintWriter writer = httpResp.getWriter();
-        writer.write("success");
+        returnObject.put("ret_code","0000");
+        returnObject.put("ret_msg","交易成功");
+        return returnObject;
     }
 }
