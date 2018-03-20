@@ -55,7 +55,7 @@ public class CustomerService {
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
 				query.getCurrentOrgCode(), publisherIdCondition, publisherPhoneCondition, orgCodeCondition,
 				orgNameCondition);
-		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"));
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setPublisherPhone", new Class<?>[] { String.class }));
