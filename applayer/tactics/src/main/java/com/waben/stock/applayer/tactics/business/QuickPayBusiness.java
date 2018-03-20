@@ -513,11 +513,13 @@ public class QuickPayBusiness {
         String tosign = genSignData(jsonObject);
         String sign = RSAUtil.sign(PayPalConfig.private_key, tosign);
         map.put("sign", sign);
+        logger.info("请求的参数是:{}",map.toString());
         JSONObject jsonObject1 = (JSONObject) JSONObject.toJSON(map);
         Map<String, String> masp = new HashMap<>();
         masp.put("req_data", jsonObject1.toJSONString());
         String result = FormRequest.doPost(masp, PayPalConfig.url);
-        if (StringUtils.isBlank(result)) {
+        logger.info("连连快捷请求的结果是:{}",result);
+        if (StringUtils.isBlank(result)||!result.startsWith("http")) {
             throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, "请求异常");
         }
         Response<Map> resp = new Response();
@@ -542,7 +544,6 @@ public class QuickPayBusiness {
                 sb.append(s);
             }
             result = sb.toString();
-            System.out.println("1" + result);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -551,19 +552,23 @@ public class QuickPayBusiness {
         logger.info("连连回调的结果是:{}", result);
         String paymentNo = responseResult.getString("no_order");
         String sign = responseResult.getString("sign");
-        //此处签名未验证
-//        String resultSign = "";
+        String oid_str = genSignData(responseResult);
+        //签名验证
+        Boolean  checksign = RSAUtil.checksign(PayPalConfig.public_key,oid_str,sign);
         JSONObject returnObject = new JSONObject();
         String result_pay = responseResult.getString("result_pay");
         if (paymentNo != null && !"".equals(paymentNo) && "SUCCESS".equals(result_pay)) {
             //验证签名
-            logger.info("连连快捷验证签名通过");
-            payCallback(paymentNo, PaymentState.Paid);
-            returnObject.put("ret_code","0000");
-            returnObject.put("ret_msg","交易成功");
-            return returnObject;
+            if(checksign){
+                logger.info("连连快捷验证签名通过");
+                payCallback(paymentNo, PaymentState.Paid);
+                returnObject.put("ret_code","0000");
+                returnObject.put("ret_msg","交易成功");
+                return returnObject;
+            }
+
         }
-        returnObject.put("ret_code","00");
+        returnObject.put("ret_code","1001");
         returnObject.put("ret_msg","交易失败");
         return returnObject;
     }
@@ -738,7 +743,7 @@ public class QuickPayBusiness {
         return params;
     }
 
-    public static String genSignData(com.alibaba.fastjson.JSONObject jsonObject) {
+    public  String genSignData(com.alibaba.fastjson.JSONObject jsonObject) {
         StringBuffer content = new StringBuffer();
 
         // 按照key做首字母升序排列
@@ -764,7 +769,7 @@ public class QuickPayBusiness {
         return signSrc;
     }
 
-    public static boolean isnull(String str) {
+    public  boolean isnull(String str) {
         if (null == str || str.equalsIgnoreCase("null") || str.equals("")) {
             return true;
         } else
