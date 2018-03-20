@@ -1,7 +1,6 @@
 package com.waben.stock.applayer.promotion.controller;
 
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
-import com.waben.stock.applayer.promotion.business.PermissionBusiness;
 import com.waben.stock.applayer.promotion.business.RoleBusiness;
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
@@ -33,7 +32,7 @@ public class RoleController {
     @Autowired
     private OrganizationBusiness organizationBusiness;
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_SAVE')")
+    @PreAuthorize("hasRole('SAVE')")
     @RequestMapping("/save")
     @ResponseBody
     public Response<RoleVo> add(RoleVo vo){
@@ -45,7 +44,7 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_REVISION')")
+    @PreAuthorize("hasRole('REVISION')")
     @RequestMapping("/modify")
     @ResponseBody
     public Response<RoleVo> modify(RoleVo vo){
@@ -65,7 +64,7 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-//    @PreAuthorize("hasRole('ROLE_AUTHORIZE')")
+    @PreAuthorize("hasRole('AUTHORIZE')")
     @RequestMapping("/permission/{id}")
     @ResponseBody
     public Response<RoleVo> addRolePermission(@PathVariable Long id,final Long[] permissionIds){
@@ -102,7 +101,7 @@ public class RoleController {
         return new Response<>(permissionVos);
     }
 
-//    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
+    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
     @RequestMapping("/{id}")
     @ResponseBody
     public Response<RoleVo> fetchById(@PathVariable Long id){

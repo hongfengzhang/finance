@@ -106,13 +106,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/turbine/**").permitAll();
 		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic").permitAll();
 		//回调放权
+		//杉德快捷放权
 		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
+		//彩拓京东QQ放权
 		http.authorizeRequests().antMatchers("/quickpay/qqcallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/jdcallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/qqpayreturn").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/jdpayreturn").permitAll();
+		//连连快捷放权
+		http.authorizeRequests().antMatchers("/quickpay/paypalreturn").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/paypalcallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/paypalnotify").permitAll();
+		//测试放权  paypalnotify
 		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

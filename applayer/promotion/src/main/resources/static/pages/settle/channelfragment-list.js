@@ -40,10 +40,19 @@ $(function() {
             var columns = [
                 { "data": "id", "title": "订单ID", orderable: false},
                 { "data": "orgDto", "title": "机构名称", orderable: false,"render": function(data, type, full, meta) {
+                    if(data !=null){
                         return data.name;
+                    }else{
+                        return "";
+                    }
+
                 }},
                 { "data": "orgDto", "title": "机构代码", orderable: false,"render": function(data, type, full, meta) {
+                    if(data !=null){
                         return data.code;
+                    }else{
+                        return "";
+                    }
                 }},
                 { "data": "flowNo", "title": "流水号", orderable: false},
                 { "data": "resourceType", "title": "业务类型", orderable: false,"render": function(data, type, full, meta) {

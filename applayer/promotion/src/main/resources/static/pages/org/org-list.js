@@ -63,7 +63,7 @@ $(function() {
 	            	if(window.level == 1) {
 	            		return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            	} else {
-	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>详情</a>";
+	            		return "<a class='detail' orgid='" + full.id + "' pid='"+full.parentId+"'  href='javascript:;'>详情</a>";
 	            	}
 	            }}
 	        ];
@@ -175,6 +175,7 @@ $(function() {
 	// 弹出页面_查看详情
 	$('#org-list-table').on('click', 'a.detail', function(){
 		currentOrgId = $(this).attr("orgid");
+		currentOrgPId = $(this).attr("pid");
 		layer.open({
 			type: 2,
 			title: '查看机构详情',
