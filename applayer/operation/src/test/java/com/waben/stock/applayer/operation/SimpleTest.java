@@ -3,7 +3,6 @@ package com.waben.stock.applayer.operation;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.sun.mail.util.MailSSLSocketFactory;
 import com.waben.stock.applayer.operation.dto.websocket.StockRequestMessage;
-import com.waben.stock.applayer.operation.warpper.mail.ExcelUtil;
 import com.waben.stock.interfaces.pojo.stock.quotation.Resonse;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -82,7 +81,7 @@ public class SimpleTest {
 
     @Test
     public void testPurchase() {
-        ExcelUtil.rendPurchase();
+        //ExcelUtil.rendPurchase();
     }
 
     @Test

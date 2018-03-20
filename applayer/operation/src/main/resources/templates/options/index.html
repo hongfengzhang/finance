@@ -567,7 +567,7 @@
                     formatter: function operateFormatter(value, row, index) {
                         if(row.status=="INQUIRY"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs btn-danger inquiry btn-danger" disabled="disabled"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs btn-danger inquiry btn-danger"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
@@ -579,7 +579,7 @@
                         }
                         if(row.status=="PURCHASE"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger" disabled="disabled"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
@@ -591,7 +591,7 @@
                         }
                         if(row.status=="TURNOVER"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger" disabled="disabled"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
@@ -603,7 +603,7 @@
                         }
                         if(row.status=="APPLYRIGHT"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger" disabled="disabled"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
@@ -615,7 +615,7 @@
                         }
                         if(row.status=="INSETTLEMENT"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger" disabled="disabled"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
@@ -627,7 +627,7 @@
                         }
                         if(row.status=="SETTLEMENTED"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger" disabled="disabled"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
@@ -868,9 +868,11 @@
                         },
                         'click .orgdetail': function (e, value, row, index) {
                             $("#id").val(row.id);
-                            $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio);
-                            $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
-                            $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
+                            if(row.offlineTrade!=null) {
+                                $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio);
+                                $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
+                                $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
+                            }
                             $('#orgPrice').click(function () {
                                 var patt = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;
                                 if(!patt.test($("[name='rightMoneyRatio']").val())) {

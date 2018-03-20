@@ -3,6 +3,8 @@ package com.waben.stock.applayer.operation.business;
 import com.waben.stock.applayer.operation.service.stockoption.OfflineStockOptionTradeService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -17,7 +19,8 @@ public class OfflineStockOptionTradeBusiness {
     @Autowired
     @Qualifier("offlinestockoptiontradeFeignService")
     private OfflineStockOptionTradeService offlineStockOptionTradeService;
-
+    @Autowired
+    private StockOptionTradeBusiness stockOptionTradeBusiness;
     public OfflineStockOptionTradeDto add(OfflineStockOptionTradeDto offlineStockOptionTradeDto) {
         Response<OfflineStockOptionTradeDto> response = offlineStockOptionTradeService.add(offlineStockOptionTradeDto);
         String code = response.getCode();
@@ -37,6 +40,11 @@ public class OfflineStockOptionTradeBusiness {
         } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }
+        StockOptionTradeDto stockOptionTrade = stockOptionTradeBusiness.findById(id);
+        if(OfflineStockOptionTradeState.APPLYRIGHT.equals(stockOptionTrade.getStatus())) {
+            stockOptionTradeBusiness.modify(id);
+        }
+
         throw new ServiceException(response.getCode());
     }
 
