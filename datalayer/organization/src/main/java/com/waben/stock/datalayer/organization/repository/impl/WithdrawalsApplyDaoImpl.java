@@ -60,4 +60,9 @@ public class WithdrawalsApplyDaoImpl implements WithdrawalsApplyDao {
 		return repository.findAll();
 	}
 
+	@Override
+	public WithdrawalsApply retrieveByApplyNo(String applyNo) {
+		return repository.findByApplyNo(applyNo);
+	}
+
 }

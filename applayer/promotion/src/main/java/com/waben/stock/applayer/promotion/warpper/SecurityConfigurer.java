@@ -80,6 +80,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/file/upload", "/websocket/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .antMatchers(HttpMethod.POST, "/file/**").permitAll()
+                .antMatchers("/withdrawalsApply/paypalnotify").permitAll()
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)

@@ -10,4 +10,6 @@ import com.waben.stock.datalayer.organization.entity.WithdrawalsApply;
  */
 public interface WithdrawalsApplyDao extends BaseDao<WithdrawalsApply, Long> {
 
+	WithdrawalsApply retrieveByApplyNo(String applyNo);
+
 }

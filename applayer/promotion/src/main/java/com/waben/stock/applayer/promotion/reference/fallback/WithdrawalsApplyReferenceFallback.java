@@ -33,4 +33,14 @@ public class WithdrawalsApplyReferenceFallback implements WithdrawalsApplyRefere
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<WithdrawalsApplyDto> fetchById(Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<WithdrawalsApplyDto> fetchByApplyNo(String applyNo) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

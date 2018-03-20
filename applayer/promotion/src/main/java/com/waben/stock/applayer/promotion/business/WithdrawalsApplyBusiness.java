@@ -31,6 +31,22 @@ public class WithdrawalsApplyBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	
+	public WithdrawalsApplyDto fetchById(Long id) {
+		Response<WithdrawalsApplyDto> response = reference.fetchById(id);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
+	public WithdrawalsApplyDto fetchByApplyNo(String applyNo) {
+		Response<WithdrawalsApplyDto> response = reference.fetchByApplyNo(applyNo);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 	public PageInfo<WithdrawalsApplyDto> pagesByQuery(WithdrawalsApplyQuery applyQuery) {
 		Response<PageInfo<WithdrawalsApplyDto>> response = reference.pagesByQuery(applyQuery);
