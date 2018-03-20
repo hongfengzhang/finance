@@ -58,7 +58,7 @@ public class StockOptionTradeBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public Boolean inquiry(Long id) {
+    public Boolean          inquiry(Long id) {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         QuotoInquiry quotoInquiry = new QuotoInquiry();

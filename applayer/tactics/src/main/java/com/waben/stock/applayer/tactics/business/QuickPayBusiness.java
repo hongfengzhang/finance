@@ -217,7 +217,7 @@ public class QuickPayBusiness {
 
 
     public void payPalCSA(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
-                            String bankCard, String bankCode, String branchName) {
+                          String bankCard, String bankCode, String branchName) {
 
         // 请求提现
         String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
@@ -246,26 +246,26 @@ public class QuickPayBusiness {
         JSONObject jsonObject1 = (JSONObject) JSONObject.toJSON(map);
         String sign1 = null;
         try {
-            sign1 = LianLianRSA.encrypt(jsonObject1.toJSONString(),PayPalConfig.public_key);
+            sign1 = LianLianRSA.encrypt(jsonObject1.toJSONString(), PayPalConfig.public_key);
         } catch (Exception e) {
             e.printStackTrace();
         }
         JSONObject response = new JSONObject();
-        response.put("pay_load",sign1);
-        response.put("oid_partner",PayPalConfig.oid_partner);
+        response.put("pay_load", sign1);
+        response.put("oid_partner", PayPalConfig.oid_partner);
         logger.info("代付请求的参数是:{}", response.toJSONString());
-        String result = HttpUtil.doPost(PayPalConfig.csa_url,response,"utf-8");
+        String result = HttpUtil.doPost(PayPalConfig.csa_url, response, "utf-8");
         JSONObject jsStr = JSONObject.parseObject(result);
         logger.info("代付请求的结果是:{}", jsStr.toJSONString());
-        String confirm_code =jsStr.getString("confirm_code");
+        String confirm_code = jsStr.getString("confirm_code");
         //如果被判定为 疑似重复提交订单则进行确认请求
-        if(!StringUtils.isBlank(confirm_code)){
+        if (!StringUtils.isBlank(confirm_code)) {
             Map<String, String> confirmMap = new TreeMap<>();
             confirmMap.put("oid_partner", PayPalConfig.oid_partner);
             confirmMap.put("sign_type", PayPalConfig.sign_type);
             confirmMap.put("api_version", PayPalConfig.csa_version);
             confirmMap.put("no_order", withdrawalsNo);
-            confirmMap.put("confirm_code",confirm_code);
+            confirmMap.put("confirm_code", confirm_code);
             confirmMap.put("notify_url", PayPalConfig.csa_notifyurl);
             JSONObject confirmObject = (JSONObject) JSONObject.toJSON(confirmMap);
             String confirmToSign = genSignData(confirmObject);
@@ -277,15 +277,15 @@ public class QuickPayBusiness {
             JSONObject confirmObject1 = (JSONObject) JSONObject.toJSON(confirmMap);
             String confirmSign1 = null;
             try {
-                confirmSign1 = LianLianRSA.encrypt(confirmObject1.toJSONString(),PayPalConfig.public_key);
+                confirmSign1 = LianLianRSA.encrypt(confirmObject1.toJSONString(), PayPalConfig.public_key);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             JSONObject confirmResponse = new JSONObject();
-            confirmResponse.put("pay_load",confirmSign1);
-            confirmResponse.put("oid_partner",PayPalConfig.oid_partner);
+            confirmResponse.put("pay_load", confirmSign1);
+            confirmResponse.put("oid_partner", PayPalConfig.oid_partner);
             logger.info("代付确认请求的参数是:{}", confirmResponse.toJSONString());
-            String confirmResult = HttpUtil.doPost(PayPalConfig.csa_confirm_url,confirmResponse,"utf-8");
+            String confirmResult = HttpUtil.doPost(PayPalConfig.csa_confirm_url, confirmResponse, "utf-8");
             jsStr = JSONObject.parseObject(confirmResult);
             logger.info("代付确认请求的结果是:{}", jsStr.toJSONString());
 
@@ -304,7 +304,7 @@ public class QuickPayBusiness {
         order.setUpdateTime(new Date());
         this.saveWithdrawalsOrders(order);
         //如果请求失败 抛出异常
-        if(!"0000".equals(jsStr.getString("ret_code"))){
+        if (!"0000".equals(jsStr.getString("ret_code"))) {
             throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
         }
 
@@ -324,8 +324,9 @@ public class QuickPayBusiness {
 
 
     }
+
     public void payPalWithholdCallback(String withdrawalsNo, WithdrawalsState withdrawalsState, String thirdRespCode,
-                                   String thirdRespMsg) {
+                                       String thirdRespMsg) {
         logger.info("连连代付异步回调");
         WithdrawalsOrderDto order = this.findByWithdrawalsNo(withdrawalsNo);
         order.setThirdRespCode(thirdRespCode);
@@ -528,7 +529,7 @@ public class QuickPayBusiness {
         return resp;
     }
 
-    public String payPalcallback(HttpServletRequest request) {
+    public JSONObject payPalcallback(HttpServletRequest request) {
         String result = "";
         logger.info("连连快捷回调开始");
         try {
@@ -541,28 +542,30 @@ public class QuickPayBusiness {
                 sb.append(s);
             }
             result = sb.toString();
-            System.out.println("1"+result);
+            System.out.println("1" + result);
         } catch (IOException e) {
             e.printStackTrace();
         }
         JSONObject responseResult = JSONObject.parseObject(result);
 
-        logger.info("连连回调的结果是:{}",result);
+        logger.info("连连回调的结果是:{}", result);
         String paymentNo = responseResult.getString("no_order");
         String sign = responseResult.getString("sign");
         //此处签名未验证
 //        String resultSign = "";
+        JSONObject returnObject = new JSONObject();
         String result_pay = responseResult.getString("result_pay");
         if (paymentNo != null && !"".equals(paymentNo) && "SUCCESS".equals(result_pay)) {
             //验证签名
             logger.info("连连快捷验证签名通过");
-//            if (sign.equals(resultSign)) {
-                payCallback(paymentNo, PaymentState.Paid);
-                return "success";
-//            }
-//            return "false";
+            payCallback(paymentNo, PaymentState.Paid);
+            returnObject.put("ret_code","0000");
+            returnObject.put("ret_msg","交易成功");
+            return returnObject;
         }
-        return "false";
+        returnObject.put("ret_code","00");
+        returnObject.put("ret_msg","交易失败");
+        return returnObject;
     }
 
     public String payPalreturn(HttpServletRequest request) {
@@ -575,12 +578,12 @@ public class QuickPayBusiness {
         String result_pay = jsonObject.getString("result_pay");
         String stateStr = "";
         String scriptContent = "<script>function call() {if(window.appInterface) {window.appInterface.rechargeCallback('%s', '%s');} else {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}} call();</script></body></html>";
-        if("SUCCESS".equals(result_pay)){
-            stateStr="支付成功";
-        }else if("PROCESSING".equals(result_pay) ){
-            stateStr="处理中";
-        }else{
-            stateStr="支付失败";
+        if ("SUCCESS".equals(result_pay)) {
+            stateStr = "支付成功";
+        } else if ("PROCESSING".equals(result_pay)) {
+            stateStr = "处理中";
+        } else {
+            stateStr = "支付失败";
         }
         result.append(String.format(scriptContent, paymentNo, stateStr, paymentNo, stateStr));
         return result.toString();

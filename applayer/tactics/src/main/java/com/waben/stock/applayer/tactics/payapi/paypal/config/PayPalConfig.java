@@ -36,11 +36,11 @@ public class PayPalConfig {
     /**
      * 回调地址
      */
-    public static final String notify_url = "http://4kk34b.natappfree.cc/quickpay/paypalcallback";
+    public static final String notify_url = "https://m.youguwang.com.cn/tactics/quickpay/paypalcallback";
     /**
      * 支付结束回显
      */
-    public static final String url_return = "http://4kk34b.natappfree.cc/quickpay/paypalreturn";
+    public static final String url_return = "https://m.youguwang.com.cn/tactics/quickpay/paypalreturn";
     /**
      * 证件类型
      */
@@ -64,7 +64,7 @@ public class PayPalConfig {
     /**
      * 代付回调地址
      */
-    public static final String csa_notifyurl = "http://4kk34b.natappfree.cc/quickpay/paypalnotify";
+    public static final String csa_notifyurl = "https://m.youguwang.com.cn/tactics/quickpay/paypalnotify";
     /**
      * 代付版本号
      */
