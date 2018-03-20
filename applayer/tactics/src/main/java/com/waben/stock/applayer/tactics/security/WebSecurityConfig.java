@@ -1,10 +1,8 @@
 package com.waben.stock.applayer.tactics.security;
 
-import com.waben.stock.applayer.tactics.wrapper.filter.HiddenParamProcessFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -17,6 +15,7 @@ import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
 import com.waben.stock.applayer.tactics.service.RedisCache;
+import com.waben.stock.applayer.tactics.wrapper.filter.HiddenParamProcessFilter;
 
 @Configuration
 @EnableWebSecurity
