@@ -1,8 +1,10 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.InquiryResultBusiness;
 import com.waben.stock.applayer.operation.business.OfflineStockOptionTradeBusiness;
 import com.waben.stock.applayer.operation.business.StockOptionOrgBusiness;
 import com.waben.stock.applayer.operation.business.StockOptionTradeBusiness;
+import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
@@ -11,6 +13,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.stockoption.InquiryResultVo;
 import com.waben.stock.interfaces.vo.stockoption.OfflineStockOptionTradeVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionOrgVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionTradeVo;
@@ -34,6 +37,8 @@ public class OptionController {
     private StockOptionOrgBusiness stockOptionOrgBusiness;
     @Autowired
     private OfflineStockOptionTradeBusiness offlineStockOptionTradeBusiness;
+    @Autowired
+    private InquiryResultBusiness inquiryResultBusiness;
     @RequestMapping("/index")
     public String index(ModelMap map){
         List<StockOptionOrgDto> stockOptionOrgDtos = stockOptionOrgBusiness.fetchStockOptionOrgs();
@@ -54,6 +59,13 @@ public class OptionController {
                 OfflineStockOptionTradeVo offlineStockOptionTradeVo = CopyBeanUtils.copyBeanProperties(
                         OfflineStockOptionTradeVo.class,offlineTradeDto , false);
                 response.getContent().get(i).setOfflineTrade(offlineStockOptionTradeVo);
+            }
+            try {
+                System.out.println("=================="+pageInfo.getContent().get(i).getId());
+                InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(pageInfo.getContent().get(i).getId());
+                response.getContent().get(i).setInquiryResultVo(CopyBeanUtils.copyBeanProperties(InquiryResultVo.class,inquiryResultDto , false));
+            }catch (Exception e) {
+                e.printStackTrace();
             }
         }
         return new Response<>(response);

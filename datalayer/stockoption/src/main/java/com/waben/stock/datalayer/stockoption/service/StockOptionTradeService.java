@@ -353,4 +353,10 @@ public class StockOptionTradeService {
 		List<StockOptionTrade> result = stockOptionTradeDao.retieveByState(stockOptionTradeState);
 		return result;
 	}
+
+	public StockOptionTrade dueTreatmentExercise(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		stockOptionTrade.setRightTime(new Date());
+		return stockOptionTradeDao.update(stockOptionTrade);
+	}
 }

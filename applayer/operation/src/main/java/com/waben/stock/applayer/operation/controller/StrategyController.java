@@ -45,6 +45,11 @@ public class StrategyController {
         return "strategy/unwind/index";
     }
 
+    @RequestMapping("/withdraw/index")
+    public String strategyWithdraw(ModelMap map) {
+        map.addAttribute("investors", CopyBeanUtils.copyListBeanPropertiesToList(investorBusiness.findAllInvestors(), InvestorVo.class));
+        return "strategy/withdraw/index";
+    }
 
     @GetMapping("/posted/pages")
     @ResponseBody
