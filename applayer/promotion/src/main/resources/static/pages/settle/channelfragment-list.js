@@ -51,7 +51,7 @@ $(function () {
                 },
                 {
                     "data": "orgDto", "title": "机构代码", orderable: false, "render": function (data, type, full, meta) {
-                    if (full.code != null) {
+                    if (full.code) {
                         return data.code;
                     }
                     return '';
@@ -64,7 +64,7 @@ $(function () {
                     "title": "业务类型",
                     orderable: false,
                     "render": function (data, type, full, meta) {
-                        if (full.resourceType != null) {
+                        if (full.resourceType) {
                             if (full.resourceType == "BUYRECORD") {
                                 return "配资";
                             }
@@ -80,7 +80,7 @@ $(function () {
                 {"data": "amount", "title": "平台收入", orderable: false},
                 {
                     "data": "type", "title": "佣金类型", orderable: false, "render": function (data, type, full, meta) {
-                    if (full.type != null) {
+                    if (full.type) {
                         if (full.type == "ServiceFeeAssign") {
                             return "信息服务费";
                         }
