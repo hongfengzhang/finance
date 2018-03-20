@@ -67,5 +67,10 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
 	public Response<StockOptionTradeDto> fail(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<StockOptionTradeDto> dueTreatmentExercise(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
     
 }

@@ -132,7 +132,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
-		http.sessionManagement().maximumSessions(1);
 	}
 
 	@Override
