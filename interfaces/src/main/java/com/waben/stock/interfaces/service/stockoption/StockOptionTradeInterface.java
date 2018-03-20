@@ -71,4 +71,7 @@ public interface StockOptionTradeInterface {
 
 	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
 	Response<List<StockOptionTradeDto>> stockOptionsWithState(@PathVariable("state") Integer state);
+
+	@RequestMapping(value = "/duetreatment", method = RequestMethod.GET)
+	Response<StockOptionTradeDto> dueTreatmentExercise(Long id);
 }

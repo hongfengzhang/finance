@@ -63,7 +63,12 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService 
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
-	@Override
+    @Override
+    public Response<StockOptionTradeDto> dueTreatmentExercise(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
 	public Response<StockOptionTradeDto> modify(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

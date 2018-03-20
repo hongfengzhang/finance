@@ -147,7 +147,11 @@ public class StockOptionTradeBusiness {
         quotoExenise.setStrike("100%");
         quotoExenise.setAmount(String.valueOf(result.getNominalAmount().intValue()));
         quotoExenise.setDueTo(result.getOfflineTradeDto().getExpireTime());
-        quotoExenise.setExenise(result.getRightTime());
+        if(result.getRightTime()!=null) {
+            quotoExenise.setExenise(result.getRightTime());
+        }else {
+            quotoExenise.setExenise(new Date());
+        }
         MailMessage mailMessage = new ExeriseMessage();
         String file = ExcelUtil.commonRender(contextPath, quotoExenise);
         //添加邮件url信息
@@ -165,6 +169,8 @@ public class StockOptionTradeBusiness {
         //修改订单状态
         if(result.getRightTime()!=null) {
             stockOptionTradeService.exercise(id);
+        }else {
+            stockOptionTradeService.dueTreatmentExercise(id);
         }
         if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
             modify(id);

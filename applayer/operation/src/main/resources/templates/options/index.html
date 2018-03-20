@@ -950,10 +950,13 @@
                         },
                         'click .orgdetail': function (e, value, row, index) {
                             $("#id").val(row.id);
+                            if(row.inquiryResultVo!=null) {
+                                $("[name='rightMoneyRatio']").val(row.inquiryResultVo.rightMoneyRatio);
+                            }
                             if(row.offlineTrade!=null) {
                                 $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio);
-                                $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
                                 $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
+                                $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
                             }
                             $('#orgPrice').click(function () {
                                 var patt = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;

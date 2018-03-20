@@ -51,6 +51,34 @@ public class WithdrawalsApply {
 	 */
 	private Date updateTime;
 	/**
+	 * 绑卡ID
+	 */
+	private Long bindCardId;
+	/**
+	 * 姓名
+	 */
+	private String name;
+	/**
+	 * 身份证号
+	 */
+	private String idCard;
+	/**
+	 * 手机号
+	 */
+	private String phone;
+	/**
+	 * 银行卡号
+	 */
+	private String bankCard;
+	/**
+	 * 第三方代扣接口响应代码
+	 */
+	private String thirdRespCode;
+	/**
+	 * 第三方代扣接口响应提示
+	 */
+	private String thirdRespMsg;
+	/**
 	 * 
 	 * 对应的机构
 	 */
@@ -148,6 +176,74 @@ public class WithdrawalsApply {
 
 	public void setApplyNo(String applyNo) {
 		this.applyNo = applyNo;
+	}
+
+	public Long getBindCardId() {
+		return bindCardId;
+	}
+
+	public void setBindCardId(Long bindCardId) {
+		this.bindCardId = bindCardId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getBankCard() {
+		return bankCard;
+	}
+
+	public void setBankCard(String bankCard) {
+		this.bankCard = bankCard;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public String getThirdRespCode() {
+		return thirdRespCode;
+	}
+
+	public void setThirdRespCode(String thirdRespCode) {
+		this.thirdRespCode = thirdRespCode;
+	}
+
+	public String getThirdRespMsg() {
+		return thirdRespMsg;
+	}
+
+	public void setThirdRespMsg(String thirdRespMsg) {
+		this.thirdRespMsg = thirdRespMsg;
 	}
 
 }
