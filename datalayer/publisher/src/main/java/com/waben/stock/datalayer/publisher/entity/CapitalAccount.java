@@ -3,12 +3,7 @@ package com.waben.stock.datalayer.publisher.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 
@@ -23,114 +18,118 @@ import net.sf.cglib.beans.BeanCopier;
 @Table(name = "capital_account")
 public class CapitalAccount {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	/**
-	 * 账户余额
-	 */
-	@Column(name = "balance")
-	private BigDecimal balance;
-	/**
-	 * 账户可用余额
-	 */
-	@Column(name = "available_balance")
-	private BigDecimal availableBalance;
-	/**
-	 * 冻结资金
-	 */
-	@Column(name = "frozen_capital")
-	private BigDecimal frozenCapital;
-	/**
-	 * 支付密码
-	 */
-	@Column(name = "payment_password")
-	private String paymentPassword;
-	/**
-	 * 更新时间
-	 */
-	@Column(name = "update_time")
-	private Date updateTime;
-	/**
-	 * 发布人ID
-	 */
-	@Column(name = "publisher_id")
-	private Long publisherId;
-	/**
-	 * 发布人序列号
-	 */
-	@Column(name = "publisher_serial_code")
-	private String publisherSerialCode;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    /**
+     * 账户余额
+     */
+    @Column(name = "balance")
+    private BigDecimal balance;
+    /**
+     * 账户可用余额
+     */
+    @Column(name = "available_balance")
+    private BigDecimal availableBalance;
+    /**
+     * 冻结资金
+     */
+    @Column(name = "frozen_capital")
+    private BigDecimal frozenCapital;
+    /**
+     * 支付密码
+     */
+    @Column(name = "payment_password")
+    private String paymentPassword;
+    /**
+     * 更新时间
+     */
+    @Column(name = "update_time")
+    private Date updateTime;
+    /**
+     * 发布人ID
+     */
+    @Column(name = "publisher_id")
+    private Long publisherId;
+    /**
+     * 发布人序列号
+     */
+    @Column(name = "publisher_serial_code")
+    private String publisherSerialCode;
 
-	public Long getId() {
-		return id;
-	}
+    @JoinColumn(name = "publisher_id", updatable = false, insertable = false)
+    @OneToOne
+    private Publisher publisher;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public BigDecimal getBalance() {
-		return balance;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public void setBalance(BigDecimal balance) {
-		this.balance = balance;
-	}
+    public BigDecimal getBalance() {
+        return balance;
+    }
 
-	public BigDecimal getAvailableBalance() {
-		return availableBalance;
-	}
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
 
-	public void setAvailableBalance(BigDecimal availableBalance) {
-		this.availableBalance = availableBalance;
-	}
+    public BigDecimal getAvailableBalance() {
+        return availableBalance;
+    }
 
-	public BigDecimal getFrozenCapital() {
-		return frozenCapital;
-	}
+    public void setAvailableBalance(BigDecimal availableBalance) {
+        this.availableBalance = availableBalance;
+    }
 
-	public void setFrozenCapital(BigDecimal frozenCapital) {
-		this.frozenCapital = frozenCapital;
-	}
+    public BigDecimal getFrozenCapital() {
+        return frozenCapital;
+    }
 
-	public String getPaymentPassword() {
-		return paymentPassword;
-	}
+    public void setFrozenCapital(BigDecimal frozenCapital) {
+        this.frozenCapital = frozenCapital;
+    }
 
-	public void setPaymentPassword(String paymentPassword) {
-		this.paymentPassword = paymentPassword;
-	}
+    public String getPaymentPassword() {
+        return paymentPassword;
+    }
 
-	public Date getUpdateTime() {
-		return updateTime;
-	}
+    public void setPaymentPassword(String paymentPassword) {
+        this.paymentPassword = paymentPassword;
+    }
 
-	public void setUpdateTime(Date updateTime) {
-		this.updateTime = updateTime;
-	}
+    public Date getUpdateTime() {
+        return updateTime;
+    }
 
-	public Long getPublisherId() {
-		return publisherId;
-	}
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
 
-	public void setPublisherId(Long publisherId) {
-		this.publisherId = publisherId;
-	}
+    public Long getPublisherId() {
+        return publisherId;
+    }
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
+    public void setPublisherId(Long publisherId) {
+        this.publisherId = publisherId;
+    }
 
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
-	}
+    public String getPublisherSerialCode() {
+        return publisherSerialCode;
+    }
 
-	public CapitalAccountDto copy() {
-		CapitalAccountDto result = new CapitalAccountDto();
-		BeanCopier copier = BeanCopier.create(CapitalAccount.class, CapitalAccountDto.class, false);
-		copier.copy(this, result, null);
-		return result;
-	}
+    public void setPublisherSerialCode(String publisherSerialCode) {
+        this.publisherSerialCode = publisherSerialCode;
+    }
 
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
 }

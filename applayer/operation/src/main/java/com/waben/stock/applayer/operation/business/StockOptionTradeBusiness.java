@@ -1,13 +1,15 @@
 package com.waben.stock.applayer.operation.business;
 
+import com.waben.stock.applayer.operation.service.stockoption.MailUrlInfoService;
 import com.waben.stock.applayer.operation.service.stockoption.StockOptionOrgService;
 import com.waben.stock.applayer.operation.service.stockoption.StockOptionTradeService;
-import com.waben.stock.applayer.operation.warpper.mail.ExcelUtil;
 import com.waben.stock.applayer.operation.warpper.mail.*;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
+import com.waben.stock.interfaces.dto.stockoption.MailUrlInfoDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,6 +43,9 @@ public class StockOptionTradeBusiness {
     private InquiryResultBusiness inquiryResultBusiness;
     @Value("${mail.contextPath}")
     private String contextPath;
+    @Autowired
+    @Qualifier("mailUrlInfoFeignService")
+    private MailUrlInfoService mailUrlInfoService;
 
     public PageInfo<StockOptionTradeDto> pages(StockOptionTradeQuery query) {
         Response<PageInfo<StockOptionTradeDto>> response = stockOptionTradeService.pagesByQuery(query);
@@ -66,8 +72,22 @@ public class StockOptionTradeBusiness {
         quotoInquiry.setTenor(result.getCycleMonth());
         quotoInquiry.setDate(new Date());
         logger.info("数据组装成功:{}", JacksonUtil.encode(quotoInquiry));
-        String file = ExcelUtil.renderInquiry(contextPath, quotoInquiry);
+        String file = ExcelUtil.commonRender(contextPath, quotoInquiry);
+        //添加邮件url信息
+        MailUrlInfoDto mailUrlInfoDto = new MailUrlInfoDto();
+        mailUrlInfoDto.setCode(result.getStockCode());
+        mailUrlInfoDto.setUnderlying(result.getStockName());
+        mailUrlInfoDto.setTemplateName("inquiry");
+        mailUrlInfoDto.setLocalUrl(file);
+        try {
+            mailUrlInfoService.add(mailUrlInfoDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
+        if(result.getStatus()==null) {
+            modify(id);
+        }
         return true;
     }
 
@@ -94,8 +114,22 @@ public class StockOptionTradeBusiness {
             quotoPurchase.setEnd(calendar.getTime());
             quotoPurchase.setRate(String.valueOf(inquiryResultDto.getRightMoneyRatio()));
             MailMessage mailMessage = new PurchaseMessage();
+            //添加邮件url信息
+            String file = ExcelUtil.commonRender(contextPath, quotoPurchase);
+            MailUrlInfoDto mailUrlInfoDto = new MailUrlInfoDto();
+            mailUrlInfoDto.setCode(result.getStockCode());
+            mailUrlInfoDto.setUnderlying(result.getStockName());
+            mailUrlInfoDto.setTemplateName("purchase");
+            mailUrlInfoDto.setLocalUrl(file);
+            try {
+                mailUrlInfoService.add(mailUrlInfoDto);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
-
+            if(OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
+                modify(id);
+            }
             return true;
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
@@ -115,10 +149,25 @@ public class StockOptionTradeBusiness {
         quotoExenise.setDueTo(result.getOfflineTradeDto().getExpireTime());
         quotoExenise.setExenise(result.getRightTime());
         MailMessage mailMessage = new ExeriseMessage();
+        String file = ExcelUtil.commonRender(contextPath, quotoExenise);
+        //添加邮件url信息
+        MailUrlInfoDto mailUrlInfoDto = new MailUrlInfoDto();
+        mailUrlInfoDto.setCode(result.getStockCode());
+        mailUrlInfoDto.setUnderlying(result.getStockName());
+        mailUrlInfoDto.setTemplateName("exercise");
+        mailUrlInfoDto.setLocalUrl(file);
+        try {
+            mailUrlInfoService.add(mailUrlInfoDto);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         mailService.send("行权单", mailMessage.message(quotoExenise), org.getEmail());
         //修改订单状态
         if(result.getRightTime()!=null) {
             stockOptionTradeService.exercise(id);
+        }
+        if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
+            modify(id);
         }
         return true;
     }
@@ -132,6 +181,10 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
+        }
+
+        if(OfflineStockOptionTradeState.PURCHASE.equals(response.getResult().getStatus())) {
+            modify(id);
         }
         throw new ServiceException(response.getCode());
     }
@@ -165,6 +218,9 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
+        }
+        if(OfflineStockOptionTradeState.INSETTLEMENT.equals(response.getResult().getStatus())) {
+            modify(id);
         }
         throw new ServiceException(response.getCode());
     }

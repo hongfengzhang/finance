@@ -5,14 +5,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.waben.stock.datalayer.publisher.entity.enumconverter.CapitalFlowTypeConverter;
@@ -55,11 +48,15 @@ public class CapitalFlow {
 	 */
 	@Column(name = "occurrence_time")
 	private Date occurrenceTime;
+
+	@Column(name = "publisher_id")
+	private Long publisherId;
 	/**
 	 * 发布人ID
 	 */
-	@Column(name = "publisher_id")
-	private Long publisherId;
+	@JoinColumn(name = "publisher_id",insertable = false,updatable = false)
+	@ManyToOne
+	private Publisher publisher;
 	/**
 	 * 发布人序列号
 	 */
@@ -112,12 +109,12 @@ public class CapitalFlow {
 		this.occurrenceTime = occurrenceTime;
 	}
 
-	public Long getPublisherId() {
-		return publisherId;
+	public Publisher getPublisher() {
+		return publisher;
 	}
 
-	public void setPublisherId(Long publisherId) {
-		this.publisherId = publisherId;
+	public void setPublisher(Publisher publisher) {
+		this.publisher = publisher;
 	}
 
 	public String getPublisherSerialCode() {
@@ -152,4 +149,15 @@ public class CapitalFlow {
 		this.flowNo = flowNo;
 	}
 
+ 	public String getPublisherPhone() {
+		return publisher.getPhone();
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
+	}
 }

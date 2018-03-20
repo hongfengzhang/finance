@@ -33,7 +33,8 @@ $(function() {
         parent.layer.closeAll();
     });
     // 提交按钮
-zx        $.ajax({
+    $("#submit-btn").on('click', function() {
+        $.ajax({
             type: "POST",
             url: "/promotion/user/"+userId+"/role",
             dataType: "json",

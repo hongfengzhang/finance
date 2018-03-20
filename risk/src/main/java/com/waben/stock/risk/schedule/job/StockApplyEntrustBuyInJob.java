@@ -70,13 +70,13 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo(), securitiesStockEntrust.getStockCode());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
-                        if (stockEntrustQueryResult == null) {
-                            logger.info("委托买入轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
-                            stockEntrusts.remove(entry.getKey());
-                        } else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex
+                        if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex
                                 ())) {
-                            //废单
-                            logger.info("委托买入轮询点买记录买入废单:{}", entry.getKey());
+                            if(stockEntrustQueryResult == null) {
+                                logger.info("委托买入轮询点买记录不存在，删除容器中该交易记录,进行废单操作:{}", securitiesStockEntrust.getTradeNo());
+                            }else {
+                                logger.info("委托买入轮询点买记录买入废单:{}", entry.getKey());
+                            }
                             // 将点买废单放入废单处理队列中
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());

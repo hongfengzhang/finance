@@ -38,7 +38,7 @@ $(function() {
                         parent.layer.closeAll();
                         parent.renderTable("#user-list-table");
                     } else {
-                        parent.layer.msg(jsonResult.responseJSON.message)
+                        parent.layer.msg(jsonResult.message)
                     }
                 },
                 error: function (jsonResult) {
