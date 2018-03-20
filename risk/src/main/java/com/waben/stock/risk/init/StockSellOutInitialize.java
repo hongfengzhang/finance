@@ -1,6 +1,7 @@
 package com.waben.stock.risk.init;
 
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.risk.business.BuyRecordBusiness;
@@ -39,10 +40,10 @@ public class StockSellOutInitialize implements CommandLineRunner {
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
             securitiesStockEntrust.setSerialCode(buyRecord.getSerialCode());
             securitiesStockEntrust.setInvestor(buyRecord.getInvestorId());
-//            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
-//            securitiesStockEntrust.setStockName(stockDto.getName());
-//            securitiesStockEntrust.setStockCode(stockDto.getCode());
-//            securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
+            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
+            securitiesStockEntrust.setStockName(stockDto.getName());
+            securitiesStockEntrust.setStockCode(stockDto.getCode());
+            securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
             securitiesStockEntrust.setEntrustNumber(buyRecord.getNumberOfStrand());
             securitiesStockEntrust.setEntrustPrice(buyRecord.getDelegatePrice());
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
