@@ -7,6 +7,7 @@ import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +35,7 @@ public class OrganizationAccountController {
 	@Autowired
 	public OrganizationAccountBusiness accountBusiness;
 
+	@PreAuthorize("hasRole('CASH_PASSWORD')")
 	@RequestMapping(value = "/{orgId}/modifyPaymentPassword", method = RequestMethod.PUT)
 	public Response<Void> modifyPaymentPassword(@PathVariable("orgId") Long orgId, String oldPaymentPassword, String paymentPassword) {
 		accountBusiness.modifyPaymentPassword(orgId, oldPaymentPassword, paymentPassword);
