@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,7 @@ public class WithdrawalsApplyController {
 	@Autowired
 	private OrganizationAccountBusiness accountBusiness;
 
+	@PreAuthorize("hasRole('APPLICATION_FOR_CASH')")
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public Response<WithdrawalsApplyDto> addition(@RequestParam(required = true) Long orgId,
 			@RequestParam(required = true) BigDecimal amount, @RequestParam(required = true) String paymentPassword) {
@@ -73,6 +75,7 @@ public class WithdrawalsApplyController {
 		return new Response<>(business.pagesByQuery(applyQuery));
 	}
 
+	@PreAuthorize("hasRole('REFUSE_CASH')")
 	@RequestMapping(value = "/refuse/{applyId}", method = RequestMethod.POST)
 	public Response<WithdrawalsApplyDto> refuse(@PathVariable("applyId") Long applyId) {
 		return new Response<>(business.changeState(applyId, WithdrawalsApplyState.REFUSED.getIndex()));

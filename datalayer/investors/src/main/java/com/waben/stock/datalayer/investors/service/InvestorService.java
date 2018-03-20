@@ -436,7 +436,7 @@ public class InvestorService {
     }
 
     public void againEntrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
-        String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, securitiesStockEntrust.getTradeSession());
+        String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, securitiesStockEntrust.getTradeSession());
         securitiesStockEntrust.setEntrustNo(entrustNo);
         entrustProducer.entrustApplySellOut(securitiesStockEntrust);
     }
