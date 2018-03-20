@@ -109,7 +109,7 @@ public class OrganizationAccountService {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		if (account != null) {
 			String dbOldPaymentPassword = account.getPaymentPassword();
-			if (!PasswordCrypt.match(oldPaymentPassword, dbOldPaymentPassword)) {
+			if (dbOldPaymentPassword!= null && !"".equals(dbOldPaymentPassword.trim()) && !PasswordCrypt.match(oldPaymentPassword, dbOldPaymentPassword)) {
 				throw new ServiceException(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION);
 			}
 			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
