@@ -49,7 +49,8 @@ public class CapitalAccount {
     /**
      * 发布人ID
      */
-    @Column(name = "publisher_id")
+//    @Column(name = "publisher_id")
+   @Transient
     private Long publisherId;
     /**
      * 发布人序列号
@@ -57,7 +58,7 @@ public class CapitalAccount {
     @Column(name = "publisher_serial_code")
     private String publisherSerialCode;
 
-    @JoinColumn(name = "publisher_id", updatable = false, insertable = false)
+    @JoinColumn(name = "publisher_id")
     @OneToOne
     private Publisher publisher;
 
@@ -130,6 +131,7 @@ public class CapitalAccount {
     }
 
     public void setPublisher(Publisher publisher) {
+        publisher.setId(publisherId);
         this.publisher = publisher;
     }
 }

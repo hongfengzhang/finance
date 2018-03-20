@@ -21,7 +21,7 @@ $(function() {
                         html += '<span>'+permission.name+'</span><br>&nbsp;&nbsp;&nbsp;&nbsp;';
                         $.each(permissions,function (index,cpermission){
                             if(cpermission.pid==permission.id) {
-                                html += '<span>'+cpermission.name+'  <input value='+cpermission.id+' type="checkbox" name="permission"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
+                                html += '<span>'+cpermission.name+'  <input value='+cpermission.id+' type="checkbox" name="permission" disabled="disabled"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
                             }
                         })
                         html += "<br>";

@@ -10,11 +10,23 @@ $(function() {
 	$("#cancel-btn").on('click', function() {
 		parent.layer.closeAll();
 	});
-	// 提交按钮
+
+    function isExist(element) {
+        for (var i = 0; i < this.length; i++) {
+            if (this[i] == element) {
+                return true;
+            }
+        } return false;
+    }
+    // 提交按钮
 	$("#submit-btn").on('click', function() {
         var permissionIds = new Array();
         $("input[name='permission']:checked").each(function() {
             var permissionId = $(this).val();
+            var pid = $(this).attr("pid");
+            if(!isExist(permissionIds)) {
+                permissionIds.push(parseInt(pid));
+            }
             permissionIds.push(parseInt(permissionId));
         })
 		$.ajax({
@@ -52,7 +64,7 @@ $(function() {
                         html += '<span>'+permission.name+'</span><br>&nbsp;&nbsp;&nbsp;&nbsp;';
                         $.each(permissions,function (index,cpermission){
                             if(cpermission.pid==permission.id) {
-                                html += '<span>'+cpermission.name+'  <input value='+cpermission.id+' type="checkbox" name="permission"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
+                                html += '<span>'+cpermission.name+'  <input pid='+permission.id+' value='+cpermission.id+' type="checkbox" name="permission"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
                             }
                         })
                         html += "<br>";
