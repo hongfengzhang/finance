@@ -48,7 +48,9 @@ $(function() {
                         if (full.resourceType == "STOCKOPTIONTRADE") {
                             return "期权";
                         }
-                    }
+                    }else {
+                    	return "";
+					}
                 }},
 	            { "data": "originAmount", "title": "原始收入", orderable: false},
 	            { "data": "amount", "title": "平台收入", orderable: false},
@@ -66,7 +68,9 @@ $(function() {
                         if (full.type == "Withdrawals") {
                             return "提现";
                         }
-                    }
+                    }else {
+                    	return "";
+					}
                 }},
 	            { "data": "occurrenceTime", "title": "结算时间", orderable: false}
 	        ];

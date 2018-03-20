@@ -71,6 +71,8 @@ $(function () {
                             if (full.resourceType == "STOCKOPTIONTRADE") {
                                 return "期权";
                             }
+                        }else{
+                            return "";
                         }
                     }
                 },
@@ -91,6 +93,8 @@ $(function () {
                         if (full.type == "Withdrawals") {
                             return "提现";
                         }
+                    }else {
+                        return "";
                     }
                 }
                 },
