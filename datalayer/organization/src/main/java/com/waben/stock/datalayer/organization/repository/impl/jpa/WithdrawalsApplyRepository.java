@@ -10,4 +10,6 @@ import com.waben.stock.datalayer.organization.entity.WithdrawalsApply;
  */
 public interface WithdrawalsApplyRepository extends CustomJpaRepository<WithdrawalsApply, Long> {
 
+	WithdrawalsApply findByApplyNo(String applyNo);
+
 }
