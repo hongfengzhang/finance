@@ -113,6 +113,13 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
+	public Response<StockOptionTradeDto> dueTreatmentExercise(@PathVariable Long id) {
+		StockOptionTrade stockOptionTrades = stockOptionTradeService.dueTreatmentExercise(id);
+		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, stockOptionTrades, false);
+		return new Response<>(result);
+	}
+
+	@Override
 	public Response<StockOptionTradeDto> add(@RequestBody StockOptionTradeDto stockOptionTradeDto) {
 		logger.info("发布人{}申购期权{}，名义本金 {}!", stockOptionTradeDto.getPublisherId(), stockOptionTradeDto.getStockCode(),
 				stockOptionTradeDto.getNominalAmount());
