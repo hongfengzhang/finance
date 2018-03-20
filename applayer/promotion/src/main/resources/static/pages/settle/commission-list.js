@@ -41,19 +41,21 @@ $(function() {
 	            { "data": "id", "title": "订单ID", orderable: false},
 	            { "data": "flowNo", "title": "流水号", orderable: false},
 	            { "data": "resourceType", "title": "业务类型", orderable: false,"render": function(data, type, full, meta) {
-                    if (full.resourceType != null) {
+                    if (full.resourceType) {
                         if (full.resourceType == "BUYRECORD") {
                             return "配资";
                         }
                         if (full.resourceType == "STOCKOPTIONTRADE") {
                             return "期权";
                         }
-                    }
+                    }else {
+                    	return "";
+					}
                 }},
 	            { "data": "originAmount", "title": "原始收入", orderable: false},
 	            { "data": "amount", "title": "平台收入", orderable: false},
 	            { "data": "type", "title": "佣金类型", orderable: false,"render": function(data, type, full, meta) {
-                    if (full.type != null) {
+                    if (full.type) {
                         if (full.type == "ServiceFeeAssign") {
                             return "信息服务费";
                         }
@@ -66,7 +68,9 @@ $(function() {
                         if (full.type == "Withdrawals") {
                             return "提现";
                         }
-                    }
+                    }else {
+                    	return "";
+					}
                 }},
 	            { "data": "occurrenceTime", "title": "结算时间", orderable: false}
 	        ];
