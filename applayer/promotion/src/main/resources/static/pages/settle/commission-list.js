@@ -41,30 +41,38 @@ $(function() {
 	            { "data": "id", "title": "订单ID", orderable: false},
 	            { "data": "flowNo", "title": "流水号", orderable: false},
 	            { "data": "resourceType", "title": "业务类型", orderable: false,"render": function(data, type, full, meta) {
-                    var resourceType = full.resourceType;
-                    if(resourceType=="BUYRECORD"){
-                    	return "配资";
+                    if (full.resourceType) {
+                        if (full.resourceType == "BUYRECORD") {
+                            return "配资";
+                        } else if (full.resourceType == "STOCKOPTIONTRADE") {
+                            return "期权";
+                        } else if("ORGWITHDRAWALSAPPLY"==full.resourceType){
+                        	return "机构提现申请";
+						}else{
+                            return full.resourceType;
+						}
+                    }else {
+                    	return "";
 					}
-                    if(resourceType=="STOCKOPTIONTRADE"){
-                        return "期权";
-                    }
                 }},
 	            { "data": "originAmount", "title": "原始收入", orderable: false},
 	            { "data": "amount", "title": "平台收入", orderable: false},
 	            { "data": "type", "title": "佣金类型", orderable: false,"render": function(data, type, full, meta) {
-                    var type = full.type;
-                    if(type =="ServiceFeeAssign"){
-						return "信息服务费";
+                    if (full.type) {
+                        if (full.type == "ServiceFeeAssign") {
+                            return "信息服务费";
+                        }else if (full.type == "DeferredChargesAssign") {
+                            return "递延费";
+                        }else if (full.type == "RightMoneyAssign") {
+                            return "期权收益";
+                        }else if (full.type == "Withdrawals") {
+                            return "提现";
+                        }else{
+                        	return full.type;
+						}
+                    }else {
+                    	return "";
 					}
-                    if(type =="DeferredChargesAssign"){
-                        return "递延费";
-                    }
-                    if(type =="RightMoneyAssign"){
-                        return "期权收益";
-                    }
-                    if(type =="Withdrawals"){
-                        return "提现";
-                    }
                 }},
 	            { "data": "occurrenceTime", "title": "结算时间", orderable: false}
 	        ];

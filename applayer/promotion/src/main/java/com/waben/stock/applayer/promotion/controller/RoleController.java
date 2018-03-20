@@ -3,6 +3,7 @@ package com.waben.stock.applayer.promotion.controller;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.applayer.promotion.business.RoleBusiness;
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
@@ -11,6 +12,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.manage.MenuVo;
 import com.waben.stock.interfaces.vo.manage.PermissionVo;
 import com.waben.stock.interfaces.vo.manage.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,6 +101,17 @@ public class RoleController {
         permissions.addAll(permissionDtos);
         List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissions, PermissionVo.class);
         return new Response<>(permissionVos);
+    }
+
+    @RequestMapping("/menus")
+    @ResponseBody
+    public Response<List<MenuVo>> menus() {
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        Set<MenuDto> menuDtos = roleBusiness.findById(userDto.getRole()).getMenusDtos();
+        List<MenuDto> menus = new ArrayList<>();
+        menus.addAll(menuDtos);
+        List<MenuVo> menuVos = CopyBeanUtils.copyListBeanPropertiesToList(menus, MenuVo.class);
+        return new Response<>(menuVos);
     }
 
     @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
