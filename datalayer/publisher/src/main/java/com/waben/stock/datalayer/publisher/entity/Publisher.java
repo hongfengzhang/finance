@@ -62,7 +62,7 @@ public class Publisher {
 	@Column(name = "is_test")
 	private Boolean isTest;
 	/**
-	 * 用户使用的终端类型，I表示IOS，A表示Android，H表示PC
+	 * 用户使用的终端类型，I表示IOS，A表示Android，PC表示PC，H5表示移动端
 	 */
 	@Column(name = "end_type")
 	private String endType;
