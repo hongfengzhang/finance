@@ -44,10 +44,13 @@ $(function() {
                     if (full.resourceType) {
                         if (full.resourceType == "BUYRECORD") {
                             return "配资";
-                        }
-                        if (full.resourceType == "STOCKOPTIONTRADE") {
+                        } else if (full.resourceType == "STOCKOPTIONTRADE") {
                             return "期权";
-                        }
+                        } else if("ORGWITHDRAWALSAPPLY"==full.resourceType){
+                        	return "机构提现申请";
+						}else{
+                            return full.resourceType;
+						}
                     }else {
                     	return "";
 					}
@@ -58,16 +61,15 @@ $(function() {
                     if (full.type) {
                         if (full.type == "ServiceFeeAssign") {
                             return "信息服务费";
-                        }
-                        if (full.type == "DeferredChargesAssign") {
+                        }else if (full.type == "DeferredChargesAssign") {
                             return "递延费";
-                        }
-                        if (full.type == "RightMoneyAssign") {
+                        }else if (full.type == "RightMoneyAssign") {
                             return "期权收益";
-                        }
-                        if (full.type == "Withdrawals") {
+                        }else if (full.type == "Withdrawals") {
                             return "提现";
-                        }
+                        }else{
+                        	return full.type;
+						}
                     }else {
                     	return "";
 					}
