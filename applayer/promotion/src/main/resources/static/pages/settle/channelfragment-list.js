@@ -42,13 +42,13 @@ $(function () {
             var columns = [
                 {"data": "id", "title": "订单ID", orderable: false},
                 {"data": "orgDto", "title": "机构名称", orderable: false, "render": function (data, type, full, meta) {
-                    if (full.orgDto.name != null) {
+                    if (full.orgDto != null) {
                         return full.orgDto.name;
                     }
                     return '';
                 }},
                 {"data": "orgDto", "title": "机构代码", orderable: false, "render": function (data, type, full, meta) {
-                    if (full.orgDto.code != null) {
+                    if (full.orgDto!= null) {
                         return full.orgDto.code;
                     }
                     return '';
