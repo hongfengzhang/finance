@@ -41,29 +41,20 @@ $(function () {
         } else {
             var columns = [
                 {"data": "id", "title": "订单ID", orderable: false},
-                {
-                    "data": "orgDto", "title": "机构名称", orderable: false, "render": function (data, type, full, meta) {
-                    if (full.name != null) {
-                        return data.name;
+                {"data": "orgDto", "title": "机构名称", orderable: false, "render": function (data, type, full, meta) {
+                    if (full.orgDto != null) {
+                        return full.orgDto.name;
                     }
                     return '';
-                }
-                },
-                {
-                    "data": "orgDto", "title": "机构代码", orderable: false, "render": function (data, type, full, meta) {
-                    if (full.code) {
-                        return data.code;
+                }},
+                {"data": "orgDto", "title": "机构代码", orderable: false, "render": function (data, type, full, meta) {
+                    if (full.orgDto!= null) {
+                        return full.orgDto.code;
                     }
                     return '';
-
-                }
-                },
+                }},
                 {"data": "flowNo", "title": "流水号", orderable: false},
-                {
-                    "data": "resourceType",
-                    "title": "业务类型",
-                    orderable: false,
-                    "render": function (data, type, full, meta) {
+                {"data": "resourceType", "title": "业务类型", orderable: false, "render": function (data, type, full, meta) {
                         if (full.resourceType) {
                             if (full.resourceType == "BUYRECORD") {
                                 return "配资";
@@ -81,8 +72,7 @@ $(function () {
                 },
                 {"data": "originAmount", "title": "原始收入", orderable: false},
                 {"data": "amount", "title": "平台收入", orderable: false},
-                {
-                    "data": "type", "title": "佣金类型", orderable: false, "render": function (data, type, full, meta) {
+                {"data": "type", "title": "佣金类型", orderable: false, "render": function (data, type, full, meta) {
                     if (full.type) {
                         if (full.type == "ServiceFeeAssign") {
                             return "信息服务费";
