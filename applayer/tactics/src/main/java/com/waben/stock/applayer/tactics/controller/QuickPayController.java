@@ -325,13 +325,13 @@ public class QuickPayController {
             quickPayBusiness.payPalWithholdCallback(no_order,
                     "SUCCESS".equals(result_pay) ? WithdrawalsState.PROCESSED : WithdrawalsState.FAILURE, settle_date,
                     result_pay);
+            // 响应回调
+            returnObject.put("ret_code","0000");
+            returnObject.put("ret_msg","交易成功");
         }else{
             returnObject.put("ret_code","1001");
             returnObject.put("ret_msg","交易失败");
         }
-        // 响应回调
-        returnObject.put("ret_code","0000");
-        returnObject.put("ret_msg","交易成功");
         return returnObject;
     }
 
