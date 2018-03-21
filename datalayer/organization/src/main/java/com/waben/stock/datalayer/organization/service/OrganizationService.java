@@ -70,6 +70,11 @@ public class OrganizationService {
         } else {
             level = parent.getLevel() + 1;
         }
+        // 判断机构名称是否存在
+        List<Organization> checkName = organizationDao.retriveByName(orgForm.getName());
+        if(checkName != null && checkName.size() > 0) {
+        	throw new ServiceException(ExceptionConstant.ORGNAME_EXIST_EXCEPTION);
+        }
         // 生成机构代码
         List<Organization> childList = organizationDao.listByParentOrderByCodeDesc(parent);
         String code = parent.getCode();
