@@ -83,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
 						"/system/stockMarketExponent", "/system/getAppHomeTopData", "/system/serverTime")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
+		http.authorizeRequests().antMatchers("/strategytype/lists", "/strategytype/experience").permitAll();
 		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
 		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
 				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking")
