@@ -295,7 +295,7 @@ public class QuickPayBusiness {
         WithdrawalsOrderDto order = new WithdrawalsOrderDto();
         order.setWithdrawalsNo(withdrawalsNo);
         order.setAmount(amount);
-        order.setState("0000".equals(jsStr.getString("ret_code")) ? WithdrawalsState.PROCESSING : WithdrawalsState.FAILURE);
+        order.setState(WithdrawalsState.PROCESSING);
         order.setName(name);
         order.setIdCard(idCard);
         order.setBankCard(bankCard);
@@ -303,10 +303,10 @@ public class QuickPayBusiness {
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         this.saveWithdrawalsOrders(order);
-        //如果请求失败 抛出异常
-        if (!"0000".equals(jsStr.getString("ret_code"))) {
-            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
-        }
+//        //如果请求失败 抛出异常
+//        if (!"0000".equals(jsStr.getString("ret_code"))) {
+//            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
+//        }
 
 //        // 提现异常
 //        JSONObject jsonData = jsStr.getJSONObject("data");
@@ -502,7 +502,7 @@ public class QuickPayBusiness {
         map.put("acct_name", bindCard.getName());
         risk.put("frms_ware_category", PayPalConfig.frms_ware_category);
         risk.put("user_info_mercht_userno", bindCard.getPhone().substring(1));
-        risk.put("user_info_dt_registe", sdf.format(response.getResult().getCreateTime()));
+        risk.put("user_info_dt_register", sdf.format(response.getResult().getCreateTime()));
         risk.put("user_info_bind_phone", bindCard.getPhone());
         risk.put("user_info_identify_state", PayPalConfig.user_info_identify_state);
         risk.put("user_info_identify_type", PayPalConfig.user_info_identify_type);
