@@ -18,10 +18,10 @@ public class InquiryResultDaoImpl implements InquiryResultDao {
     private InquiryResultRepository inquiryResultRepository;
 
     @Override
-    public InquiryResult retrieveByTrade(Long trade) {
+    public List<InquiryResult> retrieveByTrade(Long trade) {
         StockOptionTrade tradeInfo = new StockOptionTrade();
         tradeInfo.setId(trade);
-        return inquiryResultRepository.findByTrade(tradeInfo);
+        return inquiryResultRepository.findAllByTradeOrderByIdDesc(tradeInfo);
     }
 
     @Override

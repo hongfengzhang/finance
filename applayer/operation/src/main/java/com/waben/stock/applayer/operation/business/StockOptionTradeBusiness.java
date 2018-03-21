@@ -170,7 +170,7 @@ public class StockOptionTradeBusiness {
         if(result.getRightTime()!=null) {
             stockOptionTradeService.exercise(id);
         }else {
-            stockOptionTradeService.dueTreatmentExercise(id);
+           logger.info("结果：{}",JacksonUtil.encode(stockOptionTradeService.dueTreatmentExercise(id)));
         }
         if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
             modify(id);

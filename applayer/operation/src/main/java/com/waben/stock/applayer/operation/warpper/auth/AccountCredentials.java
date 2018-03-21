@@ -21,7 +21,7 @@ public class AccountCredentials extends User implements Serializable {
     private Object security;
 
     public AccountCredentials(String username, String password, Collection<? extends GrantedAuthority> authorities) {
-        super(username, password, authorities);
+            super(username, password, authorities);
     }
 
     @Override

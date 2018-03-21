@@ -64,7 +64,7 @@ $(function() {
 	            	if(window.level == 1) {
 	            		return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            	} else {
-	            		return "<a class='detail' orgid='" + full.id + "' href='javascript:;'>详情</a>";
+	            		return "<a class='detail' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>详情</a>";
 	            	}
 	            }}
 	        ];
