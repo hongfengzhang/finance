@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class InquiryResultService {
@@ -20,10 +21,10 @@ public class InquiryResultService {
     }
 
     public InquiryResult fetchByTrade(Long trade) {
-        InquiryResult result = inquiryResultDao.retrieveByTrade(trade);
+        List<InquiryResult> result = inquiryResultDao.retrieveByTrade(trade);
         if (result == null) {
             throw new DataNotFoundException(ExceptionConstant.INQUIRY_RESULT_NOT_FOUND);
         }
-        return result;
+        return result.get(0);
     }
 }

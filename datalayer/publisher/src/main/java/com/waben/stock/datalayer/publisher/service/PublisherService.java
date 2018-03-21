@@ -76,6 +76,7 @@ public class PublisherService {
 		account.setFrozenCapital(new BigDecimal(0.00));
 		account.setPublisherSerialCode(publisher.getSerialCode());
 		account.setPublisherId(publisher.getId());
+		account.setPublisher(publisher);
 		account.setUpdateTime(new Date());
 		capitalAccountDao.create(account);
 		// 返回
