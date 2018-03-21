@@ -42,12 +42,12 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 				String cacheToken = redisCache.get(String.format(RedisCacheKeyType.AppToken.getKey(), username));
 				if (cacheToken != null && !"".equals(cacheToken) && !cacheToken.equals(token)) {
 					String url = httpRequest.getRequestURL().toString();
-					if (url.indexOf("stock/selectStock") > 0 || url.indexOf("buyRecord/tradeDynamic") > 0
-							|| url.indexOf("stockoptiontrade/tradeDynamic") > 0
-							|| url.indexOf("system/getEnabledBannerList") > 0 || url.indexOf("system/banner/lists") > 0
-							|| url.indexOf("system/getEnabledCircularsList") > 0
-							|| url.indexOf("system/stockMarketExponent") > 0
-							|| url.indexOf("system/getAppHomeTopData") > 0 || url.indexOf("system/serverTime") > 0) {
+					if (url.indexOf("/publisher/sendSms") > 0 || url.indexOf("/publisher/register") > 0
+							|| url.indexOf("/publisher/modifyPassword") > 0 || url.indexOf("/crawler/") > 0
+							|| url.indexOf("/stock/") > 0 || url.indexOf("/strategytype/lists") > 0
+							|| url.indexOf("/buyRecord/tradeDynamic") > 0 || url.indexOf("/buyRecord/isTradeTime") > 0
+							|| url.indexOf("/stockoptiontrade/cyclelists") > 0
+							|| url.indexOf("/stockoptiontrade/tradeDynamic") > 0 || url.indexOf("/system/") > 0) {
 					} else {
 						httpRequest.getSession().invalidate();
 						HttpServletResponse httpResponse = (HttpServletResponse) response;

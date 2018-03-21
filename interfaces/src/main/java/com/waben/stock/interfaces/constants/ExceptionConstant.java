@@ -150,6 +150,8 @@ public class ExceptionConstant {
 	public static final String ORGPUBLISHER_EXIST_EXCEPTION = "8007";
 	// 尚未绑卡，不能申请提现
 	public static final String WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION = "8008";
+	// 机构名称已存在
+	public static final String ORGNAME_EXIST_EXCEPTION = "8009";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍

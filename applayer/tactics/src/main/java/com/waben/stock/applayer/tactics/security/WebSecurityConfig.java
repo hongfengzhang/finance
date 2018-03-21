@@ -118,8 +118,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/quickpay/paypalcallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/paypalnotify").permitAll();
 //		//测试放权  paypalnotify
-//		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
-//		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
@@ -132,7 +132,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
-		http.sessionManagement().maximumSessions(1);
 	}
 
 	@Override
