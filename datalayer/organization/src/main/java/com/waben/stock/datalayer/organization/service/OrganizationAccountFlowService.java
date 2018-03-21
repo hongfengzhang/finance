@@ -8,6 +8,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -17,6 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -41,6 +43,8 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlo
  */
 @Service
 public class OrganizationAccountFlowService {
+
+    org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private OrganizationAccountFlowDao organizationAccountFlowDao;
@@ -101,6 +105,7 @@ public class OrganizationAccountFlowService {
                             query.getEndTime()));
                 }
                 if (query.getOrgIds()!= null && query.getOrgIds().size() > 0) {
+                    logger.info("查询orgIds被传进来了");
                     Join<Organization, OrganizationAccountFlow> join = root.join("org", JoinType.LEFT);
                     CriteriaBuilder.In<Object> in = criteriaBuilder.in(join.get("id"));
                     for (Long id : query.getOrgIds()) {
