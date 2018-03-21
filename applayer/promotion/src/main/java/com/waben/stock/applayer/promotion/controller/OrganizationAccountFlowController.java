@@ -59,6 +59,14 @@ public class OrganizationAccountFlowController {
         }
         if(orgIds.size()==0){
             PageInfo<OrganizationAccountFlowDto>  organizationAccountFlowDtoPage = new PageInfo<>();
+            List<OrganizationAccountFlowDto> organizationAccountFlowDtos = new ArrayList<>();
+            organizationAccountFlowDtoPage.setFrist(true);
+            organizationAccountFlowDtoPage.setLast(true);
+            organizationAccountFlowDtoPage.setNumber(0);
+            organizationAccountFlowDtoPage.setSize(10);
+            organizationAccountFlowDtoPage.setTotalElements(0l);
+            organizationAccountFlowDtoPage.setTotalPages(0);
+            organizationAccountFlowDtoPage.setContent(organizationAccountFlowDtos);
             return new Response<>(organizationAccountFlowDtoPage);
         }
         PageInfo<OrganizationAccountFlowDto> organizationAccountFlowDtoPageInfo = organizationAccountFlowBusiness.pages(query);
