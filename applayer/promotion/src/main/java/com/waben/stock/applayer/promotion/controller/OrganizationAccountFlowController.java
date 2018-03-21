@@ -67,6 +67,10 @@ public class OrganizationAccountFlowController {
         }
         query.setOrgIds(orgIds);
         logger.info("orgIds",orgIds.size());
+        if(orgIds.size()==0){
+            PageInfo<OrganizationAccountFlowDto>  organizationAccountFlowDtoPage = new PageInfo<>();
+            return new Response<>(organizationAccountFlowDtoPage);
+        }
         PageInfo<OrganizationAccountFlowDto> organizationAccountFlowDtoPageInfo = organizationAccountFlowBusiness.pages(query);
         return new Response<>(organizationAccountFlowDtoPageInfo);
     }
