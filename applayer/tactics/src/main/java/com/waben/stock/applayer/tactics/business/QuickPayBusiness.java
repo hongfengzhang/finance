@@ -502,7 +502,7 @@ public class QuickPayBusiness {
         map.put("acct_name", bindCard.getName());
         risk.put("frms_ware_category", PayPalConfig.frms_ware_category);
         risk.put("user_info_mercht_userno", bindCard.getPhone().substring(1));
-        risk.put("user_info_dt_registe", sdf.format(response.getResult().getCreateTime()));
+        risk.put("user_info_dt_register", sdf.format(response.getResult().getCreateTime()));
         risk.put("user_info_bind_phone", bindCard.getPhone());
         risk.put("user_info_identify_state", PayPalConfig.user_info_identify_state);
         risk.put("user_info_identify_type", PayPalConfig.user_info_identify_type);

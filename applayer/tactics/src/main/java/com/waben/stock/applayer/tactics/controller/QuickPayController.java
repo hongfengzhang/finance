@@ -217,6 +217,7 @@ public class QuickPayController {
     @ApiOperation(value = "连连快捷支付")
     @ResponseBody
     public Response<Map> paypal(@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) BigDecimal amount) {
+
         Response<Map> result = quickPayBusiness.payPal(amount, bindCardId, SecurityUtil.getUserId());
         return result;
     }
