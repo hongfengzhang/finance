@@ -303,10 +303,10 @@ public class QuickPayBusiness {
         order.setCreateTime(new Date());
         order.setUpdateTime(new Date());
         this.saveWithdrawalsOrders(order);
-//        //如果请求失败 抛出异常
-//        if (!"0000".equals(jsStr.getString("ret_code"))) {
-//            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
-//        }
+        //如果请求失败 抛出异常
+        if (!"0000".equals(jsStr.getString("ret_code"))) {
+            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
+        }
 
 //        // 提现异常
 //        JSONObject jsonData = jsStr.getJSONObject("data");
