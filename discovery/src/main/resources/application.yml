@@ -1,3 +1,8 @@
+server:
+  port: 8882
+management:
+  port: 3332
+  context-path: /turbine
 logging:
   config: classpath:log/logback.xml
 eureka:
@@ -16,8 +21,8 @@ eureka:
       lease-expiration-duration-in-seconds: 30  # 续约到期时间
       lease-renewal-interval-in-seconds: 10  #续约更新时间间隔
   client:
-    register-with-eureka: true
-    fetch-registry: true
+    register-with-eureka: false
+    fetch-registry: false
   server:
     renewal-percent-threshold: '0.8'
     enable-self-preservation: false

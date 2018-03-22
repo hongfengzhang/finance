@@ -17,7 +17,9 @@ public enum ResourceType implements CommonalityEnum {
 
 	STOCKOPTIONTRADE("3", "期权交易记录"),
 	
-	ORGWITHDRAWALSAPPLY("4", "机构提现申请");
+	ORGWITHDRAWALSAPPLY("4", "机构提现申请"),
+	
+	ORGANIZATION("5", "机构");
 
 	private String index;
 	private String type;

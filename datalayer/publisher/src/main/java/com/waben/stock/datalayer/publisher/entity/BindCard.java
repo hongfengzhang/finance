@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.publisher.entity;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
@@ -78,6 +80,10 @@ public class BindCard {
 	 */
 	@Column(name = "contract_no")
 	private String contractNo;
+	/**
+	 * 绑卡时间
+	 */
+	private Date createTime;
 
 	public Long getId() {
 		return id;
@@ -173,6 +179,14 @@ public class BindCard {
 
 	public void setResourceId(Long resourceId) {
 		this.resourceId = resourceId;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }
