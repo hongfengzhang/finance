@@ -61,7 +61,6 @@ public class OptionController {
                 response.getContent().get(i).setOfflineTrade(offlineStockOptionTradeVo);
             }
             try {
-                System.out.println("=================="+pageInfo.getContent().get(i).getId());
                 InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(pageInfo.getContent().get(i).getId());
                 response.getContent().get(i).setInquiryResultVo(CopyBeanUtils.copyBeanProperties(InquiryResultVo.class,inquiryResultDto , false));
             }catch (Exception e) {

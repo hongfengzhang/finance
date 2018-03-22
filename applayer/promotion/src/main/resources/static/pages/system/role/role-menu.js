@@ -55,16 +55,17 @@ $(function() {
         type: "GET",
         url: "/promotion/role/menus",
         dataType: "json",
+        async:false,
         success: function (jsonResult) {
             if("200" == jsonResult.code) {
                 var menus = jsonResult.result;
                 var html = '';
                 $.each(menus,function (index,menu){
                     if(menu.pid==0) {
-                        html += '<span>'+menu.name+'</span><br>&nbsp;&nbsp;&nbsp;&nbsp;';
+                        html += '<label class="label-danger">'+menu.name+'</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                         $.each(menus,function (index,cmenu){
                             if(cmenu.pid==menu.id) {
-                                html += '<span>'+cmenu.name+'  <input pid='+menu.id+' value='+cmenu.id+' type="checkbox" name="menu"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
+                                html += '<input title='+cmenu.name+' pid='+menu.id+' value='+cmenu.id+' type="checkbox" name="menu"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
                             }
                         })
                         html += "<br>";
