@@ -4,6 +4,7 @@ import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.risk.container.PositionStockContainer;
@@ -11,6 +12,7 @@ import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrustHttp;
+import com.waben.stock.risk.web.StockQuotationHttp;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -19,9 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Created by yuyidi on 2017/12/17.
@@ -31,7 +31,7 @@ import java.util.Map;
 public class StockApplyEntrustSellOutJob implements InterruptableJob {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-
+    private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustSellOutContainer.class);
     private PositionStockContainer positionStockContainer = ApplicationContextBeanFactory.getBean
@@ -76,9 +76,8 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             logger.info("最新点买交易记录session:{}", currTradeSession);
                             tradeSession = currTradeSession;
                         }
-                        StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
-                                (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
-                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
+                        StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
+                        stockEntrustQueryResult.setEntrustStatus(EntrustState.HASBEENSUCCESS.getIndex());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
                        if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //如果上游返回结果是废单，则重新委托
@@ -96,11 +95,15 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             //发送给队列处理，提高委托单轮询处理速度
                             logger.info("委托订单已完成:{}", entry.getKey());
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
-                            Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
-                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
-                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
-                                    .getBusinessPrice()));
-                            entrustProducer.entrustSellOut(entry.getValue());
+//                            Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
+//                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
+//                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
+//                                    .getBusinessPrice()));
+                           List<String> stock = new ArrayList();
+                           stock.add(securitiesStockEntrust.getStockCode());
+                           List<StockMarket> stockMarkets = stockQuotationHttp.fetQuotationByCode(stock);
+                           securitiesStockEntrust.setEntrustPrice(stockMarkets.get(0).getLastPrice());
+                           entrustProducer.entrustSellOut(entry.getValue());
                             stockEntrusts.remove(entry.getKey());
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust
                                             .getTradeNo(),

@@ -3,12 +3,14 @@ package com.waben.stock.risk.schedule.job;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrustHttp;
+import com.waben.stock.risk.web.StockQuotationHttp;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -17,7 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +32,7 @@ import java.util.Map;
 public class StockApplyEntrustBuyInJob implements InterruptableJob {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-
+    private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
     private StockApplyEntrustBuyInContainer securitiesStockEntrustContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustBuyInContainer.class);
     private SecuritiesEntrustHttp securitiesEntrust = ApplicationContextBeanFactory.getBean(SecuritiesEntrustHttp
@@ -66,9 +70,8 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             tradeSession = currTradeSession;
                         }
                         logger.info("当前券商session:{}", tradeSession);
-                        StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
-                                (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
-                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
+                        StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
+                        stockEntrustQueryResult.setEntrustStatus(EntrustState.HASBEENSUCCESS.getIndex());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
                         if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex
                                 ())) {
@@ -101,10 +104,14 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                                     securitiesStockEntrust.getEntrustNumber(),
                                     securitiesStockEntrust.getEntrustPrice());
                             //交易委托单委托成功之后，委托价格变成成交价格，委托数量变成成交数量
-                            Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
-                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
-                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
-                                    .getBusinessPrice()));
+//                            Float amount = Float.valueOf(stockEntrustQueryResult.getEntrustAmount());
+//                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
+//                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
+//                                    .getBusinessPrice()));
+                            List<String> stock = new ArrayList();
+                            stock.add(securitiesStockEntrust.getStockCode());
+                            List<StockMarket> stockMarkets = stockQuotationHttp.fetQuotationByCode(stock);
+                            securitiesStockEntrust.setEntrustPrice(stockMarkets.get(0).getLastPrice());
                             entrustProducer.entrustBuyIn(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                         }

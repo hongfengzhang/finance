@@ -161,8 +161,9 @@ public class InvestorService {
             throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
         }
         //开始委托下单
-        String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
-                EntrustType.BUY);
+//        String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
+//                EntrustType.BUY);
+        String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
         return entrustNo;
     }
 
@@ -187,9 +188,10 @@ public class InvestorService {
         }
 
         //开始委托下单卖出
-        String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
-                EntrustType
-                        .SELL);
+//        String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
+//                EntrustType
+//                        .SELL);
+        String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
         return entrustNo;
     }
 
@@ -293,7 +295,8 @@ public class InvestorService {
             }
         }
         //开始委托撤单
-        String entrustNo = stockJyRest.withdraw(securitiesStockEntrust, stockAccount);
+//        String entrustNo = stockJyRest.withdraw(securitiesStockEntrust, stockAccount);
+        String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
         return entrustNo;
     }
 

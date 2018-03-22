@@ -66,9 +66,8 @@ public class StockApplyEntrustWithdrawJob implements InterruptableJob {
                             tradeSession = currTradeSession;
                         }
                         logger.info("当前券商session:{}", tradeSession);
-                        StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
-                                (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
-                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
+                        StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
+                        stockEntrustQueryResult.setEntrustStatus(EntrustState.WASTEORDER.getIndex());
                         if (stockEntrustQueryResult.getEntrustStatus().equals
                                 (EntrustState.WASTEORDER.getIndex())) {
                             //废单
