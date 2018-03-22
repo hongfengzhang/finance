@@ -43,7 +43,9 @@ public class OrganizationAccountFlowController {
     public Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query) {
         UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
         logger.info("userDto:{}", JacksonUtil.encode(userDto));
-        query.setOrgId(userDto.getOrg().getId());
+        if(!"admin".equals(userDto.getUsername())){
+            query.setOrgId(userDto.getOrg().getId());
+        }
         return new Response<>(organizationAccountFlowBusiness.pages(query));
     }
     
@@ -59,25 +61,27 @@ public class OrganizationAccountFlowController {
     public Response<PageInfo<OrganizationAccountFlowDto>> childPages(@RequestBody OrganizationAccountFlowQuery query) {
         UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
         logger.info("userDto:{}", JacksonUtil.encode(userDto));
-        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(userDto.getOrg().getId());
-        logger.info("organizationDtos:{}", JacksonUtil.encode(organizationDtos));
-        List<Long> orgIds = new ArrayList<>();
-        for (OrganizationDto orgDto:organizationDtos){
-            orgIds.add(orgDto.getId());
-        }
-        query.setOrgIds(orgIds);
-        logger.info("orgIds",orgIds.size());
-        if(orgIds.size()==0){
-            PageInfo<OrganizationAccountFlowDto>  organizationAccountFlowDtoPage = new PageInfo<>();
-            List<OrganizationAccountFlowDto> organizationAccountFlowDtos = new ArrayList<>();
-            organizationAccountFlowDtoPage.setFrist(true);
-            organizationAccountFlowDtoPage.setLast(true);
-            organizationAccountFlowDtoPage.setNumber(0);
-            organizationAccountFlowDtoPage.setSize(10);
-            organizationAccountFlowDtoPage.setTotalElements(0l);
-            organizationAccountFlowDtoPage.setTotalPages(0);
-            organizationAccountFlowDtoPage.setContent(organizationAccountFlowDtos);
-            return new Response<>(organizationAccountFlowDtoPage);
+        if(!"admin".equals(userDto.getUsername())){
+            List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(userDto.getOrg().getId());
+            logger.info("organizationDtos:{}", JacksonUtil.encode(organizationDtos));
+            List<Long> orgIds = new ArrayList<>();
+            for (OrganizationDto orgDto:organizationDtos){
+                orgIds.add(orgDto.getId());
+            }
+            query.setOrgIds(orgIds);
+            logger.info("orgIds",orgIds.size());
+            if(orgIds.size()==0){
+                PageInfo<OrganizationAccountFlowDto>  organizationAccountFlowDtoPage = new PageInfo<>();
+                List<OrganizationAccountFlowDto> organizationAccountFlowDtos = new ArrayList<>();
+                organizationAccountFlowDtoPage.setFrist(true);
+                organizationAccountFlowDtoPage.setLast(true);
+                organizationAccountFlowDtoPage.setNumber(0);
+                organizationAccountFlowDtoPage.setSize(10);
+                organizationAccountFlowDtoPage.setTotalElements(0l);
+                organizationAccountFlowDtoPage.setTotalPages(0);
+                organizationAccountFlowDtoPage.setContent(organizationAccountFlowDtos);
+                return new Response<>(organizationAccountFlowDtoPage);
+            }
         }
         PageInfo<OrganizationAccountFlowDto> organizationAccountFlowDtoPageInfo = organizationAccountFlowBusiness.pages(query);
         return new Response<>(organizationAccountFlowDtoPageInfo);

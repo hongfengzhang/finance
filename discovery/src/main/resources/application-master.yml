@@ -1,9 +1,0 @@
-server:
-  port: 8882
-management:
-  port: 3332
-  context-path: /master
-eureka:
-  client:
-      service-url:
-        defaultZone: @discovery.server@
