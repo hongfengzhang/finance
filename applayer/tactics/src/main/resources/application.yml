@@ -1,5 +1,6 @@
 server:
   port: 8083
+  maxHttpPostSize: 10485760
 management:
   port: 3033
   context-path: /turbine
@@ -30,3 +31,5 @@ redis:
 custom:
   operation:
     server: ${operation.server}
+mongo:
+    uri: ${sys.mongo.uri}
