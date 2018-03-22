@@ -16,7 +16,7 @@ $(function() {
                 var roles = jsonResult.result;
                 var html = '';
                 $.each(roles,function (index,role){
-                    html += '<span>'+role.name+'  <input class="radio" value='+role.id+' type="radio" name="role"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
+                    html += '<input title='+role.name+' class="radio" value='+role.id+' type="radio" name="role"/>&nbsp;&nbsp;&nbsp;&nbsp;';
                     if((index+1)%3==0) {
                         html += "<br>";
                     }
