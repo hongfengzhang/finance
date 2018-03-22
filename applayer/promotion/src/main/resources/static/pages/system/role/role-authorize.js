@@ -55,6 +55,7 @@ $(function() {
         type: "GET",
         url: "/promotion/role/permissions",
         dataType: "json",
+        async:false,
         success: function (jsonResult) {
             if("200" == jsonResult.code) {
                 var permissions = jsonResult.result;

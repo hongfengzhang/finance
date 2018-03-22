@@ -31,8 +31,6 @@ import java.util.List;
 @Controller
 public class RiskApplication {
 
-    @Autowired
-    private BuyRecordBusiness buyRecordBusiness;
 
     public static void main(String[] args) {
         System.setProperty("org.terracotta.quartz.skipUpdateCheck", "true");
