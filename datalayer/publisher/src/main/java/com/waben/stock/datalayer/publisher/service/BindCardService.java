@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.publisher.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,7 @@ public class BindCardService {
 			if (!isValid) {
 				throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
 			}
+			bindCard.setCreateTime(new Date());
 			bindCardDao.create(bindCard);
 		}
 		return bindCard;
