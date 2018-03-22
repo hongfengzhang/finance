@@ -89,13 +89,13 @@ public class BeanConfigurer {
         return new Queue("voluntarilyApplySellOut");
     }
 
-    /**
-     * 创建 委托申请买入队列
-     */
-    @Bean(name = "entrustApplyBuyIn")
-    public Queue entrustBuyInQueue() {
-        return new Queue("entrustApplyBuyIn");
-    }
+//    /**
+//     * 创建 委托申请买入队列
+//     */
+//    @Bean(name = "entrustApplyBuyIn")
+//    public Queue entrustBuyInQueue() {
+//        return new Queue("entrustApplyBuyIn");
+//    }
 
     /**
      * 创建 委托申请撤单队列
@@ -147,11 +147,11 @@ public class BeanConfigurer {
         return BindingBuilder.bind(queue).to(buyRecordExchange).with("voluntarilySellOut");
     }
 
-    @Bean
-    public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustApplyBuyIn") Queue queue,
-                                              @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
-        return BindingBuilder.bind(queue).to(buyRecordExchange).with("applyBuyIn");
-    }
+//    @Bean
+//    public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustApplyBuyIn") Queue queue,
+//                                              @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
+//        return BindingBuilder.bind(queue).to(buyRecordExchange).with("applyBuyIn");
+//    }
 
     @Bean
     public Binding bindingExchangRisk(@Qualifier("risk") Queue queue,

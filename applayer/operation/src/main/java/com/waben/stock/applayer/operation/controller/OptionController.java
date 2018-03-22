@@ -1,8 +1,10 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.InquiryResultBusiness;
 import com.waben.stock.applayer.operation.business.OfflineStockOptionTradeBusiness;
 import com.waben.stock.applayer.operation.business.StockOptionOrgBusiness;
 import com.waben.stock.applayer.operation.business.StockOptionTradeBusiness;
+import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
@@ -11,6 +13,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.stockoption.InquiryResultVo;
 import com.waben.stock.interfaces.vo.stockoption.OfflineStockOptionTradeVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionOrgVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionTradeVo;
@@ -34,6 +37,8 @@ public class OptionController {
     private StockOptionOrgBusiness stockOptionOrgBusiness;
     @Autowired
     private OfflineStockOptionTradeBusiness offlineStockOptionTradeBusiness;
+    @Autowired
+    private InquiryResultBusiness inquiryResultBusiness;
     @RequestMapping("/index")
     public String index(ModelMap map){
         List<StockOptionOrgDto> stockOptionOrgDtos = stockOptionOrgBusiness.fetchStockOptionOrgs();
@@ -55,6 +60,12 @@ public class OptionController {
                         OfflineStockOptionTradeVo.class,offlineTradeDto , false);
                 response.getContent().get(i).setOfflineTrade(offlineStockOptionTradeVo);
             }
+            try {
+                InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(pageInfo.getContent().get(i).getId());
+                response.getContent().get(i).setInquiryResultVo(CopyBeanUtils.copyBeanProperties(InquiryResultVo.class,inquiryResultDto , false));
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         return new Response<>(response);
     }
@@ -64,7 +75,6 @@ public class OptionController {
     @ResponseBody
     public Response<StockOptionTradeVo> settlement(@PathVariable Long id){
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.settlement(id);
-        stockOptionTradeBusiness.modify(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);
     }
@@ -78,10 +88,6 @@ public class OptionController {
     @ResponseBody
     public Response<Boolean> inquiry(@PathVariable Long id){
         Boolean result = stockOptionTradeBusiness.inquiry(id);
-        //修改订单状态status
-        if (result){
-            stockOptionTradeBusiness.modify(id);
-        }
         return new Response<>(result);
     }
 
@@ -94,9 +100,6 @@ public class OptionController {
     @ResponseBody
     public Response<Boolean> purchase(@PathVariable Long id){
         Boolean result = stockOptionTradeBusiness.purchase(id);
-        if (result){
-            stockOptionTradeBusiness.modify(id);
-        }
         return new Response<>(result);
     }
 
@@ -109,9 +112,6 @@ public class OptionController {
     @ResponseBody
     public Response<Boolean> exercise(@PathVariable Long id){
         Boolean result = stockOptionTradeBusiness.exercise(id);
-        if (result){
-            stockOptionTradeBusiness.modify(id);
-        }
         return new Response<>(result);
     }
 
@@ -119,7 +119,6 @@ public class OptionController {
     @ResponseBody
     public Response<StockOptionTradeVo> success(@PathVariable Long id){
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.success(id);
-        stockOptionTradeBusiness.modify(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);
     }

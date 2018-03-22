@@ -3,6 +3,7 @@
  */
 $(function() {
 	var currentOrgId = parent.currentOrgId;
+    var currentOrgPId = parent.currentOrgPId;
 	// 加载layui
 	layui.use(['element', 'table'], function() {});
 	// 修改机构名称
@@ -111,44 +112,59 @@ $(function() {
     $("#user-cancel-btn").on('click', function() {
         parent.layer.closeAll();
     });
+//得到当前用户
+    $.ajax({
+        type: "GET",
+        url: "/promotion/user/getCurrent",
+        dataType: "json",
+        success: function (jsonResult) {
+            $("[name='currentId']").val(jsonResult.result.org.id);
+        }
+    });
+
     // 提交按钮
     $("#user-submit-btn").on('click', function() {
-    	$("[name='org.id']").val(currentOrgId);
-        var uPattern = /^[a-zA-Z0-9_-]{4,10}$/;
-        var password = $('[name="password"]').val();
-        var againPassword = $('[name="again-password"]').val();
-        var userName = $('[name="username"]').val();
-        var nickName = $('[name="nickname"]').val();
-        if (!uPattern.test(userName)||!uPattern.test(nickName)) {
-            alert("用户名或昵称有误，请重新输入！");
-        }else if(userName=="") {
-            alert("用户名不能为空！");
-        }else if(nickName=="") {
-            alert("昵称不能为空");
-        }else if(password==""||againPassword=="") {
-            alert("密码不能为空！");
-        }else if(password!=againPassword) {
-            alert("两次输入的密码不一致，请重新输入");
-        }else {
-            var formData = $("#add-form").serialize();
-            $.ajax({
-                type: "POST",
-                url: "/promotion/user/save",
-                dataType: "json",
-                data: formData,
-                success: function (jsonResult) {
-                    if("200" == jsonResult.code) {
-                        alert("添加成功");
-                        parent.layer.closeAll();
-                        parent.renderTable("#user-list-table");
-                    } else {
+        var currentId = $("[name='currentId']").val();
+    	if(currentId!=currentOrgPId) {
+			alert("你不能为该机构添加管理员！");
+		}else {
+            $("[name='org.id']").val(currentOrgId);
+            var uPattern = /^[a-zA-Z0-9_-]{4,10}$/;
+            var password = $('[name="password"]').val();
+            var againPassword = $('[name="again-password"]').val();
+            var userName = $('[name="username"]').val();
+            var nickName = $('[name="nickname"]').val();
+            if (!uPattern.test(userName)||!uPattern.test(nickName)) {
+                alert("用户名或昵称有误，请重新输入！");
+            }else if(userName=="") {
+                alert("用户名不能为空！");
+            }else if(nickName=="") {
+                alert("昵称不能为空");
+            }else if(password==""||againPassword=="") {
+                alert("密码不能为空！");
+            }else if(password!=againPassword) {
+                alert("两次输入的密码不一致，请重新输入");
+            }else {
+                var formData = $("#add-form").serialize();
+                $.ajax({
+                    type: "POST",
+                    url: "/promotion/user/save",
+                    dataType: "json",
+                    data: formData,
+                    success: function (jsonResult) {
+                        if("200" == jsonResult.code) {
+                            alert("添加成功");
+                            parent.layer.closeAll();
+                            parent.renderTable("#user-list-table");
+                        } else {
+                            parent.layer.msg(jsonResult.message)
+                        }
+                    },
+                    error: function (jsonResult) {
                         parent.layer.msg(jsonResult.responseJSON.message)
                     }
-                },
-				error: function (jsonResult) {
-                    parent.layer.msg(jsonResult.responseJSON.message)
-                }
-            });
+                });
+            }
         }
     });
 });

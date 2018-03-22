@@ -46,7 +46,21 @@ $(function() {
 	            { "data": "availableBalance", "title": "可用资金", orderable: false},
 	            { "data": "frozenCapital", "title": "冻结资金", orderable: false},
 	            { "data": "balance", "title": "总资金", orderable: false},
-	            { "data": "createTime", "title": "注册时间", orderable: false}
+	            { "data": "createTime", "title": "注册时间", orderable: false},
+	            { "data": "endType", "title": "注册来源", orderable: false, "render": function(data, type, full, meta) {
+	            	var endType = full.endType;
+	            	// I表示IOS，A表示Android，PC表示PC，H5表示移动端
+	            	if(endType === 'I') {
+	            		return 'IOS';
+	            	} else if(endType === 'A') {
+	            		return '安卓'
+	            	} else if(endType === 'PC') {
+	            		return 'PC网页'
+	            	} else if(endType === 'H5') {
+	            		return 'H5移动端'
+	            	} 
+	            	return endType;
+	            }}
 	        ];
 			$(id).dataTable({
 				"responsive": true,

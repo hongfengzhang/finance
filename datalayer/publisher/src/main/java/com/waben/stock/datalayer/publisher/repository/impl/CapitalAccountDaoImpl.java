@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.publisher.repository.impl;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.publisher.entity.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -67,7 +68,9 @@ public class CapitalAccountDaoImpl implements CapitalAccountDao {
 
 	@Override
 	public CapitalAccount retriveByPublisherId(Long publisherId) {
-		return repository.findByPublisherId(publisherId);
+		Publisher publisher = new Publisher();
+		publisher.setId(publisherId);
+		return repository.findByPublisher(publisher);
 	}
 
 }

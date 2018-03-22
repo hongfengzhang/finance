@@ -150,11 +150,28 @@ $(function() {
             	} else {
             		layer.msg(jsonResult.message);
             	}
+            },
+            error: function(jsonResult) {
+                parent.layer.msg(jsonResult.responseJSON.message)
             }
         });
 	});
 	// 确认提现
 	$('#apply-record-list-table').on('click', 'a.processing', function(){
-		alert("ing...");
+		var applyId = $(this).attr("applyid");
+		$.ajax({
+            type: "POST",
+            url: "/promotion/withdrawalsApply/confirm/" + applyId,
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            dataType: "json",
+            success: function (jsonResult) {
+            	if("200" == jsonResult.code) {
+            		layer.msg("操作成功");
+            		renderTable("#apply-record-list-table");
+            	} else {
+            		layer.msg(jsonResult.message);
+            	}
+            }
+        });
 	});
 });

@@ -37,6 +37,10 @@ public class CustomerDto {
 	 * 冻结资金
 	 */
 	private BigDecimal frozenCapital;
+	/**
+	 * 用户注册终端
+	 */
+	private String endType;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -100,6 +104,14 @@ public class CustomerDto {
 
 	public void setFrozenCapital(BigDecimal frozenCapital) {
 		this.frozenCapital = frozenCapital;
+	}
+
+	public String getEndType() {
+		return endType;
+	}
+
+	public void setEndType(String endType) {
+		this.endType = endType;
 	}
 
 }

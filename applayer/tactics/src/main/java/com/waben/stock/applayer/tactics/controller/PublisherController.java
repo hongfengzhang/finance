@@ -19,6 +19,7 @@ import com.waben.stock.applayer.tactics.business.BindCardBusiness;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.business.OrganizationPublisherBusiness;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
+import com.waben.stock.applayer.tactics.business.RealNameBusiness;
 import com.waben.stock.applayer.tactics.business.SmsBusiness;
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
 import com.waben.stock.applayer.tactics.dto.publisher.SettingRemindDto;
@@ -31,7 +32,9 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.RealNameDto;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -47,7 +50,7 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/publisher")
 @Api(description = "策略发布人")
 public class PublisherController {
-	
+
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -61,9 +64,12 @@ public class PublisherController {
 
 	@Autowired
 	private SmsBusiness smsBusiness;
-	
+
 	@Autowired
 	private OrganizationPublisherBusiness orgPublisherBusiness;
+
+	@Autowired
+	private RealNameBusiness realNameBusiness;
 
 	@Autowired
 	private RedisCache redisCache;
@@ -115,11 +121,12 @@ public class PublisherController {
 
 	@PostMapping("/registrationId")
 	@ApiOperation(value = "设置极光registrationId", notes = "deviceType设备类型(1IOS 2安卓),shellIndex空壳包序号")
-	public Response<String> bindRegistrationId(String registrationId, @RequestParam(defaultValue = "0") Integer deviceType,
+	public Response<String> bindRegistrationId(String registrationId,
+			@RequestParam(defaultValue = "0") Integer deviceType,
 			@RequestParam(defaultValue = "0") Integer shellIndex) {
 		logger.info("用户{}设置极光registrationId:{}", SecurityUtil.getUserId(), registrationId);
 		if (registrationId != null && !"".equals(registrationId.trim())) {
-			if("0".equals(shellIndex) || shellIndex == null) {
+			if ("0".equals(shellIndex) || shellIndex == null) {
 				redisCache.set(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), SecurityUtil.getUserId()),
 						registrationId.trim());
 			} else {
@@ -155,6 +162,11 @@ public class PublisherController {
 		CapitalAccountDto account = accountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		if (account != null && account.getPaymentPassword() != null && !"".equals(account.getPaymentPassword())) {
 			result.getResult().setSettingPaymentPassword(true);
+		}
+		// 获取是否实名认证
+		RealNameDto realName = realNameBusiness.fetch(ResourceType.PUBLISHER, SecurityUtil.getUserId());
+		if (realName != null) {
+			result.getResult().setSettingRealName(true);
 		}
 		return result;
 	}

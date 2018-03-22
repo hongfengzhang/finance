@@ -154,7 +154,7 @@ public class StockOptionTradeService {
 							query.getBeginTime()));
 				}
 				if (query.getEndTime() != null) {
-					predicatesList.add(criteriaBuilder.lessThan(root.get("updateTimegit").as(Date.class), query.getEndTime()));
+					predicatesList.add(criteriaBuilder.lessThan(root.get("updateTime").as(Date.class), query.getEndTime()));
 				}
 				if (!StringUtils.isEmpty(query.getPublisherPhone())) {
 					Predicate publisherPhoneQuery = criteriaBuilder.equal(root.get("publisherPhone").as(Long.class),
@@ -352,5 +352,11 @@ public class StockOptionTradeService {
 	public List<StockOptionTrade> fetchByState(StockOptionTradeState stockOptionTradeState) {
 		List<StockOptionTrade> result = stockOptionTradeDao.retieveByState(stockOptionTradeState);
 		return result;
+	}
+
+	public StockOptionTrade dueTreatmentExercise(Long id) {
+		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
+		stockOptionTrade.setRightTime(new Date());
+		return stockOptionTradeDao.update(stockOptionTrade);
 	}
 }

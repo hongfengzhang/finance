@@ -10,7 +10,7 @@ import com.waben.stock.datalayer.manage.entity.AppVersionUpgrade;
  */
 public interface AppVersionUpgradeRepository extends CustomJpaRepository<AppVersionUpgrade, Long> {
 
-	AppVersionUpgrade findByIsCurrentVersionAndDeviceTypeAndVersionCodeGreaterThan(Boolean isCurrentVersion,
-			Integer deviceType, Integer versionCode);
+	AppVersionUpgrade findByIsCurrentVersionAndDeviceTypeAndShellIndexAndVersionCodeGreaterThan(
+			Boolean isCurrentVersion, Integer deviceType, Integer shellIndex, Integer versionCode);
 
 }

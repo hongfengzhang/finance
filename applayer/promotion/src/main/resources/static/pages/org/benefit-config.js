@@ -99,6 +99,17 @@ $(function() {
 		var configFormList = [];
 		for(var i = 0; i < formDataArr.length; i++) {
 			var keyValue = formDataArr[i].split("=");
+			if(keyValue[0] == "rightMoneyRatio") {
+				// 校验百分比输出格式
+				var reg = /(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/;
+				if (!reg.test(keyValue[1])) {
+					layer.msg('比例格式有误，最多为两位小数的数字', {time: 1000});
+					return;
+				} else if (parseFloat(keyValue[1]) >= 100) {
+					layer.msg('比例格式有误，不能大于100%', {time: 1000});
+					return;
+				}
+			}
 			if(i%3 == 0) {
 				configFormList.push({});
 				configFormList[configFormList.length-1][keyValue[0]] = keyValue[1]

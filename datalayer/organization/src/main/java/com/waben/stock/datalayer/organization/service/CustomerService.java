@@ -48,14 +48,14 @@ public class CustomerService {
 			orgNameCondition = " and t4.name like '%" + query.getOrgName() + "%' ";
 		}
 		String sql = String.format(
-				"select t1.id, t1.phone, t4.code, t4.name, t1.create_time, t3.balance, t3.available_balance, t3.frozen_capital from publisher t1 "
+				"select t1.id, t1.phone, t4.code, t4.name, t1.create_time, t3.balance, t3.available_balance, t3.frozen_capital, t1.end_type from publisher t1 "
 						+ "INNER JOIN p_organization_publisher t2 on t1.id=t2.publisher_id and t2.org_code like '%s%%' "
 						+ "LEFT JOIN p_organization t4 on t2.org_code=t4.code "
 						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id where 1=1 %s %s %s %s limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
 				query.getCurrentOrgCode(), publisherIdCondition, publisherPhoneCondition, orgCodeCondition,
 				orgNameCondition);
-		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"));
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setPublisherPhone", new Class<?>[] { String.class }));
@@ -65,6 +65,7 @@ public class CustomerService {
 		setMethodMap.put(new Integer(5), new MethodDesc("setBalance", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(6), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(7), new MethodDesc("setFrozenCapital", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setEndType", new Class<?>[] { String.class }));
 		List<CustomerDto> content = dynamicQuerySqlDao.execute(CustomerDto.class, sql, setMethodMap);
 		BigInteger totalElements = dynamicQuerySqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()), totalElements.longValue());

@@ -80,12 +80,13 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo(), securitiesStockEntrust.getStockCode());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
-                        if(stockEntrustQueryResult == null) {
-                            logger.info("委托卖出轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
-                            stockEntrusts.remove(entry.getKey());
-                        } else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
+                       if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
                             //如果上游返回结果是废单，则重新委托
-                            logger.info("委托卖出轮询点买记录卖出废单:{}", entry.getKey());
+                            if(stockEntrustQueryResult == null) {
+                                logger.info("委托卖出轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
+                            }else {
+                                logger.info("委托卖出轮询点买记录卖出废单:{}", entry.getKey());
+                            }
                             entrustProducer.againEntrust(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;

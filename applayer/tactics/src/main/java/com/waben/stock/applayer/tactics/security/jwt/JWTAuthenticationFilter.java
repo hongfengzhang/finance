@@ -41,10 +41,19 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 				// 判断该token是否为最新登陆的token
 				String cacheToken = redisCache.get(String.format(RedisCacheKeyType.AppToken.getKey(), username));
 				if (cacheToken != null && !"".equals(cacheToken) && !cacheToken.equals(token)) {
-					httpRequest.getSession().invalidate();
-					HttpServletResponse httpResponse = (HttpServletResponse) response;
-					httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
-					SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+					String url = httpRequest.getRequestURL().toString();
+					if (url.indexOf("/publisher/sendSms") > 0 || url.indexOf("/publisher/register") > 0
+							|| url.indexOf("/publisher/modifyPassword") > 0 || url.indexOf("/crawler/") > 0
+							|| url.indexOf("/stock/") > 0 || url.indexOf("/strategytype/lists") > 0
+							|| url.indexOf("/buyRecord/tradeDynamic") > 0 || url.indexOf("/buyRecord/isTradeTime") > 0
+							|| url.indexOf("/stockoptiontrade/cyclelists") > 0
+							|| url.indexOf("/stockoptiontrade/tradeDynamic") > 0 || url.indexOf("/system/") > 0) {
+					} else {
+						httpRequest.getSession().invalidate();
+						HttpServletResponse httpResponse = (HttpServletResponse) response;
+						httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
+						SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+					}
 				} else {
 					// 判断username是否存在，以及token是否过期
 					Long userId = new Long((Integer) tokenInfo.get("userId"));

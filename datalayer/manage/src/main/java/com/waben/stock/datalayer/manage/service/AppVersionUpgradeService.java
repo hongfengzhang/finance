@@ -18,8 +18,8 @@ public class AppVersionUpgradeService {
 	@Autowired
 	private AppVersionUpgradeDao dao;
 
-	public AppVersionUpgrade checkUpgrade(Integer versionCode, Integer deviceType) {
-		AppVersionUpgrade upgrade = dao.getGreaterThanCurrentVersion(versionCode, deviceType);
+	public AppVersionUpgrade checkUpgrade(Integer versionCode, Integer deviceType, Integer shellIndex) {
+		AppVersionUpgrade upgrade = dao.getGreaterThanCurrentVersion(versionCode, deviceType, shellIndex);
 		return upgrade;
 	}
 

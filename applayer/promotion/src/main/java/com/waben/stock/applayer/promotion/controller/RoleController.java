@@ -1,9 +1,9 @@
 package com.waben.stock.applayer.promotion.controller;
 
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
-import com.waben.stock.applayer.promotion.business.PermissionBusiness;
 import com.waben.stock.applayer.promotion.business.RoleBusiness;
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
@@ -12,6 +12,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.manage.MenuVo;
 import com.waben.stock.interfaces.vo.manage.PermissionVo;
 import com.waben.stock.interfaces.vo.manage.RoleVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class RoleController {
     @Autowired
     private OrganizationBusiness organizationBusiness;
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_SAVE')")
+    @PreAuthorize("hasRole('SAVE')")
     @RequestMapping("/save")
     @ResponseBody
     public Response<RoleVo> add(RoleVo vo){
@@ -45,7 +46,7 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-//    @PreAuthorize("hasAnyAuthority('ROLE_REVISION')")
+    @PreAuthorize("hasRole('REVISION')")
     @RequestMapping("/modify")
     @ResponseBody
     public Response<RoleVo> modify(RoleVo vo){
@@ -65,7 +66,7 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-//    @PreAuthorize("hasRole('ROLE_AUTHORIZE')")
+    @PreAuthorize("hasRole('AUTHORIZE')")
     @RequestMapping("/permission/{id}")
     @ResponseBody
     public Response<RoleVo> addRolePermission(@PathVariable Long id,final Long[] permissionIds){
@@ -102,7 +103,18 @@ public class RoleController {
         return new Response<>(permissionVos);
     }
 
-//    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
+    @RequestMapping("/menus")
+    @ResponseBody
+    public Response<List<MenuVo>> menus() {
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        Set<MenuDto> menuDtos = roleBusiness.findById(userDto.getRole()).getMenusDtos();
+        List<MenuDto> menus = new ArrayList<>();
+        menus.addAll(menuDtos);
+        List<MenuVo> menuVos = CopyBeanUtils.copyListBeanPropertiesToList(menus, MenuVo.class);
+        return new Response<>(menuVos);
+    }
+
+    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
     @RequestMapping("/{id}")
     @ResponseBody
     public Response<RoleVo> fetchById(@PathVariable Long id){

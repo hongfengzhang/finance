@@ -57,4 +57,16 @@ public class WithdrawalsApplyController implements WithdrawalsApplyInterface {
 				service.changeState(applyId, WithdrawalsApplyState.getByIndex(stateIndex)), false));
 	}
 
+	@Override
+	public Response<WithdrawalsApplyDto> fetchById(@PathVariable Long id) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class,
+				service.findById(id), false));
+	}
+
+	@Override
+	public Response<WithdrawalsApplyDto> fetchByApplyNo(@PathVariable String applyNo) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class,
+				service.findByApplyNo(applyNo), false));
+	}
+
 }

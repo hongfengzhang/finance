@@ -57,6 +57,10 @@ public class AppVersionUpgrade {
 	 */
 	private Integer deviceType;
 	/**
+	 * 空壳包序号
+	 */
+	private Integer shellIndex;
+	/**
 	 * 升级策略
 	 * <ul>
 	 * <li>0强制升级</li>
@@ -147,6 +151,14 @@ public class AppVersionUpgrade {
 
 	public void setIsCurrentVersion(Boolean isCurrentVersion) {
 		this.isCurrentVersion = isCurrentVersion;
+	}
+
+	public Integer getShellIndex() {
+		return shellIndex;
+	}
+
+	public void setShellIndex(Integer shellIndex) {
+		this.shellIndex = shellIndex;
 	}
 
 }

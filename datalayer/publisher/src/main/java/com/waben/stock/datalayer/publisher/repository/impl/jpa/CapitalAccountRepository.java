@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.publisher.repository.impl.jpa;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
+import com.waben.stock.datalayer.publisher.entity.Publisher;
 
 /**
  * 资金账号 Jpa
@@ -12,6 +13,6 @@ public interface CapitalAccountRepository extends CustomJpaRepository<CapitalAcc
 
 	CapitalAccount findByPublisherSerialCode(String serialCode);
 
-	CapitalAccount findByPublisherId(Long publisherId);
+	CapitalAccount findByPublisher(Publisher publisher);
 
 }

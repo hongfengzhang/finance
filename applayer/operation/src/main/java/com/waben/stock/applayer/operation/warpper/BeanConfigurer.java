@@ -55,7 +55,10 @@ public class BeanConfigurer {
     private String username;
     @Value("${mail.password}")
     private String password;
-
+    @Value("${mail.host}")
+    private String host;
+    @Value("${mail.port}")
+    private Integer port;
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -154,24 +157,6 @@ public class BeanConfigurer {
         return new HttpSessionEventPublisher();
     }
 
-//    /**
-//     * 创建上证 深证 创业板队列
-//     */
-//    @Bean(name = "shangSecurity")
-//    public Queue shangSecurity() {
-//        return new Queue("shangSecurity");
-//    }
-//
-//    @Bean(name = "shenSecurity")
-//    public Queue shenSecurity() {
-//        return new Queue("shenSecurity");
-//    }
-//
-//    @Bean(name = "developSecurity")
-//    public Queue developSecurity() {
-//        return new Queue("developSecurity");
-//    }
-
     /**
      * 创建 委托申请买入队列
      */
@@ -187,35 +172,10 @@ public class BeanConfigurer {
         return new Queue("entrustApplySellOut");
     }
 
-//    /**
-//     * 点买交易风控交换机
-//     */
-//    @Bean("risk")
-//    public TopicExchange riskExchange() {
-//        return new TopicExchange("risk");
-//    }
-
     @Bean("buyRecord")
     public TopicExchange buyRecordExchange() {
         return new TopicExchange("buyRecord");
     }
-
-
-//    @Bean
-//    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,
-//                                                @Qualifier("risk")TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("shang");
-//    }
-//    @Bean
-//    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,
-//                                               @Qualifier("risk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("shen");
-//    }
-//    @Bean
-//    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,
-//                                                  @Qualifier("risk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("develop");
-//    }
 
 
     /**绑定申请买入卖出路由与队列*/
@@ -233,8 +193,8 @@ public class BeanConfigurer {
     @Bean
     public JavaMailSenderImpl javaMailSender() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
-        javaMailSender.setHost("smtp.exmail.qq.com");
-        javaMailSender.setPort(465);
+        javaMailSender.setHost(host);
+        javaMailSender.setPort(port);
         javaMailSender.setUsername(username);
         javaMailSender.setPassword(password);
         Properties properties = new Properties();

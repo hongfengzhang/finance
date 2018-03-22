@@ -9,6 +9,7 @@ import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.MailUrlInfoDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -84,6 +85,9 @@ public class StockOptionTradeBusiness {
             e.printStackTrace();
         }
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
+        if(result.getStatus()==null) {
+            modify(id);
+        }
         return true;
     }
 
@@ -123,7 +127,9 @@ public class StockOptionTradeBusiness {
                 e.printStackTrace();
             }
             mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
-
+            if(OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
+                modify(id);
+            }
             return true;
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
@@ -141,7 +147,11 @@ public class StockOptionTradeBusiness {
         quotoExenise.setStrike("100%");
         quotoExenise.setAmount(String.valueOf(result.getNominalAmount().intValue()));
         quotoExenise.setDueTo(result.getOfflineTradeDto().getExpireTime());
-        quotoExenise.setExenise(result.getRightTime());
+        if(result.getRightTime()!=null) {
+            quotoExenise.setExenise(result.getRightTime());
+        }else {
+            quotoExenise.setExenise(new Date());
+        }
         MailMessage mailMessage = new ExeriseMessage();
         String file = ExcelUtil.commonRender(contextPath, quotoExenise);
         //添加邮件url信息
@@ -159,6 +169,11 @@ public class StockOptionTradeBusiness {
         //修改订单状态
         if(result.getRightTime()!=null) {
             stockOptionTradeService.exercise(id);
+        }else {
+           logger.info("结果：{}",JacksonUtil.encode(stockOptionTradeService.dueTreatmentExercise(id)));
+        }
+        if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
+            modify(id);
         }
         return true;
     }
@@ -172,6 +187,10 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
+        }
+
+        if(OfflineStockOptionTradeState.PURCHASE.equals(response.getResult().getStatus())) {
+            modify(id);
         }
         throw new ServiceException(response.getCode());
     }
@@ -205,6 +224,9 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
+        }
+        if(OfflineStockOptionTradeState.INSETTLEMENT.equals(response.getResult().getStatus())) {
+            modify(id);
         }
         throw new ServiceException(response.getCode());
     }

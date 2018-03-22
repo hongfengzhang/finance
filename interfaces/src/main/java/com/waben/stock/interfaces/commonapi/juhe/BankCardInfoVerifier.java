@@ -41,14 +41,14 @@ public class BankCardInfoVerifier {
 				return false;
 			}
 		} else if (responseObj.getError_code() == 10012) {
-			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "验证接口可用次数不足!");
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "银行卡四要素验证接口可用次数不足!");
 		} else {
 			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION, responseObj.getReason());
 		}
 	}
 
 	public static void test(String[] args) {
-		System.out.println(verify("李四", "410323199309021511", "13949111791", "6227002432210669566"));
+		System.out.println(verify("陈建", "33108119840815943X", "15557691234", "6236681480007516770"));
 	}
 
 }

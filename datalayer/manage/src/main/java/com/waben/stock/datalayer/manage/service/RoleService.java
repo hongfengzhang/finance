@@ -108,14 +108,16 @@ public class RoleService {
 
     public Role saveRoleMenu(Long id, Long[] menuIds) {
         Role role = roleDao.retrieve(id);
-        Menu menu = new Menu();
         if (role == null) {
             throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
         }
+        Set<Menu> menus = role.getMenus();
         for(Long menuId : menuIds) {
+            Menu menu = new Menu();
             menu.setId(menuId);
-            role.getMenus().add(menu);
+            menus.add(menu);
         }
+        role.setMenus(menus);
         return roleDao.update(role);
     }
 

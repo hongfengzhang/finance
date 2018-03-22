@@ -8,6 +8,7 @@ import com.waben.stock.datalayer.investors.entity.SecurityAccount;
 import com.waben.stock.datalayer.investors.repository.InvestorDao;
 import com.waben.stock.datalayer.investors.repository.rest.StockJyRest;
 import com.waben.stock.datalayer.investors.warpper.messagequeue.rabbitmq.EntrustApplyProducer;
+import com.waben.stock.datalayer.investors.web.StockQuotationHttp;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
@@ -20,6 +21,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesInterface;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockHolder;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockLoginInfo;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockMoney;
@@ -40,9 +42,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Created by yuyidi on 2017/11/30.
@@ -59,6 +59,9 @@ public class InvestorService {
     private StockBusiness stockBusiness;
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;
+
+    @Autowired
+    private StockQuotationHttp stockQuotationHttp;
     //    private InvestorContainer investorContainer = ApplicationContextBeanFactory.getBean
 //            (InvestorContainer.class);
     @Autowired
@@ -436,7 +439,13 @@ public class InvestorService {
     }
 
     public void againEntrustApplySellOut(SecuritiesStockEntrust securitiesStockEntrust) {
-        String entrustNo = entrustApplyBuyIn(securitiesStockEntrust, securitiesStockEntrust.getTradeSession());
+        Set<String> codes = new HashSet();
+        codes.add(securitiesStockEntrust.getStockCode());
+        List<String> codePrams = new ArrayList();
+        codePrams.addAll(codes);
+        List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
+        securitiesStockEntrust.setEntrustPrice(quotations.get(0).getDownLimitPrice());
+        String entrustNo = buyRecordApplySellOut(securitiesStockEntrust, securitiesStockEntrust.getTradeSession());
         securitiesStockEntrust.setEntrustNo(entrustNo);
         entrustProducer.entrustApplySellOut(securitiesStockEntrust);
     }

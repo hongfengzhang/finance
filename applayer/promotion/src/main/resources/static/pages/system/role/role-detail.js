@@ -12,13 +12,19 @@ $(function() {
         type: "GET",
         url: "/promotion/role/"+roleId,
         dataType: "json",
+        async:false,
         success: function (jsonResult) {
             if("200" == jsonResult.code) {
                 var permissions = jsonResult.result.permissionVos;
                 var html = '';
-                $.each(permissions,function (index,permissions){
-                    html += '<span>'+permissions.name+'  <input value='+permissions.id+' type="checkbox" name="permission" disabled="disabled"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
-                    if((index+1)%3==0) {
+                $.each(permissions,function (index,permission){
+                    if(permission.pid==0) {
+                        html += '<label class="label-danger">'+permission.name+'</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                        $.each(permissions,function (index,cpermission){
+                            if(cpermission.pid==permission.id) {
+                                html += '<input title='+cpermission.name+' pid='+permission.id+' value='+cpermission.id+' type="checkbox" name="permission"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
+                            }
+                        })
                         html += "<br>";
                     }
                 });

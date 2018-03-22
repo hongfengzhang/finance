@@ -108,6 +108,8 @@ public class StockOptionTradeVo{
 	 */
 	private OfflineStockOptionTradeVo offlineTrade;
 
+	private InquiryResultVo inquiryResultVo;
+
 	private OfflineStockOptionTradeState status;
 	public Long getId() {
 		return id;
@@ -292,6 +294,14 @@ public class StockOptionTradeVo{
 
 	public void setOfflineTrade(OfflineStockOptionTradeVo offlineTrade) {
 		this.offlineTrade = offlineTrade;
+	}
+
+	public InquiryResultVo getInquiryResultVo() {
+		return inquiryResultVo;
+	}
+
+	public void setInquiryResultVo(InquiryResultVo inquiryResultVo) {
+		this.inquiryResultVo = inquiryResultVo;
 	}
 
 	public OfflineStockOptionTradeState getStatus() {
