@@ -160,7 +160,6 @@ public class InvestorService {
 //        //开始委托下单
 //        String entrustNo = stockJyRest.buyRecordEntrust(securitiesStockEntrust, tradeSession, stockAccount, type,
 //                EntrustType.BUY);
-        String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
         StockJyRest stockJyRest = (StockJyRest) securitiesInterface;
         StockMoney stockMoney = stockJyRest.money(tradeSession);
         //点买交易股票数量* 单价
@@ -187,6 +186,7 @@ public class InvestorService {
         if (securitiesStockEntrust.getBuyRecordState().equals(BuyRecordState.BUYLOCK)) {
             throw new ServiceException(ExceptionConstant.BUYRECORD_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
         }
+        String entrustNo = String.valueOf(((int)(Math.random()*(9999-1000+1))+1000));
         return entrustNo;
     }
 
