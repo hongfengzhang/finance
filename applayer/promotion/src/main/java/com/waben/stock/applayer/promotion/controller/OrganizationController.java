@@ -60,7 +60,9 @@ public class OrganizationController {
 	@RequestMapping(value = "/pages", method = RequestMethod.POST)
 	public Response<PageInfo<OrganizationDto>> pages(@RequestBody OrganizationQuery query) {
 		UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-		query.setParentId(userDto.getOrg().getId());
+		if(!"admin".equals(userDto.getUsername())){
+			query.setParentId(userDto.getOrg().getId());
+		}
 		return new Response<>(business.pages(query));
 	}
 	@RequestMapping(value = "/adminTree", method = RequestMethod.GET)
