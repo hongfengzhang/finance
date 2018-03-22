@@ -17,7 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
 public class AppVersionUpgradeReferenceFallback implements AppVersionUpgradeReference {
 
 	@Override
-	public Response<AppVersionUpgradeDto> checkUpgrade(Integer versionCode, Integer deviceType) {
+	public Response<AppVersionUpgradeDto> checkUpgrade(Integer versionCode, Integer deviceType, Integer shellIndex) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
