@@ -12,6 +12,7 @@ $(function() {
         type: "GET",
         url: "/promotion/role/"+roleId,
         dataType: "json",
+        async:false,
         success: function (jsonResult) {
             if("200" == jsonResult.code) {
                 var menus = jsonResult.result.menusVos;

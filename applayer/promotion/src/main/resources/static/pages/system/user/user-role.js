@@ -11,6 +11,7 @@ $(function() {
         type: "GET",
         url: "/promotion/role/",
         dataType: "json",
+        async:false,
         success: function (jsonResult) {
             if("200" == jsonResult.code) {
                 var roles = jsonResult.result;
