@@ -34,7 +34,7 @@ public class CrawlerConfiguration {
 	@Value("${redis.password}")
 	private String redisPassword;
 	
-	@Value("${mongo.uri}")
+	@Value("${sys.mongo.uri}")
 	private String mongoUri;
 	
 	@Bean

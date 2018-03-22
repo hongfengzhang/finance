@@ -24,12 +24,3 @@ ribbon:
   OkToRetryOnAllOperations: false
   ReadTimeout: 30000
   ConnectTimeout: 30000
-redis:
-  host: ${redis.host}
-  port: ${redis.port}
-  password: ${redis.password}
-custom:
-  operation:
-    server: ${operation.server}
-mongo:
-    uri: ${sys.mongo.uri}
