@@ -114,17 +114,17 @@ $(function() {
     });
 //得到当前用户
     $.ajax({
-        type: "POST",
+        type: "GET",
         url: "/promotion/user/getCurrent",
         dataType: "json",
         success: function (jsonResult) {
-            $("[name='currentId']").val(jsonResult.org.id);
+            $("[name='currentId']").val(jsonResult.result.org.id);
         }
     });
 
     // 提交按钮
     $("#user-submit-btn").on('click', function() {
-        var currentId = $("[name='currentId']").val;
+        var currentId = $("[name='currentId']").val();
     	if(currentId!=currentOrgPId) {
 			alert("你不能为该机构添加管理员！");
 		}else {
@@ -157,7 +157,7 @@ $(function() {
                             parent.layer.closeAll();
                             parent.renderTable("#user-list-table");
                         } else {
-                            parent.layer.msg(jsonResult.responseJSON.message)
+                            parent.layer.msg(jsonResult.message)
                         }
                     },
                     error: function (jsonResult) {

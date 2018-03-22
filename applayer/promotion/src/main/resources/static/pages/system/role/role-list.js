@@ -51,10 +51,12 @@ $(function() {
                 { "data": "code", "title": "角色代码", orderable: false},
                 { "data": "description", "title": "角色描述", orderable: false},
                 { "data": "organizationName", "title": "所属机构", orderable: false},
-                { "data": "id", "width": "230", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+                { "data": "id", "width": "300", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
                     return "<a class='edit mr10' roleId='" + full.id + "' href='javascript:;'>编辑</a>" +
-                            "<a class='authority mr10' roleId='" + full.id + "' href='javascript:;'>授权</a>"+
-                            "<a class='detail mr10' roleId='" + full.id + "' href='javascript:;'>查看权限</a>";
+                            "<a class='authority mr10' roleId='" + full.id + "' href='javascript:;'>设置授权</a>"+
+                            "<a class='detail mr10' roleId='" + full.id + "' href='javascript:;'>查看权限</a>"+
+                            "<a class='menu mr10' roleId='" + full.id + "' href='javascript:;'>设置菜单</a>"+
+                            "<a class='existMenu mr10' roleId='" + full.id + "' href='javascript:;'>查看菜单</a>";
                 }}
             ];
             $(id).dataTable({
@@ -127,6 +129,30 @@ $(function() {
             shade: 0.8,
             area: ['60%', '80%'],
             content: 'role-authorize.html',
+        });
+    });
+
+    $('#role-list-table').on('click','a.menu', function(){
+        currentRoleId = $(this).attr("roleId");
+        layer.open({
+            type: 2,
+            title: '设置菜单',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['60%', '80%'],
+            content: 'role-menu.html',
+        });
+    });
+
+    $('#role-list-table').on('click','a.existMenu', function(){
+        currentRoleId = $(this).attr("roleId");
+        layer.open({
+            type: 2,
+            title: '查看菜单',
+            shadeClose: true,
+            shade: 0.8,
+            area: ['60%', '80%'],
+            content: 'exist-menu.html',
         });
     });
 

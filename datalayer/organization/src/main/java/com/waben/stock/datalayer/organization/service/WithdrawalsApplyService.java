@@ -46,6 +46,14 @@ public class WithdrawalsApplyService {
 
 	@Autowired
 	private OrganizationAccountService accountService;
+	
+	public WithdrawalsApply findById(Long id) {
+		return withdrawalsApplyDao.retrieve(id);
+	}
+	
+	public WithdrawalsApply findByApplyNo(String applyNo) {
+		return withdrawalsApplyDao.retrieveByApplyNo(applyNo);
+	}
 
 	@Transactional
 	public WithdrawalsApply addWithdrawalsApply(WithdrawalsApply withdrawalsApply, Long orgId) {

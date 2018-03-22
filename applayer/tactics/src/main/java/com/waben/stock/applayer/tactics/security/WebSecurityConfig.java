@@ -1,10 +1,8 @@
 package com.waben.stock.applayer.tactics.security;
 
-import com.waben.stock.applayer.tactics.wrapper.filter.HiddenParamProcessFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -17,6 +15,7 @@ import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
 import com.waben.stock.applayer.tactics.service.RedisCache;
+import com.waben.stock.applayer.tactics.wrapper.filter.HiddenParamProcessFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -84,7 +83,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
 						"/system/stockMarketExponent", "/system/getAppHomeTopData", "/system/serverTime")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
+		http.authorizeRequests().antMatchers("/strategytype/lists", "/strategytype/experience").permitAll();
 		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
 		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
 				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking")
@@ -118,9 +117,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/quickpay/paypalreturn").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/paypalcallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/paypalnotify").permitAll();
-		//测试放权  paypalnotify
-		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
+//		//测试放权  paypalnotify
+//		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
+//		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
@@ -133,7 +132,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
-		http.sessionManagement().maximumSessions(1);
 	}
 
 	@Override

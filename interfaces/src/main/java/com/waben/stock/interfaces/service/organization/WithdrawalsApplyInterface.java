@@ -15,6 +15,18 @@ import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
 public interface WithdrawalsApplyInterface {
 
 	/**
+	 * 根据ID获取提现申请
+	 */
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	Response<WithdrawalsApplyDto> fetchById(@PathVariable("id") Long id);
+	
+	/**
+	 * 根据申请单号获取提现申请
+	 */
+	@RequestMapping(value = "/applyNo/{applyNo}", method = RequestMethod.GET)
+	Response<WithdrawalsApplyDto> fetchByApplyNo(@PathVariable("applyNo") String applyNo);
+	
+	/**
 	 * 添加提现申请
 	 * 
 	 * @param apply

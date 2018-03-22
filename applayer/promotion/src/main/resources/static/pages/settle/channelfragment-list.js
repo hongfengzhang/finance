@@ -1,9 +1,10 @@
-
-window.renderTable = function(){};
-$(function() {
+window.renderTable = function () {
+};
+$(function () {
     var searchData = {
         currentOrgCode: '01'
     };
+
     // 加载数据
     function retrieveData(sSource, aoData, fnCallback, oSettings) {
         var draw = (aoData[3].value / 10) + 1;
@@ -32,56 +33,64 @@ $(function() {
             currentOrgCode: searchData.currentOrgCode
         };
     }
+
     // 渲染表格
-    renderTable = function(id) {
-        if($(id + "_wrapper").length > 0) {
+    renderTable = function (id) {
+        if ($(id + "_wrapper").length > 0) {
             $(id).dataTable().fnDraw();
         } else {
             var columns = [
-                { "data": "id", "title": "订单ID", orderable: false},
-                { "data": "orgDto", "title": "机构名称", orderable: false,"render": function(data, type, full, meta) {
-                    if(data !=null){
-                        return data.name;
-                    }else{
+                {"data": "id", "title": "订单ID", orderable: false},
+                {"data": "orgDto", "title": "机构名称", orderable: false, "render": function (data, type, full, meta) {
+                    if (full.orgDto != null) {
+                        return full.orgDto.name;
+                    }
+                    return '';
+                }},
+                {"data": "orgDto", "title": "机构代码", orderable: false, "render": function (data, type, full, meta) {
+                    if (full.orgDto!= null) {
+                        return full.orgDto.code;
+                    }
+                    return '';
+                }},
+                {"data": "flowNo", "title": "流水号", orderable: false},
+                {"data": "resourceType", "title": "业务类型", orderable: false, "render": function (data, type, full, meta) {
+                        if (full.resourceType) {
+                            if (full.resourceType == "BUYRECORD") {
+                                return "配资";
+                            } else if (full.resourceType == "STOCKOPTIONTRADE") {
+                                return "期权";
+                            } else if("ORGWITHDRAWALSAPPLY"==full.resourceType){
+                                return "机构提现申请";
+                            }else{
+                                return full.resourceType;
+                            }
+                        }else {
+                            return "";
+                        }
+                    }
+                },
+                {"data": "originAmount", "title": "原始收入", orderable: false},
+                {"data": "amount", "title": "平台收入", orderable: false},
+                {"data": "type", "title": "佣金类型", orderable: false, "render": function (data, type, full, meta) {
+                    if (full.type) {
+                        if (full.type == "ServiceFeeAssign") {
+                            return "信息服务费";
+                        } else if (full.type == "DeferredChargesAssign") {
+                            return "递延费";
+                        }else if (full.type == "RightMoneyAssign") {
+                            return "期权收益";
+                        }else if (full.type == "Withdrawals") {
+                            return "提现";
+                        }else {
+                            return full.type;
+                        }
+                    }else {
                         return "";
                     }
-
-                }},
-                { "data": "orgDto", "title": "机构代码", orderable: false,"render": function(data, type, full, meta) {
-                    if(data !=null){
-                        return data.code;
-                    }else{
-                        return "";
-                    }
-                }},
-                { "data": "flowNo", "title": "流水号", orderable: false},
-                { "data": "resourceType", "title": "业务类型", orderable: false,"render": function(data, type, full, meta) {
-                    var resourceType = full.resourceType;
-                    if(resourceType=="BUYRECORD"){
-                        return "配资";
-                    }
-                    if(resourceType=="STOCKOPTIONTRADE"){
-                        return "期权";
-                    }
-                }},
-                { "data": "originAmount", "title": "原始收入", orderable: false},
-                { "data": "amount", "title": "平台收入", orderable: false},
-                { "data": "type", "title": "佣金类型", orderable: false,"render": function(data, type, full, meta) {
-                    var type = full.type;
-                    if(type =="ServiceFeeAssign"){
-                        return "信息服务费";
-                    }
-                    if(type =="DeferredChargesAssign"){
-                        return "递延费";
-                    }
-                    if(type =="RightMoneyAssign"){
-                        return "期权收益";
-                    }
-                    if(type =="Withdrawals"){
-                        return "提现";
-                    }
-                }},
-                { "data": "occurrenceTime", "title": "结算时间", orderable: false}
+                }
+                },
+                {"data": "occurrenceTime", "title": "结算时间", orderable: false}
             ];
             $(id).dataTable({
                 "responsive": true,
@@ -111,16 +120,16 @@ $(function() {
     // 执行
     renderTable("#channelfragment-list-table");
     // 加载layui
-    layui.use(['element', 'table'], function() {
+    layui.use(['element', 'table'], function () {
     });
     // 搜索
-    $('#search-btn').on('click', function(){
+    $('#search-btn').on('click', function () {
         var formDataArr = $("#search-form").serializeArray();
 
-        for(var i = 0; i < formDataArr.length; i++) {
+        for (var i = 0; i < formDataArr.length; i++) {
             var name = formDataArr[i].name;
             var value = formDataArr[i].value;
-            if(searchData[name]) {
+            if (searchData[name]) {
                 searchData[name] = searchData[name] + "," + value;
             } else {
                 searchData[name] = value;
