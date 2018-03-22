@@ -18,10 +18,10 @@ $(function() {
                 var html = '';
                 $.each(permissions,function (index,permission){
                     if(permission.pid==0) {
-                        html += '<span>'+permission.name+'</span><br>&nbsp;&nbsp;&nbsp;&nbsp;';
+                        html += '<label class="label-danger">'+permission.name+'</label><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
                         $.each(permissions,function (index,cpermission){
                             if(cpermission.pid==permission.id) {
-                                html += '<span>'+cpermission.name+'  <input value='+cpermission.id+' type="checkbox" name="permission" disabled="disabled"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
+                                html += '<input title='+cpermission.name+' pid='+permission.id+' value='+cpermission.id+' type="checkbox" name="permission"/></span>&nbsp;&nbsp;&nbsp;&nbsp;';
                             }
                         })
                         html += "<br>";
