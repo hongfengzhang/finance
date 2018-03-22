@@ -187,35 +187,10 @@ public class BeanConfigurer {
         return new Queue("entrustApplySellOut");
     }
 
-//    /**
-//     * 点买交易风控交换机
-//     */
-//    @Bean("risk")
-//    public TopicExchange riskExchange() {
-//        return new TopicExchange("risk");
-//    }
-
     @Bean("buyRecord")
     public TopicExchange buyRecordExchange() {
         return new TopicExchange("buyRecord");
     }
-
-
-//    @Bean
-//    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,
-//                                                @Qualifier("risk")TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("shang");
-//    }
-//    @Bean
-//    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,
-//                                               @Qualifier("risk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("shen");
-//    }
-//    @Bean
-//    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,
-//                                                  @Qualifier("risk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("develop");
-//    }
 
 
     /**绑定申请买入卖出路由与队列*/
