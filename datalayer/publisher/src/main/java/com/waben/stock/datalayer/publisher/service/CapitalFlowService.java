@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
+import org.springframework.util.StringUtils;
 
 /**
  * 资金流水 Service
@@ -40,6 +41,11 @@ public class CapitalFlowService {
 			public Predicate toPredicate(Root<CapitalFlow> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
+				if (!StringUtils.isEmpty(query.getPublisherPhone())) {
+					Predicate phoneQuery = criteriaBuilder.like(root.get("phone").as(String.class), "%"+query
+							.getPublisherPhone()+"%");
+					predicateList.add(phoneQuery);
+				}
 				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
 					predicateList
 							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));

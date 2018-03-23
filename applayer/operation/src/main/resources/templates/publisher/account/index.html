@@ -25,10 +25,10 @@
 
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="col-md-4 control-label">发布人ID</label>
+                            <label class="col-md-4 control-label">发布人电话</label>
                             <div class="col-md-8">
-                                <input type="text" class="form-control" name="publisherId" maxlength="11"
-                                       placeholder="发布人ID"/>
+                                <input type="text" class="form-control" name="publisherPhone" maxlength="11"
+                                       placeholder="发布人电话"/>
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                         }
                         var queryMap = {
                 			types:$("select[name='types']").val(),
-                			publisherId:$("input[name='publisherId']").val(),
+                			publisherPhone:$("input[name='publisherPhone']").val(),
                 			startTime:$("input[name='startTime']").val(),
       		        		endTime:$("input[name='endTime']").val()
                         }
@@ -230,7 +230,7 @@
          });
          
          $('#reset').click(function(){
-      	   $("input[name='publisherId']").val('');
+      	   $("input[name='publisherPhone']").val('');
       	   $("span[class='filter-option pull-left']").text('请选择流水类型');
       	   $("select[name='types']").val('');
       	   $("input[name='startTime']").val('');
