@@ -41,7 +41,7 @@ public class BankCardInfoVerifier {
 				return false;
 			}
 		} else if (responseObj.getError_code() == 10012) {
-			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "验证接口可用次数不足!");
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "银行卡四要素验证接口可用次数不足!");
 		} else {
 			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION, responseObj.getReason());
 		}

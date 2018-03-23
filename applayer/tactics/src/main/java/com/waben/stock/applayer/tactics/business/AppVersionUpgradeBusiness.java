@@ -22,8 +22,8 @@ public class AppVersionUpgradeBusiness {
 	@Qualifier("appVersionUpgradeInterface")
 	private AppVersionUpgradeReference reference;
 
-	public AppVersionUpgradeDto checkUpgrade(Integer versionCode, Integer deviceType) {
-		Response<AppVersionUpgradeDto> response = reference.checkUpgrade(versionCode, deviceType);
+	public AppVersionUpgradeDto checkUpgrade(Integer versionCode, Integer deviceType, Integer shellIndex) {
+		Response<AppVersionUpgradeDto> response = reference.checkUpgrade(versionCode, deviceType, shellIndex);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
