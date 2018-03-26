@@ -49,7 +49,7 @@ public class CapitalAccount {
     /**
      * 发布人ID
      */
-//    @Column(name = "publisher_id")
+    @Column(name = "publisher_id")
    @Transient
     private Long publisherId;
     /**
