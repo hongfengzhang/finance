@@ -11,6 +11,7 @@ spring:
   jpa:
     database: mysql
     hibernate:
+      show-sql: false
       ddl-auto: update
       naming:
         strategy: org.hibernate.cfg.ImprovedNamingStrategy
@@ -19,3 +20,4 @@ spring:
           dialect: org.hibernate.dialect.MySQL5Dialect
           connection:
             autocommit: true
+needtask: true
