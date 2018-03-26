@@ -12,7 +12,6 @@ import com.waben.stock.applayer.strategist.reference.CapitalFlowReference;
 import com.waben.stock.applayer.strategist.reference.StrategyTypeReference;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
-import com.waben.stock.interfaces.dto.publisher.CapitalFlowExtendDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
@@ -46,7 +45,7 @@ public class CapitalFlowBusiness {
 	@Autowired
 	@Qualifier("strategyTypeReference")
 	private StrategyTypeReference strategyTypeReference;
-	
+
 	@Autowired
 	private StockOptionTradeBusiness tradeBusiness;
 
@@ -67,35 +66,31 @@ public class CapitalFlowBusiness {
 			for (int i = 0; i < response.getResult().getContent().size(); i++) {
 				CapitalFlowDto flow = response.getResult().getContent().get(i);
 				CapitalFlowWithExtendDto flowWithExtend = content.get(i);
-				if (flow.getExtendList() != null && flow.getExtendList().size() > 0) {
-					for (CapitalFlowExtendDto extend : flow.getExtendList()) {
-						if (extend.getExtendType() == CapitalFlowExtendType.BUYRECORD) {
-							BuyRecordDto buyRecord = buyRecordBusiness.findById(extend.getExtendId());
-							if (buyRecord != null) {
-								// 设置股票代码和股票名称
-								flowWithExtend.setStockCode(buyRecord.getStockCode());
-								StockDto stock = stockBusiness.findByCode(buyRecord.getStockCode());
-								if (stock != null) {
-									flowWithExtend.setStockName(stock.getName());
-								}
-								// 设置策略类型ID和策略类型名称
-								flowWithExtend.setStrategyTypeId(buyRecord.getStrategyTypeId());
-								for (StrategyTypeDto strategyType : strategyTypeResponse.getResult()) {
-									if (strategyType.getId() == buyRecord.getStrategyTypeId()) {
-										flowWithExtend.setStrategyTypeName(strategyType.getName());
-									}
-								}
+				if (flow.getExtendType() == CapitalFlowExtendType.BUYRECORD) {
+					BuyRecordDto buyRecord = buyRecordBusiness.findById(flow.getExtendId());
+					if (buyRecord != null) {
+						// 设置股票代码和股票名称
+						flowWithExtend.setStockCode(buyRecord.getStockCode());
+						StockDto stock = stockBusiness.findByCode(buyRecord.getStockCode());
+						if (stock != null) {
+							flowWithExtend.setStockName(stock.getName());
+						}
+						// 设置策略类型ID和策略类型名称
+						flowWithExtend.setStrategyTypeId(buyRecord.getStrategyTypeId());
+						for (StrategyTypeDto strategyType : strategyTypeResponse.getResult()) {
+							if (strategyType.getId() == buyRecord.getStrategyTypeId()) {
+								flowWithExtend.setStrategyTypeName(strategyType.getName());
 							}
-						} else if(extend.getExtendType() == CapitalFlowExtendType.STOCKOPTIONTRADE) {
-							StockOptionTradeDto stockOption = tradeBusiness.findById(extend.getExtendId());
-							if (stockOption != null) {
-								// 设置股票代码和股票名称
-								flowWithExtend.setStockCode(stockOption.getStockCode());
-								StockDto stock = stockBusiness.findByCode(stockOption.getStockCode());
-								if (stock != null) {
-									flowWithExtend.setStockName(stock.getName());
-								}
-							}
+						}
+					}
+				} else if (flow.getExtendType() == CapitalFlowExtendType.STOCKOPTIONTRADE) {
+					StockOptionTradeDto stockOption = tradeBusiness.findById(flow.getExtendId());
+					if (stockOption != null) {
+						// 设置股票代码和股票名称
+						flowWithExtend.setStockCode(stockOption.getStockCode());
+						StockDto stock = stockBusiness.findByCode(stockOption.getStockCode());
+						if (stock != null) {
+							flowWithExtend.setStockName(stock.getName());
 						}
 					}
 				}

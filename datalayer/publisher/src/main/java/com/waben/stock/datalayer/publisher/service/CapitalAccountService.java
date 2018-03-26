@@ -24,14 +24,11 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.publisher.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
-import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
-import com.waben.stock.datalayer.publisher.entity.CapitalFlowExtend;
 import com.waben.stock.datalayer.publisher.entity.FrozenCapital;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.entity.WithdrawalsOrder;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
-import com.waben.stock.datalayer.publisher.repository.CapitalFlowExtendDao;
 import com.waben.stock.datalayer.publisher.repository.FrozenCapitalDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.datalayer.publisher.repository.WithdrawalsOrderDao;
@@ -46,7 +43,6 @@ import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
-import com.waben.stock.interfaces.pojo.query.CapitalFlowExtendQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 @Service
@@ -61,16 +57,10 @@ public class CapitalAccountService {
 	private CapitalFlowDao flowDao;
 
 	@Autowired
-	private CapitalFlowExtendDao flowExtendDao;
-
-	@Autowired
 	private FrozenCapitalDao frozenCapitalDao;
 
 	@Autowired
 	private PublisherDao publisherDao;
-
-	@Autowired
-	private CapitalFlowExtendService extendService;
 
 	@Autowired
 	private WithdrawalsOrderDao withdrawalsOrderDao;
@@ -161,12 +151,12 @@ public class CapitalAccountService {
 	 * 充值
 	 */
 	@Transactional
-	public synchronized CapitalAccount recharge(Long publisherId, BigDecimal amount) {
+	public synchronized CapitalAccount recharge(Long publisherId, BigDecimal amount, Long rechargeId) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		increaseAmount(account, amount, date);
-		flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Recharge, amount.abs(), date);
-
+		flowDao.create(account.getPublisher(), CapitalFlowType.Recharge, amount.abs(), date,
+				CapitalFlowExtendType.PAYMENTORDER, rechargeId);
 		sendRechargeOutsideMessage(publisherId, amount);
 		return findByPublisherId(publisherId);
 	}
@@ -175,11 +165,12 @@ public class CapitalAccountService {
 	 * 提现改变资金
 	 */
 	@Transactional
-	public synchronized CapitalAccount csa(Long publisherId, BigDecimal amount) {
+	public synchronized CapitalAccount csa(Long publisherId, BigDecimal amount, Long withdrawalsId) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
-		flowDao.create(account.getPublisher(), account.getPublisherSerialCode(), CapitalFlowType.Withdrawals, amount.abs().multiply(new BigDecimal(-1)), date);
+		flowDao.create(account.getPublisher(), CapitalFlowType.Withdrawals, amount.abs().multiply(new BigDecimal(-1)),
+				date, CapitalFlowExtendType.WITHDRAWALSORDER, withdrawalsId);
 		sendWithdrawalsOutsideMessage(publisherId, amount, true);
 		return findByPublisherId(publisherId);
 	}
@@ -188,9 +179,9 @@ public class CapitalAccountService {
 	 * 提现
 	 */
 	@Transactional
-	public synchronized CapitalAccount withdrawals(Long publisherId, String withdrawalsNo,
+	public synchronized CapitalAccount withdrawals(Long publisherId, Long withdrawalsId,
 			WithdrawalsState withdrawalsState) {
-		WithdrawalsOrder withdrawalsOrder = withdrawalsOrderDao.retrieveByWithdrawalsNo(withdrawalsNo);
+		WithdrawalsOrder withdrawalsOrder = withdrawalsOrderDao.retrieve(withdrawalsId);
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		if (withdrawalsOrder.getState() == WithdrawalsState.PROCESSING
 				&& withdrawalsState != WithdrawalsState.PROCESSING) {
@@ -203,7 +194,7 @@ public class CapitalAccountService {
 				withdrawalsOrderDao.update(withdrawalsOrder);
 				// 解冻
 				FrozenCapital frozen = frozenCapitalDao.retriveByPublisherIdAndWithdrawalsNo(publisherId,
-						withdrawalsNo);
+						withdrawalsOrder.getWithdrawalsNo());
 				frozen.setStatus(FrozenCapitalStatus.Thaw);
 				frozen.setThawTime(date);
 				frozenCapitalDao.update(frozen);
@@ -212,8 +203,9 @@ public class CapitalAccountService {
 				account.setFrozenCapital(account.getFrozenCapital().subtract(amount));
 				capitalAccountDao.update(account);
 				// 产生资金流水
-				flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Withdrawals,
-						amount.abs().multiply(new BigDecimal(-1)), date);
+				flowDao.create(account.getPublisher(), CapitalFlowType.Withdrawals,
+						amount.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.WITHDRAWALSORDER,
+						withdrawalsId);
 				sendWithdrawalsOutsideMessage(publisherId, amount.abs(), true);
 				return findByPublisherId(publisherId);
 			} else if (withdrawalsState == WithdrawalsState.FAILURE) {
@@ -223,7 +215,7 @@ public class CapitalAccountService {
 				withdrawalsOrderDao.update(withdrawalsOrder);
 				// 解冻
 				FrozenCapital frozen = frozenCapitalDao.retriveByPublisherIdAndWithdrawalsNo(publisherId,
-						withdrawalsNo);
+						withdrawalsOrder.getWithdrawalsNo());
 				frozen.setStatus(FrozenCapitalStatus.Thaw);
 				frozen.setThawTime(date);
 				frozenCapitalDao.update(frozen);
@@ -252,24 +244,14 @@ public class CapitalAccountService {
 		}
 		// 保存流水
 		if (serviceFee != null && serviceFee.compareTo(new BigDecimal(0)) > 0) {
-			CapitalFlow serviceFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-					CapitalFlowType.ServiceFee, serviceFee.abs().multiply(new BigDecimal(-1)), date);
-			CapitalFlowExtend serviceFeeExtend = new CapitalFlowExtend(serviceFeeFlow, CapitalFlowExtendType.BUYRECORD,
-					buyRecordId);
-			flowExtendDao.create(serviceFeeExtend);
+			flowDao.create(account.getPublisher(), CapitalFlowType.ServiceFee,
+					serviceFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.BUYRECORD, buyRecordId);
 		}
-		CapitalFlow reserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.ReserveFund, reserveFund.abs().multiply(new BigDecimal(-1)), date);
-		CapitalFlowExtend reserveFundExtend = new CapitalFlowExtend(reserveFundFlow, CapitalFlowExtendType.BUYRECORD,
-				buyRecordId);
-		flowExtendDao.create(reserveFundExtend);
-
+		flowDao.create(account.getPublisher(), CapitalFlowType.ReserveFund,
+				reserveFund.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.BUYRECORD, buyRecordId);
 		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
-			CapitalFlow deferredFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-					CapitalFlowType.DeferredCharges, deferredFee.abs().multiply(new BigDecimal(-1)), date);
-			CapitalFlowExtend deferredFeeExtend = new CapitalFlowExtend(deferredFeeFlow,
-					CapitalFlowExtendType.BUYRECORD, buyRecordId);
-			flowExtendDao.create(deferredFeeExtend);
+			flowDao.create(account.getPublisher(), CapitalFlowType.DeferredCharges,
+					deferredFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.BUYRECORD, buyRecordId);
 		}
 		// 保存冻结资金记录
 		FrozenCapital frozen = new FrozenCapital();
@@ -291,11 +273,8 @@ public class CapitalAccountService {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
-		CapitalFlow deferredChargesFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.DeferredCharges, amount.abs().multiply(new BigDecimal(-1)), date);
-		CapitalFlowExtend deferredChargesExtend = new CapitalFlowExtend(deferredChargesFlow,
-				CapitalFlowExtendType.BUYRECORD, buyRecordId);
-		flowExtendDao.create(deferredChargesExtend);
+		flowDao.create(account.getPublisher(), CapitalFlowType.DeferredCharges,
+				amount.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.BUYRECORD, buyRecordId);
 		return findByPublisherId(publisherId);
 	}
 
@@ -317,20 +296,14 @@ public class CapitalAccountService {
 		thawAmount(account, frozenAmount, frozenAmount, date);
 		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenAmount.abs()));
 		capitalAccountDao.update(account);
-		CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.ReturnReserveFund, frozenAmount.abs(), date);
-		CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
+		flowDao.create(account.getPublisher(), CapitalFlowType.ReturnReserveFund, frozenAmount.abs(), date,
 				CapitalFlowExtendType.BUYRECORD, buyRecordId);
-		flowExtendDao.create(returnReserveFundExtend);
 		// 盈亏
 		if (profitOrLoss.compareTo(new BigDecimal(0)) > 0) {
 			// 盈利
 			increaseAmount(account, profitOrLoss, date);
-			CapitalFlow profitFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-					CapitalFlowType.Profit, profitOrLoss.abs(), date);
-			CapitalFlowExtend profitExtend = new CapitalFlowExtend(profitFlow, CapitalFlowExtendType.BUYRECORD,
-					buyRecordId);
-			flowExtendDao.create(profitExtend);
+			flowDao.create(account.getPublisher(), CapitalFlowType.Profit, profitOrLoss.abs(), date,
+					CapitalFlowExtendType.BUYRECORD, buyRecordId);
 		} else if (profitOrLoss.compareTo(new BigDecimal(0)) < 0) {
 			// 亏损
 			BigDecimal lossAmountAbs = profitOrLoss.abs();
@@ -339,11 +312,9 @@ public class CapitalAccountService {
 				lossAmountAbs = frozenAmount;
 			}
 			reduceAmount(account, lossAmountAbs, date);
-			CapitalFlow lossFlow = flowDao.create(publisherId, account.getPublisherSerialCode(), CapitalFlowType.Loss,
-					lossAmountAbs.abs().multiply(new BigDecimal(-1)), date);
-			CapitalFlowExtend lossExtend = new CapitalFlowExtend(lossFlow, CapitalFlowExtendType.BUYRECORD,
+			flowDao.create(account.getPublisher(), CapitalFlowType.Loss,
+					lossAmountAbs.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.BUYRECORD,
 					buyRecordId);
-			flowExtendDao.create(lossExtend);
 		}
 		// 修改冻结记录为解冻状态
 		frozen.setStatus(FrozenCapitalStatus.Thaw);
@@ -363,37 +334,45 @@ public class CapitalAccountService {
 		if (publisher.getPromoter() != null && !"".equals(publisher.getPromoter().trim())) {
 			Publisher promoter = publisherDao.retrieveByPromotionCode(publisher.getPromoter().trim());
 			if (promoter != null) {
-				CapitalFlowExtendQuery query = new CapitalFlowExtendQuery();
-				query.setPage(0);
-				query.setSize(10);
-				query.setType(CapitalFlowType.Promotion);
-				query.setPublisherId(promoter.getId());
-				query.setExtendType(CapitalFlowExtendType.PUBLISHER);
-				query.setExtendId(publisher.getId());
-				Page<CapitalFlowExtend> flowPage = extendService.pagesByQuery(query);
-				if (flowPage.getContent().size() == 0) {
-					// 获取当前点买记录的服务费
-					query.setPage(0);
-					query.setSize(10);
-					query.setType(CapitalFlowType.ServiceFee);
-					query.setPublisherId(publisherId);
-					query.setExtendType(CapitalFlowExtendType.BUYRECORD);
-					query.setExtendId(buyRecordId);
-					Page<CapitalFlowExtend> serviceFeePage = extendService.pagesByQuery(query);
-					if (serviceFeePage.getContent() != null && serviceFeePage.getContent().size() > 0) {
-						BigDecimal serviceFee = serviceFeePage.getContent().get(0).getFlow().getAmount().abs();
-						if (serviceFee.compareTo(new BigDecimal(0)) > 0) {
-							BigDecimal promotionAmount = serviceFee.multiply(new BigDecimal(0.1));
-							CapitalAccount promoterAccount = capitalAccountDao.retriveByPublisherId(promoter.getId());
-							increaseAmount(promoterAccount, promotionAmount, date);
-							CapitalFlow promotionFlow = flowDao.create(promoter.getId(), promoter.getSerialCode(),
-									CapitalFlowType.Promotion, promotionAmount, date);
-							CapitalFlowExtend promotionExtend = new CapitalFlowExtend(promotionFlow,
-									CapitalFlowExtendType.PUBLISHER, publisherId);
-							flowExtendDao.create(promotionExtend);
-						}
-					}
-				}
+				// CapitalFlowExtendQuery query = new CapitalFlowExtendQuery();
+				// query.setPage(0);
+				// query.setSize(10);
+				// query.setType(CapitalFlowType.Promotion);
+				// query.setPublisherId(promoter.getId());
+				// query.setExtendType(CapitalFlowExtendType.PUBLISHER);
+				// query.setExtendId(publisher.getId());
+				// Page<CapitalFlowExtend> flowPage =
+				// extendService.pagesByQuery(query);
+				// if (flowPage.getContent().size() == 0) {
+				// // 获取当前点买记录的服务费
+				// query.setPage(0);
+				// query.setSize(10);
+				// query.setType(CapitalFlowType.ServiceFee);
+				// query.setPublisherId(publisherId);
+				// query.setExtendType(CapitalFlowExtendType.BUYRECORD);
+				// query.setExtendId(buyRecordId);
+				// Page<CapitalFlowExtend> serviceFeePage =
+				// extendService.pagesByQuery(query);
+				// if (serviceFeePage.getContent() != null &&
+				// serviceFeePage.getContent().size() > 0) {
+				// BigDecimal serviceFee =
+				// serviceFeePage.getContent().get(0).getFlow().getAmount().abs();
+				// if (serviceFee.compareTo(new BigDecimal(0)) > 0) {
+				// BigDecimal promotionAmount = serviceFee.multiply(new
+				// BigDecimal(0.1));
+				// CapitalAccount promoterAccount =
+				// capitalAccountDao.retriveByPublisherId(promoter.getId());
+				// increaseAmount(promoterAccount, promotionAmount, date);
+				// CapitalFlow promotionFlow = flowDao.create(promoter.getId(),
+				// promoter.getSerialCode(),
+				// CapitalFlowType.Promotion, promotionAmount, date);
+				// CapitalFlowExtend promotionExtend = new
+				// CapitalFlowExtend(promotionFlow,
+				// CapitalFlowExtendType.PUBLISHER, publisherId);
+				// flowExtendDao.create(promotionExtend);
+				// }
+				// }
+				// }
 			}
 		}
 	}
@@ -404,11 +383,8 @@ public class CapitalAccountService {
 		Date date = new Date();
 		increaseAmount(account, deferredFee, date);
 		// 保存流水
-		CapitalFlow serviceFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.ReturnDeferredCharges, deferredFee.abs(), date);
-		CapitalFlowExtend serviceFeeExtend = new CapitalFlowExtend(serviceFeeFlow, CapitalFlowExtendType.BUYRECORD,
-				buyRecordId);
-		flowExtendDao.create(serviceFeeExtend);
+		flowDao.create(account.getPublisher(), CapitalFlowType.ReturnDeferredCharges, deferredFee.abs(), date,
+				CapitalFlowExtendType.BUYRECORD, buyRecordId);
 		return findByPublisherId(publisherId);
 	}
 
@@ -423,26 +399,17 @@ public class CapitalAccountService {
 		frozenCapital.setThawTime(date);
 		thawAmount(account, frozenCapital.getAmount(), frozenCapital.getAmount(), date);
 		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenCapital.getAmount()));
-		CapitalFlow returnReserveFundFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.ReturnReserveFund, frozenCapital.getAmount().abs(), date);
-		CapitalFlowExtend returnReserveFundExtend = new CapitalFlowExtend(returnReserveFundFlow,
+		flowDao.create(account.getPublisher(), CapitalFlowType.ReturnReserveFund, frozenCapital.getAmount().abs(), date,
 				CapitalFlowExtendType.BUYRECORD, buyRecordId);
-		flowExtendDao.create(returnReserveFundExtend);
 		// 退回服务费
 		increaseAmount(account, serviceFee, date);
-		CapitalFlow revokeServiceFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.Revoke, serviceFee, date);
-		CapitalFlowExtend revokeServiceFeeExtend = new CapitalFlowExtend(revokeServiceFeeFlow,
+		flowDao.create(account.getPublisher(), CapitalFlowType.Revoke, serviceFee.abs(), date,
 				CapitalFlowExtendType.BUYRECORD, buyRecordId);
-		flowExtendDao.create(revokeServiceFeeExtend);
 		// 退回递延费
 		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
 			increaseAmount(account, deferredFee, date);
-			CapitalFlow deferredFeeFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-					CapitalFlowType.ReturnDeferredCharges, deferredFee.abs(), date);
-			CapitalFlowExtend deferredFeeExtend = new CapitalFlowExtend(deferredFeeFlow,
+			flowDao.create(account.getPublisher(), CapitalFlowType.ReturnDeferredCharges, deferredFee.abs(), date,
 					CapitalFlowExtendType.BUYRECORD, buyRecordId);
-			flowExtendDao.create(deferredFeeExtend);
 		}
 		capitalAccountDao.update(account);
 		return findByPublisherId(publisherId);
@@ -565,11 +532,9 @@ public class CapitalAccountService {
 		Date date = new Date();
 		reduceAmount(account, rightMoney, date);
 		// 保存流水
-		CapitalFlow rightMoneyFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.RightMoney, rightMoney.abs().multiply(new BigDecimal(-1)), date);
-		CapitalFlowExtend rightMoneyExtend = new CapitalFlowExtend(rightMoneyFlow,
-				CapitalFlowExtendType.STOCKOPTIONTRADE, optionTradeId);
-		flowExtendDao.create(rightMoneyExtend);
+		flowDao.create(account.getPublisher(), CapitalFlowType.RightMoney,
+				rightMoney.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.STOCKOPTIONTRADE,
+				optionTradeId);
 		return findByPublisherId(publisherId);
 	}
 
@@ -578,11 +543,8 @@ public class CapitalAccountService {
 		Date date = new Date();
 		increaseAmount(account, rightMoney, date);
 		// 保存流水
-		CapitalFlow returnRightMoneyFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.ReturnRightMoney, rightMoney.abs(), date);
-		CapitalFlowExtend returnRightMoneyExtend = new CapitalFlowExtend(returnRightMoneyFlow,
+		flowDao.create(account.getPublisher(), CapitalFlowType.ReturnRightMoney, rightMoney.abs(), date,
 				CapitalFlowExtendType.STOCKOPTIONTRADE, optionTradeId);
-		flowExtendDao.create(returnRightMoneyExtend);
 		return findByPublisherId(publisherId);
 	}
 
@@ -591,11 +553,8 @@ public class CapitalAccountService {
 		Date date = new Date();
 		increaseAmount(account, profit, date);
 		// 保存流水
-		CapitalFlow optionProfitFlow = flowDao.create(publisherId, account.getPublisherSerialCode(),
-				CapitalFlowType.StockOptionProfit, profit.abs(), date);
-		CapitalFlowExtend optionProfitExtend = new CapitalFlowExtend(optionProfitFlow,
+		flowDao.create(account.getPublisher(), CapitalFlowType.StockOptionProfit, profit.abs(), date,
 				CapitalFlowExtendType.STOCKOPTIONTRADE, optionTradeId);
-		flowExtendDao.create(optionProfitExtend);
 		return findByPublisherId(publisherId);
 	}
 

@@ -65,9 +65,9 @@ public class PaymentOrderBusiness {
 			paymentOrder.setState(PaymentState.Paid);
 			if (oldState == PaymentState.PartPaid) {
 				accountBusiness.recharge(paymentOrder.getPublisherId(),
-						paymentOrder.getAmount().subtract(paymentOrder.getPartAmount()));
+						paymentOrder.getAmount().subtract(paymentOrder.getPartAmount()), paymentOrder.getId());
 			} else {
-				accountBusiness.recharge(paymentOrder.getPublisherId(), paymentOrder.getAmount());
+				accountBusiness.recharge(paymentOrder.getPublisherId(), paymentOrder.getAmount(), paymentOrder.getId());
 			}
 		}
 		return paymentOrder;
@@ -87,7 +87,7 @@ public class PaymentOrderBusiness {
 				paymentOrder.setPartAmount(partAmount);
 				this.save(paymentOrder);
 			}
-			accountBusiness.recharge(paymentOrder.getPublisherId(), partAmount);
+			accountBusiness.recharge(paymentOrder.getPublisherId(), partAmount, paymentOrder.getId());
 		} else {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "支付订单状态不匹配");
 		}

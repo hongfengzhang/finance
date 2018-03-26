@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -16,11 +18,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
+import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
-import org.springframework.util.StringUtils;
 
 /**
  * 资金流水 Service
@@ -42,13 +45,13 @@ public class CapitalFlowService {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
 				if (!StringUtils.isEmpty(query.getPublisherPhone())) {
-					Predicate phoneQuery = criteriaBuilder.like(root.get("phone").as(String.class), "%"+query
-							.getPublisherPhone()+"%");
+					Predicate phoneQuery = criteriaBuilder.like(root.get("phone").as(String.class),
+							"%" + query.getPublisherPhone() + "%");
 					predicateList.add(phoneQuery);
 				}
 				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
-					predicateList
-							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
+					Join<CapitalFlow, Publisher> join = root.join("publisher", JoinType.LEFT);
+					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getPublisherId()));
 				}
 				if (query.getTypes() != null && query.getTypes().length > 0) {
 					predicateList.add(root.get("type").in(query.getTypes()));
@@ -58,8 +61,8 @@ public class CapitalFlowService {
 							query.getStartTime()));
 				}
 				if (query.getEndTime() != null) {
-					predicateList.add(criteriaBuilder.lessThan(root.get("occurrenceTime").as(Date.class),
-							query.getEndTime()));
+					predicateList.add(
+							criteriaBuilder.lessThan(root.get("occurrenceTime").as(Date.class), query.getEndTime()));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
@@ -75,8 +78,7 @@ public class CapitalFlowService {
 		return capitalFlowDao.promotionTotalAmount(publisherId);
 	}
 
-	
-	public CapitalFlow findById(Long capitalFlowId){
+	public CapitalFlow findById(Long capitalFlowId) {
 		return capitalFlowDao.retrieve(capitalFlowId);
 	}
 }

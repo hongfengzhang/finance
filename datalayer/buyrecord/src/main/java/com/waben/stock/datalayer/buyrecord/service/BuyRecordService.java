@@ -360,18 +360,18 @@ public class BuyRecordService {
 		buyRecord.setBuyingTime(date);
 		// 止盈点位价格 = 买入价格 + ((市值 * 止盈点)/股数)
 		buyRecord.setProfitPosition(buyingPrice.add(buyRecord.getApplyAmount().multiply(buyRecord.getProfitPoint())
-				.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
+				.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_EVEN)));
 		// 止损点位价格 = 买入价格 - ((市值 * 止损点)/股数)
 		buyRecord.setLossPosition(
 				buyingPrice.subtract(buyRecord.getApplyAmount().multiply(buyRecord.getLossPoint().abs())
-						.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_UP)));
+						.divide(new BigDecimal(buyRecord.getNumberOfStrand()), 2, RoundingMode.HALF_EVEN)));
 		// 止盈预警点位价格 = (止盈点位 - 买入点位) * 90% + 买入点位
 		buyRecord.setProfitWarnPosition(buyRecord.getProfitPosition().subtract(buyRecord.getBuyingPrice())
-				.multiply(new BigDecimal(0.9)).setScale(2, RoundingMode.HALF_UP).add(buyRecord.getBuyingPrice()));
+				.multiply(new BigDecimal(0.9)).setScale(2, RoundingMode.HALF_EVEN).add(buyRecord.getBuyingPrice()));
 		// 止损预警点位价格 = 买入点位 - (买入点位 - 止损点位) * 90%
 		buyRecord.setLossWarnPosition(
 				buyRecord.getBuyingPrice().subtract(buyRecord.getBuyingPrice().subtract(buyRecord.getLossPosition())
-						.multiply(new BigDecimal(0.9)).setScale(2, RoundingMode.HALF_UP)));
+						.multiply(new BigDecimal(0.9)).setScale(2, RoundingMode.HALF_EVEN)));
 		// 修改点买记录状态
 		StrategyTypeDto strategyType = strategyTypeBusiness.fetchById(buyRecord.getStrategyTypeId());
 		if (buyRecord.getDeferred()) {

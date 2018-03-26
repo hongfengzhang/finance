@@ -2,9 +2,7 @@ package com.waben.stock.interfaces.vo.publisher;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.Set;
 
-import com.waben.stock.interfaces.dto.publisher.CapitalFlowExtendDto;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 
 public class CapitalFlowVo {
@@ -36,10 +34,6 @@ public class CapitalFlowVo {
      * 发布人序列号
      */
     private String publisherSerialCode;
-    /**
-     * 流水扩展列表
-     */
-    private Set<CapitalFlowExtendDto> extendList;
 
     private String publisherPhone;
 
@@ -105,14 +99,6 @@ public class CapitalFlowVo {
 
     public void setPublisherSerialCode(String publisherSerialCode) {
         this.publisherSerialCode = publisherSerialCode;
-    }
-
-    public Set<CapitalFlowExtendDto> getExtendList() {
-        return extendList;
-    }
-
-    public void setExtendList(Set<CapitalFlowExtendDto> extendList) {
-        this.extendList = extendList;
     }
 
     public String getPublisherPhone() {

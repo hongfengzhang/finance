@@ -333,7 +333,7 @@ public class QuickPayBusiness {
         order.setThirdRespMsg(thirdRespMsg);
         this.revisionWithdrawalsOrder(order);
         if (order.getState() == WithdrawalsState.PROCESSING) {
-            accountBusiness.withdrawals(order.getPublisherId(), withdrawalsNo, withdrawalsState);
+            accountBusiness.withdrawals(order.getPublisherId(), order.getId(), withdrawalsState);
         }
     }
 
@@ -643,7 +643,7 @@ public class QuickPayBusiness {
         String resultFlag = jsonData.getString("resultFlag");
         if ("SUCCESS".equals(jsStr.getString("result")) || "0".equals(resultFlag) || "2".equals(resultFlag)) {
             WithdrawalsOrderDto origin = findWithdrawalsOrder(withdrawalsNo);
-            accountBusiness.csa(origin.getPublisherId(), origin.getAmount());
+            accountBusiness.csa(origin.getPublisherId(), origin.getAmount(), order.getId());
             if (origin.getState() != WithdrawalsState.PROCESSED) {
                 // 更新代付订单的状态
                 withdrawalsOrderReference.changeState(withdrawalsNo, WithdrawalsState.PROCESSED.getIndex());
@@ -664,7 +664,7 @@ public class QuickPayBusiness {
             // 给发布人账号中充值
             if (state == PaymentState.Paid) {
                 logger.info("给发布人账号中充值");
-                accountBusiness.recharge(origin.getPublisherId(), origin.getAmount());
+                accountBusiness.recharge(origin.getPublisherId(), origin.getAmount(), origin.getId());
             }
         }
     }
