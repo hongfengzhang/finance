@@ -29,13 +29,14 @@ public class ExcelUtil {
      */
     private static String renderInquiry(QuotoInquiry quotoInquiry, String contextPath) {
         String file = null;
-        String url = "/officetemplate/excel/inquiry.xlsx";
-        try (InputStream is = ExcelUtil.class.getResourceAsStream(url)) {
+        String url = "officetemplate" + File.separator + "excel" + File.separator + "inquiry.xlsx";
+        try (InputStream is = ClassLoader.getSystemResourceAsStream(url)) {
             if (is == null) {
                 logger.error("模板文件找不到");
             }
             Date date = new Date();
-            String path = contextPath + new SimpleDateFormat("yyyy/MM/dd/").format(date);
+            String path = contextPath + new SimpleDateFormat("yyyy/MM/dd/").format(date)
+                            .replace("/", File.separator);
             File f = new File(path);
             if (!f.exists()) {
                 f.mkdirs();
@@ -128,13 +129,18 @@ public class ExcelUtil {
     public static String commonWordRender(Map<String, Object> datas, String templateName, String contextPath){
         XWPFTemplate template = null;
         Date date = new Date();
-        String path = contextPath + new SimpleDateFormat("yyyy/MM/dd/").format(date)
-                + File.separator + templateName + File.separator + System.currentTimeMillis()  + ".docx";
-        String url = "officetemplate/world/" + templateName + ".docx";
+        String path = contextPath + new SimpleDateFormat("yyyy/MM/dd").format(date)
+                        .replace("/", File.separator) + File.separator + templateName;
+        File f = new File(path);
+        if (!f.exists()) {
+            f.mkdirs();
+        }
+        String file = path + File.separator + System.currentTimeMillis()  + ".docx";
+        String url = "officetemplate" + File.separator + "world" + File.separator + templateName + ".docx";
         try (InputStream is = ClassLoader.getSystemResourceAsStream(url);
-             FileOutputStream out = new FileOutputStream(path)) {
-            template = XWPFTemplate.compile(is).render(datas);
-            template.write(out);
+             FileOutputStream out = new FileOutputStream(file)) {
+             template = XWPFTemplate.compile(is).render(datas);
+             template.write(out);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
