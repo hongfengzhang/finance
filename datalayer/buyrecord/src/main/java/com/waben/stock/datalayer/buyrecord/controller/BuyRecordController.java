@@ -180,4 +180,10 @@ public class BuyRecordController implements BuyRecordInterface {
         return new Response<>(CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecord, false));
 	}
 
+
+	@Override
+    public Response<Boolean> echo() {
+        return new Response<>(true);
+    }
+
 }

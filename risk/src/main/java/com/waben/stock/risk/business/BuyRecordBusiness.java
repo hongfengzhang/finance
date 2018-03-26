@@ -73,7 +73,8 @@ public class BuyRecordBusiness {
         if ("200".equals(code)) {
             return response.getResult();
         } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
-            throw new NetflixCircuitException(code);
+            return buyRecordService.buyRecordsWithStatus(1).getResult();
+//            throw new NetflixCircuitException(code);
         }
         throw new ServiceException(response.getCode());
     }
@@ -85,6 +86,17 @@ public class BuyRecordBusiness {
             return response.getResult();
         } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public Boolean echo() {
+        Response<Boolean> response = buyRecordService.echo();
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            return false;
         }
         throw new ServiceException(response.getCode());
     }

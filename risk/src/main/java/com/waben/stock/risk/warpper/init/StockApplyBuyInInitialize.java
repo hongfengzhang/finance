@@ -1,4 +1,4 @@
-package com.waben.stock.risk.init;
+package com.waben.stock.risk.warpper.init;
 
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
@@ -17,7 +17,6 @@ import java.util.List;
  * @desc 初始化申请买入的点买记录
  */
 @Component
-//@Order(Ordered.LOWEST_PRECEDENCE+100)
 public class StockApplyBuyInInitialize implements CommandLineRunner {
 
     @Autowired
@@ -30,10 +29,6 @@ public class StockApplyBuyInInitialize implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithBuyIn();
-        if(buyRecords.size()==0){
-            logger.info("没有买入中的订单");
-            return;
-        }
         logger.info("获取买入中的点买交易记录个数：{}", buyRecords.size());
         for (BuyRecordDto buyRecord : buyRecords) {
             SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();

@@ -10,6 +10,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.cloud.netflix.hystrix.EnableHystrix;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,29 +27,15 @@ import java.util.List;
 @EnableDiscoveryClient
 //服务调用
 @EnableFeignClients
-
+//断路器
+@EnableHystrix
 @ComponentScan(basePackages = {"com.waben.stock"})
-@Controller
 public class RiskApplication {
 
 
     public static void main(String[] args) {
         System.setProperty("org.terracotta.quartz.skipUpdateCheck", "true");
         SpringApplication.run(RiskApplication.class);
-    }
-
-    @Autowired
-    public StockApplyEntrustBuyInContainer buyInContainer;
-
-    @RequestMapping("/buyrecords")
-    @ResponseBody
-    public Response<Void> buyrecords(String code) {
-        SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
-        securitiesStockEntrust.setTradeNo(code);
-        securitiesStockEntrust.setEntrustNo("112");
-        securitiesStockEntrust.setTradeSession("c445ac76489dd9b5026772e98b3cc4ab011513322080");
-        buyInContainer.add(securitiesStockEntrust);
-        return new Response<>();
     }
 
 

@@ -3,6 +3,7 @@ package com.waben.stock.risk.warpper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import feign.Retryer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Binding;
@@ -60,6 +61,8 @@ public class BeanConfigurer {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
         return rabbitTemplate;
     }
+
+    @Bean public Retryer retryer() { return Retryer.NEVER_RETRY; }
 
     /**
      * 创建 重新委托卖出队列

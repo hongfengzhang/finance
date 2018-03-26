@@ -1,4 +1,4 @@
-package com.waben.stock.risk.init;
+package com.waben.stock.risk.warpper.init;
 
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
@@ -22,7 +22,6 @@ import java.util.Set;
  * @desc
  */
 @Component
-//@Order(Ordered.LOWEST_PRECEDENCE+100)
 public class StockApplySellOutInitialize implements CommandLineRunner {
 
     @Autowired
@@ -38,8 +37,8 @@ public class StockApplySellOutInitialize implements CommandLineRunner {
     public void run(String... args) throws Exception {
         //拉取最新股票详情
         List<BuyRecordDto> buyRecords = buyRecordBusiness.buyRecordsWithSellOut();
+        logger.info("获取卖出中的点买交易记录个数：{}", buyRecords.size());
         if(buyRecords.size()==0){
-            logger.info("没有卖出中的订单");
             return;
         }
         Set<String> codes = new HashSet();
@@ -49,7 +48,6 @@ public class StockApplySellOutInitialize implements CommandLineRunner {
         List<String> codePrams = new ArrayList();
         codePrams.addAll(codes);
         List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
-        logger.info("获取卖出中的点买交易记录个数：{}", buyRecords.size());
         for (BuyRecordDto buyRecord : buyRecords) {
             SecuritiesStockEntrust securitiesStockEntrust = new SecuritiesStockEntrust();
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
