@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.stockoption.entity.StockOptionOrg;
@@ -27,6 +28,9 @@ public class StockOptionQuoteService {
 
 	@Autowired
 	private StockOptionOrgQuoteDao orgQuoteDao;
+	
+	@Value("${price.markup:0.1}")
+	private String priceMarkup;
 
 	public StockOptionQuote quote(String stockCode, Integer cycle) {
 		// TODO 此处目前只有一个机构，默认取第一个机构
@@ -35,7 +39,7 @@ public class StockOptionQuoteService {
 		if (orgQuote != null) {
 			StockOptionQuote result = CopyBeanUtils.copyBeanProperties(StockOptionQuote.class, orgQuote, false);
 			BigDecimal rightMoneyRatio = result.getRightMoneyRatio();
-			result.setRightMoneyRatio(rightMoneyRatio.add(rightMoneyRatio.multiply(new BigDecimal("0.1"))).setScale(4, RoundingMode.HALF_UP));
+			result.setRightMoneyRatio(rightMoneyRatio.add(rightMoneyRatio.multiply(new BigDecimal(priceMarkup))).setScale(4, RoundingMode.HALF_UP));
 			return result;
 		}
 		return null;
