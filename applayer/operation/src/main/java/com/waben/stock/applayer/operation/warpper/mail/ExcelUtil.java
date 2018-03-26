@@ -29,8 +29,8 @@ public class ExcelUtil {
      */
     private static String renderInquiry(QuotoInquiry quotoInquiry, String contextPath) {
         String file = null;
-        String url = "officetemplate" + File.separator + "excel" + File.separator + "inquiry.xlsx";
-        try (InputStream is = ClassLoader.getSystemResourceAsStream(url)) {
+        String url = "/officetemplate" + File.separator + "excel" + File.separator + "inquiry.xlsx";
+        try (InputStream is = ExcelUtil.class.getResourceAsStream(url)) {
             if (is == null) {
                 logger.error("模板文件找不到");
             }
