@@ -58,7 +58,7 @@ public class CapitalFlow {
 	/**
 	 * 发布人ID
 	 */
-	@JoinColumn(name = "publisher_id", insertable = false, updatable = false)
+	@JoinColumn(name = "publisher_id")
 	@ManyToOne
 	private Publisher publisher;
 	/**
