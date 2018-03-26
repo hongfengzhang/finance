@@ -27,17 +27,16 @@ public interface CapitalAccountInterface {
 
 	@RequestMapping(value = "/{publisherId}/recharge/{amount}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> recharge(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("amount") BigDecimal amount);
+			@PathVariable("amount") BigDecimal amount, @RequestParam("rechargeId") Long rechargeId);
 
-	@RequestMapping(value = "/{publisherId}/withdrawals/{withdrawalsNo}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{publisherId}/withdrawals", method = RequestMethod.POST)
 	Response<CapitalAccountDto> withdrawals(@PathVariable("publisherId") Long publisherId,
-			@PathVariable("withdrawalsNo") String withdrawalsNo,
+			@RequestParam("withdrawalsId") Long withdrawalsId,
 			@RequestParam(name = "withdrawalsStateIndex") String withdrawalsStateIndex);
 
 	@RequestMapping(value = "/{publisherId}/csa/{amount}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> csa(@PathVariable("publisherId") Long publisherId,
-											@PathVariable("amount") BigDecimal amount);
-
+			@PathVariable("amount") BigDecimal amount, @RequestParam("withdrawalsId") Long withdrawalsId);
 
 	@RequestMapping(value = "/{publisherId}/{buyRecordId}/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> serviceFeeAndReserveFund(@PathVariable("publisherId") Long publisherId,

@@ -19,7 +19,6 @@ import com.waben.stock.collector.dao.BindCardDao;
 import com.waben.stock.collector.dao.BuyRecordDao;
 import com.waben.stock.collector.dao.CapitalAccountDao;
 import com.waben.stock.collector.dao.CapitalFlowDao;
-import com.waben.stock.collector.dao.CapitalFlowExtendDao;
 import com.waben.stock.collector.dao.DeferredRecordDao;
 import com.waben.stock.collector.dao.DomainTableDao;
 import com.waben.stock.collector.dao.DomainTableReceiveErrorDao;
@@ -40,7 +39,6 @@ import com.waben.stock.collector.entity.BindCard;
 import com.waben.stock.collector.entity.BuyRecord;
 import com.waben.stock.collector.entity.CapitalAccount;
 import com.waben.stock.collector.entity.CapitalFlow;
-import com.waben.stock.collector.entity.CapitalFlowExtend;
 import com.waben.stock.collector.entity.DeferredRecord;
 import com.waben.stock.collector.entity.DomainTable;
 import com.waben.stock.collector.entity.DomainTableReceiveError;
@@ -79,8 +77,6 @@ public class DomainTableService {
 	private CapitalAccountDao capitalAccountDao;
 	@Autowired
 	private CapitalFlowDao capitalFlowDao;
-	@Autowired
-	private CapitalFlowExtendDao capitalFlowExtendDao;
 	@Autowired
 	private DeferredRecordDao deferredRecordDao;
 	@Autowired
@@ -255,16 +251,6 @@ public class DomainTableService {
 				capitalFlowDao.updateCapitalFlow(data);
 			} else {
 				capitalFlowDao.createCapitalFlow(data);
-			}
-		} else if (clazz == CapitalFlowExtend.class) {
-			CapitalFlowExtend data = (CapitalFlowExtend) dataObj;
-			data.setDomain(domain);
-			CapitalFlowExtend origin = capitalFlowExtendDao.getByDomainAndDataId(domain, dataId);
-			if (origin != null) {
-				data.setId(origin.getId());
-				capitalFlowExtendDao.updateCapitalFlowExtend(data);
-			} else {
-				capitalFlowExtendDao.createCapitalFlowExtend(data);
 			}
 		} else if (clazz == DeferredRecord.class) {
 			DeferredRecord data = (DeferredRecord) dataObj;

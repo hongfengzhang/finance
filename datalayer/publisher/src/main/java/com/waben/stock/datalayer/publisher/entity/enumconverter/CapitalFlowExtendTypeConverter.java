@@ -17,6 +17,9 @@ public class CapitalFlowExtendTypeConverter implements AttributeConverter<Capita
 	 */
 	@Override
 	public Integer convertToDatabaseColumn(CapitalFlowExtendType attribute) {
+		if (attribute == null) {
+			return null;
+		}
 		return Integer.parseInt(attribute.getIndex());
 	}
 
@@ -25,6 +28,9 @@ public class CapitalFlowExtendTypeConverter implements AttributeConverter<Capita
 	 */
 	@Override
 	public CapitalFlowExtendType convertToEntityAttribute(Integer dbData) {
+		if (dbData == null) {
+			return null;
+		}
 		return CapitalFlowExtendType.getByIndex(String.valueOf(dbData));
 	}
 }
