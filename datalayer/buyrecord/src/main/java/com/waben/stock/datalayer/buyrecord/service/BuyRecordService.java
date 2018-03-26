@@ -414,7 +414,11 @@ public class BuyRecordService {
 		entrust.setEntrustPrice(market.getDownLimitPrice());
 		entrust.setWindControlType(WindControlType.PUBLISHERAPPLY.getIndex());
 		producer.voluntarilyEntrustApplySellOut(entrust);
+<<<<<<< HEAD
 		// 发送站外消息
+=======
+		// 推送站外消息
+>>>>>>> 2274b52724f0ec0d92a4ffb7a99c36b85aa2bc06
 		sendOutsideMessage(buyRecord);
 		return buyRecord;
 	}

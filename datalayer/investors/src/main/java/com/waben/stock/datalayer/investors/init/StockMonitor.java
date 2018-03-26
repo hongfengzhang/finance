@@ -43,6 +43,11 @@ public class StockMonitor implements CommandLineRunner {
         // 3、org.quartz.DateBuilder.evenMinuteDate <下一分钟>  -- 通过DateBuilder构建Date
         Date runTime = DateBuilder.evenMinuteDate(new Date());
         WeeklyCalendar workDay = new WeeklyCalendar();
+        workDay.setDayExcluded(5,false);
+        workDay.setDayExcluded(6,false);
+        workDay.setDayExcluded(7,false);
+        workDay.setDayExcluded(1,false);
+
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置

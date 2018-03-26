@@ -20,6 +20,7 @@ public class RiskProcess implements Callable<List<PositionStock>> {
     long millisOfDay = 24 * 60 * 60 * 1000;
     SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
     SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    boolean flag = true;
     private StockMarket stockMarket;
     private List<PositionStock> positionStock;
     private Map<String, PositionStock> entrustSellOutContainer;
@@ -54,11 +55,15 @@ public class RiskProcess implements Callable<List<PositionStock>> {
             } else {
                 tradeSession = currTradeSession;
             }
+
+
+
             BigDecimal lastPrice = stockMarket.getLastPrice();
             BigDecimal downLimitPrice = stockMarket.getDownLimitPrice();//跌停价格
             BigDecimal upLimitPrice = stockMarket.getUpLimitPrice();//涨停价格
             BigDecimal lossPosition = riskBuyInStock.getLossPosition();
             BigDecimal profitPosition = riskBuyInStock.getProfitPosition();
+
             logger.info("最新行情价格:{},止损价格：{},止盈价格:{}", lastPrice, lossPosition, profitPosition);
             Date currentDay = new Date();
             Date expriessDay = riskBuyInStock.getExpireTime();
@@ -78,7 +83,9 @@ public class RiskProcess implements Callable<List<PositionStock>> {
 //                    riskBuyInStock.setWindControlType(WindControlType.LIMITDOWN.getIndex());
 //                }
 //            }else
-
+//            upLimitPrice = lastPrice;
+//            stockMarket.setStatus(0);
+//            downLimitPrice = lastPrice;
             if(stockMarket.getStatus()==0||lastPrice.compareTo(downLimitPrice)==0||lastPrice.compareTo(upLimitPrice)==0) {
                 if(lastPrice.compareTo(upLimitPrice)==0) {
                     logger.info("股票已涨停：{}",riskBuyInStock.getStockName());
@@ -99,9 +106,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                 // 判断  最新行情价格与 当前持仓订单买入价格   是否达到止盈或止损点位  若 达到则 执行强制卖出  卖出跌停价
                 if (profitPosition.compareTo(lastPrice) == -1 || profitPosition.compareTo(lastPrice) == 0 ||
                         lossPosition.compareTo(lastPrice) == 1 || lossPosition.compareTo(lastPrice) == 0) {
-                    long buying = riskBuyInStock.getBuyingTime().getTime()/millisOfDay;//买入时间
-                    long current = currentDay.getTime()/millisOfDay;
-                    if(current-buying>=1) {
+
+                    if(((currentDayL/millisOfDay))-( riskBuyInStock.getBuyingTime().getTime()/millisOfDay)>=1) {
                         if (lastPrice.compareTo(profitPosition) >= 0) {
                             //达到止盈点位
                             riskBuyInStock.setWindControlType(WindControlType.REACHPROFITPOINT.getIndex());
@@ -110,6 +116,8 @@ public class RiskProcess implements Callable<List<PositionStock>> {
                             riskBuyInStock.setWindControlType(WindControlType.REACHLOSSPOINT.getIndex());
                         }
                         logger.info("满足止损止盈条件:{}", riskBuyInStock.getTradeNo());
+                    } else {
+                        continue;
                     }
                 } else {
                     logger.info("当前持仓订单未满足止损或止盈条件,不执行风控强制平仓：{}", riskBuyInStock.getTradeNo());

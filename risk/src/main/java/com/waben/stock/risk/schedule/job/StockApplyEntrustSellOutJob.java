@@ -31,7 +31,6 @@ import java.util.*;
 public class StockApplyEntrustSellOutJob implements InterruptableJob {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-    private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustSellOutContainer.class);
     private PositionStockContainer positionStockContainer = ApplicationContextBeanFactory.getBean
@@ -39,7 +38,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     private SecuritiesEntrustHttp securitiesEntrust = ApplicationContextBeanFactory.getBean(SecuritiesEntrustHttp
             .class);
     private EntrustProducer entrustProducer = ApplicationContextBeanFactory.getBean(EntrustProducer.class);
-
+    private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
     private Boolean interrupted = false;
     private long millisOfDay = 24 * 60 * 60 * 1000;
 
@@ -76,6 +75,9 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                             logger.info("最新点买交易记录session:{}", currTradeSession);
                             tradeSession = currTradeSession;
                         }
+//                        StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
+//                                (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
+//                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
                         StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
                         stockEntrustQueryResult.setEntrustStatus(EntrustState.HASBEENSUCCESS.getIndex());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
@@ -103,7 +105,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                            stock.add(securitiesStockEntrust.getStockCode());
                            List<StockMarket> stockMarkets = stockQuotationHttp.fetQuotationByCode(stock);
                            securitiesStockEntrust.setEntrustPrice(stockMarkets.get(0).getLastPrice());
-                           entrustProducer.entrustSellOut(entry.getValue());
+                            entrustProducer.entrustSellOut(entry.getValue());
                             stockEntrusts.remove(entry.getKey());
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust
                                             .getTradeNo(),

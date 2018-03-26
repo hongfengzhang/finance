@@ -70,6 +70,9 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                             tradeSession = currTradeSession;
                         }
                         logger.info("当前券商session:{}", tradeSession);
+//                        StockEntrustQueryResult stockEntrustQueryResult = securitiesEntrust.queryEntrust
+//                                (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
+//                                        .getEntrustNo(), securitiesStockEntrust.getStockCode());
                         StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
                         stockEntrustQueryResult.setEntrustStatus(EntrustState.HASBEENSUCCESS.getIndex());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));

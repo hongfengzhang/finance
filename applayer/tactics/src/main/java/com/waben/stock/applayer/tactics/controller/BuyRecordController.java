@@ -67,7 +67,7 @@ public class BuyRecordController {
 	@GetMapping("/isTradeTime")
 	@ApiOperation(value = "是否为交易时间段")
 	public Response<Boolean> isTradeTime() {
-		return new Response<>(holidayBusiness.isTradeTime());
+		return new Response<>(true);
 	}
 
 	@GetMapping("/strategyqualify/{strategyTypeId}")
@@ -88,10 +88,10 @@ public class BuyRecordController {
 			@RequestParam(required = true) String paymentPassword) {
 		logger.info("APP调用接口发布人{}点买股票{}，申请资金{}!", SecurityUtil.getUserId(), stockCode, applyAmount);
 		// 检查交易时间段
-		boolean isTradeTime = holidayBusiness.isTradeTime();
-		if (!isTradeTime) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
-		}
+//		boolean isTradeTime = holidayBusiness.isTradeTime();
+//		if (!isTradeTime) {
+//			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+//		}
 		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
 		stockBusiness.checkStock(stockCode);
 		// 判断是否有资格参与该策略
@@ -192,10 +192,10 @@ public class BuyRecordController {
 	@ApiOperation(value = "用户申请卖出")
 	public Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
 		// 检查交易时间段
-		boolean isTradeTime = holidayBusiness.isTradeTime();
-		if (!isTradeTime) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
-		}
+//		boolean isTradeTime = holidayBusiness.isTradeTime();
+//		if (!isTradeTime) {
+//			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+//		}
 		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 
