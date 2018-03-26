@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -51,10 +52,15 @@ public class RetriveStockOptionQuoteSchedule {
 	@Autowired
 	private StockOptionOrgQuoteDao quoteDao;
 
+	@Value("${needquotetask:true}")
+	private boolean needQuoteTask;
+
 	@PostConstruct
 	public void initTask() {
-		Timer timer = new Timer();
-		timer.schedule(new RetriveTask(), 10 * 1000);
+		if (needQuoteTask) {
+			Timer timer = new Timer();
+			timer.schedule(new RetriveTask(), 30 * 1000);
+		}
 	}
 
 	public void next() {
@@ -127,7 +133,7 @@ public class RetriveStockOptionQuoteSchedule {
 			webClient.getOptions().setTimeout(1000);
 			HtmlPage rootPage = webClient
 					.getPage("http://120.79.59.39/stockoption/retrive.html?cycle=" + cycle + "&codes=" + codes);
-			webClient.waitForBackgroundJavaScript(10000);
+			webClient.waitForBackgroundJavaScript(100000);
 			String json = "[" + rootPage.getHtmlElementById("content").asText() + "]";
 			logger.info("获取第三方机构报价：" + json);
 			List<OrgQuote> quoteList = JacksonUtil.decode(json, JacksonUtil.getGenericType(List.class, OrgQuote.class));
