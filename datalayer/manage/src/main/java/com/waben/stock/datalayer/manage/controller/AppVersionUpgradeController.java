@@ -26,7 +26,7 @@ public class AppVersionUpgradeController implements AppVersionUpgradeInterface {
 
 	@Override
 	public Response<AppVersionUpgradeDto> checkUpgrade(@PathVariable Integer versionCode,
-			@PathVariable Integer deviceType, @PathVariable Integer shellIndex) {
+			@PathVariable Integer deviceType, Integer shellIndex) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(AppVersionUpgradeDto.class,
 				service.checkUpgrade(versionCode, deviceType, shellIndex), false));
 	}

@@ -1,22 +1,20 @@
-package com.waben.stock.risk.init;
+package com.waben.stock.risk.warpper.init;
 
 import org.quartz.Calendar;
-import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.List;
 
 /**
  * @author Created by yuyidi on 2018/2/2.
  * @desc
  */
-@Component
-@Order(2)
+//@Component
+//@Order(2)
 public class QuartzJobShouldBeRunProcess implements CommandLineRunner {
 
 

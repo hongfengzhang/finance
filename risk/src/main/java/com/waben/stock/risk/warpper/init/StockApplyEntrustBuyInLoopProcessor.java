@@ -1,9 +1,5 @@
-package com.waben.stock.risk.init;
+package com.waben.stock.risk.warpper.init;
 
-import com.waben.stock.interfaces.enums.EntrustState;
-import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
-import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrustHttp;
@@ -11,9 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
-import java.util.Map;
 
 /**
  * @author Created by yuyidi on 2017/12/4.

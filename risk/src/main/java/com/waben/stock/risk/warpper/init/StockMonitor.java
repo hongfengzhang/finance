@@ -1,4 +1,4 @@
-package com.waben.stock.risk.init;
+package com.waben.stock.risk.warpper.init;
 
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -55,7 +55,7 @@ public class StockMonitor implements CommandLineRunner {
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
         DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:30");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "14:00");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "18:56", "19:00");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
@@ -78,7 +78,7 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("calendarPM")
                 .build();
 
-        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 0 9,13 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 56 9,18 * * ?");
         CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
         CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 15 * * ?");
 

@@ -3,6 +3,7 @@ package com.waben.stock.risk.service.fallback;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.*;
 import com.waben.stock.risk.service.BuyRecordService;
@@ -19,7 +20,6 @@ import java.util.List;
  */
 @Component
 public class BuyRecordServiceFallback implements BuyRecordService {
-    Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public Response<BuyRecordDto> addBuyRecord(BuyRecordDto buyRecordDto) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -67,6 +67,7 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<PageInfo<BuyRecordDto>> pagesByWithdrawQuery(StrategyUnwindQuery trategyUnwindQuery) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
 
     @Override
     public void delete(Long id) {
@@ -122,4 +123,9 @@ public class BuyRecordServiceFallback implements BuyRecordService {
 	public Response<BuyRecordDto> revoke(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+    @Override
+    public Response<Boolean> echo() {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

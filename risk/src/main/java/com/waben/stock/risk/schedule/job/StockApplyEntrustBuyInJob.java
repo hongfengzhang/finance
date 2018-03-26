@@ -1,13 +1,16 @@
 package com.waben.stock.risk.schedule.job;
 
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.risk.business.BuyRecordBusiness;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
+import com.waben.stock.risk.warpper.messagequeue.rabbitmq.VoluntarilyApplyEntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrustHttp;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
@@ -18,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -35,11 +39,19 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
             .class);
     private EntrustProducer entrustProducer = ApplicationContextBeanFactory.getBean(EntrustProducer.class);
 
+//    private BuyRecordBusiness buyRecordBusiness = ApplicationContextBeanFactory.getBean(BuyRecordBusiness.class);
+//
+//    private VoluntarilyApplyEntrustProducer producer = ApplicationContextBeanFactory.getBean
+//            (VoluntarilyApplyEntrustProducer
+//            .class);
+
     private Boolean interrupted = false;
     private long millisOfDay = 24 * 60 * 60 * 1000;
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        //执行任务前将容器中的数据清空
+//        securitiesStockEntrustContainer.getBuyInContainer().clear();
         logger.info("券商股票委托容器对象:{},当前对象{}", securitiesStockEntrustContainer, this);
         String tradeSession = "880003450508";
         while (!interrupted) {
@@ -70,11 +82,12 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                                 (securitiesStockEntrust.getTradeSession(), securitiesStockEntrust
                                         .getEntrustNo(), securitiesStockEntrust.getStockCode());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
-                        if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex
+                        if (stockEntrustQueryResult == null || stockEntrustQueryResult.getEntrustStatus().equals
+                                (EntrustState.WASTEORDER.getIndex
                                 ())) {
-                            if(stockEntrustQueryResult == null) {
+                            if (stockEntrustQueryResult == null) {
                                 logger.info("委托买入轮询点买记录不存在，删除容器中该交易记录,进行废单操作:{}", securitiesStockEntrust.getTradeNo());
-                            }else {
+                            } else {
                                 logger.info("委托买入轮询点买记录买入废单:{}", entry.getKey());
                             }
                             // 将点买废单放入废单处理队列中
