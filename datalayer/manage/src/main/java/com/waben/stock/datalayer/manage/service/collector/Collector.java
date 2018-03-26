@@ -36,6 +36,8 @@ public class Collector {
 	private String executeTime;
 	@Value("${execute.isgrace:false}")
 	private boolean isGrace;
+	@Value("${needtask:false}")
+	private boolean needTask;
 
 	private RestTemplate restTemplate = new RestTemplate();
 
@@ -48,7 +50,7 @@ public class Collector {
 
 	@PostConstruct
 	public void initTask() {
-		if (isGrace) {
+		if (needTask && isGrace) {
 			try {
 				Timer timer = new Timer();
 				Date date = new Date();
@@ -84,6 +86,7 @@ public class Collector {
 							sendData(table.getId(), JacksonUtil.encode(sqlResult));
 						}
 					} catch (Exception ex) {
+						sendError(table.getId(), ex.getMessage());
 					}
 				}
 			} catch (Exception ex) {
@@ -99,6 +102,24 @@ public class Collector {
 		JavaType javaType = JacksonUtil.getGenericType(ArrayList.class, DomainTable.class);
 		List<DomainTable> responseObj = JacksonUtil.decode(response, javaType);
 		return responseObj;
+	}
+	
+	private boolean sendError(Long domainTableId, String error) {
+		Map<String, String> paramsMap = new HashMap<>();
+		paramsMap.put("domainTableId", domainTableId.toString());
+		paramsMap.put("error", error);
+		HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+		HttpEntity<String> requestEntity = new HttpEntity<String>(getParamSrc(paramsMap), requestHeaders);
+		String requestUrl = collectorUrl + "/domainTable/receiveError";
+		String response = restTemplate.postForObject(requestUrl, requestEntity, String.class);
+		DataResponse<String> responseObj = JacksonUtil.decode(response,
+				JacksonUtil.getGenericType(DataResponse.class, String.class));
+		if ("200".equals(responseObj.getCode())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private boolean sendData(Long domainTableId, String data) {

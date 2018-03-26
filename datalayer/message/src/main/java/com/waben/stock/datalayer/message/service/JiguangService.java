@@ -58,7 +58,7 @@ public class JiguangService {
 
 	private PushPayload buildPushObjectForSingle(String registrationId, String title, String alert,
 			Map<String, String> extras) {
-		extras.put("sound ", "default");
+		extras.put("sound", "default");
 		Builder builder = PushPayload.newBuilder();
 		builder.setPlatform(Platform.all());
 		builder.setAudience(
@@ -75,7 +75,7 @@ public class JiguangService {
 
 	private PushPayload buildPushObjectForMultiple(String[] registrationIdArr, String title, String alert,
 			Map<String, String> extras) {
-		extras.put("sound ", "default");
+		extras.put("sound", "default");
 		Builder builder = PushPayload.newBuilder();
 		builder.setPlatform(Platform.all());
 		builder.setAudience(
@@ -91,7 +91,7 @@ public class JiguangService {
 	}
 
 	private PushPayload buildPushObjectForAllDevice(String title, String alert, Map<String, String> extras) {
-		extras.put("sound ", "default");
+		extras.put("sound", "default");
 		Builder builder = PushPayload.newBuilder();
 		builder.setPlatform(Platform.all());
 		builder.setAudience(Audience.newBuilder().setAll(true).build());
