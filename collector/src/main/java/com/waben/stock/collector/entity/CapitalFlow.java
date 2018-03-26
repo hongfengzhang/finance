@@ -50,10 +50,13 @@ public class CapitalFlow {
 	@Column(name = "publisher_id")
 	private Long publisherId;
 	/**
-	 * 发布人序列号
+	 * 扩展类型
 	 */
-	@Column(name = "publisher_serial_code")
-	private String publisherSerialCode;
+	public Integer extendType;
+	/**
+	 * 扩展ID
+	 */
+	public Long extendId;
 
 	public Long getId() {
 		return id;
@@ -85,14 +88,6 @@ public class CapitalFlow {
 
 	public void setOccurrenceTime(Date occurrenceTime) {
 		this.occurrenceTime = occurrenceTime;
-	}
-
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
-
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
 	}
 
 	public String getFlowNo() {
@@ -133,6 +128,22 @@ public class CapitalFlow {
 
 	public void setDataId(Long dataId) {
 		this.dataId = dataId;
+	}
+
+	public Integer getExtendType() {
+		return extendType;
+	}
+
+	public void setExtendType(Integer extendType) {
+		this.extendType = extendType;
+	}
+
+	public Long getExtendId() {
+		return extendId;
+	}
+
+	public void setExtendId(Long extendId) {
+		this.extendId = extendId;
 	}
 
 }

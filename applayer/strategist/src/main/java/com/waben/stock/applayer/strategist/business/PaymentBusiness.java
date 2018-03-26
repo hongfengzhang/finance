@@ -245,7 +245,7 @@ public class PaymentBusiness {
 			changeState(paymentNo, state);
 			// 给发布人账号中充值
 			if (state == PaymentState.Paid) {
-				accountBusiness.recharge(origin.getPublisherId(), origin.getAmount());
+				accountBusiness.recharge(origin.getPublisherId(), origin.getAmount(), origin.getId());
 			}
 		}
 	}
@@ -292,7 +292,7 @@ public class PaymentBusiness {
 		order.setThirdRespMsg(thirdRespMsg);
 		this.revisionWithdrawalsOrder(order);
 		if (order.getState() == WithdrawalsState.PROCESSING) {
-			accountBusiness.withdrawals(order.getPublisherId(), withdrawalsNo, withdrawalsState);
+			accountBusiness.withdrawals(order.getPublisherId(), order.getId(), withdrawalsState);
 		}
 	}
 	

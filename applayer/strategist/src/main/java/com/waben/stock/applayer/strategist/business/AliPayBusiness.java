@@ -79,7 +79,7 @@ public class AliPayBusiness {
 			changeState(paymentNo, state);
 			// 给发布人账号中充值
 			if (state == PaymentState.Paid) {
-				accountBusiness.recharge(origin.getPublisherId(), origin.getAmount());
+				accountBusiness.recharge(origin.getPublisherId(), origin.getAmount(), origin.getId());
 			}
 		}
 	}

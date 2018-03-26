@@ -39,7 +39,7 @@ public class StockOptionQuoteService {
 		if (orgQuote != null) {
 			StockOptionQuote result = CopyBeanUtils.copyBeanProperties(StockOptionQuote.class, orgQuote, false);
 			BigDecimal rightMoneyRatio = result.getRightMoneyRatio();
-			result.setRightMoneyRatio(rightMoneyRatio.add(rightMoneyRatio.multiply(new BigDecimal(priceMarkup))).setScale(4, RoundingMode.HALF_UP));
+			result.setRightMoneyRatio(rightMoneyRatio.add(rightMoneyRatio.multiply(new BigDecimal(priceMarkup))).setScale(4, RoundingMode.HALF_EVEN));
 			return result;
 		}
 		return null;

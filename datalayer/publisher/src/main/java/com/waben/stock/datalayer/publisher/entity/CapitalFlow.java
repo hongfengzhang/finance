@@ -2,13 +2,20 @@ package com.waben.stock.datalayer.publisher.entity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.waben.stock.datalayer.publisher.entity.enumconverter.CapitalFlowExtendTypeConverter;
 import com.waben.stock.datalayer.publisher.entity.enumconverter.CapitalFlowTypeConverter;
+import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 
 /**
@@ -48,26 +55,23 @@ public class CapitalFlow {
 	 */
 	@Column(name = "occurrence_time")
 	private Date occurrenceTime;
-
-	@Column(name = "publisher_id")
-	private Long publisherId;
 	/**
 	 * 发布人ID
 	 */
-	@JoinColumn(name = "publisher_id",insertable = false,updatable = false)
+	@JoinColumn(name = "publisher_id")
 	@ManyToOne
 	private Publisher publisher;
 	/**
-	 * 发布人序列号
+	 * 产生流水的对象类型
 	 */
-	@Column(name = "publisher_serial_code")
-	private String publisherSerialCode;
+	@Convert(converter = CapitalFlowExtendTypeConverter.class)
+	@Column(name = " extend_type")
+	private CapitalFlowExtendType extendType;
 	/**
-	 * 流水扩展列表
+	 * 产生流水的对象ID
 	 */
-	@JsonManagedReference
-	@OneToMany(mappedBy = "flow")
-	private Set<CapitalFlowExtend> extendList = new HashSet<>();
+	@Column(name = "extend_id")
+	private Long extendId;
 
 	public Long getId() {
 		return id;
@@ -117,30 +121,14 @@ public class CapitalFlow {
 		this.publisher = publisher;
 	}
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
-
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
-	}
-
-	public Set<CapitalFlowExtend> getExtendList() {
-		return extendList;
-	}
-
-	public void setExtendList(Set<CapitalFlowExtend> extendList) {
-		this.extendList = extendList;
-	}
-
-	public String getCapitalFlowType(){
+	public String getCapitalFlowType() {
 		String capitalFlowType = null;
-		if(type != null){
+		if (type != null) {
 			capitalFlowType = type.getType();
 		}
 		return capitalFlowType;
 	}
-	
+
 	public String getFlowNo() {
 		return flowNo;
 	}
@@ -149,15 +137,41 @@ public class CapitalFlow {
 		this.flowNo = flowNo;
 	}
 
- 	public String getPublisherPhone() {
-		return publisher.getPhone();
+	public CapitalFlowExtendType getExtendType() {
+		return extendType;
+	}
+
+	public void setExtendType(CapitalFlowExtendType extendType) {
+		this.extendType = extendType;
+	}
+
+	public Long getExtendId() {
+		return extendId;
+	}
+
+	public void setExtendId(Long extendId) {
+		this.extendId = extendId;
 	}
 
 	public Long getPublisherId() {
-		return publisherId;
+		if (publisher != null) {
+			return publisher.getId();
+		}
+		return null;
 	}
 
-	public void setPublisherId(Long publisherId) {
-		this.publisherId = publisherId;
+	public String getPublisherPhone() {
+		if (publisher != null) {
+			return publisher.getPhone();
+		}
+		return null;
 	}
+
+	public String getPublisherSerialCode() {
+		if (publisher != null) {
+			return publisher.getSerialCode();
+		}
+		return null;
+	}
+
 }

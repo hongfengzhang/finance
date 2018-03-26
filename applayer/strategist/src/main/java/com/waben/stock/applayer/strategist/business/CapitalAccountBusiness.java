@@ -51,24 +51,24 @@ public class CapitalAccountBusiness {
 		}
 	}
 
-	public CapitalAccountDto recharge(Long publisherId, BigDecimal amount) {
-		Response<CapitalAccountDto> response = capitalAccountReference.recharge(publisherId, amount);
+	public CapitalAccountDto recharge(Long publisherId, BigDecimal amount, Long rechargeId) {
+		Response<CapitalAccountDto> response = capitalAccountReference.recharge(publisherId, amount, rechargeId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
 
-	public CapitalAccountDto csa(Long publisherId, BigDecimal amount) {
-		Response<CapitalAccountDto> response = capitalAccountReference.csa(publisherId, amount);
+	public CapitalAccountDto csa(Long publisherId, BigDecimal amount, Long withdrawalsId) {
+		Response<CapitalAccountDto> response = capitalAccountReference.csa(publisherId, amount, withdrawalsId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
 
-	public CapitalAccountDto withdrawals(Long publisherId, String withdrawalsNo, WithdrawalsState state) {
-		Response<CapitalAccountDto> response = capitalAccountReference.withdrawals(publisherId, withdrawalsNo,
+	public CapitalAccountDto withdrawals(Long publisherId, Long withdrawalsId, WithdrawalsState state) {
+		Response<CapitalAccountDto> response = capitalAccountReference.withdrawals(publisherId, withdrawalsId,
 				state.getIndex());
 		if ("200".equals(response.getCode())) {
 			return response.getResult();

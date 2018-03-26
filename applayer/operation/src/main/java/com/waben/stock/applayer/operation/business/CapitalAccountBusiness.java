@@ -66,8 +66,8 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public CapitalAccountDto recharge(Long publisherId, BigDecimal amount) {
-		Response<CapitalAccountDto> response = capitalAccountService.recharge(publisherId, amount);
+	public CapitalAccountDto recharge(Long publisherId, BigDecimal amount, Long rechargeId) {
+		Response<CapitalAccountDto> response = capitalAccountService.recharge(publisherId, amount, rechargeId);
 		String code = response.getCode();
 		if ("200".equals(code)) {
 			return response.getResult();

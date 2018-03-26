@@ -3,11 +3,15 @@ package com.waben.stock.datalayer.publisher.entity;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.*;
-
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-
-import net.sf.cglib.beans.BeanCopier;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /***
  * @author yuyidi 2017-11-13 23:11:02
@@ -50,7 +54,7 @@ public class CapitalAccount {
      * 发布人ID
      */
     @Column(name = "publisher_id")
-   @Transient
+    @Transient
     private Long publisherId;
     /**
      * 发布人序列号

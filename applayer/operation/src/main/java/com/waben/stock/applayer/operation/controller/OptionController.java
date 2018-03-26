@@ -17,6 +17,7 @@ import com.waben.stock.interfaces.vo.stockoption.InquiryResultVo;
 import com.waben.stock.interfaces.vo.stockoption.OfflineStockOptionTradeVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionOrgVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionTradeVo;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -26,11 +27,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Controller
 @RequestMapping("/option")
 public class OptionController {
-
+    org.slf4j.Logger logger = LoggerFactory.getLogger(getClass());
     @Autowired
     private StockOptionTradeBusiness stockOptionTradeBusiness;
     @Autowired
@@ -74,6 +76,7 @@ public class OptionController {
     @RequestMapping("/settlement/{id}")
     @ResponseBody
     public Response<StockOptionTradeVo> settlement(@PathVariable Long id){
+        logger.info("结算id:{}",id);
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.settlement(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
         return new Response<>(stockOptionTradeVo);

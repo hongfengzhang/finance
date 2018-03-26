@@ -15,7 +15,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +33,7 @@ import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.OutsideMessageType;
 import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
@@ -154,7 +154,8 @@ public class StockOptionTradeService {
 							query.getBeginTime()));
 				}
 				if (query.getEndTime() != null) {
-					predicatesList.add(criteriaBuilder.lessThan(root.get("updateTime").as(Date.class), query.getEndTime()));
+					predicatesList
+							.add(criteriaBuilder.lessThan(root.get("updateTime").as(Date.class), query.getEndTime()));
 				}
 				if (!StringUtils.isEmpty(query.getPublisherPhone())) {
 					Predicate publisherPhoneQuery = criteriaBuilder.equal(root.get("publisherPhone").as(Long.class),
@@ -185,6 +186,9 @@ public class StockOptionTradeService {
 	@Transactional
 	public StockOptionTrade settlement(Long id) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		if (StockOptionTradeState.SETTLEMENTED == trade.getState()) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
 		BigDecimal sellingPrice = trade.getOfflineTrade().getSellingPrice();
 		trade.setSellingPrice(sellingPrice);
 		trade.setSellingTime(new Date());
@@ -192,7 +196,7 @@ public class StockOptionTradeService {
 		BigDecimal profit = BigDecimal.ZERO;
 		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
 			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice(), 10, RoundingMode.DOWN)
-					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.HALF_UP);
+					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.HALF_EVEN);
 		}
 		trade.setProfit(profit);
 		trade.setUpdateTime(new Date());
@@ -253,26 +257,26 @@ public class StockOptionTradeService {
 	}
 
 	@Transactional
-	public StockOptionTrade modify(Long id){
+	public StockOptionTrade modify(Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
 		OfflineStockOptionTradeState next = OfflineStockOptionTradeState.INQUIRY;
-		if(stockOptionTrade.getStatus()==null){
-			next =OfflineStockOptionTradeState.INQUIRY;
+		if (stockOptionTrade.getStatus() == null) {
+			next = OfflineStockOptionTradeState.INQUIRY;
 		}
-		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.INQUIRY){
-			next =OfflineStockOptionTradeState.PURCHASE;
+		if (stockOptionTrade.getStatus() == OfflineStockOptionTradeState.INQUIRY) {
+			next = OfflineStockOptionTradeState.PURCHASE;
 		}
-		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.PURCHASE){
-			next =OfflineStockOptionTradeState.TURNOVER;
+		if (stockOptionTrade.getStatus() == OfflineStockOptionTradeState.PURCHASE) {
+			next = OfflineStockOptionTradeState.TURNOVER;
 		}
-		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.TURNOVER){
-			next =OfflineStockOptionTradeState.APPLYRIGHT;
+		if (stockOptionTrade.getStatus() == OfflineStockOptionTradeState.TURNOVER) {
+			next = OfflineStockOptionTradeState.APPLYRIGHT;
 		}
-		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.APPLYRIGHT){
-			next =OfflineStockOptionTradeState.INSETTLEMENT;
+		if (stockOptionTrade.getStatus() == OfflineStockOptionTradeState.APPLYRIGHT) {
+			next = OfflineStockOptionTradeState.INSETTLEMENT;
 		}
-		if(stockOptionTrade.getStatus()==OfflineStockOptionTradeState.INSETTLEMENT){
-			next =OfflineStockOptionTradeState.SETTLEMENTED;
+		if (stockOptionTrade.getStatus() == OfflineStockOptionTradeState.INSETTLEMENT) {
+			next = OfflineStockOptionTradeState.SETTLEMENTED;
 		}
 		stockOptionTrade.setStatus(next);
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
@@ -314,9 +318,10 @@ public class StockOptionTradeService {
 				extras.put("type", OutsideMessageType.OPTION_WAITCONFIRMED.getIndex());
 				break;
 			case FAILURE:
-				message.setContent(String.format("您申购的“%s %s”申购失败，权利金已退回至您的账户，请留意账户余额", trade.getStockName(), trade.getStockCode()));
-				extras.put("content", String.format("您申购的“<span id=\"stock\">%s %s</span>”申购失败，权利金已退回至您的账户，请留意账户余额", trade.getStockName(),
+				message.setContent(String.format("您申购的“%s %s”申购失败，权利金已退回至您的账户，请留意账户余额", trade.getStockName(),
 						trade.getStockCode()));
+				extras.put("content", String.format("您申购的“<span id=\"stock\">%s %s</span>”申购失败，权利金已退回至您的账户，请留意账户余额",
+						trade.getStockName(), trade.getStockCode()));
 				extras.put("type", OutsideMessageType.OPTION_FAILURE.getIndex());
 				break;
 			case TURNOVER:

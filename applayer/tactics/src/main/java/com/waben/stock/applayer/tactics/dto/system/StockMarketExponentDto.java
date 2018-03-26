@@ -66,7 +66,7 @@ public class StockMarketExponentDto {
 	}
 
 	public void setLastPrice(BigDecimal lastPrice) {
-		this.lastPrice = lastPrice.setScale(2, BigDecimal.ROUND_HALF_UP);
+		this.lastPrice = lastPrice.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getUpDropPrice() {
@@ -74,7 +74,7 @@ public class StockMarketExponentDto {
 	}
 
 	public void setUpDropPrice(BigDecimal upDropPrice) {
-		this.upDropPrice = upDropPrice.setScale(2, BigDecimal.ROUND_HALF_UP);
+		this.upDropPrice = upDropPrice.setScale(2, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 	public BigDecimal getUpDropSpeed() {
@@ -82,7 +82,7 @@ public class StockMarketExponentDto {
 	}
 
 	public void setUpDropSpeed(BigDecimal upDropSpeed) {
-		this.upDropSpeed = upDropSpeed.setScale(4, BigDecimal.ROUND_HALF_UP);
+		this.upDropSpeed = upDropSpeed.setScale(4, BigDecimal.ROUND_HALF_EVEN);
 	}
 
 }

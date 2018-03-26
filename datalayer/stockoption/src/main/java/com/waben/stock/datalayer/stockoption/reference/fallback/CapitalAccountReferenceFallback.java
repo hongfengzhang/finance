@@ -32,22 +32,6 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 	}
 
 	@Override
-	public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
-	public Response<CapitalAccountDto> withdrawals(Long publisherId, String withdrawalsNo,
-			String withdrawalsStateIndex) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
-	public Response<CapitalAccountDto> csa(Long publisherId, BigDecimal amount) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
 	public Response<CapitalAccountDto> serviceFeeAndReserveFund(Long publisherId, Long buyRecordId,
 			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -78,13 +62,13 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 	public Response<CapitalAccountDto> fetchById(Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
-	
+
 	@Override
 	public Response<CapitalAccountDto> revoke(Long publisherId, Long buyRecordId, BigDecimal serviceFee,
 			BigDecimal deferredFee) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
-	
+
 	@Override
 	public Response<CapitalAccountDto> modifyCapitalAccount(CapitalAccountDto capitalAccountDto) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -107,6 +91,21 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 
 	@Override
 	public Response<CapitalAccountDto> optionProfit(Long publisherId, Long optionTradeId, BigDecimal profit) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount, Long rechargeId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> withdrawals(Long publisherId, Long withdrawalsId, String withdrawalsStateIndex) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> csa(Long publisherId, BigDecimal amount, Long withdrawalsId) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

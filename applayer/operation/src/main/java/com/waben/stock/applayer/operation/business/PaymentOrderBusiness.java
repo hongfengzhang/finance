@@ -50,15 +50,15 @@ public class PaymentOrderBusiness {
 		throw new ServiceException(orderResp.getCode());
 	}
 
-	public PageInfo<PaymentOrderDto> pagesByQuery(PaymentOrderQuery query){
+	public PageInfo<PaymentOrderDto> pagesByQuery(PaymentOrderQuery query) {
 		Response<PageInfo<PaymentOrderDto>> response = paymentOrderReference.pagesByQuery(query);
 		String code = response.getCode();
 		if ("200".equals(code)) {
-            return response.getResult();
-        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
-            throw new NetflixCircuitException(code);
-        }
-        throw new ServiceException(response.getCode());
+			return response.getResult();
+		} else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+			throw new NetflixCircuitException(code);
+		}
+		throw new ServiceException(response.getCode());
 	}
 
 	public PaymentOrderDto aliturnPaid(String paymentNo) {
@@ -69,9 +69,9 @@ public class PaymentOrderBusiness {
 			paymentOrder.setState(PaymentState.Paid);
 			if (oldState == PaymentState.PartPaid) {
 				accountBusiness.recharge(paymentOrder.getPublisherId(),
-						paymentOrder.getAmount().subtract(paymentOrder.getPartAmount()));
+						paymentOrder.getAmount().subtract(paymentOrder.getPartAmount()), paymentOrder.getId());
 			} else {
-				accountBusiness.recharge(paymentOrder.getPublisherId(), paymentOrder.getAmount());
+				accountBusiness.recharge(paymentOrder.getPublisherId(), paymentOrder.getAmount(), paymentOrder.getId());
 			}
 		}
 		return paymentOrder;
@@ -91,11 +91,11 @@ public class PaymentOrderBusiness {
 				paymentOrder.setPartAmount(partAmount);
 				this.save(paymentOrder);
 			}
-			accountBusiness.recharge(paymentOrder.getPublisherId(), partAmount);
+			accountBusiness.recharge(paymentOrder.getPublisherId(), partAmount, paymentOrder.getId());
 		} else {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "支付订单状态不匹配");
 		}
 		return paymentOrder;
 	}
-	
+
 }

@@ -68,7 +68,7 @@ public class SimpleTest {
     public void testBigDecimal() {
         BigDecimal amountValue = new BigDecimal(10000);
         BigDecimal price = new BigDecimal(13.45);
-        System.out.println(amountValue.divide(price, 2, RoundingMode.HALF_UP).intValue());
+        System.out.println(amountValue.divide(price, 2, RoundingMode.HALF_EVEN).intValue());
     }
 
     @Test

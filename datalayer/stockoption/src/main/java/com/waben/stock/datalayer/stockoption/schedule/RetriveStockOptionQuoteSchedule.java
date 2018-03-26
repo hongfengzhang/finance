@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
@@ -51,10 +52,15 @@ public class RetriveStockOptionQuoteSchedule {
 	@Autowired
 	private StockOptionOrgQuoteDao quoteDao;
 
+	@Value("${needquotetask:true}")
+	private boolean needQuoteTask;
+
 	@PostConstruct
 	public void initTask() {
-		Timer timer = new Timer();
-		timer.schedule(new RetriveTask(), 30 * 1000);
+		if (needQuoteTask) {
+			Timer timer = new Timer();
+			timer.schedule(new RetriveTask(), 30 * 1000);
+		}
 	}
 
 	public void next() {

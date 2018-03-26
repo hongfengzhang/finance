@@ -15,11 +15,11 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 @Component
 public class CapitalAccountServiceFallback implements CapitalAccountService {
 
-
 	@Override
 	public Response<CapitalAccountDto> fetchById(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 	@Override
 	public Response<PageInfo<CapitalAccountDto>> pages(CapitalAccountQuery publisherQuery) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -32,22 +32,6 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 
 	@Override
 	public Response<CapitalAccountDto> fetchByPublisherId(Long publisherId) {
-		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
-	public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount) {
-		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
-	public Response<CapitalAccountDto> withdrawals(Long publisherId, String withdrawalsNo,
-			String withdrawalsStateIndex) {
-		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
-	public Response<CapitalAccountDto> csa(Long publisherId, BigDecimal amount) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
@@ -88,20 +72,39 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 	public Response<CapitalAccountDto> modifyCapitalAccount(CapitalAccountDto capitalAccountDto) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 	@Override
 	public Response<CapitalAccountDto> returnDeferredFee(Long publisherId, Long buyRecordId, BigDecimal deferredFee) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 	@Override
 	public Response<CapitalAccountDto> rightMoney(Long publisherId, Long optionTradeId, BigDecimal rightMoney) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 	@Override
 	public Response<CapitalAccountDto> returnRightMoney(Long publisherId, Long optionTradeId, BigDecimal rightMoney) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
 	@Override
 	public Response<CapitalAccountDto> optionProfit(Long publisherId, Long optionTradeId, BigDecimal profit) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount, Long rechargeId) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> withdrawals(Long publisherId, Long withdrawalsId, String withdrawalsStateIndex) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> csa(Long publisherId, BigDecimal amount, Long withdrawalsId) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

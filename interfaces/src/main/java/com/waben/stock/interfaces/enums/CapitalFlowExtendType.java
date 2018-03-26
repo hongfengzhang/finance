@@ -12,10 +12,14 @@ import java.util.Map;
 public enum CapitalFlowExtendType implements CommonalityEnum {
 
 	BUYRECORD("1", "点买记录"),
-	
+
 	PUBLISHER("2", "发布人"),
-	
-	STOCKOPTIONTRADE("3", "期权交易信息");
+
+	STOCKOPTIONTRADE("3", "期权交易信息"),
+
+	PAYMENTORDER("4", "支付订单"),
+
+	WITHDRAWALSORDER("5", "提现订单");
 
 	private String index;
 	private String type;

@@ -156,7 +156,7 @@ public class PromotionStockOptionTradeDto {
 			if (buyingPrice != null) {
 				BigDecimal settlePrice = sellingPrice != null ? sellingPrice : lastPrice;
 				if (settlePrice != null && settlePrice.compareTo(buyingPrice) > 0) {
-					return settlePrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN).multiply(nominalAmount).setScale(2, RoundingMode.HALF_UP);
+					return settlePrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN).multiply(nominalAmount).setScale(2, RoundingMode.HALF_EVEN);
 				} else {
 					return BigDecimal.ZERO;
 				}
