@@ -53,9 +53,9 @@ public class StockMonitor implements CommandLineRunner {
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
-        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:30");
+        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "12:30");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "14:00");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "23:00");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
@@ -78,9 +78,9 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("calendarPM")
                 .build();
 
-        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 0 9,13 * * ?");
-        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
-        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 15 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 34 9,15 * * ?");
+        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 10 * * ?");
+        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 23 * * ?");
 
         //期权到期处理启动时间
         CronScheduleBuilder scheduleDueTreatmentBuilderBegin = CronScheduleBuilder.cronSchedule("0 51 14 * * ?");
