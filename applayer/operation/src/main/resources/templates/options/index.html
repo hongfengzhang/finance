@@ -743,7 +743,7 @@
                             $('#inquiryaction').click(function () {
                                 $('#inquiryclose').click();
                                 $.ajax({
-                                    url: "../option/inquiry/" + $("#id").val(row.id),
+                                    url: "../option/inquiry/" + $("#id").val(),
                                     type: 'post',
                                     success: function (response) {
                                         if (response.code = '200') {
@@ -773,7 +773,7 @@
                             }, function(isConfirm) {
                                 if (isConfirm) {
                                     $.ajax({
-                                        url: "../option/purchase/" + $("#id").val(row.id),
+                                        url: "../option/purchase/" + $("#id").val(),
                                         type: 'post',
                                         success: function (response) {
                                             if (response.code = '200') {
@@ -805,7 +805,7 @@
                             }, function(isConfirm) {
                                 if (isConfirm) {
                                     $.ajax({
-                                        url: "../option/success/" + $("#id").val(row.id),
+                                        url: "../option/success/" + $("#id").val(),
                                         type: 'post',
                                         success: function (response) {
                                             if (response.code = '200') {
