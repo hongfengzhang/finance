@@ -196,7 +196,7 @@ public class StockOptionTradeService {
 		BigDecimal profit = BigDecimal.ZERO;
 		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
 			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice(), 10, RoundingMode.DOWN)
-					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.HALF_UP);
+					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.HALF_EVEN);
 		}
 		trade.setProfit(profit);
 		trade.setUpdateTime(new Date());
