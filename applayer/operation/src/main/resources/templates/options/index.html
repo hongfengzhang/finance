@@ -735,6 +735,7 @@
                     },
                     events: {
                         'click .inquiry': function (e, value, row, index) {
+                            $("#id").val(row.id);
                             $("[name='inquiryDate']").val(new Date());
                             $("[name='stockName']").val(row.stockName);
                             $("[name='date']").val(row.cycle + "日");
@@ -742,7 +743,7 @@
                             $('#inquiryaction').click(function () {
                                 $('#inquiryclose').click();
                                 $.ajax({
-                                    url: "../option/inquiry/" + row.id,
+                                    url: "../option/inquiry/" + $("#id").val(row.id),
                                     type: 'post',
                                     success: function (response) {
                                         if (response.code = '200') {
@@ -759,6 +760,7 @@
                             })
                         },
                         'click .subscription': function (e, value, row, index) {
+                            $("#id").val(row.id);
                             swal({
                                 title: "你确定吗?",
                                 text: "申购后,数据将不可被恢复!",
@@ -771,7 +773,7 @@
                             }, function(isConfirm) {
                                 if (isConfirm) {
                                     $.ajax({
-                                        url: "../option/purchase/" + row.id,
+                                        url: "../option/purchase/" + $("#id").val(row.id),
                                         type: 'post',
                                         success: function (response) {
                                             if (response.code = '200') {
@@ -790,6 +792,7 @@
                             });
                         },
                         'click .subscriptionsuccess': function (e, value, row, index) {
+                            $("#id").val(row.id);
                             swal({
                                 title: "你确定吗?",
                                 text: "申购成功后,数据将不可被恢复!",
@@ -802,7 +805,7 @@
                             }, function(isConfirm) {
                                 if (isConfirm) {
                                     $.ajax({
-                                        url: "../option/success/" + row.id,
+                                        url: "../option/success/" + $("#id").val(row.id),
                                         type: 'post',
                                         success: function (response) {
                                             if (response.code = '200') {
@@ -822,6 +825,7 @@
                             });
                         },
                         'click .subscriptionfail': function (e, value, row, index) {
+                            $("#id").val(row.id);
                             swal({
                                 title: "你确定吗?",
                                 text: "撤单成功后,数据将不可被恢复!",
@@ -834,7 +838,7 @@
                             }, function(isConfirm) {
                                 if (isConfirm) {
                                     $.ajax({
-                                        url: "../option/fail/" + row.id,
+                                        url: "../option/fail/" + $("#id").val(),
                                         type: 'post',
                                         success: function (response) {
                                             if (response.code = '200') {
@@ -854,6 +858,7 @@
                             });
                         },
                         'click .exerciseright': function (e, value, row, index) {
+                            $("#id").val(row.id);
                             swal({
                                 title: "你确定吗?",
                                 text: "行权后,数据将不可被恢复!",
@@ -866,7 +871,7 @@
                             }, function(isConfirm) {
                                 if (isConfirm) {
                                     $.ajax({
-                                        url: "../option/exercise/" + row.id,
+                                        url: "../option/exercise/" + $("#id").val(),
                                         type: 'post',
                                         success: function (response) {
                                             if (response.code = '200') {
@@ -886,7 +891,11 @@
                             });
                         },
                         'click .settlement': function (e, value, row, index) {
-                            var sellingPrice = row.offlineTrade.sellingPrice;
+                            $("#id").val(row.id);
+                            var sellingPrice = null;
+                            if(row.offlineTrade!=null) {
+                                sellingPrice = row.offlineTrade.sellingPrice;
+                            }
                             if(sellingPrice==null||sellingPrice=='') {
                                 sellingPrice = 0;
                                 profitAndLoss = 0;
@@ -904,7 +913,6 @@
                                     profitAndLoss = 0;
                                 }
                             }
-
                             $("[name='detailStock']").val(row.stockName);
                             $("[name='detailAmount']").val(row.buyingPrice);
                             $("[name='detailnominalAmount']").val(row.nominalAmount);
@@ -916,7 +924,7 @@
                             $('#settlementaction').click(function () {
                                 $('#settlementclose').click();
                                 $.ajax({
-                                    url: "../option/settlement/"+row.id,
+                                    url: "../option/settlement/"+$("#id").val(),
                                     type: 'post',
                                     success: function (response) {
                                         if (response.code = '200') {
