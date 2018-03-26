@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.publisher.controller;
 
 import java.math.BigDecimal;
 
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +43,9 @@ public class CapitalAccountController implements CapitalAccountInterface {
         Page<CapitalAccount> pages = capitalAccountService.pages(capitalAccountQuery);
         System.out.println(JacksonUtil.encode(pages));
         PageInfo<CapitalAccountDto> result = new PageInfo<>(pages, CapitalAccountDto.class);
+        for(int i=0; i<pages.getContent().size(); i++) {
+            result.getContent().get(i).setPublisherId(pages.getContent().get(i).getPublisherId());
+        }
         return new Response<>(result);
     }
 
@@ -119,7 +123,8 @@ public class CapitalAccountController implements CapitalAccountInterface {
     public Response<CapitalAccountDto> fetchById(@PathVariable Long capitalAccountId) {
         CapitalAccount account = capitalAccountService.findById(capitalAccountId);
         CapitalAccountDto accountDto = CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, account, false);
-        return new Response<CapitalAccountDto>(accountDto);
+        accountDto.setPublisherId(account.getPublisher().getId());
+        return new Response<>(accountDto);
     }
 
     @Override

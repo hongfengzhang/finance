@@ -1,11 +1,8 @@
-package com.waben.stock.risk.init;
+package com.waben.stock.risk.warpper.init;
 
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.EntrustState;
-import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
 import com.waben.stock.risk.business.BuyRecordBusiness;
-import com.waben.stock.risk.business.StockBusiness;
 import com.waben.stock.risk.container.PositionStockContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,8 +17,7 @@ import java.util.List;
  * @desc
  */
 @Component
-//@Order(Ordered.LOWEST_PRECEDENCE+100)
-public class PositionStockInitialize implements CommandLineRunner {
+public class StockPositionInitialize implements CommandLineRunner {
 
     @Autowired
     private BuyRecordBusiness buyRecordBusiness;

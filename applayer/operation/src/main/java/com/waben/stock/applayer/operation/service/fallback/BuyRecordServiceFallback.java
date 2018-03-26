@@ -123,4 +123,9 @@ public class BuyRecordServiceFallback implements BuyRecordService {
 	public Response<BuyRecordDto> revoke(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+    @Override
+    public Response<Boolean> echo() {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

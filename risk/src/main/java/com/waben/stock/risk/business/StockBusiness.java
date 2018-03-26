@@ -24,7 +24,6 @@ public class StockBusiness {
 
     public StockDto fetchByCode(String stockCode) {
         Response<StockDto> response = stockService.fetchWithExponentByCode(stockCode);
-        System.out.println("股票内容请求结果:"+ JacksonUtil.encode(response));
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
