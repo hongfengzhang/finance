@@ -3,6 +3,7 @@ package com.waben.stock.applayer.tactics.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.AppVersionUpgradeBusiness;
@@ -28,8 +29,9 @@ public class AppVersionUpgradeController {
 
 	@GetMapping("/checkUpgrade")
 	@ApiOperation(value = "检查更新", notes = "deviceType:0安卓,1IOS")
-	public Response<AppVersionUpgradeDto> checkUpgrade(Integer versionCode, Integer deviceType) {
-		return new Response<>(business.checkUpgrade(versionCode, deviceType));
+	public Response<AppVersionUpgradeDto> checkUpgrade(Integer versionCode, Integer deviceType,
+			@RequestParam(required = false) Integer shellIndex) {
+		return new Response<>(business.checkUpgrade(versionCode, deviceType, shellIndex));
 	}
 
 }

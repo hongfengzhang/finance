@@ -9,7 +9,7 @@ public class CapitalFlowQuery extends PageAndSortQuery {
 	private Long publisherId;
 
 	private CapitalFlowType[] types;
-
+	private String publisherPhone;
 	private Date startTime;
 
 	private Date endTime;
@@ -56,4 +56,11 @@ public class CapitalFlowQuery extends PageAndSortQuery {
 		this.types = types;
 	}
 
+	public String getPublisherPhone() {
+		return publisherPhone;
+	}
+
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
+	}
 }

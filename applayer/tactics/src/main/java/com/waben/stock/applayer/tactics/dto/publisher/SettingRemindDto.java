@@ -14,6 +14,8 @@ public class SettingRemindDto {
 
 	private boolean settingBindCard;
 
+	private boolean settingRealName;
+
 	private Integer bindCardCount = 0;
 
 	public String getPhone() {
@@ -46,6 +48,14 @@ public class SettingRemindDto {
 
 	public void setBindCardCount(Integer bindCardCount) {
 		this.bindCardCount = bindCardCount;
+	}
+
+	public boolean isSettingRealName() {
+		return settingRealName;
+	}
+
+	public void setSettingRealName(boolean settingRealName) {
+		this.settingRealName = settingRealName;
 	}
 
 }
