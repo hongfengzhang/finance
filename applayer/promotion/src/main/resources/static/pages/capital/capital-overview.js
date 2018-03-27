@@ -46,9 +46,6 @@ $(function() {
             	fnCallback(dtData);
             }
         });
-		searchData = {
-				orgId: searchData.orgId
-		};
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -118,8 +115,8 @@ $(function() {
 	});
 	// 搜索
 	$('#search-btn').on('click', function(){
+		window.searchData = { orgId: currentOrgId }
 		var formDataArr = $("#search-form").serializeArray();
-		
 		for(var i = 0; i < formDataArr.length; i++) {
 			var name = formDataArr[i].name;
 			var value = formDataArr[i].value;

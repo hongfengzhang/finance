@@ -34,12 +34,6 @@ $(function() {
             	fnCallback(dtData);
             }
         });
-		searchData = {
-			states: searchData.states
-		};
-		if(window.level > 1) {
-    		searchData.orgId = window.currentOrgId;
-    	}
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -102,6 +96,12 @@ $(function() {
 	});
 	// 搜索
 	$('#search-btn').on('click', function(){
+		searchData = {
+			states: searchData.states
+		};
+		if(window.level > 1) {
+    		searchData.orgId = window.currentOrgId;
+    	}
 		var formDataArr = $("#search-form").serializeArray();
 		for(var i = 0; i < formDataArr.length; i++) {
 			var name = formDataArr[i].name;

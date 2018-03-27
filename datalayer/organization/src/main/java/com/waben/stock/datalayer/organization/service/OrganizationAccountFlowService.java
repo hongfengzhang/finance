@@ -132,11 +132,11 @@ public class OrganizationAccountFlowService {
 		}
 		String startTimeCondition = "";
 		if (query.getStartTime() != null) {
-			typeCondition = " and t1.occurrence_time>='" + sdf.format(query.getStartTime()) + "' ";
+			startTimeCondition = " and t1.occurrence_time>='" + sdf.format(query.getStartTime()) + "' ";
         }
 		String endTimeCondition = "";
         if (query.getEndTime() != null) {
-        	typeCondition = " and t1.occurrence_time<'" + sdf.format(query.getEndTime()) + "' ";
+        	endTimeCondition = " and t1.occurrence_time<'" + sdf.format(query.getEndTime()) + "' ";
         }
 		String sql = String
 				.format("select t1.id, t1.amount, t1.flow_no, t1.occurrence_time, t1.origin_amount, t1.remark, t1.resource_id, t1.resource_trade_no, t1.resource_type, t1.type, t1.org_id, "

@@ -12,9 +12,9 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 	private String flowNo;
 	private Long orgId;
 	private Long flowType;
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
-	@JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date endTime;
 	private String orgName;
 	private String orgCode;
