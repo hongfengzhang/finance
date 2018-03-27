@@ -62,5 +62,11 @@ public class PaymentOrderController implements PaymentOrderInterface {
 		PageInfo<PaymentOrderDto> result = PageToPageInfo.pageToPageInfo(page, PaymentOrderDto.class);
 		return new Response<>(result);
 	}
-	
+
+	@Override
+	public Response<PaymentOrderDto> fetchById(@PathVariable Long paymentId) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(PaymentOrderDto.class, service.findById(paymentId), false));
+	}
+
 }

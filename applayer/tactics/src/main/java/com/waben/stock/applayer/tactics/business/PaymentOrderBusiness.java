@@ -40,6 +40,14 @@ public class PaymentOrderBusiness {
 		}
 		throw new ServiceException(orderResp.getCode());
 	}
+	
+	public PaymentOrderDto findById(Long paymentId) {
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.fetchById(paymentId);
+		if ("200".equals(orderResp.getCode())) {
+			return orderResp.getResult();
+		}
+		throw new ServiceException(orderResp.getCode());
+	}
 
 	public PaymentOrderDto changeState(String paymentNo, PaymentState state) {
 		Response<PaymentOrderDto> orderResp = paymentOrderReference.changeState(paymentNo, state.getIndex());

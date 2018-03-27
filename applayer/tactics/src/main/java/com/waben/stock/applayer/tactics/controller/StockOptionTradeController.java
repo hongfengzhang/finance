@@ -108,6 +108,8 @@ public class StockOptionTradeController {
 		logger.info("APP调用接口发布人{}申购期权{}，名义本金{}!", SecurityUtil.getUserId(), stockCode, nominalAmount);
 		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
 		stockBusiness.checkStock(stockCode);
+		// 判断是否连续两个涨停
+		stockBusiness.check2LimitUp(stockCode);
 		// 判断名义本金是否大于20万，且是否是10万的整数倍
 		if (nominalAmount.compareTo(new BigDecimal("200000")) < 0) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION);

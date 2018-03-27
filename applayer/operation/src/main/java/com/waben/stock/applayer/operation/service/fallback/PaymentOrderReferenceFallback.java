@@ -43,4 +43,9 @@ public class PaymentOrderReferenceFallback implements PaymentOrderReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<PaymentOrderDto> fetchById(Long paymentId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }
