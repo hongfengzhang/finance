@@ -967,8 +967,26 @@
                             }
                             if(row.offlineTrade!=null) {
                                 $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio);
-                                $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
                                 $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
+                                if(row.offlineTrade.sellingPrice==null) {
+                                    $("[name='sellingPrice']").val('');
+                                    $("#sys_profitAndLoss").text('');
+                                    $("#user_profitAndLoss").text('');
+                                }else {
+                                    $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
+                                    $("#sys_profitAndLoss").text(row.offlineTrade.profit);
+                                    var profitAndLoss  = ((row.offlineTrade.sellingPrice-row.buyingPrice)/row.buyingPrice)*row.nominalAmount;
+                                    if(profitAndLoss>0) {
+                                        profitAndLoss = profitAndLoss.toFixed(2) + "";
+                                        var flag = profitAndLoss.indexOf(".");
+                                        if(flag!=-1) {
+                                            profitAndLoss = profitAndLoss.substring(0,flag+3);
+                                        }
+                                        $("#user_profitAndLoss").text(profitAndLoss);
+                                    }else {
+                                        $("#user_profitAndLoss").text(0);
+                                    }
+                                }
                             }
                             $('#orgPrice').click(function () {
                                 var patt = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;
