@@ -28,9 +28,6 @@ $(function() {
             	fnCallback(dtData);
             }
         });
-		searchData = {
-			currentOrgCode: searchData.currentOrgCode
-		};
 	}
 	// 渲染表格
 	renderTable = function(id) {
@@ -115,6 +112,9 @@ $(function() {
 	});
 	// 搜索
 	$('#search-btn').on('click', function(){
+		searchData = {
+			currentOrgCode: searchData.currentOrgCode
+		};
 		var formDataArr = $("#search-form").serializeArray();
 		for(var i = 0; i < formDataArr.length; i++) {
 			var name = formDataArr[i].name;
