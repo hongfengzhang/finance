@@ -1,9 +1,11 @@
 package com.waben.stock.applayer.operation.business;
 
+import com.waben.stock.applayer.operation.dto.websocket.StockRequestMessage;
 import com.waben.stock.applayer.operation.service.stockoption.MailUrlInfoService;
 import com.waben.stock.applayer.operation.service.stockoption.StockOptionOrgService;
 import com.waben.stock.applayer.operation.service.stockoption.StockOptionTradeService;
 import com.waben.stock.applayer.operation.warpper.mail.*;
+import com.waben.stock.applayer.operation.web.StockQuotationHttp;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.MailUrlInfoDto;
@@ -15,6 +17,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,10 +26,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class StockOptionTradeBusiness {
@@ -46,6 +46,9 @@ public class StockOptionTradeBusiness {
     @Autowired
     @Qualifier("mailUrlInfoFeignService")
     private MailUrlInfoService mailUrlInfoService;
+
+    @Autowired
+    private StockQuotationHttp stockQuotationHttp;
 
     public PageInfo<StockOptionTradeDto> pages(StockOptionTradeQuery query) {
         Response<PageInfo<StockOptionTradeDto>> response = stockOptionTradeService.pagesByQuery(query);
@@ -113,6 +116,7 @@ public class StockOptionTradeBusiness {
             calendar.add(Calendar.DAY_OF_MONTH,result.getCycle()-1);
             quotoPurchase.setEnd(calendar.getTime());
             quotoPurchase.setRate(String.valueOf(inquiryResultDto.getRightMoneyRatio()));
+            logger.info("数据组装成功:{}", JacksonUtil.encode(quotoPurchase));
             MailMessage mailMessage = new PurchaseMessage();
             //添加邮件url信息
             String file = ExcelUtil.commonRender(contextPath, quotoPurchase);
@@ -126,7 +130,9 @@ public class StockOptionTradeBusiness {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            logger.info("添加邮件url信息:{}", JacksonUtil.encode(mailUrlInfoDto));
             mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
+            logger.info("申购邮件发送成功：{}",id);
             if(OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
                 modify(id);
             }
@@ -138,34 +144,46 @@ public class StockOptionTradeBusiness {
     }
 
     public Boolean exercise(Long id) {
+        Boolean flag = true;
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
-        QuotoExenise quotoExenise = new QuotoExenise();
-        quotoExenise.setUnderlying(result.getStockName());
-        quotoExenise.setCode(result.getStockCode());
-        quotoExenise.setStrike("100%");
-        quotoExenise.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        quotoExenise.setDueTo(result.getOfflineTradeDto().getExpireTime());
-        if(result.getRightTime()!=null) {
-            quotoExenise.setExenise(result.getRightTime());
+        List<StockRequestMessage> codePrams = new ArrayList();
+        StockRequestMessage stockRequestMessage = new StockRequestMessage();
+        stockRequestMessage.setCode(result.getStockCode());
+        stockRequestMessage.setTime(new Date());
+        codePrams.add(stockRequestMessage);
+        List<StockMarket> quotations = stockQuotationHttp.fetQuotationByCode(codePrams);
+        StockMarket stockMarket = quotations.get(0);
+        if(result.getBuyingPrice().compareTo(stockMarket.getLastPrice())<0) {
+            QuotoExenise quotoExenise = new QuotoExenise();
+            quotoExenise.setUnderlying(result.getStockName());
+            quotoExenise.setCode(result.getStockCode());
+            quotoExenise.setStrike("100%");
+            quotoExenise.setAmount(String.valueOf(result.getNominalAmount().intValue()));
+            quotoExenise.setDueTo(result.getOfflineTradeDto().getExpireTime());
+            if(result.getRightTime()!=null) {
+                quotoExenise.setExenise(result.getRightTime());
+            }else {
+                quotoExenise.setExenise(new Date());
+            }
+            MailMessage mailMessage = new ExeriseMessage();
+            String file = ExcelUtil.commonRender(contextPath, quotoExenise);
+            //添加邮件url信息
+            MailUrlInfoDto mailUrlInfoDto = new MailUrlInfoDto();
+            mailUrlInfoDto.setCode(result.getStockCode());
+            mailUrlInfoDto.setUnderlying(result.getStockName());
+            mailUrlInfoDto.setTemplateName("exercise");
+            mailUrlInfoDto.setLocalUrl(file);
+            try {
+                mailUrlInfoService.add(mailUrlInfoDto);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            mailService.send("行权单", mailMessage.message(quotoExenise), org.getEmail());
         }else {
-            quotoExenise.setExenise(new Date());
+            flag = false;
         }
-        MailMessage mailMessage = new ExeriseMessage();
-        String file = ExcelUtil.commonRender(contextPath, quotoExenise);
-        //添加邮件url信息
-        MailUrlInfoDto mailUrlInfoDto = new MailUrlInfoDto();
-        mailUrlInfoDto.setCode(result.getStockCode());
-        mailUrlInfoDto.setUnderlying(result.getStockName());
-        mailUrlInfoDto.setTemplateName("exercise");
-        mailUrlInfoDto.setLocalUrl(file);
-        try {
-            mailUrlInfoService.add(mailUrlInfoDto);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mailService.send("行权单", mailMessage.message(quotoExenise), org.getEmail());
         //修改订单状态
         if(result.getRightTime()!=null) {
             stockOptionTradeService.exercise(id);
@@ -175,7 +193,7 @@ public class StockOptionTradeBusiness {
         if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
             modify(id);
         }
-        return true;
+        return flag;
     }
 
     public StockOptionTradeDto success(Long id) {

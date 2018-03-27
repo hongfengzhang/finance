@@ -136,8 +136,8 @@ public class ExcelUtil {
             f.mkdirs();
         }
         String file = path + File.separator + System.currentTimeMillis()  + ".docx";
-        String url = "officetemplate" + File.separator + "world" + File.separator + templateName + ".docx";
-        try (InputStream is = ClassLoader.getSystemResourceAsStream(url);
+        String url = "/officetemplate" + File.separator + "world" + File.separator + templateName + ".docx";
+        try (InputStream is = ExcelUtil.class.getResourceAsStream(url);
              FileOutputStream out = new FileOutputStream(file)) {
              template = XWPFTemplate.compile(is).render(datas);
              template.write(out);
