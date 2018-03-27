@@ -336,4 +336,12 @@ public class QuickPayController {
         return returnObject;
     }
 
+
+    @RequestMapping("/quickbank")
+    @ApiOperation(value = "网贝支付调接口")
+    @ResponseBody
+    public void quickBank(){
+
+    }
+
 }
