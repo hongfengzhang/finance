@@ -149,6 +149,14 @@ public class PaymentBusiness {
 		}
 		throw new ServiceException(orderResp.getCode());
 	}
+	
+	public PaymentOrderDto findById(Long paymentId) {
+		Response<PaymentOrderDto> orderResp = paymentOrderReference.fetchById(paymentId);
+		if ("200".equals(orderResp.getCode())) {
+			return orderResp.getResult();
+		}
+		throw new ServiceException(orderResp.getCode());
+	}
 
 	public WithdrawalsOrderDto findByWithdrawalsNo(String withdrawalsNo) {
 		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.fetchByWithdrawalsNo(withdrawalsNo);

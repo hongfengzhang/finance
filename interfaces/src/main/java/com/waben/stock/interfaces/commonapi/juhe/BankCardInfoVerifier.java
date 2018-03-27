@@ -48,7 +48,8 @@ public class BankCardInfoVerifier {
 	}
 
 	public static void test(String[] args) {
-		System.out.println(verify("陈建", "33108119840815943X", "15557691234", "6236681480007516770"));
+		// System.out.println(verify("陈建", "33108119840815943X", "15557691234", "6236681480007516770"));
+		// System.out.println(verify("李智慧", "211282198608173842", "13168013974", "6214856585138511"));
 	}
 
 }

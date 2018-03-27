@@ -216,6 +216,23 @@ public class StockBusiness {
 			throw new ServiceException(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION);
 		}
 	}
+	
+	/**
+	 * 检查股票是否连续两个涨停
+	 */
+	public void check2LimitUp(String stockCode) {
+		List<StockKLine> list = RetriveStockOverHttp.listKLine(restTemplate, stockCode, 1, null, null, 3);
+		if (list != null && list.size() >= 3) {
+			StockKLine day1 = list.get(0);
+			StockKLine day2 = list.get(1);
+			StockKLine day3 = list.get(2);
+			BigDecimal speed1 = day1.getClosePrice().subtract(day2.getClosePrice()).divide(day2.getClosePrice());
+			BigDecimal speed2 = day2.getClosePrice().subtract(day3.getClosePrice()).divide(day3.getClosePrice());
+			if (speed1.compareTo(new BigDecimal("0.1")) >= 0 && speed2.compareTo(new BigDecimal("0.1")) >= 0) {
+				throw new ServiceException(ExceptionConstant.STOCKOPTION_2UPLIMIT_CANNOTBY_EXCEPTION);
+			}
+		}
+	}
 
 	public List<StockMarket> ranking(String exponent, int rankType, int size) {
 		String code = "4609";

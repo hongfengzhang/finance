@@ -48,6 +48,10 @@ public class CapitalFlowWithExtendDto {
 	 * 策略类型名称
 	 */
 	private String strategyTypeName;
+	/**
+	 * 充值方式
+	 */
+	private String paymentType;
 
 	public Long getId() {
 		return id;
@@ -139,6 +143,14 @@ public class CapitalFlowWithExtendDto {
 
 	public void setFlowNo(String flowNo) {
 		this.flowNo = flowNo;
+	}
+
+	public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
 	}
 
 }

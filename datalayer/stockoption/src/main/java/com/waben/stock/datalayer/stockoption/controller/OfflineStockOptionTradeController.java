@@ -41,10 +41,19 @@ public class OfflineStockOptionTradeController implements OfflineStockOptionTrad
     }
 
     @Override
+    public Response<OfflineStockOptionTradeDto> exercise(@PathVariable Long id) {
+        OfflineStockOptionTrade result = offlineStockOptionTradeService.exercise(id);
+        OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, result, false);
+        return new Response<>(offlineStockOptionTradeDto);
+    }
+
+    @Override
     public Response<OfflineStockOptionTradeDto> find(@PathVariable Long id) {
         OfflineStockOptionTrade result = offlineStockOptionTradeService.findById(id);
         OfflineStockOptionTradeDto response = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class,
                 result, false);
         return new Response<>(response);
     }
+
+
 }

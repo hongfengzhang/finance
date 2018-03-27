@@ -99,7 +99,6 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	@Override
 	public Response<StockOptionTradeDto> exercise(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.exercise(id);
-		offlineStockOptionTradeService.exercise(result.getOfflineTrade().getId());
 		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
 		return new Response<>(stockOptionTradeDto);
 	}

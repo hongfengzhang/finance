@@ -19,6 +19,9 @@ public interface PaymentOrderInterface {
 	
 	@RequestMapping(value = "/{paymentNo}", method = RequestMethod.GET)
 	Response<PaymentOrderDto> fetchByPaymentNo(@PathVariable("paymentNo") String paymentNo);
+	
+	@RequestMapping(value = "/id/{id}", method = RequestMethod.GET)
+	Response<PaymentOrderDto> fetchById(@PathVariable("id") Long paymentId);
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Response<PaymentOrderDto> addPaymentOrder(@RequestBody PaymentOrderDto paymentOrderDto);
