@@ -505,8 +505,9 @@ public class CapitalAccountService {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
 				if (query.getPublisherId() != null && query.getPublisherId() > 0) {
-					Predicate publisherIdQuery = criteriaBuilder.equal(root.get("publisherId").as(Long.class),
-							query.getPublisherId());
+					Publisher publisher = new Publisher();
+					publisher.setId(query.getPublisherId());
+					Predicate publisherIdQuery = criteriaBuilder.equal(root.get("publisher").as(Publisher.class), publisher);
 					predicatesList.add(criteriaBuilder.and(publisherIdQuery));
 				}
 				if (query.getBeginTime() != null) {

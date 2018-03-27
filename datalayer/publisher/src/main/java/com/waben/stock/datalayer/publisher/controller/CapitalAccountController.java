@@ -43,7 +43,7 @@ public class CapitalAccountController implements CapitalAccountInterface {
 		System.out.println(JacksonUtil.encode(pages));
 		PageInfo<CapitalAccountDto> result = new PageInfo<>(pages, CapitalAccountDto.class);
 		for (int i = 0; i < pages.getContent().size(); i++) {
-			result.getContent().get(i).setPublisherId(pages.getContent().get(i).getPublisherId());
+			result.getContent().get(i).setPublisherId(pages.getContent().get(i).getPublisher().getId());
 		}
 		return new Response<>(result);
 	}
