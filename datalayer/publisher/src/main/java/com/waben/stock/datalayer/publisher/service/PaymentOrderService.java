@@ -50,6 +50,10 @@ public class PaymentOrderService {
 	public PaymentOrder findByPaymentNo(String paymentNo) {
 		return paymentOrderDao.retrieveByPaymentNo(paymentNo);
 	}
+	
+	public PaymentOrder findById(Long paymentId) {
+		return paymentOrderDao.retrieve(paymentId);
+	}
 
 	public Page<PaymentOrder> pages(final PaymentOrderQuery query){
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -112,6 +116,5 @@ public class PaymentOrderService {
 		}, pageable);
 		return pages;
 	}
-	
 
 }

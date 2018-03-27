@@ -11,6 +11,7 @@ import com.waben.stock.applayer.tactics.reference.CapitalFlowReference;
 import com.waben.stock.applayer.tactics.reference.StrategyTypeReference;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
+import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
@@ -46,6 +47,9 @@ public class CapitalFlowBusiness {
 
 	@Autowired
 	private StockOptionTradeBusiness tradeBusiness;
+
+	@Autowired
+	private PaymentOrderBusiness paymentOrderBusiness;
 
 	public PageInfo<CapitalFlowWithExtendDto> pages(CapitalFlowQuery query) {
 		Response<PageInfo<CapitalFlowDto>> response = service.pagesByQuery(query);
@@ -90,6 +94,11 @@ public class CapitalFlowBusiness {
 						if (stock != null) {
 							flowWithExtend.setStockName(stock.getName());
 						}
+					}
+				} else if (flow.getExtendType() == CapitalFlowExtendType.PAYMENTORDER) {
+					PaymentOrderDto paymentOrder = paymentOrderBusiness.findById(flow.getExtendId());
+					if (paymentOrder != null && paymentOrder.getType() != null) {
+						flowWithExtend.setPaymentType(paymentOrder.getType().getType());
 					}
 				}
 			}

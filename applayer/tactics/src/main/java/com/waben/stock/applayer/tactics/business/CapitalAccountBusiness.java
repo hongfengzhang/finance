@@ -86,7 +86,6 @@ public class CapitalAccountBusiness {
 
 	public BigDecimal getHoldProfitOrLoss(Long publisherId) {
 		BigDecimal result = BigDecimal.valueOf(0);
-
 		BuyRecordQuery query = new BuyRecordQuery(0, Integer.MAX_VALUE, SecurityUtil.getUserId(),
 				new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
 						BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
