@@ -876,7 +876,11 @@
                                         success: function (response) {
                                             if (response.code = '200') {
                                                 $table.bootstrapTable('refresh');
-                                                swal("行权成功");
+                                                if(response.result==true) {
+                                                    swal("向机构行权成功");
+                                                }else {
+                                                    swal("本地行权成功");
+                                                }
                                             } else {
                                                 swal(response.message);
                                             }

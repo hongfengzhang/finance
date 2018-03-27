@@ -116,6 +116,7 @@ public class StockOptionTradeBusiness {
             calendar.add(Calendar.DAY_OF_MONTH,result.getCycle()-1);
             quotoPurchase.setEnd(calendar.getTime());
             quotoPurchase.setRate(String.valueOf(inquiryResultDto.getRightMoneyRatio()));
+            logger.info("数据组装成功:{}", JacksonUtil.encode(quotoPurchase));
             MailMessage mailMessage = new PurchaseMessage();
             //添加邮件url信息
             String file = ExcelUtil.commonRender(contextPath, quotoPurchase);
@@ -129,7 +130,9 @@ public class StockOptionTradeBusiness {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            logger.info("添加邮件url信息:{}", JacksonUtil.encode(mailUrlInfoDto));
             mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
+            logger.info("申购邮件发送成功：{}",id);
             if(OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
                 modify(id);
             }
@@ -141,6 +144,7 @@ public class StockOptionTradeBusiness {
     }
 
     public Boolean exercise(Long id) {
+        Boolean flag = true;
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         StockOptionOrgDto org = result.getOfflineTradeDto().getOrg();
@@ -177,6 +181,8 @@ public class StockOptionTradeBusiness {
                 e.printStackTrace();
             }
             mailService.send("行权单", mailMessage.message(quotoExenise), org.getEmail());
+        }else {
+            flag = false;
         }
         //修改订单状态
         if(result.getRightTime()!=null) {
@@ -187,7 +193,7 @@ public class StockOptionTradeBusiness {
         if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
             modify(id);
         }
-        return true;
+        return flag;
     }
 
     public StockOptionTradeDto success(Long id) {
