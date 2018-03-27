@@ -24,7 +24,7 @@
                         <div class="form-group">
                             <label class="col-md-4 control-label">订单编号</label>
                             <div class="col-sm-8">
-                                <input type="text" class="form-control" name="tradeNo" maxlength="22"
+                                <input type="text" class="form-control" name="tradeNo" maxlength="2"
                                        placeholder="订单编号"/>
                             </div>
                         </div>
@@ -625,7 +625,7 @@
                                 '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
                             ].join('');
                         }
-                        if(row.state=="结算中"&&row.rightTime==null){
+                        if(row.state=="结算中"&&row.offlineTrade.state!="APPLYRIGHT"){
                             return [
                                 ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +

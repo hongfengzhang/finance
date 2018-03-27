@@ -31,6 +31,10 @@ import java.util.*;
 @Service
 public class StockOptionTradeBusiness {
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Autowired
+    private OfflineStockOptionTradeBusiness offlineStockOptionTradeBusiness;
+
     @Autowired
     @Qualifier("stockoptiontradeFeignService")
     private StockOptionTradeService stockOptionTradeService;
@@ -187,8 +191,9 @@ public class StockOptionTradeBusiness {
         //修改订单状态
         if(result.getRightTime()!=null) {
             stockOptionTradeService.exercise(id);
+            offlineStockOptionTradeBusiness.exercise(result.getOfflineTradeDto().getId());
         }else {
-           logger.info("结果：{}",JacksonUtil.encode(stockOptionTradeService.dueTreatmentExercise(id)));
+            offlineStockOptionTradeBusiness.exercise(result.getOfflineTradeDto().getId());
         }
         if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
             modify(id);
