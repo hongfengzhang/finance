@@ -613,7 +613,7 @@
                                 '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
                             ].join('');
                         }
-                        if(row.state=="结算中"&&row.rightTime!=null){
+                        if(row.state=="结算中"&&(row.rightTime!=null||row.offlineTrade.state=="APPLYRIGHT")){
                             return [
                                 ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
