@@ -169,9 +169,9 @@ public class InvestorService {
         Double realStockPrice = securitiesStockEntrust.getEntrustNumber() * securitiesStockEntrust.getEntrustPrice()
                 .doubleValue();
         //校检资金信息
-        if (stockMoney.getEnableBalance() - realStockPrice < 0) {
-            throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH);
-        }
+//        if (stockMoney.getEnableBalance() - realStockPrice < 0) {
+//            throw new ServiceException(ExceptionConstant.INVESTOR_STOCKACCOUNT_MONEY_NOT_ENOUGH);
+//        }
         //查询当前资金账户的股东账户信息
         List<StockHolder> stockHolders = stockJyRest.retrieveStockHolder(tradeSession);
         String type = stockType(securitiesStockEntrust.getExponent());
