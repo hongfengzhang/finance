@@ -31,7 +31,7 @@ public class StrategyTypeReferenceFallback implements StrategyTypeReference {
 	}
 
 	@Override
-	public Response<StrategyTypeDto> modify(StrategyTypeDto strategyTypeDto) {
+	public Response<StrategyTypeDto> modify(StrategyTypeDto strategyTypeDto, List<Long> loss) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

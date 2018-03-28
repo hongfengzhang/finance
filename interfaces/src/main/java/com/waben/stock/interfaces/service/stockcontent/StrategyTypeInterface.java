@@ -31,8 +31,8 @@ public interface StrategyTypeInterface {
     @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<StrategyTypeDto>> pages(@RequestBody StrategyTypeQuery query);
 
-    @RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-    Response<StrategyTypeDto> modify(@RequestBody StrategyTypeDto strategyTypeDto);
+    @RequestMapping(value = "/modify", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<StrategyTypeDto> modify(@RequestBody StrategyTypeDto strategyTypeDto,@RequestParam("loss") List<Long> loss);
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     void delete(@PathVariable("id") Long id);
