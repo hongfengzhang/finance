@@ -49,8 +49,12 @@ public class CapitalAccountController {
 		result.setTotalApplyAmount(capitalAccountBusiness.getTotalApplyAmount(publisherId));
 		result.setTodayApplyAmount(capitalAccountBusiness.getTodayApplyAmount(publisherId));
 		result.setFrozenAmount(capitalAccountBusiness.findByPublisherId(publisherId).getFrozenCapital());
-		result.setDeferredAmount(capitalAccountBusiness.getDeferredAmount(publisherId));
+		result.setDeferredAmount(capitalAccountBusiness.getHoldDeferredAmount(publisherId));
 
+		result.setTotalNominalAmount(capitalAccountBusiness.getTotalNominalAmount(publisherId));
+		result.setTodayNominalAmount(capitalAccountBusiness.getTodayNominalAmount(publisherId));
+		result.setTotalRightMoney(capitalAccountBusiness.getTotalApplyAmount(publisherId));
+		result.setTodayRightMoney(capitalAccountBusiness.getTodayApplyAmount(publisherId));
 		return new Response<>(result);
 	}
 

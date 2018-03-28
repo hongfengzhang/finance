@@ -80,6 +80,14 @@ public class StockOptionTradeService {
 				if (query.isOnlyProfit()) {
 					predicateList.add(criteriaBuilder.gt(root.get("profit").as(BigDecimal.class), new BigDecimal(0)));
 				}
+				if (query.getStartApplyTime() != null) {
+					predicateList.add(criteriaBuilder.greaterThanOrEqualTo(root.get("applyTime").as(Date.class),
+							query.getStartApplyTime()));
+				}
+				if (query.getEndApplyTime() != null) {
+					predicateList.add(
+							criteriaBuilder.lessThan(root.get("applyTime").as(Date.class), query.getEndApplyTime()));
+				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
