@@ -85,7 +85,15 @@ public class CapitalAccountBusiness {
 	}
 
 	public BigDecimal getHoldProfitOrLoss(Long publisherId) {
-		BigDecimal result = BigDecimal.valueOf(0);
+		return getStrategyHoldProfitOrLoss(publisherId).add(getStockOptionHoldProfitOrLoss(publisherId));
+	}
+	
+	private BigDecimal getStockOptionHoldProfitOrLoss(Long publisherId) {
+		return BigDecimal.ZERO;
+	}
+
+	private BigDecimal getStrategyHoldProfitOrLoss(Long publisherId) {
+		BigDecimal result = BigDecimal.ZERO;
 		BuyRecordQuery query = new BuyRecordQuery(0, Integer.MAX_VALUE, SecurityUtil.getUserId(),
 				new BuyRecordState[] { BuyRecordState.POSTED, BuyRecordState.BUYLOCK, BuyRecordState.HOLDPOSITION,
 						BuyRecordState.SELLAPPLY, BuyRecordState.SELLLOCK });
@@ -97,7 +105,6 @@ public class CapitalAccountBusiness {
 				result = result.add(market.getProfitOrLoss());
 			}
 		}
-
 		return result;
 	}
 
