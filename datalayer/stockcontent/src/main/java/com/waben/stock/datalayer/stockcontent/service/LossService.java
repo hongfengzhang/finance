@@ -67,4 +67,8 @@ public class LossService {
     public Loss revision(Loss loss) {
         return lossDao.update(loss);
     }
+
+    public List<Loss> findAllLoss() {
+        return lossDao.list();
+    }
 }

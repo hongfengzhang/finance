@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.LossBusiness;
 import com.waben.stock.applayer.operation.business.StrategyTypeBusiness;
+import com.waben.stock.applayer.operation.service.stock.LossService;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.AmountValueDto;
 import com.waben.stock.interfaces.dto.stockcontent.LossDto;
@@ -18,10 +20,7 @@ import com.waben.stock.interfaces.vo.stockcontent.StrategyTypeVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -36,6 +35,9 @@ public class StrategyTypeController {
 
     @Autowired
     private StrategyTypeBusiness strategyTypeBusiness;
+
+    @Autowired
+    private LossBusiness lossBusiness;
 
     @RequestMapping("/index")
     public String stock() {
@@ -55,7 +57,10 @@ public class StrategyTypeController {
     public String edit(@PathVariable Long id, ModelMap map){
         StrategyTypeDto strategyTypeDto = strategyTypeBusiness.fetchById(id);
         StrategyTypeVo strategyTypeVo = CopyBeanUtils.copyBeanProperties(StrategyTypeVo.class, strategyTypeDto, false);
+        List<LossDto> lossDtos = lossBusiness.findAllLoss();
+        List<LossVo> lossVos = CopyBeanUtils.copyListBeanPropertiesToList(lossDtos, LossVo.class);
         map.addAttribute("strategyType", strategyTypeVo);
+        map.addAttribute("lossVos", lossVos);
         return "stock/strategytype/edit";
     }
 
@@ -69,7 +74,7 @@ public class StrategyTypeController {
 
     @RequestMapping("/modify")
     @ResponseBody
-    public Response<StrategyTypeVo> modify(StrategyTypeVo vo){
+    public Response<StrategyTypeVo> modify(StrategyTypeVo vo,List<Long> losses){
         StrategyTypeDto requestDto = CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class, vo, false);
         StrategyTypeDto responseDto = strategyTypeBusiness.revision(requestDto);
         StrategyTypeVo result = CopyBeanUtils.copyBeanProperties(StrategyTypeVo.class, responseDto, false);
