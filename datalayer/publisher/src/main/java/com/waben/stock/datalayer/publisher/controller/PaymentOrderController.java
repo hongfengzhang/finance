@@ -64,9 +64,9 @@ public class PaymentOrderController implements PaymentOrderInterface {
 	}
 
 	@Override
-	public Response<PaymentOrderDto> fetchById(@PathVariable Long paymentId) {
+	public Response<PaymentOrderDto> fetchById(@PathVariable Long id) {
 		return new Response<>(
-				CopyBeanUtils.copyBeanProperties(PaymentOrderDto.class, service.findById(paymentId), false));
+				CopyBeanUtils.copyBeanProperties(PaymentOrderDto.class, service.findById(id), false));
 	}
 
 }

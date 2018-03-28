@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.strategist.business;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -216,7 +217,7 @@ public class StockBusiness {
 			throw new ServiceException(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION);
 		}
 	}
-	
+
 	/**
 	 * 检查股票是否连续两个涨停
 	 */
@@ -226,8 +227,10 @@ public class StockBusiness {
 			StockKLine day1 = list.get(0);
 			StockKLine day2 = list.get(1);
 			StockKLine day3 = list.get(2);
-			BigDecimal speed1 = day1.getClosePrice().subtract(day2.getClosePrice()).divide(day2.getClosePrice());
-			BigDecimal speed2 = day2.getClosePrice().subtract(day3.getClosePrice()).divide(day3.getClosePrice());
+			BigDecimal speed1 = day1.getClosePrice().subtract(day2.getClosePrice()).divide(day2.getClosePrice(), 4,
+					RoundingMode.HALF_EVEN);
+			BigDecimal speed2 = day2.getClosePrice().subtract(day3.getClosePrice()).divide(day3.getClosePrice(), 4,
+					RoundingMode.HALF_EVEN);
 			if (speed1.compareTo(new BigDecimal("0.1")) >= 0 && speed2.compareTo(new BigDecimal("0.1")) >= 0) {
 				throw new ServiceException(ExceptionConstant.STOCKOPTION_2UPLIMIT_CANNOTBY_EXCEPTION);
 			}
