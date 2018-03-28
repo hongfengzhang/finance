@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.util.List;
+
 public interface LossInterface {
 
     @RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
@@ -21,4 +23,9 @@ public interface LossInterface {
     @RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<LossDto> modify(@RequestBody LossDto lossDto);
 
+    @RequestMapping(value = "/save", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+    Response<LossDto> add(@RequestBody LossDto lossDto);
+
+    @RequestMapping(value = "/")
+    Response<List<LossDto>> fetchAllLoss();
 }

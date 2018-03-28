@@ -45,7 +45,12 @@
                 <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
-
+                <div class="col-md-1">
+                    <div class="form-group">
+                        <label class="col-md-5"></label>
+                        <a id="add" class="btn btn-fill btn-info" href="../loss/add">添加</a>
+                    </div>
+                </div>
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
 
@@ -133,9 +138,7 @@
                             $(location).prop('href',"../loss/view/"+row.id);
                         },
                         'click .edit': function (e, value, row, index) {
-                            info = JSON.stringify(row);
-                            swal('You click edit icon, row: ', info);
-                            console.log(info);
+                            $(location).prop('href',"../loss/edit/"+row.id);
                         },
                         'click .remove': function (e, value, row, index) {
 

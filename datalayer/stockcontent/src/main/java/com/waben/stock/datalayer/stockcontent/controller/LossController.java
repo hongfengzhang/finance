@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/loss")
 public class LossController implements LossInterface{
@@ -45,5 +47,19 @@ public class LossController implements LossInterface{
         Loss loss = CopyBeanUtils.copyBeanProperties(Loss.class, lossDto, false);
         LossDto result = CopyBeanUtils.copyBeanProperties(LossDto.class,lossService.revision(loss),false);
         return new Response<>(result);
+    }
+
+    @Override
+    public Response<LossDto> add(LossDto lossDto) {
+        Loss loss = CopyBeanUtils.copyBeanProperties(Loss.class, lossDto, false);
+        LossDto result = CopyBeanUtils.copyBeanProperties(LossDto.class,lossService.save(loss),false);
+        return new Response<>(result);
+    }
+
+    @Override
+    public Response<List<LossDto>> fetchAllLoss() {
+        List<Loss> losses = lossService.findAllLoss();
+        List<LossDto> lossDtos = CopyBeanUtils.copyListBeanPropertiesToList(losses, LossDto.class);
+        return new Response<>(lossDtos);
     }
 }

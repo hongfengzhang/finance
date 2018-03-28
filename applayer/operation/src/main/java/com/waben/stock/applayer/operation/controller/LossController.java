@@ -49,11 +49,33 @@ public class LossController {
         return "stock/loss/view";
     }
 
+    @RequestMapping("/edit/{id}")
+    public String edit(@PathVariable Long id, ModelMap map){
+        LossDto lossDto = lossBusiness.fetchById(id);
+        LossVo lossVo = CopyBeanUtils.copyBeanProperties(LossVo.class, lossDto, false);
+        map.addAttribute("loss", lossVo);
+        return "stock/loss/edit";
+    }
+
+    @RequestMapping("/add")
+    public String add(){
+        return "stock/loss/add";
+    }
+
     @RequestMapping("/modify")
     @ResponseBody
     public Response<LossVo> modify(LossVo vo){
         LossDto requestDto = CopyBeanUtils.copyBeanProperties(LossDto.class, vo, false);
         LossDto responseDto = lossBusiness.revision(requestDto);
+        LossVo result = CopyBeanUtils.copyBeanProperties(LossVo.class, responseDto, false);
+        return new Response<>(result);
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<LossVo> add(LossVo vo){
+        LossDto requestDto = CopyBeanUtils.copyBeanProperties(LossDto.class, vo, false);
+        LossDto responseDto = lossBusiness.save(requestDto);
         LossVo result = CopyBeanUtils.copyBeanProperties(LossVo.class, responseDto, false);
         return new Response<>(result);
     }

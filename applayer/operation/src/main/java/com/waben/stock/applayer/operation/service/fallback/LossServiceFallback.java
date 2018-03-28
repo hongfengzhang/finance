@@ -9,6 +9,8 @@ import com.waben.stock.interfaces.pojo.query.LossQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 public class LossServiceFallback implements LossService {
 
@@ -24,6 +26,16 @@ public class LossServiceFallback implements LossService {
 
     @Override
     public Response<LossDto> modify(LossDto lossDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<LossDto> add(LossDto lossDto) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<List<LossDto>> fetchAllLoss() {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 }

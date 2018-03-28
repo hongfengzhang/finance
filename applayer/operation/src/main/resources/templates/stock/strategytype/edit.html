@@ -89,6 +89,17 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <div class="col-sm-1"></div>
+                                <div class="col-sm-1 columns-left">
+                                    <p>止损点</p>
+                                </div>
+                                <div class="col-sm-4 columns-right">
+                                    <select name="losses    " class="selectpicker show-tick form-control" multiple="multiple">
+                                        <option th:each="loss:${lossVos}" th:value="${loss.id}" th:text="${loss.point}"></option>
+                                    </select>
+                                </div>
+                            </div>
                         </fieldset>
 						<div class="row">
                             <div class="col-md-1"></div>
