@@ -42,7 +42,7 @@
                                     <p>所属指数</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="stockExponent.exponentCode">
+                                    <select name="stockExponent.exponentCode" class="selectpicker">
                                         <option th:each="stockExponent:${stockExponentVos}" th:value="${stockExponent.exponentCode}" th:text="${stockExponent.name}"></option>
                                     </select>
                                 </div>
@@ -55,7 +55,7 @@
                                     <p>状态</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="status" >
+                                    <select name="status" class="selectpicker">
                                         <option value="1">正常</option>
                                         <option value="0">异常</option>
                                     </select>

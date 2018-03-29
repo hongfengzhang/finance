@@ -42,9 +42,9 @@ public class StrategyTypeController implements StrategyTypeInterface {
     }
 
     @Override
-    public Response<StrategyTypeDto> modify(@RequestBody StrategyTypeDto strategyTypeDto) {
+    public Response<StrategyTypeDto> modify(@RequestBody StrategyTypeDto strategyTypeDto,@RequestParam("loss") List<Long> loss) {
         StrategyType strategyType = CopyBeanUtils.copyBeanProperties(StrategyType.class, strategyTypeDto, false);
-        StrategyTypeDto result = CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class,straegyTypeService.revision(strategyType),false);
+        StrategyTypeDto result = CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class,straegyTypeService.revision(strategyType,loss),false);
         return new Response<>(result);
     }
 

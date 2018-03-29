@@ -50,7 +50,7 @@ public class LossController implements LossInterface{
     }
 
     @Override
-    public Response<LossDto> add(LossDto lossDto) {
+    public Response<LossDto> add(@RequestBody LossDto lossDto) {
         Loss loss = CopyBeanUtils.copyBeanProperties(Loss.class, lossDto, false);
         LossDto result = CopyBeanUtils.copyBeanProperties(LossDto.class,lossService.save(loss),false);
         return new Response<>(result);

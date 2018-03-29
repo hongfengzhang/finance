@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.vo.stockcontent;
 
+import com.waben.stock.interfaces.dto.stockcontent.AmountValueDto;
+import com.waben.stock.interfaces.dto.stockcontent.LossDto;
+
 import java.math.BigDecimal;
 import java.util.Set;
 
@@ -7,7 +10,7 @@ import java.util.Set;
  * @author Created by yuyidi on 2017/11/23.
  * @desc
  */
-public class LossVo implements Comparable<LossVo> {
+public class LossVo  implements Comparable<LossVo> {
 
 	private Long id;
 	private BigDecimal point;
@@ -41,7 +44,6 @@ public class LossVo implements Comparable<LossVo> {
 
 	@Override
 	public int compareTo(LossVo o) {
-		return o.getPoint().compareTo(point);
+		return 0;
 	}
-
 }

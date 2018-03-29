@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * @author Created by yuyidi on 2017/12/6.
  * @desc
@@ -49,8 +51,8 @@ public class StrategyTypeBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public StrategyTypeDto revision(StrategyTypeDto requestDto) {
-        Response<StrategyTypeDto> response = strategyTypeService.modify(requestDto);
+    public StrategyTypeDto revision(StrategyTypeDto requestDto, List<Long> loss) {
+        Response<StrategyTypeDto> response = strategyTypeService.modify(requestDto,loss);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

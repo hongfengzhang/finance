@@ -20,7 +20,7 @@
                                     <p>止损点</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <input name="value" type="text" class="form-control" placeholder="请输入止损点" maxlength="4"/>
+                                    <input name="point" type="text" class="form-control" placeholder="请输入止损点" maxlength="4"/>
                                 </div>
                             </div>
                         </fieldset>
@@ -41,28 +41,28 @@
 	<script type="text/javascript">
       $("#submit").on('click',function () {
           var patt = /^(1|1\.[0]*|0?\.(?!0+$)[\d]+)$/;
-          if(!patt.test($("[name='value']")).val()) {
+          if(!patt.test($("[name='point']").val())) {
               alert("数据格式错误，请重新输入！");
 		  }else {
               $.ajax({
-                  url:'../save',
+                  url:'../loss/save',
                   type:'post',
                   data:$("#msgForm").serialize(),
                   success:function (response) {
                       if(response.code != '200'){
-                          console.log("------服务器出错-------");
+                          swal({
+                              text : '服务器出错',
+                              type : 'error'
+                          })
                           return false;
                       }
-
-                      var data = response.result;
-                      var id = $("input[name='id']").val();
-                      if(data.id == id){
+                      if(response.result!=null){
                           swal({
-                              text : '更新成功',
+                              text : '添加成功',
                               type : 'success'
                           },function(){
                               setTimeout(function(){
-                                  $(location).prop('href',"../index");
+                                  $(location).prop('href',"../loss/index");
                               },500);
                           });
                       }

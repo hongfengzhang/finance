@@ -53,7 +53,7 @@
                                     <p>类型</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="type" class="form-control">
+                                    <select name="type" class="selectpicker">
                                         <option th:each="state,stateStart : ${types}"
                                                 th:value="${state.index}" th:text="${state.type}"></option>
                                     </select>
@@ -67,7 +67,7 @@
                                     <p>发布人</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="publisherId">
+                                    <select name="publisherId" class="selectpicker">
                                         <option th:each="publisher:${publishers}" th:value="${publisher.id}" th:text="${publisher.phone}"></option>
                                     </select>
                                 </div>
@@ -80,7 +80,7 @@
                                     <p>站内站外</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="isOutside" class="form-control">
+                                    <select name="isOutside" class="selectpicker">
                                         <option value="0">站内</option>
                                         <option value="1">站外</option>
                                     </select>
@@ -94,7 +94,7 @@
                                     <p>站外类型</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="outsideMsgType" class="form-control">
+                                    <select name="outsideMsgType" class="selectpicker">
                                         <!--<option value="1">已发布</option>-->
                                         <!--<option value="2">买入锁定</option>-->
                                         <!--<option value="3">持仓中</option>-->

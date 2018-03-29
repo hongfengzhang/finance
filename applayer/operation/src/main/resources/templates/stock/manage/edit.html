@@ -43,7 +43,7 @@
                                     <p>状态</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="status" >
+                                    <select name="status" class="selectpicker" >
                                         <option value="0" th:if="${stock.status eq false}" th:selected="selected" >异常</option>
                                         <option value="1" th:if="${stock.status eq true}" th:selected="selected" >正常</option>
                                         <option value="0" th:if="${stock.status eq true}" >异常</option>
