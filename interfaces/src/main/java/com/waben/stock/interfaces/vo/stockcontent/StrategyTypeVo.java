@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.dto.stockcontent.LossDto;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -43,6 +44,8 @@ public class StrategyTypeVo {
 	 * 周期
 	 */
 	private Integer cycle;
+
+	private List<Long> loss;
 
 	public Long getId() {
 		return id;
@@ -142,4 +145,11 @@ public class StrategyTypeVo {
 		this.wearingPoint = wearingPoint;
 	}
 
+	public List<Long> getLoss() {
+		return loss;
+	}
+
+	public void setLoss(List<Long> loss) {
+		this.loss = loss;
+	}
 }

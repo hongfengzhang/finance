@@ -116,6 +116,17 @@
                     field: 'title',
                     title: '标题',
                     align: 'center'
+                }, {
+                    field: 'enable',
+                    title: '状态',
+                    align: 'center',
+                    formatter: function (value, row, index) {
+                        if (value == true) {
+                            return '正常';
+                        } else {
+                            return '异常';
+                        }
+                    }
                 },{
                     field: 'createTime',
                     title: '创建时间',

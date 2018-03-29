@@ -19,6 +19,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Created by yuyidi on 2017/11/23.
@@ -75,7 +77,16 @@ public class StrategyTypeService {
 		return strategyTypeDao.retrieve(id);
 	}
 
-    public StrategyType revision(StrategyType strategyType) {
+    public StrategyType revision(StrategyType strategyType, List<Long> loss) {
+        StrategyType retrieve = strategyTypeDao.retrieve(strategyType.getId());
+        Set<Loss> losses = retrieve.getLosses();
+        for(Long id : loss) {
+            Loss temp = new Loss();
+            temp.setId(id);
+            losses.add(temp);
+        }
+        strategyType.setLosses(losses);
+        strategyType.setAmountValues(retrieve.getAmountValues());
         return strategyTypeDao.update(strategyType);
     }
 

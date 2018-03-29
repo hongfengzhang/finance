@@ -58,7 +58,7 @@
                                     <p>类别</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="sort" >
+                                    <select name="sort" class="selectpicker" >
                                         <option value="1">APP</option>
                                         <option value="2">PC</option>
                                         <option value="3">app上架使用</option>
@@ -73,7 +73,7 @@
                                     <p>状态</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="enable" >
+                                    <select name="enable" class="selectpicker" >
                                         <option value="0" th:if="${banner.enable eq false}" th:selected="selected" >异常</option>
                                         <option value="1" th:if="${banner.enable eq true}" th:selected="selected" >正常</option>
                                         <option value="0" th:if="${banner.enable eq true}" >异常</option>
