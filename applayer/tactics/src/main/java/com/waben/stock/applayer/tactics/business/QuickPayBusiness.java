@@ -10,9 +10,12 @@ import com.waben.stock.applayer.tactics.payapi.paypal.utils.LianLianRSA;
 import com.waben.stock.applayer.tactics.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.tactics.payapi.shande.config.SandPayConfig;
 import com.waben.stock.applayer.tactics.payapi.shande.utils.FormRequest;
+import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WabenPayConfig;
+import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
+import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
@@ -64,6 +67,10 @@ public class QuickPayBusiness {
     @Autowired
     private BindCardBusiness bindCardBusiness;
 
+    @Autowired
+    private PublisherBusiness publisherBusiness;
+    @Autowired
+    private RealNameBusiness business;
     public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
         Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
         if ("200".equals(orderResp.getCode())) {
@@ -652,6 +659,59 @@ public class QuickPayBusiness {
             throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("msg"));
         }
 
+
+    }
+
+    public Response<Map> wabenPay(BigDecimal amount, Long userId){
+        PublisherDto publisher = publisherBusiness.findById(userId);
+        //创建订单
+        PaymentOrderDto paymentOrder = new PaymentOrderDto();
+        paymentOrder.setAmount(amount);
+        String paymentNo = UniqueCodeGenerator.generatePaymentNo();
+        paymentOrder.setPaymentNo(paymentNo);
+        paymentOrder.setType(PaymentType.QuickPay);
+        paymentOrder.setState(PaymentState.Unpaid);
+        paymentOrder.setPublisherId(publisher.getId());
+        paymentOrder.setCreateTime(new Date());
+        paymentOrder.setUpdateTime(new Date());
+        this.savePaymentOrder(paymentOrder);
+        //封装请求参数
+        Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmsss");
+        String timeStamp = format.format(date);
+        Map<String, String> map = new TreeMap<>();
+        String url = WBConfig.quick_bank_url;
+        map.put("merchantNo", WBConfig.merchantNo);
+        map.put("notifyUrl", WBConfig.notifyUrl);
+        map.put("amount", (amount.movePointRight(2)).toString());
+        map.put("name", "");
+        map.put("tradeType", WBConfig.tradeType);
+        map.put("timeStart", timeStamp);
+        map.put("outTradeNo", paymentNo);
+        map.put("frontUrl", WBConfig.frontUrl);
+        map.put("idCard", "");
+        String signStr = "";
+        for (String keys : map.keySet()) {
+            signStr += keys + "=" + map.get(keys) + "&";
+        }
+        map.put("sign", "");
+        logger.info("请求的参数是{}:", map.toString());
+        String result = FormRequest.doPost(map, url);
+        JSONObject jsStr = JSONObject.parseObject(result);
+        JSONObject result1 =  jsStr.getJSONObject("result");
+        logger.info("请求的结果是{}:", jsStr.toString());
+        Response<Map> resp = new Response<Map>();
+        if ("200".equals(jsStr.getString("code"))) {
+            resp.setCode("200");
+            resp.setMessage(jsStr.getString("message"));
+            Map<String, String> resultUrl = new HashMap<>();
+            resultUrl.put("url", result1.getString("result"));
+            resp.setResult(resultUrl);
+        } else {
+            resp.setCode(jsStr.getString("code"));
+            resp.setMessage(jsStr.getString("message"));
+        }
+        return resp;
 
     }
 
