@@ -81,7 +81,7 @@
                                     <p>状态</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="state" >
+                                    <select name="state" class="selectpicker">
                                         <option value="0" th:if="${strategyType.state eq false}" th:selected="selected" >异常</option>
                                         <option value="1" th:if="${strategyType.state eq true}" th:selected="selected" >正常</option>
                                         <option value="0" th:if="${strategyType.state eq true}" >异常</option>

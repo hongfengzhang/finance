@@ -23,12 +23,16 @@
                                 <div class="col-sm-4 columns-right">
                                     <input name="userName" type="text" class="form-control" placeholder="" th:value="${staff.userName}" maxlength="11"/>
                                 </div>
+                            </div>
+                        </fieldset>
+                        <fieldset>
+                            <div class="form-group">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-1 columns-left">
                                     <p>状态</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="state" >
+                                    <select name="state" class="selectpicker">
                                         <option value="0" th:if="${staff.state eq false}" th:selected="selected" >异常</option>
                                         <option value="1" th:if="${staff.state eq true}" th:selected="selected" >正常</option>
                                         <option value="0" th:if="${staff.state eq true}" >异常</option>
