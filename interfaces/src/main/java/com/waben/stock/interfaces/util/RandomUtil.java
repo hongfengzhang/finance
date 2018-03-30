@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.util;
 
+import java.util.UUID;
+
 public class RandomUtil {
 
 	public static char[] randomCharArr = new char[62];
@@ -62,6 +64,15 @@ public class RandomUtil {
 			result.append(randomCharArr[randomIndex]);
 		}
 		return result.toString();
+	}
+
+	/**
+	 * 获取随机字符串 Nonce Str
+	 *
+	 * @return String 随机字符串
+	 */
+	public static String generateNonceStr() {
+		return UUID.randomUUID().toString().replaceAll("-", "").substring(0, 32);
 	}
 
 }

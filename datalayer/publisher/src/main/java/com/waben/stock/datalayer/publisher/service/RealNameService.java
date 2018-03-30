@@ -24,7 +24,7 @@ public class RealNameService {
 	@Autowired
 	private RealNameDao realNameDao;
 
-	public RealName save(RealName realName) {
+	public synchronized RealName save(RealName realName) {
 		RealName check = realNameDao.retriveByResourceTypeAndResourceId(realName.getResourceType(),
 				realName.getResourceId());
 		if (check != null) {
