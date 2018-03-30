@@ -43,7 +43,7 @@
                                     <p>所属权限</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <select name="pid">
+                                    <select name="pid" class="selectpicker">
                                         <option th:each="permission:${permissions}" th:value="${permission.id}" th:text="${permission.name}"></option>
                                     </select>
                                 </div>

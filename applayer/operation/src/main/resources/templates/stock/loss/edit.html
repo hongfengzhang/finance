@@ -21,7 +21,7 @@
                                     <p>止损点</p>
                                 </div>
                                 <div class="col-sm-4 columns-right">
-                                    <input name="value" type="text" class="form-control" placeholder="" th:value="${loss.point}" maxlength="3"/>
+                                    <input name="point" type="text" class="form-control" placeholder="" th:value="${loss.point}" maxlength="5"/>
                                 </div>
                             </div>
                         </fieldset>
@@ -50,7 +50,6 @@
   					console.log("------服务器出错-------");
 					return false;	
   				}
-
                 var data = response.result;
                 var id = $("input[name='id']").val();
                 if(data.id == id){

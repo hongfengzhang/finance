@@ -22,8 +22,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * @author Created by yuyidi on 2017/12/6.
@@ -74,9 +76,9 @@ public class StrategyTypeController {
 
     @RequestMapping("/modify")
     @ResponseBody
-    public Response<StrategyTypeVo> modify(StrategyTypeVo vo,List<Long> losses){
+    public Response<StrategyTypeVo> modify(StrategyTypeVo vo){
         StrategyTypeDto requestDto = CopyBeanUtils.copyBeanProperties(StrategyTypeDto.class, vo, false);
-        StrategyTypeDto responseDto = strategyTypeBusiness.revision(requestDto);
+        StrategyTypeDto responseDto = strategyTypeBusiness.revision(requestDto, vo.getLoss());
         StrategyTypeVo result = CopyBeanUtils.copyBeanProperties(StrategyTypeVo.class, responseDto, false);
         return new Response<>(result);
     }
