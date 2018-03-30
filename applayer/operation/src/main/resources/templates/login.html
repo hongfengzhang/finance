@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
-    <title>优股网后台管理系统</title>
+    <title th:text="${session.companyName}+'运营管理系统'"></title>
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'/>
     <meta name="viewport" content="width=device-width"/>
     <link th:href="@{/static/css/bootstrap.min.css}" rel="stylesheet"/>
@@ -41,7 +41,7 @@
                         <form th:action="@{/login}" method="post">
                             <!--   if you want to have the card without animation please remove the ".card-hidden" class   -->
                             <div class="card card-hidden">
-                                <div class="header text-center">后台管理系统</div>
+                                <div class="header text-center">运营管理系统</div>
                                 <div class="content">
                                     <div class="form-group">
                                         <label>账号</label>
@@ -50,31 +50,32 @@
                                     <div class="form-group">
                                         <label>密码</label>
                                         <input type="password" name="password" required="required" placeholder="请输入您的密码" class="form-control"/>
+                                        <input type="hidden"  name="isOperater" value="true"/>
                                     </div>
 
-                                    <div class="form-group col-sm-12" id="operater">
-                                        <div class="col-md-2">
-                                            <input id="hidenOperater" type="hidden" name="operater" value="true"/>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="radio checked">
-                                                <span class="icons">
-                                                    <span class="first-icon fa fa-circle-o"></span>
-                                                    <span class="second-icon fa fa-dot-circle-o"></span>
-                                                </span>
-                                                <input type="radio" data-toggle="radio" name="isOperater" value="true"/>管理员
-                                            </label>
-                                        </div>
-                                        <div class="col-md-4">
-                                            <label class="radio">
-                                                <span class="icons">
-                                                    <span class="first-icon fa fa-circle-o"></span>
-                                                    <span class="second-icon fa fa-dot-circle-o"></span>
-                                                </span>
-                                                <input type="radio" data-toggle="radio" name="isOperater" value="false"/>投资人
-                                            </label>
-                                        </div>
-                                    </div>
+                                    <!--<div class="form-group col-sm-12" id="operater">-->
+                                        <!--<div class="col-md-2">-->
+                                            <!--<input id="hidenOperater" type="hidden" name="operater" value="true"/>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-md-4">-->
+                                            <!--<label class="radio checked">-->
+                                                <!--<span class="icons">-->
+                                                    <!--<span class="first-icon fa fa-circle-o"></span>-->
+                                                    <!--<span class="second-icon fa fa-dot-circle-o"></span>-->
+                                                <!--</span>-->
+                                                <!--<input type="radio" data-toggle="radio" name="isOperater" value="true"/>管理员-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+                                        <!--<div class="col-md-4">-->
+                                            <!--<label class="radio">-->
+                                                <!--<span class="icons">-->
+                                                    <!--<span class="first-icon fa fa-circle-o"></span>-->
+                                                    <!--<span class="second-icon fa fa-dot-circle-o"></span>-->
+                                                <!--</span>-->
+                                                <!--<input type="radio" data-toggle="radio" name="isOperater" value="false"/>投资人-->
+                                            <!--</label>-->
+                                        <!--</div>-->
+                                    <!--</div>-->
                                 </div>
                                 <div class="footer text-center">
                                     <button type="submit" class="btn btn-fill btn-warning btn-wd">登陆</button>

@@ -340,7 +340,8 @@ public class QuickPayController {
     @RequestMapping("/quickbank")
     @ApiOperation(value = "网贝支付调接口")
     @ResponseBody
-    public void quickBank(){
+    public void quickBank(@RequestParam(required = true) BigDecimal amount){
+           Response<Map>  result =  quickPayBusiness.wabenPay(amount ,SecurityUtil.getUserId());
 
     }
 

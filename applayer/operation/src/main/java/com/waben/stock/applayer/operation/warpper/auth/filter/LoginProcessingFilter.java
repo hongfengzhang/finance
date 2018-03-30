@@ -55,7 +55,7 @@ public class LoginProcessingFilter extends UsernamePasswordAuthenticationFilter 
             }
             throw new AuthMethodNotSupportedException("Authentication method not supported");
         }
-        Boolean isOperater = Boolean.valueOf(request.getParameter("operater"));
+        Boolean isOperater = Boolean.valueOf(request.getParameter("isOperater"));
         logger.info("是否管理员登录:{}", isOperater);
         LoginRequest loginRequest = new LoginRequest(request.getParameter("username"), request.getParameter
                 ("password"));
