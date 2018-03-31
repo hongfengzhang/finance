@@ -34,7 +34,6 @@ public class MenuBusiness {
         AccountCredentials current = SecurityAccount.current();
         Long role = current.getRole();
         Response<List<MenuDto>> response = menuService.menusByRole(role);
-        logger.info("获取菜单信息:{}", JacksonUtil.encode(response));
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

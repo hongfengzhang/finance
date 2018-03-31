@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
  * @author Created by yuyidi on 2017/11/6.
  * @desc
  */
-@SessionAttributes(value = {"menus", "userName"})
+@SessionAttributes(value = {"menus", "userName","companyName"})
 @Controller
 public class SystemController {
 
@@ -25,14 +26,17 @@ public class SystemController {
 
     @Value("${mail.contextPath}")
     private String contextPath;
+    @Value("${company.name}")
+    private String compayName;
 
     @GetMapping("/login")
-    public String login() {
+    public String login(ModelMap modelMap) {
+        modelMap.put("companyName",compayName);
         return "login";
     }
 
     @GetMapping("/index")
-    public String index(Model model) {
+    public String index(ModelMap model) {
         model.addAttribute("userName", SecurityAccount.current().getUsername());
         model.addAttribute("menus", systemManageBusiness.menus());
         return "index";
