@@ -17,12 +17,10 @@ import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.BindCardDto;
-import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
+import com.waben.stock.interfaces.dto.publisher.*;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -42,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -70,7 +69,8 @@ public class QuickPayBusiness {
     @Autowired
     private PublisherBusiness publisherBusiness;
     @Autowired
-    private RealNameBusiness business;
+    private RealNameBusiness realNameBusiness;
+
     public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
         Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
         if ("200".equals(orderResp.getCode())) {
@@ -520,13 +520,13 @@ public class QuickPayBusiness {
         String tosign = genSignData(jsonObject);
         String sign = RSAUtil.sign(PayPalConfig.private_key, tosign);
         map.put("sign", sign);
-        logger.info("请求的参数是:{}",map.toString());
+        logger.info("请求的参数是:{}", map.toString());
         JSONObject jsonObject1 = (JSONObject) JSONObject.toJSON(map);
         Map<String, String> masp = new HashMap<>();
         masp.put("req_data", jsonObject1.toJSONString());
         String result = FormRequest.doPost(masp, PayPalConfig.url);
-        logger.info("连连快捷请求的结果是:{}",result);
-        if (StringUtils.isBlank(result)||!result.startsWith("http")) {
+        logger.info("连连快捷请求的结果是:{}", result);
+        if (StringUtils.isBlank(result) || !result.startsWith("http")) {
             throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, "请求异常");
         }
         Response<Map> resp = new Response();
@@ -561,22 +561,22 @@ public class QuickPayBusiness {
         String sign = responseResult.getString("sign");
         String oid_str = genSignData(responseResult);
         //签名验证
-        Boolean  checksign = RSAUtil.checksign(PayPalConfig.public_key,oid_str,sign);
+        Boolean checksign = RSAUtil.checksign(PayPalConfig.public_key, oid_str, sign);
         JSONObject returnObject = new JSONObject();
         String result_pay = responseResult.getString("result_pay");
         if (paymentNo != null && !"".equals(paymentNo) && "SUCCESS".equals(result_pay)) {
             //验证签名
-            if(checksign){
+            if (checksign) {
                 logger.info("连连快捷验证签名通过");
                 payCallback(paymentNo, PaymentState.Paid);
-                returnObject.put("ret_code","0000");
-                returnObject.put("ret_msg","交易成功");
+                returnObject.put("ret_code", "0000");
+                returnObject.put("ret_msg", "交易成功");
                 return returnObject;
             }
 
         }
-        returnObject.put("ret_code","1001");
-        returnObject.put("ret_msg","交易失败");
+        returnObject.put("ret_code", "1001");
+        returnObject.put("ret_msg", "交易失败");
         return returnObject;
     }
 
@@ -662,8 +662,9 @@ public class QuickPayBusiness {
 
     }
 
-    public Response<Map> wabenPay(BigDecimal amount, Long userId){
+    public Response<Map> wabenPay(BigDecimal amount, Long userId) {
         PublisherDto publisher = publisherBusiness.findById(userId);
+        RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
         //创建订单
         PaymentOrderDto paymentOrder = new PaymentOrderDto();
         paymentOrder.setAmount(amount);
@@ -676,36 +677,33 @@ public class QuickPayBusiness {
         paymentOrder.setUpdateTime(new Date());
         this.savePaymentOrder(paymentOrder);
         //封装请求参数
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmsss");
-        String timeStamp = format.format(date);
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+        String timeStamp = format.format(new Date());
         Map<String, String> map = new TreeMap<>();
         String url = WBConfig.quick_bank_url;
         map.put("merchantNo", WBConfig.merchantNo);
         map.put("notifyUrl", WBConfig.notifyUrl);
         map.put("amount", (amount.movePointRight(2)).toString());
-        map.put("name", "");
+        map.put("name", realNameDto.getName());
         map.put("tradeType", WBConfig.tradeType);
         map.put("timeStart", timeStamp);
         map.put("outTradeNo", paymentNo);
         map.put("frontUrl", WBConfig.frontUrl);
-        map.put("idCard", "");
+        map.put("idCard", realNameDto.getIdCard());
         String signStr = "";
-        for (String keys : map.keySet()) {
-            signStr += keys + "=" + map.get(keys) + "&";
-        }
-        map.put("sign", "");
+        map.put("sign", "001");
         logger.info("请求的参数是{}:", map.toString());
         String result = FormRequest.doPost(map, url);
         JSONObject jsStr = JSONObject.parseObject(result);
-        JSONObject result1 =  jsStr.getJSONObject("result");
+        JSONObject result1 = jsStr.getJSONObject("result");
         logger.info("请求的结果是{}:", jsStr.toString());
         Response<Map> resp = new Response<Map>();
         if ("200".equals(jsStr.getString("code"))) {
             resp.setCode("200");
             resp.setMessage(jsStr.getString("message"));
             Map<String, String> resultUrl = new HashMap<>();
-            resultUrl.put("url", result1.getString("result"));
+            resultUrl.put("url", WBConfig.domain + result1.getString("redirectURL"));
             resp.setResult(resultUrl);
         } else {
             resp.setCode(jsStr.getString("code"));
@@ -713,6 +711,86 @@ public class QuickPayBusiness {
         }
         return resp;
 
+    }
+
+
+    public Response<Map> platform(BigDecimal amount, Long userId){
+        PublisherDto publisher = publisherBusiness.findById(userId);
+        RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
+        //创建订单
+        PaymentOrderDto paymentOrder = new PaymentOrderDto();
+        paymentOrder.setAmount(amount);
+        String paymentNo = UniqueCodeGenerator.generatePaymentNo();
+        paymentOrder.setPaymentNo(paymentNo);
+        paymentOrder.setType(PaymentType.QuickPay);
+        paymentOrder.setState(PaymentState.Unpaid);
+        paymentOrder.setPublisherId(publisher.getId());
+        paymentOrder.setCreateTime(new Date());
+        paymentOrder.setUpdateTime(new Date());
+        this.savePaymentOrder(paymentOrder);
+        //封装请求参数
+
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
+        String timeStamp = format.format(new Date());
+        Map<String, String> map = new TreeMap<>();
+        String url = WBConfig.quick_bank_url;
+        map.put("merchantNo", WBConfig.merchantNo);
+        map.put("notifyUrl", WBConfig.notifyUrl);
+        map.put("amount", (amount.movePointRight(2)).toString());
+        map.put("name", realNameDto.getName());
+        map.put("tradeType", WBConfig.tradeType);
+        map.put("timeStart", timeStamp);
+        map.put("outTradeNo", paymentNo);
+        map.put("frontUrl", WBConfig.frontUrl);
+        map.put("idCard", realNameDto.getIdCard());
+        String signStr = "";
+        map.put("sign", "001");
+        logger.info("请求的参数是{}:", map.toString());
+        String result = FormRequest.doPost(map, url);
+        JSONObject jsStr = JSONObject.parseObject(result);
+        JSONObject result1 = jsStr.getJSONObject("result");
+        logger.info("请求的结果是{}:", jsStr.toString());
+        Response<Map> resp = new Response<Map>();
+        if ("200".equals(jsStr.getString("code"))) {
+            resp.setCode("200");
+            resp.setMessage(jsStr.getString("message"));
+            Map<String, String> resultUrl = new HashMap<>();
+            resultUrl.put("url", WBConfig.domain + result1.getString("redirectURL"));
+            resp.setResult(resultUrl);
+        } else {
+            resp.setCode(jsStr.getString("code"));
+            resp.setMessage(jsStr.getString("message"));
+        }
+        return resp;
+    }
+
+
+    public String wbCallback(HttpServletRequest request) {
+        Map<String, String> result = paramter2Map(request);
+        logger.info("网贝回调的结果是:{}", result);
+        String paymentNo = result.get("outTradeNo");
+        String sign = result.get("signValue");
+        Map<String,String> checksign = new TreeMap<>(result);
+
+        checksign.put("transactTime",checksign.get("transactTime").replaceAll("-","").replaceAll(":","").replaceAll(" ",""));
+        String  signStr = "";
+        for (String keys : checksign.keySet()) {
+            if(!"signValue".equals(keys)){
+                signStr += checksign.get(keys);
+            }
+        }
+        signStr+=WBConfig.key;
+       String check =  DigestUtils.md5Hex(signStr);
+        //签名验证
+        if (paymentNo != null && !"".equals(paymentNo)) {
+            //验证签名
+            if (check.equals(sign)) {
+                logger.info("网贝快捷验证签名通过");
+                payCallback(paymentNo, PaymentState.Paid);
+                return "SUCCESS";
+            }
+        }
+        return "FALSE";
     }
 
     public void payCallback(String paymentNo, PaymentState state) {
@@ -803,7 +881,7 @@ public class QuickPayBusiness {
         return params;
     }
 
-    public  String genSignData(com.alibaba.fastjson.JSONObject jsonObject) {
+    public String genSignData(com.alibaba.fastjson.JSONObject jsonObject) {
         StringBuffer content = new StringBuffer();
 
         // 按照key做首字母升序排列
@@ -829,7 +907,7 @@ public class QuickPayBusiness {
         return signSrc;
     }
 
-    public  boolean isnull(String str) {
+    public boolean isnull(String str) {
         if (null == str || str.equalsIgnoreCase("null") || str.equals("")) {
             return true;
         } else

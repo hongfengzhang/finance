@@ -17,6 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.jdbc.Null;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -304,19 +305,19 @@ public class QuickPayController {
             e.printStackTrace();
         }
         JSONObject jsonObject = JSONObject.parseObject(result);
-        logger.info("代付异步通知内容为:{}",jsonObject.toJSONString());
+        logger.info("代付异步通知内容为:{}", jsonObject.toJSONString());
         String no_order = jsonObject.getString("no_order");//流水号
         String result_pay = jsonObject.getString("result_pay");//付款结果
         String settle_date = jsonObject.getString("settle_date");//付款日期
-        JSONObject  returnObject= new JSONObject();
+        JSONObject returnObject = new JSONObject();
         // TODO 签名校验
         String sign = jsonObject.getString("sign");
         String oid_str = quickPayBusiness.genSignData(jsonObject);
         //签名验证
-        Boolean  checksign = RSAUtil.checksign(PayPalConfig.public_key,oid_str,sign);
-        if (!checksign){
-            returnObject.put("ret_code","1002");
-            returnObject.put("ret_msg","验证签名失败");
+        Boolean checksign = RSAUtil.checksign(PayPalConfig.public_key, oid_str, sign);
+        if (!checksign) {
+            returnObject.put("ret_code", "1002");
+            returnObject.put("ret_msg", "验证签名失败");
             return returnObject;
         }
         logger.info("连连代付异步通知签名验证成功");
@@ -327,22 +328,57 @@ public class QuickPayController {
                     "SUCCESS".equals(result_pay) ? WithdrawalsState.PROCESSED : WithdrawalsState.FAILURE, settle_date,
                     result_pay);
             // 响应回调
-            returnObject.put("ret_code","0000");
-            returnObject.put("ret_msg","交易成功");
-        }else{
-            returnObject.put("ret_code","1001");
-            returnObject.put("ret_msg","交易失败");
+            returnObject.put("ret_code", "0000");
+            returnObject.put("ret_msg", "交易成功");
+        } else {
+            returnObject.put("ret_code", "1001");
+            returnObject.put("ret_msg", "交易失败");
         }
         return returnObject;
     }
 
 
     @RequestMapping("/quickbank")
-    @ApiOperation(value = "网贝支付调接口")
+    @ApiOperation(value = "网贝收银台支付调接口")
     @ResponseBody
-    public void quickBank(@RequestParam(required = true) BigDecimal amount){
-           Response<Map>  result =  quickPayBusiness.wabenPay(amount ,SecurityUtil.getUserId());
-
+    public Response<Map> quickBank(@RequestParam(required = true) BigDecimal amount) {
+        Response<Map> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId());
+        return result;
     }
+
+    @RequestMapping("/platform")
+    @ApiOperation(value = "网贝收银台支付调接口")
+    @ResponseBody
+    public Response<Map> platform(@RequestParam(required = true) BigDecimal amount) {
+        Response<Map> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId());
+        return result;
+    }
+
+
+
+    @RequestMapping("/wbreturn")
+    @ApiOperation(value = "网贝收银台同步回调接口")
+    @ResponseBody
+    public void callback(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+        // 处理回调
+        String result = quickPayBusiness.sdPayReturn();
+        // 响应回调
+        httpResp.setContentType("text/html;charset=UTF-8");
+        try {
+            PrintWriter writer = httpResp.getWriter();
+            writer.write(result);
+        } catch (IOException e) {
+            throw new RuntimeException("http write interrupt");
+        }
+    }
+
+    @RequestMapping("/wbcallback")
+    @ApiOperation(value = "网贝收银台异步回调接口")
+    @ResponseBody
+    public String notify(HttpServletRequest request) {
+        String result = quickPayBusiness.wbCallback(request);
+        return result;
+    }
+
 
 }
