@@ -4,6 +4,14 @@
 $(function() {
 	var currentOrgId = parent.currentOrgId;
     var currentOrgPId = parent.currentOrgPId;
+    var currentOrgLevel = parent.currentOrgLevel;
+    if(currentOrgLevel == 1) {
+    	$("#org-detail-tab li").each(function(index,element) {
+    		if(index != 0) {
+    			$(this).css("display", "none");
+    		}
+    	});
+    }
 	// 加载layui
 	layui.use(['element', 'table'], function() {});
 	// 修改机构名称

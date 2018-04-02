@@ -64,12 +64,12 @@ $(function() {
 	            	var currentLevel = full.level;
 	            	if(window.level == 1) {
 	            		if(currentLevel == 1) {
-	            			return "<a class='detail' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            			return "<a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            		} else {
-	            			return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            			return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            		}
 	            	} else {
-	            		return "<a class='detail' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>详情</a>";
+	            		return "<a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>详情</a>";
 	            	}
 	            }}
 	        ];
@@ -182,6 +182,7 @@ $(function() {
 	$('#org-list-table').on('click', 'a.detail', function(){
 		currentOrgId = $(this).attr("orgid");
 		currentOrgPId = $(this).attr("pid");
+		currentOrgLevel = $(this).attr("level");
 		layer.open({
 			type: 2,
 			title: '查看机构详情',
