@@ -477,7 +477,13 @@ public class QuickPayBusiness {
         request.put("tradeType","protocol_d0");
         request.put("merchantNo",WBConfig.merchantNo);
         request.put("timeStart",time.format(new Date()));
-        request.put("sign","");
+        String signStr = "";
+        for (String keys : request.keySet()) {
+                signStr += request.get(keys);
+        }
+        signStr+=WBConfig.key;
+        String sign =  DigestUtils.md5Hex(signStr);
+        request.put("sign",sign);
     }
 
 
