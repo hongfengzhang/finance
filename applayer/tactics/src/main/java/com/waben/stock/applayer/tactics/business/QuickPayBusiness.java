@@ -68,8 +68,12 @@ public class QuickPayBusiness {
 
     @Autowired
     private PublisherBusiness publisherBusiness;
+    
     @Autowired
     private RealNameBusiness realNameBusiness;
+    
+    @Autowired
+    private WBConfig wbConfig;
 
     public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
         Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
@@ -533,18 +537,18 @@ public class QuickPayBusiness {
         request.put("name",name);
         request.put("phone",phone);
         request.put("outTradeNo",withdrawalsNo);
-        request.put("notifyUrl",WBConfig.protocol_callback);
+        request.put("notifyUrl", wbConfig.getProtocol_callback());
         request.put("amount",amount.movePointRight(2).toString());
         request.put("signType",WBConfig.sign_type);
         request.put("cardType",WBConfig.card_type);
         request.put("tradeType",WBConfig.protocol_type);
-        request.put("merchantNo",WBConfig.merchantNo);
+        request.put("merchantNo", wbConfig.getMerchantNo());
         request.put("timeStart",time.format(new Date()));
         String signStr = "";
         for (String keys : request.keySet()) {
             signStr += request.get(keys);
         }
-        signStr+=WBConfig.key;
+        signStr+= wbConfig.getKey();
         String sign =  DigestUtils.md5Hex(signStr);
         request.put("sign",sign);
         String result = FormRequest.doPost(request, WBConfig.protocol_url);
@@ -576,14 +580,14 @@ public class QuickPayBusiness {
         String timeStamp = format.format(new Date());
         Map<String, String> map = new TreeMap<>();
         String url = WBConfig.quick_bank_url;
-        map.put("merchantNo", WBConfig.merchantNo);
-        map.put("notifyUrl", WBConfig.notifyUrl);
+        map.put("merchantNo", wbConfig.getMerchantNo());
+        map.put("notifyUrl", wbConfig.getNotifyUrl());
         map.put("amount", (amount.movePointRight(2)).toString());
         map.put("name", realNameDto.getName());
         map.put("tradeType", WBConfig.tradeType);
         map.put("timeStart", timeStamp);
         map.put("outTradeNo", paymentNo);
-        map.put("frontUrl", WBConfig.frontUrl);
+        map.put("frontUrl", wbConfig.getFrontUrl());
         map.put("idCard", realNameDto.getIdCard());
         String signStr = "";
         map.put("sign", "001");
@@ -629,12 +633,12 @@ public class QuickPayBusiness {
         String url = WBConfig.quick_bank_url;
         map.put("timeStart", timeStamp);
         map.put("payment", paytype);
-        map.put("notifyUrl", WBConfig.notifyUrl);
+        map.put("notifyUrl", wbConfig.getNotifyUrl());
         map.put("tradeType", WBConfig.platformType);
         map.put("amount", (amount.movePointRight(2)).toString());
-        map.put("merchantNo", WBConfig.merchantNo);
+        map.put("merchantNo", wbConfig.getMerchantNo());
         map.put("outTradeNo", paymentNo);
-        map.put("frontUrl", WBConfig.frontUrl);
+        map.put("frontUrl", wbConfig.getFrontUrl());
         String signStr = "";
         map.put("sign", "001");
         logger.info("请求的参数是{}:", map.toString());
@@ -672,7 +676,7 @@ public class QuickPayBusiness {
                 signStr += checksign.get(keys);
             }
         }
-        signStr+=WBConfig.key;
+        signStr+= wbConfig.getKey();
         String check =  DigestUtils.md5Hex(signStr);
         //签名验证
         if (paymentNo != null && !"".equals(paymentNo)) {
@@ -705,7 +709,7 @@ public class QuickPayBusiness {
                 signStr += checksign.get(keys);
             }
         }
-        signStr+=WBConfig.key;
+        signStr+= wbConfig.getKey();
         String check =  DigestUtils.md5Hex(signStr);
         //签名验证
         if (paymentNo != null && !"".equals(paymentNo)) {
