@@ -447,47 +447,6 @@ public class QuickPayBusiness {
     }
 
 
-    public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
-                   String bankCard, String bankCode, String branchName){
-        logger.info("保存提现订单");
-        String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
-        WithdrawalsOrderDto order = new WithdrawalsOrderDto();
-        order.setWithdrawalsNo(withdrawalsNo);
-        order.setAmount(amount);
-        order.setState(WithdrawalsState.PROCESSING);
-        order.setName(name);
-        order.setIdCard(idCard);
-        order.setBankCard(bankCard);
-        order.setPublisherId(publisherId);
-        order.setCreateTime(new Date());
-        order.setUpdateTime(new Date());
-        this.saveWithdrawalsOrders(order);
-
-        logger.info("发起提现申请");
-        Map<String,String> request = new TreeMap<>();
-        SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
-        request.put("cardNo",bankCard);
-        request.put("bankCode",bankCode);
-        request.put("name",name);
-        request.put("phone",phone);
-        request.put("outTradeNo",withdrawalsNo);
-        request.put("notifyUrl","");
-        request.put("amount",amount.movePointRight(2).toString());
-        request.put("cardType","cash_card");
-        request.put("tradeType","protocol_d0");
-        request.put("merchantNo",WBConfig.merchantNo);
-        request.put("timeStart",time.format(new Date()));
-        String signStr = "";
-        for (String keys : request.keySet()) {
-                signStr += request.get(keys);
-        }
-        signStr+=WBConfig.key;
-        String sign =  DigestUtils.md5Hex(signStr);
-        request.put("sign",sign);
-    }
-
-
-
     public void withdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
                             String bankCard, String bankCode, String branchName) {
         //生成提现订单
@@ -547,6 +506,51 @@ public class QuickPayBusiness {
         }
 
 
+    }
+
+
+    public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
+                              String bankCard, String bankCode, String branchName){
+        logger.info("保存提现订单");
+        String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+        WithdrawalsOrderDto order = new WithdrawalsOrderDto();
+        order.setWithdrawalsNo(withdrawalsNo);
+        order.setAmount(amount);
+        order.setState(WithdrawalsState.PROCESSING);
+        order.setName(name);
+        order.setIdCard(idCard);
+        order.setBankCard(bankCard);
+        order.setPublisherId(publisherId);
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
+        this.saveWithdrawalsOrders(order);
+
+        logger.info("发起提现申请");
+        Map<String,String> request = new TreeMap<>();
+        SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
+        request.put("cardNo",bankCard);
+        request.put("bankCode",bankCode);
+        request.put("name",name);
+        request.put("phone",phone);
+        request.put("outTradeNo",withdrawalsNo);
+        request.put("notifyUrl",WBConfig.protocol_callback);
+        request.put("amount",amount.movePointRight(2).toString());
+        request.put("cardType","cash_card");
+        request.put("tradeType","protocol_d0");
+        request.put("merchantNo",WBConfig.merchantNo);
+        request.put("timeStart",time.format(new Date()));
+        String signStr = "";
+        for (String keys : request.keySet()) {
+            signStr += request.get(keys);
+        }
+        signStr+=WBConfig.key;
+        String sign =  DigestUtils.md5Hex(signStr);
+        request.put("sign",sign);
+        String result = FormRequest.doPost(request, WBConfig.protocol_url);
+        JSONObject jsStr = JSONObject.parseObject(result);
+        if(!"200".equals(jsStr.getString("code"))){
+            throw new ServiceException(jsStr.getString("message"));
+        }
     }
 
     public Response<Map> wabenPay(BigDecimal amount, Long userId) {
@@ -650,6 +654,39 @@ public class QuickPayBusiness {
     }
 
 
+    public String protocolCallBack(HttpServletRequest request) {
+        Map<String, String> result = paramter2Map(request);
+        logger.info("网贝代付回调的结果是:{}", result);
+        String paymentNo = result.get("outTradeNo");
+        String thirdNo=result.get("transactNo");
+        String sign = result.get("signValue");
+        Map<String,String> checksign = new TreeMap<>(result);
+
+        checksign.put("transactTime",checksign.get("transactTime").replaceAll("-","").replaceAll(":","").replaceAll(" ",""));
+        String  signStr = "";
+        for (String keys : checksign.keySet()) {
+            if(!"signValue".equals(keys)){
+                signStr += checksign.get(keys);
+            }
+        }
+        signStr+=WBConfig.key;
+        String check =  DigestUtils.md5Hex(signStr);
+        //签名验证
+        if (paymentNo != null && !"".equals(paymentNo)) {
+            //验证签名
+            if (check.equals(sign)) {
+                logger.info("网贝代付异步回调");
+                WithdrawalsOrderDto order = this.findByWithdrawalsNo(paymentNo);
+                order.setThirdWithdrawalsNo(thirdNo);
+                this.revisionWithdrawalsOrder(order);
+                if (order.getState() == WithdrawalsState.PROCESSING) {
+                    accountBusiness.withdrawals(order.getPublisherId(), order.getId(),WithdrawalsState.PROCESSED);
+                }
+            }
+        }
+        return "FALSE";
+    }
+
     public String wbCallback(HttpServletRequest request) {
         Map<String, String> result = paramter2Map(request);
         logger.info("网贝回调的结果是:{}", result);
@@ -665,7 +702,7 @@ public class QuickPayBusiness {
             }
         }
         signStr+=WBConfig.key;
-       String check =  DigestUtils.md5Hex(signStr);
+        String check =  DigestUtils.md5Hex(signStr);
         //签名验证
         if (paymentNo != null && !"".equals(paymentNo)) {
             //验证签名
