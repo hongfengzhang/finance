@@ -314,22 +314,6 @@ public class QuickPayBusiness {
         if (!"0000".equals(jsStr.getString("ret_code"))) {
             throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
         }
-
-//        // 提现异常
-//        JSONObject jsonData = jsStr.getJSONObject("data");
-//        String resultFlag = jsonData.getString("resultFlag");
-//        if ("SUCCESS".equals(jsStr.getString("result")) || "0".equals(resultFlag) || "2".equals(resultFlag)) {
-//            WithdrawalsOrderDto origin = findWithdrawalsOrder(withdrawalsNo);
-//            accountBusiness.csa(origin.getPublisherId(), origin.getAmount());
-//            if (origin.getState() != WithdrawalsState.PROCESSED) {
-//                // 更新代付订单的状态
-//                withdrawalsOrderReference.changeState(withdrawalsNo, WithdrawalsState.PROCESSED.getIndex());
-//            }
-//        } else {
-//            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("msg"));
-//        }
-
-
     }
 
     public void payPalWithholdCallback(String withdrawalsNo, WithdrawalsState withdrawalsState, String thirdRespCode,
@@ -462,144 +446,41 @@ public class QuickPayBusiness {
         return resp;
     }
 
-    public Response<Map> payPal(BigDecimal amount, Long bindCardId, Long publisherId) {
-        BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
-        if (bindCard == null) {
-            throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
-        }
-        if (publisherId.compareTo(bindCard.getResourceId()) != 0) {
-            throw new ServiceException(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION);
-        }
-        Response<PublisherDto> response = publisherReference.fetchById(publisherId);
-        if (!"200".equals(response.getCode())) {
-            throw new ServiceException(response.getCode());
-        }
-        //创建订单
-        PaymentOrderDto paymentOrder = new PaymentOrderDto();
-        paymentOrder.setAmount(amount);
-        String paymentNo = UniqueCodeGenerator.generatePaymentNo();
-        paymentOrder.setPaymentNo(paymentNo);
-        paymentOrder.setType(PaymentType.QuickPay);
-        paymentOrder.setState(PaymentState.Unpaid);
-        paymentOrder.setPublisherId(publisherId);
-        paymentOrder.setCreateTime(new Date());
-        paymentOrder.setUpdateTime(new Date());
-        this.savePaymentOrder(paymentOrder);
-        logger.info("订单保存成功,开始封装请求参数");
-        //封装请求参数
-        Date date = new Date();
-        SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
-        String timeStamp = format.format(date);
-        JSONObject risk = new JSONObject();
-        Map<String, String> map = new TreeMap<>();
-        map.put("version", PayPalConfig.version);
-        map.put("oid_partner", PayPalConfig.oid_partner);
-        map.put("user_id", bindCard.getPhone().substring(1));
-        map.put("app_request", PayPalConfig.app_request);
-        map.put("sign_type", PayPalConfig.sign_type);
-        map.put("busi_partner", PayPalConfig.busi_partner);//虚拟交易 实物交易
-        map.put("no_order", paymentNo);
-        map.put("dt_order", timeStamp);
-        map.put("name_goods", PayPalConfig.name_goods);
-        map.put("money_order", amount.toString());
-        map.put("notify_url", PayPalConfig.notify_url);
-        map.put("url_return", PayPalConfig.url_return);
-        map.put("id_type", PayPalConfig.id_type);
-        map.put("id_no", bindCard.getIdCard());
-        map.put("acct_name", bindCard.getName());
-        risk.put("frms_ware_category", PayPalConfig.frms_ware_category);
-        risk.put("user_info_mercht_userno", bindCard.getPhone().substring(1));
-        risk.put("user_info_dt_register", sdf.format(response.getResult().getCreateTime()));
-        risk.put("user_info_bind_phone", bindCard.getPhone());
-        risk.put("user_info_identify_state", PayPalConfig.user_info_identify_state);
-        risk.put("user_info_identify_type", PayPalConfig.user_info_identify_type);
-        risk.put("user_info_full_name", bindCard.getName());
-        risk.put("user_info_id_no", bindCard.getIdCard());
-        map.put("risk_item", risk.toString());
-        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(map);
-        String tosign = genSignData(jsonObject);
-        String sign = RSAUtil.sign(PayPalConfig.private_key, tosign);
-        map.put("sign", sign);
-        logger.info("请求的参数是:{}", map.toString());
-        JSONObject jsonObject1 = (JSONObject) JSONObject.toJSON(map);
-        Map<String, String> masp = new HashMap<>();
-        masp.put("req_data", jsonObject1.toJSONString());
-        String result = FormRequest.doPost(masp, PayPalConfig.url);
-        logger.info("连连快捷请求的结果是:{}", result);
-        if (StringUtils.isBlank(result) || !result.startsWith("http")) {
-            throw new ServiceException(ExceptionConstant.RECHARGE_EXCEPTION, "请求异常");
-        }
-        Response<Map> resp = new Response();
-        resp.setCode("200");
-        resp.setMessage("请求成功");
-        Map<String, String> resultUrl = new HashMap<>();
-        resultUrl.put("url", result);
-        resp.setResult(resultUrl);
-        return resp;
+
+    public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
+                   String bankCard, String bankCode, String branchName){
+        logger.info("保存提现订单");
+        String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+        WithdrawalsOrderDto order = new WithdrawalsOrderDto();
+        order.setWithdrawalsNo(withdrawalsNo);
+        order.setAmount(amount);
+        order.setState(WithdrawalsState.PROCESSING);
+        order.setName(name);
+        order.setIdCard(idCard);
+        order.setBankCard(bankCard);
+        order.setPublisherId(publisherId);
+        order.setCreateTime(new Date());
+        order.setUpdateTime(new Date());
+        this.saveWithdrawalsOrders(order);
+
+        logger.info("发起提现申请");
+        Map<String,String> request = new TreeMap<>();
+        SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
+        request.put("cardNo",bankCard);
+        request.put("bankCode",bankCode);
+        request.put("name",name);
+        request.put("phone",phone);
+        request.put("outTradeNo",withdrawalsNo);
+        request.put("notifyUrl","");
+        request.put("amount",amount.movePointRight(2).toString());
+        request.put("cardType","cash_card");
+        request.put("tradeType","protocol_d0");
+        request.put("merchantNo",WBConfig.merchantNo);
+        request.put("timeStart",time.format(new Date()));
+        request.put("sign","");
     }
 
-    public JSONObject payPalcallback(HttpServletRequest request) {
-        String result = "";
-        logger.info("连连快捷回调开始");
-        try {
-            StringBuffer sb = new StringBuffer();
-            InputStream is = request.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String s = "";
-            while ((s = br.readLine()) != null) {
-                sb.append(s);
-            }
-            result = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        JSONObject responseResult = JSONObject.parseObject(result);
 
-        logger.info("连连回调的结果是:{}", result);
-        String paymentNo = responseResult.getString("no_order");
-        String sign = responseResult.getString("sign");
-        String oid_str = genSignData(responseResult);
-        //签名验证
-        Boolean checksign = RSAUtil.checksign(PayPalConfig.public_key, oid_str, sign);
-        JSONObject returnObject = new JSONObject();
-        String result_pay = responseResult.getString("result_pay");
-        if (paymentNo != null && !"".equals(paymentNo) && "SUCCESS".equals(result_pay)) {
-            //验证签名
-            if (checksign) {
-                logger.info("连连快捷验证签名通过");
-                payCallback(paymentNo, PaymentState.Paid);
-                returnObject.put("ret_code", "0000");
-                returnObject.put("ret_msg", "交易成功");
-                return returnObject;
-            }
-
-        }
-        returnObject.put("ret_code", "1001");
-        returnObject.put("ret_msg", "交易失败");
-        return returnObject;
-    }
-
-    public String payPalreturn(HttpServletRequest request) {
-        Map<String, String> responseResult = paramter2Map(request);
-        String res_data = responseResult.get("res_data");
-        JSONObject jsonObject = JSONObject.parseObject(res_data);
-        StringBuilder result = new StringBuilder();
-        result.append("<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title>回调页面</title></head><body>");
-        String paymentNo = jsonObject.getString("no_order");
-        String result_pay = jsonObject.getString("result_pay");
-        String stateStr = "";
-        String scriptContent = "<script>function call() {if(window.appInterface) {window.appInterface.rechargeCallback('%s', '%s');} else {window.webkit.messageHandlers.callback.postMessage({paymentNo:'%s',result:'%s'});}} call();</script></body></html>";
-        if ("SUCCESS".equals(result_pay)) {
-            stateStr = "支付成功";
-        } else if ("PROCESSING".equals(result_pay)) {
-            stateStr = "处理中";
-        } else {
-            stateStr = "支付失败";
-        }
-        result.append(String.format(scriptContent, paymentNo, stateStr, paymentNo, stateStr));
-        return result.toString();
-    }
 
     public void withdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
                             String bankCard, String bankCode, String branchName) {
@@ -714,9 +595,8 @@ public class QuickPayBusiness {
     }
 
 
-    public Response<Map> platform(BigDecimal amount, Long userId){
+    public Response<Map> platform(BigDecimal amount, Long userId,String paytype){
         PublisherDto publisher = publisherBusiness.findById(userId);
-        RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
         //创建订单
         PaymentOrderDto paymentOrder = new PaymentOrderDto();
         paymentOrder.setAmount(amount);
@@ -734,15 +614,14 @@ public class QuickPayBusiness {
         String timeStamp = format.format(new Date());
         Map<String, String> map = new TreeMap<>();
         String url = WBConfig.quick_bank_url;
-        map.put("merchantNo", WBConfig.merchantNo);
-        map.put("notifyUrl", WBConfig.notifyUrl);
-        map.put("amount", (amount.movePointRight(2)).toString());
-        map.put("name", realNameDto.getName());
-        map.put("tradeType", WBConfig.tradeType);
         map.put("timeStart", timeStamp);
+        map.put("payment", paytype);
+        map.put("notifyUrl", WBConfig.notifyUrl);
+        map.put("tradeType", WBConfig.platformType);
+        map.put("amount", (amount.movePointRight(2)).toString());
+        map.put("merchantNo", WBConfig.merchantNo);
         map.put("outTradeNo", paymentNo);
         map.put("frontUrl", WBConfig.frontUrl);
-        map.put("idCard", realNameDto.getIdCard());
         String signStr = "";
         map.put("sign", "001");
         logger.info("请求的参数是{}:", map.toString());
@@ -755,7 +634,7 @@ public class QuickPayBusiness {
             resp.setCode("200");
             resp.setMessage(jsStr.getString("message"));
             Map<String, String> resultUrl = new HashMap<>();
-            resultUrl.put("url", WBConfig.domain + result1.getString("redirectURL"));
+            resultUrl.put("url", WBConfig.domain + result1.getString("result"));
             resp.setResult(resultUrl);
         } else {
             resp.setCode(jsStr.getString("code"));
