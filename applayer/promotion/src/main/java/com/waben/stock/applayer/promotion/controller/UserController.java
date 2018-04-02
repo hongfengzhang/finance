@@ -3,6 +3,7 @@ package com.waben.stock.applayer.promotion.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +37,9 @@ public class UserController {
 
     @Autowired
     private RoleBusiness roleBusiness;
+    
+    @Value("${onlystockoption:false}")
+    private boolean onlyStockoption;
 
     @PreAuthorize("hasRole('USER_SAVE')")
     @RequestMapping("/save")
@@ -92,6 +96,7 @@ public class UserController {
 	public Response<UserDto> getCurrent() {
     	AccountCredentials details = SecurityAccount.current();
     	UserDto result = (UserDto)details.getSecurity();
+    	result.setOnlyStockoption(onlyStockoption);
     	result.setPassword(null);
 		return new Response<>(result);
 	}

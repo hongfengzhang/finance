@@ -4,12 +4,16 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,8 +24,10 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.waben.stock.applayer.promotion.payapi.paypal.config.PayPalConfig;
 import com.waben.stock.applayer.promotion.payapi.paypal.config.RSAUtil;
+import com.waben.stock.applayer.promotion.payapi.paypal.utils.FormRequest;
 import com.waben.stock.applayer.promotion.payapi.paypal.utils.HttpUtil;
 import com.waben.stock.applayer.promotion.payapi.paypal.utils.LianLianRSA;
+import com.waben.stock.applayer.promotion.payapi.wbpay.WBConfig;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
 import com.waben.stock.interfaces.enums.WithdrawalsApplyState;
@@ -31,15 +37,18 @@ import com.waben.stock.interfaces.exception.ServiceException;
 public class QuickPayBusiness {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	public WithdrawalsApplyBusiness applyBusiness;
 
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
-	
+
+	@Autowired
+	private WBConfig wbConfig;
+
 	private boolean isProd = true;
-	
+
 	@PostConstruct
 	public void init() {
 		if ("prod".equals(activeProfile)) {
@@ -48,7 +57,92 @@ public class QuickPayBusiness {
 			isProd = false;
 		}
 	}
-	
+
+	private Map<String, String> paramter2Map(HttpServletRequest request) {
+		Map<String, String> params = new HashMap<>();
+		Map requestParams = request.getParameterMap();
+		for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext();) {
+			String name = (String) iter.next();
+			String[] values = (String[]) requestParams.get(name);
+			String valueStr = "";
+			for (int i = 0; i < values.length; i++) {
+				valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+			}
+			// 乱码解决，这段代码在出现乱码时使用。
+			// valueStr = new String(valueStr.getBytes("ISO-8859-1"),
+			// "utf-8");
+			params.put(name, valueStr);
+		}
+		return params;
+	}
+
+	public String wabenProtocolCallBack(HttpServletRequest request) {
+		Map<String, String> result = paramter2Map(request);
+		logger.info("网贝代付回调的结果是:{}", result);
+		String paymentNo = result.get("outTradeNo");
+		String thirdNo = result.get("transactNo");
+		String sign = result.get("signValue");
+		Map<String, String> checksign = new TreeMap<>(result);
+
+		checksign.put("transactTime",
+				checksign.get("transactTime").replaceAll("-", "").replaceAll(":", "").replaceAll(" ", ""));
+		String signStr = "";
+		for (String keys : checksign.keySet()) {
+			if (!"signValue".equals(keys)) {
+				signStr += checksign.get(keys);
+			}
+		}
+		signStr += wbConfig.getKey();
+		String check = DigestUtils.md5Hex(signStr);
+		// 签名验证
+		if (paymentNo != null && !"".equals(paymentNo)) {
+			// 验证签名
+			if (check.equals(sign)) {
+				logger.info("网贝代付异步回调");
+				WithdrawalsApplyDto apply = applyBusiness.fetchByApplyNo(paymentNo);
+				apply.setThirdWithdrawalsNo(thirdNo);
+				applyBusiness.revision(apply);
+				applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.SUCCESS.getIndex());
+				return "SUCCESS";
+			}
+		}
+		return "FALSE";
+	}
+
+	public void payWabenWithdrawals(WithdrawalsApplyDto apply) {
+		logger.info("发起提现申请");
+		Map<String, String> request = new TreeMap<>();
+		SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
+		request.put("cardNo", apply.getBankCard());
+		request.put("bankCode", "CCB");
+		request.put("name", apply.getName());
+		request.put("phone", apply.getPhone());
+		request.put("outTradeNo", apply.getApplyNo());
+		request.put("notifyUrl", wbConfig.getProtocol_callback());
+		request.put("amount", apply.getAmount().movePointRight(2).toString());
+		request.put("signType", WBConfig.sign_type);
+		request.put("cardType", WBConfig.card_type);
+		request.put("tradeType", WBConfig.protocol_type);
+		request.put("merchantNo", wbConfig.getMerchantNo());
+		request.put("timeStart", time.format(new Date()));
+		String signStr = "";
+		for (String keys : request.keySet()) {
+			signStr += request.get(keys);
+		}
+		signStr += wbConfig.getKey();
+		String sign = DigestUtils.md5Hex(signStr);
+		request.put("sign", sign);
+		String result = FormRequest.doPost(request, WBConfig.protocol_url);
+		JSONObject jsStr = JSONObject.parseObject(result);
+		// 修改提现状态
+		applyBusiness.changeState(apply.getId(), "200".equals(jsStr.getString("code"))
+				? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex());
+		// 如果请求失败 抛出异常
+		if (!"200".equals(jsStr.getString("code"))) {
+			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("message"));
+		}
+	}
+
 	public void payPalCSA(WithdrawalsApplyDto apply) {
 		// 请求提现
 		SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -121,7 +215,8 @@ public class QuickPayBusiness {
 
 		}
 		// 修改提现状态
-		applyBusiness.changeState(apply.getId(), "0000".equals(jsStr.getString("ret_code")) ? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex());
+		applyBusiness.changeState(apply.getId(), "0000".equals(jsStr.getString("ret_code"))
+				? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex());
 		// 如果请求失败 抛出异常
 		if (!"0000".equals(jsStr.getString("ret_code"))) {
 			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
@@ -133,38 +228,38 @@ public class QuickPayBusiness {
 		WithdrawalsApplyDto apply = applyBusiness.fetchByApplyNo(applyNo);
 		applyBusiness.changeState(apply.getId(), state.getIndex());
 	}
-	
+
 	public static String genSignData(com.alibaba.fastjson.JSONObject jsonObject) {
-        StringBuffer content = new StringBuffer();
+		StringBuffer content = new StringBuffer();
 
-        // 按照key做首字母升序排列
-        List<String> keys = new ArrayList<String>(jsonObject.keySet());
-        Collections.sort(keys, String.CASE_INSENSITIVE_ORDER);
-        for (int i = 0; i < keys.size(); i++) {
-            String key = (String) keys.get(i);
-            if ("sign".equals(key)) {
-                continue;
-            }
-            String value = jsonObject.getString(key);
-            // 空串不参与签名
-            if (isnull(value)) {
-                continue;
-            }
-            content.append((i == 0 ? "" : "&") + key + "=" + value);
+		// 按照key做首字母升序排列
+		List<String> keys = new ArrayList<String>(jsonObject.keySet());
+		Collections.sort(keys, String.CASE_INSENSITIVE_ORDER);
+		for (int i = 0; i < keys.size(); i++) {
+			String key = (String) keys.get(i);
+			if ("sign".equals(key)) {
+				continue;
+			}
+			String value = jsonObject.getString(key);
+			// 空串不参与签名
+			if (isnull(value)) {
+				continue;
+			}
+			content.append((i == 0 ? "" : "&") + key + "=" + value);
 
-        }
-        String signSrc = content.toString();
-        if (signSrc.startsWith("&")) {
-            signSrc = signSrc.replaceFirst("&", "");
-        }
-        return signSrc;
-    }
+		}
+		String signSrc = content.toString();
+		if (signSrc.startsWith("&")) {
+			signSrc = signSrc.replaceFirst("&", "");
+		}
+		return signSrc;
+	}
 
-    public static boolean isnull(String str) {
-        if (null == str || str.equalsIgnoreCase("null") || str.equals("")) {
-            return true;
-        } else
-            return false;
-    }
+	public static boolean isnull(String str) {
+		if (null == str || str.equalsIgnoreCase("null") || str.equals("")) {
+			return true;
+		} else
+			return false;
+	}
 
 }

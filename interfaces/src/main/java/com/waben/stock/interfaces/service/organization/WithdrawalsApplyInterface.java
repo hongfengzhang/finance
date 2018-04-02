@@ -35,6 +35,16 @@ public interface WithdrawalsApplyInterface {
 	 */
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<WithdrawalsApplyDto> addition(@RequestBody WithdrawalsApplyDto apply);
+	
+	/**
+	 * 修改提现申请
+	 * 
+	 * @param apply
+	 *            提现申请
+	 * @return 提现申请
+	 */
+	@RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<WithdrawalsApplyDto> revision(@RequestBody WithdrawalsApplyDto apply);
 
 	/**
 	 * 分页查询提现申请

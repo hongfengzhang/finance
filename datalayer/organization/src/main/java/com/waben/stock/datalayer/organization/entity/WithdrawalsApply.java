@@ -79,12 +79,15 @@ public class WithdrawalsApply {
 	 */
 	private String thirdRespMsg;
 	/**
-	 * 
 	 * 对应的机构
 	 */
 	@OneToOne
 	@JoinColumn(name = "org_id")
 	private Organization org;
+	/**
+	 * 对应的第三方提现单号
+	 */
+	private String thirdWithdrawalsNo;
 	/**
 	 * 机构ID
 	 */
@@ -244,6 +247,14 @@ public class WithdrawalsApply {
 
 	public void setThirdRespMsg(String thirdRespMsg) {
 		this.thirdRespMsg = thirdRespMsg;
+	}
+
+	public String getThirdWithdrawalsNo() {
+		return thirdWithdrawalsNo;
+	}
+
+	public void setThirdWithdrawalsNo(String thirdWithdrawalsNo) {
+		this.thirdWithdrawalsNo = thirdWithdrawalsNo;
 	}
 
 }

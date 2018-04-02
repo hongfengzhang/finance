@@ -8,6 +8,25 @@ $(function() {
 	$("#strategy-cancel-btn, #stockoption-cancel-btn").on('click', function() {
 		parent.layer.closeAll();
 	});
+	if(parent.window.onlyStockoption == true) {
+		$("#tab-title li").each(function(index, element) {
+			if(index == 0) {
+				$(this).removeClass("layui-this");
+				$(this).css("display", "none");
+			} else if(index == 1) {
+				$(this).addClass("layui-this");
+			}
+		});
+		
+		$("#tab-content .layui-tab-item").each(function(index, element) {
+			if(index == 0) {
+				$(this).removeClass("layui-show");
+				$(this).css("display", "none");
+			} else if(index == 1) {
+				$(this).addClass("layui-show");
+			}
+		});
+	}
 	// 初始化配资分成比例表格
 	$.ajax({
         type: "GET",

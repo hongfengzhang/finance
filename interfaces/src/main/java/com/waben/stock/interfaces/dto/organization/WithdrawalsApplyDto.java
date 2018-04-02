@@ -74,6 +74,10 @@ public class WithdrawalsApplyDto {
 	 * 机构名称
 	 */
 	private String orgName;
+	/**
+	 * 对应的第三方提现单号
+	 */
+	private String thirdWithdrawalsNo;
 
 	public Long getId() {
 		return id;
@@ -201,6 +205,14 @@ public class WithdrawalsApplyDto {
 
 	public void setThirdRespMsg(String thirdRespMsg) {
 		this.thirdRespMsg = thirdRespMsg;
+	}
+
+	public String getThirdWithdrawalsNo() {
+		return thirdWithdrawalsNo;
+	}
+
+	public void setThirdWithdrawalsNo(String thirdWithdrawalsNo) {
+		this.thirdWithdrawalsNo = thirdWithdrawalsNo;
 	}
 
 }

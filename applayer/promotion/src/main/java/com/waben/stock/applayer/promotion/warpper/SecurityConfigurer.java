@@ -81,6 +81,7 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/user/register").permitAll()
                 .antMatchers(HttpMethod.POST, "/file/**").permitAll()
                 .antMatchers("/withdrawalsApply/paypalnotify").permitAll()
+                .antMatchers("/withdrawalsApply/protocolcallback").permitAll()
                 .anyRequest().authenticated()
 //                .anyRequest().permitAll()
                 .and().formLogin().loginPage(LOGIN_ENTRY_POINT)
