@@ -189,8 +189,8 @@ public class QuickPayController {
     @ApiOperation(value = "网贝收银台支付调接口")
     @ResponseBody
     public Response<Map> platform(@RequestParam(required = true) BigDecimal amount,String paytype) {
-        Response<Map> result = quickPayBusiness.platform(amount, SecurityUtil.getUserId(),paytype);
-        return result;
+//        Response<Map> result = quickPayBusiness.platform(amount, SecurityUtil.getUserId(),paytype);
+        return null;
     }
 
     @RequestMapping("/wbreturn")
@@ -223,31 +223,31 @@ public class QuickPayController {
     public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
                                           @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
         // 判断是否为测试用户，测试用户不能提现
-        PublisherDto publisher = publisherBusiness.findById(15l);
-//        if (publisher.getIsTest() != null && publisher.getIsTest()) {
-//            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
-//        }
-//        // 验证支付密码
-//        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
-//        String storePaymentPassword = capitalAccount.getPaymentPassword();
-//        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
-//            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
-//        }
-//        if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
-//            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
-//        }
-//        // 检查余额
-//        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
-//            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
-//        }
+        PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+        if (publisher.getIsTest() != null && publisher.getIsTest()) {
+            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
+        }
+        // 验证支付密码
+        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
+        String storePaymentPassword = capitalAccount.getPaymentPassword();
+        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
+        }
+        if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
+            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
+        }
+        // 检查余额
+        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
+            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+        }
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
         CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
-//        if (bankType == null) {
-//            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
-//        }
+        if (bankType == null) {
+            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
+        }
         logger.info("验证通过,提现开始");
-        quickPayBusiness.wbWithdrawals(15l, amount, bindCard.getName(), bindCard.getPhone(),
+        quickPayBusiness.wbWithdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
                 bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bindCard.getBranchName());
         resp.setResult("success");
         return resp;

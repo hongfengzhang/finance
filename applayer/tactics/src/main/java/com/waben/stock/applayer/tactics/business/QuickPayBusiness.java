@@ -535,8 +535,9 @@ public class QuickPayBusiness {
         request.put("outTradeNo",withdrawalsNo);
         request.put("notifyUrl",WBConfig.protocol_callback);
         request.put("amount",amount.movePointRight(2).toString());
-        request.put("cardType","cash_card");
-        request.put("tradeType","protocol_d0");
+        request.put("signType",WBConfig.sign_type);
+        request.put("cardType",WBConfig.card_type);
+        request.put("tradeType",WBConfig.protocol_type);
         request.put("merchantNo",WBConfig.merchantNo);
         request.put("timeStart",time.format(new Date()));
         String signStr = "";
@@ -549,6 +550,8 @@ public class QuickPayBusiness {
         String result = FormRequest.doPost(request, WBConfig.protocol_url);
         JSONObject jsStr = JSONObject.parseObject(result);
         if(!"200".equals(jsStr.getString("code"))){
+            WithdrawalsOrderDto orders = this.findByWithdrawalsNo(withdrawalsNo);
+            accountBusiness.withdrawals(publisherId, orders.getId(),WithdrawalsState.FAILURE);
             throw new ServiceException(jsStr.getString("message"));
         }
     }
@@ -681,6 +684,7 @@ public class QuickPayBusiness {
                 this.revisionWithdrawalsOrder(order);
                 if (order.getState() == WithdrawalsState.PROCESSING) {
                     accountBusiness.withdrawals(order.getPublisherId(), order.getId(),WithdrawalsState.PROCESSED);
+                    return "SUCCESS";
                 }
             }
         }
