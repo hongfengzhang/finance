@@ -42,7 +42,7 @@ $(function() {
 				if (!reg.test(keyValue[1])) {
 					layer.msg('比例格式有误，最多为两位小数的数字', {time: 1000});
 					return;
-				} else if (parseFloat(keyValue[1]) >= 100) {
+				} else if (parseFloat(keyValue[1]) > 100) {
 					layer.msg('比例格式有误，不能大于100%', {time: 1000});
 					return;
 				}
