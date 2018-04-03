@@ -83,4 +83,9 @@ public class OrganizationDaoImpl implements OrganizationDao {
 		return repository.findByName(orgName);
 	}
 
+	@Override
+	public List<Organization> listByLevel(Integer level) {
+		return repository.findByLevel(level);
+	}
+
 }

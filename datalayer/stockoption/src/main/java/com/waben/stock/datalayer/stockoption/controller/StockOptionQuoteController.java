@@ -25,8 +25,10 @@ public class StockOptionQuoteController implements StockOptionQuoteInterface {
 	private StockOptionQuoteService service;
 
 	@Override
-	public Response<StockOptionQuoteDto> quote(@PathVariable String stockCode, @PathVariable Integer cycle) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionQuoteDto.class, service.quote(stockCode, cycle), false)); 
+	public Response<StockOptionQuoteDto> quote(@PathVariable Long publisherId, @PathVariable String stockCode,
+			@PathVariable Integer cycle) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionQuoteDto.class,
+				service.quote(publisherId, stockCode, cycle), false));
 	}
-	
+
 }

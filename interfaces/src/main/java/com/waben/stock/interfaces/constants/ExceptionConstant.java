@@ -55,6 +55,8 @@ public class ExceptionConstant {
 	public static final String REALNAME_EXIST_EXCEPTION = "2016";
 	// 实名认证信息错误
 	public static final String REALNAME_WRONG_EXCEPTION = "2017";
+	// 机构代码不存在
+	public static final String ORGCODE_NOTEXIST_EXCEPTION = "2018";
 
 	/* 业务异常 */
 	// 系统管理业务异常

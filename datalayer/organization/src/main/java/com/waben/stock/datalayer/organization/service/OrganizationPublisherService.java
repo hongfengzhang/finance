@@ -19,20 +19,23 @@ import com.waben.stock.interfaces.exception.ServiceException;
  */
 @Service
 public class OrganizationPublisherService {
-	
+
 	@Autowired
 	private OrganizationPublisherDao dao;
-	
+
 	@Autowired
 	private OrganizationDao orgDao;
-	
+
 	public OrganizationPublisher addOrgPublisher(String orgCode, Long publisherId) {
-		Organization org = orgDao.retrieveByCode(orgCode);
-		if(org == null) {
+		if (orgCode == null || "".equals(orgCode.trim())) {
 			return null;
 		}
+		Organization org = orgDao.retrieveByCode(orgCode);
+		if (org == null) {
+			throw new ServiceException(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION);
+		}
 		OrganizationPublisher orgPublisher = dao.retrieveByPublisherId(publisherId);
-		if(orgPublisher != null) {
+		if (orgPublisher != null) {
 			throw new ServiceException(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION);
 		}
 		orgPublisher = new OrganizationPublisher();
@@ -41,5 +44,5 @@ public class OrganizationPublisherService {
 		orgPublisher.setCreateTime(new Date());
 		return dao.create(orgPublisher);
 	}
-	
+
 }

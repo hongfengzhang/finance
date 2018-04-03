@@ -21,7 +21,7 @@ import com.waben.stock.datalayer.stockoption.repository.impl.jpa.StockOptionCycl
  */
 @Repository
 public class StockOptionCycleDaoImpl implements StockOptionCycleDao {
-	
+
 	@Autowired
 	private StockOptionCycleRepository repository;
 
@@ -32,7 +32,7 @@ public class StockOptionCycleDaoImpl implements StockOptionCycleDao {
 
 	@Override
 	public void delete(Long id) {
-		repository.delete(id);		
+		repository.delete(id);
 	}
 
 	@Override
@@ -58,6 +58,15 @@ public class StockOptionCycleDaoImpl implements StockOptionCycleDao {
 	@Override
 	public List<StockOptionCycle> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public StockOptionCycle retrieveByCycle(Integer cycle) {
+		List<StockOptionCycle> cycleList = repository.findByCycle(cycle);
+		if (cycleList != null && cycleList.size() > 0) {
+			return cycleList.get(0);
+		}
+		return null;
 	}
 
 }

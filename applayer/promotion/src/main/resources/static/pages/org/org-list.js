@@ -61,16 +61,20 @@ $(function() {
 	            { "data": "createTime", "title": "创建时间", orderable: false},
 	            { "data": "id", "width": "230", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
 	            	var id = full.id;
-	            	var currentLevel = full.level;
+	            	var result = "";
 	            	if(window.level == 1) {
-	            		if(currentLevel == 1) {
-	            			return "<a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            		if(full.level == 1) {
+	            			result = "<a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            		} else {
-	            			return "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
+	            			result = "<a class='benefit mr10' orgid='" + full.id + "' href='javascript:;'>分成比例</a><a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>查看详情</a>";
 	            		}
 	            	} else {
-	            		return "<a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>详情</a>";
+	            		result = "<a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>详情</a>";
 	            	}
+	            	if(window.currentOrgId == full.id) {
+	            		result = "<a class='markup mr10' orgid='" + full.id + "' href='javascript:;'>加价比例</a>" + result;
+	            	}
+	            	return result;
 	            }}
 	        ];
 			$(id).dataTable({
@@ -176,6 +180,18 @@ $(function() {
 			shade: 0.8,
 			area: ['60%', '80%'],
 			content: 'benefit-config.html',
+		});
+	});
+	// 弹出页面_设置加价比例
+	$('#org-list-table').on('click', 'a.markup', function(){
+		currentOrgId = $(this).attr("orgid");
+		layer.open({
+			type: 2,
+			title: '设置加价比例',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['60%', '80%'],
+			content: 'markup-config.html',
 		});
 	});
 	// 弹出页面_查看详情
