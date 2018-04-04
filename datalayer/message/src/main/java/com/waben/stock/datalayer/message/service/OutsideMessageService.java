@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.message.service;
 
 import java.util.Date;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,8 @@ public class OutsideMessageService {
 	@Autowired
 	private RedisCache redisCache;
 	
+	Logger logger = LoggerFactory.getLogger(getClass());
+	
 	public void send(OutsideMessage message) {
 		String registrationId = redisCache.get(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), message.getPublisherId()));
 		OutsidePushConfig config = null;
@@ -46,6 +50,7 @@ public class OutsideMessageService {
 			config = outsidePushConfigDao.getDefaultConfig();
 		}
 		if (config != null && registrationId != null && !"".equals(registrationId.trim())) {
+			logger.error("推送消息:" + message.getContent());
 			jiguangService.pushSingleDevice(registrationId, message.getTitle(), message.getContent(),
 					message.getExtras(), config != null ? config.getAppKey() : null, config != null ? config.getMasterSecret() : null);
 			// 保存消息
@@ -66,6 +71,8 @@ public class OutsideMessageService {
 			receipt.setRecipient(String.valueOf(message.getPublisherId()));
 			receipt.setState(false);
 			messageReceiptDao.create(receipt);
+		} else {
+			logger.error("推送消息未找到推送配置:" + message.getContent());
 		}
 	}
 
