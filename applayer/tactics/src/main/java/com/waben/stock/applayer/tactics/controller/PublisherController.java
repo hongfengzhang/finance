@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.waben.stock.applayer.tactics.business.BindCardBusiness;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.tactics.business.OrganizationBusiness;
 import com.waben.stock.applayer.tactics.business.OrganizationPublisherBusiness;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.RealNameBusiness;
@@ -29,6 +30,7 @@ import com.waben.stock.applayer.tactics.security.jwt.JWTTokenUtil;
 import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
@@ -77,6 +79,9 @@ public class PublisherController {
 	@Autowired
 	private SmsCache smsCache;
 
+	@Autowired
+	private OrganizationBusiness orgBusiness;
+
 	@GetMapping("/{id}")
 	public Response<PublisherDto> echo(@PathVariable Long id) {
 		return new Response<>(publisherBusiness.findById(id));
@@ -104,6 +109,13 @@ public class PublisherController {
 	public Response<PublisherCapitalAccountDto> register(@RequestParam(required = true) String phone,
 			@RequestParam(required = true) String password, @RequestParam(required = true) String verificationCode,
 			String promoter, String orgCode, HttpServletRequest request) {
+		// 检查机构代码是否正确
+		if (orgCode != null && !"".equals(orgCode.trim())) {
+			OrganizationDto org = orgBusiness.fetchByCode(orgCode);
+			if (org == null) {
+				throw new ServiceException(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION);
+			}
+		}
 		// 检查验证码
 		smsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, "code", verificationCode);
 		// 注册

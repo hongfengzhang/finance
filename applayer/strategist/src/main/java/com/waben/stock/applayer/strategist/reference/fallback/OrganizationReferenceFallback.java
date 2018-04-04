@@ -1,10 +1,10 @@
-package com.waben.stock.applayer.promotion.reference.fallback;
+package com.waben.stock.applayer.strategist.reference.fallback;
 
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.promotion.reference.organization.OrganizationReference;
+import com.waben.stock.applayer.strategist.reference.OrganizationReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;

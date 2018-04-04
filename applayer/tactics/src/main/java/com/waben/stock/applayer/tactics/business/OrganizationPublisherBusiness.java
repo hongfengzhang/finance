@@ -27,19 +27,14 @@ public class OrganizationPublisherBusiness {
 	private OrganizationPublisherReference reference;
 
 	public OrganizationPublisherDto addOrgPublisher(Long publisherId, String orgCode) {
-		try {
-			OrganizationPublisherDto orgPublisher = new OrganizationPublisherDto();
-			orgPublisher.setOrgCode(orgCode);
-			orgPublisher.setPublisherId(publisherId);
-			Response<OrganizationPublisherDto> response = reference.addOrgPublisher(orgPublisher);
-			if ("200".equals(response.getCode())) {
-				return response.getResult();
-			}
-			throw new ServiceException(response.getCode());
-		} catch (Exception ex) {
-			logger.error("调用绑定机构代码异常{}_{}，异常{}!", publisherId, orgCode, ex.getMessage());
-			return null;
+		OrganizationPublisherDto orgPublisher = new OrganizationPublisherDto();
+		orgPublisher.setOrgCode(orgCode);
+		orgPublisher.setPublisherId(publisherId);
+		Response<OrganizationPublisherDto> response = reference.addOrgPublisher(orgPublisher);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
 		}
+		throw new ServiceException(response.getCode());
 	}
 
 }
