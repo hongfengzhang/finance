@@ -37,3 +37,47 @@
 .edit-button{
 	margin-top: 30px;
 }
+
+/* 翁爽新加 */
+.table>thead:first-child>tr:first-child>th{
+    border: 1px solid #ddd;
+}
+.bootstrap-table .table.table-striped > tbody > tr > td{
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+}
+.form-group{
+    margin-bottom: 0;
+
+}
+.bootstrap-table .table > tbody > tr > td{
+    padding: 0 8px !important;
+}
+.form-control{
+    height: 32px;
+}
+.fixed-plugin {
+    top: 90px;
+}
+.card{
+    margin-bottom: 15px;
+}
+.main-panel > .content{
+    padding: 15px 15px;
+}
+.btn{
+    padding: 4px 16px;
+}
+.dropdown-toggle{
+    padding: 4px 16px;
+}
+.fixed-table-toolbar{
+    padding: 0;
+}
+.fixed-table-toolbar .columns{
+    margin: 10px 0;
+    margin-right: 10px;
+}
+.form-horizontal .control-label{
+    padding-top: 8px !important;
+}

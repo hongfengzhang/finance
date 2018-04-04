@@ -32,4 +32,7 @@ public class PromotionStockOptionTradeBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public void export(PromotionStockOptionTradeQuery query) {
+	}
+
 }

@@ -30,50 +30,57 @@ public class OutsideMessageService {
 
 	@Autowired
 	private MessageReceiptDao messageReceiptDao;
-	
+
 	@Autowired
 	private OutsidePushConfigDao outsidePushConfigDao;
 
 	@Autowired
 	private RedisCache redisCache;
-	
+
 	Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	public void send(OutsideMessage message) {
-		String registrationId = redisCache.get(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), message.getPublisherId()));
-		OutsidePushConfig config = null;
-		if(registrationId.indexOf("_") > 0) {
-			String[] strArr = registrationId.split("_");
-			registrationId = strArr[2];
-			config = outsidePushConfigDao.retrieveByDeviceTypeAndShellIndex(Integer.parseInt(strArr[0]), Integer.parseInt(strArr[1]));
-		} else {
-			config = outsidePushConfigDao.getDefaultConfig();
-		}
-		if (config != null && registrationId != null && !"".equals(registrationId.trim())) {
-			logger.error("推送消息:" + message.getContent());
-			jiguangService.pushSingleDevice(registrationId, message.getTitle(), message.getContent(),
-					message.getExtras(), config != null ? config.getAppKey() : null, config != null ? config.getMasterSecret() : null);
-			// 保存消息
-			Messaging messaging = new Messaging();
-			messaging.setIsOutside(true);
-			messaging.setOutsideMsgType(OutsideMessageType.getByType(message.getExtras().get("type")));
-			messaging.setCreateTime(new Date());
-			messaging.setTitle(message.getTitle());
-			messaging.setType(MessageType.POIT);
-			if (message.getExtras() != null && message.getExtras().get("resourceType") != null) {
-				messaging.setResourceType(ResourceType.getByIndex(message.getExtras().get("resourceType")));
-				messaging.setResourceId(Long.parseLong(message.getExtras().get("resourceId")));
+		String registrationId = redisCache
+				.get(String.format(RedisCacheKeyType.AppRegistrationId.getKey(), message.getPublisherId()));
+		if (registrationId != null && !"".equals(registrationId.trim())) {
+			OutsidePushConfig config = null;
+			if (registrationId.indexOf("_") > 0) {
+				String[] strArr = registrationId.split("_");
+				registrationId = strArr[2];
+				config = outsidePushConfigDao.retrieveByDeviceTypeAndShellIndex(Integer.parseInt(strArr[0]),
+						Integer.parseInt(strArr[1]));
+			} else {
+				config = outsidePushConfigDao.getDefaultConfig();
 			}
-			messaging.setContent(message.getExtras().get("content"));
-			messagingDao.create(messaging);
-			MessageReceipt receipt = new MessageReceipt();
-			receipt.setMessage(messaging);
-			receipt.setRecipient(String.valueOf(message.getPublisherId()));
-			receipt.setState(false);
-			messageReceiptDao.create(receipt);
+			if (config != null && registrationId != null && !"".equals(registrationId.trim())) {
+				logger.error("推送消息:" + message.getContent());
+				jiguangService.pushSingleDevice(registrationId, message.getTitle(), message.getContent(),
+						message.getExtras(), config != null ? config.getAppKey() : null,
+						config != null ? config.getMasterSecret() : null);
+			} else {
+				logger.error("推送消息未找到推送配置:" + message.getContent());
+			}
 		} else {
-			logger.error("推送消息未找到推送配置:" + message.getContent());
+			logger.error("推送消息未找到用户registrationId:" + message.getContent());
 		}
+		// 保存消息
+		Messaging messaging = new Messaging();
+		messaging.setIsOutside(true);
+		messaging.setOutsideMsgType(OutsideMessageType.getByType(message.getExtras().get("type")));
+		messaging.setCreateTime(new Date());
+		messaging.setTitle(message.getTitle());
+		messaging.setType(MessageType.POIT);
+		if (message.getExtras() != null && message.getExtras().get("resourceType") != null) {
+			messaging.setResourceType(ResourceType.getByIndex(message.getExtras().get("resourceType")));
+			messaging.setResourceId(Long.parseLong(message.getExtras().get("resourceId")));
+		}
+		messaging.setContent(message.getExtras().get("content"));
+		messagingDao.create(messaging);
+		MessageReceipt receipt = new MessageReceipt();
+		receipt.setMessage(messaging);
+		receipt.setRecipient(String.valueOf(message.getPublisherId()));
+		receipt.setState(false);
+		messageReceiptDao.create(receipt);
 	}
 
 }
