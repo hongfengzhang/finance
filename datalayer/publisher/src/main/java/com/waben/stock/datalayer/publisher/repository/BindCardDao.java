@@ -18,4 +18,6 @@ public interface BindCardDao extends BaseDao<BindCard, Long> {
 	BindCard retriveByResourceTypeAndResourceIdAndBankCard(BindCardResourceType resourceType, Long resourceId,
 			String bankCard);
 
+	List<BindCard> retrieveByBankCard(String bankCard);
+
 }
