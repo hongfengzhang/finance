@@ -1,5 +1,9 @@
 package com.waben.stock.applayer.promotion.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.promotion.business.PromotionStockOptionTradeBusiness;
+import com.waben.stock.applayer.promotion.util.PoiUtil;
 import com.waben.stock.interfaces.dto.organization.PromotionStockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -35,15 +40,28 @@ public class PromotionStockOptionTradeController implements PromotionStockOption
 	public PromotionStockOptionTradeBusiness business;
 
 	@RequestMapping(value = "/adminPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Response<PageInfo<PromotionStockOptionTradeDto>> adminPage(@RequestBody PromotionStockOptionTradeQuery query) {
+	public Response<PageInfo<PromotionStockOptionTradeDto>> adminPage(
+			@RequestBody PromotionStockOptionTradeQuery query) {
 		return new Response<>(business.adminPage(query));
 	}
-	
+
 	@RequestMapping(value = "/export", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void export(@RequestBody PromotionStockOptionTradeQuery query) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		// PageInfo<PromotionStockOptionTradeDto> result = business.adminPage(query);
+		PageInfo<PromotionStockOptionTradeDto> result = business.adminPage(query);
+		try {
+			File file = File.createTempFile(String.valueOf(System.currentTimeMillis()), "xls");
+			List<String> columnDescList = columnDescList();
+			PoiUtil.writeDataToExcel("期权交易数据", file, columnDescList, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
-	
+
+	private List<String> columnDescList() {
+		return null;
+	}
+
 }

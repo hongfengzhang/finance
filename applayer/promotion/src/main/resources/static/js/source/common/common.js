@@ -24,7 +24,7 @@ $(function() {
 	        	var url = window.location.href;
 	            var menus = jsonResult;
 	            $.each(menus,function (index,menu){
-	                var html = '<li class="layui-nav-item"><a href="javascript:;" style="text-decoration:none;"><i class="layui-icon">' + menu.icon + '</i></i>'+menu.name+'</a><dl class="layui-nav-child">';
+	                var html = '<li class="layui-nav-item"><a href="javascript:;" style="text-decoration:none;"><i class="layui-icon">' + (menu.icon?menu.icon:'') + '</i></i>'+menu.name+'</a><dl class="layui-nav-child">';
 	                var liOpened = false;
 	                $.each(menu.childs,function (index,child) {
 	                	if(url.indexOf(child.url) >= 0) {
