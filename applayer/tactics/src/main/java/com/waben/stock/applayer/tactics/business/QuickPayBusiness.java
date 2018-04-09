@@ -587,7 +587,7 @@ public class QuickPayBusiness {
         map.put("tradeType", WBConfig.tradeType);
         map.put("timeStart", timeStamp);
         map.put("outTradeNo", paymentNo);
-        map.put("frontUrl", "H5".equals(endType) ? wbConfig.getH5FrontUrl() : wbConfig.getFrontUrl());
+        map.put("frontUrl", "H5".equals(endType) ? wbConfig.getH5ProxyfrontUrl() : wbConfig.getFrontUrl());
         map.put("idCard", realNameDto.getIdCard());
         String signStr = "";
         map.put("sign", "001");

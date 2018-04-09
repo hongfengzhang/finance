@@ -1,11 +1,31 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONObject;
-import com.waben.stock.applayer.strategist.payapi.czpay.bean.CzPayReturn;
 import com.waben.stock.applayer.strategist.payapi.czpay.config.CzPayConfig;
 import com.waben.stock.applayer.strategist.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.strategist.payapi.shande.config.SandPayConfig;
 import com.waben.stock.applayer.strategist.payapi.shande.utils.FormRequest;
+import com.waben.stock.applayer.strategist.payapi.wbpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
@@ -20,20 +40,6 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @Service
 public class QuickPayBusiness {
@@ -53,6 +59,9 @@ public class QuickPayBusiness {
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
+
+	@Autowired
+	private WBConfig wbConfig;
 
 	public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
 		Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
@@ -271,11 +280,118 @@ public class QuickPayBusiness {
 		throw new ServiceException(orderResp.getCode());
 	}
 
-	public WithdrawalsOrderDto findWithdrawalsOrder(String withdrawalsNo) {
-		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.fetchByWithdrawalsNo(withdrawalsNo);
-		if ("200".equals(orderResp.getCode())) {
-			return orderResp.getResult();
+	public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
+			String bankCard, String bankCode, String branchName) {
+		logger.info("保存提现订单");
+		String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+		WithdrawalsOrderDto order = new WithdrawalsOrderDto();
+		order.setWithdrawalsNo(withdrawalsNo);
+		order.setAmount(amount);
+		order.setState(WithdrawalsState.PROCESSING);
+		order.setName(name);
+		order.setIdCard(idCard);
+		order.setBankCard(bankCard);
+		order.setPublisherId(publisherId);
+		order.setCreateTime(new Date());
+		order.setUpdateTime(new Date());
+		this.saveWithdrawalsOrders(order);
+
+		logger.info("发起提现申请");
+		Map<String, String> request = new TreeMap<>();
+		SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
+		request.put("cardNo", bankCard);
+		request.put("bankCode", bankCode);
+		request.put("name", name);
+		request.put("phone", phone);
+		request.put("outTradeNo", withdrawalsNo);
+		request.put("notifyUrl", wbConfig.getProtocol_callback());
+		request.put("amount", amount.movePointRight(2).toString());
+		request.put("signType", WBConfig.sign_type);
+		request.put("cardType", WBConfig.card_type);
+		request.put("tradeType", WBConfig.protocol_type);
+		request.put("merchantNo", wbConfig.getMerchantNo());
+		request.put("timeStart", time.format(new Date()));
+		String signStr = "";
+		for (String keys : request.keySet()) {
+			signStr += request.get(keys);
 		}
-		throw new ServiceException(orderResp.getCode());
+		signStr += wbConfig.getKey();
+		String sign = DigestUtils.md5Hex(signStr);
+		request.put("sign", sign);
+		String result = FormRequest.doPost(request, WBConfig.protocol_url);
+		JSONObject jsStr = JSONObject.parseObject(result);
+		if (!"200".equals(jsStr.getString("code"))) {
+			WithdrawalsOrderDto orders = this.findByWithdrawalsNo(withdrawalsNo);
+			accountBusiness.withdrawals(publisherId, orders.getId(), WithdrawalsState.FAILURE);
+			throw new ServiceException(jsStr.getString("message"));
+		}
 	}
+
+	public String protocolCallBack(HttpServletRequest request) {
+		Map<String, String> result = paramter2Map(request);
+		logger.info("网贝代付回调的结果是:{}", result);
+		String paymentNo = result.get("outTradeNo");
+		String thirdNo = result.get("transactNo");
+		String sign = result.get("signValue");
+		Map<String, String> checksign = new TreeMap<>(result);
+
+		checksign.put("transactTime",
+				checksign.get("transactTime").replaceAll("-", "").replaceAll(":", "").replaceAll(" ", ""));
+		String signStr = "";
+		for (String keys : checksign.keySet()) {
+			if (!"signValue".equals(keys)) {
+				signStr += checksign.get(keys);
+			}
+		}
+		signStr += wbConfig.getKey();
+		String check = DigestUtils.md5Hex(signStr);
+		// 签名验证
+		if (paymentNo != null && !"".equals(paymentNo)) {
+			// 验证签名
+			if (check.equals(sign)) {
+				logger.info("网贝代付异步回调");
+				WithdrawalsOrderDto order = this.findByWithdrawalsNo(paymentNo);
+				order.setThirdWithdrawalsNo(thirdNo);
+				this.revisionWithdrawalsOrder(order);
+				if (order.getState() == WithdrawalsState.PROCESSING) {
+					accountBusiness.withdrawals(order.getPublisherId(), order.getId(), WithdrawalsState.PROCESSED);
+					return "SUCCESS";
+				}
+			}
+		}
+		return "FALSE";
+	}
+	
+	public WithdrawalsOrderDto saveWithdrawalsOrders(WithdrawalsOrderDto withdrawalsOrderDto) {
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.addWithdrawalsOrder(withdrawalsOrderDto);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+
+    public WithdrawalsOrderDto findWithdrawalsOrder(String withdrawalsNo) {
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.fetchByWithdrawalsNo(withdrawalsNo);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+
+    public WithdrawalsOrderDto findByWithdrawalsNo(String withdrawalsNo) {
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.fetchByWithdrawalsNo(withdrawalsNo);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+
+    public WithdrawalsOrderDto revisionWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
+        Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.modifyWithdrawalsOrder(withdrawalsOrderDto);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+
 }

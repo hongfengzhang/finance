@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.tactics.payapi.wbpay.config;
+package com.waben.stock.applayer.strategist.payapi.wbpay.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

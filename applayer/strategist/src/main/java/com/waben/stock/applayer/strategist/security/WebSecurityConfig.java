@@ -87,10 +87,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
 		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic")
 				.permitAll();
-
-		//测试放权
+		//支付回调
 		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/wbreturn").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/wbcallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/protocolcallback").permitAll();
 
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();

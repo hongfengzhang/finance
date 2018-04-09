@@ -5,6 +5,8 @@ import com.waben.stock.applayer.tactics.business.*;
 import com.waben.stock.applayer.tactics.payapi.czpay.config.CzBankType;
 import com.waben.stock.applayer.tactics.payapi.paypal.config.PayPalConfig;
 import com.waben.stock.applayer.tactics.payapi.paypal.config.RSAUtil;
+import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WabenPayConfig;
+import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
@@ -59,6 +61,9 @@ public class QuickPayController {
 
     @Autowired
     private PaymentBusiness paymentBusiness;
+    
+    @Autowired
+    private WBConfig wbConfig;
 
     @GetMapping("/sdquickpay")
     @ApiOperation(value = "杉德快捷支付")
@@ -209,6 +214,16 @@ public class QuickPayController {
         } catch (IOException e) {
             throw new RuntimeException("http write interrupt");
         }
+    }
+    
+    @RequestMapping("/h5wbreturn")
+    @ApiOperation(value = "网贝收银台同步回调接口")
+    @ResponseBody
+    public void h5Callback(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+    	try {
+			httpResp.sendRedirect(wbConfig.getH5FrontUrl());
+		} catch (IOException e) {
+		}
     }
 
     @RequestMapping("/wbcallback")
