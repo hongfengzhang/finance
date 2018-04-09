@@ -29,7 +29,7 @@ public class UserVo {
 
     private Long role;
     private String roleName;
-
+    private String code;
     public Long getId() {
         return id;
     }
@@ -92,5 +92,13 @@ public class UserVo {
 
     public void setRoleName(String roleName) {
         this.roleName = roleName;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 }

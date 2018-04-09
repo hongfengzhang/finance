@@ -53,6 +53,9 @@ $(function() {
                 }},
                 { "data": "roleName", "title": "所拥角色", orderable: false},
                 { "data": "id", "width": "230", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+                    if(full.code=="SUPERADMIN") {
+                        return "-";
+                    }
                     return "<a class='edit mr10' userId='" + full.id + "' href='javascript:;'>修改角色</a>";
                 }}
             ];

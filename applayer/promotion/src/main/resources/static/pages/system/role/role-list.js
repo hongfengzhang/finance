@@ -52,6 +52,9 @@ $(function() {
                 { "data": "description", "title": "角色描述", orderable: false},
                 { "data": "organizationName", "title": "所属机构", orderable: false},
                 { "data": "id", "width": "300", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+                    if(full.code=='SUPERADMIN') {
+                        return "-";
+                    }
                     return "<a class='edit mr10' roleId='" + full.id + "' href='javascript:;'>编辑</a>" +
                             "<a class='authority mr10' roleId='" + full.id + "' href='javascript:;'>设置授权</a>"+
                             "<a class='detail mr10' roleId='" + full.id + "' href='javascript:;'>查看权限</a>"+
