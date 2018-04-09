@@ -8,9 +8,9 @@ package com.waben.stock.interfaces.commonapi.netease.config;
  */
 public class NeteaseConfig {
 
-	public static final String AppKey = "02fa7214502f6d913480dc8c73126fba";
+	public static final String AppKey = "d0fc8a8448dabce125efce3dcc90c611";
 
-	public static final String AppSecret = "94ae24d050ac";
+	public static final String AppSecret = "05a13f09d796";
 	/**
 	 * 2.1创建频道
 	 */
