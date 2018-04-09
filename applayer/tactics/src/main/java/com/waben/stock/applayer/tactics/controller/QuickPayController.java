@@ -175,13 +175,15 @@ public class QuickPayController {
             throw new RuntimeException("http write interrupt");
         }
     }
-
+    
+    /**************************网贝支付**********************/
 
     @RequestMapping("/quickbank")
     @ApiOperation(value = "网贝收银台支付调接口")
     @ResponseBody
-    public Response<Map> quickBank(@RequestParam(required = true) BigDecimal amount) {
-        Response<Map> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId());
+    public Response<Map> quickBank(@RequestParam(required = true) BigDecimal amount, HttpServletRequest request) {
+    	String endType = request.getHeader("endType");
+        Response<Map> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId(), endType);
         return result;
     }
 
