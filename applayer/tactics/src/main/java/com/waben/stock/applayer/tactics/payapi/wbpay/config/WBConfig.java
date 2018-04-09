@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class WBConfig {
-	
+
 	@Value("${pay.merchant}")
 	private String merchantNo;
 	@Value("${pay.key}")
@@ -14,6 +14,8 @@ public class WBConfig {
 	private String notifyUrl;
 	@Value("${pay.frontUrl}")
 	private String frontUrl;
+	@Value("${pay.h5FrontUrl}")
+	private String h5FrontUrl;
 	@Value("${pay.protocolcallback}")
 	private String protocol_callback;
 
@@ -64,6 +66,14 @@ public class WBConfig {
 
 	public void setProtocol_callback(String protocol_callback) {
 		this.protocol_callback = protocol_callback;
+	}
+
+	public String getH5FrontUrl() {
+		return h5FrontUrl;
+	}
+
+	public void setH5FrontUrl(String h5FrontUrl) {
+		this.h5FrontUrl = h5FrontUrl;
 	}
 
 }

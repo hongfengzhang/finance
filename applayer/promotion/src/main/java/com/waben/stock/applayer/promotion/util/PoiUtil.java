@@ -7,6 +7,8 @@ import java.util.List;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -58,9 +60,16 @@ public class PoiUtil {
 			int rowIndex = 0;
 			// 创建顶部描述列
 			Row descRow = sheet.createRow(rowIndex++);
+			CellStyle style = workbook.createCellStyle();
+			Font font = workbook.createFont();
+			font.setFontName("黑体");
+			font.setFontHeightInPoints((short) 11);
+			font.setBold(true);
+			style.setFont(font);
 			for (int i = 0; i < columnDescList.size(); i++) {
 				Cell cell = descRow.createCell(i);
 				cell.setCellValue(columnDescList.get(i));
+				cell.setCellStyle(style);
 			}
 			// 创建数据列
 			for (int i = 0; i < dataList.size(); i++) {
@@ -75,7 +84,7 @@ public class PoiUtil {
 			workbook.write(fos);
 			fos.close();
 			workbook.close();
-			System.out.println(fileName + " written successfully");
+			logger.info(fileName + " written successfully");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			logger.error("written execel failed!" + ex.getMessage());

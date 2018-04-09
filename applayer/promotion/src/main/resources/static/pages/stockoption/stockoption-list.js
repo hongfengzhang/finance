@@ -35,7 +35,7 @@ $(function() {
 			$(id).dataTable().fnDraw();
 		} else {
 			var columns = [
-	            { "data": "tradeId", "title": "策略ID", orderable: false},
+	            { "data": "tradeId", "title": "交易ID", orderable: false},
 	            { "data": "tradeNo", "title": "交易单号", orderable: false},
 	            { "data": "publisherId", "title": "用户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
@@ -43,7 +43,7 @@ $(function() {
 	            	return full.stockCode + "/" + full.stockName;
 	            }},
 	            { "data": "cycleName", "title": "持仓时间", orderable: false},
-	            { "data": "state", "title": "策略状态", orderable: false, "render": function(data, type, full, meta) {
+	            { "data": "state", "title": "交易状态", orderable: false, "render": function(data, type, full, meta) {
 	                var state = full.state;
 	                if(state == "1") {
 	                	return "待确认";
@@ -118,4 +118,22 @@ $(function() {
 		}
 		renderTable("#stockoption-list-table");
 	});
+	// 导出
+	$('#export-btn').on('click', function(){
+		searchData = {
+			currentOrgCode: searchData.currentOrgCode
+		};
+		var formDataArr = $("#search-form").serializeArray();
+		for(var i = 0; i < formDataArr.length; i++) {
+			var name = formDataArr[i].name;
+			var value = formDataArr[i].value;
+			if(searchData[name]) {
+				searchData[name] = searchData[name] + "," + value;
+			} else {
+				searchData[name] = value;
+			}
+		}
+		window.open("/promotion/promotionStockOptionTrade/export?" + $.param(searchData));
+	});
+	
 });

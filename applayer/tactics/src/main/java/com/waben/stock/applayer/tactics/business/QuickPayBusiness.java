@@ -560,7 +560,7 @@ public class QuickPayBusiness {
         }
     }
 
-    public Response<Map> wabenPay(BigDecimal amount, Long userId) {
+    public Response<Map> wabenPay(BigDecimal amount, Long userId, String endType) {
         PublisherDto publisher = publisherBusiness.findById(userId);
         RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
         //创建订单
@@ -587,7 +587,7 @@ public class QuickPayBusiness {
         map.put("tradeType", WBConfig.tradeType);
         map.put("timeStart", timeStamp);
         map.put("outTradeNo", paymentNo);
-        map.put("frontUrl", wbConfig.getFrontUrl());
+        map.put("frontUrl", "H5".equals(endType) ? wbConfig.getH5FrontUrl() : wbConfig.getFrontUrl());
         map.put("idCard", realNameDto.getIdCard());
         String signStr = "";
         map.put("sign", "001");
