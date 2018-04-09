@@ -82,7 +82,11 @@ public class RoleService {
     }
 
     public Role revision(Role role) {
-        return roleDao.update(role);
+        Role retrieve = roleDao.retrieve(role.getId());
+        retrieve.setCode(role.getCode());
+        retrieve.setName(role.getName());
+        retrieve.setDescription(role.getDescription());
+        return roleDao.update(retrieve);
     }
 
     public void delete(Long id) {

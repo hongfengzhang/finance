@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.manage.controller;
 
+import com.fasterxml.jackson.core.JsonEncoding;
 import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.service.RoleService;
@@ -12,7 +13,10 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
 import com.waben.stock.interfaces.service.manage.RoleInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.PageToPageInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,7 +36,7 @@ public class RoleController implements RoleInterface {
 
     @Autowired
     private RoleService roleService;
-
+    Logger logger = LoggerFactory.getLogger(getClass());
     @Override
     public Response<RoleDto> role(@PathVariable Long id) {
         Role role = roleService.findById(id);

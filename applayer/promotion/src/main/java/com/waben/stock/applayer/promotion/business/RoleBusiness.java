@@ -114,8 +114,8 @@ public class RoleBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public RoleDto modify(RoleDto requestDto) {
-        Response<RoleDto> response = roleReference.add(requestDto);
+    public RoleDto revision(RoleDto requestDto) {
+        Response<RoleDto> response = roleReference.modify(requestDto);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
