@@ -82,10 +82,10 @@ public class StockOptionTradeController {
 	@ApiOperation(value = "询价")
 	public Response<StockOptionQuoteWithBalanceDto> quote(@PathVariable("stockCode") String stockCode,
 			@PathVariable("cycle") Integer cycle) {
-		StockOptionQuoteDto quote = quoteBusiness.quote(stockCode, cycle);
+		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle);
 		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
 		if (quote == null && cycle == 14) {
-			quote = quoteBusiness.quote(stockCode, 30);
+			quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
 			if (quote != null) {
 				quote.setRightMoneyRatio(
 						quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.HALF_EVEN));
@@ -121,10 +121,10 @@ public class StockOptionTradeController {
 		// 获取股票、期权周期、报价
 		StockDto stock = stockBusiness.findByCode(stockCode);
 		StockOptionCycleDto cycle = cycleBusiness.fetchById(cycleId);
-		StockOptionQuoteDto quote = quoteBusiness.quote(stockCode, cycle.getCycle());
+		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle.getCycle());
 		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
 		if (quote == null && cycle.getCycle().intValue() == 14) {
-			quote = quoteBusiness.quote(stockCode, 30);
+			quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
 			quote.setRightMoneyRatio(
 					quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.HALF_EVEN));
 		}

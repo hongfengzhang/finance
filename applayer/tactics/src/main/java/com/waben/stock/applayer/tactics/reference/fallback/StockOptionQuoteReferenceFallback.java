@@ -17,7 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
 public class StockOptionQuoteReferenceFallback implements StockOptionQuoteReference {
 
 	@Override
-	public Response<StockOptionQuoteDto> quote(String stockCode, Integer cycle) {
+	public Response<StockOptionQuoteDto> quote(Long publisherId, String stockCode, Integer cycle) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

@@ -15,7 +15,6 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 
 /**
  * 机构 reference服务接口fallback
@@ -70,5 +69,9 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<OrganizationDto> fetchByCode(String code) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
 }

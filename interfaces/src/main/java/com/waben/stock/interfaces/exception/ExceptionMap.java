@@ -41,6 +41,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION, "信息输入有误");
 		exceptionMap.put(ExceptionConstant.REALNAME_EXIST_EXCEPTION, "已实名认证，不能重复操作");
 		exceptionMap.put(ExceptionConstant.REALNAME_WRONG_EXCEPTION, "实名认证信息错误");
+		exceptionMap.put(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION, "机构代码不存在");
+		exceptionMap.put(ExceptionConstant.BANKCARD_ALREADY_USERED_EXCEPTION, "该银行卡已被使用");
+		exceptionMap.put(ExceptionConstant.REALNAME_ALREADY_USERED_EXCEPTION, "该实名信息已被使用");
 
 		exceptionMap.put(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION, "账户可用余额不足");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION, "买入或者卖出前需进行锁定操作");

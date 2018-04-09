@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,11 +25,15 @@ public class RealNameService {
 	@Autowired
 	private RealNameDao realNameDao;
 
-	public RealName save(RealName realName) {
+	public synchronized RealName save(RealName realName) {
 		RealName check = realNameDao.retriveByResourceTypeAndResourceId(realName.getResourceType(),
 				realName.getResourceId());
 		if (check != null) {
 			throw new ServiceException(ExceptionConstant.REALNAME_EXIST_EXCEPTION);
+		}
+		List<RealName> checkList = realNameDao.retrieveByNameAndIdCard(realName.getName(), realName.getIdCard());
+		if (checkList != null && checkList.size() > 0) {
+			throw new ServiceException(ExceptionConstant.REALNAME_ALREADY_USERED_EXCEPTION);
 		}
 		// 验证实名信息
 		boolean isValid = RealNameInfoVerifier.verify(realName.getName(), realName.getIdCard());

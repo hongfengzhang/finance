@@ -38,5 +38,12 @@ public class PromotionStockOptionTradeController implements PromotionStockOption
 	public Response<PageInfo<PromotionStockOptionTradeDto>> adminPage(@RequestBody PromotionStockOptionTradeQuery query) {
 		return new Response<>(business.adminPage(query));
 	}
-
+	
+	@RequestMapping(value = "/export", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void export(@RequestBody PromotionStockOptionTradeQuery query) {
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
+		// PageInfo<PromotionStockOptionTradeDto> result = business.adminPage(query);
+	}
+	
 }

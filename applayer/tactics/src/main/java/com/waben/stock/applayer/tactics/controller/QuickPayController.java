@@ -17,6 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.ApiOperation;
+import org.apache.ibatis.jdbc.Null;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,43 +102,6 @@ public class QuickPayController {
     }
 
 
-    @PostMapping("/sdpaycsa")
-    @ApiOperation(value = "杉德支付提现")
-    @ResponseBody
-    public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
-                                          @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
-        // 判断是否为测试用户，测试用户不能提现
-        PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
-        if (publisher.getIsTest() != null && publisher.getIsTest()) {
-            throw new ServiceException(ExceptionConstant.TESTUSER_NOWITHDRAWALS_EXCEPTION);
-        }
-        // 验证支付密码
-        CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
-        String storePaymentPassword = capitalAccount.getPaymentPassword();
-        if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
-            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
-        }
-        if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
-            throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
-        }
-        // 检查余额
-        if (amount.compareTo(capitalAccount.getAvailableBalance()) > 0) {
-            throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
-        }
-        Response<String> resp = new Response<String>();
-        BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
-        CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
-        if (bankType == null) {
-            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
-        }
-        logger.info("验证通过,提现开始");
-        quickPayBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
-                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bindCard.getBranchName());
-        resp.setResult("success");
-        return resp;
-    }
-
-
     @GetMapping("/qqh5")
     @ApiOperation(value = "彩拓QQh5")
     @ResponseBody
@@ -213,30 +177,28 @@ public class QuickPayController {
     }
 
 
-    @RequestMapping("/paypal")
-    @ApiOperation(value = "连连快捷支付")
+    @RequestMapping("/quickbank")
+    @ApiOperation(value = "网贝收银台支付调接口")
     @ResponseBody
-    public Response<Map> paypal(@RequestParam(required = true) Long bindCardId, @RequestParam(required = true) BigDecimal amount) {
-
-        Response<Map> result = quickPayBusiness.payPal(amount, bindCardId, SecurityUtil.getUserId());
+    public Response<Map> quickBank(@RequestParam(required = true) BigDecimal amount) {
+        Response<Map> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId());
         return result;
     }
 
-    @RequestMapping("/paypalcallback")
-    @ApiOperation(value = "连连快捷支付后台回调")
+    @RequestMapping("/platform")
+    @ApiOperation(value = "网贝收银台支付调接口")
     @ResponseBody
-    public JSONObject payPalPayCallback(HttpServletRequest request) throws UnsupportedEncodingException {
-        // 处理回调
-        JSONObject result = quickPayBusiness.payPalcallback(request);
-        // 响应回调
-        return result;
+    public Response<Map> platform(@RequestParam(required = true) BigDecimal amount,String paytype) {
+//        Response<Map> result = quickPayBusiness.platform(amount, SecurityUtil.getUserId(),paytype);
+        return null;
     }
 
-    @RequestMapping("/paypalreturn")
-    @ApiOperation(value = "连连快捷支付页面回调")
-    public void payPalPayReturn(HttpServletResponse httpResp, HttpServletRequest request) throws UnsupportedEncodingException {
+    @RequestMapping("/wbreturn")
+    @ApiOperation(value = "网贝收银台同步回调接口")
+    @ResponseBody
+    public void callback(HttpServletResponse httpResp) throws UnsupportedEncodingException {
         // 处理回调
-        String result = quickPayBusiness.payPalreturn(request);
+        String result = quickPayBusiness.sdPayReturn();
         // 响应回调
         httpResp.setContentType("text/html;charset=UTF-8");
         try {
@@ -247,11 +209,19 @@ public class QuickPayController {
         }
     }
 
-    @RequestMapping("/paypalcsa")
-    @ApiOperation(value = "连连支付代付接口")
+    @RequestMapping("/wbcallback")
+    @ApiOperation(value = "网贝收银台异步回调接口")
     @ResponseBody
-    public Response<String> paypalcsa(@RequestParam(required = true) BigDecimal amount,
-                                      @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
+    public String notify(HttpServletRequest request) {
+        String result = quickPayBusiness.wbCallback(request);
+        return result;
+    }
+
+    @PostMapping("/wbcsa")
+    @ApiOperation(value = "网贝提现")
+    @ResponseBody
+    public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
+                                          @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
         // 判断是否为测试用户，测试用户不能提现
         PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
         if (publisher.getIsTest() != null && publisher.getIsTest()) {
@@ -277,72 +247,18 @@ public class QuickPayController {
             throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
         }
         logger.info("验证通过,提现开始");
-        quickPayBusiness.payPalCSA(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
+        quickPayBusiness.wbWithdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
                 bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bindCard.getBranchName());
         resp.setResult("success");
         return resp;
     }
 
-
-    @RequestMapping("/paypalnotify")
-    @ApiOperation(value = "连连支付代付回调接口")
+    @RequestMapping("/protocolcallback")
+    @ApiOperation(value = "网贝提现异步通知")
     @ResponseBody
-    public JSONObject payPalWithholdCallback(HttpServletRequest request) throws IOException {
-        logger.info("异步调用");
-        String result = "";
-        try {
-            StringBuffer sb = new StringBuffer();
-            InputStream is = request.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String s = "";
-            while ((s = br.readLine()) != null) {
-                sb.append(s);
-            }
-            result = sb.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        JSONObject jsonObject = JSONObject.parseObject(result);
-        logger.info("代付异步通知内容为:{}",jsonObject.toJSONString());
-        String no_order = jsonObject.getString("no_order");//流水号
-        String result_pay = jsonObject.getString("result_pay");//付款结果
-        String settle_date = jsonObject.getString("settle_date");//付款日期
-        JSONObject  returnObject= new JSONObject();
-        // TODO 签名校验
-        String sign = jsonObject.getString("sign");
-        String oid_str = quickPayBusiness.genSignData(jsonObject);
-        //签名验证
-        Boolean  checksign = RSAUtil.checksign(PayPalConfig.public_key,oid_str,sign);
-        if (!checksign){
-            returnObject.put("ret_code","1002");
-            returnObject.put("ret_msg","验证签名失败");
-            return returnObject;
-        }
-        logger.info("连连代付异步通知签名验证成功");
-        // 处理回调result_pay settle_date
-        logger.info("receive paypalpay withhold notify result: {},{}", jsonObject.get("no_order"), jsonObject.get("result_pay"));
-        if (jsonObject.get("no_order") != null) {
-            quickPayBusiness.payPalWithholdCallback(no_order,
-                    "SUCCESS".equals(result_pay) ? WithdrawalsState.PROCESSED : WithdrawalsState.FAILURE, settle_date,
-                    result_pay);
-            // 响应回调
-            returnObject.put("ret_code","0000");
-            returnObject.put("ret_msg","交易成功");
-        }else{
-            returnObject.put("ret_code","1001");
-            returnObject.put("ret_msg","交易失败");
-        }
-        return returnObject;
-    }
-
-
-    @RequestMapping("/quickbank")
-    @ApiOperation(value = "网贝支付调接口")
-    @ResponseBody
-    public void quickBank(@RequestParam(required = true) BigDecimal amount){
-           Response<Map>  result =  quickPayBusiness.wabenPay(amount ,SecurityUtil.getUserId());
-
+    public String protocolCallBack(HttpServletRequest request){
+        String result = quickPayBusiness.protocolCallBack(request);
+        return result;
     }
 
 }

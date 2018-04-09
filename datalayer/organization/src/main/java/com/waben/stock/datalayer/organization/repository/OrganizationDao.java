@@ -20,4 +20,6 @@ public interface OrganizationDao extends BaseDao<Organization, Long> {
 	
 	List<Organization> retriveByName(String orgName);
 
+	List<Organization> listByLevel(Integer level);
+
 }

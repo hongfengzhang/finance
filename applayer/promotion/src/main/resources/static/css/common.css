@@ -17,8 +17,12 @@
 .layui-nav dl {
 	margin-bottom: 0px;
 }
+.layui-nav .layui-icon {
+	margin-right: 5px;
+	font-size: 17px;
+}
 .layui-nav dl dd {
-	padding-left: 28px;
+	padding-left: 23px;
 }
 
 table.dataTable thead tr th:first-child:after {

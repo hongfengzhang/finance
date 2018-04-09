@@ -9,4 +9,6 @@ import com.waben.stock.datalayer.stockoption.entity.StockOptionCycle;
  *
  */
 public interface StockOptionCycleDao extends BaseDao<StockOptionCycle, Long> {
+
+	StockOptionCycle retrieveByCycle(Integer cycle);
 }

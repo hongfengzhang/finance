@@ -71,6 +71,16 @@ public class WithdrawalsApplyService {
 		accountService.withdrawals(org, withdrawalsApply.getAmount(), withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
 		return withdrawalsApply;
 	}
+	
+	@Transactional
+	public WithdrawalsApply revisionWithdrawalsApply(WithdrawalsApply withdrawalsApply) {
+		Organization org = organizationDao.retrieve(withdrawalsApply.getOrgId());
+		if (org == null) {
+			throw new ServiceException(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION);
+		}
+		withdrawalsApply.setOrg(org);
+		return withdrawalsApplyDao.update(withdrawalsApply);
+	}
 
 	public Page<WithdrawalsApply> pagesByQuery(final WithdrawalsApplyQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());

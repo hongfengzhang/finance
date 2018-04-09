@@ -40,7 +40,7 @@ public class CapitalFlowController {
 	private CapitalFlowBusiness capitalFlowBusiness;
 
 	@GetMapping("/pages")
-	@ApiOperation(value = "用户资金流水", notes = "range表示统计范围，0全部，1最近一周，2最近一个月，3最近半年, 4最近一年, 5今天;flowType表示流水类型，0全部，1充值，2提现，3服务费, 4冻结履约保证金, 5递延费, 6退回履约保证金, 7卖出结算, 8推广佣金;")
+	@ApiOperation(value = "用户资金流水", notes = "range表示统计范围，0全部，1最近一周，2最近一个月，3最近半年, 4最近一年, 5今天;flowType表示流水类型，0全部，1充值，2提现，3服务费, 4冻结履约保证金, 5递延费, 6退回履约保证金, 7卖出结算, 8推广佣金, 9期权权利金, 10申购失败退回期权权利金, 11期权盈利;")
 	public Response<PageInfo<CapitalFlowWithExtendDto>> publisherCapitalFlow(int page, int size,
 			@RequestParam(defaultValue = "0") int range, @RequestParam(defaultValue = "0") int flowType) {
 		CapitalFlowQuery query = new CapitalFlowQuery(page, size);
@@ -53,7 +53,7 @@ public class CapitalFlowController {
 			startTime = new DateTime(new Date()).minusHours(180 * 24).toDate();
 		} else if (range == 4) {
 			startTime = new DateTime(new Date()).minusHours(365 * 24).toDate();
-		} else if(range == 5) {
+		} else if (range == 5) {
 			Calendar cal = Calendar.getInstance();
 			cal.set(Calendar.HOUR_OF_DAY, 0);
 			cal.set(Calendar.MINUTE, 0);
@@ -78,6 +78,12 @@ public class CapitalFlowController {
 			types = new CapitalFlowType[] { CapitalFlowType.Loss, CapitalFlowType.Profit };
 		} else if (flowType == 8) {
 			types = new CapitalFlowType[] { CapitalFlowType.Promotion };
+		} else if (flowType == 9) {
+			types = new CapitalFlowType[] { CapitalFlowType.RightMoney };
+		} else if (flowType == 10) {
+			types = new CapitalFlowType[] { CapitalFlowType.ReturnRightMoney };
+		} else if (flowType == 11) {
+			types = new CapitalFlowType[] { CapitalFlowType.StockOptionProfit };
 		}
 		query.setTypes(types);
 		query.setStartTime(startTime);

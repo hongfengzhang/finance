@@ -45,6 +45,13 @@ public class WithdrawalsApplyController implements WithdrawalsApplyInterface {
 	}
 
 	@Override
+	public Response<WithdrawalsApplyDto> revision(@RequestBody WithdrawalsApplyDto apply) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class, service.revisionWithdrawalsApply(
+						CopyBeanUtils.copyBeanProperties(WithdrawalsApply.class, apply, false)), false));
+	}
+
+	@Override
 	public Response<PageInfo<WithdrawalsApplyDto>> pagesByQuery(@RequestBody WithdrawalsApplyQuery applyQuery) {
 		Page<WithdrawalsApply> page = service.pagesByQuery(applyQuery);
 		PageInfo<WithdrawalsApplyDto> result = PageToPageInfo.pageToPageInfo(page, WithdrawalsApplyDto.class);
@@ -59,14 +66,13 @@ public class WithdrawalsApplyController implements WithdrawalsApplyInterface {
 
 	@Override
 	public Response<WithdrawalsApplyDto> fetchById(@PathVariable Long id) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class,
-				service.findById(id), false));
+		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class, service.findById(id), false));
 	}
 
 	@Override
 	public Response<WithdrawalsApplyDto> fetchByApplyNo(@PathVariable String applyNo) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class,
-				service.findByApplyNo(applyNo), false));
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class, service.findByApplyNo(applyNo), false));
 	}
 
 }

@@ -25,21 +25,24 @@ public class BindCardService {
 	@Autowired
 	private BindCardDao bindCardDao;
 
-	public BindCard save(BindCard bindCard) {
+	public synchronized BindCard save(BindCard bindCard) {
 		BindCard check = bindCardDao.retriveByResourceTypeAndResourceIdAndBankCard(bindCard.getResourceType(),
 				bindCard.getResourceId(), bindCard.getBankCard());
 		if (check != null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_ALREADY_BIND_EXCEPTION);
-		} else {
-			// 判断四要素
-			boolean isValid = BankCardInfoVerifier.verify(bindCard.getName(), bindCard.getIdCard(), bindCard.getPhone(),
-					bindCard.getBankCard());
-			if (!isValid) {
-				throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
-			}
-			bindCard.setCreateTime(new Date());
-			bindCardDao.create(bindCard);
 		}
+		List<BindCard> checkList = bindCardDao.retrieveByBankCard(bindCard.getBankCard());
+		if (checkList != null && checkList.size() > 0) {
+			throw new ServiceException(ExceptionConstant.BANKCARD_ALREADY_USERED_EXCEPTION);
+		}
+		// 判断四要素
+		boolean isValid = BankCardInfoVerifier.verify(bindCard.getName(), bindCard.getIdCard(), bindCard.getPhone(),
+				bindCard.getBankCard());
+		if (!isValid) {
+			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
+		}
+		bindCard.setCreateTime(new Date());
+		bindCardDao.create(bindCard);
 		return bindCard;
 	}
 

@@ -22,8 +22,8 @@ public class StockOptionQuoteBusiness {
 	@Qualifier("stockOptionQuoteReference")
 	private StockOptionQuoteReference quoteReference;
 
-	public StockOptionQuoteDto quote(String stockCode, Integer cycle) {
-		Response<StockOptionQuoteDto> response = quoteReference.quote(stockCode, cycle);
+	public StockOptionQuoteDto quote(Long publisherId, String stockCode, Integer cycle) {
+		Response<StockOptionQuoteDto> response = quoteReference.quote(publisherId, stockCode, cycle);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

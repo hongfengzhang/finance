@@ -114,11 +114,20 @@ public class WithdrawalsApplyController {
 	@RequestMapping(value = "/confirm/{applyId}", method = RequestMethod.POST)
 	public Response<String> paypalcsa(@PathVariable("applyId") Long applyId) {
 		WithdrawalsApplyDto apply = business.fetchById(applyId);
-		payBusiness.payPalCSA(apply);
+		// payBusiness.payPalCSA(apply);
+		payBusiness.payWabenWithdrawals(apply);
 		Response<String> resp = new Response<String>();
 		resp.setResult("success");
 		return resp;
 	}
+	
+	@RequestMapping("/protocolcallback")
+    @ApiOperation(value = "网贝提现异步通知")
+    @ResponseBody
+    public String protocolCallBack(HttpServletRequest request){
+        String result = payBusiness.wabenProtocolCallBack(request);
+        return result;
+    }
 
 	@RequestMapping("/paypalnotify")
 	@ApiOperation(value = "连连支付代付回调接口")
