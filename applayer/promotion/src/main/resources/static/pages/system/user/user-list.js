@@ -3,6 +3,7 @@
  */
 window.renderTable = function(){};
 window.currentUserId = "";
+window.orgId = "";
 $(function() {
     var searchData = {
         currentOrgCode: '01'
@@ -56,7 +57,7 @@ $(function() {
                     if(full.code=="SUPERADMIN") {
                         return "-";
                     }
-                    return "<a class='edit mr10' userId='" + full.id + "' href='javascript:;'>修改角色</a>";
+                    return "<a class='edit mr10' orgId='"+full.org.id+"' userId='" + full.id + "' href='javascript:;'>修改角色</a>";
                 }}
             ];
             $(id).dataTable({
@@ -122,6 +123,7 @@ $(function() {
 
     $('#user-list-table').on('click','a.edit', function(){
         currentUserId = $(this).attr("userId");
+        orgId = $(this).attr("orgId");
         layer.open({
             type: 2,
             title: '设置角色',

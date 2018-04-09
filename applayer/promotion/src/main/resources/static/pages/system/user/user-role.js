@@ -3,13 +3,14 @@
  */
 $(function() {
     var userId = parent.currentUserId;
-	// 加载layui
+    var orgId = parent.orgId;
+    // 加载layui
 	layui.use(['element', 'table', 'form'], function() {});
 
     //初始化权限信息
     $.ajax({
         type: "GET",
-        url: "/promotion/role/",
+        url: "/promotion/role/org/"+orgId,
         dataType: "json",
         async:false,
         success: function (jsonResult) {
