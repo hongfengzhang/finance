@@ -123,11 +123,10 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-    @RequestMapping("/")
+    @RequestMapping("/org/{orgId}")
     @ResponseBody
-    public Response<List<RoleVo>> fetchByOrganization(){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
+    public Response<List<RoleVo>> fetchByOrganization(@PathVariable Long orgId){
+        List<RoleDto> roleDtos = roleBusiness.findByOrganization(orgId);
         List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
         return new Response<>(roleVos);
     }

@@ -3,6 +3,7 @@
  */
 window.renderTable = function(){};
 window.currentUserId = "";
+window.orgId = "";
 $(function() {
     var searchData = {
         currentOrgCode: '01'
@@ -53,7 +54,10 @@ $(function() {
                 }},
                 { "data": "roleName", "title": "所拥角色", orderable: false},
                 { "data": "id", "width": "230", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
-                    return "<a class='edit mr10' userId='" + full.id + "' href='javascript:;'>修改角色</a>";
+                    if(full.code=="SUPERADMIN") {
+                        return "-";
+                    }
+                    return "<a class='edit mr10' orgId='"+full.org.id+"' userId='" + full.id + "' href='javascript:;'>修改角色</a>";
                 }}
             ];
             $(id).dataTable({
@@ -119,6 +123,7 @@ $(function() {
 
     $('#user-list-table').on('click','a.edit', function(){
         currentUserId = $(this).attr("userId");
+        orgId = $(this).attr("orgId");
         layer.open({
             type: 2,
             title: '设置角色',

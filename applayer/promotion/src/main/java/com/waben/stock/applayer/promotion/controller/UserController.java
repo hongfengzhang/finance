@@ -86,6 +86,7 @@ public class UserController {
             if(role!=null) {
                 RoleDto roleDto = roleBusiness.findById(role);
                 userVoContent.get(i).setRoleName(roleDto.getName());
+                userVoContent.get(i).setCode(roleDto.getCode());
             }
         }
         return new Response<>(response);
