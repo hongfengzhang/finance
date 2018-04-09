@@ -53,11 +53,12 @@ public class RoleController {
         UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
         vo.setOrganization(userDto.getOrg().getId());
         RoleDto requestDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, vo, false);
-        RoleDto roleDto = roleBusiness.modify(requestDto);
+        RoleDto roleDto = roleBusiness.revision(requestDto);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
 
+    @PreAuthorize("hasRole('BIND_MENU')")
     @RequestMapping("/menu/{id}")
     @ResponseBody
     public Response<RoleVo> addRoleMenu(@PathVariable Long id,Long[] menuIds){
@@ -114,7 +115,6 @@ public class RoleController {
         return new Response<>(menuVos);
     }
 
-    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
     @RequestMapping("/{id}")
     @ResponseBody
     public Response<RoleVo> fetchById(@PathVariable Long id){
