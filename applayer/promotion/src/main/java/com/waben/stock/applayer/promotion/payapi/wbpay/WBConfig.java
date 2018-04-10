@@ -14,7 +14,7 @@ public class WBConfig {
 	private String notifyUrl;
 	@Value("${pay.frontUrl}")
 	private String frontUrl;
-//	@Value("${pay.protocolcallback}")
+	@Value("${pay.protocolcallback}")
 	private String protocol_callback;
 
 	public static final String tradeType = "quick_bank";

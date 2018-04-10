@@ -115,6 +115,7 @@ public class RoleController {
         return new Response<>(menuVos);
     }
 
+    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
     @RequestMapping("/{id}")
     @ResponseBody
     public Response<RoleVo> fetchById(@PathVariable Long id){
@@ -123,10 +124,11 @@ public class RoleController {
         return new Response<>(roleVo);
     }
 
-    @RequestMapping("/org/{orgId}")
+    @RequestMapping("/")
     @ResponseBody
-    public Response<List<RoleVo>> fetchByOrganization(@PathVariable Long orgId){
-        List<RoleDto> roleDtos = roleBusiness.findByOrganization(orgId);
+    public Response<List<RoleVo>> fetchByOrganization(){
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
         List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
         return new Response<>(roleVos);
     }
