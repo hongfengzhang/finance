@@ -552,15 +552,16 @@ public class QuickPayBusiness {
         String sign =  DigestUtils.md5Hex(signStr);
         request.put("sign",sign);
         String result = FormRequest.doPost(request, WBConfig.protocol_url);
+        logger.info("提现返回:" + result);
         JSONObject jsStr = JSONObject.parseObject(result);
         if(!"200".equals(jsStr.getString("code"))){
             WithdrawalsOrderDto orders = this.findByWithdrawalsNo(withdrawalsNo);
             accountBusiness.withdrawals(publisherId, orders.getId(),WithdrawalsState.FAILURE);
-            throw new ServiceException(jsStr.getString("message"));
+            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
         }
     }
 
-    public Response<Map> wabenPay(BigDecimal amount, Long userId) {
+    public Response<Map> wabenPay(BigDecimal amount, Long userId, String endType) {
         PublisherDto publisher = publisherBusiness.findById(userId);
         RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
         //创建订单
@@ -587,7 +588,7 @@ public class QuickPayBusiness {
         map.put("tradeType", WBConfig.tradeType);
         map.put("timeStart", timeStamp);
         map.put("outTradeNo", paymentNo);
-        map.put("frontUrl", wbConfig.getFrontUrl());
+        map.put("frontUrl", "H5".equals(endType) ? wbConfig.getH5ProxyfrontUrl() : wbConfig.getFrontUrl());
         map.put("idCard", realNameDto.getIdCard());
         String signStr = "";
         map.put("sign", "001");

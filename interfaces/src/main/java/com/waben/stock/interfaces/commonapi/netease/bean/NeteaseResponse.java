@@ -7,6 +7,8 @@ public class NeteaseResponse<T> {
 
 	private String msg;
 
+	private String requestId;
+
 	private int code;
 
 	private T ret;
@@ -33,6 +35,14 @@ public class NeteaseResponse<T> {
 
 	public void setRet(T ret) {
 		this.ret = ret;
+	}
+
+	public String getRequestId() {
+		return requestId;
+	}
+
+	public void setRequestId(String requestId) {
+		this.requestId = requestId;
 	}
 
 }

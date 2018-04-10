@@ -3,7 +3,8 @@
  */
 $(function() {
     var userId = parent.currentUserId;
-	// 加载layui
+    var orgId = parent.orgId;
+    // 加载layui
 	layui.use(['element', 'table', 'form'], function() {});
 
     //初始化权限信息
@@ -17,9 +18,11 @@ $(function() {
                 var roles = jsonResult.result;
                 var html = '';
                 $.each(roles,function (index,role){
-                    html += '<input title='+role.name+' class="radio" value='+role.id+' type="radio" name="role"/>&nbsp;&nbsp;&nbsp;&nbsp;';
-                    if((index+1)%3==0) {
-                        html += "<br>";
+                    if(role.code!="SUPERADMIN") {
+                        html += '<input title='+role.name+' class="radio" value='+role.id+' type="radio" name="role"/>&nbsp;&nbsp;&nbsp;&nbsp;';
+                        if((index+1)%3==0) {
+                            html += "<br>";
+                        }
                     }
                 });
                 $("#role").append(html);
