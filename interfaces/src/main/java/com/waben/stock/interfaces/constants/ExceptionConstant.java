@@ -103,9 +103,9 @@ public class ExceptionConstant {
 	public static final String BUYRECORD_NONTRADINGPERIOD_EXCEPTION = "6013";
 	// 该股票已停牌
 	public static final String STOCK_SUSPENSION_EXCEPTION = "6014";
-	// 提现异常
+	// 提现失败
 	public static final String WITHDRAWALS_EXCEPTION = "6015";
-	// 充值异常
+	// 充值失败
 	public static final String RECHARGE_EXCEPTION = "6016";
 	// 用户选择不递延，不能进行递延操作
 	public static final String BUYRECORD_USERNOTDEFERRED_EXCEPTION = "6017";

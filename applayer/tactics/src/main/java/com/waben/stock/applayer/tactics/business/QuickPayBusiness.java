@@ -552,11 +552,12 @@ public class QuickPayBusiness {
         String sign =  DigestUtils.md5Hex(signStr);
         request.put("sign",sign);
         String result = FormRequest.doPost(request, WBConfig.protocol_url);
+        logger.info("提现返回:" + result);
         JSONObject jsStr = JSONObject.parseObject(result);
         if(!"200".equals(jsStr.getString("code"))){
             WithdrawalsOrderDto orders = this.findByWithdrawalsNo(withdrawalsNo);
             accountBusiness.withdrawals(publisherId, orders.getId(),WithdrawalsState.FAILURE);
-            throw new ServiceException(jsStr.getString("message"));
+            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
         }
     }
 
