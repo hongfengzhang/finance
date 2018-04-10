@@ -10,7 +10,7 @@ $(function() {
     //初始化权限信息
     $.ajax({
         type: "GET",
-        url: "/promotion/role/org/"+orgId,
+        url: "/promotion/role/",
         dataType: "json",
         async:false,
         success: function (jsonResult) {
