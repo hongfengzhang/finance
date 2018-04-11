@@ -27,8 +27,7 @@ public class ActivityMngController implements ActivityMngInterface{
 	
 	@Override
 	public Response<ActivityDto> saveActivity(ActivityDto adto) {
-		Activity a = CopyBeanUtils.copyBeanProperties(Activity.class, adto, false);
-		ActivityDto ad = ams.saveActivity(a);
+		ActivityDto ad = ams.saveActivity(adto);
 		
 		return new Response<>(ad);
 	}
