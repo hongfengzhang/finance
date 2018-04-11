@@ -33,7 +33,12 @@ public class ActivityDaoImpl implements ActivityDao {
 	
 	@Override
 	public Activity getActivity(long activityId){
-		return ar.getOne(activityId);
+		return ar.findByActivityId(activityId);
+	}
+
+	@Override
+	public Activity getActivityByLocation(String location){
+		return ar.findActivitiesByLocation(location);
 	}
 
 }

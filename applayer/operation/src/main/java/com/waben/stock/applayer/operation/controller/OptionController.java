@@ -63,10 +63,14 @@ public class OptionController {
                 response.getContent().get(i).setOfflineTrade(offlineStockOptionTradeVo);
             }
             try {
-                InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(pageInfo.getContent().get(i).getId());
-                response.getContent().get(i).setInquiryResultVo(CopyBeanUtils.copyBeanProperties(InquiryResultVo.class,inquiryResultDto , false));
                 PublisherDto publisherDto = publisherBusiness.fetchById(pageInfo.getContent().get(i).getPublisherId());
                 response.getContent().get(i).setTest(publisherDto.getIsTest());
+            }catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(pageInfo.getContent().get(i).getId());
+                response.getContent().get(i).setInquiryResultVo(CopyBeanUtils.copyBeanProperties(InquiryResultVo.class,inquiryResultDto , false));
             }catch (Exception e) {
                 e.printStackTrace();
             }

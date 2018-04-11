@@ -65,12 +65,14 @@ public class BuyRecordBusiness {
         int todayCount = 0;
         int allCount = 0;
         for(BuyRecordDto buyRecordDto : result) {
-            if(sdf.format(new Date()).equals(sdf.format(buyRecordDto.getUpdateTime()))) {
-                todayCount++;
-                todayProfit = todayProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
+            if(buyRecordDto.getSettlement()!=null) {
+                if(sdf.format(new Date()).equals(sdf.format(buyRecordDto.getUpdateTime()))) {
+                    todayCount++;
+                    todayProfit = todayProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
+                }
+                allProfit = allProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
             }
             allCount++;
-            allProfit = allProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
         }
         map.put("todayProfit",todayProfit);
         map.put("allProfit",allProfit);
