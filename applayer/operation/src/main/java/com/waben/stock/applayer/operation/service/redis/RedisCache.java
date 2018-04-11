@@ -13,13 +13,13 @@ import redis.clients.jedis.Protocol;
 @Component
 public class RedisCache {
 
-	@Value("${redis.host}")
+	@Value("${redis.host:localhost}")
 	private String redisHost;
 
-	@Value("${redis.port}")
+	@Value("${redis.port:6379}")
 	private String redisPort;
 
-	@Value("${redis.password}")
+	@Value("${redis.password:empty}")
 	private String redisPassword;
 
 	private JedisPool pool;
