@@ -18,6 +18,7 @@ import java.util.Date;
 public class StockOptionTradeVo{
 
 
+
 	private Long id;
 	/**
 	 * 交易单号
@@ -111,6 +112,8 @@ public class StockOptionTradeVo{
 	private InquiryResultVo inquiryResultVo;
 
 	private OfflineStockOptionTradeState status;
+
+	private Boolean isTest;
 	public Long getId() {
 		return id;
 	}
@@ -310,5 +313,13 @@ public class StockOptionTradeVo{
 
 	public void setStatus(OfflineStockOptionTradeState status) {
 		this.status = status;
+	}
+
+	public Boolean getTest() {
+		return isTest;
+	}
+
+	public void setTest(Boolean test) {
+		isTest = test;
 	}
 }
