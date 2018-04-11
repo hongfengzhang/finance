@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.commonapi.netease.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NeteaseChannellistRet {
 
 	/**
@@ -42,6 +45,10 @@ public class NeteaseChannellistRet {
 	 * 录制后文件名
 	 */
 	private String filename;
+	/**
+	 * 网易云内部维护用字段，用户不需关注。后续版本将删除，请勿调用
+	 */
+	private int recordStatus;
 
 	public Long getCtime() {
 		return ctime;
@@ -121,6 +128,14 @@ public class NeteaseChannellistRet {
 
 	public void setFilename(String filename) {
 		this.filename = filename;
+	}
+
+	public int getRecordStatus() {
+		return recordStatus;
+	}
+
+	public void setRecordStatus(int recordStatus) {
+		this.recordStatus = recordStatus;
 	}
 
 }

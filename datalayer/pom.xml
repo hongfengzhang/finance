@@ -23,6 +23,7 @@
         <module>message</module><!--8008-->
         <module>stockoption</module> <!--8009-->
         <module>organization</module><!--8010-->
+        <module>activity</module><!--8011--> <!-- add by guowei 2018/4/10 -->
     </modules>
 
     <properties>
