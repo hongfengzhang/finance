@@ -11,5 +11,5 @@ public interface ActivityDao  {
 	public List<Activity> getActivityList(int pageno,int pagesize);
 	
 	public Activity getActivity(long activityId);
-	
+	public Activity getActivityByLocation(String location);
 }

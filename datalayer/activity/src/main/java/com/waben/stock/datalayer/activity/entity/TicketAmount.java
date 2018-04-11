@@ -69,6 +69,11 @@ public class TicketAmount {
 	 */
 	private String memo;
 
+	/**
+	 * 奖品图片
+	 */
+	private String url;
+
 	public long getTicketAmountId() {
 		return ticketAmountId;
 	}
@@ -140,6 +145,12 @@ public class TicketAmount {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
-	
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

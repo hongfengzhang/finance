@@ -274,14 +274,16 @@ public class StockOptionTradeBusiness {
         int allCount = 0;
         List<StockOptionTradeDto> result = stockOptionTradeService.stockOptionsWithState(6).getResult();
         for(StockOptionTradeDto stockOptionTradeDto : result) {
-            if(sdf.format(new Date()).equals(sdf.format(stockOptionTradeDto.getUpdateTime()))) {
-                todayCount++;
-                todayProfit = todayProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
+            if(stockOptionTradeDto.getOfflineTradeDto()!=null) {
+                if(stockOptionTradeDto.getOfflineTradeDto().getProfit()!=null) {
+                    if(sdf.format(new Date()).equals(sdf.format(stockOptionTradeDto.getUpdateTime()))) {
+                        todayCount++;
+                        todayProfit = todayProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
+                    }
+                    allProfit = allProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
+                }
             }
             allCount++;
-            if(stockOptionTradeDto.getOfflineTradeDto()!=null) {
-                allProfit = allProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
-            }
         }
         map.put("todayProfit",todayProfit);
         map.put("allProfit",allProfit);

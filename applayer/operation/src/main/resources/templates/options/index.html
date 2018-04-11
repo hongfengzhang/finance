@@ -525,7 +525,15 @@
                 }, {
                     field: 'rightMoneyRatio',
                     title: '权利金比率',
-                    align: 'center'
+                    align: 'center',
+                    formatter: function operateFormatter(value, row, index) {
+                        var number = (row.rightMoneyRatio*100).toString();
+                        var flag = number.indexOf(".");
+                        if(flag!=-1) {
+                            number = number.substring(0,flag+3);
+                        }
+                        return number+"%";
+                    }
                 }, {
                     field: 'rightMoney',
                     title: '预询价',
@@ -563,7 +571,7 @@
                     title: '测试',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
-                        if(value) {
+                        if(row.test) {
                             return "是";
                         }else {
                             return "否";
@@ -997,7 +1005,7 @@
                                 }
                             }
                             $('#orgPrice').click(function () {
-                                var patt = /^(0|([1-9]\d)|(100))(\.\d{0,2})?$/;
+                                var patt = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
                                 if(!patt.test($("[name='rightMoneyRatio']").val())) {
                                     alert("数据格式错误，请重新输入！");
                                 }else {
@@ -1026,7 +1034,7 @@
                                 modal.find('#orgdetail').attr("onclick",params[0]);
                             })
                             $('#realPrice').click(function () {
-                                var pattRaito = /^(0|([1-9]\d)|(100))(\.\d{0,2})?$/;
+                                var pattRaito = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
                                 var pattPrice = /^[1-9]{1}\d*(\.\d{1,2})?$/
                                 if(!pattRaito.test($("[name='realRightMoneyRatio']").val())||!pattPrice.test($("[name='realBuyingPrice']").val())) {
                                     alert("数据格式错误，请重新输入！");

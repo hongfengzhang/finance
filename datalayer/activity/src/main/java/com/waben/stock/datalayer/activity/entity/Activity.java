@@ -97,6 +97,11 @@ public class Activity {
 	 */
 	private String awardType;
 
+	/**
+	 * 活动展示位置
+	 */
+	private String location;
+
 	public Activity(){
 		
 	}
@@ -220,6 +225,12 @@ public class Activity {
 	public void setAwardType(String awardType) {
 		this.awardType = awardType;
 	}
-	
-	
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
 }

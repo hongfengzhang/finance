@@ -38,7 +38,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 		this.exceptions
 				.add(new ExceptionInformation(NoHandlerFoundException.class, HttpServletResponse.SC_NOT_FOUND, "404"));
 		this.exceptions
-				.add(new ExceptionInformation(DataNotFoundException.class, HttpServletResponse.SC_NO_CONTENT, "204"));
+				.add(new ExceptionInformation(DataNotFoundException.class, HttpServletResponse.SC_OK, "204"));
 		this.exceptions.add(
 				new ExceptionInformation(IllegalArgumentException.class, HttpServletResponse.SC_BAD_REQUEST, "400"));
 		this.exceptions.add(new ExceptionInformation(NetflixCircuitException.class,
@@ -69,33 +69,9 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 		} finally {
 			mv.addObject("message", message);
 			mv.addObject("code", code);
-			logger.info("响应状态码:{},异常编码:{},异常信息:{}", response.getStatus(), code, message);
-			String contentType = request.getContentType();
-			String isFeign = request.getHeader("feign");
-			logger.info("isfegin{}", isFeign);
-			if (contentType != null && (contentType.indexOf("application/json") > -1
-					|| contentType.indexOf("application/x-www-form-urlencoded") > -1)) {
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
-				response.setCharacterEncoding("UTF-8"); // 避免乱码
-				mv.setView(jsonView);
-				logger.info("web 请求");
-			} else if ("true".equals(isFeign)) {
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
-				response.setCharacterEncoding("UTF-8"); // 避免乱码
-				mv.setView(jsonView);
-				logger.info("feign 请求");
-			} else {
-				// 通讯类的异常
-				// if (ex instanceof NetflixCircuitException) {
-				// response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-				// response.setCharacterEncoding("UTF-8"); // 避免乱码
-				// mv.setView(jsonView);
-				// } else {
-				// mv.setViewName(error);
-				// }
-				mv.setViewName(error);
-				logger.info("视图解析 请求");
-			}
+			 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+			 response.setCharacterEncoding("UTF-8"); // 避免乱码
+			 mv.setView(jsonView);
 		}
 		return mv;
 	}
