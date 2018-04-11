@@ -26,7 +26,7 @@ public class TicketAmount {
 	private long ticketAmountId;
 	
 	/**
-	 * 券类型 1:期权抵扣券 2：话费券
+	 * 券类型 1:期权抵扣券 2：话费券  3.实物
 	 */
 	private int ticketType;
 	
@@ -56,6 +56,8 @@ public class TicketAmount {
 	 * 数量
 	 */
 	private int num;
+	
+	
 	
 	/**
 	 * 使用数量
