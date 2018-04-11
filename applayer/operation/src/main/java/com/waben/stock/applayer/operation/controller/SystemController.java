@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.operation.controller;
 
+import com.waben.stock.applayer.operation.business.BuyRecordBusiness;
 import com.waben.stock.applayer.operation.business.MenuBusiness;
+import com.waben.stock.applayer.operation.business.StockOptionTradeBusiness;
 import com.waben.stock.applayer.operation.util.SecurityAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import java.math.BigDecimal;
+import java.util.Map;
+
 /**
  * @author Created by yuyidi on 2017/11/6.
  * @desc
@@ -23,6 +28,12 @@ public class SystemController {
 
     @Autowired
     private MenuBusiness systemManageBusiness;
+
+    @Autowired
+    private BuyRecordBusiness buyRecordBusiness;
+
+    @Autowired
+    private StockOptionTradeBusiness stockOptionTradeBusiness;
 
     @Value("${mail.contextPath}")
     private String contextPath;
@@ -37,6 +48,10 @@ public class SystemController {
 
     @GetMapping("/index")
     public String index(ModelMap model) {
+        Map<String,Object> buyRecordProfitAndPosition = buyRecordBusiness.fetchBuyRecordProfitAndPosition();
+        Map<String,Object>stockOptionTradeProfitAndPosition = stockOptionTradeBusiness.fetchStockOptionTradeProfitAndPosition();
+        model.addAttribute("buyRecordProfitAndPosition", buyRecordProfitAndPosition);
+        model.addAttribute("stockOptionTradeProfitAndPosition", stockOptionTradeProfitAndPosition);
         model.addAttribute("userName", SecurityAccount.current().getUsername());
         model.addAttribute("menus", systemManageBusiness.menus());
         return "index";

@@ -108,6 +108,12 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		StockOptionTradeState stockOptionTradeState = StockOptionTradeState.getByIndex(String.valueOf(state));
 		List<StockOptionTrade> stockOptionTrades = stockOptionTradeService.fetchByState(stockOptionTradeState);
 		List<StockOptionTradeDto> result = CopyBeanUtils.copyListBeanPropertiesToList(stockOptionTrades, StockOptionTradeDto.class);
+		for (int i=0; i<stockOptionTrades.size(); i++) {
+			if(stockOptionTrades.get(i).getOfflineTrade()!=null) {
+				OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, stockOptionTrades.get(i).getOfflineTrade(), false);
+				result.get(i).setOfflineTradeDto(offlineStockOptionTradeDto);
+			}
+		}
 		return new Response<>(result);
 	}
 

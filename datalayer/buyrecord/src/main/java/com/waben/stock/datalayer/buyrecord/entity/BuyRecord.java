@@ -500,4 +500,11 @@ public class BuyRecord {
 		this.lossMultiple = lossMultiple;
 	}
 
+	public Settlement getSettlement() {
+		return settlement;
+	}
+
+	public void setSettlement(Settlement settlement) {
+		this.settlement = settlement;
+	}
 }

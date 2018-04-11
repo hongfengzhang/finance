@@ -44,7 +44,7 @@ public class PermissionBusiness {
     }
 
     public List<PermissionDto> fetchPermissions() {
-        Response<List<PermissionDto>> response = permissionService.fetchPermissions();
+        Response<List<PermissionDto>> response = permissionService.fetchPermissionsByVariety(1L);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

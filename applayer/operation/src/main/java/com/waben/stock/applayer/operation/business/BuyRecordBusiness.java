@@ -14,6 +14,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.sql.rowset.serial.SerialException;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Created by yuyidi on 2017/12/2.
@@ -50,4 +56,26 @@ public class BuyRecordBusiness {
         buyRecordService.delete(id);
     }
 
+    public Map<String,Object> fetchBuyRecordProfitAndPosition() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Map<String,Object> map = new HashMap<>();
+        List<BuyRecordDto> result = buyRecordService.buyRecordsWithStatus(6).getResult();
+        BigDecimal todayProfit = new BigDecimal(0);
+        BigDecimal allProfit = new BigDecimal(0);
+        int todayCount = 0;
+        int allCount = 0;
+        for(BuyRecordDto buyRecordDto : result) {
+            if(sdf.format(new Date()).equals(sdf.format(buyRecordDto.getUpdateTime()))) {
+                todayCount++;
+                todayProfit = todayProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
+            }
+            allCount++;
+            allProfit = allProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
+        }
+        map.put("todayProfit",todayProfit);
+        map.put("allProfit",allProfit);
+        map.put("todayCount",todayCount);
+        map.put("allCount",allCount);
+        return map;
+    }
 }

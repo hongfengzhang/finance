@@ -6,12 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.waben.stock.datalayer.activity.entity.Activity;
 import com.waben.stock.datalayer.activity.service.ActivityMngService;
 import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.activity.ActivityMngInterface;
-import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
  * 
