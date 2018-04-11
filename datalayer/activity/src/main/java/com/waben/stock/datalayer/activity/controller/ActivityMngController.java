@@ -5,13 +5,10 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.waben.stock.datalayer.activity.entity.Activity;
 import com.waben.stock.datalayer.activity.service.ActivityMngService;
 import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.activity.ActivityMngInterface;
-import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,8 +29,7 @@ public class ActivityMngController implements ActivityMngInterface{
 	
 	@Override
 	public Response<ActivityDto> saveActivity(ActivityDto adto) {
-		Activity a = CopyBeanUtils.copyBeanProperties(Activity.class, adto, false);
-		ActivityDto ad = ams.saveActivity(a);
+		ActivityDto ad = ams.saveActivity(adto);
 		
 		return new Response<>(ad);
 	}

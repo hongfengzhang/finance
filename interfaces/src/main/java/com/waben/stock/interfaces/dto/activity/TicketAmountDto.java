@@ -1,32 +1,17 @@
-package com.waben.stock.datalayer.activity.entity;
+package com.waben.stock.interfaces.dto.activity;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.springframework.format.annotation.DateTimeFormat;
 
-/**
- * 券实体
- * 
- * @author guowei 2018/4/10
- *
- */
-@Entity
-@Table(name = "ticket_amount")
-public class TicketAmount {
+public class TicketAmountDto {
+
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ticketAmountId;
 	
 	/**
-	 * 券类型 1:期权抵扣券 2：话费券  3.实物
+	 * 券类型 1:期权抵扣券 2：话费券
 	 */
 	private int ticketType;
 	
@@ -57,8 +42,6 @@ public class TicketAmount {
 	 */
 	private int num;
 	
-	
-	
 	/**
 	 * 使用数量
 	 */
@@ -68,11 +51,6 @@ public class TicketAmount {
 	 * 备注
 	 */
 	private String memo;
-
-	/**
-	 * 奖品图片
-	 */
-	private String url;
 
 	public long getTicketAmountId() {
 		return ticketAmountId;
@@ -145,12 +123,7 @@ public class TicketAmount {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
+	
+	
 
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
 }

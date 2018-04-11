@@ -30,7 +30,8 @@ public class ActivityMngService {
 	private ActivityDao ad;
 	
 	@Transactional
-	public ActivityDto saveActivity(Activity a){
+	public ActivityDto saveActivity(ActivityDto adto){
+		Activity a = CopyBeanUtils.copyBeanProperties(Activity.class, adto, false);
 		ad.saveActivity(a);
 		return CopyBeanUtils.copyBeanProperties(ActivityDto.class, a, false);
 	}
