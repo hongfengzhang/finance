@@ -1,9 +1,7 @@
 package com.waben.stock.applayer.operation.controller;
 
-import com.waben.stock.applayer.operation.business.InquiryResultBusiness;
-import com.waben.stock.applayer.operation.business.OfflineStockOptionTradeBusiness;
-import com.waben.stock.applayer.operation.business.StockOptionOrgBusiness;
-import com.waben.stock.applayer.operation.business.StockOptionTradeBusiness;
+import com.waben.stock.applayer.operation.business.*;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
@@ -41,6 +39,8 @@ public class OptionController {
     private OfflineStockOptionTradeBusiness offlineStockOptionTradeBusiness;
     @Autowired
     private InquiryResultBusiness inquiryResultBusiness;
+    @Autowired
+    private PublisherBusiness publisherBusiness;
     @RequestMapping("/index")
     public String index(ModelMap map){
         List<StockOptionOrgDto> stockOptionOrgDtos = stockOptionOrgBusiness.fetchStockOptionOrgs();
@@ -61,6 +61,12 @@ public class OptionController {
                 OfflineStockOptionTradeVo offlineStockOptionTradeVo = CopyBeanUtils.copyBeanProperties(
                         OfflineStockOptionTradeVo.class,offlineTradeDto , false);
                 response.getContent().get(i).setOfflineTrade(offlineStockOptionTradeVo);
+            }
+            try {
+                PublisherDto publisherDto = publisherBusiness.fetchById(pageInfo.getContent().get(i).getPublisherId());
+                response.getContent().get(i).setTest(publisherDto.getIsTest());
+            }catch (Exception e) {
+                e.printStackTrace();
             }
             try {
                 InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(pageInfo.getContent().get(i).getId());

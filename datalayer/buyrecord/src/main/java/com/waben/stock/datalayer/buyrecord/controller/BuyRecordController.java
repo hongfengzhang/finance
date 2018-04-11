@@ -3,6 +3,8 @@ package com.waben.stock.datalayer.buyrecord.controller;
 import java.math.BigDecimal;
 import java.util.List;
 
+import com.waben.stock.datalayer.buyrecord.entity.Settlement;
+import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,6 +132,10 @@ public class BuyRecordController implements BuyRecordInterface {
         BuyRecordState buyRecordState = BuyRecordState.getByIndex(String.valueOf(state));
         List<BuyRecord> buyRecords = buyRecordService.fetchByStateAndOrderByCreateTime(buyRecordState);
         List<BuyRecordDto> result = CopyBeanUtils.copyListBeanPropertiesToList(buyRecords, BuyRecordDto.class);
+        for (int i=0; i<buyRecords.size(); i++) {
+            SettlementDto settlementDto = CopyBeanUtils.copyBeanProperties(SettlementDto.class, buyRecords.get(i).getSettlement(), false);
+            result.get(i).setSettlement(settlementDto);
+        }
         return new Response<>(result);
     }
 

@@ -2,6 +2,8 @@ package com.waben.stock.interfaces.dto.activity;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 public class ActivityDto {
 	
 	private long activityId;
@@ -19,11 +21,13 @@ public class ActivityDto {
 	/**
 	 * 开始时间
 	 */
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
 	
 	/**
 	 * 结束时间
 	 */
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date endTime;
 	
 	/**

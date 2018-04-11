@@ -7,6 +7,7 @@ import com.waben.stock.applayer.operation.service.stockoption.StockOptionTradeSe
 import com.waben.stock.applayer.operation.warpper.mail.*;
 import com.waben.stock.applayer.operation.web.StockQuotationHttp;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.MailUrlInfoDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
@@ -26,6 +27,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -260,5 +263,32 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }
         throw new ServiceException(response.getCode());
+    }
+
+    public Map<String,Object> fetchStockOptionTradeProfitAndPosition() {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Map<String,Object> map = new HashMap<>();
+        BigDecimal todayProfit = new BigDecimal(0);
+        BigDecimal allProfit = new BigDecimal(0);
+        int todayCount = 0;
+        int allCount = 0;
+        List<StockOptionTradeDto> result = stockOptionTradeService.stockOptionsWithState(6).getResult();
+        for(StockOptionTradeDto stockOptionTradeDto : result) {
+            if(stockOptionTradeDto.getOfflineTradeDto()!=null) {
+                if(stockOptionTradeDto.getOfflineTradeDto().getProfit()!=null) {
+                    if(sdf.format(new Date()).equals(sdf.format(stockOptionTradeDto.getUpdateTime()))) {
+                        todayCount++;
+                        todayProfit = todayProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
+                    }
+                    allProfit = allProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
+                }
+            }
+            allCount++;
+        }
+        map.put("todayProfit",todayProfit);
+        map.put("allProfit",allProfit);
+        map.put("todayCount",todayCount);
+        map.put("allCount",allCount);
+        return map;
     }
 }

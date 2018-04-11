@@ -67,7 +67,7 @@ public class OfflineStockOptionTradeService {
         offlineStockOptionTrade.setSellingPrice(sellingPrice);
         offlineStockOptionTrade.setSellingTime(new Date());
         offlineStockOptionTrade.setState(OfflineStockOptionTradeState.SETTLEMENTED);
-        offlineStockOptionTrade.setProfit(stockOptionTrade.getRightMoney());
+        offlineStockOptionTrade.setProfit(stockOptionTrade.getRightMoney().subtract(offlineStockOptionTrade.getRightMoney()));
         return offlineStockOptionTradeDao.update(offlineStockOptionTrade);
     }
 

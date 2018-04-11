@@ -158,7 +158,7 @@ public class BuyRecordDto {
 	private PublisherDto publisherDto;
 
 	private StockDto stockDto;
-
+	private SettlementDto settlement;
 	public Long getId() {
 		return id;
 	}
@@ -492,4 +492,11 @@ public class BuyRecordDto {
 		this.lossMultiple = lossMultiple;
 	}
 
+	public SettlementDto getSettlement() {
+		return settlement;
+	}
+
+	public void setSettlement(SettlementDto settlement) {
+		this.settlement = settlement;
+	}
 }

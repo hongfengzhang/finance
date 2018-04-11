@@ -34,6 +34,17 @@ public class PublisherDeduTicket {
 	private int useType;
 	
 	/**
+	 * 限期权申购使用;
+	 */
+	private String useTypeName;
+	
+	/**
+	 * 券名称
+	 */
+	private String ticketName;
+	
+	
+	/**
 	 * 有效期
 	 */
 	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -58,6 +69,24 @@ public class PublisherDeduTicket {
 	 * 备注
 	 */
 	private String memo;
+	
+	
+	
+	public String getTicketName() {
+		return ticketName;
+	}
+
+	public void setTicketName(String ticketName) {
+		this.ticketName = ticketName;
+	}
+
+	public String getUseTypeName() {
+		return useTypeName;
+	}
+
+	public void setUseTypeName(String useTypeName) {
+		this.useTypeName = useTypeName;
+	}
 
 	public long getDtId() {
 		return dtId;

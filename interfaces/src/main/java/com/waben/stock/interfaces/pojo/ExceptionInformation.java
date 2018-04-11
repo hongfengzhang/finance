@@ -8,6 +8,7 @@ public class ExceptionInformation {
     private Class exception;
     private Integer httpStatus;
     private String error;
+
     public ExceptionInformation(Class exception, Integer httpStatus,  String error) {
         this.exception = exception;
         this.httpStatus = httpStatus;
