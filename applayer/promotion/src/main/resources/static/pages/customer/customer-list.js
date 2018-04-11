@@ -2,6 +2,8 @@
  * 机构列表
  */
 window.renderTable = function(){};
+window.currentPublisherId = null;
+window.currentPublisherOrgCode = null;
 $(function() {
 	window.searchData = { currentOrgCode: currentOrgCode }
 	// 加载数据
@@ -57,8 +59,12 @@ $(function() {
 	            		return 'H5移动端'
 	            	} 
 	            	return endType;
+	            }},
+	            { "data": "id", "width": "110", "title": "操作", "className": "align-center", orderable: false, "render": function(data, type, full, meta) {
+	            	return "<a class='publisherorg' orgcode='" + full.orgCode + "' publisherid='" + full.publisherId + "'>修改所属机构</a>";
 	            }}
 	        ];
+			
 			$(id).dataTable({
 				"responsive": true,
 		        "processing": true,
@@ -105,5 +111,18 @@ $(function() {
 			}
 		}
 		renderTable("#customer-list-table");
+	});
+	// 修改所属机构
+	$("#customer-list-table_wrapper").on("click", ".publisherorg", function(event){
+		currentPublisherId = $(this).attr("publisherid");
+		currentPublisherOrgCode = $(this).attr("orgcode");
+		layer.open({
+			type: 2,
+			title: '修改所属机构',
+			shadeClose: true,
+			shade: 0.8,
+			area: ['500px', '200px'],
+			content: 'set-publisherorg.html'
+		});
 	});
 });

@@ -6,7 +6,7 @@ public class NeteaseUpdateParam {
 
 	private String name;
 
-	private int type;
+	private int type = 0;
 
 	public NeteaseUpdateParam() {
 		super();
