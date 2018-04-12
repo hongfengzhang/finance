@@ -44,6 +44,21 @@ public class PublisherTicket {
 	 * 备注
 	 */
 	private String memo;
+	
+	/**
+	 * 活动参与关联Id
+	 * 
+	 */
+	private long apId;
+
+	
+	public long getApId() {
+		return apId;
+	}
+
+	public void setApId(long apId) {
+		this.apId = apId;
+	}
 
 	public long getPtId() {
 		return ptId;
