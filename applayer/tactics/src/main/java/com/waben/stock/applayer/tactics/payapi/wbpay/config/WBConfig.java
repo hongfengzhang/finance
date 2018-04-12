@@ -21,7 +21,8 @@ public class WBConfig {
 	@Value("${pay.protocolcallback}")
 	private String protocol_callback;
 
-	public static final String tradeType = "quick_bank";
+	// public static final String tradeType = "quick_bank";
+	public static final String tradeType = "quick_wap";
 	public static final String platformType = "platform_wap";
 	public static final String quick_bank_url = "http://b.waben.com.cn/api/quick/bankpay";
 	public static final String domain = "http://b.waben.com.cn";

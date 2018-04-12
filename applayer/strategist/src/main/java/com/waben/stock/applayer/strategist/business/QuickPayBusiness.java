@@ -311,6 +311,8 @@ public class QuickPayBusiness {
 		request.put("tradeType", WBConfig.protocol_type);
 		request.put("merchantNo", wbConfig.getMerchantNo());
 		request.put("timeStart", time.format(new Date()));
+		request.put("product", "quick");
+        request.put("payment", "d0");
 		String signStr = "";
 		for (String keys : request.keySet()) {
 			signStr += request.get(keys);

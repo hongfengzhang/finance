@@ -1,15 +1,11 @@
-package com.waben.stock.interfaces.commonapi.netease.bean;
+package com.waben.stock.interfaces.commonapi.netease.livebean;
 
-public class NeteaseSetAlwaysRecordParam {
+public class NeteaseSetupRecordInfoParam {
 
 	/**
 	 * 频道ID，32位字符串 是
 	 */
 	private String cid;
-	/**
-	 * 1-开启录制； 0-关闭录制 是
-	 */
-	private int needRecord;
 	/**
 	 * 1-flv； 0-mp4 是
 	 */
@@ -24,7 +20,7 @@ public class NeteaseSetAlwaysRecordParam {
 	 */
 	private String filename;
 
-	public NeteaseSetAlwaysRecordParam() {
+	public NeteaseSetupRecordInfoParam() {
 		super();
 	}
 
@@ -34,14 +30,6 @@ public class NeteaseSetAlwaysRecordParam {
 
 	public void setCid(String cid) {
 		this.cid = cid;
-	}
-
-	public int getNeedRecord() {
-		return needRecord;
-	}
-
-	public void setNeedRecord(int needRecord) {
-		this.needRecord = needRecord;
 	}
 
 	public int getFormat() {

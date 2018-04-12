@@ -13,23 +13,23 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.JavaType;
 import com.waben.stock.applayer.operation.service.redis.RedisCache;
 import com.waben.stock.interfaces.commonapi.netease.ChannelManageOverHttps;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseAddressParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseAddressRet;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseChannellistParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseChannellistRet;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseChannelstatsParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseChannelstatsRet;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseCreateParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseCreateRet;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseDeleteParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseDeleteRet;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseDisableParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseDisableRet;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteasePage;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseResponse;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseUpdateParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseUpdateRet;
-import com.waben.stock.interfaces.commonapi.netease.config.NeteaseConfig;
+import com.waben.stock.interfaces.commonapi.netease.config.NeteaseLiveConfig;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseAddressParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseAddressRet;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseChannellistParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseChannellistRet;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseChannelstatsParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseChannelstatsRet;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseCreateParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseCreateRet;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseDeleteParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseDeleteRet;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseDisableParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseDisableRet;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseLivePage;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseLiveResponse;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseUpdateParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseUpdateRet;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -76,9 +76,9 @@ public class LiveplayerController {
 		NeteaseChannellistParam listParam = new NeteaseChannellistParam();
 		listParam.setPnum(page + 1);
 		listParam.setRecords(size);
-		JavaType listJavaType = JacksonUtil.getGenericType(NeteasePage.class, NeteaseChannellistRet.class);
-		NeteaseResponse<NeteasePage<NeteaseChannellistRet>> listResponse = ChannelManageOverHttps
-				.doAction(NeteaseConfig.ChannellistUrl, listParam, listJavaType);
+		JavaType listJavaType = JacksonUtil.getGenericType(NeteaseLivePage.class, NeteaseChannellistRet.class);
+		NeteaseLiveResponse<NeteaseLivePage<NeteaseChannellistRet>> listResponse = ChannelManageOverHttps
+				.doAction(NeteaseLiveConfig.ChannellistUrl, listParam, listJavaType);
 		if (listResponse.getCode() == 200) {
 			String currentCid = redisCache.get(CurrentLivePlayerKey);
 			PageInfo<NeteaseChannellistRet> result = new PageInfo<>();
@@ -110,8 +110,8 @@ public class LiveplayerController {
 	public Response<NeteaseChannelstatsRet> getByCid(@PathVariable("cid") String cid) {
 		NeteaseChannelstatsParam param = new NeteaseChannelstatsParam();
 		param.setCid(cid);
-		NeteaseResponse<NeteaseChannelstatsRet> response = ChannelManageOverHttps
-				.doAction(NeteaseConfig.ChannelstatsUrl, param, NeteaseChannelstatsRet.class);
+		NeteaseLiveResponse<NeteaseChannelstatsRet> response = ChannelManageOverHttps
+				.doAction(NeteaseLiveConfig.ChannelstatsUrl, param, NeteaseChannelstatsRet.class);
 		if (response.getCode() == 200) {
 			return new Response<>(response.getRet());
 		} else {
@@ -124,7 +124,7 @@ public class LiveplayerController {
 	public Response<NeteaseAddressRet> getAddressByCid(@PathVariable("cid") String cid) {
 		NeteaseAddressParam param = new NeteaseAddressParam();
 		param.setCid(cid);
-		NeteaseResponse<NeteaseAddressRet> response = ChannelManageOverHttps.doAction(NeteaseConfig.AddressUrl, param,
+		NeteaseLiveResponse<NeteaseAddressRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.AddressUrl, param,
 				NeteaseAddressRet.class);
 		if (response.getCode() == 200) {
 			return new Response<>(response.getRet());
@@ -139,7 +139,7 @@ public class LiveplayerController {
 		NeteaseUpdateParam param = new NeteaseUpdateParam();
 		param.setCid(cid);
 		param.setName(name);
-		NeteaseResponse<NeteaseUpdateRet> response = ChannelManageOverHttps.doAction(NeteaseConfig.UpdateUrl, param,
+		NeteaseLiveResponse<NeteaseUpdateRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.UpdateUrl, param,
 				NeteaseUpdateRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();
@@ -155,7 +155,7 @@ public class LiveplayerController {
 	public Response<String> add(String name) {
 		NeteaseCreateParam param = new NeteaseCreateParam();
 		param.setName(name);
-		NeteaseResponse<NeteaseCreateRet> response = ChannelManageOverHttps.doAction(NeteaseConfig.CreateUrl, param,
+		NeteaseLiveResponse<NeteaseCreateRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.CreateUrl, param,
 				NeteaseCreateRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();
@@ -171,7 +171,7 @@ public class LiveplayerController {
 	public Response<String> delete(@PathVariable("cid") String cid) {
 		NeteaseDeleteParam param = new NeteaseDeleteParam();
 		param.setCid(cid);
-		NeteaseResponse<NeteaseDeleteRet> response = ChannelManageOverHttps.doAction(NeteaseConfig.DeleteUrl, param,
+		NeteaseLiveResponse<NeteaseDeleteRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.DeleteUrl, param,
 				NeteaseDeleteRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();
@@ -187,7 +187,7 @@ public class LiveplayerController {
 	public Response<String> disable(@PathVariable("cid") String cid) {
 		NeteaseDisableParam param = new NeteaseDisableParam();
 		param.setCid(cid);
-		NeteaseResponse<NeteaseDisableRet> response = ChannelManageOverHttps.doAction(NeteaseConfig.DisableUrl, param,
+		NeteaseLiveResponse<NeteaseDisableRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.DisableUrl, param,
 				NeteaseDisableRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();

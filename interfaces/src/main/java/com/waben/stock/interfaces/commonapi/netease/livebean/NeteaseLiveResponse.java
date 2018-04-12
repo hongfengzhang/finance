@@ -1,9 +1,18 @@
-package com.waben.stock.interfaces.commonapi.netease.bean;
+package com.waben.stock.interfaces.commonapi.netease.livebean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+/**
+ * 
+ * 直播统一响应实体
+ * 
+ * @author luomengan
+ *
+ * @param <T>
+ *            响应主信息泛型
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NeteaseResponse<T> {
+public class NeteaseLiveResponse<T> {
 
 	private String msg;
 
