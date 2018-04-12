@@ -40,6 +40,10 @@ public class NeteaseConfig {
 	 */
 	public static final String SetAlwaysRecordUrl = "https://vcloud.163.com/app/channel/setAlwaysRecord";
 	/**
+	 * 2.8禁用频道
+	 */
+	public static final String DisableUrl = "https://vcloud.163.com/app/channel/pause";
+	/**
 	 * 2.20设置录制信息
 	 */
 	public static final String SetupRecordInfoUrl = "https://vcloud.163.com/app/channel/setupRecordInfo";

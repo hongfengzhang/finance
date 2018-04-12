@@ -4,7 +4,7 @@ public class NeteaseCreateParam {
 
 	private String name;
 
-	private int type;
+	private int type = 0;
 
 	public NeteaseCreateParam(String name) {
 		super();

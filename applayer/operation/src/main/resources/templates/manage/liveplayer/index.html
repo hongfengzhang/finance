@@ -8,6 +8,13 @@
 	 -->
 	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.16/datatables.min.css"/>
 	<style type="text/css">
+	table.dataTable thead tr th:first-child:after {
+		content: "";
+		display: none;
+	}
+	table.dataTable thead .sorting_asc {
+    	background-image: none;
+	}
 	.table>thead:first-child>tr:first-child>th {
 	    border: none;
 	    border-right: 1px solid #E3E3E3;
@@ -44,13 +51,16 @@
 		padding-top: 15px;
 		
 	}
-	
+	.text-center {
+		text-align: center;
+	}
 	</style>
 </head>
 <body>
 <div class="content" layout:fragment="content">
 	<div class="row">
 		<div id="container" class="col-md-12">
+			<div><button id="create-btn">创建直播频道</button></div>
 			<table id="mainTable" class="table table-striped table-bordered" width="100%"></table>
 		</div>
 	</div>

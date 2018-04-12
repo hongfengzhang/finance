@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.organization.service;
 
 import java.util.Date;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +28,7 @@ public class OrganizationPublisherService {
 	@Autowired
 	private OrganizationDao orgDao;
 
+	@Transactional
 	public OrganizationPublisher addOrgPublisher(String orgCode, Long publisherId) {
 		if (orgCode == null || "".equals(orgCode.trim())) {
 			return null;
@@ -36,7 +39,11 @@ public class OrganizationPublisherService {
 		}
 		OrganizationPublisher orgPublisher = dao.retrieveByPublisherId(publisherId);
 		if (orgPublisher != null) {
-			throw new ServiceException(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION);
+			if (orgPublisher.getOrgCode().equals(orgCode)) {
+				return orgPublisher;
+			} else {
+				dao.delete(orgPublisher.getId());
+			}
 		}
 		orgPublisher = new OrganizationPublisher();
 		orgPublisher.setOrgCode(orgCode);

@@ -6,6 +6,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class NeteaseChannellistRet {
 
 	/**
+	 * 是否为当前直播频道
+	 */
+	private boolean isCurrent;
+	/**
 	 * 创建频道的时间戳
 	 */
 	private Long ctime;
@@ -136,6 +140,14 @@ public class NeteaseChannellistRet {
 
 	public void setRecordStatus(int recordStatus) {
 		this.recordStatus = recordStatus;
+	}
+
+	public boolean isCurrent() {
+		return isCurrent;
+	}
+
+	public void setCurrent(boolean isCurrent) {
+		this.isCurrent = isCurrent;
 	}
 
 }

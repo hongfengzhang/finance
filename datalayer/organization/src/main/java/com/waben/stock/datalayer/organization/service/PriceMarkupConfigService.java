@@ -180,7 +180,7 @@ public class PriceMarkupConfigService {
 			return result;
 		}
 		List<Organization> orgTree = getPublisherOrgTreeList(publisherId);
-		if (orgTree.size() > 0) {
+		if (orgTree != null && orgTree.size() > 0) {
 			for (Organization org : orgTree) {
 				List<PriceMarkupConfig> configList = priceMarkupConfigDao.retrieveByOrgAndResourceTypeAndResourceId(org,
 						resourceType, resourceId);
