@@ -9,6 +9,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -37,5 +38,12 @@ public class PublisherTeleChargeController {
             pages.get(i).setPublisherPhone(publisherDto.getPhone());
         }
         return new Response<>(pages);
+    }
+
+    @RequestMapping("/ispay/{id}")
+    @ResponseBody
+    public Response<Void> isPay(@PathVariable long id) {
+        Void pay = publisherTeleChargeBusiness.isPay(id);
+        return new Response<>(pay);
     }
 }

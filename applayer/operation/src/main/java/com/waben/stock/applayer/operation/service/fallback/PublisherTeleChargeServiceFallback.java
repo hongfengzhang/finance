@@ -24,4 +24,9 @@ public class PublisherTeleChargeServiceFallback implements PublisherTeleChargeSe
     public Response<PublisherTeleChargeDto> getPublisherTeleCharge(long publisherTeleChargeId) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<Void> setPay(long publisherTeleChargeId) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

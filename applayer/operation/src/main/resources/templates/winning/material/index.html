@@ -55,7 +55,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "../tele/pages",
+                url: "../material/pages",
                 dataType: "json",
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
@@ -92,25 +92,14 @@
                         title: '中奖号码',
                         align: 'center'
                     }, {
-                        field: 'amount',
-                        title: '面值',
+                        field: 'ticketName',
+                        title: '券名称',
                         align: 'center'
-                    }, {
+                    },{
                     field: 'validDate',
                     title: '有效期',
                     align: 'center'
                 }, {
-                        field: 'ispay',
-                        title: '是否充值',
-                        align: 'center',
-                        formatter: function formatter(value, row, index) {
-                            if(row.ispay) {
-                                return "是";
-                            }else {
-                                return "否";
-                            }
-                        }
-                    }, {
                     field: 'status',
                     title: '状态',
                     align: 'center',
@@ -131,51 +120,15 @@
                     title: '操作',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
-
                         return [
-                            '<a rel="tooltip" title="设置" class="btn btn-simple btn-info btn-icon table-action ispay" href="javascript:void(0)">',
-                            '<i class="glyphicon glyphicon-cog"></i>',
+                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
+                            '<i class="fa fa-eye"></i>',
                             '</a>',
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            $(location).prop('href',"../tele/view/"+row.ptId);
-                        },
-                        'click .ispay': function (e, value, row, index) {
-                            if(row.ispay) {
-                                swal("", "已充值.", "warning");
-                                $table.bootstrapTable('refresh');
-                            }else {
-                                swal({
-                                    title: "你确定吗?",
-                                    text: "设置后,数据将不可被恢复!",
-                                    type: "warning",
-                                    showCancelButton: true,
-                                    confirmButtonText: "是的, 确认充值!",
-                                    cancelButtonText: "不了, 取消!",
-                                    closeOnConfirm: false,
-                                    closeOnCancel: false
-                                }, function(isConfirm) {
-                                    if (isConfirm) {
-                                        $.ajax({
-                                            url:'../tele/ispay/'+row.ptId,
-                                            type:'post',
-                                            success:function (response) {
-                                                if(response.code != '200'){
-                                                    swal("Deleted!", "设置失败.", "error");
-                                                    $table.bootstrapTable('refresh');
-                                                }else {
-                                                    swal("Deleted!", "设置成功.", "success");
-                                                    $table.bootstrapTable('refresh');
-                                                }
-                                            }
-                                        })
-                                    } else {
-                                        swal("Cancelled", "操作已取消 :)", "error");
-                                    }
-                                });
-                            }
+                            $(location).prop('href',"../material/view/"+row.ptId);
                         }
                     }
                 }]

@@ -7,6 +7,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.activity.PublisherTeleChargeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +22,7 @@ public class PublisherTeleChargeController implements PublisherTeleChargeInterfa
     private PublisherTeleChargeService publisherTeleChargeService;
 
     @Override
-    public Response<PublisherTeleChargeDto> savePublisherTeleCharge(PublisherTeleChargeDto publisherTeleChargeDto) {
+    public Response<PublisherTeleChargeDto> savePublisherTeleCharge(@RequestBody PublisherTeleChargeDto publisherTeleChargeDto) {
         PublisherTeleChargeDto result = publisherTeleChargeService.savePublisherTeleCharge(publisherTeleChargeDto);
         return new Response<>(result);
     }
@@ -32,9 +34,15 @@ public class PublisherTeleChargeController implements PublisherTeleChargeInterfa
     }
 
     @Override
-    public Response<PublisherTeleChargeDto> getPublisherTeleCharge(long publisherTeleChargeId) {
+    public Response<PublisherTeleChargeDto> getPublisherTeleCharge(@PathVariable long publisherTeleChargeId) {
         PublisherTeleCharge result = publisherTeleChargeService.getPublisherTeleCharge(publisherTeleChargeId);
         PublisherTeleChargeDto publisherTeleChargeDto = CopyBeanUtils.copyBeanProperties(PublisherTeleChargeDto.class, result, false);
         return new Response<>(publisherTeleChargeDto);
+    }
+
+    @Override
+    public Response<Void> setPay(@PathVariable long publisherTeleChargeId) {
+        publisherTeleChargeService.setPay(publisherTeleChargeId);
+        return new Response<>();
     }
 }

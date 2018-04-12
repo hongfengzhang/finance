@@ -9,13 +9,14 @@ import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/tele")
+@RequestMapping("/material")
 public class PublisherTicketController {
 
     @Autowired
@@ -26,7 +27,7 @@ public class PublisherTicketController {
 
     @RequestMapping("/index")
     public String index() {
-        return "winning/tele/index";
+        return "winning/material/index";
     }
     @GetMapping("/pages")
     @ResponseBody
@@ -38,4 +39,5 @@ public class PublisherTicketController {
         }
         return new Response<>(pages);
     }
+
 }

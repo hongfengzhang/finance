@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.activity.service;
 
+import com.waben.stock.datalayer.activity.entity.Activity;
 import com.waben.stock.datalayer.activity.entity.PublisherTeleCharge;
 import com.waben.stock.datalayer.activity.repository.PublisherTeleChargeDao;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
@@ -43,5 +44,13 @@ public class PublisherTeleChargeService {
     public PublisherTeleCharge getPublisherTeleCharge(long publisherTeleChargeId) {
         PublisherTeleCharge publisherTeleCharge = dao.getPublisherTeleCharge(publisherTeleChargeId);
         return publisherTeleCharge;
+    }
+
+    @Transactional
+    public void setPay(long publisherTeleChargeId) {
+        PublisherTeleCharge publisherTeleCharge = dao.getPublisherTeleCharge(publisherTeleChargeId);
+        if(!publisherTeleCharge.isIspay()) {
+            publisherTeleCharge.setIspay(!publisherTeleCharge.isIspay());
+        }
     }
 }

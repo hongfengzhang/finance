@@ -17,7 +17,7 @@ public interface PublisherTeleChargeInterface {
 
 	/**
 	 * 保存优惠券
-	 * @param td
+	 * @param publisherTeleChargeDtod
 	 * @return
 	 */
 	@RequestMapping(value = "/savePublisherTeleCharge", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -35,4 +35,7 @@ public interface PublisherTeleChargeInterface {
 
 	@RequestMapping(value = "/getPublisherTeleCharge/{publisherTeleChargeId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	Response<PublisherTeleChargeDto> getPublisherTeleCharge(@PathVariable("publisherTeleChargeId") long publisherTeleChargeId);
+
+	@RequestMapping(value = "/setPay/{publisherTeleChargeId}", method = RequestMethod.POST)
+	Response<Void> setPay(@PathVariable("publisherTeleChargeId") long publisherTeleChargeId);
 }
