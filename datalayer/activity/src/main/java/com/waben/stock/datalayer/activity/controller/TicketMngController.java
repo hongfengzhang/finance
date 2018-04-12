@@ -10,12 +10,18 @@ import com.waben.stock.datalayer.activity.service.TicketMngService;
 import com.waben.stock.interfaces.dto.activity.TicketAmountDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.activity.TicketMngInterface;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 
  * @author guowei 2018/4/11
  *
  */
+@RestController
+@RequestMapping("/ticketamount")
 public class TicketMngController implements TicketMngInterface{
 	
 	Logger logger = LoggerFactory.getLogger(getClass());
@@ -24,7 +30,7 @@ public class TicketMngController implements TicketMngInterface{
 	private TicketMngService ts;
 	
 	@Override
-	public Response<TicketAmountDto> saveTicketAmount(TicketAmountDto td) {
+	public Response<TicketAmountDto> saveTicketAmount(@RequestBody TicketAmountDto td) {
 		return new Response<>(ts.saveTicket(td));
 	}
 
@@ -34,7 +40,7 @@ public class TicketMngController implements TicketMngInterface{
 	}
 
 	@Override
-	public Response<Void> deleteTicket(long ticketId) {
+	public Response<Void> deleteTicket(@PathVariable long ticketId) {
 		ts.deleteTicket(ticketId);
 		return new Response<>();
 	}

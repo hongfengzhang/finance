@@ -52,6 +52,8 @@ public class TicketAmountDto {
 	 */
 	private String memo;
 
+	private String url;
+
 	public long getTicketAmountId() {
 		return ticketAmountId;
 	}
@@ -123,7 +125,12 @@ public class TicketAmountDto {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
-	
 
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
 }

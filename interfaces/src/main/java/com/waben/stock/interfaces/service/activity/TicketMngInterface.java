@@ -35,7 +35,7 @@ public interface TicketMngInterface {
 	 * @return
 	 */
 	@RequestMapping(value = "/getTicketAmountList", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<List<TicketAmountDto>> getTicketAmountList(@RequestParam int pageno,@RequestParam Integer pagesize);
+	Response<List<TicketAmountDto>> getTicketAmountList(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") Integer pagesize);
 	
 	/**
 	 * 删除优惠券
@@ -43,6 +43,6 @@ public interface TicketMngInterface {
 	 * @return
 	 */
 	@RequestMapping(value = "/deleteTicket/{ticketId}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<Void> deleteTicket(@PathVariable long ticketId);
+	Response<Void> deleteTicket(@PathVariable("ticketId") long ticketId);
 	
 }

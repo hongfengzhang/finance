@@ -38,4 +38,9 @@ public class ActivityMngServiceFallback implements ActivityMngService {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<ActivityDto> getActivityByLocation(String location) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

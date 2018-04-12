@@ -39,4 +39,37 @@ public class ActivityBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+
+    public Void isValid(long id) {
+        Response<Void> response = activityService.setValid(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public ActivityDto save(ActivityDto activityDto) {
+        Response<ActivityDto> response = activityService.saveActivity(activityDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public ActivityDto revision(ActivityDto activityDto) {
+        Response<ActivityDto> response = activityService.saveActivity(activityDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }

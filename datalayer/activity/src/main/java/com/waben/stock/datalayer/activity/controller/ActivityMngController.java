@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.activity.ActivityMngInterface;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,9 +29,8 @@ public class ActivityMngController implements ActivityMngInterface{
 	private ActivityMngService ams;
 	
 	@Override
-	public Response<ActivityDto> saveActivity(ActivityDto adto) {
+	public Response<ActivityDto> saveActivity(@RequestBody ActivityDto adto) {
 		ActivityDto ad = ams.saveActivity(adto);
-		
 		return new Response<>(ad);
 	}
 
@@ -41,10 +41,9 @@ public class ActivityMngController implements ActivityMngInterface{
 	}
 
 	@Override
-	public Response<Void> setValid(long activityId) {
+	public Response<Void> setValid(@PathVariable long activityId) {
 		ams.setValid(activityId);
-		
-		return new Response<Void>();
+		return new Response<>();
 	}
 
 
@@ -54,7 +53,7 @@ public class ActivityMngController implements ActivityMngInterface{
 	}
 
 	@Override
-	public Response<ActivityDto> getActivityByLocation(String location) {
+	public Response<ActivityDto> getActivityByLocation(@PathVariable String location) {
 		return new Response<>(ams.getActivityByLocation(location));
 	}
 

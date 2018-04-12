@@ -42,7 +42,7 @@ public interface ActivityMngInterface {
 	 * @param activityId
 	 * @return
 	 */
-	@RequestMapping(value = "/setValid/{activityId}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/setValid/{activityId}", method = RequestMethod.POST)
 	Response<Void> setValid(@PathVariable("activityId") long activityId);
 	
 	
