@@ -6,10 +6,10 @@ import com.waben.stock.datalayer.activity.entity.Activity;
 
 public interface ActivityDao  {
 	
-	public void saveActivity(Activity a);
+	void saveActivity(Activity a);
 	
-	public List<Activity> getActivityList(int pageno,int pagesize);
+	List<Activity> getActivityList(int pageno,int pagesize);
 	
-	public Activity getActivity(long activityId);
-	public Activity getActivityByLocation(String location);
+	Activity getActivity(long activityId);
+	Activity getActivityByLocation(String location);
 }

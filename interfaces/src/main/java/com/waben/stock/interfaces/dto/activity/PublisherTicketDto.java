@@ -1,14 +1,10 @@
-package com.waben.stock.datalayer.activity.entity;
+package com.waben.stock.interfaces.dto.activity;
 
-import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
+import org.springframework.data.annotation.Id;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * 用户实物实体
@@ -17,20 +13,16 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  */
 
-@Entity
-@Table(name = "publisher_ticket")
-public class PublisherTicket {
+
+public class PublisherTicketDto {
 	
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long ptId;
 	private long publisherId;
 	
-	
+	private String publisherPhone;
 	/**
 	 * 有效期
 	 */
-	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Date validDate;
 	
 	private String ticketName;
@@ -44,21 +36,6 @@ public class PublisherTicket {
 	 * 备注
 	 */
 	private String memo;
-	
-	/**
-	 * 活动参与关联Id
-	 * 
-	 */
-	private long apId;
-
-	
-	public long getApId() {
-		return apId;
-	}
-
-	public void setApId(long apId) {
-		this.apId = apId;
-	}
 
 	public long getPtId() {
 		return ptId;
@@ -74,6 +51,14 @@ public class PublisherTicket {
 
 	public void setPublisherId(long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public String getPublisherPhone() {
+		return publisherPhone;
+	}
+
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
 	}
 
 	public Date getValidDate() {

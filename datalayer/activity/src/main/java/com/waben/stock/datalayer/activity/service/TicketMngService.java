@@ -48,4 +48,9 @@ public class TicketMngService {
 	public void deleteTicket(long ticketId) {
 		td.deleteTicket(ticketId);
 	}
+
+    public TicketAmount getTicketAmount(long ticketAmountId) {
+		TicketAmount ticketAmount = td.getTicketAmount(ticketAmountId);
+		return ticketAmount;
+	}
 }

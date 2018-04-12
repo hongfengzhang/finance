@@ -38,7 +38,7 @@
                 <div class="col-md-1">
                     <div class="form-group">
                         <label class="col-md-5"></label>
-                        <a id="add" class="btn btn-fill btn-info" href="../activity/add">添加</a>
+                        <a id="add" class="btn btn-fill btn-info" href="../ticket/add">添加</a>
                     </div>
                 </div>
                 <table id="bootstrap-table" class="table text-center">
@@ -61,7 +61,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "../activity/pages",
+                url: "../ticket/pages",
                 dataType: "json",
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
@@ -92,18 +92,22 @@
                     }
                     return query;
                 },
-                columns: [{
-                    field: 'activityId',
-                    title: 'ID',
-                    align: 'center'
-                }, {
-                    field: 'subject',
-                    title: '主标题',
-                    align: 'center'
-                }, {
-                    field: 'subject2',
-                    title: '副标题',
-                    align: 'center'
+                columns: [
+                    {
+                        field: 'ticketName',
+                        title: '券名称',
+                        align: 'center'
+                    }, {
+                    field: 'ticketType',
+                    title: '券类型',
+                    align: 'center',
+                    formatter: function formatter(value, row, index) {
+                        if(row.ticketType==1) {
+                            return "期权抵扣券";
+                        }else if(row.ticketType==2) {
+                            return "话费券";
+                        }
+                    }
                 }, {
                     field: 'startTime',
                     title: '开始时间',
@@ -113,77 +117,21 @@
                     title: '结束时间',
                     align: 'center'
                 }, {
-                    field: 'isvalid',
-                    title: '是否生效',
-                    align: 'center',
-                    formatter: function formatter(value, row, index) {
-                        if(row.isvalid) {
-                            return "是";
-                        }else {
-                            return "否";
-                        }
-                    }
-                }, {
-                    field: 'activityType',
-                    title: '活动类型',
-                    align: 'center',
-                    formatter: function formatter(value, row, index) {
-                        if(row.activityType==0) {
-                            return "优股网";
-                        }else if(row.activityType==1) {
-                            return "合作方";
-                        }
-                    }
-                }, {
-                    field: 'qualification',
-                    title: '活动资格',
-                    align: 'center',
-                    formatter: function formatter(value, row, index) {
-                        if(row.qualification==0) {
-                            return "所有用户";
-                        }
-                    }
-                }, {
-                    field: 'usercount',
-                    title: '参与量',
+                    field: 'amount',
+                    title: '面值',
                     align: 'center'
                 }, {
-                    field: 'pv',
-                    title: '页面浏览量',
+                    field: 'num',
+                    title: '数量',
                     align: 'center'
                 }, {
-                    field: 'uv',
-                    title: '用户浏览量',
+                    field: 'usednum',
+                    title: '使用数量',
                     align: 'center'
                 }, {
-                    field: 'isend',
-                    title: '是否结束',
-                    align: 'center',
-                    formatter: function formatter(value, row, index) {
-                        if(row.isend) {
-                            return "是";
-                        }else {
-                            return "否";
-                        }
-                    }
-                }, {
-                    field: 'awardType',
-                    title: '奖品类型',
-                    align: 'center',
-                    formatter: function formatter(value, row, index) {
-                        var split = row.awardType.split(",");
-                        var value = "";
-                        $.each(split, function(i,val){
-                           if(val==1) {
-                               value = value+"期权抵扣券,";
-                           }else if(val==2) {
-                               value = value+"话费券,";
-                           }else if(val==3) {
-                               value = value+"实物奖品,";
-                           }
-                        });
-                        return value;
-                    }
+                    field: 'memo',
+                    title: '备注',
+                    align: 'center'
                 }, {
                     title: '操作',
                     align: 'center',
@@ -195,31 +143,48 @@
                             '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
                             '<i class="fa fa-edit"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="是否有效" class="btn btn-simple btn-danger btn-icon table-action isvalid" href="javascript:void(0)">',
-                            '<i class="glyphicon glyphicon-cog"></i>',
+                            '<a rel="tooltip" title="是否有效" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
+                            '<i class="fa fa-trash"></i>',
                             '</a>'
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
-                            $(location).prop('href',"../activity/view/"+row.activityId);
+                            $(location).prop('href',"../ticket/view/"+row.ticketAmountId);
                         },
                         'click .edit': function (e, value, row, index) {
-                            $(location).prop('href',"../activity/edit/"+row.activityId);
+                            $(location).prop('href',"../ticket/edit/"+row.ticketAmountId);
                         },
-                        'click .isvalid': function (e, value, row, index) {
-                            $.ajax({
-                                url:'../activity/isvalid/'+row.activityId,
-                                type:'post',
-                                success:function (response) {
-                                    if(response.code==200) {
-                                        swal("Update!", "设置成功.", "success");
-                                    }else {
-                                        swal("Update!", "设置失败.", "error");
-                                    }
-                                    $table.bootstrapTable('refresh');
+                        'click .remove': function (e, value, row, index) {
+                            swal({
+                                title: "你确定吗?",
+                                text: "删除后,数据将不可被恢复!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 删除!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function(isConfirm) {
+                                if (isConfirm) {
+
+                                    $.ajax({
+                                        url:'../ticket/delete/'+row.ticketAmountId,
+                                        type:'post',
+                                        success:function (response) {
+                                            if(response.code != '200'){
+                                                swal("Deleted!", "数据删除失败.", "error");
+                                                $table.bootstrapTable('refresh');
+                                            }else {
+                                                swal("Deleted!", "数据删除成功.", "success");
+                                                $table.bootstrapTable('refresh');
+                                            }
+                                        }
+                                    })
+                                } else {
+                                    swal("Cancelled", "数据已取消删除 :)", "error");
                                 }
-                            })
+                            });
                         }
                     }
                 }]

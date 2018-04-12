@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,5 +34,46 @@ public class ActivityController {
     public Response<List<ActivityDto>> pages(int pageNo,Integer pageSize) {
         List<ActivityDto> pages = activityBusiness.pages(pageNo, pageSize);
         return new Response<>(pages);
+    }
+
+    @RequestMapping("/isvalid/{id}")
+    @ResponseBody
+    public Response<Void> isValid(@PathVariable long id) {
+        Void valid = activityBusiness.isValid(id);
+        return new Response<>(valid);
+    }
+
+    @RequestMapping("/view/{id}")
+    public String view(@PathVariable long id, ModelMap map) {
+        ActivityDto activity = activityBusiness.findActivityById(id);
+        map.addAttribute("activity",activity);
+        return "activity/manage/view";
+    }
+
+    @RequestMapping("/edit/{id}")
+    public String edit(@PathVariable long id, ModelMap map) {
+        ActivityDto activity = activityBusiness.findActivityById(id);
+        map.addAttribute("activity",activity);
+        return "activity/manage/edit";
+    }
+
+
+    @RequestMapping("/add")
+    public String add() {
+        return "activity/manage/add";
+    }
+
+    @RequestMapping("/save")
+    @ResponseBody
+    public Response<ActivityDto> add(ActivityDto activityDto) {
+        ActivityDto result = activityBusiness.save(activityDto);
+        return new Response<>(result);
+    }
+
+    @RequestMapping("/modify")
+    @ResponseBody
+    public Response<ActivityDto> modify(ActivityDto activityDto) {
+        ActivityDto result = activityBusiness.revision(activityDto);
+        return new Response<>(result);
     }
 }

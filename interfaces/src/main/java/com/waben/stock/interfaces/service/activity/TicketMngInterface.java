@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.activity;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public interface TicketMngInterface {
 	 * @return
 	 */
 	@RequestMapping(value = "/getTicketAmountList", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<List<TicketAmountDto>> getTicketAmountList(@RequestParam int pageno,@RequestParam Integer pagesize);
+	Response<List<TicketAmountDto>> getTicketAmountList(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") Integer pagesize);
 	
 	/**
 	 * 删除优惠券
@@ -43,6 +44,8 @@ public interface TicketMngInterface {
 	 * @return
 	 */
 	@RequestMapping(value = "/deleteTicket/{ticketId}", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<Void> deleteTicket(@PathVariable long ticketId);
-	
+	Response<Void> deleteTicket(@PathVariable("ticketId") long ticketId);
+
+	@RequestMapping(value = "/getTicketAmount/{ticketAmountId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	Response<TicketAmountDto> getTicketAmount(@PathVariable("ticketAmountId") long ticketAmountId);
 }
