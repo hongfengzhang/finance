@@ -34,4 +34,9 @@ public class TicketDaoImpl implements TicketDao{
 	public void deleteTicket(long ticketId) {
 		tr.delete(ticketId);
 	}
+
+	@Override
+	public TicketAmount getTicketAmount(long ticketAmountId) {
+		return tr.findOne(ticketAmountId);
+	}
 }

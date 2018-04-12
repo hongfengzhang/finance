@@ -35,12 +35,6 @@
                 <div class="toolbar">
                     <!--        Here you can write extra buttons/actions for the toolbar              -->
                 </div>
-                <div class="col-md-1">
-                    <div class="form-group">
-                        <label class="col-md-5"></label>
-                        <a id="add" class="btn btn-fill btn-info" href="../ticket/add">添加</a>
-                    </div>
-                </div>
                 <table id="bootstrap-table" class="table text-center">
                     <thead>
 
@@ -61,7 +55,7 @@
         var $table = $('#bootstrap-table');
         $(function () {
             $table.bootstrapTable({
-                url: "../ticket/pages",
+                url: "../dedu/pages",
                 dataType: "json",
                 cache: true, // 不缓存
                 striped: true, // 隔行加亮
@@ -94,40 +88,47 @@
                 },
                 columns: [
                     {
+                        field: 'publisherPhone',
+                        title: '中奖号码',
+                        align: 'center'
+                    }, {
                         field: 'ticketName',
                         title: '券名称',
                         align: 'center'
                     }, {
-                    field: 'ticketType',
-                    title: '券类型',
+                        field: 'amount',
+                        title: '面值',
+                        align: 'center'
+                    }, {
+                    field: 'useType',
+                    title: '使用方式',
                     align: 'center',
                     formatter: function formatter(value, row, index) {
-                        if(row.ticketType==1) {
-                            return "期权抵扣券";
-                        }else if(row.ticketType==2) {
-                            return "话费券";
+                        if(row.useType==1) {
+                            return "限期权申购使用";
                         }
                     }
                 }, {
-                    field: 'startTime',
-                    title: '开始时间',
+                    field: 'useTypeName',
+                    title: '使用方式名称',
                     align: 'center'
                 }, {
-                    field: 'endTime',
-                    title: '结束时间',
+                    field: 'validDate',
+                    title: '有效期',
                     align: 'center'
                 }, {
-                    field: 'amount',
-                    title: '面值',
-                    align: 'center'
-                }, {
-                    field: 'num',
-                    title: '数量',
-                    align: 'center'
-                }, {
-                    field: 'usednum',
-                    title: '使用数量',
-                    align: 'center'
+                    field: 'status',
+                    title: '状态',
+                    align: 'center',
+                        formatter: function formatter(value, row, index) {
+                            if(row.status==1) {
+                                return "未使用";
+                            }else if(row.status==1) {
+                                return "已使用";
+                            }else if(row.status==1) {
+                                return "已过期";
+                            }
+                        }
                 }, {
                     field: 'memo',
                     title: '备注',
@@ -140,51 +141,11 @@
                             '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
                             '<i class="fa fa-eye"></i>',
                             '</a>',
-                            '<a rel="tooltip" title="修改" class="btn btn-simple btn-warning btn-icon table-action edit" href="javascript:void(0)">',
-                            '<i class="fa fa-edit"></i>',
-                            '</a>',
-                            '<a rel="tooltip" title="是否有效" class="btn btn-simple btn-danger btn-icon table-action remove" href="javascript:void(0)">',
-                            '<i class="fa fa-trash"></i>',
-                            '</a>'
                         ].join('');
                     },
                     events: {
                         'click .view': function (e, value, row, index) {
                             $(location).prop('href',"../ticket/view/"+row.ticketAmountId);
-                        },
-                        'click .edit': function (e, value, row, index) {
-                            $(location).prop('href',"../ticket/edit/"+row.ticketAmountId);
-                        },
-                        'click .remove': function (e, value, row, index) {
-                            swal({
-                                title: "你确定吗?",
-                                text: "删除后,数据将不可被恢复!",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonText: "是的, 删除!",
-                                cancelButtonText: "不了, 取消!",
-                                closeOnConfirm: false,
-                                closeOnCancel: false
-                            }, function(isConfirm) {
-                                if (isConfirm) {
-
-                                    $.ajax({
-                                        url:'../ticket/delete/'+row.ticketAmountId,
-                                        type:'post',
-                                        success:function (response) {
-                                            if(response.code != '200'){
-                                                swal("Deleted!", "数据删除失败.", "error");
-                                                $table.bootstrapTable('refresh');
-                                            }else {
-                                                swal("Deleted!", "数据删除成功.", "success");
-                                                $table.bootstrapTable('refresh');
-                                            }
-                                        }
-                                    })
-                                } else {
-                                    swal("Cancelled", "数据已取消删除 :)", "error");
-                                }
-                            });
                         }
                     }
                 }]
