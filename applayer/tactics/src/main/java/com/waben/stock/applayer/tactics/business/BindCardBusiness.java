@@ -95,7 +95,7 @@ public class BindCardBusiness {
 		if (bankInfoDto == null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_NOTRECOGNITION_EXCEPTION);
 		}
-		bindCard.setBankName(bankInfoDto.getBankName() != null ? bankInfoDto.getBankName().split("|")[0] : null);
+		bindCard.setBankName(bankInfoDto.getBankName() != null ? bankInfoDto.getBankName().split("\\|")[0] : null);
 		bindCard.setBankCode(bankInfoDto.getBankCode());
 		// bindCard.setContractNo(this.getWabenContractNo(bindCard));
 		// 执行绑卡操作
