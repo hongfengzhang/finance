@@ -1,8 +1,8 @@
-package com.waben.stock.interfaces.commonapi.netease.bean;
+package com.waben.stock.interfaces.commonapi.netease.livebean;
 
 import java.util.List;
 
-public class NeteasePage<T> {
+public class NeteaseLivePage<T> {
 
 	private int pnum;
 

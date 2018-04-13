@@ -6,7 +6,7 @@ package com.waben.stock.interfaces.commonapi.netease.config;
  * @author luomengan
  *
  */
-public class NeteaseConfig {
+public class NeteaseLiveConfig {
 
 	public static final String AppKey = "d0fc8a8448dabce125efce3dcc90c611";
 

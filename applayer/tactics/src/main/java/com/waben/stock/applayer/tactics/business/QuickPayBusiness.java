@@ -544,6 +544,8 @@ public class QuickPayBusiness {
         request.put("tradeType",WBConfig.protocol_type);
         request.put("merchantNo", wbConfig.getMerchantNo());
         request.put("timeStart",time.format(new Date()));
+        request.put("product", "quick");
+        request.put("payment", "d0");
         String signStr = "";
         for (String keys : request.keySet()) {
             signStr += request.get(keys);
@@ -586,6 +588,7 @@ public class QuickPayBusiness {
         map.put("amount", (amount.movePointRight(2)).toString());
         map.put("name", realNameDto.getName());
         map.put("tradeType", WBConfig.tradeType);
+        map.put("payment", "auth");
         map.put("timeStart", timeStamp);
         map.put("outTradeNo", paymentNo);
         map.put("frontUrl", "H5".equals(endType) ? wbConfig.getH5ProxyfrontUrl() : wbConfig.getFrontUrl());

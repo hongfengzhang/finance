@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.commonapi.netease.bean;
+package com.waben.stock.interfaces.commonapi.netease.livebean;
 
 public class NeteaseChannelstatsParam {
 

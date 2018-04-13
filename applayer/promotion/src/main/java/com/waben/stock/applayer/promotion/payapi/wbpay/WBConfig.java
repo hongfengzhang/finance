@@ -24,7 +24,7 @@ public class WBConfig {
 	public static final String protocol_url = "http://b.waben.com.cn/api/protocol/pay";
 	public static final String sign_type = "md5";
 	public static final String card_type = "cash_card";
-	public static final String protocol_type = "protocol_d0";
+	public static final String protocol_type = "protocol_wap";
 
 	public String getMerchantNo() {
 		return merchantNo;

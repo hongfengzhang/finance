@@ -1,17 +1,14 @@
-package com.waben.stock.interfaces.commonapi.netease.bean;
+package com.waben.stock.interfaces.commonapi.netease.livebean;
 
-public class NeteaseCreateParam {
+public class NeteaseUpdateParam {
+
+	private String cid;
 
 	private String name;
 
 	private int type = 0;
 
-	public NeteaseCreateParam(String name) {
-		super();
-		this.name = name;
-	}
-
-	public NeteaseCreateParam() {
+	public NeteaseUpdateParam() {
 		super();
 	}
 
@@ -29,6 +26,14 @@ public class NeteaseCreateParam {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public String getCid() {
+		return cid;
+	}
+
+	public void setCid(String cid) {
+		this.cid = cid;
 	}
 
 }

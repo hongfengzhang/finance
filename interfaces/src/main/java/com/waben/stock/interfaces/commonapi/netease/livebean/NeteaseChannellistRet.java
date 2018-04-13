@@ -1,10 +1,14 @@
-package com.waben.stock.interfaces.commonapi.netease.bean;
+package com.waben.stock.interfaces.commonapi.netease.livebean;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class NeteaseChannelstatsRet {
+public class NeteaseChannellistRet {
 
+	/**
+	 * 是否为当前直播频道
+	 */
+	private boolean isCurrent;
 	/**
 	 * 创建频道的时间戳
 	 */
@@ -48,7 +52,7 @@ public class NeteaseChannelstatsRet {
 	/**
 	 * 网易云内部维护用字段，用户不需关注。后续版本将删除，请勿调用
 	 */
-	private String recordStatus;
+	private int recordStatus;
 
 	public Long getCtime() {
 		return ctime;
@@ -130,12 +134,20 @@ public class NeteaseChannelstatsRet {
 		this.filename = filename;
 	}
 
-	public String getRecordStatus() {
+	public int getRecordStatus() {
 		return recordStatus;
 	}
 
-	public void setRecordStatus(String recordStatus) {
+	public void setRecordStatus(int recordStatus) {
 		this.recordStatus = recordStatus;
+	}
+
+	public boolean isCurrent() {
+		return isCurrent;
+	}
+
+	public void setCurrent(boolean isCurrent) {
+		this.isCurrent = isCurrent;
 	}
 
 }
