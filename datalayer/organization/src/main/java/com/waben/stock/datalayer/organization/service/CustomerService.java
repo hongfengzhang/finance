@@ -51,7 +51,7 @@ public class CustomerService {
 				"select t1.id, t1.phone, t4.code, t4.name, t1.create_time, t3.balance, t3.available_balance, t3.frozen_capital, t1.end_type from publisher t1 "
 						+ "INNER JOIN p_organization_publisher t2 on t1.id=t2.publisher_id and t2.org_code like '%s%%' "
 						+ "LEFT JOIN p_organization t4 on t2.org_code=t4.code "
-						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id where 1=1 %s %s %s %s limit "
+						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id where 1=1 %s %s %s %s order by t1.create_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
 				query.getCurrentOrgCode(), publisherIdCondition, publisherPhoneCondition, orgCodeCondition,
 				orgNameCondition);

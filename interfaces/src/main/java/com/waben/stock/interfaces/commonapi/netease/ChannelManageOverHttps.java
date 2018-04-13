@@ -7,15 +7,21 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.databind.JavaType;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseChannellistParam;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseChannellistRet;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteasePage;
-import com.waben.stock.interfaces.commonapi.netease.bean.NeteaseResponse;
-import com.waben.stock.interfaces.commonapi.netease.config.NeteaseConfig;
+import com.waben.stock.interfaces.commonapi.netease.config.NeteaseLiveConfig;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseChannellistParam;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseChannellistRet;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseLivePage;
+import com.waben.stock.interfaces.commonapi.netease.livebean.NeteaseLiveResponse;
 import com.waben.stock.interfaces.commonapi.netease.util.CheckSumBuilder;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.RandomUtil;
 
+/**
+ * 直播频道统一请求网易云
+ * 
+ * @author luomengan
+ *
+ */
 public class ChannelManageOverHttps {
 
 	public static RestTemplate restTemplate = new RestTemplate();
@@ -25,15 +31,15 @@ public class ChannelManageOverHttps {
 	/**
 	 * 统一请求网易云直播
 	 */
-	public static <T> NeteaseResponse<T> doAction(String requestUrl, Object param, Class<T> clazz) {
+	public static <T> NeteaseLiveResponse<T> doAction(String requestUrl, Object param, Class<T> clazz) {
 		// 设置请求头
 		HttpHeaders requestHeaders = new HttpHeaders();
-		requestHeaders.set("AppKey", NeteaseConfig.AppKey);
+		requestHeaders.set("AppKey", NeteaseLiveConfig.AppKey);
 		String nonce = RandomUtil.generateNonceStr();
 		requestHeaders.set("Nonce", nonce);
 		String curTime = String.valueOf(System.currentTimeMillis() / 1000L);
 		requestHeaders.set("CurTime", curTime);
-		requestHeaders.set("CheckSum", CheckSumBuilder.getCheckSum(NeteaseConfig.AppSecret, nonce, curTime));
+		requestHeaders.set("CheckSum", CheckSumBuilder.getCheckSum(NeteaseLiveConfig.AppSecret, nonce, curTime));
 		requestHeaders.set("Content-Type", "application/json;charset=utf-8");
 		// 请求对象
 		HttpEntity<String> requestEntity = new HttpEntity<String>(JacksonUtil.encode(param), requestHeaders);
@@ -41,23 +47,23 @@ public class ChannelManageOverHttps {
 		String resultJson = restTemplate.postForObject(requestUrl, requestEntity, String.class);
 		logger.info("请求网易云信响应:" + resultJson);
 		// 响应对象
-		NeteaseResponse<T> responseObj = JacksonUtil.decode(resultJson,
-				JacksonUtil.getGenericType(NeteaseResponse.class, clazz));
+		NeteaseLiveResponse<T> responseObj = JacksonUtil.decode(resultJson,
+				JacksonUtil.getGenericType(NeteaseLiveResponse.class, clazz));
 		return responseObj;
 	}
 
 	/**
 	 * 统一请求网易云直播
 	 */
-	public static <T> NeteaseResponse<T> doAction(String requestUrl, Object param, JavaType javaType) {
+	public static <T> NeteaseLiveResponse<T> doAction(String requestUrl, Object param, JavaType javaType) {
 		// 设置请求头
 		HttpHeaders requestHeaders = new HttpHeaders();
-		requestHeaders.set("AppKey", NeteaseConfig.AppKey);
+		requestHeaders.set("AppKey", NeteaseLiveConfig.AppKey);
 		String nonce = RandomUtil.generateNonceStr();
 		requestHeaders.set("Nonce", nonce);
 		String curTime = String.valueOf(System.currentTimeMillis() / 1000L);
 		requestHeaders.set("CurTime", curTime);
-		requestHeaders.set("CheckSum", CheckSumBuilder.getCheckSum(NeteaseConfig.AppSecret, nonce, curTime));
+		requestHeaders.set("CheckSum", CheckSumBuilder.getCheckSum(NeteaseLiveConfig.AppSecret, nonce, curTime));
 		requestHeaders.set("Content-Type", "application/json;charset=utf-8");
 		// 请求对象
 		HttpEntity<String> requestEntity = new HttpEntity<String>(JacksonUtil.encode(param), requestHeaders);
@@ -65,8 +71,8 @@ public class ChannelManageOverHttps {
 		String resultJson = restTemplate.postForObject(requestUrl, requestEntity, String.class);
 		logger.info("请求网易云信响应:" + resultJson);
 		// 响应对象
-		NeteaseResponse<T> responseObj = JacksonUtil.decode(resultJson,
-				JacksonUtil.getGenericType(NeteaseResponse.class, javaType));
+		NeteaseLiveResponse<T> responseObj = JacksonUtil.decode(resultJson,
+				JacksonUtil.getGenericType(NeteaseLiveResponse.class, javaType));
 		return responseObj;
 	}
 
@@ -80,8 +86,8 @@ public class ChannelManageOverHttps {
 
 		// 获取频道列表
 		NeteaseChannellistParam listParam = new NeteaseChannellistParam();
-		JavaType listJavaType = JacksonUtil.getGenericType(NeteasePage.class, NeteaseChannellistRet.class);
-		NeteaseResponse<NeteasePage<NeteaseChannellistRet>> listResponse = doAction(NeteaseConfig.ChannellistUrl,
+		JavaType listJavaType = JacksonUtil.getGenericType(NeteaseLivePage.class, NeteaseChannellistRet.class);
+		NeteaseLiveResponse<NeteaseLivePage<NeteaseChannellistRet>> listResponse = doAction(NeteaseLiveConfig.ChannellistUrl,
 				listParam, listJavaType);
 		System.out.println("获取频道列表响应结果:" + JacksonUtil.encode(listResponse));
 

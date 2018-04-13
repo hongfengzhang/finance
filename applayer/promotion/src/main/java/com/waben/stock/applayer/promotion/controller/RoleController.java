@@ -115,7 +115,6 @@ public class RoleController {
         return new Response<>(menuVos);
     }
 
-    @PreAuthorize("hasRole('LOOK_AUTHORIZE')")
     @RequestMapping("/{id}")
     @ResponseBody
     public Response<RoleVo> fetchById(@PathVariable Long id){

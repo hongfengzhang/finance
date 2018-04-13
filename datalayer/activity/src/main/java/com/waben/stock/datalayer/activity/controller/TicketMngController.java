@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.activity.controller;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,12 @@ public class TicketMngController implements TicketMngInterface{
 	public Response<Void> deleteTicket(@PathVariable long ticketId) {
 		ts.deleteTicket(ticketId);
 		return new Response<>();
+	}
+
+	@Override
+	public Response<TicketAmountDto> getTicketAmount(@PathVariable long ticketAmountId) {
+		TicketAmountDto ticketAmountDto = CopyBeanUtils.copyBeanProperties(TicketAmountDto.class, ts.getTicketAmount(ticketAmountId), false);
+		return new Response<>(ticketAmountDto);
 	}
 
 }

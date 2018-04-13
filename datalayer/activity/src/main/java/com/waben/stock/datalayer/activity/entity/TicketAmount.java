@@ -56,8 +56,7 @@ public class TicketAmount {
 	 * 数量
 	 */
 	private int num;
-	
-	
+
 	
 	/**
 	 * 使用数量

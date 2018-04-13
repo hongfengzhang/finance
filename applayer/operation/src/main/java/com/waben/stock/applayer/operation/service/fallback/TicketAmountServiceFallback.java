@@ -23,4 +23,9 @@ public class TicketAmountServiceFallback implements TicketAmountService {
     public Response<Void> deleteTicket(long ticketId) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<TicketAmountDto> getTicketAmount(long ticketAmountId) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }
