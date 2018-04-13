@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.activity.entity;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,6 +56,8 @@ public class Activity {
 	/**
 	 * 活动详情
 	 */
+	
+	@Column(length=2000)
 	private String content;
 	
 	/**
