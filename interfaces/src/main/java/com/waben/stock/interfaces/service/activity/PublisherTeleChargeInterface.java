@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.activity;
 
+import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.http.MediaType;
@@ -38,4 +39,7 @@ public interface PublisherTeleChargeInterface {
 
 	@RequestMapping(value = "/setPay/{publisherTeleChargeId}", method = RequestMethod.POST)
 	Response<Void> setPay(@PathVariable("publisherTeleChargeId") long publisherTeleChargeId);
+
+	@RequestMapping(value = "/getPublisherTeleChargeByApId/{apId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	Response<PublisherTeleChargeDto> getPublisherTeleChargeByApId(@PathVariable("apId") long apId);
 }

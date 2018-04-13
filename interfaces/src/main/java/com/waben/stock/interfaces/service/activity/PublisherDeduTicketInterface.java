@@ -27,4 +27,7 @@ public interface PublisherDeduTicketInterface {
 
 	@RequestMapping(value = "/getPublisherDeduTicket/{publisherDeduTicketId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	Response<PublisherDeduTicketDto> getPublisherDeduTicket(@PathVariable("publisherDeduTicketId") long publisherDeduTicketId);
+
+	@RequestMapping(value = "/getPublisherDeduTicketByApId/{apId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	Response<PublisherDeduTicketDto> getPublisherDeduTicketByApId(@PathVariable("apId") long apId);
 }

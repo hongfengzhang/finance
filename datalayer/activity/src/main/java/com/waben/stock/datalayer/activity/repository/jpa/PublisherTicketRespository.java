@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PublisherTicketRespository extends JpaRepository<PublisherTicket, Long>{
 
+    PublisherTicket findPublisherTicketByApId(long apId);
 }

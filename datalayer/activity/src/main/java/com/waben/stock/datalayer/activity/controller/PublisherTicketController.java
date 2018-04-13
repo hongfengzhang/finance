@@ -7,6 +7,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.activity.PublisherTicketInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,7 +22,7 @@ public class PublisherTicketController implements PublisherTicketInterface{
     private PublisherTicketService publisherTicketService;
 
     @Override
-    public Response<PublisherTicketDto> savePublisherTicket(PublisherTicketDto publisherTicketDto) {
+    public Response<PublisherTicketDto> savePublisherTicket(@RequestBody PublisherTicketDto publisherTicketDto) {
         PublisherTicketDto result = publisherTicketService.savePublisherTicket(publisherTicketDto);
         return new Response<>(result);
     }
@@ -32,8 +34,15 @@ public class PublisherTicketController implements PublisherTicketInterface{
     }
 
     @Override
-    public Response<PublisherTicketDto> getPublisherTicket(long publisherTicketId) {
+    public Response<PublisherTicketDto> getPublisherTicket(@PathVariable long publisherTicketId) {
         PublisherTicket result = publisherTicketService.getPublisherTicket(publisherTicketId);
+        PublisherTicketDto publisherTicketDto = CopyBeanUtils.copyBeanProperties(PublisherTicketDto.class, result, false);
+        return new Response<>(publisherTicketDto);
+    }
+
+    @Override
+    public Response<PublisherTicketDto> getPublisherTicketByApId(@PathVariable long apId) {
+        PublisherTicket result = publisherTicketService.getPublisherTicketByApId(apId);
         PublisherTicketDto publisherTicketDto = CopyBeanUtils.copyBeanProperties(PublisherTicketDto.class, result, false);
         return new Response<>(publisherTicketDto);
     }

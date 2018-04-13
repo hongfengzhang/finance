@@ -11,4 +11,6 @@ public interface PublisherTicketDao {
 	List<PublisherTicket> getPublisherTicketList(int pageno, int pagesize);
 
 	PublisherTicket getPublisherTicket(long PublisherTicketId);
+
+    PublisherTicket getPublisherTicketByApId(long apId);
 }

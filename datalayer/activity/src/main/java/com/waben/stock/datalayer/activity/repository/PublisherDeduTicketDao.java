@@ -13,4 +13,6 @@ public interface PublisherDeduTicketDao {
 	List<PublisherDeduTicket> getPublisherDeduTicketList(int pageno, int pagesize);
 
 	PublisherDeduTicket getPublisherDeduTicket(long publisherDeduTicketId);
+
+    PublisherDeduTicket getPublisherDeduTicketByActivityPublisherId(long activityPublisherId);
 }

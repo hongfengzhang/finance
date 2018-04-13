@@ -12,4 +12,6 @@ public interface PublisherTeleChargeDao {
 	List<PublisherTeleCharge> getPublisherTeleChargeList(int pageno, int pagesize);
 
 	PublisherTeleCharge getPublisherTeleCharge(long publisherTeleChargeId);
+
+    PublisherTeleCharge getPublisherTeleChargeByApId(long apId);
 }
