@@ -24,4 +24,10 @@ public class PublisherTicketServiceFallback implements PublisherTicketService{
     public Response<PublisherTicketDto> getPublisherTicket(long publisherTicketId) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<List<PublisherTicketDto>> getPublisherTicketsByApId(long apId) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 }

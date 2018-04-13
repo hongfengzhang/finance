@@ -14,5 +14,5 @@ public interface PublisherDeduTicketDao {
 
 	PublisherDeduTicket getPublisherDeduTicket(long publisherDeduTicketId);
 
-    PublisherDeduTicket getPublisherDeduTicketByActivityPublisherId(long activityPublisherId);
+    List<PublisherDeduTicket> getPublisherDeduTicketsByApId(long activityPublisherId);
 }

@@ -38,5 +38,5 @@ public interface PublisherTicketInterface {
 	Response<PublisherTicketDto> getPublisherTicket(@PathVariable("publisherTicketId") long publisherTicketId);
 
 	@RequestMapping(value = "/getPublisherTicketByApId/{apId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	Response<PublisherTicketDto> getPublisherTicketByApId(@PathVariable("apId") long apId);
+	Response<List<PublisherTicketDto>> getPublisherTicketsByApId(@PathVariable("apId") long apId);
 }

@@ -36,7 +36,7 @@ public class PublisherTicketDaoImpl implements PublisherTicketDao {
 	}
 
 	@Override
-	public PublisherTicket getPublisherTicketByApId(long apId) {
-		return respository.findPublisherTicketByApId(apId);
+	public List<PublisherTicket> getPublisherTicketsByApId(long apId) {
+		return respository.findPublisherTicketsByApId(apId);
 	}
 }

@@ -13,5 +13,5 @@ public interface PublisherTeleChargeDao {
 
 	PublisherTeleCharge getPublisherTeleCharge(long publisherTeleChargeId);
 
-    PublisherTeleCharge getPublisherTeleChargeByApId(long apId);
+    List<PublisherTeleCharge> getPublisherTeleChargesByApId(long apId);
 }

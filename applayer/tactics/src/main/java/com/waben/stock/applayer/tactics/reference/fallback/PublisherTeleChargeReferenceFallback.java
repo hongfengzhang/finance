@@ -29,4 +29,10 @@ public class PublisherTeleChargeReferenceFallback implements PublisherTeleCharge
     public Response<Void> setPay(long publisherTeleChargeId) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<List<PublisherTeleChargeDto>> getPublisherTeleChargesByApId(long apId) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 }

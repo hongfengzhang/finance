@@ -41,5 +41,5 @@ public interface PublisherTeleChargeInterface {
 	Response<Void> setPay(@PathVariable("publisherTeleChargeId") long publisherTeleChargeId);
 
 	@RequestMapping(value = "/getPublisherTeleChargeByApId/{apId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	Response<PublisherTeleChargeDto> getPublisherTeleChargeByApId(@PathVariable("apId") long apId);
+	Response<List<PublisherTeleChargeDto>> getPublisherTeleChargesByApId(@PathVariable("apId") long apId);
 }

@@ -84,6 +84,11 @@ public class ActivityDto {
 
 	private List<Map<String,String>> listWinningInfo;
 
+	/**
+	 * 活动展示位置
+	 */
+	private String location;
+
 	public ActivityDto(){
 		
 	}
