@@ -69,6 +69,9 @@ public interface StockOptionTradeInterface {
 	@RequestMapping(value = "/exercise/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> exercise(@PathVariable("id") Long id);
 
+	@RequestMapping(value = "/inquiry/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> inquiry(@PathVariable("id") Long id);
+
 	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
 	Response<List<StockOptionTradeDto>> stockOptionsWithState(@PathVariable("state") Integer state);
 

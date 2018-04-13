@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.activity.controller;
 
 import com.waben.stock.datalayer.activity.entity.PublisherTeleCharge;
 import com.waben.stock.datalayer.activity.service.PublisherTeleChargeService;
+import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.activity.PublisherTeleChargeInterface;
@@ -44,5 +45,12 @@ public class PublisherTeleChargeController implements PublisherTeleChargeInterfa
     public Response<Void> setPay(@PathVariable long publisherTeleChargeId) {
         publisherTeleChargeService.setPay(publisherTeleChargeId);
         return new Response<>();
+    }
+
+    @Override
+    public Response<PublisherTeleChargeDto> getPublisherTeleChargeByApId(@PathVariable long activityPublisherId) {
+        PublisherTeleCharge result = publisherTeleChargeService.getPublisherTeleChargeByApId(activityPublisherId);
+        PublisherTeleChargeDto publisherTeleChargeDto = CopyBeanUtils.copyBeanProperties(PublisherTeleChargeDto.class, result, false);
+        return new Response<>(publisherTeleChargeDto);
     }
 }

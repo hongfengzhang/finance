@@ -1,6 +1,8 @@
 package com.waben.stock.interfaces.dto.activity;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -79,6 +81,8 @@ public class ActivityDto {
 	 * 奖品类型 1:期权抵扣券  2：话费券  3：实物奖品
 	 */
 	private String awardType;
+
+	private List<Map<String,String>> listWinningInfo;
 
 	public ActivityDto(){
 		
@@ -203,6 +207,12 @@ public class ActivityDto {
 	public void setAwardType(String awardType) {
 		this.awardType = awardType;
 	}
-	
-	
+
+	public List<Map<String, String>> getListWinningInfo() {
+		return listWinningInfo;
+	}
+
+	public void setListWinningInfo(List<Map<String, String>> listWinningInfo) {
+		this.listWinningInfo = listWinningInfo;
+	}
 }

@@ -36,7 +36,8 @@ public class PublisherTicketDto {
 	 * 备注
 	 */
 	private String memo;
-
+	private long apId;
+    private String activityName;
 	public long getPtId() {
 		return ptId;
 	}
@@ -92,6 +93,20 @@ public class PublisherTicketDto {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
-	
+
+	public long getApId() {
+		return apId;
+	}
+
+	public void setApId(long apId) {
+		this.apId = apId;
+	}
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
 }

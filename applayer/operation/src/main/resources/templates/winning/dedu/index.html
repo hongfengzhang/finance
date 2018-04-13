@@ -129,25 +129,14 @@
                                 return "已过期";
                             }
                         }
-                }, {
+                },{
+                        field: 'activityName',
+                        title: '所属活动',
+                        align: 'center'
+                    }, {
                     field: 'memo',
                     title: '备注',
                     align: 'center'
-                }, {
-                    title: '操作',
-                    align: 'center',
-                    formatter: function operateFormatter(value, row, index) {
-                        return [
-                            '<a rel="tooltip" title="查看" class="btn btn-simple btn-info btn-icon table-action view" href="javascript:void(0)">',
-                            '<i class="fa fa-eye"></i>',
-                            '</a>',
-                        ].join('');
-                    },
-                    events: {
-                        'click .view': function (e, value, row, index) {
-                            $(location).prop('href',"../ticket/view/"+row.ticketAmountId);
-                        }
-                    }
                 }]
             });
 

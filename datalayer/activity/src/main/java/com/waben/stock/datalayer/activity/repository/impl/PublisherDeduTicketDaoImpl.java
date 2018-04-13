@@ -1,12 +1,8 @@
 package com.waben.stock.datalayer.activity.repository.impl;
 
-import com.waben.stock.datalayer.activity.entity.Activity;
 import com.waben.stock.datalayer.activity.entity.PublisherDeduTicket;
-import com.waben.stock.datalayer.activity.entity.TicketAmount;
 import com.waben.stock.datalayer.activity.repository.PublisherDeduTicketDao;
-import com.waben.stock.datalayer.activity.repository.TicketDao;
 import com.waben.stock.datalayer.activity.repository.jpa.PublisherDeduTicketRespository;
-import com.waben.stock.datalayer.activity.repository.jpa.TicketRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,5 +33,10 @@ public class PublisherDeduTicketDaoImpl implements PublisherDeduTicketDao{
 	@Override
 	public PublisherDeduTicket getPublisherDeduTicket(long publisherDeduTicketId) {
 		return respository.findOne(publisherDeduTicketId);
+	}
+
+	@Override
+	public PublisherDeduTicket getPublisherDeduTicketByActivityPublisherId(long activityPublisherId) {
+		return respository.findPublisherDeduTicketByApId(activityPublisherId);
 	}
 }

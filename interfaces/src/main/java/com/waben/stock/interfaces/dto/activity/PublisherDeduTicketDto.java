@@ -53,7 +53,9 @@ public class PublisherDeduTicketDto {
 	 * 活动参与人关联实体Id
 	 */
 	private long apId;
-	
+
+
+
 	/**
 	 * 抵扣券状态 1:未使用 2:已使用 3：已过期
 	 */
@@ -63,7 +65,7 @@ public class PublisherDeduTicketDto {
 	 * 备注
 	 */
 	private String memo;
-
+	private String activityName;
 	public String getPublisherPhone() {
 		return publisherPhone;
 	}
@@ -151,7 +153,12 @@ public class PublisherDeduTicketDto {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
-	
-	
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
 }

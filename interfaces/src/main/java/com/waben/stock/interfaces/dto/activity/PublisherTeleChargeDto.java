@@ -53,6 +53,7 @@ public class PublisherTeleChargeDto {
 	 */
 	private String memo;
 
+	private String activityName;
 	
 
 	public long getPtId() {
@@ -126,6 +127,12 @@ public class PublisherTeleChargeDto {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
-	
+
+	public String getActivityName() {
+		return activityName;
+	}
+
+	public void setActivityName(String activityName) {
+		this.activityName = activityName;
+	}
 }

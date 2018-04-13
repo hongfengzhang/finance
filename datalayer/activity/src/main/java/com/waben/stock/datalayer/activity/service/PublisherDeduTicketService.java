@@ -1,6 +1,10 @@
 package com.waben.stock.datalayer.activity.service;
 
+import com.waben.stock.datalayer.activity.entity.Activity;
+import com.waben.stock.datalayer.activity.entity.ActivityPublisher;
 import com.waben.stock.datalayer.activity.entity.PublisherDeduTicket;
+import com.waben.stock.datalayer.activity.repository.ActivityDao;
+import com.waben.stock.datalayer.activity.repository.ActivityPublisherDao;
 import com.waben.stock.datalayer.activity.repository.PublisherDeduTicketDao;
 import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
@@ -17,6 +21,11 @@ public class PublisherDeduTicketService {
     @Autowired
     private PublisherDeduTicketDao dao;
 
+    @Autowired
+    private ActivityPublisherDao activityPublisherDao;
+
+    @Autowired
+    private ActivityDao activityDao;
     public List<PublisherDeduTicketDto> getPublisherDeduTicketList(int pageno, Integer pagesize) {
         if(pagesize == null){
             PageAndSortQuery pq = new PageAndSortQuery();
@@ -30,6 +39,13 @@ public class PublisherDeduTicketService {
                 atolist.add(ad);
             }
         }
+
+        for(PublisherDeduTicketDto publisherDeduTicket : atolist) {
+            ActivityPublisher activityPublisher = activityPublisherDao.getActivityPublisher(publisherDeduTicket.getApId());
+            Activity activity = activityDao.getActivity(activityPublisher.getActivityId());
+            publisherDeduTicket.setActivityName(activity.getSubject());
+        }
+
         return atolist;
     }
 
@@ -43,5 +59,9 @@ public class PublisherDeduTicketService {
     public PublisherDeduTicket getPublisherDeduTicket(long publisherDeduTicketId) {
         PublisherDeduTicket publisherDeduTicket = dao.getPublisherDeduTicket(publisherDeduTicketId);
         return publisherDeduTicket;
+    }
+
+    public PublisherDeduTicket getPublisherDeduTicketByApId(long apId) {
+       return dao.getPublisherDeduTicketByActivityPublisherId(apId);
     }
 }

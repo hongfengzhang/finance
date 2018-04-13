@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.activity;
 
+import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTicketDto;
 import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.http.MediaType;
@@ -35,4 +36,7 @@ public interface PublisherTicketInterface {
 
 	@RequestMapping(value = "/getPublisherTicket/{publisherTicketId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	Response<PublisherTicketDto> getPublisherTicket(@PathVariable("publisherTicketId") long publisherTicketId);
+
+	@RequestMapping(value = "/getPublisherTicketByApId/{apId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	Response<PublisherTicketDto> getPublisherTicketByApId(@PathVariable("apId") long apId);
 }

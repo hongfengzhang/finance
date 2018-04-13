@@ -1,8 +1,12 @@
 package com.waben.stock.datalayer.activity.service;
 
 import com.waben.stock.datalayer.activity.entity.Activity;
+import com.waben.stock.datalayer.activity.entity.ActivityPublisher;
 import com.waben.stock.datalayer.activity.entity.PublisherTeleCharge;
+import com.waben.stock.datalayer.activity.repository.ActivityDao;
+import com.waben.stock.datalayer.activity.repository.ActivityPublisherDao;
 import com.waben.stock.datalayer.activity.repository.PublisherTeleChargeDao;
+import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
@@ -17,7 +21,11 @@ import java.util.List;
 public class PublisherTeleChargeService {
     @Autowired
     private PublisherTeleChargeDao dao;
+    @Autowired
+    private ActivityPublisherDao activityPublisherDao;
 
+    @Autowired
+    private ActivityDao activityDao;
     public List<PublisherTeleChargeDto> getPublisherTeleChargeList(int pageno, Integer pagesize) {
         if(pagesize == null){
             PageAndSortQuery pq = new PageAndSortQuery();
@@ -30,6 +38,11 @@ public class PublisherTeleChargeService {
                 PublisherTeleChargeDto ad  = CopyBeanUtils.copyBeanProperties(PublisherTeleChargeDto.class, a, false);
                 atolist.add(ad);
             }
+        }
+        for(PublisherTeleChargeDto publisherTeleCharge : atolist) {
+            ActivityPublisher activityPublisher = activityPublisherDao.getActivityPublisher(publisherTeleCharge.getApId());
+            Activity activity = activityDao.getActivity(activityPublisher.getActivityId());
+            publisherTeleCharge.setActivityName(activity.getSubject());
         }
         return atolist;
     }
@@ -52,5 +65,9 @@ public class PublisherTeleChargeService {
         if(!publisherTeleCharge.isIspay()) {
             publisherTeleCharge.setIspay(!publisherTeleCharge.isIspay());
         }
+    }
+
+    public PublisherTeleCharge getPublisherTeleChargeByApId(long apId) {
+        return dao.getPublisherTeleChargeByApId(apId);
     }
 }
