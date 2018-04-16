@@ -5,7 +5,7 @@ window.renderTable = function(){};
 window.currentPublisherId = null;
 window.currentPublisherOrgCode = null;
 $(function() {
-	window.searchData = { currentOrgCode: currentOrgCode }
+	window.searchData = { currentOrgCode: currentOrgCode, userType: "1" }
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -39,6 +39,13 @@ $(function() {
 			var columns = [
 	            { "data": "publisherId", "title": "客户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "客户手机号", orderable: false},
+	            { "data": "isTest", "title": "用户类型", orderable: false, "render": function(data, type, full, meta) {
+	            	if(full.isTest && full.isTest == true) {
+	            		return "测试用户";
+	            	} else {
+	            		return "正式用户";
+	            	}
+	            }},
 	            { "data": "orgName", "title": "所属机构代码/名称", orderable: false, "render": function(data, type, full, meta) {
 	            	return full.orgCode + "/" + full.orgName;
 	            }},

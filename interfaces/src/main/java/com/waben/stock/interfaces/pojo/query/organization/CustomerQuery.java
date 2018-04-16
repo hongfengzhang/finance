@@ -32,6 +32,10 @@ public class CustomerQuery extends PageAndSortQuery {
 	 * 查询的机构名称
 	 */
 	private String orgName;
+	/**
+	 * 用户类型，0表示所有，1表示正式用户，2表示测试用户
+	 */
+	private Integer userType;
 
 	public String getPublisherId() {
 		return publisherId;
@@ -71,6 +75,14 @@ public class CustomerQuery extends PageAndSortQuery {
 
 	public void setCurrentOrgCode(String currentOrgCode) {
 		this.currentOrgCode = currentOrgCode;
+	}
+
+	public Integer getUserType() {
+		return userType;
+	}
+
+	public void setUserType(Integer userType) {
+		this.userType = userType;
 	}
 
 }

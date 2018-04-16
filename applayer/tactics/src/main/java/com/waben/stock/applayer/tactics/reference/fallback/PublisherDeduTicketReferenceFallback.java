@@ -26,4 +26,9 @@ public class PublisherDeduTicketReferenceFallback implements PublisherDeduTicket
     public Response<PublisherDeduTicketDto> getPublisherDeduTicket(long publisherDeduTicketId) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<PublisherDeduTicketDto> getPublisherDeduTicketByApId(long apId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

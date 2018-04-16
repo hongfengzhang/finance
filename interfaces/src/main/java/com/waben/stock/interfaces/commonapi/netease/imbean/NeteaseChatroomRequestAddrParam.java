@@ -9,7 +9,7 @@ public class NeteaseChatroomRequestAddrParam {
 	/**
 	 * 进入聊天室的账号
 	 */
-	private long accid;
+	private String accid;
 	/**
 	 * 客户端类型
 	 * <ul>
@@ -27,11 +27,11 @@ public class NeteaseChatroomRequestAddrParam {
 		this.roomid = roomid;
 	}
 
-	public long getAccid() {
+	public String getAccid() {
 		return accid;
 	}
 
-	public void setAccid(long accid) {
+	public void setAccid(String accid) {
 		this.accid = accid;
 	}
 

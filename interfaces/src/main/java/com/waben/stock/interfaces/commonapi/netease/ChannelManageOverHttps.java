@@ -42,10 +42,13 @@ public class ChannelManageOverHttps {
 		requestHeaders.set("CheckSum", CheckSumBuilder.getCheckSum(NeteaseLiveConfig.AppSecret, nonce, curTime));
 		requestHeaders.set("Content-Type", "application/json;charset=utf-8");
 		// 请求对象
+		String paramStr = JacksonUtil.encode(param);
+		logger.info("请求网易云信直播接口:" + requestUrl);
+		logger.info("请求网易云信直播接口数据:" + paramStr);
 		HttpEntity<String> requestEntity = new HttpEntity<String>(JacksonUtil.encode(param), requestHeaders);
 		// 发送请求
 		String resultJson = restTemplate.postForObject(requestUrl, requestEntity, String.class);
-		logger.info("请求网易云信响应:" + resultJson);
+		logger.info("请求网易云信直播接口响应:" + resultJson);
 		// 响应对象
 		NeteaseLiveResponse<T> responseObj = JacksonUtil.decode(resultJson,
 				JacksonUtil.getGenericType(NeteaseLiveResponse.class, clazz));
@@ -69,7 +72,7 @@ public class ChannelManageOverHttps {
 		HttpEntity<String> requestEntity = new HttpEntity<String>(JacksonUtil.encode(param), requestHeaders);
 		// 发送请求
 		String resultJson = restTemplate.postForObject(requestUrl, requestEntity, String.class);
-		logger.info("请求网易云信响应:" + resultJson);
+		logger.info("请求网易云信直播响应:" + resultJson);
 		// 响应对象
 		NeteaseLiveResponse<T> responseObj = JacksonUtil.decode(resultJson,
 				JacksonUtil.getGenericType(NeteaseLiveResponse.class, javaType));
@@ -87,8 +90,8 @@ public class ChannelManageOverHttps {
 		// 获取频道列表
 		NeteaseChannellistParam listParam = new NeteaseChannellistParam();
 		JavaType listJavaType = JacksonUtil.getGenericType(NeteaseLivePage.class, NeteaseChannellistRet.class);
-		NeteaseLiveResponse<NeteaseLivePage<NeteaseChannellistRet>> listResponse = doAction(NeteaseLiveConfig.ChannellistUrl,
-				listParam, listJavaType);
+		NeteaseLiveResponse<NeteaseLivePage<NeteaseChannellistRet>> listResponse = doAction(
+				NeteaseLiveConfig.ChannellistUrl, listParam, listJavaType);
 		System.out.println("获取频道列表响应结果:" + JacksonUtil.encode(listResponse));
 
 		// 重新获取推流地址
