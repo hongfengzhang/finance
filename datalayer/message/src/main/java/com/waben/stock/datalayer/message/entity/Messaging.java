@@ -141,6 +141,9 @@ public class Messaging {
 	}
 
 	public Boolean getHasRead() {
+		if (hasRead == null) {
+			return false;
+		}
 		return hasRead;
 	}
 

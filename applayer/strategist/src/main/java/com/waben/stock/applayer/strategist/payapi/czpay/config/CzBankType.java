@@ -36,7 +36,22 @@ public enum CzBankType implements CommonalityEnum {
 
 	YZCX("14", "PSBC", "邮政储蓄", BankType.YZCX),
 
-	PAYH("15", "PABC", "平安银行", BankType.PAYH);
+	PAYH("15", "PABC", "平安银行", BankType.PAYH),
+
+	// 部分银行card_bin有别名的银行
+	GSYH1("16", "ICBC", "工商银行", BankType.GSYH1),
+
+	JSYH1("17", "CCB", "建设银行", BankType.JSYH1),
+
+	YZCX1("18", "PSBC", "邮政储蓄", BankType.YZCX1),
+
+	GFYH1("19", "GDB", "广发银行", BankType.GFYH1),
+
+	PFYH1("20", "SPDB", "浦发银行", BankType.PFYH1),
+
+	PAYH1("21", "PABC", "平安银行", BankType.PAYH1),
+
+	PAYH2("22", "PABC", "平安银行", BankType.PAYH2);
 
 	private String index;
 

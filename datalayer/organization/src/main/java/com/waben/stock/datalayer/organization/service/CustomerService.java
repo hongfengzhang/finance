@@ -47,14 +47,21 @@ public class CustomerService {
 		if (query.getOrgName() != null && !"".equals(query.getOrgName())) {
 			orgNameCondition = " and t4.name like '%" + query.getOrgName() + "%' ";
 		}
+		String isTestCondition = "";
+		if (query.getUserType() != null && query.getUserType() == 1) {
+			isTestCondition = " and (t1.is_test is null or t1.is_test=0) ";
+		}
+		if (query.getUserType() != null && query.getUserType() == 2) {
+			isTestCondition = " and t1.is_test=1 ";
+		}
 		String sql = String.format(
-				"select t1.id, t1.phone, t4.code, t4.name, t1.create_time, t3.balance, t3.available_balance, t3.frozen_capital, t1.end_type from publisher t1 "
+				"select t1.id, t1.phone, t4.code, t4.name, t1.create_time, t3.balance, t3.available_balance, t3.frozen_capital, t1.end_type, t1.is_test from publisher t1 "
 						+ "INNER JOIN p_organization_publisher t2 on t1.id=t2.publisher_id and t2.org_code like '%s%%' "
 						+ "LEFT JOIN p_organization t4 on t2.org_code=t4.code "
-						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id where 1=1 %s %s %s %s order by t1.create_time desc limit "
+						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id where 1=1 %s %s %s %s %s order by t1.create_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
 				query.getCurrentOrgCode(), publisherIdCondition, publisherPhoneCondition, orgCodeCondition,
-				orgNameCondition);
+				orgNameCondition, isTestCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
@@ -66,6 +73,7 @@ public class CustomerService {
 		setMethodMap.put(new Integer(6), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(7), new MethodDesc("setFrozenCapital", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(8), new MethodDesc("setEndType", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setIsTest", new Class<?>[] { Boolean.class }));
 		List<CustomerDto> content = dynamicQuerySqlDao.execute(CustomerDto.class, sql, setMethodMap);
 		BigInteger totalElements = dynamicQuerySqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()), totalElements.longValue());

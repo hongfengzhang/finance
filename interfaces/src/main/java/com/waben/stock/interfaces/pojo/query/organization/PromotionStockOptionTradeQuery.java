@@ -32,6 +32,10 @@ public class PromotionStockOptionTradeQuery extends PageAndSortQuery {
 	 * 所属机构代码
 	 */
 	private String orgCode;
+	/**
+	 * 用户类型，0表示所有，1表示正式用户，2表示测试用户
+	 */
+	private Integer userType;
 
 	public String getCurrentOrgCode() {
 		return currentOrgCode;
@@ -71,6 +75,14 @@ public class PromotionStockOptionTradeQuery extends PageAndSortQuery {
 
 	public void setOrgCode(String orgCode) {
 		this.orgCode = orgCode;
+	}
+
+	public Integer getUserType() {
+		return userType;
+	}
+
+	public void setUserType(Integer userType) {
+		this.userType = userType;
 	}
 
 }

@@ -41,6 +41,10 @@ public class CustomerDto {
 	 * 用户注册终端
 	 */
 	private String endType;
+	/**
+	 * 是否测试用户
+	 */
+	private Boolean isTest;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -112,6 +116,14 @@ public class CustomerDto {
 
 	public void setEndType(String endType) {
 		this.endType = endType;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

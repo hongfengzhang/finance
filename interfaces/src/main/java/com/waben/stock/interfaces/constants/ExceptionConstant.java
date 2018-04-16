@@ -179,4 +179,8 @@ public class ExceptionConstant {
 	// 期权询价结果不存在
 	public static final String INQUIRY_RESULT_NOT_FOUND = "9006";
 
+	// 直播
+	// 无直播频道
+	public static final String NO_LIVEPLAYER_EXCEPTION = "10001";
+
 }

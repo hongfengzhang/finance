@@ -48,8 +48,6 @@ public class LiveplayerController {
 	@Autowired
 	private RedisCache redisCache;
 
-	private static final String CurrentLivePlayerKey = "current-live-player";
-
 	@RequestMapping("/index")
 	public String index() {
 		return "manage/liveplayer/index";
@@ -80,7 +78,7 @@ public class LiveplayerController {
 		NeteaseLiveResponse<NeteaseLivePage<NeteaseChannellistRet>> listResponse = ChannelManageOverHttps
 				.doAction(NeteaseLiveConfig.ChannellistUrl, listParam, listJavaType);
 		if (listResponse.getCode() == 200) {
-			String currentCid = redisCache.get(CurrentLivePlayerKey);
+			String currentCid = redisCache.get(NeteaseLiveConfig.CurrentLivePlayerKey);
 			PageInfo<NeteaseChannellistRet> result = new PageInfo<>();
 			List<NeteaseChannellistRet> content = listResponse.getRet().getList();
 			if (content != null && content.size() > 0) {
@@ -124,8 +122,8 @@ public class LiveplayerController {
 	public Response<NeteaseAddressRet> getAddressByCid(@PathVariable("cid") String cid) {
 		NeteaseAddressParam param = new NeteaseAddressParam();
 		param.setCid(cid);
-		NeteaseLiveResponse<NeteaseAddressRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.AddressUrl, param,
-				NeteaseAddressRet.class);
+		NeteaseLiveResponse<NeteaseAddressRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.AddressUrl,
+				param, NeteaseAddressRet.class);
 		if (response.getCode() == 200) {
 			return new Response<>(response.getRet());
 		} else {
@@ -139,8 +137,8 @@ public class LiveplayerController {
 		NeteaseUpdateParam param = new NeteaseUpdateParam();
 		param.setCid(cid);
 		param.setName(name);
-		NeteaseLiveResponse<NeteaseUpdateRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.UpdateUrl, param,
-				NeteaseUpdateRet.class);
+		NeteaseLiveResponse<NeteaseUpdateRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.UpdateUrl,
+				param, NeteaseUpdateRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();
 			result.setResult("success");
@@ -155,8 +153,8 @@ public class LiveplayerController {
 	public Response<String> add(String name) {
 		NeteaseCreateParam param = new NeteaseCreateParam();
 		param.setName(name);
-		NeteaseLiveResponse<NeteaseCreateRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.CreateUrl, param,
-				NeteaseCreateRet.class);
+		NeteaseLiveResponse<NeteaseCreateRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.CreateUrl,
+				param, NeteaseCreateRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();
 			result.setResult("success");
@@ -171,8 +169,8 @@ public class LiveplayerController {
 	public Response<String> delete(@PathVariable("cid") String cid) {
 		NeteaseDeleteParam param = new NeteaseDeleteParam();
 		param.setCid(cid);
-		NeteaseLiveResponse<NeteaseDeleteRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.DeleteUrl, param,
-				NeteaseDeleteRet.class);
+		NeteaseLiveResponse<NeteaseDeleteRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.DeleteUrl,
+				param, NeteaseDeleteRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();
 			result.setResult("success");
@@ -187,8 +185,8 @@ public class LiveplayerController {
 	public Response<String> disable(@PathVariable("cid") String cid) {
 		NeteaseDisableParam param = new NeteaseDisableParam();
 		param.setCid(cid);
-		NeteaseLiveResponse<NeteaseDisableRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.DisableUrl, param,
-				NeteaseDisableRet.class);
+		NeteaseLiveResponse<NeteaseDisableRet> response = ChannelManageOverHttps.doAction(NeteaseLiveConfig.DisableUrl,
+				param, NeteaseDisableRet.class);
 		if (response.getCode() == 200) {
 			Response<String> result = new Response<>();
 			result.setResult("success");
@@ -201,7 +199,7 @@ public class LiveplayerController {
 	@PostMapping("/current/{cid}")
 	@ResponseBody
 	public Response<String> setCurrent(@PathVariable("cid") String cid) {
-		redisCache.set(CurrentLivePlayerKey, cid);
+		redisCache.set(NeteaseLiveConfig.CurrentLivePlayerKey, cid);
 		Response<String> result = new Response<>();
 		result.setResult("success");
 		return result;

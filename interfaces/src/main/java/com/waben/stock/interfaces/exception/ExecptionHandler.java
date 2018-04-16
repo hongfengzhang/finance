@@ -50,6 +50,7 @@ public class ExecptionHandler implements HandlerExceptionResolver {
 	@Override
 	public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler,
 			Exception ex) {
+		ex.printStackTrace();
 		ModelAndView mv = new ModelAndView();
 		Object message = "未知错误";
 		String code = "0000";

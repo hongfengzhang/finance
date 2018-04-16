@@ -78,6 +78,10 @@ public class PromotionStockOptionTradeDto {
 	 * 所属机构名称
 	 */
 	private String orgName;
+	/**
+	 * 是否测试用户
+	 */
+	private Boolean isTest;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -156,7 +160,8 @@ public class PromotionStockOptionTradeDto {
 			if (buyingPrice != null) {
 				BigDecimal settlePrice = sellingPrice != null ? sellingPrice : lastPrice;
 				if (settlePrice != null && settlePrice.compareTo(buyingPrice) > 0) {
-					return settlePrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN).multiply(nominalAmount).setScale(2, RoundingMode.HALF_EVEN);
+					return settlePrice.subtract(buyingPrice).divide(buyingPrice, 10, RoundingMode.DOWN)
+							.multiply(nominalAmount).setScale(2, RoundingMode.HALF_EVEN);
 				} else {
 					return BigDecimal.ZERO;
 				}
@@ -231,6 +236,14 @@ public class PromotionStockOptionTradeDto {
 
 	public void setTradeNo(String tradeNo) {
 		this.tradeNo = tradeNo;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

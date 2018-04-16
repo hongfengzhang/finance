@@ -11,6 +11,8 @@ public class NeteaseLiveConfig {
 	public static final String AppKey = "d0fc8a8448dabce125efce3dcc90c611";
 
 	public static final String AppSecret = "05a13f09d796";
+	
+	public static final String CurrentLivePlayerKey = "current-live-player";
 	/**
 	 * 2.1创建频道
 	 */

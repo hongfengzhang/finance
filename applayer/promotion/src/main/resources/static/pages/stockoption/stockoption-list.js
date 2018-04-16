@@ -3,7 +3,7 @@
  */
 window.renderTable = function(){};
 $(function() {
-	window.searchData = { currentOrgCode: currentOrgCode }
+	window.searchData = { currentOrgCode: currentOrgCode, userType: "1" }
 	// 加载数据
 	function retrieveData(sSource, aoData, fnCallback, oSettings) {
 		var draw = (aoData[3].value / 10) + 1;
@@ -37,6 +37,13 @@ $(function() {
 			var columns = [
 	            { "data": "tradeId", "title": "交易ID", orderable: false},
 	            { "data": "tradeNo", "title": "交易单号", orderable: false},
+	            { "data": "isTest", "title": "交易类别", orderable: false, "render": function(data, type, full, meta) {
+	            	if(full.isTest && full.isTest == true) {
+	            		return "测试交易";
+	            	} else {
+	            		return "正式交易";
+	            	}
+	            }},
 	            { "data": "publisherId", "title": "用户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "手机号码", orderable: false},
 	            { "data": "stockCode", "title": "股票", orderable: false, "render": function(data, type, full, meta) {
