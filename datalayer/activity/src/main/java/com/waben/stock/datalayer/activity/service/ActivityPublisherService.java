@@ -1,10 +1,12 @@
 package com.waben.stock.datalayer.activity.service;
 
 import com.waben.stock.datalayer.activity.entity.ActivityPublisher;
+import com.waben.stock.datalayer.activity.entity.PublisherDeduTicket;
 import com.waben.stock.datalayer.activity.repository.ActivityPublisherDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -14,6 +16,7 @@ public class ActivityPublisherService {
     private ActivityPublisherDao dao;
 
     public List<ActivityPublisher> getActivityPublisherByActivityId(long activityId) {
-        return dao.getActivityPublisherByAId(activityId);
+        return dao.getActivityPublisherByApId(activityId);
     }
+
 }

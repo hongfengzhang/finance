@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.activity.service;
 
 import com.waben.stock.datalayer.activity.entity.Activity;
 import com.waben.stock.datalayer.activity.entity.ActivityPublisher;
+import com.waben.stock.datalayer.activity.entity.PublisherDeduTicket;
 import com.waben.stock.datalayer.activity.entity.PublisherTicket;
 import com.waben.stock.datalayer.activity.repository.ActivityDao;
 import com.waben.stock.datalayer.activity.repository.ActivityPublisherDao;
@@ -59,7 +60,16 @@ public class PublisherTicketService {
         return publisherTicket;
     }
 
-    public PublisherTicket getPublisherTicketByApId(long apId) {
-        return dao.getPublisherTicketByApId(apId);
+    public List<PublisherTicket> getPublisherTicketsByApId(long apId) {
+        return dao.getPublisherTicketsByApId(apId);
+    }
+
+    @Transactional
+    public PublisherTicket setStatus(long id) {
+        PublisherTicket publisherTicket = dao.getPublisherTicket(id);
+        if(publisherTicket.getStatus()==1) {
+            publisherTicket.setStatus(2);
+        }
+        return publisherTicket;
     }
 }

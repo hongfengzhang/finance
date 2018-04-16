@@ -38,7 +38,7 @@ public class PublisherTeleChargeDaoImpl implements PublisherTeleChargeDao {
 	}
 
 	@Override
-	public PublisherTeleCharge getPublisherTeleChargeByApId(long apId) {
-		return respository.findPublisherTeleChargeByApId(apId);
+	public List<PublisherTeleCharge> getPublisherTeleChargesByApId(long apId) {
+		return respository.findPublisherTeleChargesByApId(apId);
 	}
 }

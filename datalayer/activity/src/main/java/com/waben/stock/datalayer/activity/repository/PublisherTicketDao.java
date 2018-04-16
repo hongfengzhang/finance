@@ -12,5 +12,5 @@ public interface PublisherTicketDao {
 
 	PublisherTicket getPublisherTicket(long PublisherTicketId);
 
-    PublisherTicket getPublisherTicketByApId(long apId);
+    List<PublisherTicket> getPublisherTicketsByApId(long apId);
 }

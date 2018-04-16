@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.activity.service;
 import com.waben.stock.datalayer.activity.entity.Activity;
 import com.waben.stock.datalayer.activity.entity.ActivityPublisher;
 import com.waben.stock.datalayer.activity.entity.PublisherDeduTicket;
+import com.waben.stock.datalayer.activity.entity.PublisherTeleCharge;
 import com.waben.stock.datalayer.activity.repository.ActivityDao;
 import com.waben.stock.datalayer.activity.repository.ActivityPublisherDao;
 import com.waben.stock.datalayer.activity.repository.PublisherDeduTicketDao;
@@ -61,7 +62,16 @@ public class PublisherDeduTicketService {
         return publisherDeduTicket;
     }
 
-    public PublisherDeduTicket getPublisherDeduTicketByApId(long apId) {
-       return dao.getPublisherDeduTicketByActivityPublisherId(apId);
+    public List<PublisherDeduTicket> getPublisherDeduTicketsByApId(long apId) {
+       return dao.getPublisherDeduTicketsByApId(apId);
+    }
+
+    @Transactional
+    public PublisherDeduTicket setStatus(long id) {
+        PublisherDeduTicket publisherDeduTicket = dao.getPublisherDeduTicket(id);
+        if(publisherDeduTicket.getStatus()==1) {
+            publisherDeduTicket.setStatus(2);
+        }
+        return publisherDeduTicket;
     }
 }

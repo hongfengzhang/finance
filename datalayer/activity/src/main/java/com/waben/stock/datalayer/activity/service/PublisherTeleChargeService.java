@@ -67,7 +67,16 @@ public class PublisherTeleChargeService {
         }
     }
 
-    public PublisherTeleCharge getPublisherTeleChargeByApId(long apId) {
-        return dao.getPublisherTeleChargeByApId(apId);
+    public List<PublisherTeleCharge> getPublisherTeleChargesByApId(long apId) {
+        return dao.getPublisherTeleChargesByApId(apId);
+    }
+
+    @Transactional
+    public PublisherTeleCharge setStatus(long id) {
+        PublisherTeleCharge publisherTeleCharge = dao.getPublisherTeleCharge(id);
+        if(publisherTeleCharge.getStatus()==1) {
+            publisherTeleCharge.setStatus(2);
+        }
+        return publisherTeleCharge;
     }
 }

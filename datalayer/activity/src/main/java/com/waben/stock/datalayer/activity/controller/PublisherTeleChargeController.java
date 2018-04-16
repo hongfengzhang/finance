@@ -48,9 +48,9 @@ public class PublisherTeleChargeController implements PublisherTeleChargeInterfa
     }
 
     @Override
-    public Response<PublisherTeleChargeDto> getPublisherTeleChargeByApId(@PathVariable long activityPublisherId) {
-        PublisherTeleCharge result = publisherTeleChargeService.getPublisherTeleChargeByApId(activityPublisherId);
-        PublisherTeleChargeDto publisherTeleChargeDto = CopyBeanUtils.copyBeanProperties(PublisherTeleChargeDto.class, result, false);
+    public Response<List<PublisherTeleChargeDto>> getPublisherTeleChargesByApId(@PathVariable long activityPublisherId) {
+        List<PublisherTeleCharge> result = publisherTeleChargeService.getPublisherTeleChargesByApId(activityPublisherId);
+        List<PublisherTeleChargeDto> publisherTeleChargeDto = CopyBeanUtils.copyListBeanPropertiesToList(result,PublisherTeleChargeDto.class);
         return new Response<>(publisherTeleChargeDto);
     }
 }

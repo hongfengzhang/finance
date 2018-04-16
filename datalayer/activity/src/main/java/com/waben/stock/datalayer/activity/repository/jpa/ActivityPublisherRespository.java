@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface ActivityPublisherRespository extends JpaRepository<ActivityPublisher, Long>{
 
-    List<ActivityPublisher> findActivityPublishersByAId(long aId);
+    List<ActivityPublisher> findActivityPublishersByApId(long apId);
 }

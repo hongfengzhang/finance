@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.activity.controller;
 
 import com.waben.stock.datalayer.activity.entity.PublisherDeduTicket;
+import com.waben.stock.datalayer.activity.entity.PublisherTeleCharge;
 import com.waben.stock.datalayer.activity.service.PublisherDeduTicketService;
 import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @RestController
@@ -42,9 +44,10 @@ public class PublisherDeduTicketController implements PublisherDeduTicketInterfa
     }
 
     @Override
-    public Response<PublisherDeduTicketDto> getPublisherDeduTicketByApId(@PathVariable long apId) {
-        PublisherDeduTicket result = publisherDeduTicketService.getPublisherDeduTicketByApId(apId);
-        PublisherDeduTicketDto publisherDeduTicketDto = CopyBeanUtils.copyBeanProperties(PublisherDeduTicketDto.class, result, false);
+    public Response<List<PublisherDeduTicketDto>> getPublisherDeduTicketsByApId(@PathVariable long apId) {
+        List<PublisherDeduTicket> result = publisherDeduTicketService.getPublisherDeduTicketsByApId(apId);
+        List<PublisherDeduTicketDto> publisherDeduTicketDto = CopyBeanUtils.copyListBeanPropertiesToList(result,PublisherDeduTicketDto.class);
         return new Response<>(publisherDeduTicketDto);
     }
+
 }

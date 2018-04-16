@@ -51,34 +51,42 @@ public class ActivityBusiness {
 
         for (ActivityPublisherDto activityPublisherDto : activityPublisherDtos) {
             long apId = activityPublisherDto.getApId();
-            Response<PublisherDeduTicketDto> publisherDeduTicket = publisherDeduTicketReference.getPublisherDeduTicketByApId(apId);
-            if(publisherDeduTicket.getCode().equals("200")&&publisherDeduTicket.getResult()!=null) {
-                PublisherDto publisherDto = publisherBusiness.findById(publisherDeduTicket.getResult().getPubliserId());
-                Map<String,String> mapPDT = new HashMap<>();
-                mapPDT.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
-                mapPDT.put("publisherPhone",publisherDto.getPhone());
-                mapPDT.put("award",publisherDeduTicket.getResult().getMemo());
-                listWinning.add(mapPDT);
+            PublisherDto publisherDto = publisherBusiness.findById(activityPublisherDto.getPublisherId());
+
+            //抵扣券
+            Response<List<PublisherDeduTicketDto>> publisherDeduTickets = publisherDeduTicketReference.getPublisherDeduTicketsByApId(apId);
+            if(publisherDeduTickets.getCode().equals("200")&&publisherDeduTickets.getResult()!=null) {
+                for (PublisherDeduTicketDto publisherDeduTicket : publisherDeduTickets.getResult()) {
+                    Map<String,String> mapPDT = new HashMap<>();
+                    mapPDT.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
+                    mapPDT.put("publisherPhone",publisherDto.getPhone());
+                    mapPDT.put("award",publisherDeduTicket.getMemo());
+                    listWinning.add(mapPDT);
+                }
             }
 
-            Response<PublisherTeleChargeDto> publisherTeleCharge = publisherTeleChargeReference.getPublisherTeleChargeByApId(apId);
-            if(publisherTeleCharge.getCode().equals("200")&&publisherTeleCharge.getResult()!=null) {
-                PublisherDto publisherDto = publisherBusiness.findById(publisherTeleCharge.getResult().getPubliserId());
-                Map<String,String> mapPTC = new HashMap<>();
-                mapPTC.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
-                mapPTC.put("publisherPhone",publisherDto.getPhone());
-                mapPTC.put("award",publisherTeleCharge.getResult().getMemo());
-                listWinning.add(mapPTC);
+            //话费
+            Response<List<PublisherTeleChargeDto>> publisherTeleCharges = publisherTeleChargeReference.getPublisherTeleChargesByApId(apId);
+            if(publisherTeleCharges.getCode().equals("200")&&publisherTeleCharges.getResult()!=null) {
+                for(PublisherTeleChargeDto publisherTeleCharge : publisherTeleCharges.getResult()) {
+                    Map<String,String> mapPTC = new HashMap<>();
+                    mapPTC.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
+                    mapPTC.put("publisherPhone",publisherDto.getPhone());
+                    mapPTC.put("award",publisherTeleCharge.getMemo());
+                    listWinning.add(mapPTC);
+                }
             }
 
-            Response<PublisherTicketDto> publisherTicket = publisherTicketReference.getPublisherTicketByApId(apId);
-            if(publisherTicket.getCode().equals("200")&&publisherTicket.getResult()!=null) {
-                PublisherDto publisherDto = publisherBusiness.findById(publisherTicket.getResult().getPublisherId());
-                Map<String,String> mapPT = new HashMap<>();
-                mapPT.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
-                mapPT.put("publisherPhone",publisherDto.getPhone());
-                mapPT.put("award",publisherTeleCharge.getResult().getMemo());
-                listWinning.add(mapPT);
+            //实物
+            Response<List<PublisherTicketDto>> publisherTickets = publisherTicketReference.getPublisherTicketsByApId(apId);
+            if(publisherTickets.getCode().equals("200")&&publisherTickets.getResult()!=null) {
+                for(PublisherTicketDto publisherTicket : publisherTickets.getResult()) {
+                    Map<String,String> mapPT = new HashMap<>();
+                    mapPT.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
+                    mapPT.put("publisherPhone",publisherDto.getPhone());
+                    mapPT.put("award",publisherTicket.getMemo());
+                    listWinning.add(mapPT);
+                }
             }
         }
         activityDto.setListWinningInfo(listWinning);

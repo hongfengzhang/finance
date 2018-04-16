@@ -41,9 +41,9 @@ public class PublisherTicketController implements PublisherTicketInterface{
     }
 
     @Override
-    public Response<PublisherTicketDto> getPublisherTicketByApId(@PathVariable long apId) {
-        PublisherTicket result = publisherTicketService.getPublisherTicketByApId(apId);
-        PublisherTicketDto publisherTicketDto = CopyBeanUtils.copyBeanProperties(PublisherTicketDto.class, result, false);
+    public Response<List<PublisherTicketDto>> getPublisherTicketsByApId(@PathVariable long apId) {
+        List<PublisherTicket> result = publisherTicketService.getPublisherTicketsByApId(apId);
+        List<PublisherTicketDto> publisherTicketDto = CopyBeanUtils.copyListBeanPropertiesToList(result,PublisherTicketDto.class);
         return new Response<>(publisherTicketDto);
     }
 }

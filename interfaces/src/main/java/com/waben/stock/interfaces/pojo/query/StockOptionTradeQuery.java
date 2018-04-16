@@ -17,6 +17,10 @@ public class StockOptionTradeQuery extends PageAndSortQuery {
     private Integer state;
     private Date beginTime;
     private Date endTime;
+    /**
+     * 是否测试
+     */
+    private Boolean isTest;
     public Long getPublisherPhone() {
         return publisherPhone;
     }
@@ -56,4 +60,13 @@ public class StockOptionTradeQuery extends PageAndSortQuery {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+
+    public Boolean getTest() {
+        return isTest;
+    }
+
+    public void setTest(Boolean test) {
+        isTest = test;
+    }
+
 }
