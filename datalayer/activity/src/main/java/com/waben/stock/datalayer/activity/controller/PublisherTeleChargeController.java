@@ -5,6 +5,7 @@ import com.waben.stock.datalayer.activity.service.PublisherTeleChargeService;
 import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.activity.PublisherTeleChargeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,15 @@ public class PublisherTeleChargeController implements PublisherTeleChargeInterfa
 
     @Override
     public Response<PublisherTeleChargeDto> savePublisherTeleCharge(@RequestBody PublisherTeleChargeDto publisherTeleChargeDto) {
-        PublisherTeleChargeDto result = publisherTeleChargeService.savePublisherTeleCharge(publisherTeleChargeDto);
-        return new Response<>(result);
+        PublisherTeleCharge publisherTeleCharge = CopyBeanUtils.copyBeanProperties(PublisherTeleCharge.class,publisherTeleChargeDto,false);
+        PublisherTeleCharge result = publisherTeleChargeService.savePublisherTeleCharge(publisherTeleCharge);
+        PublisherTeleChargeDto response = CopyBeanUtils.copyBeanProperties(PublisherTeleChargeDto.class, result, false);
+        return new Response<>(response);
     }
 
     @Override
-    public Response<List<PublisherTeleChargeDto>> getPublisherTeleChargeList(int pageno, Integer pagesize) {
-        List<PublisherTeleChargeDto> result = publisherTeleChargeService.getPublisherTeleChargeList(pageno, pagesize);
+    public Response<PageInfo<PublisherTeleChargeDto>> getPublisherTeleChargeList(int pageno, Integer pagesize) {
+        PageInfo<PublisherTeleChargeDto> result = publisherTeleChargeService.getPublisherTeleChargeList(pageno, pagesize);
         return new Response<>(result);
     }
 

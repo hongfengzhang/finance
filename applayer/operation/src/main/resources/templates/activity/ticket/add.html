@@ -148,7 +148,6 @@
         })
         var flag = 0;
         $("#upload").click(function () {
-            flag++;
             var formData = new FormData();
             formData.append('file', $('#file')[0].files[0]);
             $.ajax({
@@ -160,8 +159,16 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    alert("上传成功");
-                    $("input[name='url']").val(data);
+                    alert(data);
+                    if(data=="上传失败") {
+                        swal("上传失败");
+                    }else {
+                        swal("上传成功");
+                        $("input[name='url']").val(data);
+                        flag++;
+                    }
+                },error: function () {
+                    swal("上传失败");
                 }
             });
 

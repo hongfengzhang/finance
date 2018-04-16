@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.activity.controller;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +37,7 @@ public class ActivityMngController implements ActivityMngInterface{
 
 	
 	@Override
-	public Response<List<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
+	public Response<PageInfo<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
 		return new Response<>(ams.getActivityList(pageno, pagesize));
 	}
 

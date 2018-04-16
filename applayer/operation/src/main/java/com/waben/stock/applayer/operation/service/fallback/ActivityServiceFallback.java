@@ -4,6 +4,7 @@ import com.waben.stock.applayer.operation.service.activity.ActivityService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public class ActivityServiceFallback implements ActivityService {
     }
 
     @Override
-    public Response<List<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
+    public Response<PageInfo<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

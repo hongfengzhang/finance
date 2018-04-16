@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.service.fallback;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.operation.service.activity.ActivityMngService;
@@ -24,7 +25,7 @@ public class ActivityMngServiceFallback implements ActivityMngService {
 	}
 
 	@Override
-	public Response<List<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
+	public Response<PageInfo<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

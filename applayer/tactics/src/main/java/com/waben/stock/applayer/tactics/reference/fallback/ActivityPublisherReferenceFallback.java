@@ -12,7 +12,8 @@ import java.util.List;
 @Component
 public class ActivityPublisherReferenceFallback implements ActivityPublisherReference{
     @Override
-    public Response<List<ActivityPublisherDto>> getActivityPublisherByActivityId(long activityId) {
+    public Response<List<ActivityPublisherDto>> getActivityPublishersByActivityId(long activityId) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
 }

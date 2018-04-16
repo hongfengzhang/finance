@@ -47,7 +47,7 @@ public class ActivityBusiness {
 
         ActivityDto activityDto = activityReference.getActivity(activityId).getResult();
 
-        List<ActivityPublisherDto> activityPublisherDtos = activityPublisherReference.getActivityPublisherByActivityId(activityId).getResult();
+        List<ActivityPublisherDto> activityPublisherDtos = activityPublisherReference.getActivityPublishersByActivityId(activityId).getResult();
 
         for (ActivityPublisherDto activityPublisherDto : activityPublisherDtos) {
             long apId = activityPublisherDto.getApId();
@@ -92,5 +92,7 @@ public class ActivityBusiness {
         activityDto.setListWinningInfo(listWinning);
         return activityDto;
     }
+
+
 
 }

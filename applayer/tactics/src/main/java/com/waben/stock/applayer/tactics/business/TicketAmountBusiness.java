@@ -1,26 +1,22 @@
-package com.waben.stock.applayer.operation.business;
+package com.waben.stock.applayer.tactics.business;
 
-import com.waben.stock.applayer.operation.service.activity.PublisherTicketService;
+import com.waben.stock.applayer.tactics.reference.TicketAmountReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.activity.PublisherTicketDto;
+import com.waben.stock.interfaces.dto.activity.TicketAmountDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
-public class PublisherTicketBusiness {
-    @Autowired
-    @Qualifier("publisherTicketFeignService")
-    private PublisherTicketService publisherTicketService;
+public class TicketAmountBusiness {
 
-    public PageInfo<PublisherTicketDto> pages(int pageNo, Integer pageSize) {
-        Response<PageInfo<PublisherTicketDto>> response = publisherTicketService.getPublisherTicketList(pageNo, pageSize);
+    @Autowired
+    private TicketAmountReference ticketAmountReference;
+
+    public TicketAmountDto findTicketAmountById(long ticketAmountId) {
+        Response<TicketAmountDto> response = ticketAmountReference.getTicketAmount(ticketAmountId);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
@@ -29,4 +25,5 @@ public class PublisherTicketBusiness {
         }
         throw new ServiceException(response.getCode());
     }
+
 }

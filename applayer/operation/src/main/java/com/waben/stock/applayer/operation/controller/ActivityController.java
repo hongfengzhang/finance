@@ -3,6 +3,7 @@ package com.waben.stock.applayer.operation.controller;
 import com.waben.stock.applayer.operation.business.ActivityBusiness;
 import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -31,8 +32,8 @@ public class ActivityController {
 
     @GetMapping("/pages")
     @ResponseBody
-    public Response<List<ActivityDto>> pages(int pageNo,Integer pageSize) {
-        List<ActivityDto> pages = activityBusiness.pages(pageNo, pageSize);
+    public Response<PageInfo<ActivityDto>> pages(int pageNo, Integer pageSize) {
+        PageInfo<ActivityDto> pages = activityBusiness.pages(pageNo, pageSize);
         return new Response<>(pages);
     }
 

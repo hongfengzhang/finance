@@ -9,8 +9,11 @@ import com.waben.stock.datalayer.activity.repository.ActivityPublisherDao;
 import com.waben.stock.datalayer.activity.repository.PublisherDeduTicketDao;
 import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,34 +30,27 @@ public class PublisherDeduTicketService {
 
     @Autowired
     private ActivityDao activityDao;
-    public List<PublisherDeduTicketDto> getPublisherDeduTicketList(int pageno, Integer pagesize) {
+    public PageInfo<PublisherDeduTicketDto> getPublisherDeduTicketList(int pageno, Integer pagesize) {
         if(pagesize == null){
             PageAndSortQuery pq = new PageAndSortQuery();
             pagesize = pq.getSize();
         }
-        List<PublisherDeduTicket> li = dao.getPublisherDeduTicketList(pageno, pagesize);
-        List<PublisherDeduTicketDto> atolist = new ArrayList<>();
-        if(li != null){
-            for(PublisherDeduTicket a : li){
-                PublisherDeduTicketDto ad  = CopyBeanUtils.copyBeanProperties(PublisherDeduTicketDto.class, a, false);
-                atolist.add(ad);
-            }
-        }
+        Page<PublisherDeduTicket> page = dao.getPublisherDeduTicketList(pageno, pagesize);
+        PageInfo<PublisherDeduTicketDto> pageInfo = PageToPageInfo.pageToPageInfo(page, PublisherDeduTicketDto.class);
 
-        for(PublisherDeduTicketDto publisherDeduTicket : atolist) {
+        for(PublisherDeduTicketDto publisherDeduTicket : pageInfo.getContent()) {
             ActivityPublisher activityPublisher = activityPublisherDao.getActivityPublisher(publisherDeduTicket.getApId());
             Activity activity = activityDao.getActivity(activityPublisher.getActivityId());
             publisherDeduTicket.setActivityName(activity.getSubject());
         }
 
-        return atolist;
+        return pageInfo;
     }
 
     @Transactional
-    public PublisherDeduTicketDto savePublisherDeduTicket(PublisherDeduTicketDto pdto){
-        PublisherDeduTicket p = CopyBeanUtils.copyBeanProperties(PublisherDeduTicket.class, pdto, false);
-        dao.savePublisherDeduTicket(p);
-        return CopyBeanUtils.copyBeanProperties(PublisherDeduTicketDto.class, p, false);
+    public PublisherDeduTicket savePublisherDeduTicket(PublisherDeduTicket publisherDeduTicket){
+
+        return dao.savePublisherDeduTicket(publisherDeduTicket);
     }
 
     public PublisherDeduTicket getPublisherDeduTicket(long publisherDeduTicketId) {

@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface OfflineStockOptionTradeInterface {
     @RequestMapping(value = "/add", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -14,6 +15,9 @@ public interface OfflineStockOptionTradeInterface {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
     Response<OfflineStockOptionTradeDto> find(@PathVariable("id") Long id);
+
+    @RequestMapping(value = "/monthsProfit/{year}", method = RequestMethod.GET)
+    Response<List<OfflineStockOptionTradeDto>> fetchMonthsProfit(@PathVariable("year") String year);
 
     @RequestMapping(value = "/settlement/{id}/{sellingPrice}", method = RequestMethod.PUT)
     Response<OfflineStockOptionTradeDto> settlement(@PathVariable("id") Long id, @PathVariable("sellingPrice") BigDecimal sellingPrice);

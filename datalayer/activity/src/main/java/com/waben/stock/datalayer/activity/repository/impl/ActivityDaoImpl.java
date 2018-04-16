@@ -25,10 +25,10 @@ public class ActivityDaoImpl implements ActivityDao {
 	}
 
 	@Override
-	public List<Activity> getActivityList(int pageno,int pagesize) {
+	public Page<Activity> getActivityList(int pageno,int pagesize) {
 		Pageable p = new PageRequest(pageno-1, pagesize);
 		Page<Activity> pt =  ar.findAll(p);
-		return pt.getContent();
+		return pt;
 	}
 	
 	@Override

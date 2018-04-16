@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -19,8 +20,8 @@ public class PublisherDeduTicketBusiness {
     @Qualifier("publisherDeduTicketFeignService")
     private PublisherDeduTicketService publisherDeduTicketService;
 
-    public List<PublisherDeduTicketDto> pages(int pageNo,Integer pageSize) {
-        Response<List<PublisherDeduTicketDto>> response = publisherDeduTicketService.getPublisherDeduTicketList(pageNo, pageSize);
+    public PageInfo<PublisherDeduTicketDto> pages(int pageNo,Integer pageSize) {
+        Response<PageInfo<PublisherDeduTicketDto>> response = publisherDeduTicketService.getPublisherDeduTicketList(pageNo, pageSize);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

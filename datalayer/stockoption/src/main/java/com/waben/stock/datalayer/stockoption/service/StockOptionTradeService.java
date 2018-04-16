@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -62,6 +63,8 @@ public class StockOptionTradeService {
 
 	@Autowired
 	private OrganizationSettlementBusiness orgSettlementBusiness;
+
+
 
 	public Page<StockOptionTrade> pagesByUserQuery(final StockOptionTradeUserQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());

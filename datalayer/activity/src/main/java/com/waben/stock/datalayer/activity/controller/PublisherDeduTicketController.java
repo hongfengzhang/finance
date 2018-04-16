@@ -5,6 +5,7 @@ import com.waben.stock.datalayer.activity.entity.PublisherTeleCharge;
 import com.waben.stock.datalayer.activity.service.PublisherDeduTicketService;
 import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.activity.PublisherDeduTicketInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +27,15 @@ public class PublisherDeduTicketController implements PublisherDeduTicketInterfa
 
     @Override
     public Response<PublisherDeduTicketDto> savePublisherDeduTicket(@RequestBody PublisherDeduTicketDto publisherDeduTicketDto) {
-        PublisherDeduTicketDto result = publisherDeduTicketService.savePublisherDeduTicket(publisherDeduTicketDto);
-        return new Response<>(result);
+        PublisherDeduTicket publisherDeduTicket = CopyBeanUtils.copyBeanProperties(PublisherDeduTicket.class,publisherDeduTicketDto,false);
+        PublisherDeduTicket result = publisherDeduTicketService.savePublisherDeduTicket(publisherDeduTicket);
+        PublisherDeduTicketDto response = CopyBeanUtils.copyBeanProperties(PublisherDeduTicketDto.class, result, false);
+        return new Response<>(response);
     }
 
     @Override
-    public Response<List<PublisherDeduTicketDto>> getPublisherDeduTicketList(int pageno, Integer pagesize) {
-        List<PublisherDeduTicketDto> result = publisherDeduTicketService.getPublisherDeduTicketList(pageno, pagesize);
+    public Response<PageInfo<PublisherDeduTicketDto>> getPublisherDeduTicketList(int pageno, Integer pagesize) {
+        PageInfo<PublisherDeduTicketDto> result = publisherDeduTicketService.getPublisherDeduTicketList(pageno, pagesize);
         return new Response<>(result);
     }
 

@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.service.activity;
 import java.util.List;
 
 import com.waben.stock.interfaces.dto.activity.ActivityDto;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,7 +37,7 @@ public interface TicketMngInterface {
 	 * @return
 	 */
 	@RequestMapping(value = "/getTicketAmountList", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<List<TicketAmountDto>> getTicketAmountList(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") Integer pagesize);
+	Response<PageInfo<TicketAmountDto>> getTicketAmountList(@RequestParam(value = "pageno") int pageno, @RequestParam(value = "pagesize") Integer pagesize);
 	
 	/**
 	 * 删除优惠券

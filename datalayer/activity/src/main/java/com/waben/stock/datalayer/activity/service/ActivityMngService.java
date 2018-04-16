@@ -5,10 +5,13 @@ import com.waben.stock.datalayer.activity.repository.ActivityDao;
 import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -37,19 +40,13 @@ public class ActivityMngService {
 	}
 	
 	
-	public List<ActivityDto> getActivityList(int pageno,Integer pagesize){
+	public PageInfo<ActivityDto> getActivityList(int pageno, Integer pagesize){
 		if(pagesize == null){
 			PageAndSortQuery pq = new PageAndSortQuery();
 			pagesize = pq.getSize();
 		}
-		List<Activity> li = ad.getActivityList(pageno,pagesize);
-		List<ActivityDto> atolist = new ArrayList<>();
-		if(li != null){
-			for(Activity a : li){
-				ActivityDto ad  = CopyBeanUtils.copyBeanProperties(ActivityDto.class, a, false);
-				atolist.add(ad);
-			}
-		}
+		Page<Activity> page = ad.getActivityList(pageno,pagesize);
+		PageInfo<ActivityDto> atolist = PageToPageInfo.pageToPageInfo(page,ActivityDto.class);
 		return atolist;
 	}
 	

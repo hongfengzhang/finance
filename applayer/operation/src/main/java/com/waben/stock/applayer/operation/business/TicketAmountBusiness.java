@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.dto.activity.TicketAmountDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,8 +17,8 @@ public class TicketAmountBusiness {
     @Autowired
     private TicketAmountService ticketAmountService;
 
-    public List<TicketAmountDto> pages(int pageNo, Integer pageSize) {
-        Response<List<TicketAmountDto>> response = ticketAmountService.getTicketAmountList(pageNo, pageSize);
+    public PageInfo<TicketAmountDto> pages(int pageNo, Integer pageSize) {
+        Response<PageInfo<TicketAmountDto>> response = ticketAmountService.getTicketAmountList(pageNo, pageSize);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

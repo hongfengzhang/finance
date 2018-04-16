@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/offlinestockoptiontrade")
@@ -39,6 +40,13 @@ public class OfflineStockOptionTradeController {
     @ResponseBody
     public Response<OfflineStockOptionTradeVo> settlement(@PathVariable Long id, @PathVariable BigDecimal sellingPrice) {
         OfflineStockOptionTradeVo result = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeVo.class, offlineStockOptionTradeBusiness.settlement(id, sellingPrice), false);
+        return new Response<>(result);
+    }
+
+    @GetMapping("/monthsProfit/{year}")
+    @ResponseBody
+    public Response<Map<String,BigDecimal>> fetchMonthsProfit(@PathVariable String year) {
+        Map<String, BigDecimal> result = offlineStockOptionTradeBusiness.findMonthsProfit(year);
         return new Response<>(result);
     }
 }

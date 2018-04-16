@@ -20,8 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class OfflineStockOptionTradeService {
@@ -87,4 +88,18 @@ public class OfflineStockOptionTradeService {
         }
         return result;
     }
+
+    public List<OfflineStockOptionTrade> findByStateAndSellingTimeBetween(OfflineStockOptionTradeState state,String year) {
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        Date start = null;
+        Date end = null;
+        try {
+            start = sdf.parse(year+"-01-01 00:00:00");
+            end = sdf.parse(year+"-12-31 23:59:59");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return offlineStockOptionTradeDao.retrieveByStateAndSellingTimeBetween(state,start,end);
+    }
+
 }

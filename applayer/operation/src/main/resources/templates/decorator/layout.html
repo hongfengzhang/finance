@@ -164,8 +164,12 @@
                             <div class="widget-header">
                                 <span class="widget-caption">收入趋势</span>
                                 <div class="widget-buttons">
-                                    <select>
-                                        <option>2012</option>
+                                    <select name="year">
+                                        <option>2018</option>
+                                        <option>2019</option>
+                                        <option>2020</option>
+                                        <option>2021</option>
+                                        <option>2022</option>
                                     </select>
                                 </div>
                             </div>
@@ -383,6 +387,10 @@
     init2();
     InitiateDonutChart2.init();
     InitiateDonutChart1.init();
+
+    $('[name="year"]').change(function () {
+        InitiateLineChart2.init();
+    })
     //]]>
 </script>
 

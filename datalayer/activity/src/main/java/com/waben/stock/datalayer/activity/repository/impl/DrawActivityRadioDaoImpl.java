@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.activity.repository.impl;
 import com.waben.stock.datalayer.activity.entity.DrawActivityRadio;
 import com.waben.stock.datalayer.activity.repository.DrawActivityRadioDao;
 import com.waben.stock.datalayer.activity.repository.jpa.DrawActivityRadioRespository;
+import com.waben.stock.datalayer.activity.service.DrawActivityRadioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
