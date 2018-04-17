@@ -81,16 +81,17 @@ public class StockOptionTradeController {
 	@GetMapping("/{stockCode}/{cycle}/quote")
 	@ApiOperation(value = "询价")
 	public Response<StockOptionQuoteWithBalanceDto> quote(@PathVariable("stockCode") String stockCode,
-			@PathVariable("cycle") Integer cycle) {
-		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle);
+			@PathVariable("cycle") Integer cycle, BigDecimal nominalAmount) {
+		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle, nominalAmount);
 		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
-		if (quote == null && cycle == 14) {
-			quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
-			if (quote != null) {
-				quote.setRightMoneyRatio(
-						quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.HALF_EVEN));
-			}
-		}
+		// if (quote == null && cycle == 14) {
+		// quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
+		// if (quote != null) {
+		// quote.setRightMoneyRatio(
+		// quote.getRightMoneyRatio().multiply(new
+		// BigDecimal("0.7")).setScale(4, RoundingMode.HALF_EVEN));
+		// }
+		// }
 		if (quote == null) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION);
 		}
@@ -121,13 +122,14 @@ public class StockOptionTradeController {
 		// 获取股票、期权周期、报价
 		StockDto stock = stockBusiness.findByCode(stockCode);
 		StockOptionCycleDto cycle = cycleBusiness.fetchById(cycleId);
-		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle.getCycle());
+		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle.getCycle(), nominalAmount);
 		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
-		if (quote == null && cycle.getCycle().intValue() == 14) {
-			quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
-			quote.setRightMoneyRatio(
-					quote.getRightMoneyRatio().multiply(new BigDecimal("0.7")).setScale(4, RoundingMode.HALF_EVEN));
-		}
+		// if (quote == null && cycle.getCycle().intValue() == 14) {
+		// quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
+		// quote.setRightMoneyRatio(
+		// quote.getRightMoneyRatio().multiply(new
+		// BigDecimal("0.7")).setScale(4, RoundingMode.HALF_EVEN));
+		// }
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = capitalAccountBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();

@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,9 +28,9 @@ public class StockOptionQuoteController implements StockOptionQuoteInterface {
 
 	@Override
 	public Response<StockOptionQuoteDto> quote(@PathVariable Long publisherId, @PathVariable String stockCode,
-			@PathVariable Integer cycle) {
+			@PathVariable Integer cycle, BigDecimal nominalAmount) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionQuoteDto.class,
-				service.quote(publisherId, stockCode, cycle), false));
+				service.quote(publisherId, stockCode, cycle, nominalAmount), false));
 	}
 
 }

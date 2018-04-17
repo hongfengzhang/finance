@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,8 @@ public class StockOptionQuoteBusiness {
 	@Qualifier("stockOptionQuoteReference")
 	private StockOptionQuoteReference quoteReference;
 
-	public StockOptionQuoteDto quote(Long publisherId, String stockCode, Integer cycle) {
-		Response<StockOptionQuoteDto> response = quoteReference.quote(publisherId, stockCode, cycle);
+	public StockOptionQuoteDto quote(Long publisherId, String stockCode, Integer cycle, BigDecimal nominalAmount) {
+		Response<StockOptionQuoteDto> response = quoteReference.quote(publisherId, stockCode, cycle, nominalAmount);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

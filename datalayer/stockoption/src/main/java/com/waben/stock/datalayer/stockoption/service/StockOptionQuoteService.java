@@ -42,7 +42,11 @@ public class StockOptionQuoteService {
 	@Value("${price.markup:0.1}")
 	private String priceMarkup;
 
-	public StockOptionQuote quote(Long publisherId, String stockCode, Integer cycle) {
+	// TODO 特殊需求，两周且20W的此处暂时做特殊处理，上调20% ，后续要调整为更通用的方式
+	@Value("${price.iscycle14w20handle:false}")
+	private boolean isCycle14W20Handle;
+
+	public StockOptionQuote quote(Long publisherId, String stockCode, Integer cycle, BigDecimal nominalAmount) {
 		// TODO 此处目前只有一个机构，默认取第一个机构
 		StockOptionOrg org = orgDao.retrieve(1L);
 		StockOptionOrgQuote orgQuote = orgQuoteDao.findByOrgAndStockCodeAndCycle(org, stockCode, cycle);
@@ -54,6 +58,12 @@ public class StockOptionQuoteService {
 				BigDecimal rightMoneyRatio = result.getRightMoneyRatio();
 				result.setRightMoneyRatio(rightMoneyRatio.add(rightMoneyRatio.multiply(new BigDecimal(priceMarkup)))
 						.setScale(4, RoundingMode.HALF_EVEN));
+				// TODO 特殊需求，两周且20W的此处暂时做特殊处理，上调20% ，后续要调整为更通用的方式
+				if (isCycle14W20Handle && cycle == 14 && nominalAmount != null
+						&& nominalAmount.compareTo(new BigDecimal("200000")) == 0) {
+					result.setRightMoneyRatio(result.getRightMoneyRatio().multiply(new BigDecimal("1.2")).setScale(4,
+							RoundingMode.HALF_EVEN));
+				}
 			} else {
 				List<BigDecimal> ratioList = priceMarkupBusiness.priceMarkupRatioList(Integer.valueOf(2),
 						cycleObj.getId(), publisherId);
@@ -72,6 +82,12 @@ public class StockOptionQuoteService {
 					BigDecimal rightMoneyRatio = result.getRightMoneyRatio();
 					result.setRightMoneyRatio(rightMoneyRatio.add(rightMoneyRatio.multiply(new BigDecimal(priceMarkup)))
 							.setScale(4, RoundingMode.HALF_EVEN));
+				}
+				// TODO 特殊需求，两周且20W的此处暂时做特殊处理，上调20% ，后续要调整为更通用的方式
+				if (isCycle14W20Handle && cycle == 14 && nominalAmount != null
+						&& nominalAmount.compareTo(new BigDecimal("200000")) == 0) {
+					result.setRightMoneyRatio(result.getRightMoneyRatio().multiply(new BigDecimal("1.2")).setScale(4,
+							RoundingMode.HALF_EVEN));
 				}
 			}
 			return result;
