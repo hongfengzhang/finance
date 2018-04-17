@@ -72,7 +72,6 @@ public class StockOptionTradeBusiness {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         QuotoInquiry quotoInquiry = new QuotoInquiry();
-        stockOptionTradeService.inquiry(result.getId());//修改状态
         Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
         StockOptionOrgDto org = lists.getResult().get(0);
         quotoInquiry.setUnderlying(result.getStockName());
@@ -96,7 +95,6 @@ public class StockOptionTradeBusiness {
             e.printStackTrace();
         }
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
-
 
         if(result.getStatus()==null) {
             modify(id);
@@ -261,7 +259,7 @@ public class StockOptionTradeBusiness {
     }
 
     public StockOptionTradeDto modify(Long id){
-        Response<StockOptionTradeDto> response  =   stockOptionTradeService.modify(id);
+        Response<StockOptionTradeDto> response = stockOptionTradeService.modify(id);
         if ("200".equals(response.getCode())){
             return response.getResult();
         }
