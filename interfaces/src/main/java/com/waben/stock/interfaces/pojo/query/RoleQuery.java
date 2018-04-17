@@ -10,6 +10,7 @@ public class RoleQuery extends PageAndSortQuery {
     private Long id;
     private String description;
     private Long organization;
+    private Integer type;
 
     public String getName() {
         return name;
@@ -49,5 +50,13 @@ public class RoleQuery extends PageAndSortQuery {
 
     public void setOrganization(Long organization) {
         this.organization = organization;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

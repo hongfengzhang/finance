@@ -28,6 +28,7 @@ public class RoleBusiness {
     private RoleService roleService;
 
     public PageInfo<RoleDto> pages(RoleQuery query) {
+        query.setType(1);
         Response<PageInfo<RoleDto>> response = roleService.pages(query);
         String code = response.getCode();
         if ("200".equals(code)) {

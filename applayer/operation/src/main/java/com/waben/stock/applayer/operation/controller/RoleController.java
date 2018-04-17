@@ -51,6 +51,13 @@ public class RoleController {
         return "manage/role/view";
     }
 
+    @RequestMapping("/authorize/{id}")
+    public String authorize(@PathVariable Long id, ModelMap map){
+        RoleDto roleDto = roleBusiness.fetchById(id);
+        map.addAttribute("permissions", roleDto.getPermissionDtos());
+        return "manage/role/authorize";
+    }
+
     @RequestMapping("/edit/{id}")
     public String edit(@PathVariable Long id, ModelMap map){
         RoleDto roleDto = roleBusiness.fetchById(id);
