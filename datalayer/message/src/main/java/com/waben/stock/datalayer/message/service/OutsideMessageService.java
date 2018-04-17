@@ -53,7 +53,7 @@ public class OutsideMessageService {
 				config = outsidePushConfigDao.getDefaultConfig();
 			}
 			if (config != null && registrationId != null && !"".equals(registrationId.trim())) {
-				logger.error("推送消息:" + message.getContent());
+				logger.info("推送消息:" + message.getContent());
 				jiguangService.pushSingleDevice(registrationId, message.getTitle(), message.getContent(),
 						message.getExtras(), config != null ? config.getAppKey() : null,
 						config != null ? config.getMasterSecret() : null);
