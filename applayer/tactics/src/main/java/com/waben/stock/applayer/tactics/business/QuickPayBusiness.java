@@ -529,7 +529,7 @@ public class QuickPayBusiness {
         order.setUpdateTime(new Date());
         this.saveWithdrawalsOrders(order);
 
-        logger.info("发起提现申请");
+        logger.info("发起提现申请:{}_{}_{}_{}", name, idCard, phone, bankCard);
         Map<String,String> request = new TreeMap<>();
         SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
         request.put("cardNo",bankCard);
