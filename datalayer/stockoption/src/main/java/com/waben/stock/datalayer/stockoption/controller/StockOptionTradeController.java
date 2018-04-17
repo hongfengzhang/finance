@@ -104,13 +104,6 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> inquiry(@PathVariable Long id) {
-		StockOptionTrade result = stockOptionTradeService.inquiry(id);
-		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
-		return new Response<>(stockOptionTradeDto);
-	}
-
-	@Override
 	public Response<List<StockOptionTradeDto>> stockOptionsWithState(@PathVariable Integer state) {
 		StockOptionTradeState stockOptionTradeState = StockOptionTradeState.getByIndex(String.valueOf(state));
 		List<StockOptionTrade> stockOptionTrades = stockOptionTradeService.fetchByState(stockOptionTradeState);

@@ -376,12 +376,4 @@ public class StockOptionTradeService {
 		return stockOptionTradeDao.update(stockOptionTrade);
 	}
 
-    public StockOptionTrade inquiry(Long id) {
-		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
-		// 申购信息
-		stockOptionTrade.setState(StockOptionTradeState.INQUIRY);
-		stockOptionTrade.setUpdateTime(new Date());
-		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
-		return result;
-    }
 }

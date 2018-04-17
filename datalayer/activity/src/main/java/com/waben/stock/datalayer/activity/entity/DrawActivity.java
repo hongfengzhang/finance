@@ -25,7 +25,7 @@ public class DrawActivity {
 	private long activityId;
 	
 	private long publisherId;
-	
+
 	/**
 	 * 剩余次数
 	 */

@@ -80,6 +80,11 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     }
 
     @Override
+    public Response<List<BuyRecordDto>> fetchMonthsProfit(String year) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
     public Response<BuyRecordDto> fetchBuyRecord(Long buyrecord) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }

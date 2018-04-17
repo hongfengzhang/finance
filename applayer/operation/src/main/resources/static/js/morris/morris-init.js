@@ -1,119 +1,102 @@
-﻿
-var InitiateLineChart2 = function () {
-    return {
-        init: function () {
-            Morris.Line({
-                element: 'line-chart-2',
-                data: [
-                    { x: '01月', a: 100,b: 90 },
-                    { x: '02月', a: 75, b: 65 },
-                    { x: '03月', a: 50, b: 40 },
-                    { x: '04月', a: 75, b: 65 },
-                    { x: '05月', a: 50, b: 40 },
-                    { x: '06月', a: 75, b: 65 },
-                    { x: '07月', a: 200, b: 90 },
-                    { x: '08月', a: 200, b: 90 },
-                    { x: '09月', a: 200, b: 90 },
-                    { x: '10月', a: 200, b: 90 },
-                    { x: '11月', a: 200, b: 90 },
-                    { x: '12月', a: 200, b: 90 }
-                ],
-                xkey: 'x',
-                ykeys: ['a', 'b'],
-                labels: ['配资', '期权'],
-                lineColors: ["green", "blue"]
-            });
-            // $.ajax({
-            //     type: "GET",
-            //     url: "/operation/offlinestockoptiontrade/monthsProfit/"+$('[name="year"]').val(),
-            //     dataType: "json",
-            //     async:false,
-            //     success: function (jsonResult) {
-            //         Morris.Line({
-            //             element: 'line-chart-1',
-            //             data: [
-            //                 { x: '01月', a: 110,b:110 },
-            //                 { x: '02月', a: 120, b: 100 },
-            //                 { x: '03月', a: 100, b: 130 },
-            //                 { x: '04月', a: 140, b: 140 },
-            //                 { x: '05月', a: 100, b: 150 },
-            //                 { x: '06月', a: 160, b: 160 },
-            //                 { x: '07月', a: 170, b: 170 },
-            //                 { x: '08月', a: 180, b: 180 },
-            //                 { x: '09月', a: 190, b: 190 },
-            //                 { x: '10月', a: 110, b: 110 },
-            //                 { x: '11月', a: 120, b: 120 },
-            //                 { x: '12月', a: 100, b: 100 }
-            //             ],
-            //             xkey: 'x',
-            //             ykeys: ['a', 'b'],
-            //             labels: ['配资', '期权'],
-            //             lineColors: ["green", "blue"]
-            //         });
-            //     }
-            // });
+﻿function chart() {
+    $.ajax({
+        type: "GET",
+        url: "/operation/monthsProfit/" + $('[name="year"]').val(),
+        dataType: "json",
+        async: false,
+        success: function (jsonResult) {
+            if ("200" == jsonResult.code) {
+                var result = jsonResult.result;
+
+                var ctx1 = document.getElementById("chart_1").getContext("2d");
+                var data1 = {
+                    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                    datasets: [
+                        {
+                            label: "期权",
+                            backgroundColor: "rgba(60,184,120,0.4)",
+                            borderColor: "rgba(60,184,120,0.4)",
+                            pointBorderColor: "rgb(60,184,120)",
+                            pointHighlightStroke: "rgba(60,184,120,1)",
+                            // data: [0, 59, 80, 58, 20, 55, 40, 80, 58, 20, 55, 20000000],
+                            data: [result[0]['01'], result[0]['02'], result[0]['03'], result[0]['04'], result[0]['05'], result[0]['06'], result[0]['07'], result[0]['08'], result[0]['09'], result[0]['10'], result[0]['11'], result[0]['12']]
+                        },
+                        {
+                            label: "配资",
+                            backgroundColor: "rgba(252,176,59,0.4)",
+                            borderColor: "rgba(252,176,59,0.4)",
+                            pointBorderColor: "rgb(252,176,59)",
+                            pointBackgroundColor: "rgba(252,176,59,0.4)",
+                            // data: [28, 48, 40, 19, 86, 27, 90, 80, 20000000, 20, 55, 40],
+                            data: [result[1]['01'], result[1]['02'], result[1]['03'], result[1]['04'], result[1]['05'], result[1]['06'], result[1]['07'], result[1]['08'], result[1]['09'], result[1]['10'], result[1]['11'], result[1]['12']],
+                        }
+
+                    ]
+                };
+
+                var areaChart = new Chart(ctx1, {
+                    type: "line",
+                    data: data1,
+
+                    options: {
+                        tooltips: {
+                            mode: "label"
+                        },
+                        elements: {
+                            point: {
+                                hitRadius: 90
+                            }
+                        },
+
+                        scales: {
+                            yAxes: [{
+                                stacked: true,
+                                gridLines: {
+                                    color: "#eee",
+                                },
+                                ticks: {
+                                    fontFamily: "Varela Round",
+                                    fontColor: "#2f2c2c"
+                                }
+                            }],
+                            xAxes: [{
+                                stacked: true,
+                                gridLines: {
+                                    color: "#eee",
+                                },
+                                ticks: {
+                                    fontFamily: "Varela Round",
+                                    fontColor: "#2f2c2c"
+                                }
+                            }]
+                        },
+                        animation: {
+                            duration: 3000
+                        },
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        legend: {
+                            display: false,
+                        },
+                        tooltips: {
+                            backgroundColor: 'rgba(47,44,44,.9)',
+                            cornerRadius: 0,
+                            footerFontFamily: "'Varela Round'"
+                        }
+
+                    }
+                });
+            } else {
+                swal(jsonResult.message)
+            }
         }
-    };
-}();
+    })
+}
 
-var InitiateLineChart1 = function () {
-    return {
-        init: function () {
-            Morris.Line({
-                element: 'line-chart-2',
-                data: [
-                    { x: '01月', a: 100,b: 90 },
-                    { x: '02月', a: 75, b: 65 },
-                    { x: '03月', a: 50, b: 40 },
-                    { x: '04月', a: 75, b: 65 },
-                    { x: '05月', a: 50, b: 40 },
-                    { x: '06月', a: 75, b: 65 },
-                    { x: '07月', a: 200, b: 90 },
-                    { x: '08月', a: 200, b: 90 },
-                    { x: '09月', a: 200, b: 90 },
-                    { x: '10月', a: 200, b: 90 },
-                    { x: '11月', a: 200, b: 90 },
-                    { x: '12月', a: 200, b: 90 }
-                ],
-                xkey: 'x',
-                ykeys: ['a', 'b'],
-                labels: ['配资', '期权'],
-                lineColors: ["green", "blue"]
-            });
-        }
-    };
-}();
-
-var InitiateDonutChart1 = function () {
-    return {
-        init: function () {
-            Morris.Donut({
-                element: 'donut-chart1',
-                data: [
-                    { label: '配资', value: 40 , },
-                    { label: '期权', value: 5 }
-                ],
-                colors: ["green", "blue"],
-                formatter: function (y) { return y + "%" }
-            });
-        }
-    };
-}();
-var InitiateDonutChart2 = function () {
-    return {
-        init: function () {
-            Morris.Donut({
-                element: 'donut-chart2',
-                data: [
-                    { label: '配资', value: 40 },
-                    { label: '期权', value: 5 }
-                ],
-                colors: ["green", "blue"],
-                formatter: function (y) { return y + "%" }
-            });
-        }
-    };
-}();
+chart();
 
 
-
+$('[name="year"]').change(function () {
+    // $(".panel-wrapper").html('');
+    chart();
+})

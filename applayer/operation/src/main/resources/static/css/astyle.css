@@ -150,3 +150,12 @@ card [data-background-color="purple"] {
     position: absolute;
     z-index: 1001;
 }
+
+.card-view.panel-default.panel > .panel-heading {
+    background: transparent;
+}
+.card-view.panel > .panel-heading {
+    border: none;
+    color: inherit;
+    border-radius: 0;
+}

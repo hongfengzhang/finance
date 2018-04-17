@@ -3,7 +3,6 @@ package com.waben.stock.interfaces.service.buyrecord;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -183,6 +182,9 @@ public interface BuyRecordInterface {
 	void delete(@PathVariable("id") Long id);
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
 	Response<BuyRecordDto> updateState(@RequestBody BuyRecordDto buyRecordDto);
+
+	@RequestMapping(value = "/monthsProfit/{year}", method = RequestMethod.GET)
+	Response<List<BuyRecordDto>> fetchMonthsProfit(@PathVariable("year") String year);
 
 	@RequestMapping(value = "/echo",method = RequestMethod.GET)
 	Response<Boolean> echo();

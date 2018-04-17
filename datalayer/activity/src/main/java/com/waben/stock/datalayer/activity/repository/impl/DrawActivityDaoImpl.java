@@ -35,4 +35,9 @@ public class DrawActivityDaoImpl implements DrawActivityDao {
     public DrawActivity getDrawActicity(long id) {
         return respository.getOne(id);
     }
+
+    @Override
+    public List<DrawActivity> getDrawActicitys() {
+        return respository.findAll();
+    }
 }

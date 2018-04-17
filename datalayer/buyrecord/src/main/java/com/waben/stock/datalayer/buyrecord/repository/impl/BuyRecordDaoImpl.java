@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.buyrecord.repository.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -70,5 +71,10 @@ public class BuyRecordDaoImpl implements BuyRecordDao {
 	@Override
 	public Integer strategyJoinCount(Long publisherId, Long strategyTypeId) {
 		return repository.strategyJoinCount(publisherId, strategyTypeId);
+	}
+
+	@Override
+	public List<BuyRecord> retrieveByStateAndUpdateTimeBetween(BuyRecordState state, Date start, Date end) {
+		return repository.findByStateAndUpdateTimeBetween(state,start,end);
 	}
 }

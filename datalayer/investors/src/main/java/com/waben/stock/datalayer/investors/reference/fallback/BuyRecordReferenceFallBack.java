@@ -105,6 +105,11 @@ public class BuyRecordReferenceFallBack implements BuyRecordReference {
     }
 
     @Override
+    public Response<List<BuyRecordDto>> fetchMonthsProfit(String year) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
     public Response<List<BuyRecordDto>> buyRecordsWithStatus(Integer buyRecordState) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
