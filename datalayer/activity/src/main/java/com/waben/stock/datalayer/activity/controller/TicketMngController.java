@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.activity.controller;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class TicketMngController implements TicketMngInterface{
 	}
 
 	@Override
-	public Response<List<TicketAmountDto>> getTicketAmountList(int pageno, Integer pagesize) {
+	public Response<PageInfo<TicketAmountDto>> getTicketAmountList(int pageno, Integer pagesize) {
 		return new Response<>(ts.getTicketList(pageno, pagesize));
 	}
 

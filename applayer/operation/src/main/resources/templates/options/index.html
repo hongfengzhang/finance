@@ -47,18 +47,6 @@
                         </div>
                     </div>
 
-                    <div class="col-md-2">
-                        <div class="form-group">
-                            <label class="col-md-4 control-label">是否测试</label>
-                            <div class="col-sm-8">
-                                <select class="form-control" name="isTest">
-                                    <option value="0">否</option>
-                                    <option value="1">是</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="col-md-2 control-label">日期</label>
@@ -516,9 +504,9 @@
                     title: '操作',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
-                        if(row.state=="待确认"){
+                        if(row.status=="INQUIRY"){
                             return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
+                                ' <input type="button" disabled="disabled" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess"/>\n' +
@@ -528,9 +516,9 @@
                                 '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
                             ].join('');
                         }
-                        if(row.state=="已询价"){
+                        if(row.state=="待确认"){
                             return [
-                                ' <input type="button" disabled="disabled" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
+                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
                                 '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
                                 '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail"/>\n' +
                                 '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess"/>\n' +

@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.activity;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,7 +36,7 @@ public interface ActivityMngInterface {
 	 * @return
 	 */
 	@RequestMapping(value = "/getActivityList", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<List<ActivityDto>> getActivityList(@RequestParam(value = "pageno") int pageno,@RequestParam(value = "pagesize") Integer pagesize);
+	Response<PageInfo<ActivityDto>> getActivityList(@RequestParam(value = "pageno") int pageno, @RequestParam(value = "pagesize") Integer pagesize);
 	
 	/**
 	 * 设置活动生效状态

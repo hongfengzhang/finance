@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -19,6 +20,11 @@ public class OfflineStockOptionTradesServiceFallback implements OfflineStockOpti
 
     @Override
     public Response<OfflineStockOptionTradeDto> find(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<List<OfflineStockOptionTradeDto>> fetchMonthsProfit(String year) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

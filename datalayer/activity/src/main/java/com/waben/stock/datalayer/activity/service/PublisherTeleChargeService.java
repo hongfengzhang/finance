@@ -9,8 +9,11 @@ import com.waben.stock.datalayer.activity.repository.PublisherTeleChargeDao;
 import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,32 +29,25 @@ public class PublisherTeleChargeService {
 
     @Autowired
     private ActivityDao activityDao;
-    public List<PublisherTeleChargeDto> getPublisherTeleChargeList(int pageno, Integer pagesize) {
+    public PageInfo<PublisherTeleChargeDto> getPublisherTeleChargeList(int pageno, Integer pagesize) {
         if(pagesize == null){
             PageAndSortQuery pq = new PageAndSortQuery();
             pagesize = pq.getSize();
         }
-        List<PublisherTeleCharge> li = dao.getPublisherTeleChargeList(pageno, pagesize);
-        List<PublisherTeleChargeDto> atolist = new ArrayList<>();
-        if(li != null){
-            for(PublisherTeleCharge a : li){
-                PublisherTeleChargeDto ad  = CopyBeanUtils.copyBeanProperties(PublisherTeleChargeDto.class, a, false);
-                atolist.add(ad);
-            }
-        }
-        for(PublisherTeleChargeDto publisherTeleCharge : atolist) {
+        Page<PublisherTeleCharge> page = dao.getPublisherTeleChargeList(pageno, pagesize);
+        PageInfo<PublisherTeleChargeDto> pageInfo = PageToPageInfo.pageToPageInfo(page,PublisherTeleChargeDto.class);
+
+        for(PublisherTeleChargeDto publisherTeleCharge : pageInfo.getContent()) {
             ActivityPublisher activityPublisher = activityPublisherDao.getActivityPublisher(publisherTeleCharge.getApId());
             Activity activity = activityDao.getActivity(activityPublisher.getActivityId());
             publisherTeleCharge.setActivityName(activity.getSubject());
         }
-        return atolist;
+        return pageInfo;
     }
 
     @Transactional
-    public PublisherTeleChargeDto savePublisherTeleCharge(PublisherTeleChargeDto pdto){
-        PublisherTeleCharge p = CopyBeanUtils.copyBeanProperties(PublisherTeleCharge.class, pdto, false);
-        dao.savePublisherTeleCharge(p);
-        return CopyBeanUtils.copyBeanProperties(PublisherTeleChargeDto.class, p, false);
+    public PublisherTeleCharge savePublisherTeleCharge(PublisherTeleCharge publisherTeleCharge){
+        return dao.savePublisherTeleCharge(publisherTeleCharge);
     }
 
     public PublisherTeleCharge getPublisherTeleCharge(long publisherTeleChargeId) {

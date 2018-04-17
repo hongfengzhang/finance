@@ -15,8 +15,12 @@ public class ActivityPublisherService {
     @Autowired
     private ActivityPublisherDao dao;
 
-    public List<ActivityPublisher> getActivityPublisherByActivityId(long activityId) {
-        return dao.getActivityPublisherByApId(activityId);
+    public List<ActivityPublisher> getActivityPublishersByActivityId(long activityId) {
+        return dao.getActivityPublishersByApId(activityId);
     }
 
+
+    public ActivityPublisher getActivityPublisherByPublisherId(long publisherId) {
+        return dao.getActivityPublisherByPublisherId(publisherId);
+    }
 }

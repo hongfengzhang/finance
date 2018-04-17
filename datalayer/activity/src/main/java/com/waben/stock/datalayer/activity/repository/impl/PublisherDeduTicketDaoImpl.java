@@ -19,15 +19,15 @@ public class PublisherDeduTicketDaoImpl implements PublisherDeduTicketDao{
 
 
 	@Override
-	public void savePublisherDeduTicket(PublisherDeduTicket a) {
-		respository.save(a);
+	public PublisherDeduTicket savePublisherDeduTicket(PublisherDeduTicket a) {
+		return respository.save(a);
 	}
 
 	@Override
-	public List<PublisherDeduTicket> getPublisherDeduTicketList(int pageno, int pagesize) {
+	public Page<PublisherDeduTicket> getPublisherDeduTicketList(int pageno, int pagesize) {
 		Pageable p = new PageRequest(pageno-1, pagesize);
 		Page<PublisherDeduTicket> pt =  respository.findAll(p);
-		return pt.getContent();
+		return pt;
 	}
 
 	@Override

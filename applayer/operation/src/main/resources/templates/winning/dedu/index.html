@@ -66,16 +66,16 @@
                 pageSize: 10, //每页的记录行数（*）
                 minimumCountColumns: 1, // 设置最少显示列个数
                 clickToSelect: true, // 单击行即可以选中
-                uniqueId: "id", //每一行的唯一标识，一般为主键列
-                sortName: 'id', // 设置默认排序为 name
+                uniqueId: "dtId", //每一行的唯一标识，一般为主键列
+                sortName: 'dtId', // 设置默认排序为 name
                 sortOrder: 'asc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination: "server",
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        return{
-                            total: res.result.length,
-                            rows: res.result
+                        return {
+                            total: res.result.totalElements,
+                            rows: res.result.content
                         }
                     }
                 },

@@ -59,18 +59,25 @@ public class BuyRecordBusiness {
     public Map<String,Object> fetchBuyRecordProfitAndPosition() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
         Map<String,Object> map = new HashMap<>();
-        List<BuyRecordDto> result = buyRecordService.buyRecordsWithStatus(6).getResult();
         BigDecimal todayProfit = new BigDecimal(0);
         BigDecimal allProfit = new BigDecimal(0);
         int todayCount = 0;
         int allCount = 0;
-        for(BuyRecordDto buyRecordDto : result) {
+        List<BuyRecordDto> resultProfit = buyRecordService.buyRecordsWithStatus(6).getResult();
+        for(BuyRecordDto buyRecordDto : resultProfit) {
             if(buyRecordDto.getSettlement()!=null) {
                 if(sdf.format(new Date()).equals(sdf.format(buyRecordDto.getUpdateTime()))) {
-                    todayCount++;
                     todayProfit = todayProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
                 }
                 allProfit = allProfit.add(buyRecordDto.getSettlement().getInvestorProfitOrLoss());
+            }
+        }
+        List<BuyRecordDto> resultPosition = buyRecordService.buyRecordsWithStatus(3).getResult();
+        for(BuyRecordDto buyRecordDto : resultPosition) {
+            if(buyRecordDto.getSettlement()!=null) {
+                if(sdf.format(new Date()).equals(sdf.format(buyRecordDto.getUpdateTime()))) {
+                    todayCount++;
+                }
             }
             allCount++;
         }

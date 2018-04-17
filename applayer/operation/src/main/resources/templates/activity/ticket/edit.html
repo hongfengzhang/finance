@@ -81,7 +81,7 @@
                                 </div>
                                 <div class="col-sm-4 columns-right">
                                     <div class="form-group">
-                                        <img style="width: 200px;height: 200px;display: none" th:src="${ticket.url}" class="img-rounded" />
+                                        <img style="width: 200px;height: 200px;" th:src="${ticket.url}" class="img-rounded" />
                                         <input id="file" name="file" type="file" multiple="true"/>
                                         <button id="upload">上传</button>
                                     </div>
@@ -161,8 +161,15 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    alert("上传成功");
-                    $("input[name='url']").val(data);
+                    if(data=="上传失败") {
+                        swal("上传失败");
+                    }else {
+                        swal("上传成功");
+                        $("input[name='url']").val(data);
+                        flag++;
+                    }
+                },error: function () {
+                    swal("上传失败");
                 }
             });
 

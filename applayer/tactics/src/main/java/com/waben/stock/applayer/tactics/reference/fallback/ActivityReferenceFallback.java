@@ -5,9 +5,9 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 
 @Component
 public class ActivityReferenceFallback implements ActivityReference{
@@ -17,9 +17,10 @@ public class ActivityReferenceFallback implements ActivityReference{
     }
 
     @Override
-    public Response<List<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
+    public Response<PageInfo<ActivityDto>> getActivityList(int pageno, Integer pagesize) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
 
     @Override
     public Response<Void> setValid(long activityId) {

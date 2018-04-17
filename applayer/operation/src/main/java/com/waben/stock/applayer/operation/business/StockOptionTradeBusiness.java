@@ -72,7 +72,6 @@ public class StockOptionTradeBusiness {
         Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
         StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
         QuotoInquiry quotoInquiry = new QuotoInquiry();
-        stockOptionTradeService.inquiry(result.getId());//修改状态
         Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
         StockOptionOrgDto org = lists.getResult().get(0);
         quotoInquiry.setUnderlying(result.getStockName());
@@ -96,7 +95,6 @@ public class StockOptionTradeBusiness {
             e.printStackTrace();
         }
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
-
 
         if(result.getStatus()==null) {
             modify(id);
@@ -261,7 +259,7 @@ public class StockOptionTradeBusiness {
     }
 
     public StockOptionTradeDto modify(Long id){
-        Response<StockOptionTradeDto> response  =   stockOptionTradeService.modify(id);
+        Response<StockOptionTradeDto> response = stockOptionTradeService.modify(id);
         if ("200".equals(response.getCode())){
             return response.getResult();
         }
@@ -275,15 +273,22 @@ public class StockOptionTradeBusiness {
         BigDecimal allProfit = new BigDecimal(0);
         int todayCount = 0;
         int allCount = 0;
-        List<StockOptionTradeDto> result = stockOptionTradeService.stockOptionsWithState(6).getResult();
-        for(StockOptionTradeDto stockOptionTradeDto : result) {
+        List<StockOptionTradeDto> resultProfit = stockOptionTradeService.stockOptionsWithState(6).getResult();
+        for(StockOptionTradeDto stockOptionTradeDto : resultProfit) {
             if(stockOptionTradeDto.getOfflineTradeDto()!=null) {
                 if(stockOptionTradeDto.getOfflineTradeDto().getProfit()!=null) {
                     if(sdf.format(new Date()).equals(sdf.format(stockOptionTradeDto.getUpdateTime()))) {
-                        todayCount++;
                         todayProfit = todayProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
                     }
                     allProfit = allProfit.add(stockOptionTradeDto.getOfflineTradeDto().getProfit());
+                }
+            }
+        }
+        List<StockOptionTradeDto> resultPosition = stockOptionTradeService.stockOptionsWithState(3).getResult();
+        for(StockOptionTradeDto stockOptionTradeDto : resultPosition) {
+            if(stockOptionTradeDto.getOfflineTradeDto()!=null) {
+                if(sdf.format(new Date()).equals(sdf.format(stockOptionTradeDto.getUpdateTime()))) {
+                    todayCount++;
                 }
             }
             allCount++;

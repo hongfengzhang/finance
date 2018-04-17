@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.service.activity;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTicketDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,7 +32,7 @@ public interface PublisherTicketInterface {
 	 * @return
 	 */
 	@RequestMapping(value = "/getPublisherTicketList", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<List<PublisherTicketDto>> getPublisherTicketList(@RequestParam(value = "pageno") int pageno, @RequestParam(value = "pagesize") Integer pagesize);
+	Response<PageInfo<PublisherTicketDto>> getPublisherTicketList(@RequestParam(value = "pageno") int pageno, @RequestParam(value = "pagesize") Integer pagesize);
 
 
 	@RequestMapping(value = "/getPublisherTicket/{publisherTicketId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

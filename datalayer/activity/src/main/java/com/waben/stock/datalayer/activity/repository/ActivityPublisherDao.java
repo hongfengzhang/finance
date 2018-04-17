@@ -13,5 +13,7 @@ public interface ActivityPublisherDao {
 
 	ActivityPublisher getActivityPublisher(long activityPublisherId);
 
-	List<ActivityPublisher> getActivityPublisherByApId(long activityId);
+	List<ActivityPublisher> getActivityPublishersByApId(long activityId);
+
+	ActivityPublisher getActivityPublisherByPublisherId(long publisherId);
 }

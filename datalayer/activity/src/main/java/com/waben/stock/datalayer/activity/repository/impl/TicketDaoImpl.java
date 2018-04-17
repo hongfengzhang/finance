@@ -24,10 +24,10 @@ public class TicketDaoImpl implements TicketDao{
 	}
 
 	@Override
-	public List<TicketAmount> getTicketList(int pageno, int pagesize) {
+	public Page<TicketAmount> getTicketList(int pageno, int pagesize) {
 		Pageable p = new PageRequest(pageno-1, pagesize);
 		Page<TicketAmount> pt =  tr.findAll(p);
-		return pt.getContent();
+		return pt;
 	}
 
 	@Override

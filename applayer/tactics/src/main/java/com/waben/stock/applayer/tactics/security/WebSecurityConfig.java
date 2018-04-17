@@ -119,7 +119,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //		//测试放权  paypalnotify wbreturn wbcallback
 //		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
 //		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
-		http.authorizeRequests().antMatchers("/activity/**").permitAll();
+//		http.authorizeRequests().antMatchers("/activity/**").permitAll();
+//		http.authorizeRequests().antMatchers("/ticket/**").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

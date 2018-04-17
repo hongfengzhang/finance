@@ -21,15 +21,15 @@ public class PublisherTeleChargeDaoImpl implements PublisherTeleChargeDao {
 
 
 	@Override
-	public void savePublisherTeleCharge(PublisherTeleCharge a) {
-		respository.save(a);
+	public PublisherTeleCharge savePublisherTeleCharge(PublisherTeleCharge ptc) {
+		return respository.save(ptc);
 	}
 
 	@Override
-	public List<PublisherTeleCharge> getPublisherTeleChargeList(int pageno, int pagesize) {
+	public Page<PublisherTeleCharge> getPublisherTeleChargeList(int pageno, int pagesize) {
 		Pageable p = new PageRequest(pageno-1, pagesize);
 		Page<PublisherTeleCharge> pt =  respository.findAll(p);
-		return pt.getContent();
+		return pt;
 	}
 
 	@Override

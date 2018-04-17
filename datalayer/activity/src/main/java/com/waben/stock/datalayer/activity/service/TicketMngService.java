@@ -5,7 +5,10 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.activity.entity.TicketAmount;
@@ -28,20 +31,14 @@ public class TicketMngService {
 	}
 
 	
-	public List<TicketAmountDto> getTicketList(int pageno, Integer pagesize) {
+	public PageInfo<TicketAmountDto> getTicketList(int pageno, Integer pagesize) {
 		if(pagesize == null){
 			PageAndSortQuery pq = new PageAndSortQuery();
 			pagesize = pq.getSize();
 		}
-		List<TicketAmount> li = td.getTicketList(pageno, pagesize);
-		List<TicketAmountDto> atolist = new ArrayList<>();
-		if(li != null){
-			for(TicketAmount a : li){
-				TicketAmountDto ad  = CopyBeanUtils.copyBeanProperties(TicketAmountDto.class, a, false);
-				atolist.add(ad);
-			}
-		}
-		return atolist;
+		Page<TicketAmount> page = td.getTicketList(pageno, pagesize);
+		PageInfo<TicketAmountDto> pageInfo = PageToPageInfo.pageToPageInfo(page,TicketAmountDto.class);
+		return pageInfo;
 	}
 
 	@Transactional

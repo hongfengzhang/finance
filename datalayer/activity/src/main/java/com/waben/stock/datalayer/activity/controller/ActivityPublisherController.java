@@ -22,8 +22,8 @@ public class ActivityPublisherController implements ActivityPublisherInterface {
     private ActivityPublisherService activityPublisherService;
 
     @Override
-    public Response<List<ActivityPublisherDto>> getActivityPublisherByActivityId(@PathVariable long activityId) {
-        List<ActivityPublisher> result = activityPublisherService.getActivityPublisherByActivityId(activityId);
+    public Response<List<ActivityPublisherDto>> getActivityPublishersByActivityId(@PathVariable long activityId) {
+        List<ActivityPublisher> result = activityPublisherService.getActivityPublishersByActivityId(activityId);
         List<ActivityPublisherDto> activityPublisherDto = CopyBeanUtils.copyListBeanPropertiesToList(result,ActivityPublisherDto.class);
         return new Response<>(activityPublisherDto);
     }

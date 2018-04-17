@@ -79,9 +79,9 @@
                 sidePagination: "server",
                 responseHandler: function (res) {
                     if (res.code == '200') {
-                        return{
-                            total: res.result.length,
-                            rows: res.result
+                        return {
+                            total: res.result.totalElements,
+                            rows: res.result.content
                         }
                     }
                 },

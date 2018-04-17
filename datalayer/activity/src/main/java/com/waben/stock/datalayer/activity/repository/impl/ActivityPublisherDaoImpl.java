@@ -35,7 +35,12 @@ public class ActivityPublisherDaoImpl implements ActivityPublisherDao{
     }
 
     @Override
-    public List<ActivityPublisher> getActivityPublisherByApId(long aId) {
+    public List<ActivityPublisher> getActivityPublishersByApId(long aId) {
         return respository.findActivityPublishersByApId(aId);
+    }
+
+    @Override
+    public ActivityPublisher getActivityPublisherByPublisherId(long publisherId) {
+        return respository.findActivityPublishersByPublisherId(publisherId);
     }
 }

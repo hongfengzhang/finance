@@ -5,24 +5,53 @@ var InitiateLineChart2 = function () {
             Morris.Line({
                 element: 'line-chart-2',
                 data: [
-                  { x: '01月', a: 100,b: 90 },
-                  { x: '02月', a: 75, b: 65 },
-                  { x: '03月', a: 50, b: 40 },
-                  { x: '04月', a: 75, b: 65 },
-                  { x: '05月', a: 50, b: 40 },
-                  { x: '06月', a: 75, b: 65 },
-                  { x: '07月', a: 200, b: 90 },
-                  { x: '08月', a: 200, b: 90 },
-                  { x: '09月', a: 200, b: 90 },
-                  { x: '10月', a: 200, b: 90 },
-                  { x: '11月', a: 200, b: 90 },
-                  { x: '12月', a: 200, b: 90 }
+                    { x: '01月', a: 100,b: 90 },
+                    { x: '02月', a: 75, b: 65 },
+                    { x: '03月', a: 50, b: 40 },
+                    { x: '04月', a: 75, b: 65 },
+                    { x: '05月', a: 50, b: 40 },
+                    { x: '06月', a: 75, b: 65 },
+                    { x: '07月', a: 200, b: 90 },
+                    { x: '08月', a: 200, b: 90 },
+                    { x: '09月', a: 200, b: 90 },
+                    { x: '10月', a: 200, b: 90 },
+                    { x: '11月', a: 200, b: 90 },
+                    { x: '12月', a: 200, b: 90 }
                 ],
                 xkey: 'x',
                 ykeys: ['a', 'b'],
                 labels: ['配资', '期权'],
                 lineColors: ["green", "blue"]
             });
+            // $.ajax({
+            //     type: "GET",
+            //     url: "/operation/offlinestockoptiontrade/monthsProfit/"+$('[name="year"]').val(),
+            //     dataType: "json",
+            //     async:false,
+            //     success: function (jsonResult) {
+            //         Morris.Line({
+            //             element: 'line-chart-1',
+            //             data: [
+            //                 { x: '01月', a: 110,b:110 },
+            //                 { x: '02月', a: 120, b: 100 },
+            //                 { x: '03月', a: 100, b: 130 },
+            //                 { x: '04月', a: 140, b: 140 },
+            //                 { x: '05月', a: 100, b: 150 },
+            //                 { x: '06月', a: 160, b: 160 },
+            //                 { x: '07月', a: 170, b: 170 },
+            //                 { x: '08月', a: 180, b: 180 },
+            //                 { x: '09月', a: 190, b: 190 },
+            //                 { x: '10月', a: 110, b: 110 },
+            //                 { x: '11月', a: 120, b: 120 },
+            //                 { x: '12月', a: 100, b: 100 }
+            //             ],
+            //             xkey: 'x',
+            //             ykeys: ['a', 'b'],
+            //             labels: ['配资', '期权'],
+            //             lineColors: ["green", "blue"]
+            //         });
+            //     }
+            // });
         }
     };
 }();
@@ -31,7 +60,7 @@ var InitiateLineChart1 = function () {
     return {
         init: function () {
             Morris.Line({
-                element: 'line-chart-1',
+                element: 'line-chart-2',
                 data: [
                     { x: '01月', a: 100,b: 90 },
                     { x: '02月', a: 75, b: 65 },

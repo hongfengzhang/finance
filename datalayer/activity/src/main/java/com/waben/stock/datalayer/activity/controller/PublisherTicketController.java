@@ -4,6 +4,7 @@ import com.waben.stock.datalayer.activity.entity.PublisherTicket;
 import com.waben.stock.datalayer.activity.service.PublisherTicketService;
 import com.waben.stock.interfaces.dto.activity.PublisherTicketDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.activity.PublisherTicketInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,13 +24,15 @@ public class PublisherTicketController implements PublisherTicketInterface{
 
     @Override
     public Response<PublisherTicketDto> savePublisherTicket(@RequestBody PublisherTicketDto publisherTicketDto) {
-        PublisherTicketDto result = publisherTicketService.savePublisherTicket(publisherTicketDto);
-        return new Response<>(result);
+        PublisherTicket publisherTicket = CopyBeanUtils.copyBeanProperties(PublisherTicket.class,publisherTicketDto,false);
+        PublisherTicket result = publisherTicketService.savePublisherTicket(publisherTicket);
+        PublisherTicketDto response = CopyBeanUtils.copyBeanProperties(PublisherTicketDto.class, result, false);
+        return new Response<>(response);
     }
 
     @Override
-    public Response<List<PublisherTicketDto>> getPublisherTicketList(int pageno, Integer pagesize) {
-        List<PublisherTicketDto> result = publisherTicketService.getPublisherTicketList(pageno, pagesize);
+    public Response<PageInfo<PublisherTicketDto>> getPublisherTicketList(int pageno, Integer pagesize) {
+        PageInfo<PublisherTicketDto> result = publisherTicketService.getPublisherTicketList(pageno, pagesize);
         return new Response<>(result);
     }
 

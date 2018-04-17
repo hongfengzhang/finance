@@ -17,5 +17,5 @@ import java.util.List;
 public interface ActivityPublisherInterface {
 
 	@RequestMapping(value = "/getActivityPublisherByActivityId/{activityId}", method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	Response<List<ActivityPublisherDto>> getActivityPublisherByActivityId(@PathVariable("activityId") long activityId);
+	Response<List<ActivityPublisherDto>> getActivityPublishersByActivityId(@PathVariable("activityId") long activityId);
 }

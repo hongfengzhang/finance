@@ -6,6 +6,7 @@ import com.waben.stock.interfaces.dto.activity.ActivityDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -29,8 +30,8 @@ public class ActivityBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public List<ActivityDto> pages(int pageNo,Integer pageSize) {
-        Response<List<ActivityDto>> response = activityService.getActivityList(pageNo, pageSize);
+    public PageInfo<ActivityDto> pages(int pageNo, Integer pageSize) {
+        Response<PageInfo<ActivityDto>> response = activityService.getActivityList(pageNo, pageSize);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

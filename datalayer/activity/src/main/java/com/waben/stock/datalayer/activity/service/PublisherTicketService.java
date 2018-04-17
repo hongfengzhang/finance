@@ -10,8 +10,11 @@ import com.waben.stock.datalayer.activity.repository.PublisherTicketDao;
 import com.waben.stock.interfaces.dto.activity.PublisherTeleChargeDto;
 import com.waben.stock.interfaces.dto.activity.PublisherTicketDto;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,32 +30,24 @@ public class PublisherTicketService {
 
     @Autowired
     private ActivityDao activityDao;
-    public List<PublisherTicketDto> getPublisherTicketList(int pageno, Integer pagesize) {
+    public PageInfo<PublisherTicketDto> getPublisherTicketList(int pageno, Integer pagesize) {
         if(pagesize == null){
             PageAndSortQuery pq = new PageAndSortQuery();
             pagesize = pq.getSize();
         }
-        List<PublisherTicket> li = dao.getPublisherTicketList(pageno, pagesize);
-        List<PublisherTicketDto> atolist = new ArrayList<>();
-        if(li != null){
-            for(PublisherTicket a : li){
-                PublisherTicketDto ad  = CopyBeanUtils.copyBeanProperties(PublisherTicketDto.class, a, false);
-                atolist.add(ad);
-            }
-        }
-        for(PublisherTicketDto publisherTicketDto : atolist) {
+        Page<PublisherTicket> page = dao.getPublisherTicketList(pageno, pagesize);
+        PageInfo<PublisherTicketDto> pageInfo = PageToPageInfo.pageToPageInfo(page,PublisherTicketDto.class);
+        for(PublisherTicketDto publisherTicketDto : pageInfo.getContent()) {
             ActivityPublisher activityPublisher = activityPublisherDao.getActivityPublisher(publisherTicketDto.getApId());
             Activity activity = activityDao.getActivity(activityPublisher.getActivityId());
             publisherTicketDto.setActivityName(activity.getSubject());
         }
-        return atolist;
+        return pageInfo;
     }
 
     @Transactional
-    public PublisherTicketDto savePublisherTicket(PublisherTicketDto pdto){
-        PublisherTicket p = CopyBeanUtils.copyBeanProperties(PublisherTicket.class, pdto, false);
-        dao.savePublisherTicket(p);
-        return CopyBeanUtils.copyBeanProperties(PublisherTicketDto.class, p, false);
+    public PublisherTicket savePublisherTicket(PublisherTicket publisherTicket){
+        return dao.savePublisherTicket(publisherTicket);
     }
 
     public PublisherTicket getPublisherTicket(long publisherTicketId) {

@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.buyrecord.repository.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import com.waben.stock.interfaces.enums.BuyRecordState;
