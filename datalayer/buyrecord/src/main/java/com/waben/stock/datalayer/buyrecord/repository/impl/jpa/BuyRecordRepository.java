@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.buyrecord.repository.impl.jpa;
 
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import org.springframework.data.domain.Page;
@@ -24,4 +25,5 @@ public interface BuyRecordRepository extends CustomJpaRepository<BuyRecord, Long
     @Query("select count(id) from BuyRecord where publisherId=?1 and strategyTypeId=?2")
 	Integer strategyJoinCount(Long publisherId, Long strategyTypeId);
 
+    List<BuyRecord> findByStateAndUpdateTimeBetween(BuyRecordState state, Date start, Date end);
 }

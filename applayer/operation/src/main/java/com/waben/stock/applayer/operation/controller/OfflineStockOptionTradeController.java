@@ -43,10 +43,4 @@ public class OfflineStockOptionTradeController {
         return new Response<>(result);
     }
 
-    @GetMapping("/monthsProfit/{year}")
-    @ResponseBody
-    public Response<Map<String,BigDecimal>> fetchMonthsProfit(@PathVariable String year) {
-        Map<String, BigDecimal> result = offlineStockOptionTradeBusiness.findMonthsProfit(year);
-        return new Response<>(result);
-    }
 }

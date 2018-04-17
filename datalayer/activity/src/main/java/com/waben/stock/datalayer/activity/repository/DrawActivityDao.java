@@ -13,4 +13,6 @@ public interface DrawActivityDao {
     DrawActivity getDrawActivityByActivityIdAndPublisherId(long activityId, long publisherId);
 
     DrawActivity getDrawActicity(long id);
+
+    List<DrawActivity> getDrawActicitys();
 }

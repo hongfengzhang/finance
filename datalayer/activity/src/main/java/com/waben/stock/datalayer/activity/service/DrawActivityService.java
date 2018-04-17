@@ -1,7 +1,6 @@
 package com.waben.stock.datalayer.activity.service;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.waben.stock.datalayer.activity.entity.*;
 import com.waben.stock.datalayer.activity.repository.DrawActivityDao;
 import com.waben.stock.datalayer.activity.repository.DrawActivityRadioDao;
@@ -11,17 +10,20 @@ import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.List;
 
 @Service
 public class DrawActivityService {
 
     Logger logger = LoggerFactory.getLogger(getClass());
+
+    @Value("${remaintime}")
+    private int remaintime;
 
     @Autowired
     private DrawActivityDao drawActivityDao;
@@ -185,5 +187,14 @@ public class DrawActivityService {
         publisherTicket.setStatus(1);
         publisherTicket.setMemo(ticket.getTicketName()+"("+ticket.getAmount()+"元)");
         publisherTicketService.savePublisherTicket(publisherTicket);
+    }
+
+    @Transactional
+    public List<DrawActivity> setRemaintime() {
+        List<DrawActivity> drawActicitys = drawActivityDao.getDrawActicitys();
+        for (DrawActivity drawActivity : drawActicitys) {
+            drawActivity.setRemaintime(remaintime);
+        }
+        return drawActicitys;
     }
 }

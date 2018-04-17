@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: http://gitlab.youguwang.com.cn/agent-repo/bwgtwo
+          uri: http://gitlab.youguwang.com.cn/cmi/config-repo
           clone-on-start: true
         encrypt:
           enabled: true

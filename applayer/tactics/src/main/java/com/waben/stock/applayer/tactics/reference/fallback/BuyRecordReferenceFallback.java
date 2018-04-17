@@ -107,11 +107,16 @@ public class BuyRecordReferenceFallback implements BuyRecordReference {
 
 	@Override
 	public void delete(Long id) {
-
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
 	@Override
 	public Response<BuyRecordDto> updateState(BuyRecordDto buyRecordDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<List<BuyRecordDto>> fetchMonthsProfit(String year) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

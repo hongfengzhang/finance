@@ -4,6 +4,7 @@ import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -16,10 +17,7 @@ import org.springframework.stereotype.Service;
 import javax.sql.rowset.serial.SerialException;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Created by yuyidi on 2017/12/2.
@@ -54,6 +52,31 @@ public class BuyRecordBusiness {
 
     public void delete(Long id) {
         buyRecordService.delete(id);
+    }
+
+    public Map<String,BigDecimal> findMonthsProfit(String year) {
+        SimpleDateFormat sdf = new SimpleDateFormat( "MM" );
+        Response<List<BuyRecordDto>> response = buyRecordService.fetchMonthsProfit(year);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            List<BuyRecordDto> result = response.getResult();
+            Map<String,BigDecimal> map = new TreeMap<>();
+            for(int i=1;i<=12;i++) {
+                if(i<10) {
+                    map.put("0"+i,new BigDecimal("0"));
+                }else {
+                    map.put(i+"",new BigDecimal("0"));
+                }
+            }
+            for(BuyRecordDto dto : result) {
+                String month = sdf.format(dto.getSellingTime());
+                map.put(month,map.get(month).add(dto.getSettlement().getInvestorProfitOrLoss()));
+            }
+            return map;
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
     }
 
     public Map<String,Object> fetchBuyRecordProfitAndPosition() {

@@ -5,6 +5,8 @@ import java.util.List;
 
 import com.waben.stock.datalayer.buyrecord.entity.Settlement;
 import com.waben.stock.interfaces.dto.buyrecord.SettlementDto;
+import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
+import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -176,6 +178,17 @@ public class BuyRecordController implements BuyRecordInterface {
     public Response<BuyRecordDto> updateState(@RequestBody BuyRecordDto buyRecordDto) {
         BuyRecord buyRecord = CopyBeanUtils.copyBeanProperties(BuyRecord.class, buyRecordDto, false);
         BuyRecordDto result = CopyBeanUtils.copyBeanProperties(BuyRecordDto.class, buyRecordService.revisionState(buyRecord), false);
+        return new Response<>(result);
+    }
+
+    @Override
+    public Response<List<BuyRecordDto>> fetchMonthsProfit(@PathVariable String year) {
+        List<BuyRecord> buyRecords = buyRecordService.findByStateAndUpdateTimeBetween(BuyRecordState.UNWIND,year);
+        List<BuyRecordDto> result = CopyBeanUtils.copyListBeanPropertiesToList(buyRecords, BuyRecordDto.class);
+        for (int i=0; i<buyRecords.size(); i++) {
+            SettlementDto settlementDto = CopyBeanUtils.copyBeanProperties(SettlementDto.class, buyRecords.get(i).getSettlement(), false);
+            result.get(i).setSettlement(settlementDto);
+        }
         return new Response<>(result);
     }
 

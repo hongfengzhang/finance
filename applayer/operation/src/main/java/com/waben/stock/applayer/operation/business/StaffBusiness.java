@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,8 +25,12 @@ import java.util.Date;
  * @author Created by yuyidi on 2017/11/19.
  * @desc
  */
+
 @Service
 public class StaffBusiness {
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     @Qualifier("staffFeignService")
@@ -80,6 +85,7 @@ public class StaffBusiness {
     }
 
     public StaffDto save(StaffDto requestDto) {
+        requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
         requestDto.setCreateTime(new Date());
         Response<StaffDto> response = staffService.saveStaff(requestDto);
         String code = response.getCode();

@@ -14,4 +14,5 @@ public interface DrawActivityRespository extends JpaRepository<DrawActivity, Lon
     DrawActivity findDrawActivityByActivityIdAndPublisherId(long activityId,long publisherId);
 
     List<DrawActivity> findDrawActivitysByActivityId(long activityId);
+
 }

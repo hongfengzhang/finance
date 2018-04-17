@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.buyrecord.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -15,6 +16,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -725,4 +727,16 @@ public class BuyRecordService {
 		return changeState(buyRecord, false);
 	}
 
+    public List<BuyRecord> findByStateAndUpdateTimeBetween(BuyRecordState state, String year) {
+		SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+		Date start = null;
+		Date end = null;
+		try {
+			start = sdf.parse(year+"-01-01 00:00:00");
+			end = sdf.parse(year+"-12-31 23:59:59");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return buyRecordDao.retrieveByStateAndUpdateTimeBetween(state,start,end);
+    }
 }

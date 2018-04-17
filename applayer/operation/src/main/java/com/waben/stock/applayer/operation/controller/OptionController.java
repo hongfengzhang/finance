@@ -66,13 +66,13 @@ public class OptionController {
                 PublisherDto publisherDto = publisherBusiness.fetchById(pageInfo.getContent().get(i).getPublisherId());
                 response.getContent().get(i).setTest(publisherDto.getIsTest());
             }catch (Exception e) {
-                e.printStackTrace();
+                logger.error("查询Publisher出错：{}",e.getMessage());
             }
             try {
                 InquiryResultDto inquiryResultDto = inquiryResultBusiness.fetchByTrade(pageInfo.getContent().get(i).getId());
                 response.getContent().get(i).setInquiryResultVo(CopyBeanUtils.copyBeanProperties(InquiryResultVo.class,inquiryResultDto , false));
             }catch (Exception e) {
-                e.printStackTrace();
+                logger.error("该交易暂未有机构报价：{}",e.getMessage());
             }
         }
         return new Response<>(response);
