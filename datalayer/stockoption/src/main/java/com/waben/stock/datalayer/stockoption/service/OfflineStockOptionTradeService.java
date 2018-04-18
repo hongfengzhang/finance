@@ -72,7 +72,7 @@ public class OfflineStockOptionTradeService {
         return offlineStockOptionTradeDao.update(offlineStockOptionTrade);
     }
 
-
+    @Transactional
     public OfflineStockOptionTrade exercise(Long id) {
         OfflineStockOptionTrade offlineStockOptionTrade = offlineStockOptionTradeDao.retrieve(id);
         offlineStockOptionTrade.setState(OfflineStockOptionTradeState.APPLYRIGHT);

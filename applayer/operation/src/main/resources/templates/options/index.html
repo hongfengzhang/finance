@@ -916,10 +916,22 @@
                         'click .orgdetail': function (e, value, row, index) {
                             $("#id").val(row.id);
                             if(row.inquiryResultVo!=null) {
-                                $("[name='rightMoneyRatio']").val(row.inquiryResultVo.rightMoneyRatio*100);
+                                var value = (row.inquiryResultVo.rightMoneyRatio*100).toString();
+                                var flag = value.indexOf(".");
+                                if(flag!=-1) {
+                                    value = value.substring(0,flag+3);
+                                }
+                                $("[name='rightMoneyRatio']").val(value);
+                            }else {
+                                $("[name='rightMoneyRatio']").val('');
                             }
                             if(row.offlineTrade!=null) {
-                                $("[name='realRightMoneyRatio']").val(row.offlineTrade.rightMoneyRatio*100);
+                                var value = (row.offlineTrade.rightMoneyRatio*100).toString();
+                                var flag = value.indexOf(".");
+                                if(flag!=-1) {
+                                    value = value.substring(0,flag+3);
+                                }
+                                $("[name='realRightMoneyRatio']").val(value);
                                 $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
                                 if(row.offlineTrade.sellingPrice==null) {
                                     $("[name='sellingPrice']").val('');
@@ -940,6 +952,12 @@
                                         $("#user_profitAndLoss").text(0);
                                     }
                                 }
+                            }else {
+                                $("[name='realRightMoneyRatio']").val('');
+                                $("[name='realBuyingPrice']").val('');
+                                $("[name='sellingPrice']").val('');
+                                $("#sys_profitAndLoss").text('');
+                                $("#user_profitAndLoss").text('');
                             }
                             $('#orgPrice').click(function () {
                                 var patt = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
