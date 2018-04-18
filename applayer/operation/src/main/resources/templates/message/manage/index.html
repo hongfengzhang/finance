@@ -200,9 +200,11 @@
 
                         },
                         'click .edit': function (e, value, row, index) {
-
-                            $(location).prop('href',"../messaging/"+row.id+"/edit");
-
+                            if(row.isOutside) {
+                                swal("不能修改站外消息");
+                            }else {
+                                $(location).prop('href',"../messaging/"+row.id+"/edit");
+                            }
                         },
                         'click .remove': function (e, value, row, index) {
 
