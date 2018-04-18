@@ -43,4 +43,16 @@ public class OfflineStockOptionTradeController {
         return new Response<>(result);
     }
 
+    /**
+     * 询价  根据订单信息，发送询价单邮件
+     * @param id
+     * @return
+     */
+    @RequestMapping("/inquiry/{id}")
+    @ResponseBody
+    public Response<Boolean> inquiry(@PathVariable Long id){
+        Boolean result = stockOptionTradeBusiness.inquiry(id);
+        return new Response<>(result);
+    }
+
 }

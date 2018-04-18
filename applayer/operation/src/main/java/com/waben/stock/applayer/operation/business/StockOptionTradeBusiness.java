@@ -95,10 +95,6 @@ public class StockOptionTradeBusiness {
             e.printStackTrace();
         }
         mailService.send("询价单", Arrays.asList(file), org.getEmail());
-
-        if(result.getStatus()==null) {
-            modify(id);
-        }
         return true;
     }
 
@@ -141,9 +137,6 @@ public class StockOptionTradeBusiness {
             logger.info("添加邮件url信息:{}", JacksonUtil.encode(mailUrlInfoDto));
             mailService.send("申购单", mailMessage.message(quotoPurchase), org.getEmail());
             logger.info("申购邮件发送成功：{}",id);
-            if(OfflineStockOptionTradeState.INQUIRY.equals(result.getStatus())) {
-                modify(id);
-            }
             return true;
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
@@ -199,9 +192,6 @@ public class StockOptionTradeBusiness {
         }else {
             offlineStockOptionTradeBusiness.exercise(result.getOfflineTradeDto().getId());
         }
-        if(OfflineStockOptionTradeState.TURNOVER.equals(result.getStatus())) {
-            modify(id);
-        }
         return flag;
     }
 
@@ -214,10 +204,6 @@ public class StockOptionTradeBusiness {
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
-        }
-
-        if(OfflineStockOptionTradeState.PURCHASE.equals(response.getResult().getStatus())) {
-            modify(id);
         }
         throw new ServiceException(response.getCode());
     }
@@ -252,19 +238,9 @@ public class StockOptionTradeBusiness {
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
         }
-        if(OfflineStockOptionTradeState.INSETTLEMENT.equals(response.getResult().getStatus())) {
-            modify(id);
-        }
         throw new ServiceException(response.getCode());
     }
 
-    public StockOptionTradeDto modify(Long id){
-        Response<StockOptionTradeDto> response = stockOptionTradeService.modify(id);
-        if ("200".equals(response.getCode())){
-            return response.getResult();
-        }
-        throw new ServiceException(response.getCode());
-    }
 
     public Map<String,Object> fetchStockOptionTradeProfitAndPosition() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");

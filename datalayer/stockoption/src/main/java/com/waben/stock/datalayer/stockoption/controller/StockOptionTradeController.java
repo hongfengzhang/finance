@@ -1,9 +1,6 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
-import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
-import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,14 +59,6 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 			offlineStockOptionTradeDto.setOrg(stockOptionOrgDto);
 			result.setOfflineTradeDto(offlineStockOptionTradeDto);
 		}
-		return new Response<>(result);
-	}
-
-	@Override
-	public Response<StockOptionTradeDto> modify(@PathVariable Long id) {
-		StockOptionTrade stockOptionTrade = stockOptionTradeService.modify(id);
-		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class,
-				stockOptionTrade, false);
 		return new Response<>(result);
 	}
 

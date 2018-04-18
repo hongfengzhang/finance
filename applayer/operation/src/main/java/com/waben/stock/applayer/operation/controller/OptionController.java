@@ -89,18 +89,6 @@ public class OptionController {
     }
 
     /**
-     * 询价  根据订单信息，发送询价单邮件
-     * @param id
-     * @return
-     */
-    @RequestMapping("/inquiry/{id}")
-    @ResponseBody
-    public Response<Boolean> inquiry(@PathVariable Long id){
-        Boolean result = stockOptionTradeBusiness.inquiry(id);
-        return new Response<>(result);
-    }
-
-    /**
      * 申购
      * @param id
      * @return
@@ -152,20 +140,20 @@ public class OptionController {
         return new Response<>(stockOptionTradeVo);
     }
 
-    /**
-     * 机构单确认
-     * @param id 机构单号
-     */
-    @GetMapping("/institution/{id}")
-    @ResponseBody
-    public Response<Boolean> confirm(@PathVariable Long id) {
-        OfflineStockOptionTradeDto offlineStockOptionTradeDto = offlineStockOptionTradeBusiness.find(id);
-        OfflineStockOptionTradeState state = offlineStockOptionTradeDto.getState();
-        if (state.equals(OfflineStockOptionTradeState.TURNOVER)) {
-            //询价状态下，点击确认
-        } else if (state.equals(OfflineStockOptionTradeState.APPLYRIGHT)) {
-            //申购状态下 点击确认
-        }
-        return null;
-    }
+//    /**
+//     * 机构单确认
+//     * @param id 机构单号
+//     */
+//    @GetMapping("/institution/{id}")
+//    @ResponseBody
+//    public Response<Boolean> confirm(@PathVariable Long id) {
+//        OfflineStockOptionTradeDto offlineStockOptionTradeDto = offlineStockOptionTradeBusiness.find(id);
+//        OfflineStockOptionTradeState state = offlineStockOptionTradeDto.getState();
+//        if (state.equals(OfflineStockOptionTradeState.TURNOVER)) {
+//            //询价状态下，点击确认
+//        } else if (state.equals(OfflineStockOptionTradeState.APPLYRIGHT)) {
+//            //申购状态下 点击确认
+//        }
+//        return null;
+//    }
 }

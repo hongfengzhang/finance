@@ -385,15 +385,15 @@
                         </h4>
                     </div>
                 <div class="modal-body">
-                    <form class="form-horizontal from-main" id="msgForm" action="javascript:void(0)">
+                    <form class="form-horizontal from-main" id="subscription_Form" action="javascript:void(0)">
                         <fieldset>
                             <div class="form-group">
                                 <div class="col-sm-1"></div>
                                 <div class="col-sm-1 columns-left" style="width: 100px;">
                                     <p>机构名称:</p>
                                 </div>
-                                <div class="col-sm-4 columns-right">
-                                    <select name="orgId" class="form-control selectpicker" >
+                                <div class="col-sm-4 columns-right" style="width: 230px;">
+                                    <select name="orgId" class="form-control selectpicker">
                                         <option th:each="org:${orgVo}" th:value="${org.id}" th:text="${org.name}"></option>
                                     </select>
                                 </div>
@@ -1070,7 +1070,49 @@
         });
 
        $('#submit_subscription').click(function () {
-           alert($('#id').val());
+           var patt = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
+            if(!patt.test($("[name='rightMoneyRatio']").val())) {
+                swal({
+                    title: "提示",
+                    text: "数据格式错误，请重新输入！",
+                    type: "warning",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }else {
+                swal({
+                    title: "申购",
+                    text: "是否申购？",
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "是的, 申购!",
+                    cancelButtonText: "不了, 取消!",
+                    closeOnConfirm: false,
+                    closeOnCancel: false
+                }, function(isConfirm) {
+                    if (isConfirm) {
+                        $.ajax({
+                            url: "../option/purchase/" + $("#id").val(),
+                            type: 'post',
+                            data:$("#submit_subscription").serialize(),
+                            success: function (response) {
+                                if (response.code = '200') {
+                                    swal("申购邮件发送成功！","请继续操作！","success");
+                                    $table.bootstrapTable('refresh');
+                                } else {
+                                    swal(response.message,"请继续操作！","error");
+                                    $table.bootstrapTable('refresh');
+                                }
+                            },
+                            error: function () {
+                                swal("申购邮件发送失败！","请继续操作！","error");
+                            }
+                        })
+                    } else {
+                        swal("已取消申购！");
+                    }
+                });
+            }
        })
         //]]>
     </script>

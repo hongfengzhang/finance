@@ -10,18 +10,13 @@ import java.util.Map;
  *
  */
 public enum OfflineStockOptionTradeState implements CommonalityEnum {
-	TURNOVER("1", "持仓中"),
-
-	APPLYRIGHT("2", "申请行权"),
-
-	INSETTLEMENT("3", "结算中"),
-
-	SETTLEMENTED("4", "已结算"),
-
-	INQUIRY("5","已询价"),
-
-	PURCHASE("6","已申购");
-
+	WAITCONFIRMED("1", "待确认"),
+	INQUIRY("2","已询价"),
+	PURCHASE("3","已申购"),
+	TURNOVER("4", "持仓中"),
+	INSETTLEMENT("5", "结算中"),
+	SETTLEMENTED("6", "已结算"),
+	FAILURE("7", "申购失败");
 
 	private String index;
 
