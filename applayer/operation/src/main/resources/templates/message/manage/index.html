@@ -172,7 +172,10 @@
                 }, {
                     field: 'type',
                     title: '类型',
-                    align: 'center'
+                    align: 'center',
+                    formatter: function operateFormatter(value, row, index) {
+                        return row.type.type;
+                    }
                 }, {
                     field: 'createTime',
                     title: '发布时间',
@@ -200,12 +203,14 @@
 
                         },
                         'click .edit': function (e, value, row, index) {
-
-                            $(location).prop('href',"../messaging/"+row.id+"/edit");
+                            if(row.isOutside) {
+                                swal('站外消息不能修改！')
+                            }else {
+                                $(location).prop('href',"../messaging/"+row.id+"/edit");
+                            }
 
                         },
                         'click .remove': function (e, value, row, index) {
-
                             swal({
                                 title: "你确定吗?",
                                 text: "删除后,数据将不可被恢复!",

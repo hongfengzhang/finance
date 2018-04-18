@@ -137,6 +137,10 @@ public class OptionController {
     public Response<StockOptionTradeVo> fetchById(@PathVariable Long id){
         StockOptionTradeDto stockOptionTradeDto = stockOptionTradeBusiness.findById(id);
         StockOptionTradeVo stockOptionTradeVo = CopyBeanUtils.copyBeanProperties(StockOptionTradeVo.class, stockOptionTradeDto, false);
+        if(stockOptionTradeDto.getOfflineTradeDto()!=null) {
+            OfflineStockOptionTradeVo offlineStockOptionTradeVo = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeVo.class, stockOptionTradeDto.getOfflineTradeDto(), false);
+            stockOptionTradeVo.setOfflineTrade(offlineStockOptionTradeVo);
+        }
         return new Response<>(stockOptionTradeVo);
     }
 

@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.operation.warpper.auth;
 
 import com.waben.stock.interfaces.dto.manage.MenuDto;
+import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
@@ -19,6 +20,7 @@ public class AccountCredentials extends User implements Serializable {
     private Long role;
     private Boolean isOperator;
     private Object security;
+    private List<PermissionDto> permissions;
 
     public AccountCredentials(String username, String password, Collection<? extends GrantedAuthority> authorities) {
             super(username, password, authorities);
@@ -74,5 +76,13 @@ public class AccountCredentials extends User implements Serializable {
 
     public void setSecurity(Object security) {
         this.security = security;
+    }
+
+    public List<PermissionDto> getPermissions() {
+        return permissions;
+    }
+
+    public void setPermissions(List<PermissionDto> permissions) {
+        this.permissions = permissions;
     }
 }

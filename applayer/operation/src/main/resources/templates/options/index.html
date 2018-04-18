@@ -1093,7 +1093,7 @@
                             }else {
                                 $("#user_profitAndLoss").text(0);
                             }
-                            $("#sys_profitAndLoss").text(result.rightMoney);
+                            $("#sys_profitAndLoss").text(result.rightMoney-result.offlineTrade.rightMoney);
                         } else {
                             swal(response.message);
                         }
