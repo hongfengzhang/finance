@@ -2,7 +2,23 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout"
       layout:decorator="decorator/layout">
-
+<head>
+    <style>
+        .modal-dialog {
+            height: 500px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            z-index: 3;
+            margin: auto;
+            -webkit-transform: translate(-50%, -50%) !important;
+            -moz-transform: translate(-50%, -50%) !important;
+            -ms-transform: translate(-50%, -50%) !important;
+            -o-transform: translate(-50%, -50%) !important;
+            transform: translate(-50%, -50%) !important;
+        }
+    </style>
+</head>
 <body>
 <div class="content" layout:fragment="content">
     <div class="card">
@@ -81,7 +97,7 @@
 
 
     <!-- 询价 -->
-    <div class="modal fade" id="inquiry" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal fade" id="inquiry1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -357,6 +373,58 @@
         </div><!-- /.modal -->
     </div>
 
+    <div class="modal fade" id="subscription" role="dialog" aria-hidden="true" aria-labelledby="myModalLabel2">
+        <div class="modal-dialog">
+            <div class="modal-content" style="width: 500px;height: 400px;">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                            &times;
+                        </button>
+                        <h4 class="modal-title">
+                            机构报价单
+                        </h4>
+                    </div>
+                <div class="modal-body">
+                    <form class="form-horizontal from-main" id="msgForm" action="javascript:void(0)">
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-sm-1"></div>
+                                <div class="col-sm-1 columns-left" style="width: 100px;">
+                                    <p>机构名称:</p>
+                                </div>
+                                <div class="col-sm-4 columns-right">
+                                    <select name="orgId" class="form-control selectpicker" >
+                                        <option th:each="org:${orgVo}" th:value="${org.id}" th:text="${org.name}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <br/>
+                        <fieldset>
+                            <div class="form-group">
+                                <div class="col-sm-1"></div>
+                                <div class="col-sm-1 columns-left" style="width: 100px;">
+                                    <p>机构报价:</p>
+                                </div>
+                                <div class="col-sm-4 columns-right" style="width: 250px;">
+                                    <input name="rightMoneyRatio" type="text" class="form-control"
+                                    placeholder="机构报价" style="width: 200px;display: inline;" maxlength="5"/>&nbsp;%
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                        </div>
+                        <div class="row edit-button">
+                            <div class="col-md-5"></div>
+                            <button id="submit_subscription" class="btn btn-info btn-fill">保存</button>
+                        </div>
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-md-12">
@@ -504,551 +572,432 @@
                     title: '操作',
                     align: 'center',
                     formatter: function operateFormatter(value, row, index) {
-                        if(row.status=="INQUIRY"){
-                            return [
-                                ' <input type="button" disabled="disabled" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state=="待确认"){
-                            return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state=="申购失败"){
-                            return [
-                                ' <input type="button" disabled="disabled" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state=="持仓中"){
-                            return [
-                                ' <input type="button" disabled="disabled" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail" disabled="disabled"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state=="申请行权"){
-                            return [
-                                ' <input type="button" disabled="disabled" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state=="结算中"&&(row.rightTime!=null||row.offlineTrade.state=="APPLYRIGHT")){
-                            return [
-                                ' <input type="button" disabled="disabled" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state=="结算中"&&row.offlineTrade.state!="APPLYRIGHT"){
-                            return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-                        if(row.state=="已结算"){
-                            return [
-                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-                            ].join('');
-                        }
-//                        if(row.status=="INQUIRY"){
+
+
 //                            return [
-//                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs btn-danger inquiry btn-danger"/>\n' +
+//                                ' <input type="button" value="询价" data-toggle="modal"  class="btn btn-info btn-xs inquiry"/>\n' +
 //                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription"/>\n' +
-//                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-//                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-//                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-//                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-//                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-//                            ].join('');
-//                        }
-//                        if(row.status=="PURCHASE"){
-//                            return [
-//                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
-//                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
+//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail"/>\n' +
 //                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess"/>\n' +
-//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
 //                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
 //                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
 //                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
 //                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
 //                            ].join('');
-//                        }
-//                        if(row.status=="TURNOVER"){
-//                            return [
-//                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
-//                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-//                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-//                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright"/>\n' +
-//                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-//                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-//                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-//                            ].join('');
-//                        }
-//                        if(row.status=="APPLYRIGHT"){
-//                            return [
-//                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
-//                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-//                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-//                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-//                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-//                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-//                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
-//                            ].join('');
-//                        }
-//                        if(row.status=="INSETTLEMENT"){
-//                            return [
-//                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
-//                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-//                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-//                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-//                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement"/>\n' +
-//                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-//                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail" disabled="disabled"/>'
-//                            ].join('');
-//                        }
-//                        if(row.status=="SETTLEMENTED"){
-//                            return [
-//                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry btn-danger"/>\n' +
-//                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-//                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-//                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-//                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-//                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-//                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail" disabled="disabled"/>'
-//                            ].join('');
-//                        }else{
-//                            return [
-//                                ' <input type="button" value="询价" data-toggle="modal" data-target="#inquiry" class="btn btn-info btn-xs inquiry"/>\n' +
-//                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs subscription" disabled="disabled"/>\n' +
-//                                '<input type="button" value="申购成功" data-toggle="modal"  data-target="#subscriptionsuccess" class="btn btn-info btn-xs subscriptionsuccess" disabled="disabled"/>\n' +
-//                                '<input type="button" value="撤单" data-toggle="modal"  data-target="#subscriptionfail" class="btn btn-info btn-xs subscriptionfail" disabled="disabled"/>\n' +
-//                                '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
-//                                '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
-//                                '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail" />\n' +
-//                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail" disabled="disabled"/>'
-//                            ].join('');
-//                        }
+                            return [
+                                ' <input type="button" value="询价" class="btn btn-info btn-xs inquiry"/>\n' +
+                                '<input type="button" value="申购" data-toggle="modal" data-target="#subscription" class="btn btn-info btn-xs table-action subscription"/>\n' +
+                                '<input type="button" value="撤单" data-toggle="modal"  class="btn btn-info btn-xs"/>\n' +
+                                '<input type="button" value="申购成功" data-toggle="modal" class="btn btn-info btn-xs"/>\n' +
+                                '<input type="button" value="行权" data-toggle="modal" class="btn btn-info btn-xs"/>\n' +
+                                '<input type="button" value="结算" data-toggle="modal" class="btn btn-info btn-xs"/>\n' +
+                                '<input type="button" value="详情" data-toggle="modal" class="btn btn-info btn-xs"/>\n' +
+                                '<input type="button" value="机构信息" data-toggle="modal" class="btn btn-info btn-xs"/>'
+                            ].join('');
                     },
                     events: {
                         'click .inquiry': function (e, value, row, index) {
-                            $("#id").val(row.id);
-                            $("[name='inquiryDate']").val(new Date());
-                            $("[name='stockName']").val(row.stockName);
-                            $("[name='date']").val(row.cycle + "日");
-                            $("[name='inquiryamount']").val(row.nominalAmount);
-                            $('#inquiryaction').click(function () {
-                                $('#inquiryclose').click();
-                                $.ajax({
-                                    url: "../option/inquiry/" + $("#id").val(),
-                                    type: 'post',
-                                    success: function (response) {
-                                        if (response.code = '200') {
-                                            swal("询价邮件发送成功");
-                                            $table.bootstrapTable('refresh');
-                                        } else {
-                                            swal(response.message);
-                                            $table.bootstrapTable('refresh');
+                            swal({
+                                title: "询价",
+                                text: "是否询价!",
+                                type: "warning",
+                                showCancelButton: true,
+                                confirmButtonText: "是的, 询价!",
+                                cancelButtonText: "不了, 取消!",
+                                closeOnConfirm: false,
+                                closeOnCancel: false
+                            }, function(isConfirm) {
+                                if (isConfirm) {
+                                    $.ajax({
+                                        url: "../option/inquiry/" + row.id,
+                                        type: 'post',
+                                        success: function (response) {
+                                            if (response.code = '200') {
+                                                swal("询价邮件发送成功！","请继续操作！","success");
+                                                $table.bootstrapTable('refresh');
+                                            } else {
+                                                swal(response.message,"请继续操作！","error");
+                                                $table.bootstrapTable('refresh');
+                                            }
+                                        },
+                                        error: function () {
+                                            swal("询价邮件发送失败","请继续操作！","error");
                                         }
-                                    },
-                                    error: function () {
-                                        alert("询价邮件发送失败")
-                                    }
-                                })
-                                modal.find('#inquiry').attr("onclick",params[0]);
-                            })
+                                    })
+                                } else {
+                                    swal("已取消询价！");
+                                }
+                            });
                         },
                         'click .subscription': function (e, value, row, index) {
                             $("#id").val(row.id);
-                            swal({
-                                title: "你确定吗?",
-                                text: "申购后,数据将不可被恢复!",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonText: "是的, 申购!",
-                                cancelButtonText: "不了, 取消!",
-                                closeOnConfirm: false,
-                                closeOnCancel: false
-                            }, function(isConfirm) {
-                                if (isConfirm) {
-                                    $.ajax({
-                                        url: "../option/purchase/" + $("#id").val(),
-                                        type: 'post',
-                                        success: function (response) {
-                                            if (response.code = '200') {
-                                                swal("申购邮件发送成功！");
-                                            } else {
-                                                swal("申购邮件发送失败！");
-                                            }
-                                        },
-                                        error: function () {
-                                            swal("申购邮件发送失败！");
-                                        }
-                                    })
-                                } else {
-                                    swal("已取消申购！");
-                                }
-                            });
-                        },
-                        'click .subscriptionsuccess': function (e, value, row, index) {
-                            $("#id").val(row.id);
-                            swal({
-                                title: "你确定吗?",
-                                text: "申购成功后,数据将不可被恢复!",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonText: "是的, 申购!",
-                                cancelButtonText: "不了, 取消!",
-                                closeOnConfirm: false,
-                                closeOnCancel: false
-                            }, function(isConfirm) {
-                                if (isConfirm) {
-                                    $.ajax({
-                                        url: "../option/success/" + $("#id").val(),
-                                        type: 'post',
-                                        success: function (response) {
-                                            if (response.code = '200') {
-                                                $table.bootstrapTable('refresh');
-                                                swal("申购成功！");
-                                            } else {
-                                                swal(response.message);
-                                            }
-                                        },
-                                        error: function () {
-                                            swal("申购失败！")
-                                        }
-                                    })
-                                } else {
-                                    swal("已取消申购成功操作！");
-                                }
-                            });
-                        },
-                        'click .subscriptionfail': function (e, value, row, index) {
-                            $("#id").val(row.id);
-                            swal({
-                                title: "你确定吗?",
-                                text: "撤单成功后,数据将不可被恢复!",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonText: "是的, 撤单!",
-                                cancelButtonText: "不了, 取消!",
-                                closeOnConfirm: false,
-                                closeOnCancel: false
-                            }, function(isConfirm) {
-                                if (isConfirm) {
-                                    $.ajax({
-                                        url: "../option/fail/" + $("#id").val(),
-                                        type: 'post',
-                                        success: function (response) {
-                                            if (response.code = '200') {
-                                                $table.bootstrapTable('refresh');
-                                                swal("撤单成功！");
-                                            } else {
-                                                swal(response.message);
-                                            }
-                                        },
-                                        error: function () {
-                                            swal("撤单失败！")
-                                        }
-                                    })
-                                } else {
-                                    swal("已取消撤单操作！");
-                                }
-                            });
-                        },
-                        'click .exerciseright': function (e, value, row, index) {
-                            $("#id").val(row.id);
-                            swal({
-                                title: "你确定吗?",
-                                text: "行权后,数据将不可被恢复!",
-                                type: "warning",
-                                showCancelButton: true,
-                                confirmButtonText: "是的, 行权!",
-                                cancelButtonText: "不了, 取消!",
-                                closeOnConfirm: false,
-                                closeOnCancel: false
-                            }, function(isConfirm) {
-                                if (isConfirm) {
-                                    $.ajax({
-                                        url: "../option/exercise/" + $("#id").val(),
-                                        type: 'post',
-                                        success: function (response) {
-                                            if (response.code = '200') {
-                                                $table.bootstrapTable('refresh');
-                                                if(response.result==true) {
-                                                    swal("向机构行权成功");
-                                                }else {
-                                                    swal("本地行权成功");
-                                                }
-                                            } else {
-                                                swal(response.message);
-                                            }
-                                        },
-                                        error: function () {
-                                            swal("行权失败");
-                                        }
-                                    })
-                                } else {
-                                    swal("已取消行权操作！");
-                                }
-                            });
-                        },
-                        'click .settlement': function (e, value, row, index) {
-                            $("#id").val(row.id);
-                            var sellingPrice = null;
-                            if(row.offlineTrade!=null) {
-                                sellingPrice = row.offlineTrade.sellingPrice;
-                            }
-                            if(sellingPrice==null||sellingPrice=='') {
-                                sellingPrice = 0;
-                                profitAndLoss = 0;
-                            }else {
-                                var buyingPrice = row.buyingPrice;
-                                var nominalAmount = row.nominalAmount;
-                                var profitAndLoss  = ((sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
-                                if(profitAndLoss>0) {
-                                    profitAndLoss = profitAndLoss.toFixed(2) + "";
-                                    var flag = profitAndLoss.indexOf(".");
-                                    if(flag!=-1) {
-                                        profitAndLoss = profitAndLoss.substring(0,flag+3);
-                                    }
-                                }else {
-                                    profitAndLoss = 0;
-                                }
-                            }
-                            $("[name='detailStock']").val(row.stockName);
-                            $("[name='detailAmount']").val(row.buyingPrice);
-                            $("[name='detailnominalAmount']").val(row.nominalAmount);
-                            $("[name='detailSellAmount']").val(sellingPrice);
-                            $("[name='detailCycleName']").val(row.cycleName);
-                            $("[name='detailNominalAmount']").val(row.rightMoney);
-                            $("[name='detailBuyType']").val(row.buyingType);
-                            $("[name='detailProfit']").val(profitAndLoss);
-                            $('#settlementaction').click(function () {
-                                $('#settlementclose').click();
-                                $.ajax({
-                                    url: "../option/settlement/"+$("#id").val(),
-                                    type: 'post',
-                                    success: function (response) {
-                                        if (response.code = '200') {
-                                            $table.bootstrapTable('refresh');
-                                            alert("结算成功");
-                                        } else {
-                                            alert(response.message);
-                                        }
-                                    },
-                                    error: function () {
-                                        alert("结算失败")
-                                    }
-                                })
-                                modal.find('#settlement').attr("onclick",params[0]);
-                            })
-                        },
-                        'click .detail': function (e, value, row, index) {
-                            $("[name='detailStock']").val(row.stockName);
-                            $("[name='detailAmount']").val(row.buyingPrice);
-                            $("[name='detailnominalAmount']").val(row.nominalAmount);
-                            $("[name='detailSellAmount']").val(row.sellingPrice);
-                            $("[name='detailCycleName']").val(row.cycleName);
-                            $("[name='detailNominalAmount']").val(row.rightMoney);
-                            $("[name='detailBuyType']").val(row.buyingType);
-                            $("[name='detailProfit']").val(row.profit);
-                            $('#detailaction').click(function () {
-                                $('#detailclose').click();
-
-                            })
-//                            $(location).prop('href', "../option/inquiry/" + row.id);
-                        },
-                        'click .orgdetail': function (e, value, row, index) {
-                            $("#id").val(row.id);
-                            if(row.inquiryResultVo!=null) {
-                                var value = (row.inquiryResultVo.rightMoneyRatio*100).toString();
-                                var flag = value.indexOf(".");
-                                if(flag!=-1) {
-                                    value = value.substring(0,flag+3);
-                                }
-                                $("[name='rightMoneyRatio']").val(value);
-                            }else {
-                                $("[name='rightMoneyRatio']").val('');
-                            }
-                            if(row.offlineTrade!=null) {
-                                var value = (row.offlineTrade.rightMoneyRatio*100).toString();
-                                var flag = value.indexOf(".");
-                                if(flag!=-1) {
-                                    value = value.substring(0,flag+3);
-                                }
-                                $("[name='realRightMoneyRatio']").val(value);
-                                $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
-                                if(row.offlineTrade.sellingPrice==null) {
-                                    $("[name='sellingPrice']").val('');
-                                    $("#sys_profitAndLoss").text('');
-                                    $("#user_profitAndLoss").text('');
-                                }else {
-                                    $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
-                                    $("#sys_profitAndLoss").text(row.offlineTrade.profit);
-                                    var profitAndLoss  = ((row.offlineTrade.sellingPrice-row.buyingPrice)/row.buyingPrice)*row.nominalAmount;
-                                    if(profitAndLoss>0) {
-                                        profitAndLoss = profitAndLoss.toFixed(2) + "";
-                                        var flag = profitAndLoss.indexOf(".");
-                                        if(flag!=-1) {
-                                            profitAndLoss = profitAndLoss.substring(0,flag+3);
-                                        }
-                                        $("#user_profitAndLoss").text(profitAndLoss);
-                                    }else {
-                                        $("#user_profitAndLoss").text(0);
-                                    }
-                                }
-                            }else {
-                                $("[name='realRightMoneyRatio']").val('');
-                                $("[name='realBuyingPrice']").val('');
-                                $("[name='sellingPrice']").val('');
-                                $("#sys_profitAndLoss").text('');
-                                $("#user_profitAndLoss").text('');
-                            }
-                            $('#orgPrice').click(function () {
-                                var patt = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
-                                if(!patt.test($("[name='rightMoneyRatio']").val())) {
-                                    alert("数据格式错误，请重新输入！");
-                                }else {
-                                    $('#orgClose').click();
-                                    var rightMoneyRatio = $("[name='rightMoneyRatio']").val()/100;
-                                    if($("[name='rightMoneyRatio']").val().length==5) {
-                                        rightMoneyRatio = rightMoneyRatio.toString().substring(0,6);
-                                    }
-                                    $.ajax({
-                                        url: "../inquiryresult/add",
-                                        type: 'get',
-                                        data: {"trade.id": $("#id").val(),"rightMoneyRatio":rightMoneyRatio,"org.id":$("[name='orgId']").val()},
-                                        success: function (response) {
-                                            if (response.code = '200') {
-                                                alert("保存成功");
-                                            } else {
-                                                alert(response.message);
-                                            }
-                                        },
-                                        error: function () {
-                                            alert("保存失败")
-                                            $("[name='rightMoneyRatio']").val('');
-                                        }
-                                    })
-                                }
-                                modal.find('#orgdetail').attr("onclick",params[0]);
-                            })
-                            $('#realPrice').click(function () {
-                                var pattRaito = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
-                                var pattPrice = /^[1-9]{1}\d*(\.\d{1,2})?$/
-                                if(!pattRaito.test($("[name='realRightMoneyRatio']").val())||!pattPrice.test($("[name='realBuyingPrice']").val())) {
-                                    alert("数据格式错误，请重新输入！");
-                                }else {
-                                    $('#orgClose').click();
-                                    var realRightMoneyRatio = $("[name='realRightMoneyRatio']").val()/100;
-                                    if($("[name='realRightMoneyRatio']").val().length==5) {
-                                        realRightMoneyRatio = realRightMoneyRatio.toString().substring(0,6);
-                                    }
-                                    $.ajax({
-                                        url: "../offlinestockoptiontrade/add",
-                                        type: 'get',
-                                        data: {"id": $("#id").val(),"rightMoneyRatio":realRightMoneyRatio,"buyingPrice":$("[name='realBuyingPrice']").val(),"org.id":$("[name='orgId']").val()},
-                                        success: function (response) {
-                                            if (response.code = '200') {
-                                                alert("保存成功");
-                                            } else {
-                                                alert(response.message);
-                                            }
-                                            $("[name='realRightMoneyRatio']").val('');
-                                            $("[name='realBuyingPrice']").val('');
-                                        },
-                                        error: function () {
-                                            alert("保存失败")
-                                            $("[name='realRightMoneyRatio']").val('');
-                                            $("[name='realBuyingPrice']").val('');
-                                        }
-                                    })
-                                }
-                                modal.find('#orgdetail').attr("onclick",params[0]);
-                            })
-                            $('#orgSettle').click(function () {
-                                var pattPrice = /^[1-9]{1}\d*(\.\d{1,2})?$/;
-                                if(!pattPrice.test($("[name='sellingPrice']").val())) {
-                                    alert("数据格式错误，请重新输入！");
-                                }else {
-                                    $('#orgClose').click();
-                                    $.ajax({
-                                        url: "../offlinestockoptiontrade/settlement/" + $("[name='sellingPrice']").val()+"/"+$("#id").val(),
-                                        type: 'get',
-                                        success: function (response) {
-                                            if (response.code = '200') {
-                                                alert("保存成功");
-                                            } else {
-                                                alert(response.message);
-                                            }
-                                            $("[name='sellingPrice']").val('');
-                                        },
-                                        error: function () {
-                                            alert("保存失败")
-                                            $("[name='sellingPrice']").val('');
-                                        }
-                                    })
-                                }
-                                modal.find('#orgdetail').attr("onclick",params[0]);
-                            })
-                            modal.find('#orgdetail').attr("onclick",params[0]);
-                        },
+                        }
                     }
+//                    events: {
+//                        'click .inquiry': function (e, value, row, index) {
+//                            $("#id").val(row.id);
+//                            $("[name='inquiryDate']").val(new Date());
+//                            $("[name='stockName']").val(row.stockName);
+//                            $("[name='date']").val(row.cycle + "日");
+//                            $("[name='inquiryamount']").val(row.nominalAmount);
+//                            $('#inquiryaction').click(function () {
+//                                $('#inquiryclose').click();
+//                                $.ajax({
+//                                    url: "../option/inquiry/" + $("#id").val(),
+//                                    type: 'post',
+//                                    success: function (response) {
+//                                        if (response.code = '200') {
+//                                            swal("询价邮件发送成功");
+//                                            $table.bootstrapTable('refresh');
+//                                        } else {
+//                                            swal(response.message);
+//                                            $table.bootstrapTable('refresh');
+//                                        }
+//                                    },
+//                                    error: function () {
+//                                        alert("询价邮件发送失败")
+//                                    }
+//                                })
+//                                modal.find('#inquiry').attr("onclick",params[0]);
+//                            })
+//                        },
+//                        'click .subscription': function (e, value, row, index) {
+//                            $("#id").val(row.id);
+//                            swal({
+//                                title: "机构申报单",
+//                                text: "申购后,数据将不可被恢复!",
+//                                type: "input",
+//                                showCancelButton: true,
+//                                confirmButtonText: "是的, 申购!",
+//                                cancelButtonText: "不了, 取消!",
+//                                closeOnConfirm: false,
+//                                closeOnCancel: false
+//                            }, function(isConfirm) {
+//                                if (isConfirm) {
+//                                    $.ajax({
+//                                        url: "../option/purchase/" + $("#id").val(),
+//                                        type: 'post',
+//                                        success: function (response) {
+//                                            if (response.code = '200') {
+//                                                swal("申购邮件发送成功！");
+//                                            } else {
+//                                                swal("申购邮件发送失败！");
+//                                            }
+//                                        },
+//                                        error: function () {
+//                                            swal("申购邮件发送失败！");
+//                                        }
+//                                    })
+//                                } else {
+//                                    swal("已取消申购！");
+//                                }
+//                            });
+//                        },
+//                        'click .subscriptionsuccess': function (e, value, row, index) {
+//                            $("#id").val(row.id);
+//                            swal({
+//                                title: "你确定吗?",
+//                                text: "申购成功后,数据将不可被恢复!",
+//                                type: "warning",
+//                                showCancelButton: true,
+//                                confirmButtonText: "是的, 申购!",
+//                                cancelButtonText: "不了, 取消!",
+//                                closeOnConfirm: false,
+//                                closeOnCancel: false
+//                            }, function(isConfirm) {
+//                                if (isConfirm) {
+//                                    $.ajax({
+//                                        url: "../option/success/" + $("#id").val(),
+//                                        type: 'post',
+//                                        success: function (response) {
+//                                            if (response.code = '200') {
+//                                                $table.bootstrapTable('refresh');
+//                                                swal("申购成功！");
+//                                            } else {
+//                                                swal(response.message);
+//                                            }
+//                                        },
+//                                        error: function () {
+//                                            swal("申购失败！")
+//                                        }
+//                                    })
+//                                } else {
+//                                    swal("已取消申购成功操作！");
+//                                }
+//                            });
+//                        },
+//                        'click .subscriptionfail': function (e, value, row, index) {
+//                            $("#id").val(row.id);
+//                            swal({
+//                                title: "你确定吗?",
+//                                text: "撤单成功后,数据将不可被恢复!",
+//                                type: "warning",
+//                                showCancelButton: true,
+//                                confirmButtonText: "是的, 撤单!",
+//                                cancelButtonText: "不了, 取消!",
+//                                closeOnConfirm: false,
+//                                closeOnCancel: false
+//                            }, function(isConfirm) {
+//                                if (isConfirm) {
+//                                    $.ajax({
+//                                        url: "../option/fail/" + $("#id").val(),
+//                                        type: 'post',
+//                                        success: function (response) {
+//                                            if (response.code = '200') {
+//                                                $table.bootstrapTable('refresh');
+//                                                swal("撤单成功！");
+//                                            } else {
+//                                                swal(response.message);
+//                                            }
+//                                        },
+//                                        error: function () {
+//                                            swal("撤单失败！")
+//                                        }
+//                                    })
+//                                } else {
+//                                    swal("已取消撤单操作！");
+//                                }
+//                            });
+//                        },
+//                        'click .exerciseright': function (e, value, row, index) {
+//                            $("#id").val(row.id);
+//                            swal({
+//                                title: "你确定吗?",
+//                                text: "行权后,数据将不可被恢复!",
+//                                type: "warning",
+//                                showCancelButton: true,
+//                                confirmButtonText: "是的, 行权!",
+//                                cancelButtonText: "不了, 取消!",
+//                                closeOnConfirm: false,
+//                                closeOnCancel: false
+//                            }, function(isConfirm) {
+//                                if (isConfirm) {
+//                                    $.ajax({
+//                                        url: "../option/exercise/" + $("#id").val(),
+//                                        type: 'post',
+//                                        success: function (response) {
+//                                            if (response.code = '200') {
+//                                                $table.bootstrapTable('refresh');
+//                                                if(response.result==true) {
+//                                                    swal("向机构行权成功");
+//                                                }else {
+//                                                    swal("本地行权成功");
+//                                                }
+//                                            } else {
+//                                                swal(response.message);
+//                                            }
+//                                        },
+//                                        error: function () {
+//                                            swal("行权失败");
+//                                        }
+//                                    })
+//                                } else {
+//                                    swal("已取消行权操作！");
+//                                }
+//                            });
+//                        },
+//                        'click .settlement': function (e, value, row, index) {
+//                            $("#id").val(row.id);
+//                            var sellingPrice = null;
+//                            if(row.offlineTrade!=null) {
+//                                sellingPrice = row.offlineTrade.sellingPrice;
+//                            }
+//                            if(sellingPrice==null||sellingPrice=='') {
+//                                sellingPrice = 0;
+//                                profitAndLoss = 0;
+//                            }else {
+//                                var buyingPrice = row.buyingPrice;
+//                                var nominalAmount = row.nominalAmount;
+//                                var profitAndLoss  = ((sellingPrice-buyingPrice)/buyingPrice)*nominalAmount;
+//                                if(profitAndLoss>0) {
+//                                    profitAndLoss = profitAndLoss.toFixed(2) + "";
+//                                    var flag = profitAndLoss.indexOf(".");
+//                                    if(flag!=-1) {
+//                                        profitAndLoss = profitAndLoss.substring(0,flag+3);
+//                                    }
+//                                }else {
+//                                    profitAndLoss = 0;
+//                                }
+//                            }
+//                            $("[name='detailStock']").val(row.stockName);
+//                            $("[name='detailAmount']").val(row.buyingPrice);
+//                            $("[name='detailnominalAmount']").val(row.nominalAmount);
+//                            $("[name='detailSellAmount']").val(sellingPrice);
+//                            $("[name='detailCycleName']").val(row.cycleName);
+//                            $("[name='detailNominalAmount']").val(row.rightMoney);
+//                            $("[name='detailBuyType']").val(row.buyingType);
+//                            $("[name='detailProfit']").val(profitAndLoss);
+//                            $('#settlementaction').click(function () {
+//                                $('#settlementclose').click();
+//                                $.ajax({
+//                                    url: "../option/settlement/"+$("#id").val(),
+//                                    type: 'post',
+//                                    success: function (response) {
+//                                        if (response.code = '200') {
+//                                            $table.bootstrapTable('refresh');
+//                                            alert("结算成功");
+//                                        } else {
+//                                            alert(response.message);
+//                                        }
+//                                    },
+//                                    error: function () {
+//                                        alert("结算失败")
+//                                    }
+//                                })
+//                                modal.find('#settlement').attr("onclick",params[0]);
+//                            })
+//                        },
+//                        'click .detail': function (e, value, row, index) {
+//                            $("[name='detailStock']").val(row.stockName);
+//                            $("[name='detailAmount']").val(row.buyingPrice);
+//                            $("[name='detailnominalAmount']").val(row.nominalAmount);
+//                            $("[name='detailSellAmount']").val(row.sellingPrice);
+//                            $("[name='detailCycleName']").val(row.cycleName);
+//                            $("[name='detailNominalAmount']").val(row.rightMoney);
+//                            $("[name='detailBuyType']").val(row.buyingType);
+//                            $("[name='detailProfit']").val(row.profit);
+//                            $('#detailaction').click(function () {
+//                                $('#detailclose').click();
+//
+//                            })
+////                            $(location).prop('href', "../option/inquiry/" + row.id);
+//                        },
+//                        'click .orgdetail': function (e, value, row, index) {
+//                            $("#id").val(row.id);
+//                            if(row.inquiryResultVo!=null) {
+//                                var value = (row.inquiryResultVo.rightMoneyRatio*100).toString();
+//                                var flag = value.indexOf(".");
+//                                if(flag!=-1) {
+//                                    value = value.substring(0,flag+3);
+//                                }
+//                                $("[name='rightMoneyRatio']").val(value);
+//                            }else {
+//                                $("[name='rightMoneyRatio']").val('');
+//                            }
+//                            if(row.offlineTrade!=null) {
+//                                var value = (row.offlineTrade.rightMoneyRatio*100).toString();
+//                                var flag = value.indexOf(".");
+//                                if(flag!=-1) {
+//                                    value = value.substring(0,flag+3);
+//                                }
+//                                $("[name='realRightMoneyRatio']").val(value);
+//                                $("[name='realBuyingPrice']").val(row.offlineTrade.buyingPrice);
+//                                if(row.offlineTrade.sellingPrice==null) {
+//                                    $("[name='sellingPrice']").val('');
+//                                    $("#sys_profitAndLoss").text('');
+//                                    $("#user_profitAndLoss").text('');
+//                                }else {
+//                                    $("[name='sellingPrice']").val(row.offlineTrade.sellingPrice);
+//                                    $("#sys_profitAndLoss").text(row.offlineTrade.profit);
+//                                    var profitAndLoss  = ((row.offlineTrade.sellingPrice-row.buyingPrice)/row.buyingPrice)*row.nominalAmount;
+//                                    if(profitAndLoss>0) {
+//                                        profitAndLoss = profitAndLoss.toFixed(2) + "";
+//                                        var flag = profitAndLoss.indexOf(".");
+//                                        if(flag!=-1) {
+//                                            profitAndLoss = profitAndLoss.substring(0,flag+3);
+//                                        }
+//                                        $("#user_profitAndLoss").text(profitAndLoss);
+//                                    }else {
+//                                        $("#user_profitAndLoss").text(0);
+//                                    }
+//                                }
+//                            }else {
+//                                $("[name='realRightMoneyRatio']").val('');
+//                                $("[name='realBuyingPrice']").val('');
+//                                $("[name='sellingPrice']").val('');
+//                                $("#sys_profitAndLoss").text('');
+//                                $("#user_profitAndLoss").text('');
+//                            }
+//                            $('#orgPrice').click(function () {
+//                                var patt = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
+//                                if(!patt.test($("[name='rightMoneyRatio']").val())) {
+//                                    alert("数据格式错误，请重新输入！");
+//                                }else {
+//                                    $('#orgClose').click();
+//                                    var rightMoneyRatio = $("[name='rightMoneyRatio']").val()/100;
+//                                    if($("[name='rightMoneyRatio']").val().length==5) {
+//                                        rightMoneyRatio = rightMoneyRatio.toString().substring(0,6);
+//                                    }
+//                                    $.ajax({
+//                                        url: "../inquiryresult/add",
+//                                        type: 'get',
+//                                        data: {"trade.id": $("#id").val(),"rightMoneyRatio":rightMoneyRatio,"org.id":$("[name='orgId']").val()},
+//                                        success: function (response) {
+//                                            if (response.code = '200') {
+//                                                alert("保存成功");
+//                                            } else {
+//                                                alert(response.message);
+//                                            }
+//                                        },
+//                                        error: function () {
+//                                            alert("保存失败")
+//                                            $("[name='rightMoneyRatio']").val('');
+//                                        }
+//                                    })
+//                                }
+//                                modal.find('#orgdetail').attr("onclick",params[0]);
+//                            })
+//                            $('#realPrice').click(function () {
+//                                var pattRaito = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
+//                                var pattPrice = /^[1-9]{1}\d*(\.\d{1,2})?$/
+//                                if(!pattRaito.test($("[name='realRightMoneyRatio']").val())||!pattPrice.test($("[name='realBuyingPrice']").val())) {
+//                                    alert("数据格式错误，请重新输入！");
+//                                }else {
+//                                    $('#orgClose').click();
+//                                    var realRightMoneyRatio = $("[name='realRightMoneyRatio']").val()/100;
+//                                    if($("[name='realRightMoneyRatio']").val().length==5) {
+//                                        realRightMoneyRatio = realRightMoneyRatio.toString().substring(0,6);
+//                                    }
+//                                    $.ajax({
+//                                        url: "../offlinestockoptiontrade/add",
+//                                        type: 'get',
+//                                        data: {"id": $("#id").val(),"rightMoneyRatio":realRightMoneyRatio,"buyingPrice":$("[name='realBuyingPrice']").val(),"org.id":$("[name='orgId']").val()},
+//                                        success: function (response) {
+//                                            if (response.code = '200') {
+//                                                alert("保存成功");
+//                                            } else {
+//                                                alert(response.message);
+//                                            }
+//                                            $("[name='realRightMoneyRatio']").val('');
+//                                            $("[name='realBuyingPrice']").val('');
+//                                        },
+//                                        error: function () {
+//                                            alert("保存失败")
+//                                            $("[name='realRightMoneyRatio']").val('');
+//                                            $("[name='realBuyingPrice']").val('');
+//                                        }
+//                                    })
+//                                }
+//                                modal.find('#orgdetail').attr("onclick",params[0]);
+//                            })
+//                            $('#orgSettle').click(function () {
+//                                var pattPrice = /^[1-9]{1}\d*(\.\d{1,2})?$/;
+//                                if(!pattPrice.test($("[name='sellingPrice']").val())) {
+//                                    alert("数据格式错误，请重新输入！");
+//                                }else {
+//                                    $('#orgClose').click();
+//                                    $.ajax({
+//                                        url: "../offlinestockoptiontrade/settlement/" + $("[name='sellingPrice']").val()+"/"+$("#id").val(),
+//                                        type: 'get',
+//                                        success: function (response) {
+//                                            if (response.code = '200') {
+//                                                alert("保存成功");
+//                                            } else {
+//                                                alert(response.message);
+//                                            }
+//                                            $("[name='sellingPrice']").val('');
+//                                        },
+//                                        error: function () {
+//                                            alert("保存失败")
+//                                            $("[name='sellingPrice']").val('');
+//                                        }
+//                                    })
+//                                }
+//                                modal.find('#orgdetail').attr("onclick",params[0]);
+//                            })
+//                            modal.find('#orgdetail').attr("onclick",params[0]);
+//                        },
+//                    }
                 }],
                 onLoadError: function (status) {
                     swal({
@@ -1119,6 +1068,10 @@
                 })
             })
         });
+
+       $('#submit_subscription').click(function () {
+           alert($('#id').val());
+       })
         //]]>
     </script>
 
