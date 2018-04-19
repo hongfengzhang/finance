@@ -58,7 +58,7 @@ public class ActivityBusiness {
             if(publisherDeduTickets.getCode().equals("200")&&publisherDeduTickets.getResult()!=null) {
                 for (PublisherDeduTicketDto publisherDeduTicket : publisherDeduTickets.getResult()) {
                     Map<String,String> mapPDT = new HashMap<>();
-                    mapPDT.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
+                    mapPDT.put("winningTime",sdf.format(publisherDeduTicket.getWinningTime()));
                     mapPDT.put("publisherPhone",publisherDto.getPhone());
                     mapPDT.put("award",publisherDeduTicket.getMemo());
                     listWinning.add(mapPDT);
@@ -70,7 +70,7 @@ public class ActivityBusiness {
             if(publisherTeleCharges.getCode().equals("200")&&publisherTeleCharges.getResult()!=null) {
                 for(PublisherTeleChargeDto publisherTeleCharge : publisherTeleCharges.getResult()) {
                     Map<String,String> mapPTC = new HashMap<>();
-                    mapPTC.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
+                    mapPTC.put("winningTime",sdf.format(publisherTeleCharge.getWinningTime()));
                     mapPTC.put("publisherPhone",publisherDto.getPhone());
                     mapPTC.put("award",publisherTeleCharge.getMemo());
                     listWinning.add(mapPTC);
@@ -82,7 +82,7 @@ public class ActivityBusiness {
             if(publisherTickets.getCode().equals("200")&&publisherTickets.getResult()!=null) {
                 for(PublisherTicketDto publisherTicket : publisherTickets.getResult()) {
                     Map<String,String> mapPT = new HashMap<>();
-                    mapPT.put("winningTime",sdf.format(activityPublisherDto.getGetawardTime()));
+                    mapPT.put("winningTime",sdf.format(publisherTicket.getWinningTime()));
                     mapPT.put("publisherPhone",publisherDto.getPhone());
                     mapPT.put("award",publisherTicket.getMemo());
                     listWinning.add(mapPT);

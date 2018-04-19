@@ -62,12 +62,7 @@ public class StockOptionTradeBusiness {
     private PublisherBusiness publisherBusiness;
 
     public PageInfo<StockOptionTradeDto> pages(StockOptionTradeQuery query) {
-        List<PublisherDto> publishers;
-        if(query.getTest()) {
-            publishers = publisherBusiness.findByIsTest(query.getTest());
-        }else {
-            publishers = publisherBusiness.findByIsTest(query.getTest());
-        }
+        List<PublisherDto> publishers = publisherBusiness.findByIsTest(query.getTest());
         List<Long> list = new ArrayList<>();
         for(PublisherDto publisherDto : publishers) {
             list.add(publisherDto.getId());

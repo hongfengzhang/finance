@@ -37,6 +37,6 @@ public class PublisherDeduTicketDaoImpl implements PublisherDeduTicketDao{
 
 	@Override
 	public List<PublisherDeduTicket> getPublisherDeduTicketsByApId(long activityPublisherId) {
-		return respository.findPublisherDeduTicketsByApIdAndOrderByDtIdDesc(activityPublisherId);
+		return respository.findPublisherDeduTicketsByApId(activityPublisherId);
 	}
 }

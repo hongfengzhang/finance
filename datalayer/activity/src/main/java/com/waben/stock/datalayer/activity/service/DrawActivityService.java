@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -163,6 +164,7 @@ public class DrawActivityService {
         publisherDeduTicket.setApId(apId);
         publisherDeduTicket.setStatus(1);
         publisherDeduTicket.setMemo(ticket.getTicketName()+"("+ticket.getAmount()+"元)");
+        publisherDeduTicket.setWinningTime(new Date());
         publisherDeduTicketService.savePublisherDeduTicket(publisherDeduTicket);
     }
 
@@ -176,6 +178,7 @@ public class DrawActivityService {
         publisherTeleCharge.setStatus(1);
         publisherTeleCharge.setIspay(false);
         publisherTeleCharge.setMemo(ticket.getTicketName()+"("+ticket.getAmount()+"元)");
+        publisherTeleCharge.setWinningTime(new Date());
         publisherTeleChargeService.savePublisherTeleCharge(publisherTeleCharge);
     }
 
@@ -188,6 +191,7 @@ public class DrawActivityService {
         publisherTicket.setApId(apId);
         publisherTicket.setStatus(1);
         publisherTicket.setMemo(ticket.getTicketName()+"("+ticket.getAmount()+"元)");
+        publisherTicket.setWinningTime(new Date());
         publisherTicketService.savePublisherTicket(publisherTicket);
     }
 

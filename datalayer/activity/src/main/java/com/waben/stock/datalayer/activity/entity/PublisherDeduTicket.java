@@ -69,8 +69,11 @@ public class PublisherDeduTicket {
 	 * 备注
 	 */
 	private String memo;
-	
-	
+	/**
+	 * 中奖时间
+	 */
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date winningTime;
 	
 	public String getTicketName() {
 		return ticketName;
@@ -151,7 +154,13 @@ public class PublisherDeduTicket {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
-	
-	
+
+
+	public Date getWinningTime() {
+		return winningTime;
+	}
+
+	public void setWinningTime(Date winningTime) {
+		this.winningTime = winningTime;
+	}
 }
