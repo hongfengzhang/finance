@@ -61,6 +61,12 @@ public class PublisherReferenceFallback implements PublisherReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);	}
 
 	@Override
+	public Response<List<PublisherDto>> fetchByIsTest(Boolean test) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+
+	@Override
 	public Response<PublisherDto> modiyHeadportrait(Long id, String headPortrait) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

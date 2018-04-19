@@ -1,6 +1,8 @@
 package com.waben.stock.interfaces.pojo.query;
 
+import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 public class StockOptionTradeQuery extends PageAndSortQuery {
     /**
@@ -21,6 +23,12 @@ public class StockOptionTradeQuery extends PageAndSortQuery {
      * 是否测试
      */
     private Boolean isTest;
+
+    private String stockCode;
+    private BigDecimal nominalAmount;
+    private String cycleName;
+
+    private List<Long> publisherIds;
     public Long getPublisherPhone() {
         return publisherPhone;
     }
@@ -69,4 +77,35 @@ public class StockOptionTradeQuery extends PageAndSortQuery {
         isTest = test;
     }
 
+    public String getStockCode() {
+        return stockCode;
+    }
+
+    public void setStockCode(String stockCode) {
+        this.stockCode = stockCode;
+    }
+
+    public BigDecimal getNominalAmount() {
+        return nominalAmount;
+    }
+
+    public void setNominalAmount(BigDecimal nominalAmount) {
+        this.nominalAmount = nominalAmount;
+    }
+
+    public String getCycleName() {
+        return cycleName;
+    }
+
+    public void setCycleName(String cycleName) {
+        this.cycleName = cycleName;
+    }
+
+    public List<Long> getPublisherIds() {
+        return publisherIds;
+    }
+
+    public void setPublisherIds(List<Long> publisherIds) {
+        this.publisherIds = publisherIds;
+    }
 }

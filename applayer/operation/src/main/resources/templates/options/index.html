@@ -19,7 +19,33 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">股票代码</label>
+                            <div class="col-md-8">
+                                <input type="text" name="stockCode" class="form-control" maxlength="6"
+                                       placeholder="股票代码"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">名义本金</label>
+                            <div class="col-md-8">
+                                <input type="text" name="nominalAmount" class="form-control" maxlength="11"
+                                       placeholder="名义本金"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">行权周期</label>
+                            <div class="col-md-8">
+                                <input type="text" name="cycleName" class="form-control" maxlength="11"
+                                       placeholder="行权周期"/>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">订单编号</label>
@@ -29,7 +55,11 @@
                             </div>
                         </div>
                     </div>
-
+                </form>
+            </div>
+            <br/>
+            <div class="row">
+                <form class="form-horizontal">
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">订单状态</label>
@@ -46,7 +76,17 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">是否测试</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="isTest">
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="col-md-2 control-label">日期</label>
@@ -412,6 +452,10 @@
                         state: $("[name='state']").val() == '0' ? null : $("[name='state']").val(),
                         beginTime: $("[name='beginTime']").val(),
                         endTime: $("[name='endTime']").val(),
+                        stockCode: $("[name='stockCode']").val(),
+                        nominalAmount: $("[name='nominalAmount']").val(),
+                        cycleName: $("[name='cycleName']").val(),
+                        test: $("[name='isTest']").val()
                     }
                     $.extend(query, queryMap);
                     return query;
@@ -1086,6 +1130,10 @@
                 $("input[name='beginTime']").val('');
                 $("input[name='endTime']").val('');
                 $("[name='state']").val("0");
+                $("[name='stockCode']").val('');
+                $("[name='nominalAmount']").val('');
+                $("[name='cycleName']").val('');
+                $("[name='isTest']").val('0')
                 $table.bootstrapTable('getOptions').pageNumber = 1;
                 $table.bootstrapTable('refresh');
             });

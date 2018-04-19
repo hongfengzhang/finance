@@ -5,7 +5,9 @@ import com.waben.stock.datalayer.activity.entity.*;
 import com.waben.stock.datalayer.activity.repository.DrawActivityDao;
 import com.waben.stock.datalayer.activity.repository.DrawActivityRadioDao;
 import com.waben.stock.datalayer.activity.repository.TicketDao;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.DataNotFoundException;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +54,7 @@ public class DrawActivityService {
         ActivityPublisher activityPublisher = activityPublisherService.getActivityPublisherByPublisherId(publisherId);
         if(drawActivity.getRemaintime()<=0) {
             //抽奖次数不足
-            return null;
+            throw new ServiceException(ExceptionConstant.INSUFFICIENT_NUMBER_OF_DRAW);
         }else {
             List<DrawActivityRadio> drawActivityRadios = drawActivityRadioDao.getDrawActivityRadioByActivitysId(drawActivity.getActivityId());
             TicketAmount ticket = draw(drawActivityRadios);
@@ -96,7 +98,7 @@ public class DrawActivityService {
                 }
             }
         }
-        throw new DataNotFoundException("已没有奖品");
+        throw new ServiceException(ExceptionConstant.PRIZE_IS_EMPTY);
     }
 
     public TicketAmount draw(List<DrawActivityRadio> drawActivityRadios) {

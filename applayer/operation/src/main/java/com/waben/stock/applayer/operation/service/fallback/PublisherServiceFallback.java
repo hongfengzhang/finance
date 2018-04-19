@@ -55,6 +55,11 @@ public class PublisherServiceFallback implements PublisherService{
     }
 
     @Override
+    public Response<List<PublisherDto>> fetchByIsTest(Boolean test) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
 	public Response<PublisherDto> modiyHeadportrait(Long id, String headPortrait) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

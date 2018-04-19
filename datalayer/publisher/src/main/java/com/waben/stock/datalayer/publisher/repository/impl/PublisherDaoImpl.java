@@ -76,4 +76,9 @@ public class PublisherDaoImpl implements PublisherDao {
 	public Page<Publisher> pageByPromoter(String promotionCode, int page, int size) {
 		return repository.findByPromoter(promotionCode, new PageRequest(page, size));
 	}
+
+	@Override
+	public List<Publisher> retrieveByIsTest(Boolean test) {
+		return repository.findPublishersByIsTest(test);
+	}
 }

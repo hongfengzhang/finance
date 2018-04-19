@@ -87,6 +87,14 @@ public class PublisherController implements PublisherInterface {
 	}
 
 	@Override
+	public Response<List<PublisherDto>> fetchByIsTest(@PathVariable Boolean test) {
+		List<Publisher> publishers = publisherService.findByIsTest(test);
+		List<PublisherDto> publisherDtos = CopyBeanUtils.copyListBeanPropertiesToList(publishers,
+				PublisherDto.class);
+		return new Response<>(publisherDtos);
+	}
+
+	@Override
 	public Response<PublisherDto> modiyHeadportrait(@PathVariable Long id, String headPortrait) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(PublisherDto.class,
 				publisherService.modiyHeadportrait(id, headPortrait), false));

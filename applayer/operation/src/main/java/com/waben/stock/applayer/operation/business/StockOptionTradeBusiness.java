@@ -8,6 +8,7 @@ import com.waben.stock.applayer.operation.warpper.mail.*;
 import com.waben.stock.applayer.operation.web.StockQuotationHttp;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.MailUrlInfoDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
@@ -57,7 +58,21 @@ public class StockOptionTradeBusiness {
     @Autowired
     private StockQuotationHttp stockQuotationHttp;
 
+    @Autowired
+    private PublisherBusiness publisherBusiness;
+
     public PageInfo<StockOptionTradeDto> pages(StockOptionTradeQuery query) {
+        List<PublisherDto> publishers;
+        if(query.getTest()) {
+            publishers = publisherBusiness.findByIsTest(query.getTest());
+        }else {
+            publishers = publisherBusiness.findByIsTest(query.getTest());
+        }
+        List<Long> list = new ArrayList<>();
+        for(PublisherDto publisherDto : publishers) {
+            list.add(publisherDto.getId());
+        }
+        query.setPublisherIds(list);
         Response<PageInfo<StockOptionTradeDto>> response = stockOptionTradeService.pagesByQuery(query);
         String code = response.getCode();
         if ("200".equals(code)) {

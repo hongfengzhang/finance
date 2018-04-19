@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.operation.business;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.waben.stock.applayer.operation.service.publisher.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
@@ -44,7 +45,18 @@ public class PublisherBusiness {
         }
         throw new ServiceException(response.getCode());
     }
-    
+
+    public List<PublisherDto> findByIsTest(Boolean test){
+        Response<List<PublisherDto>> response = publisherService.fetchByIsTest(test);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
     public PublisherDto revision(PublisherDto publisherDto){
     	Response<PublisherDto> response = publisherService.modify(publisherDto);
     	String code = response.getCode();

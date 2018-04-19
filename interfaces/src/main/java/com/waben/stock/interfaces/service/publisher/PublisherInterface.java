@@ -54,4 +54,7 @@ public interface PublisherInterface {
 			@RequestParam(name = "page") int page, @RequestParam(name = "size") int size);
 	@RequestMapping(value = "/")
 	Response<List<PublisherDto>> fetchPublishers();
+
+	@RequestMapping(value = "/istest/{test}", method = RequestMethod.GET)
+    Response<List<PublisherDto>> fetchByIsTest(@PathVariable("test") Boolean test);
 }
