@@ -193,6 +193,11 @@
         <!--<artifactId>easy-mapper</artifactId>-->
         <!--<version>1.0.1</version>-->
         <!--</dependency>-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId> <!-- use mapstruct-jdk8 for Java 8 or higher -->
+            <version>1.2.0.Final</version>
+        </dependency>
     </dependencies>
 
     <profiles>

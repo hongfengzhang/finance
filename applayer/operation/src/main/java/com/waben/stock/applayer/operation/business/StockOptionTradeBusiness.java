@@ -68,35 +68,7 @@ public class StockOptionTradeBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public Boolean inquiry(Long id) {
-        Response<StockOptionTradeDto> stockOptionTradeDtoResponse = stockOptionTradeService.fetchById(id);
-        StockOptionTradeDto result = stockOptionTradeDtoResponse.getResult();
-        QuotoInquiry quotoInquiry = new QuotoInquiry();
-        Response<List<StockOptionOrgDto>> lists = stockOptionOrgService.lists();
-        StockOptionOrgDto org = lists.getResult().get(0);
-        quotoInquiry.setUnderlying(result.getStockName());
-        quotoInquiry.setCode(result.getStockCode());
-        quotoInquiry.setStrike("100%");
-        quotoInquiry.setAmount(String.valueOf(result.getNominalAmount().intValue()));
-        quotoInquiry.setPrice(null);/*String.valueOf(result.getRightMoneyRatio())*/
-        quotoInquiry.setTenor(result.getCycleMonth());
-        quotoInquiry.setDate(new Date());
-        logger.info("数据组装成功:{}", JacksonUtil.encode(quotoInquiry));
-        String file = ExcelUtil.commonRender(contextPath, quotoInquiry);
-        //添加邮件url信息
-        MailUrlInfoDto mailUrlInfoDto = new MailUrlInfoDto();
-        mailUrlInfoDto.setCode(result.getStockCode());
-        mailUrlInfoDto.setUnderlying(result.getStockName());
-        mailUrlInfoDto.setTemplateName("inquiry");
-        mailUrlInfoDto.setLocalUrl(file);
-        try {
-            mailUrlInfoService.add(mailUrlInfoDto);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        mailService.send("询价单", Arrays.asList(file), org.getEmail());
-        return true;
-    }
+
 
     public Boolean purchase(Long id) {
         Response<StockOptionTradeDto> response = stockOptionTradeService.fetchById(id);

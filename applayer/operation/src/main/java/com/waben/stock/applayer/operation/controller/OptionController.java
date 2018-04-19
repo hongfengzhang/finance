@@ -15,6 +15,8 @@ import com.waben.stock.interfaces.vo.stockoption.InquiryResultVo;
 import com.waben.stock.interfaces.vo.stockoption.OfflineStockOptionTradeVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionOrgVo;
 import com.waben.stock.interfaces.vo.stockoption.StockOptionTradeVo;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

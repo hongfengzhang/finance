@@ -51,7 +51,7 @@ public class OfflineStockOptionTradeController {
     @RequestMapping("/inquiry/{id}")
     @ResponseBody
     public Response<Boolean> inquiry(@PathVariable Long id){
-        Boolean result = stockOptionTradeBusiness.inquiry(id);
+        Boolean result = offlineStockOptionTradeBusiness.inquiry(id);
         return new Response<>(result);
     }
 
