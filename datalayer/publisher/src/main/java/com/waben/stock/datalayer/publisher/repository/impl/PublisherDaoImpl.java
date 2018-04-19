@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.publisher.repository.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,19 @@ public class PublisherDaoImpl implements PublisherDao {
 
 	@Override
 	public List<Publisher> retrieveByIsTest(Boolean test) {
-		return repository.findPublishersByIsTest(test);
+		if (test != null && test) {
+			return repository.findPublishersByIsTest(test);
+		} else {
+			List<Publisher> result = new ArrayList<>();
+			List<Publisher> p1 = repository.findPublishersByIsTest(test);
+			if (p1 != null) {
+				result.addAll(p1);
+			}
+			List<Publisher> p2 = repository.findByIsTestIsNull();
+			if (p2 != null) {
+				result.addAll(p2);
+			}
+			return result;
+		}
 	}
 }
