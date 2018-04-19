@@ -199,4 +199,9 @@ public class DrawActivityService {
         }
         return drawActicitys;
     }
+
+
+    public DrawActivity getDrawActicity(long activityId, long publisherId) {
+        return drawActivityDao.getDrawActivityByActivityIdAndPublisherId(activityId, publisherId);
+    }
 }

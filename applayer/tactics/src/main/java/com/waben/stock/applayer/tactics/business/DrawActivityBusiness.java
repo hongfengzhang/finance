@@ -2,6 +2,7 @@ package com.waben.stock.applayer.tactics.business;
 
 import com.waben.stock.applayer.tactics.reference.DrawActivityReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.activity.DrawActivityDto;
 import com.waben.stock.interfaces.dto.activity.TicketAmountDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -17,8 +18,10 @@ public class DrawActivityBusiness {
 
     public TicketAmountDto draw(long activityId,long publisherId) {
         Response<TicketAmountDto> response = drawActivityReference.draw(activityId, publisherId);
+        Response<DrawActivityDto> drawActicity = drawActivityReference.getDrawActicity(activityId, publisherId);
         String code = response.getCode();
         if ("200".equals(code)) {
+            response.getResult().setResidueDegree(drawActicity.getResult().getRemaintime());
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);

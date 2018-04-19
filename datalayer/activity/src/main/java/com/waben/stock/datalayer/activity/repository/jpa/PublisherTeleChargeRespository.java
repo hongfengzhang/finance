@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PublisherTeleChargeRespository extends JpaRepository<PublisherTeleCharge, Long>{
-    List<PublisherTeleCharge> findPublisherTeleChargesByApId(long apId);
+    List<PublisherTeleCharge> findPublisherTeleChargesByApIdAndOrderByPtIdDesc(long apId);
 }

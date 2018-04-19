@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface PublisherTicketRespository extends JpaRepository<PublisherTicket, Long>{
 
-    List<PublisherTicket> findPublisherTicketsByApId(long apId);
+    List<PublisherTicket> findPublisherTicketsByApIdAndOrderByPtIdDesc(long apId);
 }

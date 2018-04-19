@@ -65,6 +65,9 @@ public class TicketAmountDto {
 	@ApiModelProperty(value = "奖品图片url")
 	private String url;
 
+	@ApiModelProperty(value = "剩余抽奖次数")
+	private int residueDegree;
+
 	public long getTicketAmountId() {
 		return ticketAmountId;
 	}
@@ -143,5 +146,13 @@ public class TicketAmountDto {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public int getResidueDegree() {
+		return residueDegree;
+	}
+
+	public void setResidueDegree(int residueDegree) {
+		this.residueDegree = residueDegree;
 	}
 }
