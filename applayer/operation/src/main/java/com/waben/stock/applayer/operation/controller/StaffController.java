@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.RoleBusiness;
 import com.waben.stock.applayer.operation.business.StaffBusiness;
+import com.waben.stock.applayer.operation.util.SecurityAccount;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -15,10 +16,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -98,5 +96,19 @@ public class StaffController {
         StaffDto staffDto = staffBusiness.save(requestDto);
         StaffVo staffVo = CopyBeanUtils.copyBeanProperties(StaffVo.class,staffDto , false);
         return new Response<>(staffVo);
+    }
+
+    @PostMapping("/password/{password}")
+    @ResponseBody
+    public Response<StaffDto> password(@PathVariable String password) {
+       StaffDto staffDto = (StaffDto) SecurityAccount.current().getSecurity();
+       staffDto.setPassword(password);
+       staffBusiness.modif(staffDto);
+       return new Response<>(staffDto);
+    }
+
+    @GetMapping("/password")
+    public String password() {
+        return "manage/staff/password";
     }
 }

@@ -30,7 +30,7 @@ public class StaffDto implements Serializable {
     /**
      * 注册时间
      */
-    private Date createTime;
+    private Date createTime = new Date();
     /**
      * 修改时间
      */

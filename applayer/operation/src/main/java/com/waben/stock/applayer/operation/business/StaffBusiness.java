@@ -86,7 +86,19 @@ public class StaffBusiness {
 
     public StaffDto save(StaffDto requestDto) {
         requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
-        requestDto.setCreateTime(new Date());
+        Response<StaffDto> response = staffService.saveStaff(requestDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
+
+    public StaffDto modif(StaffDto requestDto) {
+        requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+        requestDto.setUpdateTime(new Date());
         Response<StaffDto> response = staffService.saveStaff(requestDto);
         String code = response.getCode();
         if ("200".equals(code)) {
