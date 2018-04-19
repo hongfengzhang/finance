@@ -25,5 +25,7 @@ public interface PublisherRepository extends CustomJpaRepository<Publisher, Long
 
 	Page<Publisher> findByPromoter(String promoter, Pageable pageable);
 
-    List<Publisher> findPublishersByIsTest(Boolean test);
+	List<Publisher> findPublishersByIsTest(Boolean test);
+
+	List<Publisher> findByIsTestIsNull();
 }
