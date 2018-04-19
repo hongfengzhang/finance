@@ -89,10 +89,27 @@ public class ActivityBusiness {
                 }
             }
         }
-        activityDto.setListWinningInfo(listWinning);
+        activityDto.setListWinningInfo(sort(listWinning));
         return activityDto;
     }
 
-
+    public List<Map<String,String>> sort(List<Map<String,String>> list) {
+        List<Map<String,String>> result = new ArrayList<>();
+        for (Map<String,String> mapI : list) {
+            String winningTimeI = mapI.get("winningTime");
+            for(Map<String,String> mapJ : list) {
+                String winningTimeJ = mapJ.get("winningTime");
+                if(winningTimeI.compareTo(winningTimeJ)<0) {
+                    break;
+                }
+            }
+            if(result.size()<=5) {
+                result.add(mapI);
+            }else {
+                break;
+            }
+        }
+        return result;
+    }
 
 }

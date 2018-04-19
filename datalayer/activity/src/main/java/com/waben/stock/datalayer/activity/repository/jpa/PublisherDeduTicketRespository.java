@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface PublisherDeduTicketRespository extends JpaRepository<PublisherDeduTicket, Long>{
 
-    List<PublisherDeduTicket> findPublisherDeduTicketsByApId(long apId);
+    List<PublisherDeduTicket> findPublisherDeduTicketsByApIdAndOrderByDtIdDesc(long apId);
 
 }
