@@ -28,6 +28,9 @@ public class WabenPayOverHttp {
 
 	private static final Logger logger = LoggerFactory.getLogger(WabenPayOverHttp.class);
 
+	
+	
+	
 	@SuppressWarnings("unchecked")
 	public static BindResponseBean bind(BindRequestBean request) {
 		try {

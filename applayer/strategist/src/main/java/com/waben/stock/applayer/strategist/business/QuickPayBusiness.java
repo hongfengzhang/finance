@@ -25,7 +25,7 @@ import com.waben.stock.applayer.strategist.payapi.czpay.config.CzPayConfig;
 import com.waben.stock.applayer.strategist.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.strategist.payapi.shande.config.SandPayConfig;
 import com.waben.stock.applayer.strategist.payapi.shande.utils.FormRequest;
-import com.waben.stock.applayer.strategist.payapi.wbpay.config.WBConfig;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
