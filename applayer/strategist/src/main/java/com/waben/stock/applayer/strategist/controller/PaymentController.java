@@ -15,14 +15,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.strategist.business.BindCardBusiness;
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.strategist.business.PaymentBusiness;
 import com.waben.stock.applayer.strategist.business.PublisherBusiness;
-import com.waben.stock.applayer.strategist.dto.payment.PayRequest;
-import com.waben.stock.applayer.strategist.dto.payment.UnionPayRequest;
 import com.waben.stock.applayer.strategist.payapi.czpay.config.CzBankType;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -31,7 +30,6 @@ import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.BankType;
 import com.waben.stock.interfaces.enums.PaymentState;
-import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -61,39 +59,85 @@ public class PaymentController {
 
 	@Autowired
 	private CapitalAccountBusiness capitalAccountBusiness;
-	
+
 	@Autowired
 	private PublisherBusiness publisherBusiness;
 
 	@GetMapping("/recharge")
-	@ApiOperation(value = "充值", notes = "paymentType:1银联支付,2扫码支付")
-	public void recharge(Long publisherId, Integer paymentType, BigDecimal amount, String bankCode,
-			HttpServletResponse httpResp) {
-		PaymentType payment = PaymentType.getByIndex(String.valueOf(paymentType));
-		PayRequest payReq = null;
-		if (payment == PaymentType.UnionPay) {
-			UnionPayRequest union = new UnionPayRequest();
-			union.setAmount(amount);
-			CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByCode(bankCode));
-			if (bankType == null) {
-				bankType = CzBankType.JSYH;
-			}
-			union.setBankCode(bankType.getCode());
-			payReq = union;
-		} else {
-			throw new RuntimeException("not supported paymentType " + paymentType);
-		}
-
-		httpResp.setContentType("text/html;charset=UTF-8");
-		String result = paymentBusiness.recharge(publisherId, payReq);
+	@ApiOperation(value = "充值", notes = "paymentType:1银联支付")
+	public void recharge(Long publisherId, Integer paymentType, BigDecimal amount, HttpServletResponse httpResp) {
+		/*
+		 * PaymentType payment =
+		 * PaymentType.getByIndex(String.valueOf(paymentType)); PayRequest
+		 * payReq = null; if (payment == PaymentType.UnionPay) { UnionPayRequest
+		 * union = new UnionPayRequest(); union.setAmount(amount); CzBankType
+		 * bankType =
+		 * CzBankType.getByPlateformBankType(BankType.getByCode(bankCode)); if
+		 * (bankType == null) { bankType = CzBankType.JSYH; }
+		 * union.setBankCode(bankType.getCode()); payReq = union; } else { throw
+		 * new RuntimeException("not supported paymentType " + paymentType); }
+		 * 
+		 * httpResp.setContentType("text/html;charset=UTF-8"); String result =
+		 * paymentBusiness.recharge(publisherId, payReq); try { PrintWriter
+		 * writer = httpResp.getWriter(); writer.write(result); } catch
+		 * (IOException e) { throw new RuntimeException("http write interrupt");
+		 * }
+		 */
 		try {
-			PrintWriter writer = httpResp.getWriter();
-			writer.write(result);
-		} catch (IOException e) {
-			throw new RuntimeException("http write interrupt");
+			logger.info("请求网贝网银支付:{}_{}", publisherId, amount);
+			String redirectURL = paymentBusiness.wabenNetbankPay(publisherId, amount);
+			httpResp.sendRedirect(redirectURL);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			httpResp.setContentType("text/html;charset=UTF-8");
+			try {
+				PrintWriter writer = httpResp.getWriter();
+				writer.write("请求支付发生异常，请稍后再试，或者联系客服!");
+			} catch (IOException e) {
+			}
 		}
 	}
-	
+
+	@RequestMapping("/wabennetbankpaynotify")
+	@ApiOperation(value = "网贝网银支付通知")
+	@ResponseBody
+	public String wabenNetbankPayNotify(HttpServletRequest request) {
+		String amount = request.getParameter("amount");
+		String merchantNo = request.getParameter("merchantNo");
+		String outTradeNo = request.getParameter("outTradeNo");
+		String transactNo = request.getParameter("transactNo");
+		String transactTime = request.getParameter("transactTime");
+		String tradeType = request.getParameter("tradeType");
+		String sign = request.getParameter("sign");
+		logger.info("接收网贝网银支付:outTradeNo_{}_transactNo_{}_amount_{}", outTradeNo, transactNo, amount);
+		// TODO 验签
+		// 完成支付
+		paymentBusiness.payCallback(outTradeNo, PaymentState.Paid);
+		return "SUCCESS";
+	}
+
+	@RequestMapping("/wabennetbankpay/h5wbreturn")
+	@ApiOperation(value = "网贝收银台同步回调接口")
+	@ResponseBody
+	public void wabenNetbankpayH5wbreturn(HttpServletResponse httpResp) throws UnsupportedEncodingException {
+		StringBuilder html = new StringBuilder();
+		html.append(
+				"<!DOCTYPE html><html><head><meta charset=\"UTF-8\"><title></title><script type=\"text/javascript\">");
+		html.append(
+				"if (navigator.userAgent.indexOf(\"MSIE\") > 0) { if (navigator.userAgent.indexOf(\"MSIE 6.0\") > 0) {");
+		html.append("window.opener = null;window.close();} else {window.open('', '_top');window.top.close();}");
+		html.append(
+				"} else if (navigator.userAgent.indexOf(\"Firefox\") > 0) {window.location.href = 'about:blank ';} else {");
+		html.append("window.opener = null;window.open('', '_self', '');window.close();}");
+		html.append("</script></head><body></body></html>");
+		httpResp.setContentType("text/html;charset=UTF-8");
+		try {
+			PrintWriter writer = httpResp.getWriter();
+			writer.write(html.toString());
+		} catch (IOException e) {
+		}
+	}
+
 	@PostMapping("/quickpaymessage")
 	@ApiOperation(value = "快捷支付发送短信验证码")
 	public Response<String> quickPayMessage(@RequestParam(required = true) BigDecimal amount,

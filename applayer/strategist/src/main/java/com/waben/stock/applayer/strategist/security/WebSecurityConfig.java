@@ -79,15 +79,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
 				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn",
-				"/payment/czpaycallback", "/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge")
+		http.authorizeRequests()
+				.antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn", "/payment/czpaycallback",
+						"/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge",
+						"/payment/wabennetbankpaynotify", "/payment/payment/wabennetbankpay/h5wbreturn")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
 		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/pclists").permitAll();
 		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
 		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic")
 				.permitAll();
-		//支付回调
+		// 支付回调
 		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
 		http.authorizeRequests().antMatchers("/quickpay/wbreturn").permitAll();
@@ -109,6 +111,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
-		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**","/static/js/**");
+		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**", "/static/js/**");
 	}
 }
