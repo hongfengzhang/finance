@@ -40,6 +40,9 @@ public class Role {
     @Column
     private Long organization;
 
+    @Column
+    private Integer type;
+
     public Long getId() {
         return id;
     }
@@ -94,5 +97,13 @@ public class Role {
 
     public void setOrganization(Long organization) {
         this.organization = organization;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

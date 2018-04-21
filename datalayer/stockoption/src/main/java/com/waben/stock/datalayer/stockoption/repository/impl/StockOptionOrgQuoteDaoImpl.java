@@ -70,4 +70,9 @@ public class StockOptionOrgQuoteDaoImpl implements StockOptionOrgQuoteDao {
 		return null;
 	}
 
+	@Override
+	public List<StockOptionOrgQuote> findByStockCodeAndCycle(String stockCode, Integer cycle) {
+		return repository.findByStockCodeAndCycle(stockCode, cycle);
+	}
+
 }

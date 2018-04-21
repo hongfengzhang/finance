@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.controller;
 
 import com.waben.stock.applayer.operation.business.RoleBusiness;
 import com.waben.stock.applayer.operation.business.StaffBusiness;
+import com.waben.stock.applayer.operation.util.SecurityAccount;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -98,5 +99,19 @@ public class StaffController {
         StaffDto staffDto = staffBusiness.save(requestDto);
         StaffVo staffVo = CopyBeanUtils.copyBeanProperties(StaffVo.class,staffDto , false);
         return new Response<>(staffVo);
+    }
+
+    @PostMapping("/password/{password}")
+    @ResponseBody
+    public Response<StaffDto> password(@PathVariable String password) {
+       StaffDto staffDto = (StaffDto) SecurityAccount.current().getSecurity();
+       staffDto.setPassword(password);
+       staffBusiness.modif(staffDto);
+       return new Response<>(staffDto);
+    }
+
+    @GetMapping("/password")
+    public String password() {
+        return "manage/staff/password";
     }
 }

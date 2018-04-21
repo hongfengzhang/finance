@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.strategist.payapi.wabenpay.config;
 
+@Deprecated
 public class WabenPayConfig {
 
 	/**

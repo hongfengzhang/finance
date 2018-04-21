@@ -39,6 +39,7 @@ $(function() {
 			var columns = [
 	            { "data": "publisherId", "title": "客户ID", orderable: false},
 	            { "data": "publisherPhone", "title": "客户手机号", orderable: false},
+	            { "data": "publisherName", "title": "客户姓名", orderable: false},
 	            { "data": "isTest", "title": "用户类型", orderable: false, "render": function(data, type, full, meta) {
 	            	if(full.isTest && full.isTest == true) {
 	            		return "测试用户";

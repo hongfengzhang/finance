@@ -55,6 +55,11 @@ public class RoleService {
                             .getId());
                     predicatesList.add(idQuery);
                 }
+                if(!StringUtils.isEmpty(roleQuery.getType())) {
+                    Predicate typeQuery = criteriaBuilder.equal(root.get("type").as(Integer.class), roleQuery
+                            .getType());
+                    predicatesList.add(typeQuery);
+                }
                 if(!StringUtils.isEmpty(roleQuery.getOrganization())) {
                     Predicate organizationQuery = criteriaBuilder.equal(root.get("organization").as(Long.class), roleQuery
                             .getOrganization());
