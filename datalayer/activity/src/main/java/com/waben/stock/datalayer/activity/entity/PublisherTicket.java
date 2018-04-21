@@ -51,7 +51,12 @@ public class PublisherTicket {
 	 */
 	private long apId;
 
-	
+	/**
+	 * 中奖时间
+	 */
+	@DateTimeFormat(pattern="yyyy-MM-dd HH:mm:ss")
+	private Date winningTime;
+
 	public long getApId() {
 		return apId;
 	}
@@ -107,6 +112,12 @@ public class PublisherTicket {
 	public void setMemo(String memo) {
 		this.memo = memo;
 	}
-	
-	
+
+	public Date getWinningTime() {
+		return winningTime;
+	}
+
+	public void setWinningTime(Date winningTime) {
+		this.winningTime = winningTime;
+	}
 }

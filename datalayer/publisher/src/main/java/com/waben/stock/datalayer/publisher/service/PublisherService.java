@@ -180,4 +180,8 @@ public class PublisherService {
     public List<Publisher> findPublishers() {
 		return publisherDao.list();
     }
+
+    public List<Publisher> findByIsTest(Boolean test) {
+		return publisherDao.retrieveByIsTest(test);
+    }
 }

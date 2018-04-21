@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.waben.stock.datalayer.publisher.entity.Publisher;
 
+import java.util.List;
+
 /**
  * @author Created by yuyidi on 2017/11/12.
  * @desc
@@ -23,4 +25,7 @@ public interface PublisherRepository extends CustomJpaRepository<Publisher, Long
 
 	Page<Publisher> findByPromoter(String promoter, Pageable pageable);
 
+	List<Publisher> findPublishersByIsTest(Boolean test);
+
+	List<Publisher> findByIsTestIsNull();
 }

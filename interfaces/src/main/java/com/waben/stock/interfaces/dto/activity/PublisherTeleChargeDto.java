@@ -54,8 +54,11 @@ public class PublisherTeleChargeDto {
 	private String memo;
 
 	private String activityName;
-	
 
+	/**
+	 * 中奖时间
+	 */
+	private Date winningTime;
 	public long getPtId() {
 		return ptId;
 	}
@@ -134,5 +137,13 @@ public class PublisherTeleChargeDto {
 
 	public void setActivityName(String activityName) {
 		this.activityName = activityName;
+	}
+
+	public Date getWinningTime() {
+		return winningTime;
+	}
+
+	public void setWinningTime(Date winningTime) {
+		this.winningTime = winningTime;
 	}
 }

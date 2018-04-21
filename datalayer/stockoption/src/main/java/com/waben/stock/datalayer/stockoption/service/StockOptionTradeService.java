@@ -173,6 +173,24 @@ public class StockOptionTradeService {
 							query.getPublisherPhone());
 					predicatesList.add(publisherPhoneQuery);
 				}
+				if (!StringUtils.isEmpty(query.getStockCode())) {
+					Predicate stockCodeQuery = criteriaBuilder.equal(root.get("stockCode").as(String.class),
+							query.getStockCode());
+					predicatesList.add(stockCodeQuery);
+				}
+				if (!StringUtils.isEmpty(query.getPublisherIds())) {
+					predicatesList.add(root.get("publisherId").in(query.getPublisherIds()));
+				}
+				if (!StringUtils.isEmpty(query.getCycleName())) {
+					Predicate cycleNameQuery = criteriaBuilder.equal(root.get("cycleName").as(String.class),
+							query.getCycleName());
+					predicatesList.add(cycleNameQuery);
+				}
+				if (!StringUtils.isEmpty(query.getNominalAmount())) {
+					Predicate nominalAmountQuery = criteriaBuilder.equal(root.get("nominalAmount").as(BigDecimal.class),
+							query.getNominalAmount());
+					predicatesList.add(nominalAmountQuery);
+				}
 				if (!StringUtils.isEmpty(query.getTradeNo())) {
 					Predicate applyNoQuery = criteriaBuilder.equal(root.get("tradeNo").as(String.class),
 							query.getTradeNo());

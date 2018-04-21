@@ -2,6 +2,7 @@ package com.waben.stock.applayer.operation.controller;
 
 
 import com.waben.stock.applayer.operation.business.RoleBusiness;
+import com.waben.stock.applayer.operation.util.SecurityAccount;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -94,4 +95,13 @@ public class RoleController {
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
+
+    @GetMapping("/permissions")
+    public String permissions(ModelMap map) {
+        SecurityAccount.current().getMenus();
+        return null;
+    }
+
+
+
 }

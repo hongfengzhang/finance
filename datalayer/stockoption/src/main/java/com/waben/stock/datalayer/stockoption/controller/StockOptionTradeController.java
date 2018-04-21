@@ -1,9 +1,6 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
-import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
-import com.waben.stock.interfaces.util.JacksonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

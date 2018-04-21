@@ -183,4 +183,9 @@ public class ExceptionConstant {
 	// 无直播频道
 	public static final String NO_LIVEPLAYER_EXCEPTION = "10001";
 
+	//抽奖活动
+	//抽奖次数不足
+	public static final String INSUFFICIENT_NUMBER_OF_DRAW = "11001";
+	//奖品已空
+	public static final String PRIZE_IS_EMPTY = "11002";
 }

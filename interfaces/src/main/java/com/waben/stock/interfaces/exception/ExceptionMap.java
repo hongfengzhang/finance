@@ -102,5 +102,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.INQUIRY_RESULT_NOT_FOUND, "期权询价结果不存在");
 		
 		exceptionMap.put(ExceptionConstant.NO_LIVEPLAYER_EXCEPTION, "无直播频道");
+
+
+		exceptionMap.put(ExceptionConstant.INSUFFICIENT_NUMBER_OF_DRAW, "抽奖次数不足");
+		exceptionMap.put(ExceptionConstant.PRIZE_IS_EMPTY, "奖品已空");
 	}
 }

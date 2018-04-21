@@ -19,7 +19,33 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">股票代码</label>
+                            <div class="col-md-8">
+                                <input type="text" name="stockCode" class="form-control" maxlength="6"
+                                       placeholder="股票代码"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">名义本金</label>
+                            <div class="col-md-8">
+                                <input type="text" name="nominalAmount" class="form-control" maxlength="11"
+                                       placeholder="名义本金"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">行权周期</label>
+                            <div class="col-md-8">
+                                <input type="text" name="cycleName" class="form-control" maxlength="11"
+                                       placeholder="行权周期"/>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">订单编号</label>
@@ -29,7 +55,11 @@
                             </div>
                         </div>
                     </div>
-
+                </form>
+            </div>
+            <br/>
+            <div class="row">
+                <form class="form-horizontal">
                     <div class="col-md-2">
                         <div class="form-group">
                             <label class="col-md-4 control-label">订单状态</label>
@@ -46,7 +76,17 @@
                             </div>
                         </div>
                     </div>
-
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">是否测试</label>
+                            <div class="col-sm-8">
+                                <select class="form-control" name="isTest">
+                                    <option value="0">否</option>
+                                    <option value="1">是</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="form-group">
                             <label class="col-md-2 control-label">日期</label>
@@ -401,6 +441,7 @@
                 sortOrder: 'desc', // 设置排序为反序 desc
                 pageList: [10, 15, 20, 25, 30],
                 sidePagination: "server",
+                showFooter: true,
                 queryParams: function () {
                     var query = {
                         page: this.pageNumber - 1,
@@ -412,6 +453,10 @@
                         state: $("[name='state']").val() == '0' ? null : $("[name='state']").val(),
                         beginTime: $("[name='beginTime']").val(),
                         endTime: $("[name='endTime']").val(),
+                        stockCode: $("[name='stockCode']").val(),
+                        nominalAmount: $("[name='nominalAmount']").val(),
+                        cycleName: $("[name='cycleName']").val(),
+                        test: $("[name='isTest']").val()
                     }
                     $.extend(query, queryMap);
                     return query;
@@ -432,7 +477,8 @@
                 columns: [{
                     field: 'publisherPhone',
                     title: '手机号',
-                    align: 'center'
+                    align: 'center',
+                    footerFormatter: '总和'
                 }, {
                     field: 'stockName',
                     title: '标的股票',
@@ -444,7 +490,10 @@
                 }, {
                     field: 'nominalAmount',
                     title: '名义本金',
-                    align: 'center'
+                    align: 'center',
+                    footerFormatter: function operateFormatter(value, row) {
+                        var count = 0; for (var i in value) { count += value[i].nominalAmount; } return count;
+                    },
                 }, {
                     field: 'rightMoneyRatio',
                     title: '权利金比率',
@@ -460,7 +509,10 @@
                 }, {
                     field: 'rightMoney',
                     title: '预询价',
-                    align: 'center'
+                    align: 'center',
+                    footerFormatter: function operateFormatter(value, row) {
+                        var count = 0; for (var i in value) { count += value[i].rightMoney; } return count;
+                    },
                 }, {
                     field: 'buyingPrice',
                     title: '成交价',
@@ -513,7 +565,7 @@
                                 '<input type="button" value="行权" data-toggle="modal"  data-target="#exerciseright" class="btn btn-info btn-xs exerciseright" disabled="disabled"/>\n' +
                                 '<input type="button" value="结算" data-toggle="modal" data-target="#settlement" class="btn btn-info btn-xs settlement" disabled="disabled"/>\n' +
                                 '<input type="button" value="详情" data-toggle="modal" data-target="#detail" class="btn btn-info btn-xs detail"/>\n' +
-                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail" disabled="disabled"/>'
+                                '<input type="button" value="机构信息" data-toggle="modal" data-target="#orgdetail" class="btn btn-info btn-xs orgdetail"/>'
                             ].join('');
                         }
                         if(row.state=="持仓中"){
@@ -914,31 +966,6 @@
 //                            $(location).prop('href', "../option/inquiry/" + row.id);
                         },
                         'click .orgdetail': function (e, value, row, index) {
-                            if(row.offlineTrade!=null) {
-                                if(row.offlineTrade.state=='SETTLEMENTED') {
-                                    $('#orgPrice').css('display','none');
-                                    $('#realPrice').css('display','none');
-                                    $('#orgSettle').css('display','none');
-                                }else {
-                                    $('#orgPrice').css('display','block');
-                                    $('#realPrice').css('display','block');
-                                    $('#orgSettle').css('display','block');
-                                }
-                                if(row.offlineTrade.state=='INQUIRY') {
-                                    $('#orgPrice').css('display','none');
-                                }else {
-                                    $('#orgPrice').css('display','none');
-                                }
-                                if(row.offlineTrade.state=='TURNOVER') {
-                                    $('#realPrice').css('display','none');
-                                }else {
-                                    $('#realPrice').css('display','none');
-                                }
-                            }else {
-                                $('#orgPrice').css('display','block');
-                                $('#realPrice').css('display','block');
-                                $('#orgSettle').css('display','block');
-                            }
                             $("#id").val(row.id);
                             if(row.inquiryResultVo!=null) {
                                 var value = (row.inquiryResultVo.rightMoneyRatio*100).toString();
@@ -981,8 +1008,8 @@
                                 $("[name='realRightMoneyRatio']").val('');
                                 $("[name='realBuyingPrice']").val('');
                                 $("[name='sellingPrice']").val('');
-                                $("#user_profitAndLoss").text('');
                                 $("#sys_profitAndLoss").text('');
+                                $("#user_profitAndLoss").text('');
                             }
                             $('#orgPrice').click(function () {
                                 var patt = /^(0|[1-9]|[1-9]\d|100)(\.\d{1,2}|\.{0})$/;
@@ -1111,6 +1138,10 @@
                 $("input[name='beginTime']").val('');
                 $("input[name='endTime']").val('');
                 $("[name='state']").val("0");
+                $("[name='stockCode']").val('');
+                $("[name='nominalAmount']").val('');
+                $("[name='cycleName']").val('');
+                $("[name='isTest']").val('0')
                 $table.bootstrapTable('getOptions').pageNumber = 1;
                 $table.bootstrapTable('refresh');
             });
