@@ -82,7 +82,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 				.antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn", "/payment/czpaycallback",
 						"/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge",
-						"/payment/wabennetbankpaynotify", "/payment/payment/wabennetbankpay/h5wbreturn")
+						"/payment/wabennetbankpaynotify", "/payment/wabennetbankpay/h5wbreturn")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
 		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/pclists").permitAll();
