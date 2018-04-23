@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.stockoption.repository;
 
+import java.util.List;
+
 import com.waben.stock.datalayer.stockoption.entity.StockOptionOrg;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionOrgQuote;
 
@@ -12,5 +14,7 @@ import com.waben.stock.datalayer.stockoption.entity.StockOptionOrgQuote;
 public interface StockOptionOrgQuoteDao extends BaseDao<StockOptionOrgQuote, Long> {
 
 	StockOptionOrgQuote findByOrgAndStockCodeAndCycle(StockOptionOrg org, String stockCode, Integer cycle);
+
+	List<StockOptionOrgQuote> findByStockCodeAndCycle(String stockCode, Integer cycle);
 
 }

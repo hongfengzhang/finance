@@ -86,6 +86,8 @@
 
                     }
                 });
+            } else {
+                swal(jsonResult.message)
             }
         }
     })

@@ -15,4 +15,6 @@ public interface StockOptionOrgQuoteRepository extends CustomJpaRepository<Stock
 
 	List<StockOptionOrgQuote> findByOrgAndStockCodeAndCycle(StockOptionOrg org, String stockCode, Integer cycle);
 
+	List<StockOptionOrgQuote> findByStockCodeAndCycle(String stockCode, Integer cycle);
+
 }

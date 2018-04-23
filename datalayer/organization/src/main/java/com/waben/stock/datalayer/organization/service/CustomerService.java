@@ -55,8 +55,9 @@ public class CustomerService {
 			isTestCondition = " and t1.is_test=1 ";
 		}
 		String sql = String.format(
-				"select t1.id, t1.phone, t4.code, t4.name, t1.create_time, t3.balance, t3.available_balance, t3.frozen_capital, t1.end_type, t1.is_test from publisher t1 "
+				"select t1.id, t1.phone, t4.code, t4.name, t1.create_time, t3.balance, t3.available_balance, t3.frozen_capital, t1.end_type, t1.is_test, t5.name as publisher_name from publisher t1 "
 						+ "INNER JOIN p_organization_publisher t2 on t1.id=t2.publisher_id and t2.org_code like '%s%%' "
+						+ "LEFT JOIN real_name t5 on t1.id=t5.resource_id and t5.resource_type=2 "
 						+ "LEFT JOIN p_organization t4 on t2.org_code=t4.code "
 						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id where 1=1 %s %s %s %s %s order by t1.create_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
@@ -74,6 +75,7 @@ public class CustomerService {
 		setMethodMap.put(new Integer(7), new MethodDesc("setFrozenCapital", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(8), new MethodDesc("setEndType", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(9), new MethodDesc("setIsTest", new Class<?>[] { Boolean.class }));
+		setMethodMap.put(new Integer(10), new MethodDesc("setPublisherName", new Class<?>[] { String.class }));
 		List<CustomerDto> content = dynamicQuerySqlDao.execute(CustomerDto.class, sql, setMethodMap);
 		BigInteger totalElements = dynamicQuerySqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()), totalElements.longValue());

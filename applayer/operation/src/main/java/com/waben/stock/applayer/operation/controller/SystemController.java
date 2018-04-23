@@ -71,6 +71,7 @@ public class SystemController {
         list.add(buyRecordProfit);
         return new Response<>(list);
     }
+
     @GetMapping("/403")
     public String forbidden() {
         return "403";

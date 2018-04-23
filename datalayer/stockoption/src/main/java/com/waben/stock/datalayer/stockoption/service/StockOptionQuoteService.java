@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.stockoption.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,9 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.stockoption.business.PriceMarkupConfigBusiness;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionCycle;
-import com.waben.stock.datalayer.stockoption.entity.StockOptionOrg;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionOrgQuote;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionQuote;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionCycleDao;
-import com.waben.stock.datalayer.stockoption.repository.StockOptionOrgDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionOrgQuoteDao;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
@@ -26,9 +26,6 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
  */
 @Service
 public class StockOptionQuoteService {
-
-	@Autowired
-	private StockOptionOrgDao orgDao;
 
 	@Autowired
 	private StockOptionOrgQuoteDao orgQuoteDao;
@@ -46,10 +43,58 @@ public class StockOptionQuoteService {
 	@Value("${price.iscycle14w20handle:false}")
 	private boolean isCycle14W20Handle;
 
+	/**
+	 * 获取机构报价
+	 * <p>
+	 * 如果存在多个机构的报价，取报价高的
+	 * </p>
+	 * 
+	 * @param stockCode
+	 *            股票代码
+	 * @param cycle
+	 *            周期
+	 * @return 机构报价
+	 */
+	private StockOptionOrgQuote orgQuote(String stockCode, Integer cycle) {
+		List<StockOptionOrgQuote> orgQuoteList = orgQuoteDao.findByStockCodeAndCycle(stockCode, cycle);
+		if (orgQuoteList != null && orgQuoteList.size() > 0) {
+			Collections.sort(orgQuoteList, new Comparator<StockOptionOrgQuote>() {
+				@Override
+				public int compare(StockOptionOrgQuote o1, StockOptionOrgQuote o2) {
+					BigDecimal ratio1 = o1.getRightMoneyRatio();
+					BigDecimal ratio2 = o2.getRightMoneyRatio();
+					if (ratio1 != null && ratio2 != null) {
+						return o2.getRightMoneyRatio().compareTo(o1.getRightMoneyRatio());
+					} else if (ratio1 != null && ratio2 == null) {
+						return -1;
+					} else if (ratio1 == null && ratio2 != null) {
+						return 1;
+					} else {
+						return 0;
+					}
+				}
+			});
+			return orgQuoteList.get(0);
+		}
+		return null;
+	}
+
+	/**
+	 * 客户询价
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param stockCode
+	 *            股票代码
+	 * @param cycle
+	 *            周期
+	 * @param nominalAmount
+	 *            名义本金
+	 * @return 给客户的报价
+	 */
 	public StockOptionQuote quote(Long publisherId, String stockCode, Integer cycle, BigDecimal nominalAmount) {
-		// TODO 此处目前只有一个机构，默认取第一个机构
-		StockOptionOrg org = orgDao.retrieve(1L);
-		StockOptionOrgQuote orgQuote = orgQuoteDao.findByOrgAndStockCodeAndCycle(org, stockCode, cycle);
+		// step 1 : 获取机构报价
+		StockOptionOrgQuote orgQuote = orgQuote(stockCode, cycle);
 		if (orgQuote != null) {
 			StockOptionCycle cycleObj = cycleDao.retrieveByCycle(cycle);
 			StockOptionQuote result = CopyBeanUtils.copyBeanProperties(StockOptionQuote.class, orgQuote, false);

@@ -14,6 +14,10 @@ public class CustomerDto {
 	 */
 	private String publisherPhone;
 	/**
+	 * 发布人姓名
+	 */
+	private String publisherName;
+	/**
 	 * 从属机构代码
 	 */
 	private String orgCode;
@@ -124,6 +128,14 @@ public class CustomerDto {
 
 	public void setIsTest(Boolean isTest) {
 		this.isTest = isTest;
+	}
+
+	public String getPublisherName() {
+		return publisherName;
+	}
+
+	public void setPublisherName(String publisherName) {
+		this.publisherName = publisherName;
 	}
 
 }

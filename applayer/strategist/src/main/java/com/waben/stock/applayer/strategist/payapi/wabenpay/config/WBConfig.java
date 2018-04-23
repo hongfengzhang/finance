@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.strategist.payapi.wbpay.config;
+package com.waben.stock.applayer.strategist.payapi.wabenpay.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -20,6 +20,11 @@ public class WBConfig {
 	private String h5FrontUrl;
 	@Value("${pay.protocolcallback}")
 	private String protocol_callback;
+
+	@Value("${pay.unionpaynotifyUrl}")
+	private String unionpayNotifyUrl;
+	@Value("${pay.unionpayfrontUrl}")
+	private String unionpayFrontUrl;
 
 	public static final String tradeType = "quick_bank";
 	public static final String platformType = "platform_wap";
@@ -84,6 +89,22 @@ public class WBConfig {
 
 	public void setH5ProxyfrontUrl(String h5ProxyfrontUrl) {
 		this.h5ProxyfrontUrl = h5ProxyfrontUrl;
+	}
+
+	public String getUnionpayNotifyUrl() {
+		return unionpayNotifyUrl;
+	}
+
+	public void setUnionpayNotifyUrl(String unionpayNotifyUrl) {
+		this.unionpayNotifyUrl = unionpayNotifyUrl;
+	}
+
+	public String getUnionpayFrontUrl() {
+		return unionpayFrontUrl;
+	}
+
+	public void setUnionpayFrontUrl(String unionpayFrontUrl) {
+		this.unionpayFrontUrl = unionpayFrontUrl;
 	}
 
 }

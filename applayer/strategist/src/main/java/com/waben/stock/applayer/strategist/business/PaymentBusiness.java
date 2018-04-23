@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +31,9 @@ import com.waben.stock.applayer.strategist.payapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.MessageRequestBean;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.MessageResponseBean;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.PayRequestBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.UnionPayRequestBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.UnionPayResponseBean;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WabenPayConfig;
 import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
@@ -60,12 +64,15 @@ public class PaymentBusiness {
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;
-	
+
 	@Autowired
 	private BindCardBusiness bindCardBusiness;
-	
+
+	@Autowired
+	private WBConfig config;
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-	
+
 	@Value("${spring.profiles.active}")
 	private String activeProfile;
 
@@ -149,7 +156,7 @@ public class PaymentBusiness {
 		}
 		throw new ServiceException(orderResp.getCode());
 	}
-	
+
 	public PaymentOrderDto findById(Long paymentId) {
 		Response<PaymentOrderDto> orderResp = paymentOrderReference.fetchById(paymentId);
 		if ("200".equals(orderResp.getCode())) {
@@ -287,7 +294,8 @@ public class PaymentBusiness {
 			stateStr = "支付异常";
 		}
 		try {
-			return CzPayConfig.webReturnUrl + "?paymentNo" + paymentNo + "&code=" + code + "&message=" + URLEncoder.encode(stateStr, "UTF-8");
+			return CzPayConfig.webReturnUrl + "?paymentNo" + paymentNo + "&code=" + code + "&message="
+					+ URLEncoder.encode(stateStr, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("utf-8 not supported?");
 		}
@@ -303,7 +311,7 @@ public class PaymentBusiness {
 			accountBusiness.withdrawals(order.getPublisherId(), order.getId(), withdrawalsState);
 		}
 	}
-	
+
 	public String quickPayMessage(BigDecimal amount, Long bindCardId, Long publisherId) {
 		BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
 		if (bindCard == null) {
@@ -371,6 +379,28 @@ public class PaymentBusiness {
 		} catch (Exception ex) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, ex.getMessage());
 		}
+	}
+
+	public String wabenNetbankPay(Long publisherId, BigDecimal amount) {
+		// 保存支付订单
+		PaymentOrderDto paymentOrder = new PaymentOrderDto();
+		paymentOrder.setAmount(amount);
+		paymentOrder.setPaymentNo(UniqueCodeGenerator.generatePaymentNo());
+		paymentOrder.setPublisherId(publisherId);
+		paymentOrder.setType(PaymentType.UnionPay);
+		paymentOrder.setState(PaymentState.Unpaid);
+		paymentOrder = this.savePaymentOrder(paymentOrder);
+		// 请求第三方支付
+		UnionPayRequestBean request = new UnionPayRequestBean();
+		request.setAmount(String.valueOf(amount.multiply(new BigDecimal("100")).setScale(0, RoundingMode.DOWN)));
+		request.setBankCode("CCB");
+		request.setOutTradeNo(paymentOrder.getPaymentNo());
+		request.setTimeStart(sdf.format(new Date()));
+		UnionPayResponseBean response = WabenPayOverHttp.netbankPay(request, config);
+		// 更新第三方支付单号
+		paymentOrder.setThirdPaymentNo(response.getTransNo());
+		savePaymentOrder(paymentOrder);
+		return "http://b.waben.com.cn" + response.getRedirectURL();
 	}
 
 }
