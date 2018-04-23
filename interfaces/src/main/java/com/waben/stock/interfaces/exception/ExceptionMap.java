@@ -105,6 +105,7 @@ public class ExceptionMap {
 
 
 		exceptionMap.put(ExceptionConstant.INSUFFICIENT_NUMBER_OF_DRAW, "抽奖次数不足");
+		exceptionMap.put(ExceptionConstant.OVERSTEP_NUMBER_OF_DRAW, "今日抽奖已达上限");
 		exceptionMap.put(ExceptionConstant.PRIZE_IS_EMPTY, "奖品已空");
 	}
 }
