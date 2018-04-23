@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.dto.manage;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
@@ -8,14 +11,22 @@ import java.util.Date;
  * @author luomengan
  *
  */
+@ApiModel(value="CircularsDto",description="公告对象")
 public class CircularsDto {
-
+	@ApiModelProperty(value = "公告id")
 	private Long id;
+	@ApiModelProperty(value = "公告标题")
 	private String title;
+	@ApiModelProperty(value = "公告内容")
 	private String content;
-	private Date createTime;
+	@ApiModelProperty(value = "创建时间")
+	private Date createTime = new Date();
+	@ApiModelProperty(value = "到期时间")
 	private Date expireTime;
+	@ApiModelProperty(value = "是否可用")
 	private Boolean enable;
+	@ApiModelProperty(value = "公告链接")
+	private String href;
 
 	public Long getId() {
 		return id;
@@ -65,4 +76,11 @@ public class CircularsDto {
 		this.enable = enable;
 	}
 
+	public String getHref() {
+		return href;
+	}
+
+	public void setHref(String href) {
+		this.href = href;
+	}
 }

@@ -36,6 +36,8 @@ public class Circulars {
     @Column
     private Boolean enable;
 
+    @Column
+    private String href;
 
     public Long getId() {
         return id;
@@ -85,4 +87,11 @@ public class Circulars {
         this.enable = enable;
     }
 
+    public String getHref() {
+        return href;
+    }
+
+    public void setHref(String href) {
+        this.href = href;
+    }
 }
