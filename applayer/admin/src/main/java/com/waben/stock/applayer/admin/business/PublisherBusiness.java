@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.admin.business;
 
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -32,4 +33,19 @@ public class PublisherBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public PublisherDto defriend(Long id) {
+		Response<PublisherDto> response = reference.defriend(id);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PublisherDto recover(Long id) {
+		Response<PublisherDto> response = reference.recover(id);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 }

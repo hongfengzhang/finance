@@ -1,11 +1,10 @@
 package com.waben.stock.applayer.admin.controller;
 
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.applayer.admin.business.PublisherBusiness;
 import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
@@ -38,4 +37,15 @@ public class PublisherController {
 		return new Response<>(business.adminPagesByQuery(query));
 	}
 
+	@PostMapping("/defriend/{id}")
+	public Response<PublisherDto> defriend(@PathVariable Long id) {
+		PublisherDto response = business.defriend(id);
+		return new Response<>(response);
+	}
+
+	@PostMapping("/recover/{id}")
+	public Response<PublisherDto> recover(@PathVariable Long id) {
+		PublisherDto response = business.recover(id);
+		return new Response<>(response);
+	}
 }
