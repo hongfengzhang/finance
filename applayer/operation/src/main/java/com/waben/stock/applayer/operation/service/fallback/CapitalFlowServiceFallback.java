@@ -2,11 +2,13 @@ package com.waben.stock.applayer.operation.service.fallback;
 
 import com.waben.stock.applayer.operation.service.publisher.CapitalFlowService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQuery;
 
 import java.math.BigDecimal;
 
@@ -26,6 +28,11 @@ public class CapitalFlowServiceFallback implements CapitalFlowService{
 
 	@Override
 	public Response<CapitalFlowDto> fetchById(Long capitalFlowId) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<CapitalFlowAdminDto>> adminPagesByQuery(CapitalFlowAdminQuery query) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }

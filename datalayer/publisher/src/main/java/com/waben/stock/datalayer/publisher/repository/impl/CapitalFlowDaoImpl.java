@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.datalayer.publisher.entity.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +12,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
+import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.datalayer.publisher.repository.impl.jpa.CapitalFlowRepository;
@@ -30,7 +30,7 @@ public class CapitalFlowDaoImpl implements CapitalFlowDao {
 
 	@Autowired
 	private CapitalFlowRepository repository;
-	
+
 	@Autowired
 	private PublisherDao publisherDao;
 
@@ -71,7 +71,7 @@ public class CapitalFlowDaoImpl implements CapitalFlowDao {
 
 	@Override
 	public CapitalFlow create(Publisher publisher, CapitalFlowType type, BigDecimal amount, Date occurrenceTime,
-			CapitalFlowExtendType extendType, Long extendId) {
+			CapitalFlowExtendType extendType, Long extendId, BigDecimal availableBalance) {
 		CapitalFlow t = new CapitalFlow();
 		t.setAmount(amount);
 		t.setOccurrenceTime(occurrenceTime);
@@ -81,6 +81,7 @@ public class CapitalFlowDaoImpl implements CapitalFlowDao {
 		t.setFlowNo(UniqueCodeGenerator.generateFlowNo());
 		t.setExtendId(extendId);
 		t.setExtendType(extendType);
+		t.setAvailableBalance(availableBalance);
 		return repository.save(t);
 	}
 
@@ -95,15 +96,4 @@ public class CapitalFlowDaoImpl implements CapitalFlowDao {
 		return repository.promotionTotalAmount(publisherId, CapitalFlowType.Promotion);
 	}
 
-	@Override
-	public CapitalFlow create(Publisher publisher, CapitalFlowType type, BigDecimal amount, Date occurrenceTime) {
-		CapitalFlow t = new CapitalFlow();
-		t.setAmount(amount);
-		t.setOccurrenceTime(occurrenceTime);
-		t.setPublisher(publisher);
-		t.setType(type);
-		t.setRemark(type.getType());
-		t.setFlowNo(UniqueCodeGenerator.generateFlowNo());
-		return repository.save(t);
-	}
 }

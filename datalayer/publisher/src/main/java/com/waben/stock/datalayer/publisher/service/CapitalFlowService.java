@@ -1,9 +1,13 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -14,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -23,7 +28,12 @@ import org.springframework.util.StringUtils;
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
+import com.waben.stock.datalayer.publisher.repository.DynamicQuerySqlDao;
+import com.waben.stock.datalayer.publisher.repository.impl.MethodDesc;
+import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
+import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQuery;
 
 /**
  * 资金流水 Service
@@ -36,6 +46,79 @@ public class CapitalFlowService {
 
 	@Autowired
 	private CapitalFlowDao capitalFlowDao;
+
+	@Autowired
+	private DynamicQuerySqlDao sqlDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	@SuppressWarnings("unused")
+	private String intArrToString(Integer[] intArr) {
+		StringBuilder result = new StringBuilder();
+		for (Integer i : intArr) {
+			result.append(i.toString() + ",");
+		}
+		return result.toString();
+	}
+
+	public Page<CapitalFlowAdminDto> adminPagesByQuery(CapitalFlowAdminQuery query) {
+		String pulisherPhoneCondition = "";
+		if (query.getPulisherPhone() != null) {
+			pulisherPhoneCondition = " and t5.phone like '%" + query.getPulisherPhone() + "%' ";
+		}
+		String publisherNameCondition = "";
+		if (query.getPublisherName() != null) {
+			publisherNameCondition = " and t4.name like '%" + query.getPublisherName() + "%' ";
+		}
+		String stockCodeCondition = "";
+		if (query.getStockCode() != null) {
+			stockCodeCondition = " and t2.stock_code like '%" + query.getStockCode() + "%' and t3.stock_code like '%"
+					+ query.getStockCode() + "%' ";
+		}
+		String typeCondition = "";
+		if (query.getFlowTypes() != null && !"".equals(query.getFlowTypes()) && !"0".equals(query.getFlowTypes())) {
+			typeCondition = " and t1.type in(" + query.getFlowTypes() + ") ";
+		}
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.occurrence_time>='" + sdf.format(query.getStartTime()) + "' ";
+		}
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.occurrence_time<'" + sdf.format(query.getEndTime()) + "' ";
+		}
+		String sql = String.format(
+				"select t1.id, t1.amount, t1.flow_no, t1.occurrence_time, t1.publisher_id, t5.phone, t1.remark, t1.type, t4.name, "
+						+ "t2.stock_code as b_stock_code, t2.stock_name as b_stock_name, "
+						+ "t3.stock_code as s_stock_code, t3.stock_name as s_stock_name from capital_flow t1 "
+						+ "LEFT JOIN buy_record t2 on t1.extend_type=1 and t1.extend_id=t2.id "
+						+ "LEFT JOIN stock_option_trade t3 on t1.extend_type=3 and t1.extend_id=t3.id "
+						+ "LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
+						+ "LEFT JOIN publisher t5 on t5.id=t1.publisher_id "
+						+ "where 1=1 %s %s %s %s %s %s order by t1.occurrence_time desc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				pulisherPhoneCondition, publisherNameCondition, stockCodeCondition, typeCondition, startTimeCondition,
+				endTimeCondition);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setAmount", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setFlowNo", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setOccurrenceTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(5), new MethodDesc("setPublisherPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(6), new MethodDesc("setRemark", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setType", new Class<?>[] { CapitalFlowType.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setPublisherName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setbStockCode", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(10), new MethodDesc("setbStockName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(11), new MethodDesc("setsStockCode", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(12), new MethodDesc("setsStockName", new Class<?>[] { String.class }));
+		List<CapitalFlowAdminDto> content = sqlDao.execute(CapitalFlowAdminDto.class, sql, setMethodMap);
+		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+				totalElements != null ? totalElements.longValue() : 0);
+	}
 
 	public Page<CapitalFlow> pagesByQuery(final CapitalFlowQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());

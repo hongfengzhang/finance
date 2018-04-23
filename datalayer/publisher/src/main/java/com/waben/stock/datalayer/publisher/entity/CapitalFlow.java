@@ -40,6 +40,14 @@ public class CapitalFlow {
 	@Column(name = "amount")
 	private BigDecimal amount;
 	/**
+	 * 当前可用余额
+	 * <p>
+	 * 产生该流水之后的可用余额
+	 * </p>
+	 */
+	@Column(name = "available_balance")
+	private BigDecimal availableBalance;
+	/**
 	 * 流水类型
 	 */
 	@Column(name = "type")
@@ -172,6 +180,14 @@ public class CapitalFlow {
 			return publisher.getSerialCode();
 		}
 		return null;
+	}
+
+	public BigDecimal getAvailableBalance() {
+		return availableBalance;
+	}
+
+	public void setAvailableBalance(BigDecimal availableBalance) {
+		this.availableBalance = availableBalance;
 	}
 
 }

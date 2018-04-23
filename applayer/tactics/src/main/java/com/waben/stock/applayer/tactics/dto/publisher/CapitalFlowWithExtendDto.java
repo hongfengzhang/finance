@@ -13,6 +13,13 @@ public class CapitalFlowWithExtendDto {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 当前可用余额
+	 * <p>
+	 * 产生该流水之后的可用余额
+	 * </p>
+	 */
+	private BigDecimal availableBalance;
+	/**
 	 * 流水类型
 	 */
 	private CapitalFlowType type;
@@ -151,6 +158,14 @@ public class CapitalFlowWithExtendDto {
 
 	public void setPaymentType(String paymentType) {
 		this.paymentType = paymentType;
+	}
+
+	public BigDecimal getAvailableBalance() {
+		return availableBalance;
+	}
+
+	public void setAvailableBalance(BigDecimal availableBalance) {
+		this.availableBalance = availableBalance;
 	}
 
 }
