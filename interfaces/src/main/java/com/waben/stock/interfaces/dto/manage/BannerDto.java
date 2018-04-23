@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.dto.manage;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 /**
@@ -8,14 +11,21 @@ import java.util.Date;
  * @author luomengan
  *
  */
+@ApiModel(value="BannerDto",description="轮播图对象")
 public class BannerDto {
-
+	@ApiModelProperty(value = "轮播图id")
 	private Long id;
+	@ApiModelProperty(value = "轮播图链接")
 	private String link;
+	@ApiModelProperty(value = "轮播图描述")
 	private String description;
+	@ApiModelProperty(value = "轮播图顺序")
 	private Integer sort;
+	@ApiModelProperty(value = "是否可用")
 	private Boolean enable;
-	private Date createTime;
+	@ApiModelProperty(value = "创建时间")
+	private Date createTime = new Date();
+	@ApiModelProperty(value = "跳转链接")
 	private String forward;
 
 	public Long getId() {

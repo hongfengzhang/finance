@@ -1,53 +1,67 @@
 package com.waben.stock.interfaces.dto.manage;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
 
 /**
- * @author Created by yuyidi on 2017/11/15.
- * @desc
+ * @Author zengzhiwei
+ * @Create 2018/4/23 15:18
  */
+@ApiModel(value = "StaffDto",description = "角色对象")
 public class StaffDto implements Serializable {
 
+	@ApiModelProperty(value = "员工id")
 	private Long id;
 	/**
 	 * 昵称
 	 */
+	@ApiModelProperty(value = "昵称")
 	private String nickname;
 	/**
 	 * 用户名
 	 */
+	@ApiModelProperty(value = "用户名")
 	private String userName;
 	/**
 	 * 密码
 	 */
+	@ApiModelProperty(value = "密码")
 	private String password;
 	/**
 	 * 加密salt
 	 */
+	@ApiModelProperty(value = "加密salt")
 	private String salt;
 	/**
 	 * 员工状态
 	 */
+	@ApiModelProperty(value = "员工状态")
 	private Boolean state;
 	/**
 	 * 注册时间
 	 */
-	private Date createTime;
+	@ApiModelProperty(value = "注册时间")
+	private Date createTime = new Date();
 	/**
 	 * 修改时间
 	 */
+	@ApiModelProperty(value = "修改时间")
 	private Date updateTime;
 	/**
 	 * 登录时间
 	 */
+	@ApiModelProperty(value = "登录时间")
 	private Date loginTime;
 	/**
 	 * 登录IP
 	 */
+	@ApiModelProperty(value = "登录IP")
 	private String ip;
-
+	@ApiModelProperty(value = "对应的角色")
 	private RoleDto roleDto;
 
 	public Long getId() {
