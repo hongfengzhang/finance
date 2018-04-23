@@ -71,6 +71,14 @@ public class Publisher {
 	 */
 	@Column(name = "head_portrait")
 	private String headPortrait;
+	/**
+	 * 状态
+	 * <ul>
+	 * <li>1正常，因为该字段为新加的字段，所以数据为空的情况也是表示正常状态</li>
+	 * <li>2黑名单，不能正常登陆</li>
+	 * </ul>
+	 */
+	private Integer state;
 
 	@OneToOne(mappedBy = "publisher", cascade = CascadeType.REMOVE)
 	private PublisherInformationStatistics publisherInformationStatistics;
@@ -166,6 +174,14 @@ public class Publisher {
 	public PublisherInformationStatisticsDto getPublisherInformationStatisticsDto() {
 		return CopyBeanUtils.copyBeanProperties(PublisherInformationStatisticsDto.class, publisherInformationStatistics,
 				false);
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 }

@@ -1,9 +1,13 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -12,6 +16,7 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -22,10 +27,14 @@ import org.springframework.util.StringUtils;
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
+import com.waben.stock.datalayer.publisher.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
+import com.waben.stock.datalayer.publisher.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 import com.waben.stock.interfaces.util.ShareCodeUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
@@ -42,6 +51,11 @@ public class PublisherService {
 
 	@Autowired
 	private CapitalAccountDao capitalAccountDao;
+
+	@Autowired
+	private DynamicQuerySqlDao sqlDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public Publisher findById(Long id) {
 		Publisher publisher = publisherDao.retrieve(id);
@@ -133,24 +147,27 @@ public class PublisherService {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<Publisher> pages = publisherDao.page(new Specification<Publisher>() {
 			@Override
-			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
-				if(StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPromoter()) && StringUtils.isEmpty(query.getBeginTime())){
+			public Predicate toPredicate(Root<Publisher> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
+				if (StringUtils.isEmpty(query.getPhone()) && StringUtils.isEmpty(query.getPromoter())
+						&& StringUtils.isEmpty(query.getBeginTime())) {
 					criteriaQuery.orderBy(criteriaBuilder.desc(root.<Date>get("createTime").as(Date.class)));
 					return criteriaQuery.getRestriction();
 				}
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
 				if (!StringUtils.isEmpty(query.getPhone())) {
-					Predicate phoneQuery = criteriaBuilder.like(root.get("phone").as(String.class), "%"+query
-							.getPhone()+"%");
+					Predicate phoneQuery = criteriaBuilder.like(root.get("phone").as(String.class),
+							"%" + query.getPhone() + "%");
 					predicatesList.add(phoneQuery);
 				}
 				if (!StringUtils.isEmpty(query.getPromoter())) {
-					Predicate promoterQuery = criteriaBuilder.equal(root.get("promoter").as(String.class), query
-							.getPromoter());
+					Predicate promoterQuery = criteriaBuilder.equal(root.get("promoter").as(String.class),
+							query.getPromoter());
 					predicatesList.add(promoterQuery);
 				}
-				if(query.getBeginTime() != null && query.getEndTime() != null){
-					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),query.getBeginTime(),query.getEndTime());
+				if (query.getBeginTime() != null && query.getEndTime() != null) {
+					Predicate createTimeQuery = criteriaBuilder.between(root.<Date>get("createTime").as(Date.class),
+							query.getBeginTime(), query.getEndTime());
 					predicatesList.add(criteriaBuilder.and(createTimeQuery));
 				}
 				criteriaQuery.where(predicatesList.toArray(new Predicate[predicatesList.size()]));
@@ -173,15 +190,62 @@ public class PublisherService {
 		return publisher;
 	}
 
-	public Publisher revision(Publisher publisher){
+	public Publisher revision(Publisher publisher) {
 		return publisherDao.update(publisher);
 	}
 
-    public List<Publisher> findPublishers() {
+	public List<Publisher> findPublishers() {
 		return publisherDao.list();
-    }
+	}
 
-    public List<Publisher> findByIsTest(Boolean test) {
+	public List<Publisher> findByIsTest(Boolean test) {
 		return publisherDao.retrieveByIsTest(test);
-    }
+	}
+
+	public Page<PublisherAdminDto> adminPagesByQuery(PublisherAdminQuery query) {
+		String nameCondition = "";
+		if (query.getName() != null) {
+			nameCondition = " and t2.name like '%" + query.getName() + "%' ";
+		}
+		String phoneCondition = "";
+		if (query.getPhone() != null) {
+			phoneCondition = " and t1.phone like '%" + query.getPhone() + "%' ";
+		}
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.create_time>='" + sdf.format(query.getStartTime()) + "' ";
+		}
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.create_time<'" + sdf.format(query.getEndTime()) + "' ";
+		}
+		String stateCondition = "";
+		if (query.getState() != null && query.getState() == 1) {
+			stateCondition = " and (t1.state is null or t1.state=1) ";
+		}
+		if (query.getState() != null && query.getState() == 2) {
+			stateCondition = " and t1.state=2 ";
+		}
+
+		String sql = String.format(
+				"select t1.id, t2.name, t1.phone, t3.available_balance, t1.create_time, t1.end_type, t1.state from publisher t1 "
+						+ "LEFT JOIN real_name t2 on t2.resource_type=2 and t1.id=t2.resource_id "
+						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id "
+						+ "where 1=1 %s %s %s %s %s order by t1.create_time desc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				nameCondition, phoneCondition, startTimeCondition, endTimeCondition, stateCondition);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setCreateTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(5), new MethodDesc("setEndType", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(6), new MethodDesc("setState", new Class<?>[] { Integer.class }));
+		List<PublisherAdminDto> content = sqlDao.execute(PublisherAdminDto.class, sql, setMethodMap);
+		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+				totalElements != null ? totalElements.longValue() : 0);
+	}
 }

@@ -7,34 +7,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.applayer.admin.business.CapitalFlowBusiness;
-import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
+import com.waben.stock.applayer.admin.business.CapitalAccountBusiness;
+import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
- * 资金流水 Controller
+ * 资金账户 Controller
  * 
  * @author luomengan
  *
  */
 @RestController
-@RequestMapping("/capitalFlow")
-@Api(description = "资金流水")
-public class CapitalFlowController {
+@RequestMapping("/capitalAccount")
+@Api(description = "资金账户")
+public class CapitalAccountController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private CapitalFlowBusiness business;
+	private CapitalAccountBusiness business;
 
 	@GetMapping("/pages")
-	@ApiOperation(value = "查询资金流水")
-	public Response<PageInfo<CapitalFlowAdminDto>> pages(CapitalFlowAdminQuery query) {
+	@ApiOperation(value = "查询资金账户")
+	public Response<PageInfo<CapitalAccountAdminDto>> pages(CapitalAccountAdminQuery query) {
 		return new Response<>(business.adminPagesByQuery(query));
 	}
 

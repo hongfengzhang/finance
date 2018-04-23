@@ -13,15 +13,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
 import com.waben.stock.datalayer.publisher.service.CapitalAccountService;
+import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
 import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 
 /**
  * 资金账户 Controller
@@ -168,6 +171,13 @@ public class CapitalAccountController implements CapitalAccountInterface {
 			@PathVariable BigDecimal profit) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.optionProfit(publisherId, optionTradeId, profit), false));
+	}
+
+	@Override
+	public Response<PageInfo<CapitalAccountAdminDto>> adminPagesByQuery(@RequestBody CapitalAccountAdminQuery query) {
+		Page<CapitalAccountAdminDto> page = capitalAccountService.adminPagesByQuery(query);
+		PageInfo<CapitalAccountAdminDto> result = PageToPageInfo.pageToPageInfo(page, CapitalAccountAdminDto.class);
+		return new Response<>(result);
 	}
 
 }

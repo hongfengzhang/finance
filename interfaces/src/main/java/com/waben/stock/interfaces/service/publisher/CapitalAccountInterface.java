@@ -2,16 +2,32 @@ package com.waben.stock.interfaces.service.publisher;
 
 import java.math.BigDecimal;
 
-import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
 
 public interface CapitalAccountInterface {
+
+	/**
+	 * 分页查询资金账户（管理后台）
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 资金账户分页数据
+	 */
+	@RequestMapping(value = "/adminpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<CapitalAccountAdminDto>> adminPagesByQuery(@RequestBody CapitalAccountAdminQuery query);
 
 	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<CapitalAccountDto>> pages(@RequestBody CapitalAccountQuery publisherQuery);

@@ -53,7 +53,14 @@ public class PublisherDto {
 	 * 头像
 	 */
 	private String headPortrait;
-
+	/**
+	 * 状态
+	 * <ul>
+	 * <li>1正常，因为该字段为新加的字段，所以数据为空的情况也是表示正常状态</li>
+	 * <li>2黑名单，不能正常登陆</li>
+	 * </ul>
+	 */
+	private Integer state;
 	/**
 	 * 发布人信息统计
 	 */
@@ -161,6 +168,14 @@ public class PublisherDto {
 			return publisherInformationStatisticsDto.getStrategyCount();
 		}
 		return null;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 }

@@ -33,9 +33,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/v2/api-docs").permitAll();
 		http.authorizeRequests().antMatchers("/configuration/**").permitAll();
 		// 开放接口
-
 		// 其余接口
-		http.authorizeRequests().antMatchers("/**").authenticated();
+		// http.authorizeRequests().antMatchers("/**").authenticated();
+		http.authorizeRequests().antMatchers("/**").permitAll();
 		// 添加一个过滤器，拦截所有POST访问/login的请求，进行初步处理
 		http.addFilterBefore(new LoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
 		// 退出登陆

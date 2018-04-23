@@ -13,10 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.service.PublisherService;
+import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
 import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -104,6 +106,13 @@ public class PublisherController implements PublisherInterface {
 	public Response<PublisherDto> modify(@RequestBody PublisherDto publisherDto) {
 		Publisher publisher = CopyBeanUtils.copyBeanProperties(Publisher.class, publisherDto, false);
 		PublisherDto result = CopyBeanUtils.copyBeanProperties(PublisherDto.class,publisherService.revision(publisher),false);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<PublisherAdminDto>> adminPagesByQuery(@RequestBody PublisherAdminQuery query) {
+		Page<PublisherAdminDto> page = publisherService.adminPagesByQuery(query);
+		PageInfo<PublisherAdminDto> result = PageToPageInfo.pageToPageInfo(page, PublisherAdminDto.class);
 		return new Response<>(result);
 	}
 

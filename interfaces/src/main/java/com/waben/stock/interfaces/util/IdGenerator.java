@@ -48,7 +48,7 @@ public enum IdGenerator {
 
         long suffix = (datacenterId << datacenterIdShift) | (workerId << workerIdShift) | sequence;
 
-        String datePrefix = DateFormatUtils.format(timestamp, "yyMMddHHMMssSSS");
+        String datePrefix = DateFormatUtils.format(timestamp, "yyMMddHHmmssSSS");
 
         return datePrefix + suffix;
     }

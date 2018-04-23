@@ -7,34 +7,34 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.applayer.admin.business.CapitalFlowBusiness;
-import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
+import com.waben.stock.applayer.admin.business.PublisherBusiness;
+import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
 /**
- * 资金流水 Controller
+ * 发布人 Controller
  * 
  * @author luomengan
  *
  */
 @RestController
-@RequestMapping("/capitalFlow")
-@Api(description = "资金流水")
-public class CapitalFlowController {
+@RequestMapping("/publisher")
+@Api(description = "发布人")
+public class PublisherController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private CapitalFlowBusiness business;
+	private PublisherBusiness business;
 
 	@GetMapping("/pages")
-	@ApiOperation(value = "查询资金流水")
-	public Response<PageInfo<CapitalFlowAdminDto>> pages(CapitalFlowAdminQuery query) {
+	@ApiOperation(value = "查询发布人")
+	public Response<PageInfo<PublisherAdminDto>> pages(PublisherAdminQuery query) {
 		return new Response<>(business.adminPagesByQuery(query));
 	}
 

@@ -6,11 +6,13 @@ import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
 
 /**
  * 发布人 reference服务接口fallback
@@ -73,6 +75,11 @@ public class PublisherReferenceFallback implements PublisherReference {
 
 	@Override
 	public Response<PublisherDto> modify(PublisherDto publisherDto) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<PublisherAdminDto>> adminPagesByQuery(PublisherAdminQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

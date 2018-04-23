@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -29,10 +31,13 @@ import com.waben.stock.datalayer.publisher.entity.Publisher;
 import com.waben.stock.datalayer.publisher.entity.WithdrawalsOrder;
 import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
 import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
+import com.waben.stock.datalayer.publisher.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.publisher.repository.FrozenCapitalDao;
 import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.datalayer.publisher.repository.WithdrawalsOrderDao;
+import com.waben.stock.datalayer.publisher.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
 import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FrozenCapitalStatus;
@@ -43,6 +48,7 @@ import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 @Service
@@ -67,6 +73,9 @@ public class CapitalAccountService {
 
 	@Autowired
 	private OutsideMessageBusiness outsideMessageBusiness;
+
+	@Autowired
+	private DynamicQuerySqlDao sqlDao;
 
 	/**
 	 * 根据发布人系列号获取资金账户
@@ -562,6 +571,48 @@ public class CapitalAccountService {
 		flowDao.create(account.getPublisher(), CapitalFlowType.StockOptionProfit, profit.abs(), date,
 				CapitalFlowExtendType.STOCKOPTIONTRADE, optionTradeId, account.getAvailableBalance());
 		return findByPublisherId(publisherId);
+	}
+
+	public Page<CapitalAccountAdminDto> adminPagesByQuery(CapitalAccountAdminQuery query) {
+		String nameCondition = "";
+		if (query.getName() != null) {
+			nameCondition = " and t3.name like '%" + query.getName() + "%' ";
+		}
+		String phoneCondition = "";
+		if (query.getPhone() != null) {
+			phoneCondition = " and t2.phone like '%" + query.getPhone() + "%' ";
+		}
+		String stateCondition = "";
+		if (query.getState() != null && query.getState() == 1) {
+			stateCondition = " and (t1.state is null or t1.state=1) ";
+		}
+		if (query.getState() != null && query.getState() == 2) {
+			stateCondition = " and t1.state=2 ";
+		}
+		String sql = String
+				.format("select t2.id, t3.name, t2.phone, t1.frozen_capital, t1.available_balance, t1.update_time, t2.create_time, t1.state, IFNULL(t4.recharge, 0), IFNULL(t5.withdraw, 0) from capital_account t1 "
+						+ "LEFT JOIN publisher t2 on t2.id =t1.publisher_id "
+						+ "LEFT JOIN real_name t3 on t3.resource_type=2 and t3.resource_id=t1.publisher_id "
+						+ "LEFT JOIN (select publisher_id, SUM(amount) as recharge from capital_flow where type=1 GROUP BY publisher_id) t4 on t4.publisher_id=t1.publisher_id "
+						+ "LEFT JOIN (select publisher_id, SUM(amount) as withdraw from capital_flow where type=2 GROUP BY publisher_id) t5 on t5.publisher_id=t1.publisher_id "
+						+ "where 1=1 %s %s %s order by t2.create_time desc limit " + query.getPage() * query.getSize()
+						+ "," + query.getSize(), nameCondition, phoneCondition, stateCondition);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setFrozenCapital", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(5), new MethodDesc("setUpdateTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(6), new MethodDesc("setRegistTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setState", new Class<?>[] { Integer.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setTotalRecharge", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setTotalWithdraw", new Class<?>[] { BigDecimal.class }));
+		List<CapitalAccountAdminDto> content = sqlDao.execute(CapitalAccountAdminDto.class, sql, setMethodMap);
+		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+				totalElements != null ? totalElements.longValue() : 0);
 	}
 
 }

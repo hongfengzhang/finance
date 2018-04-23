@@ -6,12 +6,14 @@ import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
 
 /**
  * 资金账号 reference服务接口fallback
@@ -112,6 +114,11 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 
 	@Override
 	public Response<CapitalAccountDto> csa(Long publisherId, BigDecimal amount, Long withdrawalsId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<CapitalAccountAdminDto>> adminPagesByQuery(CapitalAccountAdminQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

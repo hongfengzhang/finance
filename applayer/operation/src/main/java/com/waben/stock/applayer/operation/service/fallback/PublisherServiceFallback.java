@@ -1,15 +1,17 @@
 package com.waben.stock.applayer.operation.service.fallback;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.waben.stock.applayer.operation.service.publisher.PublisherService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
+import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
 
 @Component
 public class PublisherServiceFallback implements PublisherService{
@@ -69,5 +71,9 @@ public class PublisherServiceFallback implements PublisherService{
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<PageInfo<PublisherAdminDto>> adminPagesByQuery(PublisherAdminQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
 }

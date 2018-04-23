@@ -10,6 +10,7 @@ import java.util.Map;
  *
  */
 public enum OfflineStockOptionTradeState implements CommonalityEnum {
+	
 	TURNOVER("1", "持仓中"),
 
 	APPLYRIGHT("2", "申请行权"),
@@ -21,7 +22,6 @@ public enum OfflineStockOptionTradeState implements CommonalityEnum {
 	INQUIRY("5","已询价"),
 
 	PURCHASE("6","已申购");
-
 
 	private String index;
 
