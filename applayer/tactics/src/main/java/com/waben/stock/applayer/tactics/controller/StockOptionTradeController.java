@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.business.StockOptionCycleBusiness;
 import com.waben.stock.applayer.tactics.business.StockOptionQuoteBusiness;
@@ -26,6 +27,7 @@ import com.waben.stock.applayer.tactics.dto.stockoption.StockOptionTradeWithMark
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
@@ -71,6 +73,9 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
+	
+	@Autowired
+	private PublisherBusiness publisherBusiness;
 
 	@GetMapping("/cyclelists")
 	@ApiOperation(value = "期权周期列表")
@@ -163,7 +168,10 @@ public class StockOptionTradeController {
 		dto.setRightMoneyRatio(quote.getRightMoneyRatio());
 		dto.setStockCode(stockCode);
 		dto.setStockName(stock.getName());
-
+		// 获取是否为测试单
+		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+		dto.setIsTest(publisher.getIsTest());
+		
 		StockOptionTradeDto tradeDto = tradeBusiness.add(dto);
 		return new Response<>(tradeBusiness.wrapMarketInfo(tradeDto));
 	}

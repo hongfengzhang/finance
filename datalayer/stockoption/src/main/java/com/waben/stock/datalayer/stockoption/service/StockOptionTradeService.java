@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.stockoption.service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -33,6 +34,8 @@ import com.waben.stock.datalayer.stockoption.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.OutsideMessageType;
@@ -42,7 +45,9 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -63,7 +68,6 @@ public class StockOptionTradeService {
 
 	@Autowired
 	private OrganizationSettlementBusiness orgSettlementBusiness;
-
 
 
 	public Page<StockOptionTrade> pagesByUserQuery(final StockOptionTradeUserQuery query) {
@@ -392,6 +396,89 @@ public class StockOptionTradeService {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
 		stockOptionTrade.setRightTime(new Date());
 		return stockOptionTradeDao.update(stockOptionTrade);
+	}
+
+	public Page<StockOptionAdminDto> adminPagesByQuery(StockOptionQueryDto query) {
+		String publisherNameCondition = "";
+		if (StringUtil.isEmpty(query.getPublisherName())) {
+			publisherNameCondition = " and t4.name like '%" + query.getPublisherName() + "%' ";
+		}
+		String publisherPhoneCondition = "";
+		if (query.getPublisherPhone() != null) {
+			publisherPhoneCondition = " and t3.phone like '%" + query.getPublisherPhone() + "%' ";
+		}
+		String stockCodeCondition = "";
+		if (query.getStockCode() != null) {
+			stockCodeCondition = " and t1.stock_code like '%" + query.getStockCode() + "%' ";
+		}
+		String nominalAmountCondition = "";
+		if (query.getNominalAmount() != null) {
+			stockCodeCondition = " and t1.nominal_amount='" + query.getNominalAmount() + "' ";
+		}
+		String cycleNameCondition = "";
+		if (query.getCycleName() != null) {
+			cycleNameCondition = " and t1.cycle_name='" + query.getNominalAmount() + "' ";
+		}
+		String stateCondition = "";
+		if(query.getState() != null && query.getState() != 0) {
+			stateCondition = " and t1.state='" + query.getState() + "' ";
+		}
+		String isTestCondition = "";
+		if(query.getIsTest() != null) {
+			if(query.getIsTest()) {
+				isTestCondition = " and t1.is_test=1 ";
+			} else {
+				isTestCondition = " and (t1.is_test is null or t1.is_test=0) ";
+			}
+		}
+		String isMarkCondition = "";
+		if(query.getIsMark() != null) {
+			if(query.getIsMark()) {
+				isMarkCondition = " and t1.is_mark=1 ";
+			} else {
+				isMarkCondition = " and (t1.is_mark is null or t1.is_mark=0) ";
+			}
+		}
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.apply_time>='" + sdf.format(query.getStartTime()) + "' ";
+		}
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.apply_time<'" + sdf.format(query.getEndTime()) + "' ";
+		}
+		String startRatioCondition = "";
+		if (query.getStartRatio() != null) {
+			startRatioCondition = " and t1.right_money_ratio>='" + query.getStartRatio().divide(new BigDecimal("100")).toString() + "' ";
+		}
+		String endRatioCondition = "";
+		if (query.getEndRatio() != null) {
+			endRatioCondition = " and t1.right_money_ratio<'" + query.getEndRatio().divide(new BigDecimal("100")).toString() + "' ";
+		}
+		
+		String sql = String.format(
+				"select t1.id, t1.trade_no, t4.name, t3.phone, t1.stock_code, t1.stock_name, t1.cycle_name, t1.nominal_amount, t1.right_money_ratio, "
+						+ "t1.right_money, t2.right_money_ratio, t2.right_money, t1.apply_time, t1.buying_time, t1.buying_price, t1.selling_time, t1.selling_price, "
+						+ "t1.profit, t1.is_test, t1.is_mark, t1.state from stock_option_trade t1 "
+						+ "LEFT JOIN offline_stock_option_trade t2 on t1.offline_trade=t2.id "
+						+ "LEFT JOIN publisher t3 on t1.publisher_id=t3.id "
+						+ "LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
+						+ "where 1=1 %s %s %s %s %s %s %s %s %s %s %s %s order by t1.apply_time desc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize());
+//		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
+//		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+//		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+//		setMethodMap.put(new Integer(1), new MethodDesc("setName", new Class<?>[] { String.class }));
+//		setMethodMap.put(new Integer(2), new MethodDesc("setPhone", new Class<?>[] { String.class }));
+//		setMethodMap.put(new Integer(3), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
+//		setMethodMap.put(new Integer(4), new MethodDesc("setCreateTime", new Class<?>[] { Date.class }));
+//		setMethodMap.put(new Integer(5), new MethodDesc("setEndType", new Class<?>[] { String.class }));
+//		setMethodMap.put(new Integer(6), new MethodDesc("setState", new Class<?>[] { Integer.class }));
+//		List<PublisherAdminDto> content = sqlDao.execute(PublisherAdminDto.class, sql, setMethodMap);
+//		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
+//		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+//				totalElements != null ? totalElements.longValue() : 0);
+		return null;
 	}
 
 }

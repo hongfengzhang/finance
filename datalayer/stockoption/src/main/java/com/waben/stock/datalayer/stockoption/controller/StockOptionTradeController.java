@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
-import com.waben.stock.interfaces.enums.StockOptionTradeState;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,20 +12,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
-import com.waben.stock.datalayer.stockoption.service.OfflineStockOptionTradeService;
 import com.waben.stock.datalayer.stockoption.service.StockOptionTradeService;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
 import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/stockoptiontrade")
@@ -34,8 +35,7 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 
 	@Autowired
 	private StockOptionTradeService stockOptionTradeService;
-	@Autowired
-	private OfflineStockOptionTradeService offlineStockOptionTradeService;
+
 	@Override
 	public Response<PageInfo<StockOptionTradeDto>> pagesByQuery(@RequestBody StockOptionTradeQuery query) {
 		Page<StockOptionTrade> page = stockOptionTradeService.pagesByQuery(query);
@@ -51,11 +51,13 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	@Override
 	public Response<StockOptionTradeDto> fetchById(@PathVariable Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeService.findById(id);
-		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class,
-				stockOptionTrade, false);
-		if(stockOptionTrade.getOfflineTrade()!=null) {
-			OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, stockOptionTrade.getOfflineTrade(), false);
-			StockOptionOrgDto stockOptionOrgDto = CopyBeanUtils.copyBeanProperties(StockOptionOrgDto.class, stockOptionTrade.getOfflineTrade().getOrg(), false);
+		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, stockOptionTrade,
+				false);
+		if (stockOptionTrade.getOfflineTrade() != null) {
+			OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils
+					.copyBeanProperties(OfflineStockOptionTradeDto.class, stockOptionTrade.getOfflineTrade(), false);
+			StockOptionOrgDto stockOptionOrgDto = CopyBeanUtils.copyBeanProperties(StockOptionOrgDto.class,
+					stockOptionTrade.getOfflineTrade().getOrg(), false);
 			offlineStockOptionTradeDto.setOrg(stockOptionOrgDto);
 			result.setOfflineTradeDto(offlineStockOptionTradeDto);
 		}
@@ -65,8 +67,8 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	@Override
 	public Response<StockOptionTradeDto> modify(@PathVariable Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeService.modify(id);
-		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class,
-				stockOptionTrade, false);
+		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, stockOptionTrade,
+				false);
 		return new Response<>(result);
 	}
 
@@ -96,7 +98,8 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	@Override
 	public Response<StockOptionTradeDto> exercise(@PathVariable Long id) {
 		StockOptionTrade result = stockOptionTradeService.exercise(id);
-		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result, false);
+		StockOptionTradeDto stockOptionTradeDto = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, result,
+				false);
 		return new Response<>(stockOptionTradeDto);
 	}
 
@@ -104,10 +107,12 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	public Response<List<StockOptionTradeDto>> stockOptionsWithState(@PathVariable Integer state) {
 		StockOptionTradeState stockOptionTradeState = StockOptionTradeState.getByIndex(String.valueOf(state));
 		List<StockOptionTrade> stockOptionTrades = stockOptionTradeService.fetchByState(stockOptionTradeState);
-		List<StockOptionTradeDto> result = CopyBeanUtils.copyListBeanPropertiesToList(stockOptionTrades, StockOptionTradeDto.class);
-		for (int i=0; i<stockOptionTrades.size(); i++) {
-			if(stockOptionTrades.get(i).getOfflineTrade()!=null) {
-				OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(OfflineStockOptionTradeDto.class, stockOptionTrades.get(i).getOfflineTrade(), false);
+		List<StockOptionTradeDto> result = CopyBeanUtils.copyListBeanPropertiesToList(stockOptionTrades,
+				StockOptionTradeDto.class);
+		for (int i = 0; i < stockOptionTrades.size(); i++) {
+			if (stockOptionTrades.get(i).getOfflineTrade() != null) {
+				OfflineStockOptionTradeDto offlineStockOptionTradeDto = CopyBeanUtils.copyBeanProperties(
+						OfflineStockOptionTradeDto.class, stockOptionTrades.get(i).getOfflineTrade(), false);
 				result.get(i).setOfflineTradeDto(offlineStockOptionTradeDto);
 			}
 		}
@@ -117,7 +122,8 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	@Override
 	public Response<StockOptionTradeDto> dueTreatmentExercise(@PathVariable Long id) {
 		StockOptionTrade stockOptionTrades = stockOptionTradeService.dueTreatmentExercise(id);
-		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, stockOptionTrades, false);
+		StockOptionTradeDto result = CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, stockOptionTrades,
+				false);
 		return new Response<>(result);
 	}
 
@@ -143,6 +149,13 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		logger.info("发布人{}申请行权期权交易{}!", publisherId, id);
 		StockOptionTrade trade = stockOptionTradeService.userRight(publisherId, id);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionQueryDto query) {
+		Page<StockOptionAdminDto> page = stockOptionTradeService.adminPagesByQuery(query);
+		PageInfo<StockOptionAdminDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionAdminDto.class);
+		return new Response<>(result);
 	}
 
 }

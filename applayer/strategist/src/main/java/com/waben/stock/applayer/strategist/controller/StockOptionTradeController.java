@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.strategist.business.PublisherBusiness;
 import com.waben.stock.applayer.strategist.business.StockBusiness;
 import com.waben.stock.applayer.strategist.business.StockOptionCycleBusiness;
 import com.waben.stock.applayer.strategist.business.StockOptionQuoteBusiness;
@@ -26,6 +27,7 @@ import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeWithM
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
@@ -71,6 +73,9 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
+	
+	@Autowired
+	private PublisherBusiness publisherBusiness;
 
 	@GetMapping("/cyclelists")
 	@ApiOperation(value = "期权周期列表")
@@ -122,7 +127,8 @@ public class StockOptionTradeController {
 		// 获取股票、期权周期、报价
 		StockDto stock = stockBusiness.findByCode(stockCode);
 		StockOptionCycleDto cycle = cycleBusiness.fetchById(cycleId);
-		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle.getCycle(), nominalAmount);
+		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle.getCycle(),
+				nominalAmount);
 		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
 		// if (quote == null && cycle.getCycle().intValue() == 14) {
 		// quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
@@ -158,6 +164,9 @@ public class StockOptionTradeController {
 		dto.setRightMoneyRatio(quote.getRightMoneyRatio());
 		dto.setStockCode(stockCode);
 		dto.setStockName(stock.getName());
+		// 获取是否为测试单
+		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+		dto.setIsTest(publisher.getIsTest());
 
 		StockOptionTradeDto tradeDto = tradeBusiness.add(dto);
 		return new Response<>(tradeBusiness.wrapMarketInfo(tradeDto));

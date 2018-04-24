@@ -4,12 +4,14 @@ import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.tactics.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
 
 import java.util.List;
 
@@ -78,6 +80,11 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 	}
 	@Override
 	public Response<StockOptionTradeDto> success(Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionQueryDto query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

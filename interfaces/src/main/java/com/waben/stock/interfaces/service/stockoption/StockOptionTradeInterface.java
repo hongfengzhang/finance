@@ -1,20 +1,32 @@
 package com.waben.stock.interfaces.service.stockoption;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
-
-import java.util.List;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
 
 public interface StockOptionTradeInterface {
+
+	/**
+	 * 分页查询期权交易（管理后台）
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 期权交易分页数据
+	 */
+	@RequestMapping(value = "/adminpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionQueryDto query);
 
 	/**
 	 * 添加期权申购，此时状态为“待确认”
@@ -28,7 +40,7 @@ public interface StockOptionTradeInterface {
 
 	@RequestMapping(value = "/userpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<StockOptionTradeDto>> pagesByUserQuery(@RequestBody StockOptionTradeUserQuery query);
-	
+
 	/**
 	 * 用户申请提前行权，此时状态为“申请行权”
 	 *
@@ -57,8 +69,8 @@ public interface StockOptionTradeInterface {
 	@RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)
 	Response<StockOptionTradeDto> modify(@PathVariable("id") Long id);
 
-    @RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
-    Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id);
+	@RequestMapping(value = "/settlement/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id);
 
 	@RequestMapping(value = "/success/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> success(@PathVariable("id") Long id);
