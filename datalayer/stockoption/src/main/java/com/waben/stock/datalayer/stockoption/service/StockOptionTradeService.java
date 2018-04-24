@@ -31,8 +31,12 @@ import org.springframework.util.StringUtils;
 import com.waben.stock.datalayer.stockoption.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.stockoption.business.OrganizationSettlementBusiness;
 import com.waben.stock.datalayer.stockoption.business.OutsideMessageBusiness;
+import com.waben.stock.datalayer.stockoption.entity.OfflineStockOptionTrade;
+import com.waben.stock.datalayer.stockoption.entity.StockOptionOrg;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
 import com.waben.stock.datalayer.stockoption.repository.DynamicQuerySqlDao;
+import com.waben.stock.datalayer.stockoption.repository.OfflineStockOptionTradeDao;
+import com.waben.stock.datalayer.stockoption.repository.StockOptionOrgDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -72,6 +76,12 @@ public class StockOptionTradeService {
 
 	@Autowired
 	private DynamicQuerySqlDao sqlDao;
+
+	@Autowired
+	private OfflineStockOptionTradeDao offlineTradeDao;
+
+	@Autowired
+	private StockOptionOrgDao optionOrgDao;
 
 	public Page<StockOptionTrade> pagesByUserQuery(final StockOptionTradeUserQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -252,6 +262,7 @@ public class StockOptionTradeService {
 		return trade;
 	}
 
+	@Deprecated
 	@Transactional
 	public StockOptionTrade success(Long id) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
@@ -499,6 +510,112 @@ public class StockOptionTradeService {
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
+	}
+
+	private OfflineStockOptionTrade saveOfflineTrade(StockOptionTrade trade, Long orgId,
+			BigDecimal orgRightMoneyRatio) {
+		StockOptionOrg org = optionOrgDao.retrieve(orgId);
+		if (org == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		OfflineStockOptionTrade offlineTrade = new OfflineStockOptionTrade();
+		BigDecimal orgRightMoney = trade.getNominalAmount().multiply(orgRightMoneyRatio).setScale(2,
+				RoundingMode.HALF_EVEN);
+		offlineTrade.setBuyingPrice(trade.getBuyingPrice());
+		offlineTrade.setBuyingTime(trade.getBuyingTime());
+		offlineTrade.setCycle(trade.getCycle());
+		offlineTrade.setExpireTime(trade.getExpireTime());
+		offlineTrade.setNominalAmount(trade.getNominalAmount());
+		offlineTrade.setOrg(org);
+		offlineTrade.setRightMoneyRatio(orgRightMoneyRatio);
+		offlineTrade.setRightMoney(orgRightMoney);
+		offlineTrade.setState(OfflineStockOptionTradeState.TURNOVER);
+		offlineTrade.setStockCode(trade.getStockCode());
+		offlineTrade.setStockName(trade.getStockName());
+		return offlineTradeDao.create(offlineTrade);
+	}
+
+	private OfflineStockOptionTrade settlementOfflineTrade(StockOptionTrade trade) {
+		OfflineStockOptionTrade offlineTrade = trade.getOfflineTrade();
+		offlineTrade.setSellingTime(trade.getSellingTime());
+		offlineTrade.setSellingPrice(trade.getSellingPrice());
+		offlineTrade.setProfit(trade.getProfit());
+		return offlineTradeDao.update(offlineTrade);
+	}
+
+	private Date expireTime(Date date, Integer cycle) {
+		try {
+			// 计算到期日期
+			Date beginTime = sdf.parse(sdf.format(date));
+			long after = 24 * 60 * 60 * 1000;
+			after *= (cycle - 1);
+			return new Date(beginTime.getTime() + after);
+		} catch (ParseException e) {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
+		}
+	}
+
+	@Transactional
+	public StockOptionTrade turnover(Long id, Long orgId, BigDecimal orgRightMoneyRatio, BigDecimal buyingPrice) {
+		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		if (StockOptionTradeState.WAITCONFIRMED != trade.getState()) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		trade.setState(StockOptionTradeState.TURNOVER);
+		trade.setBuyingPrice(buyingPrice);
+		Date date = new Date();
+		trade.setBuyingTime(date);
+		trade.setExpireTime(expireTime(date, trade.getCycle()));
+		trade.setUpdateTime(date);
+		// 保存线下机构期权交易
+		OfflineStockOptionTrade offlineTrade = saveOfflineTrade(trade, orgId, orgRightMoneyRatio);
+		trade.setOfflineTrade(offlineTrade);
+		StockOptionTrade result = stockOptionTradeDao.update(trade);
+		// 站外消息推送
+		sendOutsideMessage(result);
+		return result;
+	}
+
+	@Transactional
+	public StockOptionTrade mark(Long id, Boolean isMark) {
+		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		trade.setIsMark(isMark);
+		return stockOptionTradeDao.update(trade);
+	}
+
+	@Transactional
+	public StockOptionTrade settlement(Long id, BigDecimal sellingPrice) {
+		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		if (StockOptionTradeState.SETTLEMENTED == trade.getState()) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		trade.setSellingPrice(sellingPrice);
+		Date date = new Date();
+		trade.setSellingTime(date);
+		trade.setState(StockOptionTradeState.SETTLEMENTED);
+		BigDecimal profit = BigDecimal.ZERO;
+		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
+			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice(), 10, RoundingMode.DOWN)
+					.multiply(trade.getNominalAmount()).setScale(2, RoundingMode.HALF_EVEN);
+		}
+		trade.setProfit(profit);
+		trade.setUpdateTime(date);
+		stockOptionTradeDao.update(trade);
+		if (profit.compareTo(BigDecimal.ZERO) > 0) {
+			// 用户收益
+			accountBusiness.optionProfit(trade.getPublisherId(), trade.getId(), profit);
+		}
+		// 现在期权交易结算
+		settlementOfflineTrade(trade);
+		// 给推广机构结算
+		if (trade.getOfflineTrade().getRightMoney() != null) {
+			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
+			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
+					trade.getCycleId(), rightMoneyProfit);
+		}
+		// 站外消息推送
+		sendOutsideMessage(trade);
+		return trade;
 	}
 
 }

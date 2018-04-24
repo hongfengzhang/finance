@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.admin.reference.fallback;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -85,6 +86,22 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 
 	@Override
 	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionQueryDto query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> turnover(Long id, Long orgId, BigDecimal orgRightMoneyRatio,
+			BigDecimal buyingPrice) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> mark(Long id, Boolean isMark) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> settlement(Long id, BigDecimal sellingPrice) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

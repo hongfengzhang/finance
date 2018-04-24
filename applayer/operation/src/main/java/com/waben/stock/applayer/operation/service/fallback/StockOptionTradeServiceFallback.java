@@ -12,6 +12,7 @@ import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryD
 
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -78,6 +79,22 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
 
 	@Override
 	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionQueryDto query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> turnover(Long id, Long orgId, BigDecimal orgRightMoneyRatio,
+			BigDecimal buyingPrice) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> mark(Long id, Boolean isMark) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> settlement(Long id, BigDecimal sellingPrice) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
     
