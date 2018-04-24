@@ -9,6 +9,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.waben.stock.applayer.admin.security.filter.JwtAuthenticationFilter;
+import com.waben.stock.applayer.admin.security.filter.LoginFilter;
+
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -32,12 +35,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/swagger-resources/**").permitAll();
 		http.authorizeRequests().antMatchers("/v2/api-docs").permitAll();
 		http.authorizeRequests().antMatchers("/configuration/**").permitAll();
-		// 开放接口
 		// 其余接口
-		// http.authorizeRequests().antMatchers("/**").authenticated();
-		http.authorizeRequests().antMatchers("/**").permitAll();
+		http.authorizeRequests().antMatchers("/**").authenticated();
 		// 添加一个过滤器，拦截所有POST访问/login的请求，进行初步处理
 		http.addFilterBefore(new LoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class);
+		// 添加一个过滤器验证其他请求的Token是否合法
+		http.addFilterBefore(new JwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		// 退出登陆
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
 	}

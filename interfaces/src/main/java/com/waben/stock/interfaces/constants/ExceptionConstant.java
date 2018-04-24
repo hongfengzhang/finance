@@ -178,16 +178,18 @@ public class ExceptionConstant {
 	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
 	// 期权询价结果不存在
 	public static final String INQUIRY_RESULT_NOT_FOUND = "9006";
+	// 非交易日不能申请行权
+	public static final String NONTRADINGDAY_EXCEPTION = "9007";
 
 	// 直播
 	// 无直播频道
 	public static final String NO_LIVEPLAYER_EXCEPTION = "10001";
 
-	//抽奖活动
-	//抽奖次数不足
+	// 抽奖活动
+	// 抽奖次数不足
 	public static final String INSUFFICIENT_NUMBER_OF_DRAW = "11001";
-	//抽奖次数上限
+	// 抽奖次数上限
 	public static final String OVERSTEP_NUMBER_OF_DRAW = "11002";
-	//奖品已空
+	// 奖品已空
 	public static final String PRIZE_IS_EMPTY = "11003";
 }

@@ -36,6 +36,10 @@ public class CapitalFlowAdminQuery extends PageAndSortQuery {
 	 * 股票代码
 	 */
 	private String stockCode;
+	/**
+	 * 充值方式
+	 */
+	private Integer paymentType;
 
 	public String getPublisherName() {
 		return publisherName;
@@ -83,6 +87,14 @@ public class CapitalFlowAdminQuery extends PageAndSortQuery {
 
 	public void setFlowTypes(String flowTypes) {
 		this.flowTypes = flowTypes;
+	}
+
+	public Integer getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(Integer paymentType) {
+		this.paymentType = paymentType;
 	}
 
 }

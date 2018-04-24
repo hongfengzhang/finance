@@ -430,12 +430,12 @@ public class StockOptionTradeService {
 			stockCodeCondition = " and t1.nominal_amount='" + query.getNominalAmount() + "' ";
 		}
 		String cycleNameCondition = "";
-		if (!StringUtil.isEmpty(query.getCycleName())) {
-			cycleNameCondition = " and t1.cycle_name='" + query.getCycleName() + "' ";
+		if (!StringUtil.isEmpty(query.getCycleId())) {
+			cycleNameCondition = " and t1.cycle_id='" + query.getCycleId() + "' ";
 		}
 		String stateCondition = "";
-		if (query.getState() != null && query.getState() != 0) {
-			stateCondition = " and t1.state='" + query.getState() + "' ";
+		if (!StringUtil.isEmpty(query.getState()) && !"0".equals(query.getState().trim())) {
+			stateCondition = " and t1.state in(" + query.getState() + ") ";
 		}
 		String isTestCondition = "";
 		if (query.getIsTest() != null) {

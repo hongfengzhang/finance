@@ -11,9 +11,17 @@ public class CapitalAccountAdminDto {
 	 */
 	private Long publisherId;
 	/**
+	 * 头像
+	 */
+	private String headPortrait;
+	/**
 	 * 用户姓名
 	 */
 	private String name;
+	/**
+	 * 身份证号
+	 */
+	private String idCard;
 	/**
 	 * 手机号码
 	 */
@@ -137,6 +145,22 @@ public class CapitalAccountAdminDto {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getHeadPortrait() {
+		return headPortrait;
+	}
+
+	public void setHeadPortrait(String headPortrait) {
+		this.headPortrait = headPortrait;
+	}
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
 	}
 
 }
