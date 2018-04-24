@@ -30,6 +30,10 @@ public class DrawActivity {
 	 * 剩余次数
 	 */
 	private int remaintime;
+	/**
+	 * 已抽奖次数
+	 */
+	private int luckyDrawCount;
 
 	public DrawActivity(){
 		
@@ -66,6 +70,12 @@ public class DrawActivity {
 	public void setRemaintime(int remaintime) {
 		this.remaintime = remaintime;
 	}
-	
-	
+
+	public int getLuckyDrawCount() {
+		return luckyDrawCount;
+	}
+
+	public void setLuckyDrawCount(int luckyDrawCount) {
+		this.luckyDrawCount = luckyDrawCount;
+	}
 }

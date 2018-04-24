@@ -25,9 +25,6 @@ public class DrawActivityService {
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Value("${remaintime}")
-    private int remaintime;
-
     @Autowired
     private DrawActivityDao drawActivityDao;
 
@@ -56,6 +53,8 @@ public class DrawActivityService {
         if(drawActivity.getRemaintime()<=0) {
             //抽奖次数不足
             throw new ServiceException(ExceptionConstant.INSUFFICIENT_NUMBER_OF_DRAW);
+        }else if(drawActivity.getLuckyDrawCount()>10) {
+            throw new ServiceException(ExceptionConstant.OVERSTEP_NUMBER_OF_DRAW);
         }else {
             List<DrawActivityRadio> drawActivityRadios = drawActivityRadioDao.getDrawActivityRadioByActivitysId(drawActivity.getActivityId());
             TicketAmount ticket = draw(drawActivityRadios);
@@ -145,6 +144,7 @@ public class DrawActivityService {
     public void setRemaintime(long id) {
         DrawActivity drawActicity = drawActivityDao.getDrawActicity(id);
         drawActicity.setRemaintime(drawActicity.getRemaintime()-1);
+        drawActicity.setLuckyDrawCount(drawActicity.getLuckyDrawCount()+1);
     }
 
     @Transactional
@@ -199,7 +199,8 @@ public class DrawActivityService {
     public List<DrawActivity> setRemaintime() {
         List<DrawActivity> drawActicitys = drawActivityDao.getDrawActicitys();
         for (DrawActivity drawActivity : drawActicitys) {
-            drawActivity.setRemaintime(remaintime);
+            drawActivity.setRemaintime(0);
+            drawActivity.setLuckyDrawCount(0);
         }
         return drawActicitys;
     }
