@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.admin.controller;
 
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import io.swagger.annotations.ApiImplicitParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,12 +39,16 @@ public class PublisherController {
 	}
 
 	@PostMapping("/defriend/{id}")
+	@ApiOperation(value = "拉黑")
+	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "会员id", required = true)
 	public Response<PublisherDto> defriend(@PathVariable Long id) {
 		PublisherDto response = business.defriend(id);
 		return new Response<>(response);
 	}
 
 	@PostMapping("/recover/{id}")
+	@ApiOperation(value = "恢复")
+	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "会员id", required = true)
 	public Response<PublisherDto> recover(@PathVariable Long id) {
 		PublisherDto response = business.recover(id);
 		return new Response<>(response);
