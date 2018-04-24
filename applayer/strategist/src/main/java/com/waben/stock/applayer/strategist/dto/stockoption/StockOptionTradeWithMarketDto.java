@@ -29,6 +29,10 @@ public class StockOptionTradeWithMarketDto extends StockOptionTradeDto {
 	 * 0停牌，1正常
 	 */
 	private Integer stockStatus;
+	/**
+	 * 是否可以申请行权
+	 */
+	private boolean canBeRight;
 
 	public BigDecimal getLastPrice() {
 		return lastPrice;
@@ -71,6 +75,14 @@ public class StockOptionTradeWithMarketDto extends StockOptionTradeDto {
 
 	public void setStockStatus(Integer stockStatus) {
 		this.stockStatus = stockStatus;
+	}
+
+	public boolean isCanBeRight() {
+		return canBeRight;
+	}
+
+	public void setCanBeRight(boolean canBeRight) {
+		this.canBeRight = canBeRight;
 	}
 
 }
