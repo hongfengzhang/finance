@@ -1,13 +1,17 @@
-package com.waben.stock.applayer.admin.controller;
+package com.waben.stock.applayer.admin.controller.publisher;
 
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.applayer.admin.business.PublisherBusiness;
+import com.waben.stock.applayer.admin.business.publisher.PublisherBusiness;
 import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;

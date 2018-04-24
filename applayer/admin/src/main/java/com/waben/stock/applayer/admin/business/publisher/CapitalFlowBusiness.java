@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.admin.business;
+package com.waben.stock.applayer.admin.business.publisher;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

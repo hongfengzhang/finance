@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class CapitalAccountAdminDto {
 
+	private Long id;
 	/**
 	 * 用户id
 	 */
@@ -128,6 +129,14 @@ public class CapitalAccountAdminDto {
 
 	public void setRegistTime(Date registTime) {
 		this.registTime = registTime;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }
