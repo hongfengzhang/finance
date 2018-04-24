@@ -48,17 +48,6 @@ public class StaffBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public StaffDto fetchById(Long id) {
-		Response<StaffDto> response = reference.fetchById(id);
-		String code = response.getCode();
-		if ("200".equals(code)) {
-			return response.getResult();
-		}else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
-			throw new NetflixCircuitException(code);
-		}
-		throw new ServiceException(response.getCode());
-	}
-
 	public StaffDto findById(Long id) {
 		Response<StaffDto> response = reference.fetchById(id);
 		String code = response.getCode();

@@ -25,7 +25,7 @@ import java.util.List;
  * @Author zengzhiwei
  * @Create 2018/4/23 14:57
  */
-@Controller
+@RestController
 @RequestMapping("/staff")
 public class StaffController {
 
@@ -41,7 +41,6 @@ public class StaffController {
     }
 
     @RequestMapping("/pages")
-    @ResponseBody
     @ApiImplicitParam(paramType = "query", dataType = "StaffQuery", name = "query", value = "查询对象", required = true)
     @ApiOperation(value = "员工分页")
     public Response<PageInfo<StaffDto>> pages(StaffQuery query) {
@@ -49,27 +48,7 @@ public class StaffController {
         return new Response<>(response);
     }
 
-    @RequestMapping("/view/{id}")
-    @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "员工id", required = true)
-    @ApiOperation(value = "查看详情页面")
-    public String view(@PathVariable Long id, ModelMap map){
-        StaffDto staffDto = staffBusiness.fetchById(id);
-        map.addAttribute("staff", staffDto);
-        return "manage/staff/view";
-    }
-
-    @RequestMapping("/edit/{id}")
-    @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "员工id", required = true)
-    @ApiOperation(value = "修改员工页面")
-    public String edit(@PathVariable Long id,ModelMap map){
-        StaffDto staffDto = staffBusiness.findById(id);
-        StaffVo staffVo = CopyBeanUtils.copyBeanProperties(StaffVo.class, staffDto, false);
-        map.addAttribute("staff", staffVo);
-        return "manage/staff/edit";
-    }
-
     @RequestMapping("/modify")
-    @ResponseBody
     @ApiImplicitParam(paramType = "query", dataType = "StaffDto", name = "query", value = "员工对象", required = true)
     @ApiOperation(value = "修改员工")
     public Response<Integer> modify(StaffDto staffDto){
@@ -78,7 +57,6 @@ public class StaffController {
     }
 
     @RequestMapping("/delete/{id}")
-    @ResponseBody
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "员工id", required = true)
     @ApiOperation(value = "删除员工")
     public Response<Integer> delete(Long id){
@@ -86,16 +64,7 @@ public class StaffController {
         return new Response<>(1);
     }
 
-    @RequestMapping("/add")
-    @ApiOperation(value = "添加员工页面")
-    public String add(ModelMap map) {
-        List<RoleDto> roleDtos = roleBusiness.fetchRoles();
-        map.addAttribute("roleVo",roleDtos);
-        return "manage/staff/add";
-    }
-
     @RequestMapping("/save")
-    @ResponseBody
     @ApiImplicitParam(paramType = "query", dataType = "StaffDto", name = "query", value = "员工对象", required = true)
     @ApiOperation(value = "添加员工")
     public Response<StaffDto> add(StaffDto staffDto){
@@ -104,7 +73,6 @@ public class StaffController {
     }
 
     @PostMapping("/password/{password}")
-    @ResponseBody
     @ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "员工密码", required = true)
     @ApiOperation(value = "修改密码")
     public Response<StaffDto> password(@PathVariable String password) {
@@ -114,9 +82,11 @@ public class StaffController {
        return new Response<>(staffDto);
     }
 
-    @GetMapping("/password")
-    @ApiOperation(value = "修改密码页面")
-    public String password() {
-        return "manage/staff/password";
+    @GetMapping("/{id}")
+    @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "员工id", required = true)
+    @ApiOperation(value = "通过员工id获取员工")
+    public Response<StaffDto> fetchById(@PathVariable Long id) {
+        StaffDto respone = staffBusiness.findById(id);
+        return new Response<>(respone);
     }
 }
