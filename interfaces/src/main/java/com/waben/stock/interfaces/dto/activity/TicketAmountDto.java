@@ -68,6 +68,9 @@ public class TicketAmountDto {
 	@ApiModelProperty(value = "剩余抽奖次数")
 	private int residueDegree;
 
+	@ApiModelProperty(value = "今日已抽奖次数")
+	private int luckyDrawCount;
+
 	public long getTicketAmountId() {
 		return ticketAmountId;
 	}
@@ -154,5 +157,13 @@ public class TicketAmountDto {
 
 	public void setResidueDegree(int residueDegree) {
 		this.residueDegree = residueDegree;
+	}
+
+	public int getLuckyDrawCount() {
+		return luckyDrawCount;
+	}
+
+	public void setLuckyDrawCount(int luckyDrawCount) {
+		this.luckyDrawCount = luckyDrawCount;
 	}
 }

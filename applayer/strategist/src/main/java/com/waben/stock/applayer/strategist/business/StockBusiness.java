@@ -178,7 +178,7 @@ public class StockBusiness {
 		if (kLine != null && kLine.size() > 0) {
 			result.setYesterdayClosePrice(kLine.get(0).getClosePrice());
 		}
-		if (holidayBusiness.isTradeDay()) {
+		if (holidayBusiness.isTradeDay(new Date())) {
 			List<StockTimeLine> timeLine = listTimeLine(code);
 			if (timeLine != null && timeLine.size() > 0 && sdf.format(new Date()).equals(timeLine.get(0).getDay())) {
 				result.setTodayOpenPrice(timeLine.get(0).getOpenPrice());

@@ -83,8 +83,9 @@ public class HolidayBusiness {
 		}
 	}
 
-	public boolean isTradeDay() {
+	public boolean isTradeDay(Date date) {
 		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
 		int year = cal.get(Calendar.YEAR);
 		Date now = cal.getTime();
 		String dayStr = daySdf.format(now);
@@ -101,6 +102,32 @@ public class HolidayBusiness {
 			}
 		}
 		return true;
+	}
+	
+	/**
+	 * 获取顺延多少个交易日的时间
+	 * 
+	 * @param date
+	 *            时间
+	 * @param after
+	 *            多少个交易日
+	 * @return 日期
+	 */
+	public Date getAfterTradeDate(Date before, Integer after) {
+		Date date = new Date(before.getTime());
+		while (after > 0) {
+			date.setTime(date.getTime() + 24 * 60 * 60 * 1000);
+			if (isTradeDay(date)) {
+				after--;
+			}
+		}
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
 	}
 
 }

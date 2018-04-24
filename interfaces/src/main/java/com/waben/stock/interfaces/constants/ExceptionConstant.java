@@ -172,7 +172,7 @@ public class ExceptionConstant {
 	public static final String STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "9002";
 	// 自主行权发布人不匹配，不支持该操作
 	public static final String STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION = "9003";
-	// 持仓第二天之后才能申请行权
+	// T+3才能申请行权
 	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
 	// 该只股票暂时没有机构报价，请更换一只股票
 	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
@@ -186,6 +186,8 @@ public class ExceptionConstant {
 	//抽奖活动
 	//抽奖次数不足
 	public static final String INSUFFICIENT_NUMBER_OF_DRAW = "11001";
+	//抽奖次数上限
+	public static final String OVERSTEP_NUMBER_OF_DRAW = "11002";
 	//奖品已空
-	public static final String PRIZE_IS_EMPTY = "11002";
+	public static final String PRIZE_IS_EMPTY = "11003";
 }

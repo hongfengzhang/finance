@@ -37,6 +37,8 @@ public class MessagingController {
 	@ApiOperation(value = "获取消息列表", notes = "type(1:站内消息,2:站外消息)")
 	public Response<PageInfo<MessagingDto>> pages(int page, int size, @RequestParam(defaultValue = "1") int type) {
 		MessagingQuery query = new MessagingQuery();
+		query.setPage(page);
+		query.setSize(size);
 		query.setPublisherId(SecurityUtil.getUserId());
 		if (type == 1) {
 			query.setIsOutside(false);
