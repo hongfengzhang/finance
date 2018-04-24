@@ -129,6 +129,14 @@ public class StockOptionTrade {
 	 */
 	private Date updateTime;
 	/**
+	 * 是否为测试单
+	 */
+	private Boolean isTest;
+	/**
+	 * 是否标记
+	 */
+	private Boolean isMark;
+	/**
 	 * 对应的线下期权交易信息
 	 */
 	@OneToOne
@@ -137,7 +145,7 @@ public class StockOptionTrade {
 
 	/**
 	 * 线下期权交易状态
-	 * */
+	 */
 	@Convert(converter = OfflineStockOptionTradeStateConverter.class)
 	private OfflineStockOptionTradeState status;
 
@@ -348,4 +356,21 @@ public class StockOptionTrade {
 	public void setStatus(OfflineStockOptionTradeState status) {
 		this.status = status;
 	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
+	}
+
+	public Boolean getIsMark() {
+		return isMark;
+	}
+
+	public void setIsMark(Boolean isMark) {
+		this.isMark = isMark;
+	}
+
 }

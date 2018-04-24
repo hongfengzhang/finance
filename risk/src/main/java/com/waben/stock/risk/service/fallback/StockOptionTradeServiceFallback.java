@@ -1,11 +1,13 @@
 package com.waben.stock.risk.service.fallback;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
 import com.waben.stock.risk.service.StockOptionTradeService;
 import org.springframework.stereotype.Component;
 
@@ -70,6 +72,11 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService 
 
     @Override
 	public Response<StockOptionTradeDto> modify(Long id) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionQueryDto query) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
