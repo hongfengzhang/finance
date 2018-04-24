@@ -35,7 +35,7 @@ public class CircularsBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public CircularsDto fetchById(Long id) {
+    public CircularsDto findById(Long id) {
         Response<CircularsDto> response = circularsReference.fetchById(id);
         String code = response.getCode();
         if ("200".equals(code)) {

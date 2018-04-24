@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.dto.stockoption;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -11,24 +14,29 @@ import java.util.TreeSet;
  * @author luomengan
  *
  */
+@ApiModel(value = "StockOptionCycleDto",description = "期权周期对象")
 public class StockOptionCycleDto {
-
+	@ApiModelProperty(value = "周期id")
 	private Long id;
 	/**
 	 * 周期名称
 	 */
+	@ApiModelProperty(value = "周期名称")
 	private String name;
 	/**
 	 * 周期天数
 	 */
+	@ApiModelProperty(value = "周期天数")
 	private Integer cycle;
 	/**
 	 * 周期月数
 	 */
+	@ApiModelProperty(value = "周期月数")
 	private String cycleMonth;
 	/**
 	 * 名义本金集合
 	 */
+	@ApiModelProperty(value = "名义本金集合")
 	private Set<StockOptionAmountDto> amountValues = new HashSet<>();
 
 	public Long getId() {

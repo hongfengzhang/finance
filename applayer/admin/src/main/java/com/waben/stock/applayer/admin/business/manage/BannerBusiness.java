@@ -31,7 +31,7 @@ public class BannerBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public BannerDto fetchById(Long id) {
+    public BannerDto findById(Long id) {
         Response<BannerDto> response = bannerReference.fetchById(id);
         String code = response.getCode();
         if ("200".equals(code)) {

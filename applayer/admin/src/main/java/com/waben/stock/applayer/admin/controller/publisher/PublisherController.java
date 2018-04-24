@@ -17,6 +17,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -42,12 +43,16 @@ public class PublisherController {
 	}
 
 	@PostMapping("/defriend/{id}")
+	@ApiOperation(value = "拉黑")
+	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "会员id", required = true)
 	public Response<PublisherDto> defriend(@PathVariable Long id) {
 		PublisherDto response = business.defriend(id);
 		return new Response<>(response);
 	}
 
 	@PostMapping("/recover/{id}")
+	@ApiOperation(value = "恢复")
+	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "会员id", required = true)
 	public Response<PublisherDto> recover(@PathVariable Long id) {
 		PublisherDto response = business.recover(id);
 		return new Response<>(response);

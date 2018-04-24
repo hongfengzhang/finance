@@ -22,6 +22,7 @@ public class DrawActivityBusiness {
         String code = response.getCode();
         if ("200".equals(code)) {
             response.getResult().setResidueDegree(drawActicity.getResult().getRemaintime());
+            response.getResult().setResidueDegree(drawActicity.getResult().getLuckyDrawCount());
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
