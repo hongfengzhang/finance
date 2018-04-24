@@ -50,7 +50,7 @@ public enum IdGenerator {
 
         String datePrefix = DateFormatUtils.format(timestamp, "yyMMddHHMMssSSS");
 
-        return datePrefix + suffix;
+        return datePrefix + RandomUtil.generateRandomCode(4);
     }
 
     protected long tilNextMillis(long lastTimestamp) {
