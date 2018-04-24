@@ -248,4 +248,17 @@ public class PublisherService {
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
+
+	@Transactional
+    public Publisher defriend(Long id) {
+		Publisher publisher = publisherDao.retrieve(id);
+		publisher.setState(2);
+		return publisherDao.update(publisher);
+	}
+
+	public Publisher recover(Long id) {
+		Publisher publisher = publisherDao.retrieve(id);
+		publisher.setState(1);
+		return publisherDao.update(publisher);
+	}
 }

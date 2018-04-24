@@ -69,4 +69,11 @@ public interface PublisherInterface {
 
 	@RequestMapping(value = "/istest/{test}", method = RequestMethod.GET)
 	Response<List<PublisherDto>> fetchByIsTest(@PathVariable("test") Boolean test);
+
+	@RequestMapping(value = "/defriend/{id}", method = RequestMethod.POST)
+	Response<PublisherDto> defriend(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/recover/{id}", method = RequestMethod.POST)
+	Response<PublisherDto> recover(@PathVariable("id") Long id);
+
 }

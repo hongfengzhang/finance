@@ -4,6 +4,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,8 +28,6 @@ public class StaffBusiness {
 	@Autowired
 	@Qualifier("staffReference")
 	private StaffReference reference;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 
 	public StaffDto fetchByUserName(String username) {
 		Response<StaffDto> response = reference.fetchByUserName(username);
@@ -87,7 +86,7 @@ public class StaffBusiness {
 	}
 
 	public StaffDto save(StaffDto requestDto) {
-		requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+		requestDto.setPassword(PasswordCrypt.crypt(requestDto.getPassword()));
 		Response<StaffDto> response = reference.saveStaff(requestDto);
 		String code = response.getCode();
 		if ("200".equals(code)) {
@@ -100,7 +99,7 @@ public class StaffBusiness {
 
 	public StaffDto modif(StaffDto requestDto) {
 		requestDto.setUpdateTime(new Date());
-		requestDto.setPassword(passwordEncoder.encode(requestDto.getPassword()));
+		requestDto.setPassword(PasswordCrypt.crypt(requestDto.getPassword()));
 		Response<StaffDto> response = reference.saveStaff(requestDto);
 		String code = response.getCode();
 		if ("200".equals(code)) {

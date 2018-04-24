@@ -615,4 +615,18 @@ public class CapitalAccountService {
 				totalElements != null ? totalElements.longValue() : 0);
 	}
 
+	@Transactional
+    public CapitalAccount revisionState(Long id,Integer state) {
+		CapitalAccount capitalAccount = capitalAccountDao.retrieve(id);
+		capitalAccount.setState(state);
+		return capitalAccountDao.update(capitalAccount);
+	}
+
+	@Transactional
+	public CapitalAccount revisionAccount(Long id, BigDecimal availableBalance) {
+		CapitalAccount capitalAccount = capitalAccountDao.retrieve(id);
+		capitalAccount.setAvailableBalance(availableBalance);
+		capitalAccount.setBalance(availableBalance.add(capitalAccount.getFrozenCapital()));
+		return capitalAccountDao.update(capitalAccount);
+	}
 }

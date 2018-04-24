@@ -11,10 +11,10 @@ import java.util.Calendar;
 @Service
 public class UploadBusiness {
 
-    @Value("${fileSystem}")
+//    @Value("${fileSystem}")
     private String fileSystem;
 
-    @Value("${uploadFilePath}")
+//    @Value("${uploadFilePath}")
     private String uploadFilePath;
 
     public String upload(MultipartFile file) throws IllegalStateException, IOException {

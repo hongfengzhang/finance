@@ -102,4 +102,10 @@ public interface CapitalAccountInterface {
 	Response<CapitalAccountDto> optionProfit(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("optionTradeId") Long optionTradeId, @PathVariable("profit") BigDecimal profit);
 
+	@RequestMapping(value = "/state/{id}/{state}", method = RequestMethod.PUT)
+	Response<CapitalAccountDto> modifyState(@PathVariable("id") Long id,@PathVariable("state") Integer state);
+
+	@RequestMapping(value = "/account/{id}/{availableBalance}", method = RequestMethod.PUT)
+	Response<CapitalAccountDto> modifyAccount(@PathVariable("id") Long id,@PathVariable("availableBalance") BigDecimal availableBalance);
+
 }

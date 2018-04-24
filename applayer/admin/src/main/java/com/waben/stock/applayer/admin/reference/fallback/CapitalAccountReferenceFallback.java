@@ -103,6 +103,16 @@ public class CapitalAccountReferenceFallback implements CapitalAccountReference 
 	}
 
 	@Override
+	public Response<CapitalAccountDto> modifyState(Long id, Integer state) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> modifyAccount(Long id, BigDecimal availableBalance) {
+		return null;
+	}
+
+	@Override
 	public Response<CapitalAccountDto> recharge(Long publisherId, BigDecimal amount, Long rechargeId) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

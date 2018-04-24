@@ -97,6 +97,20 @@ public class PublisherController implements PublisherInterface {
 	}
 
 	@Override
+	public Response<PublisherDto> defriend(@PathVariable Long id) {
+		Publisher result = publisherService.defriend(id);
+		PublisherDto publisherDto = CopyBeanUtils.copyBeanProperties(PublisherDto.class, result, false);
+		return new Response<>(publisherDto);
+	}
+
+	@Override
+	public Response<PublisherDto> recover(@PathVariable Long id) {
+		Publisher result = publisherService.recover(id);
+		PublisherDto publisherDto = CopyBeanUtils.copyBeanProperties(PublisherDto.class, result, false);
+		return new Response<>(publisherDto);
+	}
+
+	@Override
 	public Response<PublisherDto> modiyHeadportrait(@PathVariable Long id, String headPortrait) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(PublisherDto.class,
 				publisherService.modiyHeadportrait(id, headPortrait), false));
