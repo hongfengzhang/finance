@@ -178,6 +178,8 @@ public class ExceptionConstant {
 	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
 	// 期权询价结果不存在
 	public static final String INQUIRY_RESULT_NOT_FOUND = "9006";
+	// 非交易日不能申请行权
+	public static final String NONTRADINGDAY_EXCEPTION = "9007";
 
 	// 直播
 	// 无直播频道

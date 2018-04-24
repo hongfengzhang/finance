@@ -80,8 +80,12 @@ public class StockOptionTradeBusiness {
 		StockOptionTradeDto trade = this.findById(id);
 		Date buyingTime = trade.getBuyingTime();
 		// 计算最近的能申请行权的时间，T+3
-		Date date = holidayBusiness.getAfterTradeDate(buyingTime, 3);
 		Date now = new Date();
+		boolean isTradeDay = holidayBusiness.isTradeDay(now);
+		if (!isTradeDay) {
+			throw new ServiceException(ExceptionConstant.NONTRADINGDAY_EXCEPTION);
+		}
+		Date date = holidayBusiness.getAfterTradeDate(buyingTime, 3);
 		// 持仓中的才能申请行权
 		if (trade.getState() == StockOptionTradeState.TURNOVER && now.getTime() > date.getTime()) {
 			Response<StockOptionTradeDto> response = tradeReference.userRight(publisherId, id);
@@ -109,9 +113,13 @@ public class StockOptionTradeBusiness {
 			codes.add(trade.getStockCode());
 			// 判断是否可以申请行权，持仓中的才能申请行权
 			if (trade.getState() == StockOptionTradeState.TURNOVER) {
+				Date now = new Date();
+				boolean isTradeDay = holidayBusiness.isTradeDay(now);
+				if (!isTradeDay) {
+					continue;
+				}
 				// 计算最近的能申请行权的时间，T+3
 				Date date = holidayBusiness.getAfterTradeDate(trade.getBuyingTime(), 3);
-				Date now = new Date();
 				if (now.getTime() > date.getTime()) {
 					trade.setCanBeRight(true);
 				}
