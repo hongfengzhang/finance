@@ -13,16 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/banner")
-@Api("轮播图")
+@Api(description="轮播图")
 public class BannerController {
 
     @Autowired
     private BannerBusiness bannerBusiness;
-
-    @RequestMapping("/index")
-    public String index() {
-        return "manage/banner/index";
-    }
 
     @GetMapping("/pages")
     @ApiImplicitParam(paramType = "query", dataType = "BannerQuery", name = "query", value = "查询对象", required = true)
@@ -32,7 +27,7 @@ public class BannerController {
         return new Response<>(pageInfo);
     }
 
-    @RequestMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "轮播图id", required = true)
     @ApiOperation(value = "轮播图删除")
     public Response<Integer> delete(@PathVariable Long id){
@@ -41,7 +36,7 @@ public class BannerController {
     }
 
 
-    @RequestMapping("/save")
+    @PostMapping("/save")
     @ApiImplicitParam(paramType = "query", dataType = "BannerDto", name = "bannerDto", value = "轮播图对象", required = true)
     @ApiOperation(value = "轮播图添加")
     public Response<BannerDto> add(BannerDto bannerDto){
@@ -49,7 +44,7 @@ public class BannerController {
         return new Response<>(response);
     }
 
-    @RequestMapping("/modify")
+    @PutMapping("/modify")
     @ApiImplicitParam(paramType = "query", dataType = "BannerDto", name = "bannerDto", value = "轮播图对象", required = true)
     @ApiOperation(value = "轮播图修改")
     public Response<BannerDto> modify(BannerDto bannerDto){
