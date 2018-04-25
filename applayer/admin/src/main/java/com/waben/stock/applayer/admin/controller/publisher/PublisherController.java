@@ -2,14 +2,13 @@ package com.waben.stock.applayer.admin.controller.publisher;
 
 import java.util.List;
 
+import com.waben.stock.applayer.admin.security.SecurityUtil;
+import com.waben.stock.interfaces.dto.manage.StaffDto;
+import io.swagger.annotations.ApiImplicitParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.applayer.admin.business.publisher.BindCardBusiness;
 import com.waben.stock.applayer.admin.business.publisher.CapitalAccountBusiness;
@@ -87,6 +86,14 @@ public class PublisherController {
 	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "会员id", required = true)
 	public Response<PublisherDto> recover(@PathVariable Long id) {
 		PublisherDto response = business.recover(id);
+		return new Response<>(response);
+	}
+
+	@PutMapping("/{id}/{password}")
+	@ApiImplicitParams({@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "会员id", required = true),@ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "会员密码", required = true)})
+	@ApiOperation(value = "修改密码")
+	public Response<PublisherDto> password(@PathVariable Long id,@PathVariable String password) {
+		PublisherDto response = business.password(id,password);
 		return new Response<>(response);
 	}
 
