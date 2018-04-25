@@ -62,6 +62,10 @@ public class CapitalFlowService {
 	}
 
 	public Page<CapitalFlowAdminDto> adminPagesByQuery(CapitalFlowAdminQuery query) {
+		String publisherIdCondition = "";
+		if (query.getPublisherId() != null && query.getPublisherId() > 0) {
+			publisherIdCondition = " and t1.publisher_id=" + query.getPublisherId() + " ";
+		}
 		String pulisherPhoneCondition = "";
 		if (query.getPulisherPhone() != null) {
 			pulisherPhoneCondition = " and t5.phone like '%" + query.getPulisherPhone() + "%' ";
@@ -103,10 +107,10 @@ public class CapitalFlowService {
 						+ "LEFT JOIN payment_order t6 on t1.extend_type=4 and t1.extend_id=t6.id "
 						+ "LEFT JOIN withdrawals_order t7 on t1.extend_type=5 and t1.extend_id=t7.id "
 						+ "LEFT JOIN bind_card t8 on t7.bank_card=t8.bank_card "
-						+ "where 1=1 %s %s %s %s %s %s %s group by t1.id order by t1.occurrence_time desc limit "
+						+ "where 1=1 %s %s %s %s %s %s %s %s group by t1.id order by t1.occurrence_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				pulisherPhoneCondition, publisherNameCondition, stockCodeCondition, typeCondition, startTimeCondition,
-				endTimeCondition, paymentTypeCondition);
+				publisherIdCondition, pulisherPhoneCondition, publisherNameCondition, stockCodeCondition, typeCondition,
+				startTimeCondition, endTimeCondition, paymentTypeCondition);
 		String countSql = "select count(*) from (" + sql.substring(0, sql.indexOf("limit")) + ") c";
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
