@@ -5,6 +5,10 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 public class CapitalAccountAdminQuery extends PageAndSortQuery {
 
 	/**
+	 * 用户ID
+	 */
+	private Long publisherId;
+	/**
 	 * 用户姓名
 	 */
 	private String name;
@@ -43,6 +47,14 @@ public class CapitalAccountAdminQuery extends PageAndSortQuery {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 }

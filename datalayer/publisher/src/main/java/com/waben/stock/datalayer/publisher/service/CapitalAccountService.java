@@ -574,6 +574,10 @@ public class CapitalAccountService {
 	}
 
 	public Page<CapitalAccountAdminDto> adminPagesByQuery(CapitalAccountAdminQuery query) {
+		String publisherIdCondition = "";
+		if (query.getPublisherId() != null && query.getPublisherId() > 0) {
+			publisherIdCondition = " and t2.id=" + query.getPublisherId() + " ";
+		}
 		String nameCondition = "";
 		if (query.getName() != null) {
 			nameCondition = " and t3.name like '%" + query.getName() + "%' ";
@@ -589,26 +593,30 @@ public class CapitalAccountService {
 		if (query.getState() != null && query.getState() == 2) {
 			stateCondition = " and t1.state=2 ";
 		}
-		String sql = String
-				.format("select t2.id, t3.name, t2.phone, t1.frozen_capital, t1.available_balance, t1.update_time, t2.create_time, t1.state, IFNULL(t4.recharge, 0), IFNULL(t5.withdraw, 0) from capital_account t1 "
+		String sql = String.format(
+				"select t1.id, t2.id as publisher_id, t2.head_portrait, t3.name, t3.id_card, t2.phone, t1.frozen_capital, t1.available_balance, t1.update_time, t2.create_time, t1.state, IFNULL(t4.recharge, 0), IFNULL(t5.withdraw, 0) from capital_account t1 "
 						+ "LEFT JOIN publisher t2 on t2.id =t1.publisher_id "
 						+ "LEFT JOIN real_name t3 on t3.resource_type=2 and t3.resource_id=t1.publisher_id "
 						+ "LEFT JOIN (select publisher_id, SUM(amount) as recharge from capital_flow where type=1 GROUP BY publisher_id) t4 on t4.publisher_id=t1.publisher_id "
 						+ "LEFT JOIN (select publisher_id, SUM(amount) as withdraw from capital_flow where type=2 GROUP BY publisher_id) t5 on t5.publisher_id=t1.publisher_id "
-						+ "where 1=1 %s %s %s order by t2.create_time desc limit " + query.getPage() * query.getSize()
-						+ "," + query.getSize(), nameCondition, phoneCondition, stateCondition);
+						+ "where 1=1 %s %s %s %s order by t2.create_time desc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				publisherIdCondition, nameCondition, phoneCondition, stateCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
-		setMethodMap.put(new Integer(0), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
-		setMethodMap.put(new Integer(1), new MethodDesc("setName", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(2), new MethodDesc("setPhone", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(3), new MethodDesc("setFrozenCapital", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(4), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(5), new MethodDesc("setUpdateTime", new Class<?>[] { Date.class }));
-		setMethodMap.put(new Integer(6), new MethodDesc("setRegistTime", new Class<?>[] { Date.class }));
-		setMethodMap.put(new Integer(7), new MethodDesc("setState", new Class<?>[] { Integer.class }));
-		setMethodMap.put(new Integer(8), new MethodDesc("setTotalRecharge", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(9), new MethodDesc("setTotalWithdraw", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setHeadPortrait", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setIdCard", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(5), new MethodDesc("setPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(6), new MethodDesc("setFrozenCapital", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setUpdateTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setRegistTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(10), new MethodDesc("setState", new Class<?>[] { Integer.class }));
+		setMethodMap.put(new Integer(11), new MethodDesc("setTotalRecharge", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(12), new MethodDesc("setTotalWithdraw", new Class<?>[] { BigDecimal.class }));
 		List<CapitalAccountAdminDto> content = sqlDao.execute(CapitalAccountAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
@@ -616,7 +624,7 @@ public class CapitalAccountService {
 	}
 
 	@Transactional
-    public CapitalAccount revisionState(Long id,Integer state) {
+	public CapitalAccount revisionState(Long id, Integer state) {
 		CapitalAccount capitalAccount = capitalAccountDao.retrieve(id);
 		capitalAccount.setState(state);
 		return capitalAccountDao.update(capitalAccount);

@@ -1,19 +1,18 @@
-package com.waben.stock.applayer.admin.business;
+package com.waben.stock.applayer.admin.business.publisher;
 
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.admin.reference.CapitalAccountReference;
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
-
-import java.math.BigDecimal;
 
 /**
  * 资金账户 Business
@@ -35,9 +34,8 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-
 	public CapitalAccountDto revisionState(Long id, Integer state) {
-		Response<CapitalAccountDto> response = reference.modifyState(id,state);
+		Response<CapitalAccountDto> response = reference.modifyState(id, state);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -45,7 +43,7 @@ public class CapitalAccountBusiness {
 	}
 
 	public CapitalAccountDto revisionAccount(Long id, BigDecimal availableBalance) {
-		Response<CapitalAccountDto> response = reference.modifyAccount(id,availableBalance);
+		Response<CapitalAccountDto> response = reference.modifyAccount(id, availableBalance);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

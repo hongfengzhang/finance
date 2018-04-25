@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.admin.business;
+package com.waben.stock.applayer.admin.business.stockoption;
 
 
 import com.waben.stock.applayer.admin.reference.StockOptionCycleReference;

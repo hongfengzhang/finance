@@ -5,14 +5,23 @@ import java.util.Date;
 
 public class CapitalAccountAdminDto {
 
+	private Long id;
 	/**
 	 * 用户id
 	 */
 	private Long publisherId;
 	/**
+	 * 头像
+	 */
+	private String headPortrait;
+	/**
 	 * 用户姓名
 	 */
 	private String name;
+	/**
+	 * 身份证号
+	 */
+	private String idCard;
 	/**
 	 * 手机号码
 	 */
@@ -128,6 +137,30 @@ public class CapitalAccountAdminDto {
 
 	public void setRegistTime(Date registTime) {
 		this.registTime = registTime;
+	}
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getHeadPortrait() {
+		return headPortrait;
+	}
+
+	public void setHeadPortrait(String headPortrait) {
+		this.headPortrait = headPortrait;
+	}
+
+	public String getIdCard() {
+		return idCard;
+	}
+
+	public void setIdCard(String idCard) {
+		this.idCard = idCard;
 	}
 
 }

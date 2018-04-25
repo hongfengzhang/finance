@@ -87,19 +87,27 @@ public class CapitalFlowService {
 		if (query.getEndTime() != null) {
 			endTimeCondition = " and t1.occurrence_time<'" + sdf.format(query.getEndTime()) + "' ";
 		}
+		String paymentTypeCondition = "";
+		if (query.getPaymentType() != null && query.getPaymentType() > 0) {
+			paymentTypeCondition = " and t6.type=" + query.getPaymentType() + " ";
+		}
+
 		String sql = String.format(
 				"select t1.id, t1.amount, t1.flow_no, t1.occurrence_time, t1.publisher_id, t5.phone, t1.remark, t1.type, t4.name, "
 						+ "t2.stock_code as b_stock_code, t2.stock_name as b_stock_name, "
-						+ "t3.stock_code as s_stock_code, t3.stock_name as s_stock_name from capital_flow t1 "
+						+ "t3.stock_code as s_stock_code, t3.stock_name as s_stock_name, t6.type as payment_type, t7.bank_card, t8.bank_name from capital_flow t1 "
 						+ "LEFT JOIN buy_record t2 on t1.extend_type=1 and t1.extend_id=t2.id "
 						+ "LEFT JOIN stock_option_trade t3 on t1.extend_type=3 and t1.extend_id=t3.id "
 						+ "LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
 						+ "LEFT JOIN publisher t5 on t5.id=t1.publisher_id "
-						+ "where 1=1 %s %s %s %s %s %s order by t1.occurrence_time desc limit "
+						+ "LEFT JOIN payment_order t6 on t1.extend_type=4 and t1.extend_id=t6.id "
+						+ "LEFT JOIN withdrawals_order t7 on t1.extend_type=5 and t1.extend_id=t7.id "
+						+ "LEFT JOIN bind_card t8 on t7.bank_card=t8.bank_card "
+						+ "where 1=1 %s %s %s %s %s %s %s group by t1.id order by t1.occurrence_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
 				pulisherPhoneCondition, publisherNameCondition, stockCodeCondition, typeCondition, startTimeCondition,
-				endTimeCondition);
-		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
+				endTimeCondition, paymentTypeCondition);
+		String countSql = "select count(*) from (" + sql.substring(0, sql.indexOf("limit")) + ") c";
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setAmount", new Class<?>[] { BigDecimal.class }));
@@ -114,6 +122,9 @@ public class CapitalFlowService {
 		setMethodMap.put(new Integer(10), new MethodDesc("setbStockName", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(11), new MethodDesc("setsStockCode", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(12), new MethodDesc("setsStockName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(13), new MethodDesc("setPaymentType", new Class<?>[] { Integer.class }));
+		setMethodMap.put(new Integer(14), new MethodDesc("setBankCard", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(15), new MethodDesc("setBankName", new Class<?>[] { String.class }));
 		List<CapitalFlowAdminDto> content = sqlDao.execute(CapitalFlowAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),

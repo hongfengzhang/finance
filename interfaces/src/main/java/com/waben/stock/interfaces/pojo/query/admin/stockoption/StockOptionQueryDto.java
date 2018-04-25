@@ -30,11 +30,11 @@ public class StockOptionQueryDto extends PageAndSortQuery {
 	/**
 	 * 周期名称
 	 */
-	private String cycleName;
+	private String cycleId;
 	/**
-	 * 交易状态
+	 * 交易状态，多个交易状态使用,号分割
 	 */
-	private Integer state;
+	private String state;
 	/**
 	 * 是否为测试单
 	 */
@@ -94,19 +94,19 @@ public class StockOptionQueryDto extends PageAndSortQuery {
 		this.nominalAmount = nominalAmount;
 	}
 
-	public String getCycleName() {
-		return cycleName;
+	public String getCycleId() {
+		return cycleId;
 	}
 
-	public void setCycleName(String cycleName) {
-		this.cycleName = cycleName;
+	public void setCycleId(String cycleId) {
+		this.cycleId = cycleId;
 	}
 
-	public Integer getState() {
+	public String getState() {
 		return state;
 	}
 
-	public void setState(Integer state) {
+	public void setState(String state) {
 		this.state = state;
 	}
 

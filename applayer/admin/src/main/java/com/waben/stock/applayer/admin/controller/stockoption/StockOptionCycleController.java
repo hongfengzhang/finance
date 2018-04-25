@@ -1,16 +1,18 @@
-package com.waben.stock.applayer.admin.controller;
+package com.waben.stock.applayer.admin.controller.stockoption;
 
-import com.waben.stock.applayer.admin.business.StockOptionCycleBusiness;
-import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
-import com.waben.stock.interfaces.pojo.Response;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.waben.stock.applayer.admin.business.stockoption.StockOptionCycleBusiness;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
+import com.waben.stock.interfaces.pojo.Response;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/stockoptioncycle")

@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.admin.controller;
+package com.waben.stock.applayer.admin.controller.publisher;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.applayer.admin.business.CapitalFlowBusiness;
+import com.waben.stock.applayer.admin.business.publisher.CapitalFlowBusiness;
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;

@@ -39,7 +39,7 @@ import com.waben.stock.interfaces.util.JacksonUtil;
  * @author luomengan
  *
  */
-@Component
+// @Component
 public class RetriveStockOptionQuoteSchedule {
 
 	/**

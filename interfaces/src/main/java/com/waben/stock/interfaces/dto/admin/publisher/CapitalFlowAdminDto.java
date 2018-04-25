@@ -39,6 +39,18 @@ public class CapitalFlowAdminDto extends CapitalFlowDto {
 	 * 股票名称（期权交易）
 	 */
 	private String sStockName;
+	/**
+	 * 充值方式
+	 */
+	private Integer paymentType;
+	/**
+	 * 银行卡号
+	 */
+	private String bankCard;
+	/**
+	 * 银行名称
+	 */
+	private String bankName;
 
 	public String getPublisherName() {
 		return publisherName;
@@ -108,6 +120,30 @@ public class CapitalFlowAdminDto extends CapitalFlowDto {
 
 	public void setsStockName(String sStockName) {
 		this.sStockName = sStockName;
+	}
+
+	public Integer getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(Integer paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public String getBankCard() {
+		return bankCard;
+	}
+
+	public void setBankCard(String bankCard) {
+		this.bankCard = bankCard;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
 	}
 
 }

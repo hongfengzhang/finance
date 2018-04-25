@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 
 public interface StockOptionOrgInterface {
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    Response<List<StockOptionOrgDto>> lists();
+
+	@RequestMapping(value = "/", method = RequestMethod.GET)
+	Response<List<StockOptionOrgDto>> lists();
+
 }

@@ -13,6 +13,7 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -85,6 +86,22 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 
 	@Override
 	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionQueryDto query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> turnover(Long id, Long orgId, BigDecimal orgRightMoneyRatio,
+			BigDecimal buyingPrice) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> mark(Long id, Boolean isMark) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> settlement(Long id, BigDecimal sellingPrice) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

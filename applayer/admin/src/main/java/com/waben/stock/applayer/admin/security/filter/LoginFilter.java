@@ -1,4 +1,4 @@
-package com.waben.stock.applayer.admin.security;
+package com.waben.stock.applayer.admin.security.filter;
 
 import java.io.IOException;
 
@@ -15,6 +15,8 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.waben.stock.applayer.admin.security.CustomUserDetails;
+import com.waben.stock.applayer.admin.security.CustomUsernamePassword;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.pojo.Response;
@@ -44,9 +46,10 @@ public class LoginFilter extends AbstractAuthenticationProcessingFilter {
 	@Override
 	protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
 			Authentication auth) throws IOException, ServletException {
-		logger.info("sessionid:" + req.getSession().getId());
 		CustomUserDetails customUserDetails = (CustomUserDetails) auth.getPrincipal();
 		customUserDetails.setPassword(null);
+		String token = JwtTokenUtil.generateToken(customUserDetails);
+		customUserDetails.setToken(token);
 		res.setContentType("application/json;charset=utf-8");
 		res.setStatus(HttpServletResponse.SC_OK);
 		res.getWriter().println(JacksonUtil.encode(new Response<>(customUserDetails)));

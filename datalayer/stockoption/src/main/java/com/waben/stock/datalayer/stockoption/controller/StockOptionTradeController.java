@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.stockoption.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -145,6 +146,13 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
+	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionQueryDto query) {
+		Page<StockOptionAdminDto> page = stockOptionTradeService.adminPagesByQuery(query);
+		PageInfo<StockOptionAdminDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionAdminDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
 	public Response<StockOptionTradeDto> userRight(@PathVariable Long publisherId, @PathVariable Long id) {
 		logger.info("发布人{}申请行权期权交易{}!", publisherId, id);
 		StockOptionTrade trade = stockOptionTradeService.userRight(publisherId, id);
@@ -152,10 +160,25 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionQueryDto query) {
-		Page<StockOptionAdminDto> page = stockOptionTradeService.adminPagesByQuery(query);
-		PageInfo<StockOptionAdminDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionAdminDto.class);
-		return new Response<>(result);
+	public Response<StockOptionTradeDto> turnover(@PathVariable Long id, @PathVariable Long orgid,
+			BigDecimal orgRightMoneyRatio, BigDecimal buyingPrice) {
+		logger.info("正式成交权期权交易{}_{}，机构权利金比例{}!", id, buyingPrice, orgRightMoneyRatio);
+		StockOptionTrade trade = stockOptionTradeService.turnover(id, orgid, orgRightMoneyRatio, buyingPrice);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> mark(@PathVariable Long id, Boolean isMark) {
+		logger.info("标记权期权交易{}_{}!", id, isMark);
+		StockOptionTrade trade = stockOptionTradeService.mark(id, isMark);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> settlement(@PathVariable Long id, BigDecimal sellingPrice) {
+		logger.info("结算权期权交易{}_{}!", id, sellingPrice);
+		StockOptionTrade trade = stockOptionTradeService.settlement(id, sellingPrice);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
 	}
 
 }

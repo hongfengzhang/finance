@@ -13,6 +13,7 @@ public class CustomUserDetails implements UserDetails {
 	private String nickname;
 	private String username;
 	private String password;
+	private String token;
 	private Collection<? extends GrantedAuthority> authorities;
 
 	public CustomUserDetails(Long userId, String nickname, String username, String password,
@@ -88,6 +89,14 @@ public class CustomUserDetails implements UserDetails {
 
 	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
 		this.authorities = authorities;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 
 }

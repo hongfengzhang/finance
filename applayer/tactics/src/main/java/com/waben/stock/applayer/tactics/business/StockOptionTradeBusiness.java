@@ -1,6 +1,5 @@
 package com.waben.stock.applayer.tactics.business;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -40,8 +39,6 @@ public class StockOptionTradeBusiness {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -51,6 +48,9 @@ public class StockOptionTradeBusiness {
 
 	@Autowired
 	private AnalogDataBusiness analogDataBusiness;
+
+	@Autowired
+	private HolidayBusiness holidayBusiness;
 
 	public StockOptionTradeDto add(StockOptionTradeDto stockOptionTradeDto) {
 		Response<StockOptionTradeDto> response = tradeReference.add(stockOptionTradeDto);
@@ -78,9 +78,16 @@ public class StockOptionTradeBusiness {
 
 	public StockOptionTradeDto userRight(Long publisherId, Long id) {
 		StockOptionTradeDto trade = this.findById(id);
+		Date buyingTime = trade.getBuyingTime();
+		// 计算最近的能申请行权的时间，T+3
+		Date now = new Date();
+		boolean isTradeDay = holidayBusiness.isTradeDay(now);
+		if (!isTradeDay) {
+			throw new ServiceException(ExceptionConstant.NONTRADINGDAY_EXCEPTION);
+		}
+		Date date = holidayBusiness.getAfterTradeDate(buyingTime, 3);
 		// 持仓中的才能申请行权
-		if (trade.getState() == StockOptionTradeState.TURNOVER && trade.getBuyingTime() != null
-				&& !sdf.format(new Date()).equals(sdf.format(trade.getBuyingTime()))) {
+		if (trade.getState() == StockOptionTradeState.TURNOVER && now.getTime() > date.getTime()) {
 			Response<StockOptionTradeDto> response = tradeReference.userRight(publisherId, id);
 			if ("200".equals(response.getCode())) {
 				return response.getResult();
@@ -104,6 +111,19 @@ public class StockOptionTradeBusiness {
 		List<String> codes = new ArrayList<>();
 		for (StockOptionTradeWithMarketDto trade : result) {
 			codes.add(trade.getStockCode());
+			// 判断是否可以申请行权，持仓中的才能申请行权
+			if (trade.getState() == StockOptionTradeState.TURNOVER) {
+				Date now = new Date();
+				boolean isTradeDay = holidayBusiness.isTradeDay(now);
+				if (!isTradeDay) {
+					continue;
+				}
+				// 计算最近的能申请行权的时间，T+3
+				Date date = holidayBusiness.getAfterTradeDate(trade.getBuyingTime(), 3);
+				if (now.getTime() > date.getTime()) {
+					trade.setCanBeRight(true);
+				}
+			}
 		}
 		if (codes.size() > 0) {
 			List<StockMarket> stockMarketList = RetriveStockOverHttp.listStockMarket(restTemplate, codes);

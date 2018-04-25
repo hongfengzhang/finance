@@ -1,21 +1,20 @@
 package com.waben.stock.applayer.admin.business.manage;
 
-import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.exception.NetflixCircuitException;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.StaffQuery;
-import com.waben.stock.interfaces.util.PasswordCrypt;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.admin.reference.StaffReference;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-
-import java.util.Date;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.StaffQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 /**
  * 后台管理用户 Business
