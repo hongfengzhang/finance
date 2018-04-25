@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.manage.StaffVo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -27,6 +28,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/staff")
+@Api(description="员工")
 public class StaffController {
 
     Logger logger = LoggerFactory.getLogger(getClass());
@@ -35,12 +37,7 @@ public class StaffController {
     @Autowired
     private StaffBusiness staffBusiness;
 
-    @RequestMapping("/index")
-    public String user() {
-        return "manage/staff/index";
-    }
-
-    @RequestMapping("/pages")
+    @GetMapping("/pages")
     @ApiImplicitParam(paramType = "query", dataType = "StaffQuery", name = "query", value = "查询对象", required = true)
     @ApiOperation(value = "员工分页")
     public Response<PageInfo<StaffDto>> pages(StaffQuery query) {
@@ -48,7 +45,7 @@ public class StaffController {
         return new Response<>(response);
     }
 
-    @RequestMapping("/modify")
+    @PutMapping("/modify")
     @ApiImplicitParam(paramType = "query", dataType = "StaffDto", name = "query", value = "员工对象", required = true)
     @ApiOperation(value = "修改员工")
     public Response<Integer> modify(StaffDto staffDto){
@@ -56,7 +53,7 @@ public class StaffController {
         return new Response<>(result);
     }
 
-    @RequestMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "员工id", required = true)
     @ApiOperation(value = "删除员工")
     public Response<Integer> delete(Long id){
@@ -64,7 +61,7 @@ public class StaffController {
         return new Response<>(1);
     }
 
-    @RequestMapping("/save")
+    @PostMapping("/save")
     @ApiImplicitParam(paramType = "query", dataType = "StaffDto", name = "query", value = "员工对象", required = true)
     @ApiOperation(value = "添加员工")
     public Response<StaffDto> add(StaffDto staffDto){
@@ -72,7 +69,7 @@ public class StaffController {
         return new Response<>(response);
     }
 
-    @PostMapping("/password/{password}")
+    @PutMapping("/password/{password}")
     @ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "员工密码", required = true)
     @ApiOperation(value = "修改密码")
     public Response<StaffDto> password(@PathVariable String password) {

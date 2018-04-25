@@ -17,16 +17,11 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/circulars")
-@Api("公告")
+@Api(description="公告")
 public class CircularsController {
 
     @Autowired
     private CircularsBusiness circularsBusiness;
-
-    @RequestMapping("/index")
-    public String stock() {
-        return "manage/circulars/index";
-    }
 
     @GetMapping("/pages")
     @ApiImplicitParam(paramType = "query", dataType = "CircularsQuery", name = "query", value = "查询对象", required = true)
@@ -36,7 +31,7 @@ public class CircularsController {
         return new Response<>(response);
     }
 
-    @RequestMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "公告id", required = true)
     @ApiOperation(value = "公告删除")
     public Response<Integer> delete(@PathVariable Long id){
@@ -45,7 +40,7 @@ public class CircularsController {
     }
 
 
-    @RequestMapping("/modify")
+    @PutMapping("/modify")
     @ApiImplicitParam(paramType = "query", dataType = "CircularsDto", name = "circularsDto", value = "公告对象", required = true)
     @ApiOperation(value = "公告修改")
     public Response<Integer> modify(CircularsDto circularsDto){
@@ -53,7 +48,7 @@ public class CircularsController {
         return new Response<>(result);
     }
 
-    @RequestMapping("/save")
+    @PostMapping("/save")
     @ApiImplicitParam(paramType = "query", dataType = "CircularsDto", name = "circularsDto", value = "公告对象", required = true)
     @ApiOperation(value = "公告添加")
     public Response<CircularsDto> add(CircularsDto circularsDto){
