@@ -8,6 +8,10 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 public class CapitalFlowAdminQuery extends PageAndSortQuery {
 
 	/**
+	 * 客户ID
+	 */
+	private Long publisherId;
+	/**
 	 * 客户手机号
 	 */
 	private String pulisherPhone;
@@ -95,6 +99,14 @@ public class CapitalFlowAdminQuery extends PageAndSortQuery {
 
 	public void setPaymentType(Integer paymentType) {
 		this.paymentType = paymentType;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 }
