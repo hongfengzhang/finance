@@ -61,10 +61,11 @@ public class CircularsController implements CircularsInterface {
     }
 
     @Override
-    public Response<Integer> modify(@RequestBody CircularsDto circularsDto) {
+    public Response<CircularsDto> modify(@RequestBody CircularsDto circularsDto) {
         Circulars circulars = CopyBeanUtils.copyBeanProperties(Circulars.class, circularsDto, false);
-        int result = circularsService.revision(circulars);
-        return new Response<>(result);
+        Circulars result = circularsService.revision(circulars);
+        CircularsDto response = CopyBeanUtils.copyBeanProperties(CircularsDto.class, result, false);
+        return new Response<>(response);
     }
 
     @Override

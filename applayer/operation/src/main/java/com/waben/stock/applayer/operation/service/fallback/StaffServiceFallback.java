@@ -40,7 +40,7 @@ public class StaffServiceFallback implements StaffService {
     }
 
     @Override
-    public Response<Integer> modify(StaffDto staffDto) {
+    public Response<StaffDto> modify(StaffDto staffDto) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

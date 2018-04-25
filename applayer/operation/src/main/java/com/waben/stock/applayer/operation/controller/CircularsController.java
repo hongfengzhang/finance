@@ -65,9 +65,9 @@ public class CircularsController {
 
     @RequestMapping("/modify")
     @ResponseBody
-    public Response<Integer> modify(CircularsVo vo){
+    public Response<CircularsDto> modify(CircularsVo vo){
         CircularsDto requestDto = CopyBeanUtils.copyBeanProperties(CircularsDto.class, vo, false);
-        Integer result = circularsBusiness.revision(requestDto);
+        CircularsDto result = circularsBusiness.revision(requestDto);
         return new Response<>(result);
     }
 

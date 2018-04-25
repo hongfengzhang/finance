@@ -72,9 +72,9 @@ public class StaffController {
 
     @RequestMapping("/modify")
     @ResponseBody
-    public Response<Integer> modify(StaffVo vo){
+    public Response<StaffDto> modify(StaffVo vo){
         StaffDto requestDto = CopyBeanUtils.copyBeanProperties(StaffDto.class, vo, false);
-        Integer result = staffBusiness.revision(requestDto);
+        StaffDto result = staffBusiness.revision(requestDto);
         return new Response<>(result);
     }
 

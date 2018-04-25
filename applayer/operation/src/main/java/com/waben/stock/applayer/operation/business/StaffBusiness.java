@@ -69,8 +69,8 @@ public class StaffBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public Integer revision(StaffDto requestDto) {
-        Response<Integer> response = staffService.modify(requestDto);
+    public StaffDto revision(StaffDto requestDto) {
+        Response<StaffDto> response = staffService.modify(requestDto);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();

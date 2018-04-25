@@ -43,8 +43,8 @@ public class CircularsController {
     @PutMapping("/modify")
     @ApiImplicitParam(paramType = "query", dataType = "CircularsDto", name = "circularsDto", value = "公告对象", required = true)
     @ApiOperation(value = "公告修改")
-    public Response<Integer> modify(CircularsDto circularsDto){
-        Integer result = circularsBusiness.revision(circularsDto);
+    public Response<CircularsDto> modify(CircularsDto circularsDto){
+        CircularsDto result = circularsBusiness.revision(circularsDto);
         return new Response<>(result);
     }
 

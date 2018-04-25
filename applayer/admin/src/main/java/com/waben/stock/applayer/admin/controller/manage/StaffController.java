@@ -48,8 +48,8 @@ public class StaffController {
     @PutMapping("/modify")
     @ApiImplicitParam(paramType = "query", dataType = "StaffDto", name = "query", value = "员工对象", required = true)
     @ApiOperation(value = "修改员工")
-    public Response<Integer> modify(StaffDto staffDto){
-        Integer result = staffBusiness.revision(staffDto);
+    public Response<StaffDto> modify(StaffDto staffDto){
+        StaffDto result = staffBusiness.revision(staffDto);
         return new Response<>(result);
     }
 

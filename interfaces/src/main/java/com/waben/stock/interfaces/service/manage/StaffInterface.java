@@ -31,7 +31,7 @@ public interface StaffInterface {
     Response<StaffDto> fetchById(@PathVariable("id") Long id);
 
     @RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-    Response<Integer> modify(@RequestBody StaffDto staffDto);
+    Response<StaffDto> modify(@RequestBody StaffDto staffDto);
 
     @RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
     void delete(@PathVariable("id") Long id);

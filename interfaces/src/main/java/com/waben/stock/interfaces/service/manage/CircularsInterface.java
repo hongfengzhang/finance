@@ -22,7 +22,7 @@ public interface CircularsInterface {
 	Response<CircularsDto> fetchById(@PathVariable("id") Long id);
 
 	@RequestMapping(value = "/modify", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<Integer> modify(@RequestBody CircularsDto circularsDto);
+	Response<CircularsDto> modify(@RequestBody CircularsDto circularsDto);
 
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	void delete(@PathVariable("id") Long id);

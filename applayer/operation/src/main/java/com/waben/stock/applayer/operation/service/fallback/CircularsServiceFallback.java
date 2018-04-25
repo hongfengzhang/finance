@@ -34,7 +34,7 @@ public class CircularsServiceFallback implements CircularsService {
     }
 
     @Override
-    public Response<Integer> modify(CircularsDto circularsDto) {
+    public Response<CircularsDto> modify(CircularsDto circularsDto) {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 

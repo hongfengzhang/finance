@@ -36,7 +36,7 @@ public class CircularsReferenceFallback implements CircularsReference {
 	}
 
 	@Override
-	public Response<Integer> modify(CircularsDto circularsDto) {
+	public Response<CircularsDto> modify(CircularsDto circularsDto) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

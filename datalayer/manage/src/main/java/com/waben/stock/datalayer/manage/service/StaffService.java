@@ -84,8 +84,8 @@ public class StaffService {
         return staffDao.retrieve(id);
     }
 
-    public Integer revision(Staff staff) {
-        return staffDao.updateById(staff.getId(),staff.getUserName(),staff.getState());
+    public Staff revision(Staff staff) {
+        return staffDao.create(staff);
     }
 
     public void delete(Long id) {

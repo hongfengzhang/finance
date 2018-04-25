@@ -34,7 +34,7 @@ public class StaffReferenceFallback implements StaffReference {
 	}
 
 	@Override
-	public Response<Integer> modify(StaffDto staffDto) {
+	public Response<StaffDto> modify(StaffDto staffDto) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

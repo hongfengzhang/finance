@@ -52,8 +52,8 @@ public class CircularsBusiness {
         circularsService.delete(id);
     }
 
-    public Integer revision(CircularsDto requestDto) {
-        Response<Integer> response = circularsService.modify(requestDto);
+    public CircularsDto revision(CircularsDto requestDto) {
+        Response<CircularsDto> response = circularsService.modify(requestDto);
         String code = response.getCode();
         if ("200".equals(code)) {
             return response.getResult();
