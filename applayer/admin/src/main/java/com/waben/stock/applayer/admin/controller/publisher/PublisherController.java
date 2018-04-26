@@ -97,4 +97,12 @@ public class PublisherController {
 		return new Response<>(response);
 	}
 
+
+	@GetMapping("/{id}")
+	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "会员id", required = true)
+	@ApiOperation(value = "通过会员id获取会员")
+	public Response<PublisherDto> fetchById(@PathVariable Long id) {
+		PublisherDto respone = business.findById(id);
+		return new Response<>(respone);
+	}
 }

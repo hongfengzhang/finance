@@ -2,6 +2,7 @@ package com.waben.stock.applayer.admin.controller.manage;
 
 import com.waben.stock.applayer.admin.business.manage.RoleBusiness;
 import com.waben.stock.applayer.admin.business.manage.StaffBusiness;
+import com.waben.stock.applayer.admin.security.CustomUserDetails;
 import com.waben.stock.applayer.admin.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
@@ -9,6 +10,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 import com.waben.stock.interfaces.vo.manage.StaffVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -73,10 +75,23 @@ public class StaffController {
     @ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "员工密码", required = true)
     @ApiOperation(value = "修改密码")
     public Response<StaffDto> password(@PathVariable String password) {
-       StaffDto staffDto = (StaffDto) SecurityUtil.getUserDetails().getAuthorities();
-       staffDto.setPassword(password);
-       staffBusiness.modif(staffDto);
-       return new Response<>(staffDto);
+        CustomUserDetails userDetails = SecurityUtil.getUserDetails();
+        StaffDto staffDto = staffBusiness.findById(userDetails.getUserId());
+        staffDto.setPassword(password);
+        staffBusiness.modif(staffDto);
+        return new Response<>(staffDto);
+    }
+
+    @PutMapping("/{password}")
+    @ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "员工密码", required = true)
+    @ApiOperation(value = "校验原密码")
+    public Response<Boolean> checkPassword(@PathVariable String password) {
+        CustomUserDetails userDetails = SecurityUtil.getUserDetails();
+        Boolean flag = false;
+        if(userDetails.getPassword().equals(PasswordCrypt.crypt(password))) {
+            flag = true;
+        }
+        return new Response<>(flag);
     }
 
     @GetMapping("/{id}")

@@ -42,7 +42,7 @@ public class PublisherBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public PublisherDto fingById(Long id) {
+	public PublisherDto findById(Long id) {
 		Response<PublisherDto> response = reference.fetchById(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
