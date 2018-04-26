@@ -17,29 +17,33 @@ import com.waben.stock.datalayer.stockcontent.repository.StockExponentDao;
 @Service
 public class StockExponentService {
 
-    @Autowired
-    private StockExponentDao stockExponentDao;
+	@Autowired
+	private StockExponentDao stockExponentDao;
 
-    public List<StockExponent> findStockExponts() {
-        return stockExponentDao.list();
-    }
+	public List<StockExponent> findStockExponts() {
+		return stockExponentDao.list();
+	}
 
-    public StockExponent findStockExponent(String exponeneCode) {
-        StockExponent exponent = stockExponentDao.retrieveWithExponeneCode(exponeneCode);
-    	StringBuilder str = new StringBuilder();
-    	Set<Stock> stocks = exponent.getStocks();
-    	
-    	int i = 0;
-    	for(Stock stock : stocks) {
-    		str.append(stock.getCode()+",");
-    		i++;
-    		if(i == 500 || i == 1000) {
-    			System.out.println("stockStr:" + str.toString() + ":stockStr");
-    			str = new StringBuilder();
-    		}
-    	}
-    	System.out.println("stockStr:" + str.toString() + ":stockStr");
-    	return exponent;
-    }
-    
+	public StockExponent findStockExponentOnly(String exponeneCode) {
+		return stockExponentDao.retrieveWithExponeneCode(exponeneCode);
+	}
+
+	public StockExponent findStockExponent(String exponeneCode) {
+		StockExponent exponent = stockExponentDao.retrieveWithExponeneCode(exponeneCode);
+		StringBuilder str = new StringBuilder();
+		Set<Stock> stocks = exponent.getStocks();
+
+		int i = 0;
+		for (Stock stock : stocks) {
+			str.append(stock.getCode() + ",");
+			i++;
+			if (i == 500 || i == 1000) {
+				System.out.println("stockStr:" + str.toString() + ":stockStr");
+				str = new StringBuilder();
+			}
+		}
+		System.out.println("stockStr:" + str.toString() + ":stockStr");
+		return exponent;
+	}
+
 }

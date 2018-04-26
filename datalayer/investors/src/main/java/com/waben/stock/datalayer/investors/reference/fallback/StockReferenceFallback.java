@@ -32,7 +32,8 @@ public class StockReferenceFallback implements StockReference {
 
 	@Override
 	public Response<Integer> modify(StockDto stockDto) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);	}
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
 	@Override
 	public void delete(Long id) {
@@ -43,4 +44,15 @@ public class StockReferenceFallback implements StockReference {
 	public Response<StockDto> add(StockDto requestDto) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<StockDto> downline(String code, String stockOptionBlackRemark) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockDto> online(String code) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

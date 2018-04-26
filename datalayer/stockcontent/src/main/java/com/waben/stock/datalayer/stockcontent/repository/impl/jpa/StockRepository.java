@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 股票 Jpa
@@ -26,4 +26,7 @@ public interface StockRepository extends CustomJpaRepository<Stock, Long> {
 	@Query(value="update stock set status=?1, name=?2, code=?3 where id=?4",nativeQuery = true)
 	Integer revisionById(Boolean status, String name, String code, Long id);
 
+	@Query(value = "select t.* from stock t where t.exponent=?1", nativeQuery = true)
+	List<Stock> findByExponentCode(String exponentCode);
+	
 }

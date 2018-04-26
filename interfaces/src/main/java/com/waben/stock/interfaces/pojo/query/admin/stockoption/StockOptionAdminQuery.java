@@ -6,7 +6,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
-public class StockOptionQueryDto extends PageAndSortQuery {
+public class StockOptionAdminQuery extends PageAndSortQuery {
 
 	/**
 	 * 发布人姓名

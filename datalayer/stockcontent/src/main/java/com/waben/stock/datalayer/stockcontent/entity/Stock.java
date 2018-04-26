@@ -30,10 +30,25 @@ public class Stock {
 	@Column
 	private String abbr;
 	/**
-	 * 股票状态(可买可卖状态 非开始闭市状态)
+	 * 股票状态
+	 * <p>
+	 * 是否停牌，非开始闭市状态
+	 * </p>
 	 */
 	@Column
 	private Boolean status;
+	/**
+	 * 期权交易状态
+	 * <ul>
+	 * <li>1正常，因为该字段为新加的字段，所以数据为空的情况也是表示正常状态</li>
+	 * <li>2黑名单，不能正常交易</li>
+	 * </ul>
+	 */
+	private Integer stockOptionState;
+	/**
+	 * 将该股票加入期权黑名单的备注
+	 */
+	private String stockOptionBlackRemark;
 	/**
 	 * 所属交易指数
 	 */
@@ -87,6 +102,22 @@ public class Stock {
 
 	public void setAbbr(String abbr) {
 		this.abbr = abbr;
+	}
+
+	public Integer getStockOptionState() {
+		return stockOptionState;
+	}
+
+	public void setStockOptionState(Integer stockOptionState) {
+		this.stockOptionState = stockOptionState;
+	}
+
+	public String getStockOptionBlackRemark() {
+		return stockOptionBlackRemark;
+	}
+
+	public void setStockOptionBlackRemark(String stockOptionBlackRemark) {
+		this.stockOptionBlackRemark = stockOptionBlackRemark;
 	}
 
 }

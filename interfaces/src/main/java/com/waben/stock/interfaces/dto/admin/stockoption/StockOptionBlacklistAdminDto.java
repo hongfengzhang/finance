@@ -1,14 +1,6 @@
-package com.waben.stock.interfaces.dto.stockcontent;
+package com.waben.stock.interfaces.dto.admin.stockoption;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
-/**
- * 股票
- *
- * @author luomengan
- */
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class StockDto {
+public class StockOptionBlacklistAdminDto {
 
 	private Long id;
 	/**
@@ -24,7 +16,10 @@ public class StockDto {
 	 */
 	private String abbr;
 	/**
-	 * 股票状态(可买可卖状态 非开始闭市状态)
+	 * 股票状态
+	 * <p>
+	 * 是否停牌，非开始闭市状态
+	 * </p>
 	 */
 	private Boolean status;
 	/**
@@ -39,8 +34,6 @@ public class StockDto {
 	 * 将该股票加入期权黑名单的备注
 	 */
 	private String stockOptionBlackRemark;
-
-	private StockExponentDto exponent;
 
 	public Long getId() {
 		return id;
@@ -66,32 +59,20 @@ public class StockDto {
 		this.code = code;
 	}
 
-	public Boolean getStatus() {
-		return status;
-	}
-
-	public void setStatus(Boolean status) {
-		this.status = status;
-	}
-
-	public StockExponentDto getExponent() {
-		return exponent;
-	}
-
-	public void setExponent(StockExponentDto exponent) {
-		this.exponent = exponent;
-	}
-
-	public void setStockExponent(StockExponentDto stockExponent) {
-		this.exponent = stockExponent;
-	}
-
 	public String getAbbr() {
 		return abbr;
 	}
 
 	public void setAbbr(String abbr) {
 		this.abbr = abbr;
+	}
+
+	public Boolean getStatus() {
+		return status;
+	}
+
+	public void setStatus(Boolean status) {
+		this.status = status;
 	}
 
 	public Integer getStockOptionState() {

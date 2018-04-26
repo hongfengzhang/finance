@@ -11,12 +11,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
-import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 
 public interface StockOptionTradeInterface {
 
@@ -38,7 +43,7 @@ public interface StockOptionTradeInterface {
 	 * @return 期权交易分页数据
 	 */
 	@RequestMapping(value = "/adminpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionQueryDto query);
+	Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionAdminQuery query);
 
 	/**
 	 * 分页查询期权交易（终端用户）
@@ -133,6 +138,95 @@ public interface StockOptionTradeInterface {
 	@RequestMapping(value = "/dosettlement/{id}", method = RequestMethod.PUT)
 	Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id,
 			@RequestParam("sellingPrice") BigDecimal sellingPrice);
+
+	/**
+	 * 分页查询可正常期权交易的股票（风控）
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 可正常期权交易的股票分页数据
+	 */
+	@RequestMapping(value = "/risk/normal/adminpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<StockOptionRiskAdminDto>> adminNormalRiskPagesByQuery(
+			@RequestBody StockOptionRiskAdminQuery query);
+
+	/**
+	 * 分页查询可异常期权交易的股票（风控）
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 期权交易异常的股票分页数据
+	 */
+	@RequestMapping(value = "/risk/abnormal/adminpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<StockOptionRiskAdminDto>> adminAbnormalRiskPagesByQuery(
+			@RequestBody StockOptionRiskAdminQuery query);
+
+	/**
+	 * 分页查询期权交易黑名单股票（风控）
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 期权交易黑名单股票分页数据
+	 */
+	@RequestMapping(value = "/risk/black/adminpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<StockOptionBlacklistAdminDto>> adminBlackRiskPagesByQuery(
+			@RequestBody StockOptionRiskAdminQuery query);
+
+	/**
+	 * 设置期权交易限额
+	 * 
+	 * @param stockCode
+	 *            股票代码
+	 * @param stockName
+	 *            股票名称
+	 * @param isGlobal
+	 *            是否为全局设置
+	 * @param amountLimit
+	 *            限额
+	 * @return 期权交易限额
+	 */
+	@RequestMapping(value = "/amountlimit", method = RequestMethod.PUT)
+	Response<StockOptionAmountLimitDto> modifyStockOptionLimit(@RequestParam("stockCode") String stockCode,
+			@RequestParam("stockName") String stockName, @RequestParam("isGlobal") Boolean isGlobal,
+			@RequestParam("amountLimit") BigDecimal amountLimit);
+
+	/**
+	 * 删除期权交易限额
+	 * 
+	 * @param stockCode
+	 *            股票代码
+	 * @return 股票代码
+	 */
+	@RequestMapping(value = "/amountlimit", method = RequestMethod.DELETE)
+	Response<String> deleteStockOptionLimit(@RequestParam("stockCode") String stockCode);
+
+	/**
+	 * 获取全局期权交易限额
+	 * 
+	 * @param stockCode
+	 *            股票代码
+	 * @return 全局期权交易限额
+	 */
+	@RequestMapping(value = "/amountlimit/global", method = RequestMethod.GET)
+	Response<StockOptionAmountLimitDto> fetchGlobalStockOptionLimit();
+
+	/**
+	 * 设置平台期权报价
+	 * 
+	 * @param stockCode
+	 *            股票代码
+	 * @param stockName
+	 *            股票名称
+	 * @param cycle
+	 *            期权周期
+	 * @param rightMoneyRatio
+	 *            权利金比例
+	 * @return 期权报价
+	 */
+	@RequestMapping(value = "/modify/quote", method = RequestMethod.PUT)
+	Response<StockOptionQuoteDto> modifyStockOptionQuote(@RequestParam("stockCode") String stockCode,
+			@RequestParam("stockName") String stockName, @RequestParam("cycle") Integer cycle,
+			@RequestParam("rightMoneyRatio") BigDecimal rightMoneyRatio);
 
 	@Deprecated
 	@RequestMapping(value = "/modify/{id}", method = RequestMethod.GET)

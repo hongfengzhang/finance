@@ -1,8 +1,7 @@
 package com.waben.stock.datalayer.stockcontent.repository.impl;
 
-import com.waben.stock.datalayer.stockcontent.entity.Stock;
-import com.waben.stock.datalayer.stockcontent.repository.StockDao;
-import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StockRepository;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,7 +9,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
+import com.waben.stock.datalayer.stockcontent.entity.Stock;
+import com.waben.stock.datalayer.stockcontent.repository.StockDao;
+import com.waben.stock.datalayer.stockcontent.repository.impl.jpa.StockRepository;
 
 @Repository
 public class StockDaoImpl implements StockDao {
@@ -60,8 +61,12 @@ public class StockDaoImpl implements StockDao {
 
 	@Override
 	public Integer updateById(Boolean status, String name, String code, Long id) {
-		return repository.revisionById(status,name,code,id);
+		return repository.revisionById(status, name, code, id);
 	}
 
+	@Override
+	public List<Stock> retrieveByExponentCode(String exponentCode) {
+		return repository.findByExponentCode(exponentCode);
+	}
 
 }

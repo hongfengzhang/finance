@@ -13,6 +13,4 @@ import com.waben.stock.interfaces.service.stockoption.StockOptionCycleInterface;
 @FeignClient(name = "stockoption", path = "stockoptioncycle", fallback = StockOptionCycleReferenceFallback.class, qualifier = "stockOptionCycleReference")
 public interface StockOptionCycleReference extends StockOptionCycleInterface {
 
-	
-	
 }

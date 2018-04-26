@@ -56,6 +56,16 @@ public class StockServiceFallbackFactory implements FallbackFactory<StockService
             public Response<StockDto> add(StockDto requestDto) {
                 return null;
             }
+
+			@Override
+			public Response<StockDto> downline(String code, String stockOptionBlackRemark) {
+				return null;
+			}
+
+			@Override
+			public Response<StockDto> online(String code) {
+				return null;
+			}
         };
     }
 }

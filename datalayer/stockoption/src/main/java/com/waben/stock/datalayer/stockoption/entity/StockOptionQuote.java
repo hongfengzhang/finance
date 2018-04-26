@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.stockoption.entity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,6 +12,10 @@ import javax.persistence.Table;
 
 /**
  * 期权报价
+ * 
+ * <p>
+ * 设置某支股票的权利金比例
+ * </p>
  * 
  * @author luomengan
  *
@@ -39,6 +44,8 @@ public class StockOptionQuote {
 	 */
 	@Column(scale = 4)
 	private BigDecimal rightMoneyRatio;
+
+	private Date updateTime;
 
 	public Long getId() {
 		return id;
@@ -78,6 +85,14 @@ public class StockOptionQuote {
 
 	public void setRightMoneyRatio(BigDecimal rightMoneyRatio) {
 		this.rightMoneyRatio = rightMoneyRatio;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 }

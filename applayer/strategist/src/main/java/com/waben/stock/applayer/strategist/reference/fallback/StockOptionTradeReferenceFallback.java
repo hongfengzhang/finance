@@ -1,20 +1,25 @@
 package com.waben.stock.applayer.strategist.reference.fallback;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.strategist.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
-import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
-
-import java.math.BigDecimal;
-import java.util.List;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 
 /**
  * 期权交易 reference服务接口fallback
@@ -86,7 +91,7 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 	}
 
 	@Override
-	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionQueryDto query) {
+	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionAdminQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
@@ -103,6 +108,44 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 
 	@Override
 	public Response<StockOptionTradeDto> settlement(Long id, BigDecimal sellingPrice) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionRiskAdminDto>> adminNormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionRiskAdminDto>> adminAbnormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionBlacklistAdminDto>> adminBlackRiskPagesByQuery(
+			StockOptionRiskAdminQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionAmountLimitDto> modifyStockOptionLimit(String stockCode, String stockName,
+			Boolean isGlobal, BigDecimal amountLimit) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionQuoteDto> modifyStockOptionQuote(String stockCode, String stockName, Integer cycle,
+			BigDecimal rightMoneyRatio) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<String> deleteStockOptionLimit(String stockCode) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionAmountLimitDto> fetchGlobalStockOptionLimit() {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

@@ -20,6 +20,7 @@ import com.waben.stock.interfaces.pojo.query.StockQuery;
 public class StockServiceFallback implements StockService {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Override
 	public Response<PageInfo<StockDto>> pagesByQuery(StockQuery stockQuery) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -42,11 +43,21 @@ public class StockServiceFallback implements StockService {
 
 	@Override
 	public void delete(Long id) {
-
 	}
 
 	@Override
 	public Response<StockDto> add(StockDto requestDto) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<StockDto> downline(String code, String stockOptionBlackRemark) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockDto> online(String code) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+	
 }

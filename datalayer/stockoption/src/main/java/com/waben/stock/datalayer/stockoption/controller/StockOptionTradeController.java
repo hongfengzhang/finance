@@ -12,18 +12,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.datalayer.stockoption.entity.StockOptionAmountLimit;
+import com.waben.stock.datalayer.stockoption.entity.StockOptionQuote;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
+import com.waben.stock.datalayer.stockoption.service.StockOptionRiskService;
 import com.waben.stock.datalayer.stockoption.service.StockOptionTradeService;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
-import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -36,6 +44,9 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 
 	@Autowired
 	private StockOptionTradeService stockOptionTradeService;
+
+	@Autowired
+	private StockOptionRiskService riskService;
 
 	@Override
 	public Response<PageInfo<StockOptionTradeDto>> pagesByQuery(@RequestBody StockOptionTradeQuery query) {
@@ -146,7 +157,7 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionQueryDto query) {
+	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionAdminQuery query) {
 		Page<StockOptionAdminDto> page = stockOptionTradeService.adminPagesByQuery(query);
 		PageInfo<StockOptionAdminDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionAdminDto.class);
 		return new Response<>(result);
@@ -179,6 +190,59 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		logger.info("结算权期权交易{}_{}!", id, sellingPrice);
 		StockOptionTrade trade = stockOptionTradeService.settlement(id, sellingPrice);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionRiskAdminDto>> adminNormalRiskPagesByQuery(
+			@RequestBody StockOptionRiskAdminQuery query) {
+		Page<StockOptionRiskAdminDto> page = riskService.adminNormalPagesByQuery(query);
+		PageInfo<StockOptionRiskAdminDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionRiskAdminDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionRiskAdminDto>> adminAbnormalRiskPagesByQuery(
+			@RequestBody StockOptionRiskAdminQuery query) {
+		Page<StockOptionRiskAdminDto> page = riskService.adminAbnormalPagesByQuery(query);
+		PageInfo<StockOptionRiskAdminDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionRiskAdminDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionBlacklistAdminDto>> adminBlackRiskPagesByQuery(
+			@RequestBody StockOptionRiskAdminQuery query) {
+		Page<StockOptionBlacklistAdminDto> page = riskService.adminBlackPagesByQuery(query);
+		PageInfo<StockOptionBlacklistAdminDto> result = PageToPageInfo.pageToPageInfo(page,
+				StockOptionBlacklistAdminDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<StockOptionAmountLimitDto> modifyStockOptionLimit(String stockCode, String stockName,
+			Boolean isGlobal, BigDecimal amountLimit) {
+		StockOptionAmountLimit limit = riskService.modifyStockOptionLimit(stockCode, stockName, isGlobal, amountLimit);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionAmountLimitDto.class, limit, false));
+	}
+
+	@Override
+	public Response<StockOptionQuoteDto> modifyStockOptionQuote(String stockCode, String stockName, Integer cycle,
+			BigDecimal rightMoneyRatio) {
+		StockOptionQuote quote = riskService.modifyStockOptionQuote(stockCode, stockName, cycle, rightMoneyRatio);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionQuoteDto.class, quote, false));
+	}
+
+	@Override
+	public Response<String> deleteStockOptionLimit(String stockCode) {
+		riskService.deleteStockOptionLimit(stockCode);
+		Response<String> result = new Response<>();
+		result.setResult(stockCode);
+		return result;
+	}
+
+	@Override
+	public Response<StockOptionAmountLimitDto> fetchGlobalStockOptionLimit() {
+		StockOptionAmountLimit quote = riskService.findStockOptionQuote();
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionAmountLimitDto.class, quote, false));
 	}
 
 }

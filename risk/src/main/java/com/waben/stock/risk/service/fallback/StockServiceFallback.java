@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 public class StockServiceFallback implements StockService {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Override
 	public Response<PageInfo<StockDto>> pagesByQuery(StockQuery stockQuery) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -47,4 +48,15 @@ public class StockServiceFallback implements StockService {
 	public Response<StockDto> add(StockDto requestDto) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<StockDto> downline(String code, String stockOptionBlackRemark) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockDto> online(String code) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

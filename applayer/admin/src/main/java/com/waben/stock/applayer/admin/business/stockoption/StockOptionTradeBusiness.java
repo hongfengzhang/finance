@@ -10,12 +10,17 @@ import org.springframework.stereotype.Service;
 import com.waben.stock.applayer.admin.reference.StockOptionOrgReference;
 import com.waben.stock.applayer.admin.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 
 /**
  * 期权交易 Business
@@ -41,7 +46,7 @@ public class StockOptionTradeBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public PageInfo<StockOptionAdminDto> adminPagesByQuery(StockOptionQueryDto query) {
+	public PageInfo<StockOptionAdminDto> adminPagesByQuery(StockOptionAdminQuery query) {
 		Response<PageInfo<StockOptionAdminDto>> response = reference.adminPagesByQuery(query);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -75,6 +80,66 @@ public class StockOptionTradeBusiness {
 
 	public StockOptionTradeDto settlement(Long id, BigDecimal sellingPrice) {
 		Response<StockOptionTradeDto> response = reference.settlement(id, sellingPrice);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<StockOptionRiskAdminDto> adminNormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		Response<PageInfo<StockOptionRiskAdminDto>> response = reference.adminNormalRiskPagesByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<StockOptionRiskAdminDto> adminAbnormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		Response<PageInfo<StockOptionRiskAdminDto>> response = reference.adminAbnormalRiskPagesByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<StockOptionBlacklistAdminDto> adminBlackRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		Response<PageInfo<StockOptionBlacklistAdminDto>> response = reference.adminBlackRiskPagesByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public StockOptionAmountLimitDto modifyStockOptionLimit(String stockCode, String stockName, Boolean isGlobal,
+			BigDecimal amountLimit) {
+		Response<StockOptionAmountLimitDto> response = reference.modifyStockOptionLimit(stockCode, stockName, isGlobal,
+				amountLimit);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public StockOptionQuoteDto modifyStockOptionQuote(String stockCode, String stockName, Integer cycle,
+			BigDecimal rightMoneyRatio) {
+		Response<StockOptionQuoteDto> response = reference.modifyStockOptionQuote(stockCode, stockName, cycle,
+				rightMoneyRatio);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public String deleteStockOptionLimit(String stockCode) {
+		Response<String> response = reference.deleteStockOptionLimit(stockCode);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public StockOptionAmountLimitDto fetchGlobalStockOptionLimit() {
+		Response<StockOptionAmountLimitDto> response = reference.fetchGlobalStockOptionLimit();
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

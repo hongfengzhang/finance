@@ -50,7 +50,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
-import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
@@ -412,7 +412,7 @@ public class StockOptionTradeService {
 		return stockOptionTradeDao.update(stockOptionTrade);
 	}
 
-	public Page<StockOptionAdminDto> adminPagesByQuery(StockOptionQueryDto query) {
+	public Page<StockOptionAdminDto> adminPagesByQuery(StockOptionAdminQuery query) {
 		String publisherNameCondition = "";
 		if (!StringUtil.isEmpty(query.getPublisherName())) {
 			publisherNameCondition = " and t4.name like '%" + query.getPublisherName() + "%' ";

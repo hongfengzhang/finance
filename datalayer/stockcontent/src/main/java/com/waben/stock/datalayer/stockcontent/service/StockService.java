@@ -21,6 +21,7 @@ import com.waben.stock.datalayer.stockcontent.entity.Stock;
 import com.waben.stock.datalayer.stockcontent.entity.StockExponent;
 import com.waben.stock.datalayer.stockcontent.repository.StockDao;
 import com.waben.stock.datalayer.stockcontent.repository.StockExponentDao;
+import com.waben.stock.datalayer.stockcontent.util.PinyinUtil;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
 
 /***
@@ -99,6 +100,10 @@ public class StockService {
 		return stockDao.retrieveByCode(code);
 	}
 
+	public List<Stock> findByExponentCode(String exponentCode) {
+		return stockDao.retrieveByExponentCode(exponentCode);
+	}
+
 	public Integer revision(Stock stock) {
 		return stockDao.updateById(stock.getStatus(), stock.getName(), stock.getCode(), stock.getId());
 	}
@@ -119,11 +124,24 @@ public class StockService {
 	}
 
 	public void initStockAbbr() {
-		/*
-		 * List<Stock> stockList = stockDao.list(); for(Stock stock : stockList)
-		 * { String name = stock.getName();
-		 * stock.setAbbr(PinyinUtil.getFirstSpell(name));
-		 * stockDao.update(stock); }
-		 */
+		List<Stock> stockList = stockDao.list();
+		for (Stock stock : stockList) {
+			String name = stock.getName();
+			stock.setAbbr(PinyinUtil.getFirstSpell(name));
+			stockDao.update(stock);
+		}
+	}
+
+	public Stock downline(String code, String stockOptionBlackRemark) {
+		Stock stock = stockDao.retrieveByCode(code);
+		stock.setStockOptionState(2);
+		stock.setStockOptionBlackRemark(stockOptionBlackRemark);
+		return stockDao.update(stock);
+	}
+
+	public Stock online(String code) {
+		Stock stock = stockDao.retrieveByCode(code);
+		stock.setStockOptionState(1);
+		return stockDao.update(stock);
 	}
 }

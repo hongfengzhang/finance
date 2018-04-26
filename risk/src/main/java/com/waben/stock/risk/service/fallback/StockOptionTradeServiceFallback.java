@@ -1,18 +1,24 @@
 package com.waben.stock.risk.service.fallback;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
-import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionQueryDto;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 import com.waben.stock.risk.service.StockOptionTradeService;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.List;
 
 @Component
 public class StockOptionTradeServiceFallback implements StockOptionTradeService {
@@ -77,7 +83,7 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService 
 	}
 
 	@Override
-	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionQueryDto query) {
+	public Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(StockOptionAdminQuery query) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
@@ -94,6 +100,44 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService 
 
 	@Override
 	public Response<StockOptionTradeDto> settlement(Long id, BigDecimal sellingPrice) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionRiskAdminDto>> adminNormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionRiskAdminDto>> adminAbnormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionBlacklistAdminDto>> adminBlackRiskPagesByQuery(
+			StockOptionRiskAdminQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionAmountLimitDto> modifyStockOptionLimit(String stockCode, String stockName,
+			Boolean isGlobal, BigDecimal amountLimit) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionQuoteDto> modifyStockOptionQuote(String stockCode, String stockName, Integer cycle,
+			BigDecimal rightMoneyRatio) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<String> deleteStockOptionLimit(String stockCode) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionAmountLimitDto> fetchGlobalStockOptionLimit() {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

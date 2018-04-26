@@ -12,13 +12,29 @@ import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockExponentVarie
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockKLine;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockTimeLine;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockVariety;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
 public class RetriveStockOverHttp {
 
+	public static List<StockVariety> listStockVariety(RestTemplate restTemplate, int page, int pageSize) {
+		String url = "http://lemi.esongbai.com/order/order/getStockVariety.do?page=" + page + "&pageSize=" + pageSize;
+		String response = restTemplate.getForObject(url, String.class);
+		try {
+			JsonNode dataNode = JacksonUtil.objectMapper.readValue(response, JsonNode.class).get("data");
+			JavaType javaType = JacksonUtil.objectMapper.getTypeFactory().constructParametricType(ArrayList.class,
+					StockVariety.class);
+			List<StockVariety> list = JacksonUtil.objectMapper.readValue(dataNode.toString(), javaType);
+			return list;
+		} catch (IOException e) {
+			throw new RuntimeException("http获取股票行情异常!", e);
+		}
+	}
+
 	public static List<StockMarket> listStockMarket(RestTemplate restTemplate, List<String> codes) {
 		String url = "http://lemi.esongbai.com/stk/stk/list.do?codes="
 				+ codes.toString().substring(1, codes.toString().length() - 1).replaceAll(" ", "");
+		System.out.println("获取股票行情url:" + url);
 		String response = restTemplate.getForObject(url, String.class);
 		try {
 			JsonNode dataNode = JacksonUtil.objectMapper.readValue(response, JsonNode.class).get("data");
