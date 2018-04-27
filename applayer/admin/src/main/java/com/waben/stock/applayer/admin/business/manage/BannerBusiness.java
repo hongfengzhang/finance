@@ -3,6 +3,7 @@ package com.waben.stock.applayer.admin.business.manage;
 import com.waben.stock.applayer.admin.reference.BannerReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
+import com.waben.stock.interfaces.dto.manage.BannerForwardDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;

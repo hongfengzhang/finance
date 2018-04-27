@@ -52,6 +52,12 @@ public class BannerController implements BannerInterface {
     public Response<PageInfo<BannerDto>> pages(@RequestBody BannerQuery query) {
         Page<Banner> page = bannerService.pagesByQuery(query);
         PageInfo<BannerDto> result = PageToPageInfo.pageToPageInfo(page, BannerDto.class);
+        for(int i=0; i<page.getContent().size(); i++) {
+            if(page.getContent().get(i).getBannerForward()!=null) {
+                Long id = page.getContent().get(i).getBannerForward().getId();
+                result.getContent().get(i).setBannerForwardId(id);
+            }
+        }
         return new Response<>(result);
     }
 
@@ -66,6 +72,9 @@ public class BannerController implements BannerInterface {
     public Response<BannerDto> modify(@RequestBody BannerDto bannerDto) {
         Banner banner = CopyBeanUtils.copyBeanProperties(Banner.class, bannerDto, false);
         BannerDto result = CopyBeanUtils.copyBeanProperties(BannerDto.class,bannerService.revision(banner),false);
+        if(banner.getBannerForward()!=null) {
+            result.setBannerForwardId(banner.getBannerForward().getId());
+        }
         return new Response<>(result);
     }
 
@@ -77,12 +86,14 @@ public class BannerController implements BannerInterface {
     @Override
     public Response<BannerDto> add(@RequestBody BannerDto requestDto) {
         Banner banner = CopyBeanUtils.copyBeanProperties(Banner.class, requestDto, false);
-        BannerForward bannerForward = CopyBeanUtils.copyBeanProperties(BannerForward.class, requestDto.getBannerForward(), false);
+        BannerForward bannerForward = new BannerForward();
+        bannerForward.setId(requestDto.getBannerForwardId());
         banner.setBannerForward(bannerForward);
         Banner result = bannerService.save(banner);
         BannerDto response = CopyBeanUtils.copyBeanProperties(BannerDto.class,result,false);
-        BannerForwardDto bannerForwardDto = CopyBeanUtils.copyBeanProperties(BannerForwardDto.class, result.getBannerForward(), false);
-        response.setBannerForward(bannerForwardDto);
+        if(result.getBannerForward()!=null) {
+            response.setBannerForwardId(result.getBannerForward().getId());
+        }
         return new Response<>(response);
     }
 }

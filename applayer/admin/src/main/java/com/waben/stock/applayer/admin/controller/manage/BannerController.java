@@ -44,7 +44,7 @@ public class BannerController {
         return new Response<>(response);
     }
 
-    @PutMapping("/modify")
+    @PostMapping("/modify")
     @ApiImplicitParam(paramType = "query", dataType = "BannerDto", name = "bannerDto", value = "轮播图对象", required = true)
     @ApiOperation(value = "轮播图修改")
     public Response<BannerDto> modify(BannerDto bannerDto){
