@@ -2,24 +2,17 @@ package com.waben.stock.applayer.admin.controller.manage;
 
 import com.waben.stock.applayer.admin.business.manage.RoleBusiness;
 import com.waben.stock.applayer.admin.business.manage.StaffBusiness;
-import com.waben.stock.applayer.admin.security.CustomUserDetails;
-import com.waben.stock.applayer.admin.security.SecurityUtil;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
-import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.util.PasswordCrypt;
-import com.waben.stock.interfaces.vo.manage.StaffVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,27 +64,12 @@ public class StaffController {
         return new Response<>(response);
     }
 
-    @PutMapping("/password/{password}")
-    @ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "员工密码", required = true)
+    @PutMapping("/{originalPassword}/{password}")
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "path", dataType = "String", name = "originalPassword", value = "员工原密码", required = true),@ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "员工密码", required = true)})
     @ApiOperation(value = "修改密码")
-    public Response<StaffDto> password(@PathVariable String password) {
-        CustomUserDetails userDetails = SecurityUtil.getUserDetails();
-        StaffDto staffDto = staffBusiness.findById(userDetails.getUserId());
-        staffDto.setPassword(password);
-        staffBusiness.modif(staffDto);
-        return new Response<>(staffDto);
-    }
-
-    @PutMapping("/{password}")
-    @ApiImplicitParam(paramType = "path", dataType = "String", name = "password", value = "员工密码", required = true)
-    @ApiOperation(value = "校验原密码")
-    public Response<Boolean> checkPassword(@PathVariable String password) {
-        CustomUserDetails userDetails = SecurityUtil.getUserDetails();
-        Boolean flag = false;
-        if(userDetails.getPassword().equals(PasswordCrypt.crypt(password))) {
-            flag = true;
-        }
-        return new Response<>(flag);
+    public Response<StaffDto> password(@PathVariable String originalPassword,@PathVariable String password) {
+        StaffDto result = staffBusiness.modif(originalPassword,password);
+        return new Response<>(result);
     }
 
     @GetMapping("/{id}")

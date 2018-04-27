@@ -2,6 +2,8 @@ package com.waben.stock.applayer.admin.business.manage;
 
 import java.util.Date;
 
+import com.waben.stock.applayer.admin.security.CustomUserDetails;
+import com.waben.stock.applayer.admin.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -85,16 +87,20 @@ public class StaffBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public StaffDto modif(StaffDto requestDto) {
-		requestDto.setUpdateTime(new Date());
-		requestDto.setPassword(PasswordCrypt.crypt(requestDto.getPassword()));
-		Response<StaffDto> response = reference.saveStaff(requestDto);
-		String code = response.getCode();
-		if ("200".equals(code)) {
-			return response.getResult();
-		}else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
-			throw new NetflixCircuitException(code);
+	public StaffDto modif(String originalPassword,String password) {
+		CustomUserDetails userDetails = SecurityUtil.getUserDetails();
+		StaffDto staffDto = reference.fetchById(userDetails.getUserId()).getResult();
+		if(PasswordCrypt.match(originalPassword,staffDto.getPassword())) {
+			staffDto.setPassword(PasswordCrypt.crypt(password));
+			staffDto.setUpdateTime(new Date());
+			Response<StaffDto> response = reference.saveStaff(staffDto);
+			String code = response.getCode();
+			if ("200".equals(code)) {
+				return response.getResult();
+			}else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
+				throw new NetflixCircuitException(code);
+			}
 		}
-		throw new ServiceException(response.getCode());
+		throw new ServiceException(ExceptionConstant.ORIGINAL_PASSWORD_MISMATCH_EXCEPTION);
 	}
 }

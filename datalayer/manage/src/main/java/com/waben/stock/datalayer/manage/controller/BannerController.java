@@ -2,7 +2,9 @@ package com.waben.stock.datalayer.manage.controller;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.manage.entity.BannerForward;
 import com.waben.stock.datalayer.manage.entity.Circulars;
+import com.waben.stock.interfaces.dto.manage.BannerForwardDto;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import org.slf4j.Logger;
@@ -75,7 +77,12 @@ public class BannerController implements BannerInterface {
     @Override
     public Response<BannerDto> add(@RequestBody BannerDto requestDto) {
         Banner banner = CopyBeanUtils.copyBeanProperties(Banner.class, requestDto, false);
-        BannerDto result = CopyBeanUtils.copyBeanProperties(BannerDto.class,bannerService.save(banner),false);
-        return new Response<>(result);
+        BannerForward bannerForward = CopyBeanUtils.copyBeanProperties(BannerForward.class, requestDto.getBannerForward(), false);
+        banner.setBannerForward(bannerForward);
+        Banner result = bannerService.save(banner);
+        BannerDto response = CopyBeanUtils.copyBeanProperties(BannerDto.class,result,false);
+        BannerForwardDto bannerForwardDto = CopyBeanUtils.copyBeanProperties(BannerForwardDto.class, result.getBannerForward(), false);
+        response.setBannerForward(bannerForwardDto);
+        return new Response<>(response);
     }
 }

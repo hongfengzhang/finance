@@ -78,23 +78,60 @@ public class AdminExecptionHandler implements HandlerExceptionResolver {
 			String contentType = request.getContentType();
 			String isFeign = request.getHeader("feign");
 			logger.info("isfegin{}", isFeign);
-			if (contentType != null && (contentType.indexOf("application/json") > -1
-					|| contentType.indexOf("application/x-www-form-urlencoded") > -1)) {
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
-				response.setCharacterEncoding("UTF-8"); // 避免乱码
-				mv.setView(jsonView);
-				logger.info("web 请求");
-			} else if ("GET".equalsIgnoreCase(request.getMethod()) || "true".equals(isFeign)) {
+			if ("GET".equalsIgnoreCase(request.getMethod()) || "true".equals(isFeign)) {
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
 				response.setCharacterEncoding("UTF-8"); // 避免乱码
 				mv.setView(jsonView);
 				logger.info("feign 请求");
 			} else {
-				mv.setViewName(error);
-				logger.info("视图解析 请求");
+				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
+				response.setCharacterEncoding("UTF-8"); // 避免乱码
+				mv.setView(jsonView);
+				logger.info("web 请求");
 			}
 		}
 		return mv;
+// 		ex.printStackTrace();
+//		ModelAndView mv = new ModelAndView();
+//		Object message = "未知错误";
+//		String code = "0000";
+//		String error = "503";
+//		try {
+//			for (ExceptionInformation exception : exceptions) {
+//				if (ex.getClass().equals(exception.getException())) {
+//					logger.info("匹配到异常信息:{}", exception.getException());
+//					response.setStatus(exception.getHttpStatus());
+//					code = ex.getMessage();
+//					message = message(code, ex);
+//					error = exception.getError();
+//					break;
+//				}
+//			}
+//			logger.error("请求：{},异常：{},{}", request.getRequestURI(), message, ex.getClass());
+//		} finally {
+//			mv.addObject("message", message);
+//			mv.addObject("code", code);
+//			logger.info("响应状态码:{},异常编码:{},异常信息:{}", response.getStatus(), code, message);
+//			String contentType = request.getContentType();
+//			String isFeign = request.getHeader("feign");
+//			logger.info("isfegin{}", isFeign);
+//			if (contentType != null && (contentType.indexOf("application/json") > -1
+//					|| contentType.indexOf("application/x-www-form-urlencoded") > -1)) {
+//				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
+//				response.setCharacterEncoding("UTF-8"); // 避免乱码
+//				mv.setView(jsonView);
+//				logger.info("web 请求");
+//			} else if ("GET".equalsIgnoreCase(request.getMethod()) || "true".equals(isFeign)) {
+//				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
+//				response.setCharacterEncoding("UTF-8"); // 避免乱码
+//				mv.setView(jsonView);
+//				logger.info("feign 请求");
+//			} else {
+//				mv.setViewName(error);
+//				logger.info("视图解析 请求");
+//			}
+//		}
+//		return mv;
 	}
 
 	public void extendException(List<ExceptionInformation> exceptions) {

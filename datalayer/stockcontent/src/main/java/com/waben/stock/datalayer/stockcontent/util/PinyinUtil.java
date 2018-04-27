@@ -99,9 +99,9 @@ public class PinyinUtil {
 		return source;
 	}
 
-	public static void main(String[] args) {
-		System.out.println(getPingYin("sadfsf三国sdfs演sdfd义sdfdsaf", false));
-		System.out.println(getFirstSpell("中国平安A"));
-	}
+//	public static void main(String[] args) {
+//		System.out.println(getPingYin("sadfsf三国sdfs演sdfd义sdfdsaf", false));
+//		System.out.println(getFirstSpell("中国平安A"));
+//	}
 
 }

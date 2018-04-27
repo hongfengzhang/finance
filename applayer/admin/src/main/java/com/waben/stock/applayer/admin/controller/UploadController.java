@@ -12,7 +12,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("/file")
-@Api("图片上传")
+@Api(description = "图片上传")
 public class UploadController {
 
     @Autowired
@@ -23,7 +23,7 @@ public class UploadController {
     @ApiImplicitParam(paramType = "query", dataType = "MultipartFile", name = "file", value = "文件对象", required = true)
     @ApiOperation(value = "上传图片")
     public String upload(@RequestParam("file") MultipartFile file){
-        String resultPath = "";
+        String resultPath;
         try {
            resultPath =  uploadBusiness.upload(file);
         } catch (IOException e) {

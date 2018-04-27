@@ -4,16 +4,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class UploadBusiness {
 
-//    @Value("${fileSystem}")
+    @Value("${fileSystem}")
     private String fileSystem;
 
-//    @Value("${uploadFilePath}")
+    @Value("${uploadFilePath}")
     private String uploadFilePath;
 
     public String upload(MultipartFile file) throws IllegalStateException, IOException {

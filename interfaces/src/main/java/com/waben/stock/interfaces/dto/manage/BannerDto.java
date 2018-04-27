@@ -25,8 +25,8 @@ public class BannerDto {
 	private Boolean enable;
 	@ApiModelProperty(value = "创建时间")
 	private Date createTime = new Date();
-	@ApiModelProperty(value = "跳转链接")
-	private String forward;
+	@ApiModelProperty(value = "跳转链接对象")
+	private BannerForwardDto bannerForward;
 
 	public Long getId() {
 		return id;
@@ -76,12 +76,11 @@ public class BannerDto {
 		this.createTime = createTime;
 	}
 
-	public String getForward() {
-		return forward;
+	public BannerForwardDto getBannerForward() {
+		return bannerForward;
 	}
 
-	public void setForward(String forward) {
-		this.forward = forward;
+	public void setBannerForward(BannerForwardDto bannerForward) {
+		this.bannerForward = bannerForward;
 	}
-
 }
