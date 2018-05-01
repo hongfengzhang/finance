@@ -154,7 +154,7 @@ public class ExceptionConstant {
 	public static final String ORGANIZATION_USER_NOT_FOUND = "8003";
 	// 原始支付密码不匹配
 	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8004";
-	// 机构用户不存在
+	// 机构用户已存在
 	public static final String ORGANIZATION_USER_EXIST = "8005";
 	// 原始登陆密码不匹配
 	public static final String ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION = "8006";
@@ -192,4 +192,9 @@ public class ExceptionConstant {
 	public static final String OVERSTEP_NUMBER_OF_DRAW = "11002";
 	// 奖品已空
 	public static final String PRIZE_IS_EMPTY = "11003";
+
+
+	//上传文件
+	//上传图片失败
+	public static final String FAILED_TO_UPLOAD_PICTURES = "12001";
 }

@@ -78,7 +78,6 @@ public class AdminExecptionHandler implements HandlerExceptionResolver {
 			String contentType = request.getContentType();
 			String isFeign = request.getHeader("feign");
 			logger.info("isfegin{}", isFeign);
-			
 			response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
 			response.setCharacterEncoding("UTF-8"); // 避免乱码
 			mv.setView(jsonView);
@@ -89,7 +88,8 @@ public class AdminExecptionHandler implements HandlerExceptionResolver {
 				response.setCharacterEncoding("UTF-8"); // 避免乱码
 				mv.setView(jsonView);
 				logger.info("web 请求");
-			} else if ("GET".equalsIgnoreCase(request.getMethod()) || "true".equals(isFeign)) {
+			}
+			else if ("GET".equalsIgnoreCase(request.getMethod()) || "true".equals(isFeign)) {
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
 				response.setCharacterEncoding("UTF-8"); // 避免乱码
 				mv.setView(jsonView);
@@ -98,7 +98,7 @@ public class AdminExecptionHandler implements HandlerExceptionResolver {
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE); // 设置ContentType
 				response.setCharacterEncoding("UTF-8"); // 避免乱码
 				mv.setView(jsonView);
-				logger.info("feign 请求");
+				logger.info("other 请求");
 			}
 		}
 		return mv;
