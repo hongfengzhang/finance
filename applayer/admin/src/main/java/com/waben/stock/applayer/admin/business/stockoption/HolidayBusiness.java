@@ -31,7 +31,7 @@ public class HolidayBusiness {
 
 	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	@Value("${trade.active}")
+	@Value("${trade.active:true}")
 	private Boolean tradeActive;
 
 	@PostConstruct
