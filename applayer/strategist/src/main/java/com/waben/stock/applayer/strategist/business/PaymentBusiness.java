@@ -39,6 +39,7 @@ import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
@@ -382,6 +383,10 @@ public class PaymentBusiness {
 	}
 
 	public String wabenNetbankPay(Long publisherId, BigDecimal amount) {
+		CapitalAccountDto account = accountBusiness.findByPublisherId(publisherId);
+    	if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
 		// 保存支付订单
 		PaymentOrderDto paymentOrder = new PaymentOrderDto();
 		paymentOrder.setAmount(amount);

@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.dto.admin.stockoption;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Date;
 
 import com.waben.stock.interfaces.enums.StockOptionTradeState;

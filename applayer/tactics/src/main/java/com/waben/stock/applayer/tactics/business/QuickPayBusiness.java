@@ -515,6 +515,10 @@ public class QuickPayBusiness {
 
     public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
                               String bankCard, String bankCode, String branchName){
+    	CapitalAccountDto account = accountBusiness.findByPublisherId(publisherId);
+    	if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
         logger.info("保存提现订单");
         String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
         WithdrawalsOrderDto order = new WithdrawalsOrderDto();
@@ -564,6 +568,10 @@ public class QuickPayBusiness {
     }
 
     public Response<Map> wabenPay(BigDecimal amount, Long userId, String endType) {
+    	CapitalAccountDto account = accountBusiness.findByPublisherId(userId);
+    	if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
         PublisherDto publisher = publisherBusiness.findById(userId);
         RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
         //创建订单

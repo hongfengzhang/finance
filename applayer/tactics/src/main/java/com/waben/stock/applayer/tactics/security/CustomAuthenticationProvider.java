@@ -2,6 +2,7 @@ package com.waben.stock.applayer.tactics.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
@@ -24,7 +25,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
 		CustomUserDetails customUserDetails = (CustomUserDetails) userDetails;
 		String password = null;
-		if(authentication != null && authentication.getCredentials() != null) {
+		if (authentication != null && authentication.getCredentials() != null) {
 			password = authentication.getCredentials().toString();
 		}
 		if (!PasswordCrypt.match(password, customUserDetails.getPassword())) {
@@ -42,6 +43,9 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 		}
 		if (publisherResp.getResult() == null) {
 			throw new UsernameNotFoundException("用户名不存在");
+		}
+		if (publisherResp.getResult().getState() != null && publisherResp.getResult().getState() == 2) {
+			throw new DisabledException("当前用户已被拉黑");
 		}
 		Long userId = publisherResp.getResult().getId();
 		String password = publisherResp.getResult().getPassword();

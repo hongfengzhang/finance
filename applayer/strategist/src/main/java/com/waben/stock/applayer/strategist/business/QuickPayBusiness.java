@@ -30,6 +30,7 @@ import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
@@ -282,6 +283,10 @@ public class QuickPayBusiness {
 
 	public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
 			String bankCard, String bankCode, String branchName) {
+		CapitalAccountDto account = accountBusiness.findByPublisherId(publisherId);
+    	if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
 		logger.info("保存提现订单");
 		String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
 		WithdrawalsOrderDto order = new WithdrawalsOrderDto();

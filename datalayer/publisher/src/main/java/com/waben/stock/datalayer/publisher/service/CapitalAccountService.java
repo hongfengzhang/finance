@@ -448,6 +448,9 @@ public class CapitalAccountService {
 	 */
 	private synchronized void thawAmount(CapitalAccount account, BigDecimal amount, BigDecimal frozenAmount,
 			Date date) {
+		if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
 		account.setBalance(account.getBalance().subtract(frozenAmount.subtract(amount)));
 		account.setAvailableBalance(account.getAvailableBalance().add(amount));
 		account.setUpdateTime(date);
@@ -464,6 +467,9 @@ public class CapitalAccountService {
 	 * 
 	 */
 	private synchronized void frozenAmount(CapitalAccount account, BigDecimal frozenAmount, Date date) {
+		if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
 		BigDecimal amountAbs = frozenAmount.abs();
 		// 判断账余额是否足够
 		if (account.getAvailableBalance().compareTo(amountAbs) < 0) {
@@ -484,6 +490,9 @@ public class CapitalAccountService {
 	 *            金额
 	 */
 	private synchronized void increaseAmount(CapitalAccount account, BigDecimal amount, Date date) {
+		if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
 		account.setBalance(account.getBalance().add(amount));
 		account.setAvailableBalance(account.getAvailableBalance().add(amount));
 		account.setUpdateTime(date);
@@ -499,6 +508,9 @@ public class CapitalAccountService {
 	 *            金额
 	 */
 	private synchronized void reduceAmount(CapitalAccount account, BigDecimal amount, Date date) {
+		if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
 		BigDecimal amountAbs = amount.abs();
 		// 判断账余额是否足够
 		if (account.getAvailableBalance().compareTo(amountAbs) < 0) {

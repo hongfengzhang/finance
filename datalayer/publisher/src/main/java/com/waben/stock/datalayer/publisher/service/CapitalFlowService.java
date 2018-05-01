@@ -99,7 +99,7 @@ public class CapitalFlowService {
 		String sql = String.format(
 				"select t1.id, t1.amount, t1.flow_no, t1.occurrence_time, t1.publisher_id, t5.phone, t1.remark, t1.type, t4.name, "
 						+ "t2.stock_code as b_stock_code, t2.stock_name as b_stock_name, "
-						+ "t3.stock_code as s_stock_code, t3.stock_name as s_stock_name, t6.type as payment_type, t7.bank_card, t8.bank_name from capital_flow t1 "
+						+ "t3.stock_code as s_stock_code, t3.stock_name as s_stock_name, t6.type as payment_type, t7.bank_card, t8.bank_name, t1.available_balance from capital_flow t1 "
 						+ "LEFT JOIN buy_record t2 on t1.extend_type=1 and t1.extend_id=t2.id "
 						+ "LEFT JOIN stock_option_trade t3 on t1.extend_type=3 and t1.extend_id=t3.id "
 						+ "LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
@@ -129,6 +129,7 @@ public class CapitalFlowService {
 		setMethodMap.put(new Integer(13), new MethodDesc("setPaymentType", new Class<?>[] { Integer.class }));
 		setMethodMap.put(new Integer(14), new MethodDesc("setBankCard", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(15), new MethodDesc("setBankName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(16), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
 		List<CapitalFlowAdminDto> content = sqlDao.execute(CapitalFlowAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),

@@ -1,14 +1,21 @@
 package com.waben.stock.applayer.admin.business.stockoption;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.admin.reference.StockOptionOrgReference;
 import com.waben.stock.applayer.admin.reference.StockOptionTradeReference;
+import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
@@ -16,6 +23,7 @@ import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -38,6 +46,12 @@ public class StockOptionTradeBusiness {
 	@Qualifier("stockOptionOrgReference")
 	private StockOptionOrgReference orgReference;
 
+	@Autowired
+	private HolidayBusiness holidayBusiness;
+
+	@Autowired
+	private RestTemplate restTemplate;
+
 	public List<StockOptionOrgDto> orgList() {
 		Response<List<StockOptionOrgDto>> response = orgReference.lists();
 		if ("200".equals(response.getCode())) {
@@ -49,6 +63,36 @@ public class StockOptionTradeBusiness {
 	public PageInfo<StockOptionAdminDto> adminPagesByQuery(StockOptionAdminQuery query) {
 		Response<PageInfo<StockOptionAdminDto>> response = reference.adminPagesByQuery(query);
 		if ("200".equals(response.getCode())) {
+			List<StockOptionAdminDto> content = response.getResult().getContent();
+			// 设置股票的最新价格
+			if (content != null && content.size() > 0) {
+				List<String> codes = new ArrayList<>();
+				for (StockOptionAdminDto trade : content) {
+					codes.add(trade.getStockCode());
+				}
+				if (codes.size() > 0) {
+					List<StockMarket> stockMarketList = RetriveStockOverHttp.listStockMarket(restTemplate, codes);
+					if (stockMarketList != null && stockMarketList.size() > 0) {
+						for (int i = 0; i < stockMarketList.size(); i++) {
+							StockMarket market = stockMarketList.get(i);
+							StockOptionAdminDto record = content.get(i);
+							record.setStockName(market.getName());
+							record.setLastPrice(market.getLastPrice());
+							BigDecimal profit = record.getProfit();
+							if (profit == null) {
+								if (record.getLastPrice() != null && record.getBuyingPrice() != null
+										&& record.getLastPrice().compareTo(record.getBuyingPrice()) > 0) {
+									record.setProfit(record.getLastPrice().subtract(record.getBuyingPrice())
+											.divide(record.getBuyingPrice(), 10, RoundingMode.DOWN)
+											.multiply(record.getNominalAmount()).setScale(2, RoundingMode.HALF_EVEN));
+								} else {
+									record.setProfit(BigDecimal.ZERO);
+								}
+							}
+						}
+					}
+				}
+			}
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
@@ -78,12 +122,31 @@ public class StockOptionTradeBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public StockOptionTradeDto settlement(Long id, BigDecimal sellingPrice) {
-		Response<StockOptionTradeDto> response = reference.settlement(id, sellingPrice);
+	public StockOptionTradeDto findById(Long id) {
+		Response<StockOptionTradeDto> response = reference.fetchById(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
+	}
+
+	public StockOptionTradeDto settlement(Long id, BigDecimal sellingPrice) {
+		// T+3才能行权卖出
+		StockOptionTradeDto trade = this.findById(id);
+		Date buyingTime = trade.getBuyingTime();
+		// 计算最近的能申请行权的时间，T+3
+		Date now = new Date();
+		Date date = holidayBusiness.getAfterTradeDate(buyingTime, 3);
+		if ((trade.getState() == StockOptionTradeState.TURNOVER || trade.getState() == StockOptionTradeState.APPLYRIGHT
+				|| trade.getState() == StockOptionTradeState.INSETTLEMENT) && now.getTime() > date.getTime()) {
+			Response<StockOptionTradeDto> response = reference.settlement(id, sellingPrice);
+			if ("200".equals(response.getCode())) {
+				return response.getResult();
+			}
+			throw new ServiceException(response.getCode());
+		} else {
+			throw new ServiceException(ExceptionConstant.USERRIGHT_NOTMATCH_EXCEPTION);
+		}
 	}
 
 	public PageInfo<StockOptionRiskAdminDto> adminNormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {

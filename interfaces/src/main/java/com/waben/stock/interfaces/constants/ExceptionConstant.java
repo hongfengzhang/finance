@@ -61,6 +61,10 @@ public class ExceptionConstant {
 	public static final String BANKCARD_ALREADY_USERED_EXCEPTION = "2019";
 	// 该实名信息已被使用
 	public static final String REALNAME_ALREADY_USERED_EXCEPTION = "2020";
+	// 资金账户已冻结，不能执行资金相关的操作
+	public static final String CAPITALACCOUNT_FROZEN_EXCEPTION = "2021";
+	// 当前用户已被拉黑
+	public static final String PUBLISHER_DISABLED_EXCEPITON = "2022";
 
 	/* 业务异常 */
 	// 系统管理业务异常

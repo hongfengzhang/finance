@@ -1,6 +1,5 @@
 package com.waben.stock.applayer.strategist.security;
 
-import com.waben.stock.applayer.strategist.wrapper.filter.HiddenParamProcessFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +15,8 @@ import com.waben.stock.applayer.strategist.reference.CapitalAccountReference;
 import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.strategist.security.jwt.JWTLoginFilter;
+import com.waben.stock.applayer.strategist.service.RedisCache;
+import com.waben.stock.applayer.strategist.wrapper.filter.HiddenParamProcessFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,6 +29,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	@Qualifier("capitalAccountReference")
 	private CapitalAccountReference capitalAccountReference;
+	
+	@Autowired
+	private RedisCache redisCache;
+
+	public JWTAuthenticationFilter jWTAuthenticationFilter() {
+		JWTAuthenticationFilter result = new JWTAuthenticationFilter();
+		result.setRedisCache(redisCache);
+		return result;
+	}
 
 	@Bean
 	public JWTLoginFilter jwtLoginFilter() {
@@ -103,7 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
 		// 添加一个过滤器验证其他请求的Token是否合法
 		http.addFilterBefore(new HiddenParamProcessFilter(), UsernamePasswordAuthenticationFilter.class);
-		http.addFilterBefore(new JWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
 	}

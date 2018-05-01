@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
@@ -79,8 +80,13 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		response.setContentType("application/json;charset=utf-8");
 		response.setStatus(HttpServletResponse.SC_OK);
 		Response<String> result = new Response<>();
-		result.setCode(ExceptionConstant.USERNAME_OR_PASSWORD_ERROR_EXCEPTION);
-		result.setMessage(ExceptionMap.exceptionMap.get(ExceptionConstant.USERNAME_OR_PASSWORD_ERROR_EXCEPTION));
+		if (failed instanceof DisabledException) {
+			result.setCode(ExceptionConstant.PUBLISHER_DISABLED_EXCEPITON);
+			result.setMessage(ExceptionMap.exceptionMap.get(ExceptionConstant.PUBLISHER_DISABLED_EXCEPITON));
+		} else {
+			result.setCode(ExceptionConstant.USERNAME_OR_PASSWORD_ERROR_EXCEPTION);
+			result.setMessage(ExceptionMap.exceptionMap.get(ExceptionConstant.USERNAME_OR_PASSWORD_ERROR_EXCEPTION));
+		}
 		response.getWriter().println(JacksonUtil.encode(result));
 	}
 

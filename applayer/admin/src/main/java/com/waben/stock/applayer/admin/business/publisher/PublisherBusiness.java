@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.waben.stock.applayer.admin.business.cache.RedisCache;
 import com.waben.stock.applayer.admin.reference.PublisherReference;
 import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -26,6 +27,11 @@ public class PublisherBusiness {
 	@Qualifier("publisherReference")
 	private PublisherReference reference;
 
+	@Autowired
+	private RedisCache redisCache;
+
+	private static final String BLACKUSER_REDISKEY = "BLACKUSER";
+
 	public PageInfo<PublisherAdminDto> adminPagesByQuery(@RequestBody PublisherAdminQuery query) {
 		Response<PageInfo<PublisherAdminDto>> response = reference.adminPagesByQuery(query);
 		if ("200".equals(response.getCode())) {
@@ -37,6 +43,7 @@ public class PublisherBusiness {
 	public PublisherDto defriend(Long id) {
 		Response<PublisherDto> response = reference.defriend(id);
 		if ("200".equals(response.getCode())) {
+			redisCache.set(BLACKUSER_REDISKEY + "_" + String.valueOf(id), "true");
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
@@ -53,6 +60,7 @@ public class PublisherBusiness {
 	public PublisherDto recover(Long id) {
 		Response<PublisherDto> response = reference.recover(id);
 		if ("200".equals(response.getCode())) {
+			redisCache.remove(BLACKUSER_REDISKEY + "_" + String.valueOf(id));
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
@@ -63,7 +71,7 @@ public class PublisherBusiness {
 		if ("200".equals(response.getCode())) {
 			response.getResult().setPassword(PasswordCrypt.crypt(password));
 			reference.modify(response.getResult());
-			//TODO   发送信息通知用户
+			// TODO 发送信息通知用户
 		}
 		throw new ServiceException(response.getCode());
 	}

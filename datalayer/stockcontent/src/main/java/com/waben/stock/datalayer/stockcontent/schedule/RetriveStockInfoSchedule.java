@@ -58,7 +58,6 @@ public class RetriveStockInfoSchedule {
 					// 更新股票信息
 					Stock stockEntity = stockServcie.findByCode(stock.getVarietyType());
 					if (stockEntity != null) {
-						stockEntity.setStatus(stock.getExchangeStatus());
 						String stockName = stock.getVarietyName().replaceAll(" ", "").replaceAll("Ａ", "A");
 						stockEntity.setName(stockName);
 						stockEntity.setAbbr(PinyinUtil.getFirstSpell(stockName));
@@ -70,8 +69,8 @@ public class RetriveStockInfoSchedule {
 						stockServcie.revision(stockEntity);
 					} else {
 						stockEntity = new Stock();
+						stockEntity.setStatus(false);
 						stockEntity.setCode(stock.getVarietyType());
-						stockEntity.setStatus(stock.getExchangeStatus());
 						String stockName = stock.getVarietyName().replaceAll(" ", "").replaceAll("Ａ", "A");
 						stockEntity.setName(stockName);
 						stockEntity.setAbbr(PinyinUtil.getFirstSpell(stockName));
