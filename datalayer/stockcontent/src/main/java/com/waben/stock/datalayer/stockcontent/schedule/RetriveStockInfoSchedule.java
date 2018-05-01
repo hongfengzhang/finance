@@ -7,6 +7,7 @@ import java.util.TimerTask;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.datalayer.stockcontent.entity.Stock;
@@ -27,10 +28,10 @@ import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockVariety;
  * @author luomengan
  *
  */
-// @Component
+@Component
 public class RetriveStockInfoSchedule {
 
-	public static final long Retrive_Interval = 1 * 60 * 1000;
+	public static final long Retrive_Interval = 30 * 60 * 1000;
 
 	@Autowired
 	private StockService stockServcie;

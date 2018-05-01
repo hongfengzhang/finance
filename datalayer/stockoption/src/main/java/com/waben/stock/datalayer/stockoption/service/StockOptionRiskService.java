@@ -49,9 +49,17 @@ public class StockOptionRiskService {
 			BigDecimal amountLimit) {
 		if (isGlobal) {
 			StockOptionAmountLimit limit = limitDao.retrieveGlobal();
-			limit.setAmountLimit(amountLimit);
-			limit.setUpdateTime(new Date());
-			return limitDao.update(limit);
+			if (limit != null) {
+				limit.setAmountLimit(amountLimit);
+				limit.setUpdateTime(new Date());
+				return limitDao.update(limit);
+			} else {
+				limit = new StockOptionAmountLimit();
+				limit.setAmountLimit(amountLimit);
+				limit.setIsGlobal(true);
+				limit.setUpdateTime(new Date());
+				return limitDao.create(limit);
+			}
 		} else {
 			StockOptionAmountLimit limit = limitDao.retrieveByStockCode(stockCode);
 			if (limit != null) {
@@ -107,7 +115,7 @@ public class StockOptionRiskService {
 		String sql = String
 				.format("select t2.code, t2.name, t3.id as cycle_id, t3.name as cycle_name, IFNULL(t5.amount_limit, t6.amount_limit) as amount_limit_final, IFNULL(t7.nominal_amount, 0) as amount_limit_used, "
 						+ "t1.right_money_ratio as interface_ratio, t9.right_money_ratio as interface_ratio_reset, IFNULL(t9.right_money_ratio, t1.right_money_ratio) as interface_ratio_final, t4.ratio as markup_ratio, t8.right_money_ratio as org_ratio "
-						+ "from (select * from stock_option_org_quote group by stock_code, cycle order by stock_code asc, cycle asc, right_money_ratio desc) t1 "
+						+ "from (select * from (select * from stock_option_org_quote order by stock_code asc, cycle asc, right_money_ratio desc) innerquote group by stock_code, cycle) t1 "
 						+ "LEFT JOIN stock t2 on t1.stock_code=t2.code "
 						+ "LEFT JOIN stock_option_cycle t3 on t1.cycle=t3.cycle "
 						+ "LEFT JOIN p_price_markup_config t4 on t4.org_id=1 and t4.resource_type=2 and t4.resource_id=t3.id "
@@ -116,8 +124,8 @@ public class StockOptionRiskService {
 						+ "LEFT JOIN (select stock_code, sum(nominal_amount) as nominal_amount from stock_option_trade where (is_test is null or is_test=0) and ((state=1 and apply_time>='"
 						+ today + "') or (state=3 and buying_time>='" + today
 						+ "')) group by stock_code) t7 on t7.stock_code=t2.code "
-						+ "LEFT JOIN (select * from (select stock_code, right_money_ratio, buying_time from offline_stock_option_trade order by buying_time desc) b where buying_time>='"
-						+ today + "' GROUP BY stock_code) t8 on t2.code=t8.stock_code "
+						+ "LEFT JOIN (select * from (select stock_code, right_money_ratio, buying_time, cycle from offline_stock_option_trade order by buying_time desc) b where buying_time>='"
+						+ today + "' GROUP BY stock_code, cycle) t8 on t2.code=t8.stock_code and t8.cycle=t1.cycle "
 						+ "LEFT JOIN (select stock_code, right_money_ratio, cycle from stock_option_quote where update_time>='"
 						+ today
 						+ "' group by stock_code, cycle order by stock_code asc, cycle asc, right_money_ratio desc) t9 on t9.stock_code=t2.code and t9.cycle=t1.cycle "
@@ -160,7 +168,7 @@ public class StockOptionRiskService {
 		String sql = String
 				.format("select t2.code, t2.name, t3.id as cycle_id, t3.name as cycle_name, IFNULL(t5.amount_limit, t6.amount_limit) as amount_limit_final, IFNULL(t7.nominal_amount, 0) as amount_limit_used, "
 						+ "t1.right_money_ratio as interface_ratio, t9.right_money_ratio as interface_ratio_reset, IFNULL(t9.right_money_ratio, t1.right_money_ratio) as interface_ratio_final, t4.ratio as markup_ratio, t8.right_money_ratio as org_ratio "
-						+ "from (select * from stock_option_org_quote group by stock_code, cycle order by stock_code asc, cycle asc, right_money_ratio desc) t1 "
+						+ "from (select * from (select * from stock_option_org_quote order by stock_code asc, cycle asc, right_money_ratio desc) innerquote group by stock_code, cycle) t1 "
 						+ "LEFT JOIN stock t2 on t1.stock_code=t2.code "
 						+ "LEFT JOIN stock_option_cycle t3 on t1.cycle=t3.cycle "
 						+ "LEFT JOIN p_price_markup_config t4 on t4.org_id=1 and t4.resource_type=2 and t4.resource_id=t3.id "
@@ -169,8 +177,8 @@ public class StockOptionRiskService {
 						+ "LEFT JOIN (select stock_code, sum(nominal_amount) as nominal_amount from stock_option_trade where (is_test is null or is_test=0) and ((state=1 and apply_time>='"
 						+ today + "') or (state=3 and buying_time>='" + today
 						+ "')) group by stock_code) t7 on t7.stock_code=t2.code "
-						+ "LEFT JOIN (select * from (select stock_code, right_money_ratio, buying_time from offline_stock_option_trade order by buying_time desc) b where buying_time>='"
-						+ today + "' GROUP BY stock_code) t8 on t2.code=t8.stock_code "
+						+ "LEFT JOIN (select * from (select stock_code, right_money_ratio, buying_time, cycle from offline_stock_option_trade order by buying_time desc) b where buying_time>='"
+						+ today + "' GROUP BY stock_code, cycle) t8 on t2.code=t8.stock_code and t8.cycle=t1.cycle "
 						+ "LEFT JOIN (select stock_code, right_money_ratio, cycle from stock_option_quote where update_time>='"
 						+ today
 						+ "' group by stock_code, cycle order by stock_code asc, cycle asc, right_money_ratio desc) t9 on t9.stock_code=t2.code and t9.cycle=t1.cycle "

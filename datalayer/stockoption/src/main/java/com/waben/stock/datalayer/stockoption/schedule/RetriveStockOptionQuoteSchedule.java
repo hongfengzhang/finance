@@ -39,7 +39,7 @@ import com.waben.stock.interfaces.util.JacksonUtil;
  * @author luomengan
  *
  */
-// @Component
+@Component
 public class RetriveStockOptionQuoteSchedule {
 
 	/**
@@ -62,7 +62,7 @@ public class RetriveStockOptionQuoteSchedule {
 	public void initTask() {
 		if (needQuoteTask) {
 			Timer timer = new Timer();
-			timer.schedule(new RetriveTask(), 30 * 1000);
+			timer.schedule(new RetriveTask(), 60 * 1000);
 		}
 	}
 
