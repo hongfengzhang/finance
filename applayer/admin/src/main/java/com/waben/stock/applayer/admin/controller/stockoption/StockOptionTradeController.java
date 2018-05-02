@@ -196,6 +196,7 @@ public class StockOptionTradeController {
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	@ApiOperation(value = "导出期权交易信息")
 	public void export(StockOptionAdminQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
@@ -233,52 +234,47 @@ public class StockOptionTradeController {
 	private List<List<String>> dataList(List<StockOptionAdminDto> content) {
 		List<List<String>> result = new ArrayList<>();
 		for (StockOptionAdminDto trade : content) {
-			List<String> data = new ArrayList<>();
-			data.add(trade.getPublisherName());
-			data.add(trade.getPublisherPhone());
-			data.add(trade.getTradeNo());
-			data.add(trade.getStockCode() + "/" + trade.getStockName());
-			data.add(String.valueOf(trade.getNominalAmount()));
-			data.add(trade.getCycleName());
-			data.add(String.valueOf(trade.getRightMoneyRatio()));
-			data.add(String.valueOf(trade.getOrgRightMoneyRatio()));
 
-			// data.add(String.valueOf(trade.getTradeId()));
-			// data.add(trade.getTradeNo());
-			// data.add(String.valueOf(trade.getPublisherId()));
-			// data.add(trade.getPublisherPhone());
-			// data.add(trade.getStockCode() + "/" + trade.getStockName());
-			// data.add(trade.getCycleName());
-			// Integer state = trade.getState();
-			// String stateStr = String.valueOf(state);
-			// if (state == 1) {
-			// stateStr = "待确认";
-			// } else if (state == 2) {
-			// stateStr = "申购失败";
-			// } else if (state == 3) {
-			// stateStr = "持仓中";
-			// } else if (state == 4 || state == 5) {
-			// stateStr = "结算中";
-			// } else if (state == 6) {
-			// stateStr = "已结算";
-			// }
-			// data.add(stateStr);
-			// data.add(String.valueOf(trade.getNominalAmount()));
-			// data.add(String.valueOf(trade.getRightMoney()));
-			// data.add(trade.getBuyingTime() != null ?
-			// sdf.format(trade.getBuyingTime()) : "");
-			// data.add(String.valueOf(trade.getBuyingPrice() != null ?
-			// trade.getBuyingPrice() : ""));
-			// data.add(trade.getSellingTime() != null ?
-			// sdf.format(trade.getSellingTime()) : "");
-			// data.add(String.valueOf(trade.getSellingPrice() != null ?
-			// trade.getSellingPrice() : ""));
-			// data.add(String.valueOf(trade.getLastPrice() != null ?
-			// trade.getLastPrice() : ""));
-			// data.add(String.valueOf(trade.getProfit() != null ?
-			// trade.getProfit() : ""));
-			// data.add(trade.getOrgCode() + "/" + trade.getOrgName());
-			// result.add(data);
+			Boolean isTest = trade.getIsTest();
+			String test = "";
+			if (isTest != null) {
+				if (isTest) {
+					test = "是";
+				} else {
+					test = "否";
+				}
+			}
+			Boolean isMark = trade.getIsMark();
+			String mark = "";
+			if (isMark != null) {
+				if (isMark) {
+					mark = "是";
+				} else {
+					mark = "否";
+				}
+			}
+			List<String> data = new ArrayList<>();
+			data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+			data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+			data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
+			data.add(trade.getStockCode() + "/" + trade.getStockName());
+			data.add(String.valueOf(trade.getNominalAmount() == null ? "" : trade.getNominalAmount()));
+			data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
+			data.add(String.valueOf(trade.getOrgRightMoney() == null ? "" : trade.getOrgRightMoney()));
+			data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
+			data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+			data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
+			data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
+			data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
+			data.add(trade.getSellingTime() == null ? "" : sdf.format(trade.getSellingTime()));
+			data.add(String.valueOf(trade.getSellingPrice() != null ? trade.getSellingPrice() : ""));
+			data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
+			data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
+			data.add(test);
+			data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+			data.add(mark);
+
+			result.add(data);
 		}
 		return result;
 	}
@@ -291,17 +287,18 @@ public class StockOptionTradeController {
 		result.add("股票代码/名称");
 		result.add("名义本金");
 		result.add("行权周期");
-		result.add("平台权利金");
-		result.add("机构权利金");
+		result.add("权利金");
+		result.add("平台报价");
+		result.add("机构报价");
 		result.add("申购时间");
 		result.add("买入时间");
 		result.add("买入价格");
 		result.add("卖出时间");
 		result.add("卖出价格");
 		result.add("当前价格");
-		result.add("盈利（浮动）");
-		result.add("订单状态");
+		result.add("浮动盈亏");
 		result.add("是否测试");
+		result.add("订单状态");
 		result.add("是否标记");
 		return result;
 	}
