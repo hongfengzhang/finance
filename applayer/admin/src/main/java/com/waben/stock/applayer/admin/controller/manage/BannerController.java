@@ -57,7 +57,6 @@ public class BannerController {
     @ApiOperation(value = "通过轮播图id获取轮播图")
     public Response<BannerDto> fetchById(@PathVariable Long id) {
         BannerDto response = bannerBusiness.findById(id);
-        System.out.println("test");
         return new Response<>(response);
     }
 }
