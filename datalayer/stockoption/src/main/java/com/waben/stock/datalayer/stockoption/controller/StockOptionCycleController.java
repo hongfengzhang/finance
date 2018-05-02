@@ -38,5 +38,10 @@ public class StockOptionCycleController implements StockOptionCycleInterface {
 	public Response<StockOptionCycleDto> fetchById(@PathVariable Long id) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionCycleDto.class, service.findById(id), false));
 	}
+
+	@Override
+	public Response<StockOptionCycleDto> fetchByCycle(@PathVariable Integer cycle) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionCycleDto.class, service.findByCycle(cycle), false));
+	}
 	
 }

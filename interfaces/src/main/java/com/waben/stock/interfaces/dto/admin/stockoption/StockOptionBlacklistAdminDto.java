@@ -34,6 +34,10 @@ public class StockOptionBlacklistAdminDto {
 	 * 将该股票加入期权黑名单的备注
 	 */
 	private String stockOptionBlackRemark;
+	/**
+	 * 是否有接口费率
+	 */
+	private Boolean hasInterfaceRatio;
 
 	public Long getId() {
 		return id;
@@ -89,6 +93,22 @@ public class StockOptionBlacklistAdminDto {
 
 	public void setStockOptionBlackRemark(String stockOptionBlackRemark) {
 		this.stockOptionBlackRemark = stockOptionBlackRemark;
+	}
+
+	public Boolean getHasInterfaceRatio() {
+		return hasInterfaceRatio;
+	}
+
+	public void setHasInterfaceRatio(Boolean hasInterfaceRatio) {
+		this.hasInterfaceRatio = hasInterfaceRatio;
+	}
+
+	public void setHasInterfaceRatio(Integer hasInterfaceRatio) {
+		if (hasInterfaceRatio != null && hasInterfaceRatio == 1) {
+			this.hasInterfaceRatio = true;
+		} else {
+			this.hasInterfaceRatio = false;
+		}
 	}
 
 }

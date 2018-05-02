@@ -87,16 +87,9 @@ public class StockOptionTradeController {
 	@ApiOperation(value = "询价")
 	public Response<StockOptionQuoteWithBalanceDto> quote(@PathVariable("stockCode") String stockCode,
 			@PathVariable("cycle") Integer cycle, BigDecimal nominalAmount) {
+		StockOptionCycleDto cycleDto = cycleBusiness.fetchByCycle(cycle);
+		stockBusiness.checkStockOpton(stockCode, cycleDto.getId(), nominalAmount);
 		StockOptionQuoteDto quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, cycle, nominalAmount);
-		// TODO 因为2周的报价机构接口还未返回，使用1个月的报价*70%
-		// if (quote == null && cycle == 14) {
-		// quote = quoteBusiness.quote(SecurityUtil.getUserId(), stockCode, 30);
-		// if (quote != null) {
-		// quote.setRightMoneyRatio(
-		// quote.getRightMoneyRatio().multiply(new
-		// BigDecimal("0.7")).setScale(4, RoundingMode.HALF_EVEN));
-		// }
-		// }
 		if (quote == null) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION);
 		}
@@ -113,7 +106,7 @@ public class StockOptionTradeController {
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) String paymentPassword) {
 		logger.info("APP调用接口发布人{}申购期权{}，名义本金{}!", SecurityUtil.getUserId(), stockCode, nominalAmount);
 		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
-		stockBusiness.checkStock(stockCode);
+		stockBusiness.checkStockOpton(stockCode, cycleId, nominalAmount);
 		// 判断是否连续两个涨停
 		stockBusiness.check2LimitUp(stockCode);
 		// 判断名义本金是否大于20万，且是否是10万的整数倍

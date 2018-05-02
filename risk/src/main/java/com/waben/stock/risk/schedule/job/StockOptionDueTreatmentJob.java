@@ -41,7 +41,8 @@ public class StockOptionDueTreatmentJob implements InterruptableJob {
             Date expireTime = stockOptionTradeDto.getExpireTime();
             Date currentTime = new Date();
             flag = true;
-            if(fmt.format(expireTime).equals(fmt.format(currentTime))) {
+            // if(fmt.format(expireTime).equals(fmt.format(currentTime))) {
+            if(fmt.format(currentTime).compareTo(fmt.format(expireTime)) >= 0) {
                 while (flag) {
                     try {
                         StockOptionTradeDto result = stockOptionTradeBusiness.stockOptionDueTreatment(stockOptionTradeDto.getId());

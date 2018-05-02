@@ -207,21 +207,22 @@ public class StockOptionRiskService {
 	public Page<StockOptionBlacklistAdminDto> adminBlackPagesByQuery(StockOptionRiskAdminQuery query) {
 		String stockCodeCondition = "";
 		if (!StringUtil.isEmpty(query.getStockCode())) {
-			stockCodeCondition = " and t.code like '%" + query.getStockCode() + "%' ";
+			stockCodeCondition = " and z.code like '%" + query.getStockCode() + "%' ";
 		}
 		String stockNameCondition = "";
 		if (!StringUtil.isEmpty(query.getStockName())) {
-			stockNameCondition = " and t.name like '%" + query.getStockName() + "%' ";
+			stockNameCondition = " and z.name like '%" + query.getStockName() + "%' ";
 		}
 		String statusCondition = "";
 		if (query.getStatus() != null) {
-			statusCondition = " and t.status=" + (query.getStatus() ? "1" : "0") + " ";
+			statusCondition = " and z.status=" + (query.getStatus() ? "1" : "0") + " ";
 		}
-		String sql = String.format(
-				"select id, code, name, abbr, status, stock_option_state, stock_option_black_remark from stock t "
-						+ "where 1=1 %s %s %s and (t.stock_option_state=2 or t.status=0 or t.name like 'ST%%' or t.name like '*ST%%') order by t.code asc limit "
-						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				stockCodeCondition, stockNameCondition, statusCondition);
+		String sql = String
+				.format("select * from ((select t1.id, t1.code, t1.name, t1.abbr, t1.status, t1.stock_option_state, t1.stock_option_black_remark, false as has_interface_ratio from stock t1 "
+						+ "where not exists (select 1 from stock_option_org_quote t2 where t2.stock_code=t1.code) and (t1.stock_option_state is null or t1.stock_option_state=1) and t1.status=1 and t1.name not like 'ST%%' and t1.name not like '*ST%%') "
+						+ "union all (select id, code, name, abbr, status, stock_option_state, stock_option_black_remark, exists (select 1 from stock_option_org_quote where stock_code=code) as has_interface_ratio from stock where stock_option_state=2 or status=0 or name like 'ST%%' or name like '*ST%%')) z "
+						+ "where 1=1 %s %s %s order by z.code asc limit " + query.getPage() * query.getSize() + ","
+						+ query.getSize(), stockCodeCondition, stockNameCondition, statusCondition);
 		String countSql = "select count(*) from (" + sql.substring(0, sql.lastIndexOf("limit")) + ") c";
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
@@ -231,6 +232,7 @@ public class StockOptionRiskService {
 		setMethodMap.put(new Integer(4), new MethodDesc("setStatus", new Class<?>[] { Boolean.class }));
 		setMethodMap.put(new Integer(5), new MethodDesc("setStockOptionState", new Class<?>[] { Integer.class }));
 		setMethodMap.put(new Integer(6), new MethodDesc("setStockOptionBlackRemark", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setHasInterfaceRatio", new Class<?>[] { Integer.class }));
 		List<StockOptionBlacklistAdminDto> content = sqlDao.execute(StockOptionBlacklistAdminDto.class, sql,
 				setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
