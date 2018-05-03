@@ -30,8 +30,9 @@ public class CircularsDto {
 	private Boolean enable;
 	@ApiModelProperty(value = "公告链接")
 	private String href;
-	private StaffDto staffDto;
+	@ApiModelProperty(value = "创建人")
 	private String author;
+	private StaffDto staffDto;
 
 	public Long getId() {
 		return id;
@@ -89,20 +90,20 @@ public class CircularsDto {
 		this.href = href;
 	}
 
-	public StaffDto getStaffDto() {
-		return staffDto;
-	}
-
-	public void setStaffDto(StaffDto staffDto) {
-		this.staffDto = staffDto;
-	}
-
 	public String getAuthor() {
 		return author;
 	}
 
 	public void setAuthor(String author) {
 		this.author = author;
+	}
+
+	public StaffDto getStaffDto() {
+		return staffDto;
+	}
+
+	public void setStaffDto(StaffDto staffDto) {
+		this.staffDto = staffDto;
 	}
 
 }

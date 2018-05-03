@@ -4,16 +4,13 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
-import com.waben.stock.interfaces.dto.manage.CircularsDto;
-
-import net.sf.cglib.beans.BeanCopier;
 
 /***
  * @author yuyidi 2017-11-13 22:12:52
@@ -24,87 +21,89 @@ import net.sf.cglib.beans.BeanCopier;
 @Table(name = "circulars")
 public class Circulars {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
-	@Column(length = 22)
-	private String title;
-	@Column
-	private String content;
-	@Column(name = "create_time")
-	private Date createTime;
-	@Column(name = "expire_time")
-	private Date expireTime;
-	@Column
-	private Boolean enable;
-	@ManyToOne
-	@JoinColumn(name = "staff")
-	private Staff staff;
-	@Column
-	private String href;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(length = 22)
+    private String title;
+    @Column
+    private String content;
+    @Column(name = "create_time")
+    private Date createTime;
+    @Column(name = "expire_time")
+    private Date expireTime;
+    @Column
+    private Boolean enable;
 
-	public Long getId() {
-		return id;
-	}
+    @Column
+    private String href;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @ManyToOne(targetEntity = Staff.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff")
+    private Staff staff;
 
-	public String getTitle() {
-		return title;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getContent() {
-		return content;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Date getCreateTime() {
-		return createTime;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public Date getExpireTime() {
-		return expireTime;
-	}
+    public Date getCreateTime() {
+        return createTime;
+    }
 
-	public void setExpireTime(Date expireTime) {
-		this.expireTime = expireTime;
-	}
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
-	public Boolean getEnable() {
-		return enable;
-	}
+    public Date getExpireTime() {
+        return expireTime;
+    }
 
-	public void setEnable(Boolean enable) {
-		this.enable = enable;
-	}
+    public void setExpireTime(Date expireTime) {
+        this.expireTime = expireTime;
+    }
 
-	public String getHref() {
-		return href;
-	}
+    public Boolean getEnable() {
+        return enable;
+    }
 
-	public void setHref(String href) {
-		this.href = href;
-	}
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
+    }
 
-	public Staff getStaff() {
-		return staff;
-	}
+    public String getHref() {
+        return href;
+    }
 
-	public void setStaff(Staff staff) {
-		this.staff = staff;
-	}
+    public void setHref(String href) {
+        this.href = href;
+    }
 
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+    
 }
