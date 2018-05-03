@@ -34,6 +34,7 @@ import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQuery;
+import com.waben.stock.interfaces.util.StringUtil;
 
 /**
  * 资金流水 Service
@@ -67,15 +68,15 @@ public class CapitalFlowService {
 			publisherIdCondition = " and t1.publisher_id=" + query.getPublisherId() + " ";
 		}
 		String pulisherPhoneCondition = "";
-		if (query.getPulisherPhone() != null) {
+		if (!StringUtil.isEmpty(query.getPulisherPhone())) {
 			pulisherPhoneCondition = " and t5.phone like '%" + query.getPulisherPhone() + "%' ";
 		}
 		String publisherNameCondition = "";
-		if (query.getPublisherName() != null) {
+		if (!StringUtil.isEmpty(query.getPublisherName())) {
 			publisherNameCondition = " and t4.name like '%" + query.getPublisherName() + "%' ";
 		}
 		String stockCodeCondition = "";
-		if (query.getStockCode() != null) {
+		if (!StringUtil.isEmpty(query.getStockCode())) {
 			stockCodeCondition = " and t2.stock_code like '%" + query.getStockCode() + "%' and t3.stock_code like '%"
 					+ query.getStockCode() + "%' ";
 		}

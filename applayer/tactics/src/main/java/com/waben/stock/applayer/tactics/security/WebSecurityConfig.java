@@ -30,6 +30,44 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private RedisCache redisCache;
 
+	public static String[] noneAuthPaths = new String[] {
+		"/publisher/sendSms",
+		"/publisher/register",
+		"/publisher/modifyPassword",
+		"/system/**",
+		"/strategytype/**",
+		"/buyRecord/tradeDynamic", 
+		"/buyRecord/isTradeTime",
+		"/stock/**",
+		"/payment/tbfpaycallback", 
+		"/payment/tbfpayreturn", 
+		"/payment/czpaycallback",
+		"/payment/czpayreturn", 
+		"/payment/czwithholdcallback", 
+		"/payment/recharge",
+		"/payment/quickpaynotify",
+		"/alipay/callback",
+		"/cnaps/**",
+		"/jsonp/**",
+		"/crawler/**",
+		"/appversion/**",
+		"/appversionupgrade/**",
+		"/turbine/**",
+		"/stockoptiontrade/cyclelists", 
+		"/stockoptiontrade/tradeDynamic",
+		"/quickpay/qqcallback",
+		"/quickpay/jdcallback",
+		"/quickpay/qqpayreturn",
+		"/quickpay/jdpayreturn",
+		"/quickpay/wbreturn",
+		"/quickpay/h5wbreturn",
+		"/quickpay/wbcallback",
+		"/quickpay/protocolcallback",
+		"/activity/**",
+		"/ticket/**",
+		"/drawactivity/**"
+	};
+
 	public JWTAuthenticationFilter jWTAuthenticationFilter() {
 		JWTAuthenticationFilter result = new JWTAuthenticationFilter();
 		result.setJedisCache(redisCache);
@@ -77,51 +115,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/buy/**").permitAll();
 		http.authorizeRequests().antMatchers("/returnUrl.html").permitAll();
 		// 开放接口
-		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
-				.permitAll();
-		http.authorizeRequests()
-				.antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
-						"/system/stockMarketExponent", "/system/getAppHomeTopData", "/system/serverTime")
-				.permitAll();
-		http.authorizeRequests().antMatchers("/strategytype/lists", "/strategytype/experience").permitAll();
-		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
-		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
-				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking")
-				.permitAll();
-		http.authorizeRequests()
-				.antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn", "/payment/czpaycallback",
-						"/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge",
-						"/payment/quickpaynotify")
-				.permitAll();
-		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
-		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/applists").permitAll();
-		http.authorizeRequests()
-				.antMatchers("/jsonp/experienceSta", "/jsonp/{publisherId}/strategyqualify/{strategyTypeId}")
-				.permitAll();
-		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
-		http.authorizeRequests().antMatchers("/aliturnpay-page/**", "/paymentorder/**").permitAll();
-		http.authorizeRequests().antMatchers("/appversion/currentAppVersion", "/appversionupgrade/checkUpgrade")
-				.permitAll();
-		http.authorizeRequests().antMatchers("/turbine/**").permitAll();
-		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic").permitAll();
-		//回调放权
-		//彩拓京东QQ放权
-		http.authorizeRequests().antMatchers("/quickpay/qqcallback").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/jdcallback").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/qqpayreturn").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/jdpayreturn").permitAll();
-
-		//网贝放权
-		http.authorizeRequests().antMatchers("/quickpay/wbreturn").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/h5wbreturn").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/wbcallback").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/protocolcallback").permitAll();
-//		//测试放权  paypalnotify wbreturn wbcallback
-//		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
-//		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
-		http.authorizeRequests().antMatchers("/activity/**").permitAll();
-		http.authorizeRequests().antMatchers("/ticket/**").permitAll();
-		http.authorizeRequests().antMatchers("/drawactivity/**").permitAll();
+		for(String noneAuthPath : noneAuthPaths) {
+			http.authorizeRequests().antMatchers(noneAuthPath).permitAll();
+		}
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
@@ -139,6 +135,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
-		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**","/static/js/**");
+		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**", "/static/js/**");
 	}
 }

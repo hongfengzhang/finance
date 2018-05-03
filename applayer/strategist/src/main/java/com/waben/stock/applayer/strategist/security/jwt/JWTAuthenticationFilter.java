@@ -20,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.waben.stock.applayer.strategist.security.CustomUserDetails;
+import com.waben.stock.applayer.strategist.security.WebSecurityConfig;
 import com.waben.stock.applayer.strategist.service.RedisCache;
 
 public class JWTAuthenticationFilter extends GenericFilterBean {
@@ -27,6 +28,20 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 	private RedisCache redisCache;
 	
 	private static final String BLACKUSER_REDISKEY = "BLACKUSER";
+	
+	private boolean isNoneAuthPath(String url) {
+		boolean isMatch = false;
+		for (String noneAuthPath : WebSecurityConfig.noneAuthPaths) {
+			if (noneAuthPath.indexOf("**") > 0) {
+				noneAuthPath = noneAuthPath.replaceAll("\\*\\*", "");
+			}
+			if (url.indexOf(noneAuthPath) > 0) {
+				isMatch = true;
+				break;
+			}
+		}
+		return isMatch;
+	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
@@ -44,10 +59,16 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 				String isBlack = redisCache.get(BLACKUSER_REDISKEY + "_" + String.valueOf(userId));
 				// 判断该用户是否为黑名单用户
 				if(isBlack != null && "true".equals(isBlack)) {
-					httpRequest.getSession().invalidate();
-					HttpServletResponse httpResponse = (HttpServletResponse) response;
-					httpResponse.setStatus(409);
-					SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+					String url = httpRequest.getRequestURL().toString();
+					if (!isNoneAuthPath(url)) {
+						httpRequest.getSession().invalidate();
+						HttpServletResponse httpResponse = (HttpServletResponse) response;
+						httpResponse.setStatus(409);
+						if (SecurityContextHolder.getContext().getAuthentication() != null) {
+							SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+						}
+						return;
+					}
 				} else {
 					String serialCode = (String) tokenInfo.get("serialCode");
 					if (username != null && !"".equals(username)) {

@@ -39,9 +39,9 @@ public class CircularsService {
      */
     public List<Circulars> findCirculars(Boolean enable) {
         if (enable) {
-            return circularsDao.retrieveCirculars(enable);
+        	return circularsDao.retrieveCircularsWithInExpireTime(new Date());
         }
-        return circularsDao.retrieveCircularsWithInExpireTime(new Date());
+        return circularsDao.retrieveCirculars(enable);
     }
 
     public Page<Circulars> pagesByQuery(final CircularsQuery query) {

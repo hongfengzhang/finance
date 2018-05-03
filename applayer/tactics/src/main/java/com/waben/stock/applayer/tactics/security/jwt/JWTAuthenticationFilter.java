@@ -20,14 +20,29 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
+import com.waben.stock.applayer.tactics.security.WebSecurityConfig;
 import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 
 public class JWTAuthenticationFilter extends GenericFilterBean {
 
 	private RedisCache redisCache;
-	
+
 	private static final String BLACKUSER_REDISKEY = "BLACKUSER";
+
+	private boolean isNoneAuthPath(String url) {
+		boolean isMatch = false;
+		for (String noneAuthPath : WebSecurityConfig.noneAuthPaths) {
+			if (noneAuthPath.indexOf("**") > 0) {
+				noneAuthPath = noneAuthPath.replaceAll("\\*\\*", "");
+			}
+			if (url.indexOf(noneAuthPath) > 0) {
+				isMatch = true;
+				break;
+			}
+		}
+		return isMatch;
+	}
 
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
@@ -43,27 +58,29 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 				Long userId = new Long((Integer) tokenInfo.get("userId"));
 				String isBlack = redisCache.get(BLACKUSER_REDISKEY + "_" + String.valueOf(userId));
 				// 判断该用户是否为黑名单用户
-				if(isBlack != null && "true".equals(isBlack)) {
-					httpRequest.getSession().invalidate();
-					HttpServletResponse httpResponse = (HttpServletResponse) response;
-					httpResponse.setStatus(409);
-					SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+				if (isBlack != null && "true".equals(isBlack)) {
+					String url = httpRequest.getRequestURL().toString();
+					if (!isNoneAuthPath(url)) {
+						httpRequest.getSession().invalidate();
+						HttpServletResponse httpResponse = (HttpServletResponse) response;
+						httpResponse.setStatus(409);
+						if (SecurityContextHolder.getContext().getAuthentication() != null) {
+							SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+						}
+						return;
+					}
 				} else {
 					// 判断该token是否为最新登陆的token
 					String cacheToken = redisCache.get(String.format(RedisCacheKeyType.AppToken.getKey(), username));
 					if (cacheToken != null && !"".equals(cacheToken) && !cacheToken.equals(token)) {
 						String url = httpRequest.getRequestURL().toString();
-						if (url.indexOf("/publisher/sendSms") > 0 || url.indexOf("/publisher/register") > 0
-								|| url.indexOf("/publisher/modifyPassword") > 0 || url.indexOf("/crawler/") > 0
-								|| url.indexOf("/stock/") > 0 || url.indexOf("/strategytype/lists") > 0
-								|| url.indexOf("/buyRecord/tradeDynamic") > 0 || url.indexOf("/buyRecord/isTradeTime") > 0
-								|| url.indexOf("/stockoptiontrade/cyclelists") > 0
-								|| url.indexOf("/stockoptiontrade/tradeDynamic") > 0 || url.indexOf("/system/") > 0) {
-						} else {
+						if (!isNoneAuthPath(url)) {
 							httpRequest.getSession().invalidate();
 							HttpServletResponse httpResponse = (HttpServletResponse) response;
 							httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
-							SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+							if(SecurityContextHolder.getContext().getAuthentication() != null) {
+								SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+							}
 						}
 					} else {
 						// 判断username是否存在，以及token是否过期
@@ -74,8 +91,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 								// 如果为正确的token，将身份验证放入上下文中
 								List<GrantedAuthority> authorities = AuthorityUtils
 										.commaSeparatedStringToAuthorityList((String) tokenInfo.get("authorities"));
-								CustomUserDetails userDeatails = new CustomUserDetails(userId, serialCode, username, null,
-										authorities);
+								CustomUserDetails userDeatails = new CustomUserDetails(userId, serialCode, username,
+										null, authorities);
 								UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 										username, null, authorities);
 								authentication.setDetails(userDeatails);
@@ -85,12 +102,14 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 					}
 				}
 			} catch (Exception ex) {
+				ex.printStackTrace();
 				HttpServletResponse httpResponse = (HttpServletResponse) response;
 				httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
 			}
 		}
 
 		filterChain.doFilter(request, response);
+
 	}
 
 	public void setJedisCache(RedisCache redisCache) {
