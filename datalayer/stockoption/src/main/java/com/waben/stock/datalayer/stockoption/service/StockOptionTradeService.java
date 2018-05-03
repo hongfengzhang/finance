@@ -595,7 +595,7 @@ public class StockOptionTradeService {
 	@Transactional
 	public StockOptionTrade insettlement(Long id, BigDecimal sellingPrice) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
-		if (StockOptionTradeState.SETTLEMENTED == trade.getState()) {
+		if (!(StockOptionTradeState.APPLYRIGHT == trade.getState() || StockOptionTradeState.AUTOEXPIRE == trade.getState())) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
 		trade.setSellingPrice(sellingPrice);
