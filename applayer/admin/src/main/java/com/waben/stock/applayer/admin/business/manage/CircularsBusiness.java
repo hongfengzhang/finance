@@ -1,8 +1,11 @@
 package com.waben.stock.applayer.admin.business.manage;
 
 import com.waben.stock.applayer.admin.reference.CircularsReference;
+import com.waben.stock.applayer.admin.security.CustomUserDetails;
+import com.waben.stock.applayer.admin.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.CircularsDto;
+import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -51,6 +54,10 @@ public class CircularsBusiness {
     }
 
     public CircularsDto revision(CircularsDto requestDto) {
+        CustomUserDetails userDetails = SecurityUtil.getUserDetails();
+        StaffDto staffDto = new StaffDto();
+        staffDto.setId(userDetails.getUserId());
+        requestDto.setStaffDto(staffDto);
         Response<CircularsDto> response = circularsReference.modify(requestDto);
         String code = response.getCode();
         if ("200".equals(code)) {
@@ -62,6 +69,10 @@ public class CircularsBusiness {
     }
 
     public CircularsDto save(CircularsDto requestDto) {
+        CustomUserDetails userDetails = SecurityUtil.getUserDetails();
+        StaffDto staffDto = new StaffDto();
+        staffDto.setId(userDetails.getUserId());
+        requestDto.setStaffDto(staffDto);
         Response<CircularsDto> response = circularsReference.add(requestDto);
         String code = response.getCode();
         if ("200".equals(code)) {

@@ -50,6 +50,10 @@ public class CircularsController implements CircularsInterface {
     public Response<PageInfo<CircularsDto>> pages(@RequestBody CircularsQuery query) {
         Page<Circulars> page = circularsService.pagesByQuery(query);
         PageInfo<CircularsDto> result = PageToPageInfo.pageToPageInfo(page, CircularsDto.class);
+        for(int i=0; i<page.getContent().size();i++) {
+            String userName = page.getContent().get(i).getStaff().getUserName();
+            result.getContent().get(i).setAuthor(userName);
+        }
         return new Response<>(result);
     }
 
@@ -61,8 +65,10 @@ public class CircularsController implements CircularsInterface {
     }
 
     @Override
-    public Response<CircularsDto> modify(@RequestBody CircularsDto circularsDto) {
-        Circulars circulars = CopyBeanUtils.copyBeanProperties(Circulars.class, circularsDto, false);
+    public Response<CircularsDto> modify(@RequestBody CircularsDto requestDto) {
+        Circulars circulars = CopyBeanUtils.copyBeanProperties(Circulars.class, requestDto, false);
+        Staff staff = CopyBeanUtils.copyBeanProperties(Staff.class, requestDto.getStaffDto(), false);
+        circulars.setStaff(staff);
         Circulars result = circularsService.revision(circulars);
         CircularsDto response = CopyBeanUtils.copyBeanProperties(CircularsDto.class, result, false);
         return new Response<>(response);
@@ -76,6 +82,8 @@ public class CircularsController implements CircularsInterface {
     @Override
     public Response<CircularsDto> add(@RequestBody CircularsDto requestDto) {
         Circulars circulars = CopyBeanUtils.copyBeanProperties(Circulars.class, requestDto, false);
+        Staff staff = CopyBeanUtils.copyBeanProperties(Staff.class, requestDto.getStaffDto(), false);
+        circulars.setStaff(staff);
         CircularsDto result = CopyBeanUtils.copyBeanProperties(CircularsDto.class,circularsService.save(circulars),false);
         return new Response<>(result);
     }
