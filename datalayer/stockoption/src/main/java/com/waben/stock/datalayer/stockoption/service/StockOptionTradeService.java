@@ -139,14 +139,14 @@ public class StockOptionTradeService {
 			accountBusiness.rightMoney(stockOptionTrade.getPublisherId(), stockOptionTrade.getId(),
 					stockOptionTrade.getRightMoney());
 		} catch (ServiceException ex) {
-			if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
-				throw ex;
-			} else {
+			if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(ex.getType())) {
 				try {
 					// TODO 再一次确认是否已经扣款
 				} catch (ServiceException frozenEx) {
 					throw ex;
 				}
+			} else {
+				throw ex;
 			}
 		}
 		// 站外消息推送
@@ -468,13 +468,13 @@ public class StockOptionTradeService {
 		}
 		String endRatioCondition = "";
 		if (query.getEndRatio() != null) {
-			endRatioCondition = " and t1.right_money_ratio<'"
+			endRatioCondition = " and t1.right_money_ratio<='"
 					+ query.getEndRatio().divide(new BigDecimal("100")).toString() + "' ";
 		}
 		String sql = String.format(
 				"select t1.id, t1.trade_no, t4.name, t3.phone, t1.stock_code, t1.stock_name, t1.cycle_name, t1.nominal_amount, t1.right_money_ratio, "
 						+ "t1.right_money, t2.right_money_ratio as org_right_money_ratio, t2.right_money as org_right_money, t1.apply_time, t1.buying_time, t1.buying_price, t1.selling_time, t1.selling_price, "
-						+ "t1.profit, t1.is_test, t1.is_mark, t1.state from stock_option_trade t1 "
+						+ "t1.profit, t1.is_test, t1.is_mark, t1.state, t1.right_time from stock_option_trade t1 "
 						+ "LEFT JOIN offline_stock_option_trade t2 on t1.offline_trade=t2.id "
 						+ "LEFT JOIN publisher t3 on t1.publisher_id=t3.id "
 						+ "LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
@@ -506,6 +506,7 @@ public class StockOptionTradeService {
 		setMethodMap.put(new Integer(18), new MethodDesc("setIsTest", new Class<?>[] { Boolean.class }));
 		setMethodMap.put(new Integer(19), new MethodDesc("setIsMark", new Class<?>[] { Boolean.class }));
 		setMethodMap.put(new Integer(20), new MethodDesc("setState", new Class<?>[] { StockOptionTradeState.class }));
+		setMethodMap.put(new Integer(21), new MethodDesc("setRightTime", new Class<?>[] { Date.class }));
 		List<StockOptionAdminDto> content = sqlDao.execute(StockOptionAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),

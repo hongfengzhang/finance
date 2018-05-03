@@ -27,5 +27,9 @@ public class StockOptionCycleService {
 	public StockOptionCycle findById(Long id) {
 		return cycleDao.retrieve(id);
 	}
+
+	public StockOptionCycle findByCycle(Integer cycle) {
+		return cycleDao.retrieveByCycle(cycle);
+	}
 	
 }

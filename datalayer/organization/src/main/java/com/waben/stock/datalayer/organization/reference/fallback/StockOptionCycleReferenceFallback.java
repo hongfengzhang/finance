@@ -28,4 +28,9 @@ public class StockOptionCycleReferenceFallback implements StockOptionCycleRefere
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<StockOptionCycleDto> fetchByCycle(Integer cycle) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

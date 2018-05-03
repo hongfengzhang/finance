@@ -34,7 +34,6 @@ public class RetriveStockOverHttp {
 	public static List<StockMarket> listStockMarket(RestTemplate restTemplate, List<String> codes) {
 		String url = "http://lemi.esongbai.com/stk/stk/list.do?codes="
 				+ codes.toString().substring(1, codes.toString().length() - 1).replaceAll(" ", "");
-		System.out.println("获取股票行情url:" + url);
 		String response = restTemplate.getForObject(url, String.class);
 		try {
 			JsonNode dataNode = JacksonUtil.objectMapper.readValue(response, JsonNode.class).get("data");

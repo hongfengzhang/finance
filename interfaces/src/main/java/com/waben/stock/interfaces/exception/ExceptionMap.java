@@ -74,7 +74,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.UNIONPAY_SINGLELIMIT_EXCEPTION, "银联支付单笔最大额度为5000");
 		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION, "该股票已涨停，不能购买");
 		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION, "该股票已跌停，不能购买");
-		exceptionMap.put(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION, "ST、*ST不能购买");
+		exceptionMap.put(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION, "ST股无法申购请购买其它股票");
 		exceptionMap.put(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION, "不支持的股票，请更换股票");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_2UPLIMIT_CANNOTBY_EXCEPTION, "连续两个涨停的股票不能申购");
 
@@ -97,21 +97,22 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "机构名称已存在");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
-		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION, "期权交易状态不匹配，不支持该操作");
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,
+				"期权交易状态不匹配，不支持该操作");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION, "自主行权发布人不匹配，不支持该操作");
 		exceptionMap.put(ExceptionConstant.USERRIGHT_NOTMATCH_EXCEPTION, "T+3才能申请行权");
-		exceptionMap.put(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION, "该只股票暂时没有机构报价，请更换一只股票");
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION, "该股票暂时无法申购，请购买其它股票");
 		exceptionMap.put(ExceptionConstant.INQUIRY_RESULT_NOT_FOUND, "期权询价结果不存在");
 		exceptionMap.put(ExceptionConstant.NONTRADINGDAY_EXCEPTION, "非交易日不能申请行权");
-		
-		exceptionMap.put(ExceptionConstant.NO_LIVEPLAYER_EXCEPTION, "无直播频道");
+		exceptionMap.put(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION, "该股票暂时无法申购，请购买其它股票");
+		exceptionMap.put(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION, "今日额度已用完，明日09：00开售");
 
+		exceptionMap.put(ExceptionConstant.NO_LIVEPLAYER_EXCEPTION, "无直播频道");
 
 		exceptionMap.put(ExceptionConstant.INSUFFICIENT_NUMBER_OF_DRAW, "抽奖次数不足");
 		exceptionMap.put(ExceptionConstant.OVERSTEP_NUMBER_OF_DRAW, "今日抽奖已达上限");
 		exceptionMap.put(ExceptionConstant.PRIZE_IS_EMPTY, "奖品已空");
 		exceptionMap.put(ExceptionConstant.FAILED_TO_UPLOAD_PICTURES, "上传图片失败");
-
 
 	}
 }
