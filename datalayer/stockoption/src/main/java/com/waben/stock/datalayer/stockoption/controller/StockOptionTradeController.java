@@ -186,9 +186,16 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> settlement(@PathVariable Long id, BigDecimal sellingPrice) {
-		logger.info("结算权期权交易{}_{}!", id, sellingPrice);
-		StockOptionTrade trade = stockOptionTradeService.settlement(id, sellingPrice);
+	public Response<StockOptionTradeDto> insettlement(@PathVariable Long id, BigDecimal sellingPrice) {
+		logger.info("行权结算中权期权交易{}_{}!", id, sellingPrice);
+		StockOptionTrade trade = stockOptionTradeService.insettlement(id, sellingPrice);
+		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
+	}
+	
+	@Override
+	public Response<StockOptionTradeDto> dosettlement(@PathVariable Long id) {
+		logger.info("给用户结算权期权交易{}_{}!", id);
+		StockOptionTrade trade = stockOptionTradeService.dosettlement(id);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
 	}
 

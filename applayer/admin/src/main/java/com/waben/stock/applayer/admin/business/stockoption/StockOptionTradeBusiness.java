@@ -129,8 +129,16 @@ public class StockOptionTradeBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	
+	public StockOptionTradeDto dosettlement(Long id) {
+		Response<StockOptionTradeDto> response = reference.dosettlement(id);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
-	public StockOptionTradeDto settlement(Long id, BigDecimal sellingPrice) {
+	public StockOptionTradeDto insettlement(Long id, BigDecimal sellingPrice) {
 		// T+3才能行权卖出
 		StockOptionTradeDto trade = this.findById(id);
 		Date buyingTime = trade.getBuyingTime();
@@ -138,8 +146,8 @@ public class StockOptionTradeBusiness {
 		Date now = new Date();
 		Date date = holidayBusiness.getAfterTradeDate(buyingTime, 3);
 		if ((trade.getState() == StockOptionTradeState.TURNOVER || trade.getState() == StockOptionTradeState.APPLYRIGHT
-				|| trade.getState() == StockOptionTradeState.INSETTLEMENT) && now.getTime() > date.getTime()) {
-			Response<StockOptionTradeDto> response = reference.settlement(id, sellingPrice);
+				|| trade.getState() == StockOptionTradeState.AUTOEXPIRE) && now.getTime() > date.getTime()) {
+			Response<StockOptionTradeDto> response = reference.insettlement(id, sellingPrice);
 			if ("200".equals(response.getCode())) {
 				return response.getResult();
 			}

@@ -99,11 +99,6 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> settlement(Long id, BigDecimal sellingPrice) {
-		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
 	public Response<PageInfo<StockOptionRiskAdminDto>> adminNormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
@@ -138,6 +133,16 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
 
 	@Override
 	public Response<StockOptionAmountLimitDto> fetchGlobalStockOptionLimit() {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> insettlement(Long id, BigDecimal sellingPrice) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> dosettlement(Long id) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
     

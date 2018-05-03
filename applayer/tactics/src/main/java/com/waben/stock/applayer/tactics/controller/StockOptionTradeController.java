@@ -166,7 +166,7 @@ public class StockOptionTradeController {
 	public Response<PageInfo<StockOptionTradeWithMarketDto>> pagesHoldPosition(int page, int size) {
 		StockOptionTradeUserQuery query = new StockOptionTradeUserQuery(page, size, SecurityUtil.getUserId(),
 				new StockOptionTradeState[] { StockOptionTradeState.WAITCONFIRMED, StockOptionTradeState.TURNOVER,
-						StockOptionTradeState.APPLYRIGHT, StockOptionTradeState.INSETTLEMENT });
+						StockOptionTradeState.APPLYRIGHT, StockOptionTradeState.INSETTLEMENT, StockOptionTradeState.AUTOEXPIRE });
 		PageInfo<StockOptionTradeDto> pageInfo = tradeBusiness.pagesByUserQuery(query);
 		List<StockOptionTradeWithMarketDto> content = tradeBusiness.wrapMarketInfo(pageInfo.getContent());
 		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),

@@ -107,11 +107,6 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 	}
 
 	@Override
-	public Response<StockOptionTradeDto> settlement(Long id, BigDecimal sellingPrice) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
 	public Response<PageInfo<StockOptionRiskAdminDto>> adminNormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
@@ -146,6 +141,16 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 
 	@Override
 	public Response<StockOptionAmountLimitDto> fetchGlobalStockOptionLimit() {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> insettlement(Long id, BigDecimal sellingPrice) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> dosettlement(Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

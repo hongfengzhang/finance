@@ -35,9 +35,9 @@ public class StockOptionBlacklistAdminDto {
 	 */
 	private String stockOptionBlackRemark;
 	/**
-	 * 是否有接口费率
+	 * 是否有接口费率，0表示无，1表示有
 	 */
-	private Boolean hasInterfaceRatio;
+	private Integer hasInterfaceRatio;
 
 	public Long getId() {
 		return id;
@@ -95,16 +95,12 @@ public class StockOptionBlacklistAdminDto {
 		this.stockOptionBlackRemark = stockOptionBlackRemark;
 	}
 
-	public Boolean getHasInterfaceRatio() {
+	public Integer getHasInterfaceRatio() {
 		return hasInterfaceRatio;
 	}
 
 	public void setHasInterfaceRatio(Integer hasInterfaceRatio) {
-		if (hasInterfaceRatio != null && hasInterfaceRatio == 1) {
-			this.hasInterfaceRatio = true;
-		} else {
-			this.hasInterfaceRatio = false;
-		}
+		this.hasInterfaceRatio = hasInterfaceRatio;
 	}
 
 }
