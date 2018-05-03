@@ -63,18 +63,20 @@ public class CapitalFlowController {
 		PageInfo<CapitalFlowAdminDto> result = business.adminPagesByQuery(query);
 		File file = null;
 		FileInputStream is = null;
-//		List<String> columnDescList = null;
+		List<String> columnDescList = null;
 		try {
 			String fileName = "capitalflow_" + String.valueOf(System.currentTimeMillis());
 			file = File.createTempFile(fileName, ".xls");
-//			if ((result.getContent().get(0).getType().getIndex()).equals("1")) {
-//				columnDescList = rechargeColumnDescList();
-//			} else if ((result.getContent().get(0).getType().getIndex()).equals("2")) {
-//				columnDescList = withdrawalsColumnDescList();
-//			} else {
-			List<String> columnDescList = columnDescList();
-//			}
-			List<List<String>> dataList = dataList(result.getContent());
+			if (query.getQueryType() == 0 || query.getQueryType() == 1) {
+				columnDescList = columnDescList(); // 流水总表和交易流水
+			} else if (query.getQueryType() == 2) {
+				columnDescList = rechargeColumnDescList();// 充值流水
+			} else if (query.getQueryType() == 3) {
+				columnDescList = withdrawalsColumnDescList();// 提现流水
+			} else {
+				columnDescList = columnDescList();
+			}
+			List<List<String>> dataList = dataList(result.getContent(), query.getQueryType());
 			PoiUtil.writeDataToExcel("流水数据", file, columnDescList, dataList);
 
 			is = new FileInputStream(file);
@@ -98,29 +100,11 @@ public class CapitalFlowController {
 		}
 	}
 
-	private List<List<String>> dataList(List<CapitalFlowAdminDto> content) {
+	private List<List<String>> dataList(List<CapitalFlowAdminDto> content, Integer type) {
 		List<List<String>> result = new ArrayList<>();
 		for (CapitalFlowAdminDto trade : content) {
 			List<String> data = new ArrayList<>();
-			/*if ((trade.getType().getIndex()).equals("1")) {
-				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
-				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
-				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
-				data.add(trade.getOccurrenceTime() == null ? "" : sdf.format(trade.getOccurrenceTime()));
-				data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
-				data.add(String.valueOf(trade.getAvailableBalance() != null ? trade.getAvailableBalance() : ""));
-				data.add(String.valueOf(PaymentType.getByIndex(trade.getPaymentType().toString()).getType()));
-			} else if ((trade.getType().getIndex()).equals("2")) {
-				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
-				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
-				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
-				data.add(trade.getOccurrenceTime() == null ? "" : sdf.format(trade.getOccurrenceTime()));
-				data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
-				data.add(String.valueOf(trade.getAvailableBalance() != null ? trade.getAvailableBalance() : ""));
-				
-				data.add(trade.getBankCard() == null ? "" : trade.getBankCard());
-				data.add(trade.getBankName() == null ? "" : trade.getBankName());
-			} else {*/
+			if (type == 0 || type == 1) {
 				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
@@ -131,15 +115,53 @@ public class CapitalFlowController {
 				data.add(String.valueOf(trade.getAvailableBalance() != null ? trade.getAvailableBalance() : ""));
 				data.add(trade.getsStockCode() != null ? trade.getsStockCode() : "");
 				data.add(trade.getsStockName() != null ? trade.getsStockName() : "");
-				Integer payType = trade.getPaymentType();
+				/*Integer payType = trade.getPaymentType();
 				String recharge = "";
 				if (payType != null) {
 					recharge = PaymentType.getByIndex(String.valueOf(payType)).getType();
 				}
 				data.add(recharge);
 				data.add(trade.getBankCard() == null ? "" : trade.getBankCard());
+				data.add(trade.getBankName() == null ? "" : trade.getBankName());*/
+			} else if (type == 2) {
+				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getOccurrenceTime() == null ? "" : sdf.format(trade.getOccurrenceTime()));
+				data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
+				data.add(String.valueOf(trade.getAvailableBalance() != null ? trade.getAvailableBalance() : ""));
+				data.add(String.valueOf(PaymentType.getByIndex(trade.getPaymentType().toString()).getType()));
+				
+			} else if(type == 3) {
+				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getOccurrenceTime() == null ? "" : sdf.format(trade.getOccurrenceTime()));
+				data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
+				data.add(String.valueOf(trade.getAvailableBalance() != null ? trade.getAvailableBalance() : ""));
+				
+				data.add(trade.getBankCard() == null ? "" : trade.getBankCard());
 				data.add(trade.getBankName() == null ? "" : trade.getBankName());
-//			}
+			}else{
+				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
+				data.add(trade.getOccurrenceTime() == null ? "" : sdf.format(trade.getOccurrenceTime()));
+				data.add(String.valueOf(trade.getType().getType() == null ? "" : trade.getType().getType()));
+				data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
+				data.add(String.valueOf(trade.getAvailableBalance() != null ? trade.getAvailableBalance() : ""));
+				data.add(trade.getsStockCode() != null ? trade.getsStockCode() : "");
+				data.add(trade.getsStockName() != null ? trade.getsStockName() : "");
+				/*Integer payType = trade.getPaymentType();
+				String recharge = "";
+				if (payType != null) {
+					recharge = PaymentType.getByIndex(String.valueOf(payType)).getType();
+				}
+				data.add(recharge);
+				data.add(trade.getBankCard() == null ? "" : trade.getBankCard());
+				data.add(trade.getBankName() == null ? "" : trade.getBankName());*/
+			}
 			result.add(data);
 		}
 		return result;
@@ -156,14 +178,14 @@ public class CapitalFlowController {
 		result.add("交易金额");
 		result.add("账户余额");
 		result.add("股票代码");
-		result.add("股票名称");
-		result.add("充值方式");
+		result.add("标的股票");
+		/*result.add("充值方式");
 		result.add("银行卡号");
-		result.add("银行名称");
+		result.add("银行名称");*/
 		return result;
 	}
 
-	/*// 充值
+	// 充值
 	private List<String> rechargeColumnDescList() {
 		List<String> result = new ArrayList<>();
 		result.add("序号");
@@ -188,6 +210,6 @@ public class CapitalFlowController {
 		result.add("银行卡号");
 		result.add("银行名称");
 		return result;
-	}*/
+	}
 
 }

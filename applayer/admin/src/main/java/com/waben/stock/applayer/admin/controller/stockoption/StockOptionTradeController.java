@@ -203,11 +203,23 @@ public class StockOptionTradeController {
 		PageInfo<StockOptionAdminDto> result = business.adminPagesByQuery(query);
 		File file = null;
 		FileInputStream is = null;
+		
+		List<String> columnDescList = null;
 		try {
 			String fileName = "optiontrade_" + String.valueOf(System.currentTimeMillis());
 			file = File.createTempFile(fileName, ".xls");
-			List<String> columnDescList = columnDescList();
-			List<List<String>> dataList = dataList(result.getContent());
+			if (query.getQueryType() == 0 || query.getQueryType() == 3) {//订单列表和结算
+				columnDescList = columnDescList();
+			}else if(query.getQueryType() == 1){//询价列表
+				columnDescList = inquiryDescList();
+			}else if(query.getQueryType() == 2){ //持仓列表
+				columnDescList = positionDescList();
+			}else if(query.getQueryType() == 4){ //撤单列表
+				columnDescList = cancelDescList();
+			}else{
+				columnDescList = columnDescList();
+			}
+			List<List<String>> dataList = dataList(result.getContent(), query.getQueryType());
 			PoiUtil.writeDataToExcel("期权交易数据", file, columnDescList, dataList);
 
 			is = new FileInputStream(file);
@@ -231,48 +243,114 @@ public class StockOptionTradeController {
 		}
 	}
 
-	private List<List<String>> dataList(List<StockOptionAdminDto> content) {
+	private List<List<String>> dataList(List<StockOptionAdminDto> content, Integer type) {
 		List<List<String>> result = new ArrayList<>();
 		for (StockOptionAdminDto trade : content) {
 
 			Boolean isTest = trade.getIsTest();
 			String test = "";
-			if (isTest != null) {
-				if (isTest) {
-					test = "是";
-				} else {
-					test = "否";
-				}
+			if (isTest != null && isTest) {
+				test = "是";
+			} else {
+				test = "否";
 			}
 			Boolean isMark = trade.getIsMark();
 			String mark = "";
-			if (isMark != null) {
-				if (isMark) {
-					mark = "是";
-				} else {
-					mark = "否";
-				}
+			if (isMark != null && isMark) {
+				mark = "是";
+			} else {
+				mark = "否";
 			}
 			List<String> data = new ArrayList<>();
-			data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
-			data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
-			data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
-			data.add(trade.getStockCode() + "/" + trade.getStockName());
-			data.add(String.valueOf(trade.getNominalAmount() == null ? "" : trade.getNominalAmount()));
-			data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
-			data.add(String.valueOf(trade.getOrgRightMoney() == null ? "" : trade.getOrgRightMoney()));
-			data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
-			data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
-			data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
-			data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
-			data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
-			data.add(trade.getSellingTime() == null ? "" : sdf.format(trade.getSellingTime()));
-			data.add(String.valueOf(trade.getSellingPrice() != null ? trade.getSellingPrice() : ""));
-			data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
-			data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
-			data.add(test);
-			data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
-			data.add(mark);
+			if (type == 0 || type == 3) {
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
+				data.add(trade.getStockCode() + "/" + trade.getStockName());
+				data.add(String.valueOf(trade.getNominalAmount() == null ? "" : trade.getNominalAmount()));
+				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
+				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
+				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
+				data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
+				data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
+				data.add(trade.getSellingTime() == null ? "" : sdf.format(trade.getSellingTime()));
+				data.add(String.valueOf(trade.getSellingPrice() != null ? trade.getSellingPrice() : ""));
+				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
+				data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
+				data.add(test);
+				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(mark);
+			}else if(type == 1){
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
+				data.add(trade.getStockCode() + "/" + trade.getStockName());
+				data.add(String.valueOf(trade.getNominalAmount() == null ? "" : trade.getNominalAmount()));
+				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
+				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
+				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
+				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
+				data.add(test);
+				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+			}else if(type == 2){
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
+				data.add(trade.getStockCode() + "/" + trade.getStockName());
+				data.add(String.valueOf(trade.getNominalAmount() == null ? "" : trade.getNominalAmount()));
+				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
+				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
+				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
+				data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
+				data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
+				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
+				data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
+				data.add(test);
+				data.add(trade.getRightTime() == null ? "" : sdf.format(trade.getRightTime()));
+				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(mark);
+			}else if(type == 4){
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
+				data.add(trade.getStockCode() + "/" + trade.getStockName());
+				data.add(String.valueOf(trade.getNominalAmount() == null ? "" : trade.getNominalAmount()));
+				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
+				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
+				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
+				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
+				data.add(test);
+				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+			}else{
+				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
+				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
+				data.add(trade.getStockCode() + "/" + trade.getStockName());
+				data.add(String.valueOf(trade.getNominalAmount() == null ? "" : trade.getNominalAmount()));
+				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
+				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
+				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
+				data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
+				data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
+				data.add(trade.getSellingTime() == null ? "" : sdf.format(trade.getSellingTime()));
+				data.add(String.valueOf(trade.getSellingPrice() != null ? trade.getSellingPrice() : ""));
+				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
+				data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
+				data.add(test);
+				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(mark);
+			}
+			
 
 			result.add(data);
 		}
@@ -300,6 +378,68 @@ public class StockOptionTradeController {
 		result.add("是否测试");
 		result.add("订单状态");
 		result.add("是否标记");
+		return result;
+	}
+	
+	// 询价
+	private List<String> inquiryDescList() {
+		List<String> result = new ArrayList<>();
+		result.add("客户姓名");
+		result.add("交易账户");
+		result.add("订单编号");
+		result.add("股票代码/名称");
+		result.add("名义本金");
+		result.add("行权周期");
+		result.add("权利金");
+		result.add("平台报价");
+		result.add("机构报价");
+		result.add("申购时间");
+		result.add("当前价格");
+		result.add("是否测试");
+		result.add("订单状态");
+		return result;
+	}
+	
+	// 持仓
+	private List<String> positionDescList() {
+		List<String> result = new ArrayList<>();
+		result.add("客户姓名");
+		result.add("交易账户");
+		result.add("订单编号");
+		result.add("股票代码/名称");
+		result.add("名义本金");
+		result.add("行权周期");
+		result.add("权利金");
+		result.add("平台报价");
+		result.add("机构报价");
+		result.add("申购时间");
+		result.add("买入时间");
+		result.add("买入价格");
+		result.add("当前价格");
+		result.add("浮动盈亏");
+		result.add("是否测试");
+		result.add("申请行权时间");
+		result.add("订单状态");
+		result.add("是否标记");
+		return result;
+	}
+	
+	//撤单
+	private List<String> cancelDescList() {
+		List<String> result = new ArrayList<>();
+		result.add("客户姓名");
+		result.add("交易账户");
+		result.add("订单编号");
+		result.add("股票代码/名称");
+		result.add("名义本金");
+		result.add("行权周期");
+		result.add("权利金");
+		result.add("平台报价");
+		result.add("机构报价");
+		result.add("申购时间");
+		result.add("当前价格");
+		result.add("是否测试");
+		result.add("订单状态");
 		return result;
 	}
 

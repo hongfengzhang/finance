@@ -61,6 +61,18 @@ public class StockOptionAdminQuery extends PageAndSortQuery {
 	 * 平台权利金比例-查询结束值
 	 */
 	private BigDecimal endRatio;
+	
+	/**
+	 * 查询类型
+	 * <ul>
+	 * <li>0订单列表</li>
+	 * <li>1询价列表</li>
+	 * <li>2持仓列表</li>
+	 * <li>3结算列表</li>
+	 * <li>4撤单列表</li>
+	 * </ul>
+	 */
+	private Integer queryType;
 
 	public String getPublisherName() {
 		return publisherName;
@@ -156,6 +168,14 @@ public class StockOptionAdminQuery extends PageAndSortQuery {
 
 	public void setEndRatio(BigDecimal endRatio) {
 		this.endRatio = endRatio;
+	}
+
+	public Integer getQueryType() {
+		return queryType;
+	}
+
+	public void setQueryType(Integer queryType) {
+		this.queryType = queryType;
 	}
 
 }

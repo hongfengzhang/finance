@@ -45,6 +45,17 @@ public class CapitalFlowAdminQuery extends PageAndSortQuery {
 	 */
 	private Integer paymentType;
 
+	/**
+	 * 查询类型
+	 * <ul>
+	 * <li>0流水总表</li>
+	 * <li>1交易流水</li>
+	 * <li>2充值流水</li>
+	 * <li>3提现流水</li>
+	 * </ul>
+	 */
+	private Integer queryType;
+
 	public String getPublisherName() {
 		return publisherName;
 	}
@@ -107,6 +118,14 @@ public class CapitalFlowAdminQuery extends PageAndSortQuery {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public Integer getQueryType() {
+		return queryType;
+	}
+
+	public void setQueryType(Integer queryType) {
+		this.queryType = queryType;
 	}
 
 }
