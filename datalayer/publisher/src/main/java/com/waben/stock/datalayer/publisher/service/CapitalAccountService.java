@@ -50,6 +50,7 @@ import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
+import com.waben.stock.interfaces.util.StringUtil;
 
 @Service
 public class CapitalAccountService {
@@ -591,11 +592,11 @@ public class CapitalAccountService {
 			publisherIdCondition = " and t2.id=" + query.getPublisherId() + " ";
 		}
 		String nameCondition = "";
-		if (query.getName() != null) {
+		if (!StringUtil.isEmpty(query.getName())) {
 			nameCondition = " and t3.name like '%" + query.getName() + "%' ";
 		}
 		String phoneCondition = "";
-		if (query.getPhone() != null) {
+		if (!StringUtil.isEmpty(query.getPhone())) {
 			phoneCondition = " and t2.phone like '%" + query.getPhone() + "%' ";
 		}
 		String stateCondition = "";
