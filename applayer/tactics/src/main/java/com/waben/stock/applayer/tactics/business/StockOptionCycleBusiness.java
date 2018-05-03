@@ -40,4 +40,12 @@ public class StockOptionCycleBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public StockOptionCycleDto fetchByCycle(Integer cycle) {
+		Response<StockOptionCycleDto> response = stockOptionCycleReference.fetchByCycle(cycle);
+		if (response.getCode().equals("200")) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

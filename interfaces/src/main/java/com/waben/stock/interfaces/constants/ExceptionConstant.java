@@ -133,7 +133,7 @@ public class ExceptionConstant {
 	public static final String STOCK_ARRIVEUPLIMIT_EXCEPTION = "6026";
 	// 该股票已跌停，不能购买
 	public static final String STOCK_ARRIVEDOWNLIMIT_EXCEPTION = "6027";
-	// ST、*ST不能购买
+	// ST股无法申购请购买其它股票
 	public static final String ST_STOCK_CANNOTBUY_EXCEPTION = "6028";
 	// 不支持的股票，请更换股票
 	public static final String BLACKLIST_STOCK_EXCEPTION = "6029";
@@ -178,12 +178,16 @@ public class ExceptionConstant {
 	public static final String STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION = "9003";
 	// T+3才能申请行权
 	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
-	// 该只股票暂时没有机构报价，请更换一只股票
+	// 该股票暂时无法申购，请购买其它股票
 	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
 	// 期权询价结果不存在
 	public static final String INQUIRY_RESULT_NOT_FOUND = "9006";
 	// 非交易日不能申请行权
 	public static final String NONTRADINGDAY_EXCEPTION = "9007";
+	// 该股票暂时无法申购，请购买其它股票
+	public static final String STOCK_ABNORMAL_EXCEPTION = "9008";
+	// 今日额度已用完，明日09：00开售
+	public static final String STOCK_AMOUNTLIMIT_EXCEPTION = "9009";
 
 	// 直播
 	// 无直播频道

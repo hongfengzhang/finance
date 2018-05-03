@@ -29,6 +29,7 @@ import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockKLine;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockTimeLine;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
@@ -36,6 +37,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
@@ -61,6 +63,9 @@ public class StockBusiness {
 	@Autowired
 	@Qualifier("favoriteStockReference")
 	private FavoriteStockReference favoriteStockReference;
+	
+	@Autowired
+	private StockOptionTradeBusiness optionTradeBusiness;
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
@@ -215,6 +220,56 @@ public class StockBusiness {
 		StockDto stock = findByCode(stockCode);
 		if (!stock.getStatus()) {
 			throw new ServiceException(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION);
+		}
+	}
+	
+	/**
+	 * 检查期权股票
+	 * 
+	 * @param stockCode
+	 *            股票代码
+	 */
+	public void checkStockOpton(String stockCode, Long cycleId, BigDecimal nominalAmount) {
+		// 检查股票状态
+		List<String> codes = new ArrayList<>();
+		StockDto stock = findByCode(stockCode);
+		codes.add(stockCode);
+		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+		if (stock.getStockOptionState() != null && stock.getStockOptionState() == 2) {
+			throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);
+		} else if (market.getStatus() == 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(0.1)) >= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(-0.1)) <= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION);
+		} else if (market.getName().toUpperCase().startsWith("ST") || market.getName().toUpperCase().startsWith("*ST")
+				|| market.getName().toUpperCase().startsWith("S*ST")) {
+			throw new ServiceException(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION);
+		}
+		// 检查股票接口费率>=机构费率，并且还有额度
+		StockOptionRiskAdminQuery query = new StockOptionRiskAdminQuery();
+		query.setStockCode(stockCode);
+		query.setCycleId(cycleId);
+		PageInfo<StockOptionRiskAdminDto> abnormal = optionTradeBusiness.adminAbnormalRiskPagesByQuery(query);
+		if (abnormal.getContent() != null && abnormal.getContent().size() > 0) {
+			StockOptionRiskAdminDto optionRisk = abnormal.getContent().get(0);
+			if (optionRisk.getInterfaceRatioFinal() != null && optionRisk.getOrgRatio() != null
+					&& optionRisk.getInterfaceRatioFinal().compareTo(optionRisk.getOrgRatio()) < 0) {
+				throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);
+			} else if (nominalAmount != null && (nominalAmount.compareTo(optionRisk.getAmountLimitLeft()) > 0
+					|| optionRisk.getAmountLimitLeft().compareTo(BigDecimal.ZERO) <= 0)) {
+				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
+			}
+		}
+		// 前面的条件满足，再看看是否额度充足
+		PageInfo<StockOptionRiskAdminDto> normal = optionTradeBusiness.adminNormalRiskPagesByQuery(query);
+		if (normal.getContent() != null && normal.getContent().size() > 0) {
+			if (nominalAmount != null && nominalAmount.compareTo(normal.getContent().get(0).getAmountLimitLeft()) > 0) {
+				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
+			}
+		} else {
+			throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);
 		}
 	}
 

@@ -17,6 +17,7 @@ import com.waben.stock.applayer.tactics.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
 import com.waben.stock.interfaces.dto.manage.AnalogDataDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
 import com.waben.stock.interfaces.enums.AnalogDataType;
@@ -25,6 +26,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
@@ -51,6 +53,22 @@ public class StockOptionTradeBusiness {
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
+
+	public PageInfo<StockOptionRiskAdminDto> adminNormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		Response<PageInfo<StockOptionRiskAdminDto>> response = tradeReference.adminNormalRiskPagesByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<StockOptionRiskAdminDto> adminAbnormalRiskPagesByQuery(StockOptionRiskAdminQuery query) {
+		Response<PageInfo<StockOptionRiskAdminDto>> response = tradeReference.adminAbnormalRiskPagesByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 	public StockOptionTradeDto add(StockOptionTradeDto stockOptionTradeDto) {
 		Response<StockOptionTradeDto> response = tradeReference.add(stockOptionTradeDto);

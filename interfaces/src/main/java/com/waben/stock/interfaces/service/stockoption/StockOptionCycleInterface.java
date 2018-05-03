@@ -16,5 +16,8 @@ public interface StockOptionCycleInterface {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	Response<StockOptionCycleDto> fetchById(@PathVariable("id") Long id);
+	
+	@RequestMapping(value = "/cycle/{cycle}", method = RequestMethod.GET)
+	Response<StockOptionCycleDto> fetchByCycle(@PathVariable("cycle") Integer cycle);
 
 }

@@ -45,6 +45,8 @@ public class JWTAuthenticationFilter extends GenericFilterBean {
 				// 判断该用户是否为黑名单用户
 				if(isBlack != null && "true".equals(isBlack)) {
 					httpRequest.getSession().invalidate();
+					HttpServletResponse httpResponse = (HttpServletResponse) response;
+					httpResponse.setStatus(409);
 					SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
 				} else {
 					String serialCode = (String) tokenInfo.get("serialCode");

@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.stockoption.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,6 +17,7 @@ import com.waben.stock.datalayer.stockoption.entity.StockOptionOrgQuote;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionQuote;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionCycleDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionOrgQuoteDao;
+import com.waben.stock.datalayer.stockoption.repository.StockOptionQuoteDao;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
@@ -29,6 +31,9 @@ public class StockOptionQuoteService {
 
 	@Autowired
 	private StockOptionOrgQuoteDao orgQuoteDao;
+	
+	@Autowired
+	private StockOptionQuoteDao quoteDao;
 
 	@Autowired
 	private StockOptionCycleDao cycleDao;
@@ -78,6 +83,16 @@ public class StockOptionQuoteService {
 		}
 		return null;
 	}
+	
+	private Long getTodayMillseconds() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		
+		return cal.getTime().getTime();
+	}
 
 	/**
 	 * 客户询价
@@ -97,7 +112,14 @@ public class StockOptionQuoteService {
 		StockOptionOrgQuote orgQuote = orgQuote(stockCode, cycle);
 		if (orgQuote != null) {
 			StockOptionCycle cycleObj = cycleDao.retrieveByCycle(cycle);
-			StockOptionQuote result = CopyBeanUtils.copyBeanProperties(StockOptionQuote.class, orgQuote, false);
+			StockOptionQuote result = null;
+			StockOptionQuote quote = quoteDao.retrieveByStockCodeAndCycle(stockCode, cycle);
+			if(quote != null && quote.getUpdateTime().getTime() >= getTodayMillseconds()) {
+				// 如果手动设置了接口费率，使用手动设置的接口费率
+				result = CopyBeanUtils.copyBeanProperties(StockOptionQuote.class, quote, false);
+			} else {
+				result = CopyBeanUtils.copyBeanProperties(StockOptionQuote.class, orgQuote, false);
+			}
 			if (cycleObj == null) {
 				// 使用spring cloud config中配置的加价比例
 				BigDecimal rightMoneyRatio = result.getRightMoneyRatio();

@@ -1,7 +1,6 @@
 package com.waben.stock.interfaces.dto.admin.stockoption;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Date;
 
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
@@ -71,6 +70,10 @@ public class StockOptionAdminDto {
 	 * 成交价格
 	 */
 	private BigDecimal buyingPrice;
+	/**
+	 * 用户申请行权时间
+	 */
+	private Date rightTime;
 	/**
 	 * 卖出时间
 	 */
@@ -274,6 +277,14 @@ public class StockOptionAdminDto {
 
 	public void setIsMark(Boolean isMark) {
 		this.isMark = isMark;
+	}
+
+	public Date getRightTime() {
+		return rightTime;
+	}
+
+	public void setRightTime(Date rightTime) {
+		this.rightTime = rightTime;
 	}
 
 }

@@ -24,6 +24,14 @@ public class StockOptionCycleBusiness {
 	@Qualifier("stockOptionCycleReference")
 	private StockOptionCycleReference stockOptionCycleReference;
 
+	public StockOptionCycleDto fetchByCycle(Integer cycle) {
+		Response<StockOptionCycleDto> response = stockOptionCycleReference.fetchByCycle(cycle);
+		if (response.getCode().equals("200")) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
 	public List<StockOptionCycleDto> lists() {
 		Response<List<StockOptionCycleDto>> response = stockOptionCycleReference.lists();
 		if (response.getCode().equals("200")) {
