@@ -291,11 +291,18 @@ public class StockOptionTradeService {
 		return result;
 	}
 
+	/**
+	 * 监控到自动到期，状态变成为“自动到期”
+	 * 
+	 * @param id
+	 *            期权交易ID
+	 * @return 期权交易
+	 */
 	@Transactional
 	public StockOptionTrade exercise(Long id) {
 		StockOptionTrade stockOptionTrade = stockOptionTradeDao.retrieve(id);
 		// 申购信息
-		stockOptionTrade.setState(StockOptionTradeState.INSETTLEMENT);
+		stockOptionTrade.setState(StockOptionTradeState.AUTOEXPIRE);
 		stockOptionTrade.setUpdateTime(new Date());
 		StockOptionTrade result = stockOptionTradeDao.update(stockOptionTrade);
 		// 站外消息推送
@@ -541,6 +548,7 @@ public class StockOptionTradeService {
 		offlineTrade.setSellingTime(trade.getSellingTime());
 		offlineTrade.setSellingPrice(trade.getSellingPrice());
 		offlineTrade.setProfit(trade.getProfit());
+		offlineTrade.setState(OfflineStockOptionTradeState.SETTLEMENTED);
 		return offlineTradeDao.update(offlineTrade);
 	}
 
@@ -585,7 +593,7 @@ public class StockOptionTradeService {
 	}
 
 	@Transactional
-	public StockOptionTrade settlement(Long id, BigDecimal sellingPrice) {
+	public StockOptionTrade insettlement(Long id, BigDecimal sellingPrice) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
 		if (StockOptionTradeState.SETTLEMENTED == trade.getState()) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
@@ -593,7 +601,7 @@ public class StockOptionTradeService {
 		trade.setSellingPrice(sellingPrice);
 		Date date = new Date();
 		trade.setSellingTime(date);
-		trade.setState(StockOptionTradeState.SETTLEMENTED);
+		trade.setState(StockOptionTradeState.INSETTLEMENT);
 		BigDecimal profit = BigDecimal.ZERO;
 		if (sellingPrice.compareTo(trade.getBuyingPrice()) > 0) {
 			profit = sellingPrice.subtract(trade.getBuyingPrice()).divide(trade.getBuyingPrice(), 10, RoundingMode.DOWN)
@@ -602,13 +610,28 @@ public class StockOptionTradeService {
 		trade.setProfit(profit);
 		trade.setUpdateTime(date);
 		stockOptionTradeDao.update(trade);
+		// 线下期权交易结算
+		settlementOfflineTrade(trade);
+		// 站外消息推送
+		sendOutsideMessage(trade);
+		return trade;
+	}
+
+	@Transactional
+	public StockOptionTrade dosettlement(Long id) {
+		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
+		if (StockOptionTradeState.INSETTLEMENT != trade.getState()) {
+			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		trade.setState(StockOptionTradeState.SETTLEMENTED);
+		trade.setUpdateTime(new Date());
+		stockOptionTradeDao.update(trade);
+		BigDecimal profit = trade.getProfit();
 		if (profit.compareTo(BigDecimal.ZERO) > 0) {
 			// 用户收益
 			accountBusiness.optionProfit(trade.getPublisherId(), trade.getId(), profit);
 		}
-		// 现在期权交易结算
-		settlementOfflineTrade(trade);
-		// 给推广机构结算
+		// 给渠道推广机构结算
 		if (trade.getOfflineTrade().getRightMoney() != null) {
 			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
 			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),

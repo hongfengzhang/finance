@@ -188,11 +188,17 @@ public class StockOptionTradeController {
 		return new Response<>(business.mark(id, isMark));
 	}
 
+	@PutMapping(value = "/insettlement/{id}")
+	@ApiOperation(value = "行权结算中")
+	public Response<StockOptionTradeDto> insettlement(@PathVariable("id") Long id,
+			@RequestParam("sellingPrice") BigDecimal sellingPrice) {
+		return new Response<>(business.insettlement(id, sellingPrice));
+	}
+	
 	@PutMapping(value = "/dosettlement/{id}")
 	@ApiOperation(value = "结算")
-	public Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id,
-			@RequestParam("sellingPrice") BigDecimal sellingPrice) {
-		return new Response<>(business.settlement(id, sellingPrice));
+	public Response<StockOptionTradeDto> dosettlement(@PathVariable("id") Long id) {
+		return new Response<>(business.dosettlement(id));
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)

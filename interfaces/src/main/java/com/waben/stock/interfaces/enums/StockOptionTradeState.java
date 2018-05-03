@@ -21,7 +21,9 @@ public enum StockOptionTradeState implements CommonalityEnum {
 
 	INSETTLEMENT("5", "结算中"),
 
-	SETTLEMENTED("6", "已结算");
+	SETTLEMENTED("6", "已结算"),
+	
+	AUTOEXPIRE("7", "自动到期");
 
 	private String index;
 

@@ -129,15 +129,25 @@ public interface StockOptionTradeInterface {
 	Response<StockOptionTradeDto> mark(@PathVariable("id") Long id, @RequestParam("isMark") Boolean isMark);
 
 	/**
-	 * 正式行权结算
+	 * 正式行权结算，状态变更为结算中
+	 * 
+	 * @param id
+	 *            期权交易ID
+	 * @return 期权交易
+	 */
+	@RequestMapping(value = "/insettlement/{id}", method = RequestMethod.PUT)
+	Response<StockOptionTradeDto> insettlement(@PathVariable("id") Long id,
+			@RequestParam("sellingPrice") BigDecimal sellingPrice);
+	
+	/**
+	 * 给用户结算，状态变更为结算
 	 * 
 	 * @param id
 	 *            期权交易ID
 	 * @return 期权交易
 	 */
 	@RequestMapping(value = "/dosettlement/{id}", method = RequestMethod.PUT)
-	Response<StockOptionTradeDto> settlement(@PathVariable("id") Long id,
-			@RequestParam("sellingPrice") BigDecimal sellingPrice);
+	Response<StockOptionTradeDto> dosettlement(@PathVariable("id") Long id);
 
 	/**
 	 * 分页查询可正常期权交易的股票（风控）

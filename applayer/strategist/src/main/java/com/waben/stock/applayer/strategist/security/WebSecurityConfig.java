@@ -32,6 +32,37 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private RedisCache redisCache;
+	
+	public static String[] noneAuthPaths = new String[] {
+		"/publisher/sendSms",
+		"/publisher/register",
+		"/publisher/modifyPassword",
+		"/system/**",
+		"/strategytype/**",
+		"/buyRecord/tradeDynamic", 
+		"/buyRecord/isTradeTime",
+		"/stock/**",
+		"/payment/tbfpaycallback", 
+		"/payment/tbfpayreturn", 
+		"/payment/czpaycallback",
+		"/payment/czpayreturn", 
+		"/payment/czwithholdcallback", 
+		"/payment/recharge",
+		"/payment/wabennetbankpaynotify", 
+		"/payment/wabennetbankpay/h5wbreturn",
+		"/cnaps/**",
+		"/jsonp/**",
+		"/crawler/**",
+		"/turbine/**",
+		"/stockoptiontrade/cyclelists", 
+		"/stockoptiontrade/tradeDynamic",
+		"/alipay/callback",
+		"/quickpay/sdpaycallback",
+		"/quickpay/sdpayreturn",
+		"/quickpay/wbreturn",
+		"/quickpay/wbcallback",
+		"/quickpay/protocolcallback"
+	};
 
 	public JWTAuthenticationFilter jWTAuthenticationFilter() {
 		JWTAuthenticationFilter result = new JWTAuthenticationFilter();
@@ -60,7 +91,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.authenticationProvider(customAuthenticationProvider());
 	}
-
+	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable();
@@ -80,32 +111,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/buy/**").permitAll();
 		http.authorizeRequests().antMatchers("/returnUrl.html").permitAll();
 		// 开放接口
-		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
-				.permitAll();
-		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/getEnabledCircularsList",
-				"/system/stockMarketExponent", "/system/getAppHomeTopData", "/system/serverTime").permitAll();
-		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
-		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
-		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
-				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking")
-				.permitAll();
-		http.authorizeRequests()
-				.antMatchers("/payment/tbfpaycallback", "/payment/tbfpayreturn", "/payment/czpaycallback",
-						"/payment/czpayreturn", "/payment/czwithholdcallback", "/payment/recharge",
-						"/payment/wabennetbankpaynotify", "/payment/wabennetbankpay/h5wbreturn")
-				.permitAll();
-		http.authorizeRequests().antMatchers("/alipay/callback").permitAll();
-		http.authorizeRequests().antMatchers("/cnaps/lists/{cityCode}", "/cnaps/bankinfo/pclists").permitAll();
-		http.authorizeRequests().antMatchers("/crawler/**").permitAll();
-		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic")
-				.permitAll();
-		// 支付回调
-		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/wbreturn").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/wbcallback").permitAll();
-		http.authorizeRequests().antMatchers("/quickpay/protocolcallback").permitAll();
-
+		for(String noneAuthPath : noneAuthPaths) {
+			http.authorizeRequests().antMatchers(noneAuthPath).permitAll();
+		}
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 

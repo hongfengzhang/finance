@@ -44,7 +44,7 @@ public class PromotionStockOptionTradeService {
 		}
 		String stateCondition = "";
 		if (query.getState() != null && !"".equals(query.getState()) && !"0".equals(query.getState())) {
-			if ("4-5".equals(stateCondition)) {
+			if ("4-5".equals(query.getState())) {
 				stateCondition = " and (t1.state='4' or t1.state='5')";
 			} else {
 				stateCondition = " and t1.state='" + query.getState() + "' ";

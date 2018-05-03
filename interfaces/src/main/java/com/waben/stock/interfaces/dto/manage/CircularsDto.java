@@ -1,9 +1,11 @@
 package com.waben.stock.interfaces.dto.manage;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.util.Date;
 
 /**
  * 通告 Dto
@@ -11,7 +13,8 @@ import java.util.Date;
  * @author luomengan
  *
  */
-@ApiModel(value="CircularsDto",description="公告对象")
+@JsonIgnoreProperties(ignoreUnknown = true)
+@ApiModel(value = "CircularsDto", description = "公告对象")
 public class CircularsDto {
 	@ApiModelProperty(value = "公告id")
 	private Long id;
@@ -27,6 +30,9 @@ public class CircularsDto {
 	private Boolean enable;
 	@ApiModelProperty(value = "公告链接")
 	private String href;
+	@ApiModelProperty(value = "创建人")
+	private String author;
+	private StaffDto staffDto;
 
 	public Long getId() {
 		return id;
@@ -83,4 +89,21 @@ public class CircularsDto {
 	public void setHref(String href) {
 		this.href = href;
 	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public StaffDto getStaffDto() {
+		return staffDto;
+	}
+
+	public void setStaffDto(StaffDto staffDto) {
+		this.staffDto = staffDto;
+	}
+
 }

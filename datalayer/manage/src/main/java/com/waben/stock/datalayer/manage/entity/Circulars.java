@@ -4,20 +4,19 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.waben.stock.interfaces.dto.manage.CircularsDto;
-
-import net.sf.cglib.beans.BeanCopier;
-
 /***
-* @author yuyidi 2017-11-13 22:12:52
-* @class com.waben.stock.datalayer.manage.entity.Circulars
-* @description 通告
-*/
+ * @author yuyidi 2017-11-13 22:12:52
+ * @class com.waben.stock.datalayer.manage.entity.Circulars
+ * @description 通告
+ */
 @Entity
 @Table(name = "circulars")
 public class Circulars {
@@ -38,6 +37,10 @@ public class Circulars {
 
     @Column
     private String href;
+
+    @ManyToOne(targetEntity = Staff.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff")
+    private Staff staff;
 
     public Long getId() {
         return id;
@@ -94,4 +97,13 @@ public class Circulars {
     public void setHref(String href) {
         this.href = href;
     }
+
+    public Staff getStaff() {
+        return staff;
+    }
+
+    public void setStaff(Staff staff) {
+        this.staff = staff;
+    }
+    
 }
