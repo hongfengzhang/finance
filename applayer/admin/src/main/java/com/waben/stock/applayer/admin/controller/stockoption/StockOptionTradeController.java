@@ -277,7 +277,7 @@ public class StockOptionTradeController {
 				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
 				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
 				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
-				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "0" : trade.getOrgRightMoneyRatio()));
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
 				data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
@@ -297,7 +297,7 @@ public class StockOptionTradeController {
 				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
 				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
 				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
-				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "0" : trade.getOrgRightMoneyRatio()));
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(test);
@@ -311,7 +311,7 @@ public class StockOptionTradeController {
 				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
 				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
 				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
-				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "0" : trade.getOrgRightMoneyRatio()));
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
 				data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
@@ -330,7 +330,7 @@ public class StockOptionTradeController {
 				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
 				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
 				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
-				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "0" : trade.getOrgRightMoneyRatio()));
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(test);
@@ -344,7 +344,7 @@ public class StockOptionTradeController {
 				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
 				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
 				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
-				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "" : trade.getOrgRightMoneyRatio()));
+				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "0" : trade.getOrgRightMoneyRatio()));
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
 				data.add(String.valueOf(trade.getBuyingPrice() == null ? "" : trade.getBuyingPrice()));
