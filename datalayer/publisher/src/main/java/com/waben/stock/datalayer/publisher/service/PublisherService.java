@@ -37,6 +37,7 @@ import com.waben.stock.interfaces.pojo.query.PublisherQuery;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 import com.waben.stock.interfaces.util.ShareCodeUtil;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
@@ -204,11 +205,11 @@ public class PublisherService {
 
 	public Page<PublisherAdminDto> adminPagesByQuery(PublisherAdminQuery query) {
 		String nameCondition = "";
-		if (query.getName() != null) {
+		if (!StringUtil.isEmpty(query.getName())) {
 			nameCondition = " and t2.name like '%" + query.getName() + "%' ";
 		}
 		String phoneCondition = "";
-		if (query.getPhone() != null) {
+		if (!StringUtil.isEmpty(query.getPhone())) {
 			phoneCondition = " and t1.phone like '%" + query.getPhone() + "%' ";
 		}
 		String startTimeCondition = "";
