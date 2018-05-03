@@ -99,10 +99,6 @@ public class StockOptionBlacklistAdminDto {
 		return hasInterfaceRatio;
 	}
 
-	public void setHasInterfaceRatio(Boolean hasInterfaceRatio) {
-		this.hasInterfaceRatio = hasInterfaceRatio;
-	}
-
 	public void setHasInterfaceRatio(Integer hasInterfaceRatio) {
 		if (hasInterfaceRatio != null && hasInterfaceRatio == 1) {
 			this.hasInterfaceRatio = true;

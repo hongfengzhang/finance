@@ -254,14 +254,15 @@ public class StockBusiness {
 			if (optionRisk.getInterfaceRatioFinal() != null && optionRisk.getOrgRatio() != null
 					&& optionRisk.getInterfaceRatioFinal().compareTo(optionRisk.getOrgRatio()) < 0) {
 				throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);
-			} else if (nominalAmount != null && nominalAmount.compareTo(optionRisk.getAmountLimitLeft()) < 0) {
+			} else if (nominalAmount != null && (nominalAmount.compareTo(optionRisk.getAmountLimitLeft()) > 0
+					|| optionRisk.getAmountLimitLeft().compareTo(BigDecimal.ZERO) <= 0)) {
 				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
 			}
 		}
 		// 前面的条件满足，再看看是否额度充足
 		PageInfo<StockOptionRiskAdminDto> normal = optionTradeBusiness.adminNormalRiskPagesByQuery(query);
 		if (normal.getContent() != null && normal.getContent().size() > 0) {
-			if (nominalAmount != null && nominalAmount.compareTo(normal.getContent().get(0).getAmountLimitLeft()) < 0) {
+			if (nominalAmount != null && nominalAmount.compareTo(normal.getContent().get(0).getAmountLimitLeft()) > 0) {
 				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
 			}
 		} else {

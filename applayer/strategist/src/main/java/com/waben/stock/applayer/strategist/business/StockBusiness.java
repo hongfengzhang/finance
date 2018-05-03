@@ -230,20 +230,6 @@ public class StockBusiness {
 	 *            股票代码
 	 */
 	public void checkStockOpton(String stockCode, Long cycleId, BigDecimal nominalAmount) {
-		// 检查股票接口费率>=机构费率，并且还有额度
-		StockOptionRiskAdminQuery query = new StockOptionRiskAdminQuery();
-		query.setStockCode(stockCode);
-		query.setCycleId(cycleId);
-		PageInfo<StockOptionRiskAdminDto> abnormal = optionTradeBusiness.adminAbnormalRiskPagesByQuery(query);
-		if (abnormal.getContent() != null && abnormal.getContent().size() > 0) {
-			StockOptionRiskAdminDto optionRisk = abnormal.getContent().get(0);
-			if (optionRisk.getInterfaceRatioFinal() != null && optionRisk.getOrgRatio() != null
-					&& optionRisk.getInterfaceRatioFinal().compareTo(optionRisk.getOrgRatio()) < 0) {
-				throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);
-			} else if (nominalAmount.compareTo(optionRisk.getAmountLimitLeft()) < 0) {
-				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
-			}
-		}
 		// 检查股票状态
 		List<String> codes = new ArrayList<>();
 		StockDto stock = findByCode(stockCode);
@@ -260,6 +246,30 @@ public class StockBusiness {
 		} else if (market.getName().toUpperCase().startsWith("ST") || market.getName().toUpperCase().startsWith("*ST")
 				|| market.getName().toUpperCase().startsWith("S*ST")) {
 			throw new ServiceException(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION);
+		}
+		// 检查股票接口费率>=机构费率，并且还有额度
+		StockOptionRiskAdminQuery query = new StockOptionRiskAdminQuery();
+		query.setStockCode(stockCode);
+		query.setCycleId(cycleId);
+		PageInfo<StockOptionRiskAdminDto> abnormal = optionTradeBusiness.adminAbnormalRiskPagesByQuery(query);
+		if (abnormal.getContent() != null && abnormal.getContent().size() > 0) {
+			StockOptionRiskAdminDto optionRisk = abnormal.getContent().get(0);
+			if (optionRisk.getInterfaceRatioFinal() != null && optionRisk.getOrgRatio() != null
+					&& optionRisk.getInterfaceRatioFinal().compareTo(optionRisk.getOrgRatio()) < 0) {
+				throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);
+			} else if (nominalAmount != null && (nominalAmount.compareTo(optionRisk.getAmountLimitLeft()) > 0
+					|| optionRisk.getAmountLimitLeft().compareTo(BigDecimal.ZERO) <= 0)) {
+				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
+			}
+		}
+		// 前面的条件满足，再看看是否额度充足
+		PageInfo<StockOptionRiskAdminDto> normal = optionTradeBusiness.adminNormalRiskPagesByQuery(query);
+		if (normal.getContent() != null && normal.getContent().size() > 0) {
+			if (nominalAmount != null && nominalAmount.compareTo(normal.getContent().get(0).getAmountLimitLeft()) > 0) {
+				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
+			}
+		} else {
+			throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);
 		}
 	}
 
