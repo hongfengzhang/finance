@@ -101,7 +101,7 @@ public class CapitalAccountServiceFallback implements CapitalAccountService {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> modifyAccount(Long id, BigDecimal availableBalance) {
+	public Response<CapitalAccountDto> modifyAccount(Long staff, Long id, BigDecimal availableBalance) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

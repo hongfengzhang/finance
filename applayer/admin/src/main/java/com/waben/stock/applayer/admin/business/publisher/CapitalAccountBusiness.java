@@ -2,6 +2,8 @@ package com.waben.stock.applayer.admin.business.publisher;
 
 import java.math.BigDecimal;
 
+import com.waben.stock.applayer.admin.security.CustomUserDetails;
+import com.waben.stock.applayer.admin.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -43,7 +45,8 @@ public class CapitalAccountBusiness {
 	}
 
 	public CapitalAccountDto revisionAccount(Long id, BigDecimal availableBalance) {
-		Response<CapitalAccountDto> response = reference.modifyAccount(id, availableBalance);
+		CustomUserDetails userDetails = SecurityUtil.getUserDetails();
+		Response<CapitalAccountDto> response = reference.modifyAccount(userDetails.getUserId(),id, availableBalance);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
