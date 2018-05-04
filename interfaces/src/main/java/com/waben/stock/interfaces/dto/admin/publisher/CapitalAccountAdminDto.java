@@ -58,6 +58,10 @@ public class CapitalAccountAdminDto {
 	 * 累计提现金额
 	 */
 	private BigDecimal totalWithdraw;
+	/**
+	 * 是否为测试
+	 */
+	private Boolean isTest;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -161,6 +165,14 @@ public class CapitalAccountAdminDto {
 
 	public void setIdCard(String idCard) {
 		this.idCard = idCard;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

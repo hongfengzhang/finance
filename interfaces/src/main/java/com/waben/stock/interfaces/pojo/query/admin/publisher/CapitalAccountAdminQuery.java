@@ -24,6 +24,10 @@ public class CapitalAccountAdminQuery extends PageAndSortQuery {
 	 * </ul>
 	 */
 	private Integer state;
+	/**
+	 * 是否为测试
+	 */
+	private Boolean isTest;
 
 	public String getName() {
 		return name;
@@ -55,6 +59,14 @@ public class CapitalAccountAdminQuery extends PageAndSortQuery {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

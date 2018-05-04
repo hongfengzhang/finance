@@ -602,15 +602,23 @@ public class CapitalAccountService {
 		if (query.getState() != null && query.getState() == 2) {
 			stateCondition = " and t1.state=2 ";
 		}
+		String isTestCondition = "";
+		if (query.getIsTest() != null) {
+			if (query.getIsTest()) {
+				isTestCondition = " and t2.is_test=1 ";
+			} else {
+				isTestCondition = " and (t2.is_test is null or t2.is_test=0) ";
+			}
+		}
 		String sql = String.format(
-				"select t1.id, t2.id as publisher_id, t2.head_portrait, t3.name, t3.id_card, t2.phone, t1.frozen_capital, t1.available_balance, t1.update_time, t2.create_time, t1.state, IFNULL(t4.recharge, 0), IFNULL(t5.withdraw, 0) from capital_account t1 "
+				"select t1.id, t2.id as publisher_id, t2.head_portrait, t3.name, t3.id_card, t2.phone, t1.frozen_capital, t1.available_balance, t1.update_time, t2.create_time, t1.state, IFNULL(t4.recharge, 0), IFNULL(t5.withdraw, 0), t2.is_test from capital_account t1 "
 						+ "LEFT JOIN publisher t2 on t2.id =t1.publisher_id "
 						+ "LEFT JOIN real_name t3 on t3.resource_type=2 and t3.resource_id=t1.publisher_id "
 						+ "LEFT JOIN (select publisher_id, SUM(amount) as recharge from capital_flow where type=1 GROUP BY publisher_id) t4 on t4.publisher_id=t1.publisher_id "
 						+ "LEFT JOIN (select publisher_id, SUM(amount) as withdraw from capital_flow where type=2 GROUP BY publisher_id) t5 on t5.publisher_id=t1.publisher_id "
-						+ "where 1=1 %s %s %s %s order by t2.create_time desc limit "
+						+ "where 1=1 %s %s %s %s %s order by t2.create_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				publisherIdCondition, nameCondition, phoneCondition, stateCondition);
+				publisherIdCondition, nameCondition, phoneCondition, stateCondition, isTestCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
@@ -626,6 +634,7 @@ public class CapitalAccountService {
 		setMethodMap.put(new Integer(10), new MethodDesc("setState", new Class<?>[] { Integer.class }));
 		setMethodMap.put(new Integer(11), new MethodDesc("setTotalRecharge", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(12), new MethodDesc("setTotalWithdraw", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(13), new MethodDesc("setIsTest", new Class<?>[] { Boolean.class }));
 		List<CapitalAccountAdminDto> content = sqlDao.execute(CapitalAccountAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
@@ -643,16 +652,16 @@ public class CapitalAccountService {
 	@Transactional
 	public CapitalAccount revisionAccount(Long staff, Long id, BigDecimal availableBalance) {
 		CapitalAccount capitalAccount = capitalAccountDao.retrieve(id);
-		if(capitalAccount==null) {
+		if (capitalAccount == null) {
 			throw new DataNotFoundException();
 		}
-		//保存修改之前的账户数据
+		// 保存修改之前的账户数据
 		CapitalAccountRecord record = new CapitalAccountRecord();
 		record.setCapitalAccount(capitalAccount);
 		record.setCreateTime(new Date());
 		record.setStaff(staff);
 		record.setPublisherPhone(capitalAccount.getPublisher().getPhone());
-		//修改之前的数据
+		// 修改之前的数据
 		record.setUpdateBeforebalance(capitalAccount.getBalance());
 		record.setUpdateBeforeAvailableBalance(capitalAccount.getAvailableBalance());
 		record.setUpdateBeforeFrozenCapital(capitalAccount.getFrozenCapital());
@@ -661,7 +670,7 @@ public class CapitalAccountService {
 		capitalAccount.setBalance(availableBalance.add(capitalAccount.getFrozenCapital()));
 		capitalAccount.setUpdateTime(new Date());
 
-		//修改之后的数据
+		// 修改之后的数据
 		record.setUpdateAfterBalance(capitalAccount.getBalance());
 		record.setUpdateAfterAvailableBalance(capitalAccount.getAvailableBalance());
 		record.setUpdateAfterFrozenCapital(capitalAccount.getFrozenCapital());
