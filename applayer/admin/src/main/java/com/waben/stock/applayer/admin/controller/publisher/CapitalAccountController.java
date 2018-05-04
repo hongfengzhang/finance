@@ -116,6 +116,13 @@ public class CapitalAccountController {
 	private List<List<String>> dataList(List<CapitalAccountAdminDto> content) {
 		List<List<String>> result = new ArrayList<>();
 		for (CapitalAccountAdminDto trade : content) {
+			Boolean isTest = trade.getIsTest();
+			String test = "";
+			if (isTest != null && isTest) {
+				test = "是";
+			} else {
+				test = "否";
+			}
 			List<String> data = new ArrayList<>();
 			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
 			data.add(trade.getName() == null ? "" : trade.getName());
@@ -133,6 +140,7 @@ public class CapitalAccountController {
 				stateStr = "冻结";
 			}
 			data.add(stateStr);
+			data.add(test);
 			result.add(data);
 		}
 		return result;
@@ -149,6 +157,7 @@ public class CapitalAccountController {
 		result.add("账户余额");
 		result.add("更新时间");
 		result.add("资产状态");
+		result.add("是否测试");
 		return result;
 	}
 }

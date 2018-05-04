@@ -163,6 +163,13 @@ public class PublisherController {
 	private List<List<String>> dataList(List<PublisherAdminDto> content) {
 		List<List<String>> result = new ArrayList<>();
 		for (PublisherAdminDto trade : content) {
+			Boolean isTest = trade.getIsTest();
+			String test = "";
+			if (isTest != null && isTest) {
+				test = "是";
+			} else {
+				test = "否";
+			}
 			List<String> data = new ArrayList<>();
 			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
 			data.add(trade.getName() == null ? "" : trade.getName());
@@ -201,6 +208,7 @@ public class PublisherController {
 				stateStr = "黑名单";
 			}
 			data.add(stateStr);
+			data.add(test);
 			result.add(data);
 		}
 		return result;
@@ -216,6 +224,7 @@ public class PublisherController {
 		result.add("注册时间");
 		result.add("注册来源");
 		result.add("状态");
+		result.add("是否测试");
 		return result;
 	}
 }
