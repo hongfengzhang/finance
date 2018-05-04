@@ -110,6 +110,13 @@ public class CapitalFlowController {
 	private List<List<String>> dataList(List<CapitalFlowAdminDto> content, Integer type) {
 		List<List<String>> result = new ArrayList<>();
 		for (CapitalFlowAdminDto trade : content) {
+			Boolean isTest = trade.getIsTest();
+			String test = "";
+			if (isTest != null && isTest) {
+				test = "是";
+			} else {
+				test = "否";
+			}
 			List<String> data = new ArrayList<>();
 			if (type == 0 || type == 1) {
 				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
@@ -169,6 +176,7 @@ public class CapitalFlowController {
 				data.add(trade.getBankCard() == null ? "" : trade.getBankCard());
 				data.add(trade.getBankName() == null ? "" : trade.getBankName());*/
 			}
+			data.add(test);
 			result.add(data);
 		}
 		return result;
@@ -186,6 +194,7 @@ public class CapitalFlowController {
 		result.add("账户余额");
 		result.add("股票代码");
 		result.add("标的股票");
+		result.add("是否测试");
 		/*result.add("充值方式");
 		result.add("银行卡号");
 		result.add("银行名称");*/
@@ -202,6 +211,7 @@ public class CapitalFlowController {
 		result.add("充值金额");
 		result.add("账户余额");
 		result.add("充值方式");
+		result.add("是否测试");
 		return result;
 	}
 
@@ -216,6 +226,7 @@ public class CapitalFlowController {
 		result.add("账户余额");
 		result.add("银行卡号");
 		result.add("银行名称");
+		result.add("是否测试");
 		return result;
 	}
 
