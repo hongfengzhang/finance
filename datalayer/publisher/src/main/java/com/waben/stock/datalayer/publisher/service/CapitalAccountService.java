@@ -14,6 +14,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
+import com.waben.stock.datalayer.publisher.entity.*;
+import com.waben.stock.datalayer.publisher.repository.*;
+import com.waben.stock.interfaces.exception.DataNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +28,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.publisher.business.OutsideMessageBusiness;
-import com.waben.stock.datalayer.publisher.entity.CapitalAccount;
-import com.waben.stock.datalayer.publisher.entity.FrozenCapital;
-import com.waben.stock.datalayer.publisher.entity.Publisher;
-import com.waben.stock.datalayer.publisher.entity.WithdrawalsOrder;
-import com.waben.stock.datalayer.publisher.repository.CapitalAccountDao;
-import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
-import com.waben.stock.datalayer.publisher.repository.DynamicQuerySqlDao;
-import com.waben.stock.datalayer.publisher.repository.FrozenCapitalDao;
-import com.waben.stock.datalayer.publisher.repository.PublisherDao;
-import com.waben.stock.datalayer.publisher.repository.WithdrawalsOrderDao;
 import com.waben.stock.datalayer.publisher.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
@@ -59,6 +52,9 @@ public class CapitalAccountService {
 
 	@Autowired
 	private CapitalAccountDao capitalAccountDao;
+
+	@Autowired
+	private CapitalAccountRecordDao recordDao;
 
 	@Autowired
 	private CapitalFlowDao flowDao;
@@ -645,11 +641,31 @@ public class CapitalAccountService {
 	}
 
 	@Transactional
-	public CapitalAccount revisionAccount(Long id, BigDecimal availableBalance) {
+	public CapitalAccount revisionAccount(Long staff, Long id, BigDecimal availableBalance) {
 		CapitalAccount capitalAccount = capitalAccountDao.retrieve(id);
+		if(capitalAccount==null) {
+			throw new DataNotFoundException();
+		}
+		//保存修改之前的账户数据
+		CapitalAccountRecord record = new CapitalAccountRecord();
+		record.setCapitalAccount(capitalAccount);
+		record.setCreateTime(new Date());
+		record.setStaff(staff);
+		record.setPublisherPhone(capitalAccount.getPublisher().getPhone());
+		//修改之前的数据
+		record.setUpdateBeforebalance(capitalAccount.getBalance());
+		record.setUpdateBeforeAvailableBalance(capitalAccount.getAvailableBalance());
+		record.setUpdateBeforeFrozenCapital(capitalAccount.getFrozenCapital());
+
 		capitalAccount.setAvailableBalance(availableBalance);
 		capitalAccount.setBalance(availableBalance.add(capitalAccount.getFrozenCapital()));
 		capitalAccount.setUpdateTime(new Date());
+
+		//修改之后的数据
+		record.setUpdateAfterBalance(capitalAccount.getBalance());
+		record.setUpdateAfterAvailableBalance(capitalAccount.getAvailableBalance());
+		record.setUpdateAfterFrozenCapital(capitalAccount.getFrozenCapital());
+		recordDao.create(record);
 		return capitalAccountDao.update(capitalAccount);
 	}
 }

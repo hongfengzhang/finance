@@ -105,7 +105,7 @@ public interface CapitalAccountInterface {
 	@RequestMapping(value = "/state/{id}/{state}", method = RequestMethod.PUT)
 	Response<CapitalAccountDto> modifyState(@PathVariable("id") Long id,@PathVariable("state") Integer state);
 
-	@RequestMapping(value = "/account/{id}/{availableBalance}", method = RequestMethod.PUT)
-	Response<CapitalAccountDto> modifyAccount(@PathVariable("id") Long id,@PathVariable("availableBalance") BigDecimal availableBalance);
+	@RequestMapping(value = "/account/{staff}/{id}/{availableBalance}", method = RequestMethod.PUT)
+	Response<CapitalAccountDto> modifyAccount(@PathVariable("staff") Long staff,@PathVariable("id") Long id,@PathVariable("availableBalance") BigDecimal availableBalance);
 
 }
