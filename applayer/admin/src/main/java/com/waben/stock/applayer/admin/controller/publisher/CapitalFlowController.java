@@ -137,8 +137,7 @@ public class CapitalFlowController {
 				data.add(trade.getOccurrenceTime() == null ? "" : sdf.format(trade.getOccurrenceTime()));
 				data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
 				data.add(String.valueOf(trade.getAvailableBalance() != null ? trade.getAvailableBalance() : ""));
-				data.add(String.valueOf(PaymentType.getByIndex(trade.getPaymentType().toString()).getType()));
-				
+				data.add(trade.getPaymentType() != null ? PaymentType.getByIndex(trade.getPaymentType().toString()).getType() : "");
 			} else if(type == 3) {
 				data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
