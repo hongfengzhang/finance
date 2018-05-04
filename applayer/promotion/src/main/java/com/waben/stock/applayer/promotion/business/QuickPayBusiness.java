@@ -127,6 +127,7 @@ public class QuickPayBusiness {
 		request.put("timeStart", time.format(new Date()));
 		request.put("product", "quick");
         request.put("payment", "d0");
+        logger.info("发起提现申请:{}_{}_{}_{}", apply.getName(), apply.getIdCard(), apply.getPhone(), apply.getBankCard());
 		String signStr = "";
 		for (String keys : request.keySet()) {
 			signStr += request.get(keys);
@@ -135,6 +136,7 @@ public class QuickPayBusiness {
 		String sign = DigestUtils.md5Hex(signStr);
 		request.put("sign", sign);
 		String result = FormRequest.doPost(request, WBConfig.protocol_url);
+		logger.info("提现返回:" + result);
 		JSONObject jsStr = JSONObject.parseObject(result);
 		// 修改提现状态
 		applyBusiness.changeState(apply.getId(), "200".equals(jsStr.getString("code"))

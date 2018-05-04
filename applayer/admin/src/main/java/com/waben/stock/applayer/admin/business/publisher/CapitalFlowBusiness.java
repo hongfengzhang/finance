@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.admin.business.publisher;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,14 @@ public class CapitalFlowBusiness {
 
 	public PageInfo<CapitalFlowAdminDto> adminPagesByQuery(CapitalFlowAdminQuery query) {
 		Response<PageInfo<CapitalFlowAdminDto>> response = reference.adminPagesByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public BigDecimal adminAccumulateAmountByQuery(CapitalFlowAdminQuery query) {
+		Response<BigDecimal> response = reference.adminAccumulateAmountByQuery(query);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

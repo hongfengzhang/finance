@@ -227,14 +227,22 @@ public class PublisherService {
 		if (query.getState() != null && query.getState() == 2) {
 			stateCondition = " and t1.state=2 ";
 		}
+		String isTestCondition = "";
+		if (query.getIsTest() != null) {
+			if (query.getIsTest()) {
+				isTestCondition = " and t1.is_test=1 ";
+			} else {
+				isTestCondition = " and (t1.is_test is null or t1.is_test=0) ";
+			}
+		}
 
 		String sql = String.format(
-				"select t1.id, t2.name, t1.phone, t3.available_balance, t1.create_time, t1.end_type, t1.state from publisher t1 "
+				"select t1.id, t2.name, t1.phone, t3.available_balance, t1.create_time, t1.end_type, t1.state, t1.is_test from publisher t1 "
 						+ "LEFT JOIN real_name t2 on t2.resource_type=2 and t1.id=t2.resource_id "
 						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id "
-						+ "where 1=1 %s %s %s %s %s order by t1.create_time desc limit "
+						+ "where 1=1 %s %s %s %s %s %s order by t1.create_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				nameCondition, phoneCondition, startTimeCondition, endTimeCondition, stateCondition);
+				nameCondition, phoneCondition, startTimeCondition, endTimeCondition, stateCondition, isTestCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
@@ -244,6 +252,7 @@ public class PublisherService {
 		setMethodMap.put(new Integer(4), new MethodDesc("setCreateTime", new Class<?>[] { Date.class }));
 		setMethodMap.put(new Integer(5), new MethodDesc("setEndType", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(6), new MethodDesc("setState", new Class<?>[] { Integer.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setIsTest", new Class<?>[] { Boolean.class }));
 		List<PublisherAdminDto> content = sqlDao.execute(PublisherAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
@@ -251,7 +260,7 @@ public class PublisherService {
 	}
 
 	@Transactional
-    public Publisher defriend(Long id) {
+	public Publisher defriend(Long id) {
 		Publisher publisher = publisherDao.retrieve(id);
 		publisher.setState(2);
 		return publisherDao.update(publisher);

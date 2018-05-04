@@ -43,4 +43,9 @@ public class CapitalFlowReferenceFallback implements CapitalFlowReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<BigDecimal> adminAccumulateAmountByQuery(CapitalFlowAdminQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

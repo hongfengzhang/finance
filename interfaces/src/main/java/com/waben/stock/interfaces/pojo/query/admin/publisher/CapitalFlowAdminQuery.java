@@ -44,7 +44,10 @@ public class CapitalFlowAdminQuery extends PageAndSortQuery {
 	 * 充值方式
 	 */
 	private Integer paymentType;
-
+	/**
+	 * 是否为测试单
+	 */
+	private Boolean isTest;
 	/**
 	 * 查询类型
 	 * <ul>
@@ -126,6 +129,14 @@ public class CapitalFlowAdminQuery extends PageAndSortQuery {
 
 	public void setQueryType(Integer queryType) {
 		this.queryType = queryType;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

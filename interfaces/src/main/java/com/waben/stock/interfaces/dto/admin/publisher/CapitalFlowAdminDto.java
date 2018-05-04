@@ -51,6 +51,10 @@ public class CapitalFlowAdminDto extends CapitalFlowDto {
 	 * 银行名称
 	 */
 	private String bankName;
+	/**
+	 * 是否测试
+	 */
+	private Boolean isTest;
 
 	public String getPublisherName() {
 		return publisherName;
@@ -144,6 +148,14 @@ public class CapitalFlowAdminDto extends CapitalFlowDto {
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

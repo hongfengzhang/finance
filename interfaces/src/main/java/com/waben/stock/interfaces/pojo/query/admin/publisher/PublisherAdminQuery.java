@@ -33,6 +33,10 @@ public class PublisherAdminQuery extends PageAndSortQuery {
 	 * </ul>
 	 */
 	private Integer state;
+	/**
+	 * 是否为测试
+	 */
+	private Boolean isTest;
 
 	public String getName() {
 		return name;
@@ -72,6 +76,14 @@ public class PublisherAdminQuery extends PageAndSortQuery {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

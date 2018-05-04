@@ -640,6 +640,7 @@ public class CapitalAccountService {
 	public CapitalAccount revisionState(Long id, Integer state) {
 		CapitalAccount capitalAccount = capitalAccountDao.retrieve(id);
 		capitalAccount.setState(state);
+		capitalAccount.setUpdateTime(new Date());
 		return capitalAccountDao.update(capitalAccount);
 	}
 
@@ -648,6 +649,7 @@ public class CapitalAccountService {
 		CapitalAccount capitalAccount = capitalAccountDao.retrieve(id);
 		capitalAccount.setAvailableBalance(availableBalance);
 		capitalAccount.setBalance(availableBalance.add(capitalAccount.getFrozenCapital()));
+		capitalAccount.setUpdateTime(new Date());
 		return capitalAccountDao.update(capitalAccount);
 	}
 }

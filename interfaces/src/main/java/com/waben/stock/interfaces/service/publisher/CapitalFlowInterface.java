@@ -28,6 +28,16 @@ public interface CapitalFlowInterface {
 	Response<PageInfo<CapitalFlowAdminDto>> adminPagesByQuery(@RequestBody CapitalFlowAdminQuery query);
 
 	/**
+	 * 查询流水累积金额（管理后台）
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 资金流水累积金额
+	 */
+	@RequestMapping(value = "/adminAccumulateAmount", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<BigDecimal> adminAccumulateAmountByQuery(@RequestBody CapitalFlowAdminQuery query);
+
+	/**
 	 * 分页查询资金流水
 	 * 
 	 * @param query

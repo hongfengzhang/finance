@@ -35,4 +35,9 @@ public class CapitalFlowServiceFallback implements CapitalFlowService{
 	public Response<PageInfo<CapitalFlowAdminDto>> adminPagesByQuery(CapitalFlowAdminQuery query) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<BigDecimal> adminAccumulateAmountByQuery(CapitalFlowAdminQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

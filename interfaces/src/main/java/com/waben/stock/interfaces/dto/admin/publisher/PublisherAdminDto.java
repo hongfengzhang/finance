@@ -41,6 +41,10 @@ public class PublisherAdminDto {
 	 * </ul>
 	 */
 	private Integer state;
+	/**
+	 * 是否为测试用户
+	 */
+	private Boolean isTest;
 
 	public Long getId() {
 		return id;
@@ -109,6 +113,14 @@ public class PublisherAdminDto {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

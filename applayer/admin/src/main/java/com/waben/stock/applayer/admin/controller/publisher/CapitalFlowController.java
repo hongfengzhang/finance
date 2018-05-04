@@ -3,6 +3,7 @@ package com.waben.stock.applayer.admin.controller.publisher;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +54,12 @@ public class CapitalFlowController {
 	@ApiOperation(value = "查询资金流水")
 	public Response<PageInfo<CapitalFlowAdminDto>> pages(CapitalFlowAdminQuery query) {
 		return new Response<>(business.adminPagesByQuery(query));
+	}
+	
+	@GetMapping("/accumulateAmount")
+	@ApiOperation(value = "查询流水累积金额")
+	public Response<BigDecimal> accumulateAmount(CapitalFlowAdminQuery query) {
+		return new Response<>(business.adminAccumulateAmountByQuery(query));
 	}
 	
 	@RequestMapping(value = "/export", method = RequestMethod.GET)

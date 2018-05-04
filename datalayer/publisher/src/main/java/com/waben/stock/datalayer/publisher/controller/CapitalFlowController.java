@@ -44,6 +44,11 @@ public class CapitalFlowController implements CapitalFlowInterface {
 		PageInfo<CapitalFlowAdminDto> result = PageToPageInfo.pageToPageInfo(page, CapitalFlowAdminDto.class);
 		return new Response<>(result);
 	}
+	
+	@Override
+	public Response<BigDecimal> adminAccumulateAmountByQuery(@RequestBody CapitalFlowAdminQuery query) {
+		return new Response<>(capitalFlowService.adminAccumulateAmountByQuery(query));
+	}
 
 	@Override
 	public Response<PageInfo<CapitalFlowDto>> pagesByQuery(@RequestBody CapitalFlowQuery query) {

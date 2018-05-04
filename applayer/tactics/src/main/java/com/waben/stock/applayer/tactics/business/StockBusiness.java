@@ -11,6 +11,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -72,6 +74,8 @@ public class StockBusiness {
 
 	@Autowired
 	private RedisCache redisCache;
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -227,6 +231,7 @@ public class StockBusiness {
 	 *            股票代码
 	 */
 	public void checkStockOpton(String stockCode, Long cycleId, BigDecimal nominalAmount) {
+		logger.info("检查期权股票是否正常：{}_{}_{}", stockCode, cycleId, nominalAmount);
 		// 检查股票状态
 		List<String> codes = new ArrayList<>();
 		StockDto stock = findByCode(stockCode);
@@ -249,6 +254,7 @@ public class StockBusiness {
 		query.setStockCode(stockCode);
 		query.setCycleId(cycleId);
 		PageInfo<StockOptionRiskAdminDto> abnormal = optionTradeBusiness.adminAbnormalRiskPagesByQuery(query);
+		System.out.println("查询异常股票：" + JacksonUtil.encode(abnormal));
 		if (abnormal.getContent() != null && abnormal.getContent().size() > 0) {
 			StockOptionRiskAdminDto optionRisk = abnormal.getContent().get(0);
 			if (optionRisk.getInterfaceRatioFinal() != null && optionRisk.getOrgRatio() != null
@@ -261,6 +267,7 @@ public class StockBusiness {
 		}
 		// 前面的条件满足，再看看是否额度充足
 		PageInfo<StockOptionRiskAdminDto> normal = optionTradeBusiness.adminNormalRiskPagesByQuery(query);
+		System.out.println("查询正常股票：" + JacksonUtil.encode(normal));
 		if (normal.getContent() != null && normal.getContent().size() > 0) {
 			if (nominalAmount != null && nominalAmount.compareTo(normal.getContent().get(0).getAmountLimitLeft()) > 0) {
 				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
