@@ -242,7 +242,9 @@ public class StockOptionRiskService {
 
 	public void deleteStockOptionLimit(String stockCode) {
 		StockOptionAmountLimit stockLimit = limitDao.retrieveByStockCode(stockCode);
-		limitDao.delete(stockLimit.getId());
+		if (stockLimit != null) {
+			limitDao.delete(stockLimit.getId());
+		}
 	}
 
 	public StockOptionAmountLimit findStockOptionQuote() {
