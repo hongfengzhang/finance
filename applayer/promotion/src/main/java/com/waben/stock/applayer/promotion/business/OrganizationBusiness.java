@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.promotion.reference.organization.OrganizationReference;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDato;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
@@ -86,6 +87,14 @@ public class OrganizationBusiness {
 
     public OrganizationDto modifyName(Long id, String name) {
         Response<OrganizationDto> response = reference.modifyName(id, name);
+        if ("200".equals(response.getCode())) {
+            return response.getResult();
+        }
+        throw new ServiceException(response.getCode());
+    }
+    
+    public PageInfo<AdminAgentDetailDato> adminAgentPageByQuery(OrganizationQuery query) {
+        Response<PageInfo<AdminAgentDetailDato>> response = reference.adminAgentPageByQuery(query);
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }

@@ -29,6 +29,16 @@ public class OrganizationQuery extends PageAndSortQuery {
 
 	private boolean onlyLoginOrg;
 
+	/**
+	 * 代理商名称
+	 */
+	private String organizationName;
+
+	/**
+	 * 层级
+	 */
+	private String level;
+
 	public String getCode() {
 		return code;
 	}
@@ -67,6 +77,22 @@ public class OrganizationQuery extends PageAndSortQuery {
 
 	public void setOnlyLoginOrg(boolean onlyLoginOrg) {
 		this.onlyLoginOrg = onlyLoginOrg;
+	}
+
+	public String getOrganizationName() {
+		return organizationName;
+	}
+
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
+	}
+
+	public String getLevel() {
+		return level;
+	}
+
+	public void setLevel(String level) {
+		this.level = level;
 	}
 
 }

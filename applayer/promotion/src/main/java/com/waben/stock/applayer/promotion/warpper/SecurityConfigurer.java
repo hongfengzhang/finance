@@ -74,6 +74,16 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable();
+        
+        // swagger
+		http.authorizeRequests().antMatchers("/swagger-ui.html").permitAll();
+		http.authorizeRequests().antMatchers("/webjars/**").permitAll();
+		http.authorizeRequests().antMatchers("/swagger-resources/**").permitAll();
+		http.authorizeRequests().antMatchers("/v2/api-docs").permitAll();
+		http.authorizeRequests().antMatchers("/configuration/**").permitAll();
+		
+		http.authorizeRequests().antMatchers("/**").permitAll();
+	
         http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.GET, LOGIN_ENTRY_POINT, "/login-error").permitAll()
                 .antMatchers(HttpMethod.GET, "/turbine/**", "/turbine/hystrix.stream", "/hystrix.stream",
@@ -98,7 +108,6 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 //                .addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class)
 //                .httpBasic().and().sessionManagement().maximumSessions(1).expiredUrl(LOGIN_ENTRY_POINT)
         ;
-
     }
 
     /**
