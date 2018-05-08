@@ -1,11 +1,11 @@
-package com.waben.stock.applayer.strategist.reference.fallback;
+package com.waben.stock.applayer.promotion.reference.fallback;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.strategist.reference.StockOptionTradeReference;
+import com.waben.stock.applayer.promotion.reference.stockoption.StockOptionTradeReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
@@ -42,6 +42,11 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 	}
 
 	@Override
+	public Response<StockOptionTradeDto> modify(Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
 	public Response<StockOptionTradeDto> add(StockOptionTradeDto stockOptionTradeDto) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
@@ -53,6 +58,11 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 
 	@Override
 	public Response<StockOptionTradeDto> userRight(Long publisherId, Long id) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<StockOptionTradeDto> fail(Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
@@ -73,22 +83,11 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 
 
 	@Override
-	public Response<StockOptionTradeDto> fail(Long id) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
 	public Response<StockOptionTradeDto> settlement(Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
-
 	@Override
 	public Response<StockOptionTradeDto> success(Long id) {
-		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-	}
-
-	@Override
-	public Response<StockOptionTradeDto> modify(Long id) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

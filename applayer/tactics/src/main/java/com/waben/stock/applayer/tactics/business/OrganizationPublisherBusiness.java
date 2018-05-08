@@ -37,4 +37,12 @@ public class OrganizationPublisherBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public OrganizationPublisherDto fetchOrgPublisher(Long publisherId) {
+		Response<OrganizationPublisherDto> response = reference.fetchOrgPublisher(publisherId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

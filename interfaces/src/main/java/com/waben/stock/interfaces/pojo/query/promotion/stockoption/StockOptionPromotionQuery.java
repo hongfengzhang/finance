@@ -1,4 +1,4 @@
-package com.waben.stock.interfaces.pojo.query.admin.stockoption;
+package com.waben.stock.interfaces.pojo.query.promotion.stockoption;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -6,7 +6,7 @@ import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
-public class StockOptionAdminQuery extends PageAndSortQuery {
+public class StockOptionPromotionQuery extends PageAndSortQuery {
 
 	/**
 	 * 发布人姓名
@@ -61,18 +61,14 @@ public class StockOptionAdminQuery extends PageAndSortQuery {
 	 * 平台权利金比例-查询结束值
 	 */
 	private BigDecimal endRatio;
-	
 	/**
-	 * 查询类型
-	 * <ul>
-	 * <li>0订单列表</li>
-	 * <li>1询价列表</li>
-	 * <li>2持仓列表</li>
-	 * <li>3结算列表</li>
-	 * <li>4撤单列表</li>
-	 * </ul>
+	 * 当前登陆用户所属的代理商ID
 	 */
-	private Integer queryType;
+	private Long currentOrgId;
+	/**
+	 * 查询代理商代码或者名称
+	 */
+	private String orgCodeOrName;
 
 	public String getPublisherName() {
 		return publisherName;
@@ -170,12 +166,20 @@ public class StockOptionAdminQuery extends PageAndSortQuery {
 		this.endRatio = endRatio;
 	}
 
-	public Integer getQueryType() {
-		return queryType;
+	public Long getCurrentOrgId() {
+		return currentOrgId;
 	}
 
-	public void setQueryType(Integer queryType) {
-		this.queryType = queryType;
+	public void setCurrentOrgId(Long currentOrgId) {
+		this.currentOrgId = currentOrgId;
+	}
+
+	public String getOrgCodeOrName() {
+		return orgCodeOrName;
+	}
+
+	public void setOrgCodeOrName(String orgCodeOrName) {
+		this.orgCodeOrName = orgCodeOrName;
 	}
 
 }
