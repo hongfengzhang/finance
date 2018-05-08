@@ -21,7 +21,7 @@ import com.google.zxing.WriterException;
 import com.waben.stock.applayer.promotion.business.BindCardBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.applayer.promotion.util.QRCodeUtil;
-import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDato;
+import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
@@ -119,7 +119,7 @@ public class OrganizationController {
 
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ApiOperation(value = "获取代理商列表")
-	public Response<PageInfo<AdminAgentDetailDato>> adminAgentPage(@RequestBody OrganizationQuery query) {
+	public Response<PageInfo<AdminAgentDetailDto>> adminAgentPage(@RequestBody OrganizationQuery query) {
 		return new Response<>(business.adminAgentPageByQuery(query));
 	}
 

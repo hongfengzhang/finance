@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDato;
+import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
@@ -57,7 +57,7 @@ public interface OrganizationInterface {
 	 * @return 代理商数据
 	 */
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<PageInfo<AdminAgentDetailDato>> adminAgentPageByQuery(@RequestBody OrganizationQuery query);
+	Response<PageInfo<AdminAgentDetailDto>> adminAgentPageByQuery(@RequestBody OrganizationQuery query);
 
 	/**
 	 * 获取机构树

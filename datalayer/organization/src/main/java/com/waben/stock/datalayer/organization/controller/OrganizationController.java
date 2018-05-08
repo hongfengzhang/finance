@@ -22,7 +22,7 @@ import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.reference.BindCardReference;
 import com.waben.stock.datalayer.organization.service.OrganizationService;
 import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
-import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDato;
+import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -188,9 +188,9 @@ public class OrganizationController implements OrganizationInterface {
 	}
 
 	@Override
-	public Response<PageInfo<AdminAgentDetailDato>> adminAgentPageByQuery(OrganizationQuery query) {
-		Page<AdminAgentDetailDato> page = organizationService.adminPagesByQuery(query);
-		PageInfo<AdminAgentDetailDato> result = PageToPageInfo.pageToPageInfo(page, AdminAgentDetailDato.class);
+	public Response<PageInfo<AdminAgentDetailDto>> adminAgentPageByQuery(OrganizationQuery query) {
+		Page<AdminAgentDetailDto> page = organizationService.adminPagesByQuery(query);
+		PageInfo<AdminAgentDetailDto> result = PageToPageInfo.pageToPageInfo(page, AdminAgentDetailDto.class);
 		return new Response<>(result);
 	}
 }

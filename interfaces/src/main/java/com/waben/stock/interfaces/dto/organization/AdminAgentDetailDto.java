@@ -2,7 +2,7 @@ package com.waben.stock.interfaces.dto.organization;
 
 import java.math.BigDecimal;
 
-public class AdminAgentDetailDato extends OrganizationDto {
+public class AdminAgentDetailDto extends OrganizationDto {
 
 	/**
 	 * 线下代理

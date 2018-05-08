@@ -31,7 +31,7 @@ import com.waben.stock.datalayer.organization.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDato;
+import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
@@ -401,7 +401,7 @@ public class OrganizationService {
 		return pages;
 	}
 
-	public Page<AdminAgentDetailDato> adminPagesByQuery(OrganizationQuery query) {
+	public Page<AdminAgentDetailDto> adminPagesByQuery(OrganizationQuery query) {
 		String nameCondition = "";
 		// if (!StringUtil.isEmpty(query.getOrganizationName())) {
 		// nameCondition = " and t2.name like '%" + query.getOrganizationName()
@@ -422,7 +422,7 @@ public class OrganizationService {
 		setMethodMap.put(new Integer(5), new MethodDesc("setCreateTime", new Class<?>[] { Date.class }));
 		setMethodMap.put(new Integer(6), new MethodDesc("setName", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(7), new MethodDesc("setPhone", new Class<?>[] { String.class }));
-		List<AdminAgentDetailDato> content = sqlDao.execute(AdminAgentDetailDato.class, sql, setMethodMap);
+		List<AdminAgentDetailDto> content = sqlDao.execute(AdminAgentDetailDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
