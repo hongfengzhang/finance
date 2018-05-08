@@ -56,6 +56,7 @@ public class BannerController implements BannerInterface {
             if(page.getContent().get(i).getBannerForward()!=null) {
                 Long id = page.getContent().get(i).getBannerForward().getId();
                 result.getContent().get(i).setBannerForwardId(id);
+                result.getContent().get(i).setForward(page.getContent().get(i).getBannerForward().getForward());
             }
         }
         return new Response<>(result);
