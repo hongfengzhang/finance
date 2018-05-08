@@ -87,6 +87,9 @@ public class Banner {
     }
 
     public String getForward() {
-        return getBannerForward().getForward();
+        if (getBannerForward() != null) {
+			return getBannerForward().getForward();
+		}
+		return null;
     }
 }
