@@ -126,6 +126,10 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	 * 对应的线下期权交易状态
 	 */
 	private OfflineStockOptionTradeState status;
+	/**
+	 * 推广代理商ID
+	 */
+	private Long promotionOrgId;
 
 	public Long getId() {
 		return id;
@@ -366,6 +370,14 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 
 	public void setIsMark(Boolean isMark) {
 		this.isMark = isMark;
+	}
+
+	public Long getPromotionOrgId() {
+		return promotionOrgId;
+	}
+
+	public void setPromotionOrgId(Long promotionOrgId) {
+		this.promotionOrgId = promotionOrgId;
 	}
 
 }
