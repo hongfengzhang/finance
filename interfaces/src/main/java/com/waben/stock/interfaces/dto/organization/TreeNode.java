@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.dto.organization;
 
+import java.util.List;
+
 /**
  * 树节点
  * 
@@ -28,6 +30,8 @@ public class TreeNode {
 	 * 是否展开
 	 */
 	private boolean open;
+
+	private List<TreeNode> children;
 
 	public TreeNode(Long id, String name, int level, Long pid, boolean open) {
 		super();
@@ -80,6 +84,14 @@ public class TreeNode {
 
 	public void setOpen(boolean open) {
 		this.open = open;
+	}
+
+	public List<TreeNode> getChildren() {
+		return children;
+	}
+
+	public void setChildren(List<TreeNode> children) {
+		this.children = children;
 	}
 
 }

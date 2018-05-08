@@ -32,7 +32,7 @@ public class Swagger2 {
 				.defaultValue(token).required(false).build();
 		pars.add(tokenPar.build());
 		return new Docket(DocumentationType.SWAGGER_2).apiInfo(apiInfo()).globalOperationParameters(pars).select()
-				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.datalayer.promotion.controller"))
+				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.applayer.promotion.controller"))
 				.paths(PathSelectors.any()).build();
 	}
 

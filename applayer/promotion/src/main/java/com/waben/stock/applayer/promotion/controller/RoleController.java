@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-@Controller
-@RequestMapping("/role")
+// @Controller
+// @RequestMapping("/role")
 public class RoleController {
 
     @Autowired

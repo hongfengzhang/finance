@@ -28,8 +28,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import com.waben.stock.interfaces.vo.organization.UserVo;
 
-@Controller
-@RequestMapping("/user")
+// @Controller
+// @RequestMapping("/user")
 public class UserController {
 
     @Autowired

@@ -6,6 +6,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.datalayer.organization.reference.BindCardReference;
 import com.waben.stock.datalayer.organization.service.OrganizationService;
+import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
+import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDato;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -50,6 +54,10 @@ public class OrganizationController implements OrganizationInterface {
 
 	@Autowired
 	public OrganizationService organizationService;
+
+	@Autowired
+	@Qualifier("bindCardReference")
+	private BindCardReference bindCardReference;
 
 	@GetMapping("/{id}")
 	@ApiOperation(value = "根据id获取机构")
@@ -179,4 +187,10 @@ public class OrganizationController implements OrganizationInterface {
 				CopyBeanUtils.copyBeanProperties(OrganizationDto.class, organizationService.findByCode(code), false));
 	}
 
+	@Override
+	public Response<PageInfo<AdminAgentDetailDato>> adminAgentPageByQuery(OrganizationQuery query) {
+		Page<AdminAgentDetailDato> page = organizationService.adminPagesByQuery(query);
+		PageInfo<AdminAgentDetailDato> result = PageToPageInfo.pageToPageInfo(page, AdminAgentDetailDato.class);
+		return new Response<>(result);
+	}
 }

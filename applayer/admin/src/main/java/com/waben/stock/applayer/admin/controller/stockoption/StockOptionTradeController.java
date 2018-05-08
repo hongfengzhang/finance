@@ -286,6 +286,7 @@ public class StockOptionTradeController {
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
 				data.add(test);
+				data.add(trade.getRightTime() == null ? "" : sdf.format(trade.getRightTime()));
 				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
 				data.add(mark);
 			}else if(type == 1){
@@ -382,6 +383,7 @@ public class StockOptionTradeController {
 		result.add("当前价格");
 		result.add("浮动盈亏");
 		result.add("是否测试");
+		result.add("申请行权时间");
 		result.add("订单状态");
 		result.add("是否标记");
 		return result;
