@@ -20,4 +20,5 @@ public interface BindCardRepository extends CustomJpaRepository<BindCard, Long> 
 
 	List<BindCard> findByBankCard(String bankCard);
 
+	BindCard findBindCardByNameAndResourceType(String name,BindCardResourceType resourceType);
 }

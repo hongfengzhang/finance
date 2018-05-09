@@ -9,12 +9,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 
+import java.util.List;
+
 public interface OrganizationPublisherInterface {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Response<OrganizationPublisherDto> addOrgPublisher(@RequestBody OrganizationPublisherDto orgPublisher);
+	Response<OrganizationPublisherDto> addOrgPublisher(@RequestBody OrganizationPublisherDto orgPublisher);
+
+
+	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
+	Response<List<OrganizationPublisherDto>> fetchOrganizationPublishersByCode(@PathVariable("code") String code);
 
 	@RequestMapping(value = "/publisherId/{publisherId}", method = RequestMethod.GET)
-	public Response<OrganizationPublisherDto> fetchOrgPublisher(@PathVariable("publisherId") Long publisherId);
+	Response<OrganizationPublisherDto> fetchOrgPublisher(@PathVariable("publisherId") Long publisherId);
 
 }

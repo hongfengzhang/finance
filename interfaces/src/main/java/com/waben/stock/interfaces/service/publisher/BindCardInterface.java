@@ -70,4 +70,6 @@ public interface BindCardInterface {
 	Response<List<BindCardDto>> listsByResourceTypeAndResourceId(@PathVariable("resourceType") String resourceType,
 			@PathVariable("resourceId") Long resourceId);
 
+	@RequestMapping(value = "/name/{name}",method = RequestMethod.GET)
+    Response<BindCardDto> fetchOrgBindCardByName(@PathVariable("name") String name);
 }

@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.manage.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,7 @@ public class Role {
     @Column(length = 30)
     private String description;
 
+
     @JsonIgnore
     @ManyToMany(targetEntity = Menu.class, fetch = FetchType.LAZY)
     @JoinTable(name = "role_menu", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn
@@ -42,6 +44,8 @@ public class Role {
 
     @Column
     private Integer type;
+    @Column(name = "create_time")
+    private Date createTime;
 
     public Long getId() {
         return id;
@@ -105,5 +109,13 @@ public class Role {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

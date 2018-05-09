@@ -40,4 +40,9 @@ public class OrganizationAccountReferenceFallback implements OrganizationAccount
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<OrganizationAccountDto> modifyState(Long id, Integer state) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

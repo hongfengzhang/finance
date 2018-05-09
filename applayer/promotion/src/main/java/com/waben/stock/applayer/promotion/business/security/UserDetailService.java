@@ -60,6 +60,7 @@ public class UserDetailService implements UserDetailsService {
         logger.info("菜单项:{}", JacksonUtil.encode(menus));
         accountCredentials.setMenus(menus);
         accountCredentials.setSecurity(userDto);
+        accountCredentials.setPermissions(permissionDtos);
         return accountCredentials;
     }
 

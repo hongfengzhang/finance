@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.dto.manage;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -16,6 +17,9 @@ public class RoleDto implements Serializable{
     private Set<PermissionDto> permissionDtos;
     private Set<MenuDto> menusDtos;
     private Long organization;
+    private Integer type;
+    private Date createTime;
+
     public Long getId() {
         return id;
     }
@@ -78,5 +82,21 @@ public class RoleDto implements Serializable{
 
     public void setOrganization(Long organization) {
         this.organization = organization;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

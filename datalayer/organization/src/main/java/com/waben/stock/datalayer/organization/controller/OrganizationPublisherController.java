@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.organization.controller;
 
+import com.waben.stock.datalayer.organization.entity.OrganizationPublisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,8 @@ import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.organization.OrganizationPublisherInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+
+import java.util.List;
 
 /**
  * 机构推广的发布人 Controller
@@ -34,6 +37,12 @@ public class OrganizationPublisherController implements OrganizationPublisherInt
 				service.addOrgPublisher(orgPublisher.getOrgCode(), orgPublisher.getPublisherId()), false));
 	}
 
+	@Override
+	public Response<List<OrganizationPublisherDto>> fetchOrganizationPublishersByCode(@PathVariable String code) {
+		List<OrganizationPublisher> result = service.findOrganizationPublishersByCode(code);
+		List<OrganizationPublisherDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, OrganizationPublisherDto.class);
+		return new Response<>(response);
+	}
 	@Override
 	public Response<OrganizationPublisherDto> fetchOrgPublisher(@PathVariable Long publisherId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationPublisherDto.class,

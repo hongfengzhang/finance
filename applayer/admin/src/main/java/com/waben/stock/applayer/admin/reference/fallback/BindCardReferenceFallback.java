@@ -43,4 +43,9 @@ public class BindCardReferenceFallback implements BindCardReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<BindCardDto> fetchOrgBindCardByName(String name) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

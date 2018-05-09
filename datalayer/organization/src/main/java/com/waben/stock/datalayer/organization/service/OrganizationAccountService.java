@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.interfaces.enums.OrganizationState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -241,12 +242,33 @@ public class OrganizationAccountService {
 			@Override
 			public Predicate toPredicate(Root<OrganizationAccount> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicates = new ArrayList<>();
-				criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]));
+				List<Predicate> predicateList = new ArrayList<>();
+				if (query.getCode() != null && !"".equals(query.getCode().trim())) {
+					Organization organization = organizationDao.retrieveByCode(query.getCode());
+					predicateList.add(
+							criteriaBuilder.equal(root.get("org").as(Organization.class), organization));
+				}
+				if (query.getName() != null && !"".equals(query.getName().trim())) {
+					Organization organization = organizationDao.retrieveOrganizationByName(query.getName());
+					predicateList.add(
+							criteriaBuilder.equal(root.get("org").as(Organization.class), organization));
+				}
+				if (query.getId() != null) {
+					Organization organization = organizationDao.retrieve(query.getId());
+					predicateList.add(
+							criteriaBuilder.equal(root.get("org").as(Organization.class), organization));
+				}
+				criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
 		return pages;
 	}
 
+	@Transactional
+	public OrganizationAccount revisionState(Long id, Integer state) {
+		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(id);
+		organizationAccount.setState(state);
+		return organizationAccount;
+	}
 }

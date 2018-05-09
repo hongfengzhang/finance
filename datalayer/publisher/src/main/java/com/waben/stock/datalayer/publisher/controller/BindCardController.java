@@ -48,6 +48,13 @@ public class BindCardController implements BindCardInterface {
 	}
 
 	@Override
+	public Response<BindCardDto> fetchOrgBindCardByName(@PathVariable String name) {
+		BindCard result = bindCardService.findOrgBindCardByName(name);
+		BindCardDto response = CopyBeanUtils.copyBeanProperties(BindCardDto.class,result,false);
+		return new Response<>(response);
+	}
+
+	@Override
 	public Response<BindCardDto> fetchById(@PathVariable Long id) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(BindCardDto.class, bindCardService.findById(id), false));
 	}

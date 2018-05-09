@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.organization.repository.impl.jpa;
 
 import com.waben.stock.datalayer.organization.entity.OrganizationPublisher;
 
+import java.util.List;
+
 /**
  * 机构推广的发布人 Jpa
  * 
@@ -12,4 +14,5 @@ public interface OrganizationPublisherRepository extends CustomJpaRepository<Org
 
 	OrganizationPublisher findByPublisherId(Long publisherId);
 
+	List<OrganizationPublisher> findOrganizationPublishersByOrgCode(String code);
 }
