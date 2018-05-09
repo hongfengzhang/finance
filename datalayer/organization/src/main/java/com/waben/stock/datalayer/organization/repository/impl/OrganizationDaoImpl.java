@@ -79,6 +79,11 @@ public class OrganizationDaoImpl implements OrganizationDao {
 	}
 
 	@Override
+	public Organization retrieveOrganizationByName(String orgName) {
+		return repository.findOrganizationByName(orgName);
+	}
+
+	@Override
 	public List<Organization> retriveByName(String orgName) {
 		return repository.findByName(orgName);
 	}

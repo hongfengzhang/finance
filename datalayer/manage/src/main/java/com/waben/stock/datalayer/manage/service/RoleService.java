@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -87,27 +88,16 @@ public class RoleService {
     }
 
     public Role revision(Role role) {
-        Role retrieve = roleDao.retrieve(role.getId());
-        retrieve.setCode(role.getCode());
-        retrieve.setName(role.getName());
-        retrieve.setDescription(role.getDescription());
-        return roleDao.update(retrieve);
+        return roleDao.update(role);
     }
 
     public void delete(Long id) {
         roleDao.delete(id);
     }
 
+    @Transactional
     public Role save(Role role) {
         Role result = roleDao.create(role);
-        if (result != null) {
-            if (result.getCode().equals("ADMIN")) {
-                //添加渠道管理员
-                if (result.getDescription().equals("渠道管理员")) {
-                    bindRoleWithPermissionAndMenu(result.getId(), 4L);
-                }
-            }
-        }
         return result;
     }
 
@@ -144,6 +134,7 @@ public class RoleService {
         role.setPermissions(permissions);
         return roleDao.update(role);
     }
+
 
     public Role findByOrganizationAdmin(Long organization) {
         Role role = roleDao.retrieveRoleAdminByOrganization(organization);

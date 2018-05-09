@@ -36,4 +36,9 @@ public class BindCardServiceFallback implements BindCardService {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<BindCardDto> fetchOrgBindCardByName(String name) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

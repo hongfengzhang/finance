@@ -29,4 +29,7 @@ public interface OrganizationAccountInterface {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	Response<List<OrganizationAccountDto>> list();
+
+	@RequestMapping(value = "/state/{id}/{state}",method = RequestMethod.PUT)
+	Response<OrganizationAccountDto> modifyState(@PathVariable("id") Long id, @PathVariable("state") Integer state);
 }

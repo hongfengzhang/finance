@@ -1,35 +1,53 @@
 package com.waben.stock.interfaces.vo.organization;
 
-import com.waben.stock.interfaces.dto.organization.OrganizationDto;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.util.Date;
-
+@ApiModel(value="UserVo",description="管理员对象")
 public class UserVo {
+    @ApiModelProperty(value = "管理员id")
     private Long id;
     /**
      * 登陆用户名
      */
+    @ApiModelProperty(value = "角色名称")
     private String username;
     /**
      * 登陆密码
      */
+    @ApiModelProperty(value = "密码")
     private String password;
     /**
      * 昵称
      */
+    @ApiModelProperty(value = "真实姓名")
     private String nickname;
     /**
      * 创建时间
      */
+    @ApiModelProperty(value = "创建时间")
     private Date createTime;
     /**
      * 所属机构
      */
+    @ApiModelProperty(value = "代理商对象",hidden = true)
     private OrganizationVo org;
-
+    @ApiModelProperty(value = "代理商id")
+    private Long orgId;
+    @ApiModelProperty(value = "角色id")
     private Long role;
+    @ApiModelProperty(value = "角色名称")
     private String roleName;
+    @ApiModelProperty(value = "角色代码",hidden = true)
     private String code;
+    @ApiModelProperty(value = "代理商名称")
+    private String orgName;
+    /**
+     * 状态（0正常，1冻结）
+     */
+    @ApiModelProperty(value = "状态")
+    private Boolean state;
     public Long getId() {
         return id;
     }
@@ -78,12 +96,20 @@ public class UserVo {
         this.org = org;
     }
 
-    public void setRole(Long role) {
-        this.role = role;
+    public Long getOrgId() {
+        return orgId;
+    }
+
+    public void setOrgId(Long orgId) {
+        this.orgId = orgId;
     }
 
     public Long getRole() {
         return role;
+    }
+
+    public void setRole(Long role) {
+        this.role = role;
     }
 
     public String getRoleName() {
@@ -100,5 +126,21 @@ public class UserVo {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getOrgName() {
+        return orgName;
+    }
+
+    public void setOrgName(String orgName) {
+        this.orgName = orgName;
+    }
+
+    public Boolean getState() {
+        return state;
+    }
+
+    public void setState(Boolean state) {
+        this.state = state;
     }
 }

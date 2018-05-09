@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.organization.service;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
@@ -52,4 +53,7 @@ public class OrganizationPublisherService {
 		return dao.create(orgPublisher);
 	}
 
+    public List<OrganizationPublisher> findOrganizationPublishersByCode(String code) {
+		return dao.retrieveOrganizationPublishersByOrgCode(code);
+    }
 }

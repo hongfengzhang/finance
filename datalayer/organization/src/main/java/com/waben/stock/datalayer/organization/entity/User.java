@@ -38,7 +38,7 @@ public class User {
 	/**
 	 * 创建时间
 	 */
-	private Date createTime = new Date();
+	private Date createTime;
 	/**
 	 * 所属机构
 	 */
@@ -48,6 +48,10 @@ public class User {
 
 	private Long role;
 
+	/**
+	 * 状态（0正常，1冻结）
+	 */
+	private Boolean state;
 
 	public Long getId() {
 		return id;
@@ -103,5 +107,13 @@ public class User {
 
 	public void setRole(Long role) {
 		this.role = role;
+	}
+
+	public Boolean getState() {
+		return state;
+	}
+
+	public void setState(Boolean state) {
+		this.state = state;
 	}
 }

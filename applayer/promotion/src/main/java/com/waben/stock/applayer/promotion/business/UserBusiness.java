@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.waben.stock.applayer.promotion.util.SecurityAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,13 +40,13 @@ public class UserBusiness {
     }
 
 
-    public UserDto save(UserDto userDto, OrganizationDto organizationDto) {
+    public UserDto save(UserDto userDto) {
         //获取用户所属机构的管理员角色并绑定给当前用户
         Response<UserDto> userDtoResponse = userReference.fetchByUserName(userDto.getUsername());
         if(userDtoResponse==null) {
-            RoleDto roleDto = roleBusiness.findByOrganization(organizationDto);
+            OrganizationDto organizationDto = new OrganizationDto();
+            organizationDto.setId(userDto.getOrgId());
             userDto.setOrg(organizationDto);
-            userDto.setRole(roleDto.getId());
             userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
             Response<UserDto> response = userReference.addition(userDto);
             String code = response.getCode();
@@ -72,6 +73,8 @@ public class UserBusiness {
     }
 
     public PageInfo<UserDto> pages(UserQuery userQuery) {
+        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+        userQuery.setOrganization(userDto.getOrg().getId());
         Response<PageInfo<UserDto>> response = userReference.pages(userQuery);
         String code = response.getCode();
         if ("200".equals(code)) {
@@ -92,5 +95,15 @@ public class UserBusiness {
         }
         throw new ServiceException(response.getCode());
     }
-    
+
+    public UserDto revisionState(Long id) {
+        Response<UserDto> response = userReference.modifyState(id);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
+        }
+        throw new ServiceException(response.getCode());
+    }
 }
