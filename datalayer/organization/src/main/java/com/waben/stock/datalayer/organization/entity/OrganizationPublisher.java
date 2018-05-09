@@ -30,6 +30,10 @@ public class OrganizationPublisher {
 	 */
 	private String orgCode;
 	/**
+	 * 机构ID
+	 */
+	private Long orgId;
+	/**
 	 * 创建时间
 	 */
 	private Date createTime;
@@ -64,6 +68,14 @@ public class OrganizationPublisher {
 
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 
 }

@@ -11,7 +11,7 @@ import java.util.Date;
  * @author luomengan
  *
  */
-@ApiModel(value="BannerDto",description="轮播图对象")
+@ApiModel(value = "BannerDto", description = "轮播图对象")
 public class BannerDto {
 	@ApiModelProperty(value = "轮播图id")
 	private Long id;
@@ -27,6 +27,11 @@ public class BannerDto {
 	private Date createTime = new Date();
 	@ApiModelProperty(value = "跳转链接对象Id")
 	private Long bannerForwardId;
+	/**
+	 * 跳转类型
+	 */
+	private String forward;
+
 	public Long getId() {
 		return id;
 	}
@@ -92,4 +97,13 @@ public class BannerDto {
 	public void setBannerForwardDto(BannerForwardDto bannerForwardDto) {
 		this.bannerForwardDto = bannerForwardDto;
 	}
+
+	public String getForward() {
+		return forward;
+	}
+
+	public void setForward(String forward) {
+		this.forward = forward;
+	}
+
 }

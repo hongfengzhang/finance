@@ -27,5 +27,9 @@ public class OrganizationPublisherReferenceFallback implements OrganizationPubli
 	public Response<List<OrganizationPublisherDto>> fetchOrganizationPublishersByCode(String code) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+	@Override
+	public Response<OrganizationPublisherDto> fetchOrgPublisher(Long publisherId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 
 }

@@ -48,6 +48,7 @@ public class OrganizationPublisherService {
 		}
 		orgPublisher = new OrganizationPublisher();
 		orgPublisher.setOrgCode(orgCode);
+		orgPublisher.setOrgId(org.getId());
 		orgPublisher.setPublisherId(publisherId);
 		orgPublisher.setCreateTime(new Date());
 		return dao.create(orgPublisher);
@@ -56,4 +57,8 @@ public class OrganizationPublisherService {
     public List<OrganizationPublisher> findOrganizationPublishersByCode(String code) {
 		return dao.retrieveOrganizationPublishersByOrgCode(code);
     }
+	public OrganizationPublisher findOrgPulisher(Long publisherId) {
+		return dao.retrieveByPublisherId(publisherId);
+	}
+
 }

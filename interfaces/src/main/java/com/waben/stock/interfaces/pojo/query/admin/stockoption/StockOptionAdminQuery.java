@@ -44,12 +44,12 @@ public class StockOptionAdminQuery extends PageAndSortQuery {
 	 */
 	private Boolean isMark;
 	/**
-	 * 流水时间-查询开始时间
+	 * 申购时间-查询开始时间
 	 */
 	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
 	/**
-	 * 流水时间-查询结束时间
+	 * 申购时间-查询结束时间
 	 */
 	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date endTime;

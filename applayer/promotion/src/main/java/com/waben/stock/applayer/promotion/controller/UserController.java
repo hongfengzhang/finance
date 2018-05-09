@@ -33,6 +33,8 @@ import com.waben.stock.interfaces.vo.organization.UserVo;
 @RestController
 @RequestMapping("/user")
 @Api(description="管理员")
+// @Controller
+// @RequestMapping("/user")
 public class UserController {
 
     @Autowired

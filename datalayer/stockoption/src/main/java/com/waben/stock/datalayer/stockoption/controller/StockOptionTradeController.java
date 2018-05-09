@@ -20,6 +20,7 @@ import com.waben.stock.datalayer.stockoption.service.StockOptionTradeService;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
+import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
@@ -32,6 +33,7 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
+import com.waben.stock.interfaces.pojo.query.promotion.stockoption.StockOptionPromotionQuery;
 import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -250,6 +252,13 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	public Response<StockOptionAmountLimitDto> fetchGlobalStockOptionLimit() {
 		StockOptionAmountLimit quote = riskService.findStockOptionQuote();
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionAmountLimitDto.class, quote, false));
+	}
+
+	@Override
+	public Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(@RequestBody StockOptionPromotionQuery query) {
+		Page<StockOptionPromotionDto> page = stockOptionTradeService.promotionPagesByQuery(query);
+		PageInfo<StockOptionPromotionDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionPromotionDto.class);
+		return new Response<>(result);
 	}
 
 }

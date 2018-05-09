@@ -142,12 +142,15 @@ public class StockOptionTrade {
 	@OneToOne
 	@JoinColumn(name = "offline_trade")
 	private OfflineStockOptionTrade offlineTrade;
-
 	/**
 	 * 线下期权交易状态
 	 */
 	@Convert(converter = OfflineStockOptionTradeStateConverter.class)
 	private OfflineStockOptionTradeState status;
+	/**
+	 * 推广代理商ID
+	 */
+	private Long promotionOrgId;
 
 	public Long getId() {
 		return id;
@@ -371,6 +374,14 @@ public class StockOptionTrade {
 
 	public void setIsMark(Boolean isMark) {
 		this.isMark = isMark;
+	}
+
+	public Long getPromotionOrgId() {
+		return promotionOrgId;
+	}
+
+	public void setPromotionOrgId(Long promotionOrgId) {
+		this.promotionOrgId = promotionOrgId;
 	}
 
 }

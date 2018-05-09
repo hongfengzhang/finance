@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
+import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
@@ -22,6 +23,7 @@ import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
+import com.waben.stock.interfaces.pojo.query.promotion.stockoption.StockOptionPromotionQuery;
 
 public interface StockOptionTradeInterface {
 
@@ -44,6 +46,16 @@ public interface StockOptionTradeInterface {
 	 */
 	@RequestMapping(value = "/adminpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<StockOptionAdminDto>> adminPagesByQuery(@RequestBody StockOptionAdminQuery query);
+	
+	/**
+	 * 分页查询期权交易（代理商后台）
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 期权交易分页数据
+	 */
+	@RequestMapping(value = "/promotionpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(@RequestBody StockOptionPromotionQuery query);
 
 	/**
 	 * 分页查询期权交易（终端用户）

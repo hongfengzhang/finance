@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.strategist.reference.OrganizationReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
@@ -71,6 +72,11 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 
 	@Override
 	public Response<OrganizationDto> fetchByCode(String code) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<AdminAgentDetailDto>> adminAgentPageByQuery(OrganizationQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

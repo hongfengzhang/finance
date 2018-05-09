@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.strategist.business.OrganizationPublisherBusiness;
 import com.waben.stock.applayer.strategist.business.PublisherBusiness;
 import com.waben.stock.applayer.strategist.business.StockBusiness;
 import com.waben.stock.applayer.strategist.business.StockOptionCycleBusiness;
@@ -26,6 +27,7 @@ import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeDynam
 import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeWithMarketDto;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -76,6 +78,9 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private PublisherBusiness publisherBusiness;
+	
+	@Autowired
+	private OrganizationPublisherBusiness orgPublisherBusiness;
 
 	@GetMapping("/cyclelists")
 	@ApiOperation(value = "期权周期列表")
@@ -157,6 +162,11 @@ public class StockOptionTradeController {
 		dto.setRightMoneyRatio(quote.getRightMoneyRatio());
 		dto.setStockCode(stockCode);
 		dto.setStockName(stock.getName());
+		// 获取当前用户所属的推广代理商
+		OrganizationPublisherDto orgPublisher = orgPublisherBusiness.fetchOrgPublisher(SecurityUtil.getUserId());
+		if (orgPublisher != null) {
+			dto.setPromotionOrgId(orgPublisher.getOrgId());
+		}
 		// 获取是否为测试单
 		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
 		dto.setIsTest(publisher.getIsTest());

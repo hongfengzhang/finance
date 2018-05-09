@@ -25,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/orgpublisher")
 public class OrganizationPublisherController implements OrganizationPublisherInterface {
-	
+
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
@@ -33,14 +33,20 @@ public class OrganizationPublisherController implements OrganizationPublisherInt
 
 	@Override
 	public Response<OrganizationPublisherDto> addOrgPublisher(@RequestBody OrganizationPublisherDto orgPublisher) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationPublisherDto.class, service.addOrgPublisher(orgPublisher.getOrgCode(), orgPublisher.getPublisherId()), false));
+		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationPublisherDto.class,
+				service.addOrgPublisher(orgPublisher.getOrgCode(), orgPublisher.getPublisherId()), false));
 	}
 
 	@Override
 	public Response<List<OrganizationPublisherDto>> fetchOrganizationPublishersByCode(@PathVariable String code) {
 		List<OrganizationPublisher> result = service.findOrganizationPublishersByCode(code);
-		List<OrganizationPublisherDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result,OrganizationPublisherDto.class);
+		List<OrganizationPublisherDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, OrganizationPublisherDto.class);
 		return new Response<>(response);
+	}
+	@Override
+	public Response<OrganizationPublisherDto> fetchOrgPublisher(@PathVariable Long publisherId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationPublisherDto.class,
+				service.findOrgPulisher(publisherId), false));
 	}
 
 }
