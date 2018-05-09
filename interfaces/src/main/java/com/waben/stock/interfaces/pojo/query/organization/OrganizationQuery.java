@@ -13,6 +13,10 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 public class OrganizationQuery extends PageAndSortQuery {
 
 	/**
+	 * 机构Id
+	 */
+	private Long orgId;
+	/**
 	 * 机构代码
 	 */
 	private String code;
@@ -93,6 +97,14 @@ public class OrganizationQuery extends PageAndSortQuery {
 
 	public void setLevel(String level) {
 		this.level = level;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 
 }

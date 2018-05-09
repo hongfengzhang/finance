@@ -42,6 +42,12 @@ public class DynamicQuerySqlDaoImpl implements DynamicQuerySqlDao {
 							Class<?>[] paramTypes = setMethodMap.get(new Integer(j)).getParamTypes();
 							Method m = clazz.getMethod(mName, paramTypes);
 							Object obj = queryList.get(i)[j];
+							if (paramTypes[0].isEnum()) {
+								if (obj != null) {
+									m.invoke(inner, paramTypes[0].getEnumConstants()[(Integer) obj - 1]);
+								}
+								continue;
+							}
 							if (obj instanceof BigInteger) {
 								BigInteger bigObj = (BigInteger) obj;
 								if (paramTypes[0] == Integer.class) {
