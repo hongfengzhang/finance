@@ -26,7 +26,8 @@ import com.waben.stock.datalayer.organization.repository.WithdrawalsApplyDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.WithdrawalsApplyState;
 import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 /**
@@ -46,11 +47,11 @@ public class WithdrawalsApplyService {
 
 	@Autowired
 	private OrganizationAccountService accountService;
-	
+
 	public WithdrawalsApply findById(Long id) {
 		return withdrawalsApplyDao.retrieve(id);
 	}
-	
+
 	public WithdrawalsApply findByApplyNo(String applyNo) {
 		return withdrawalsApplyDao.retrieveByApplyNo(applyNo);
 	}
@@ -68,10 +69,11 @@ public class WithdrawalsApplyService {
 		withdrawalsApply.setState(WithdrawalsApplyState.TOBEAUDITED);
 		withdrawalsApply.setApplyNo(UniqueCodeGenerator.generateWithdrawalsNo());
 		withdrawalsApplyDao.create(withdrawalsApply);
-		accountService.withdrawals(org, withdrawalsApply.getAmount(), withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
+		accountService.withdrawals(org, withdrawalsApply.getAmount(), withdrawalsApply.getId(),
+				withdrawalsApply.getApplyNo());
 		return withdrawalsApply;
 	}
-	
+
 	@Transactional
 	public WithdrawalsApply revisionWithdrawalsApply(WithdrawalsApply withdrawalsApply) {
 		Organization org = organizationDao.retrieve(withdrawalsApply.getOrgId());
@@ -89,17 +91,22 @@ public class WithdrawalsApplyService {
 			public Predicate toPredicate(Root<WithdrawalsApply> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
+				if (!StringUtil.isEmpty(query.getOrgCodeOrName())) {
+					Join<WithdrawalsApply, Organization> join = root.join("org", JoinType.LEFT);
+					Predicate codeQuery = criteriaBuilder.like(join.get("code").as(String.class),
+							"%" + query.getOrgCodeOrName() + "%");
+					Predicate nameQuery = criteriaBuilder.like(join.get("name").as(String.class),
+							"%" + query.getOrgCodeOrName() + "%");
+					predicateList.add(criteriaBuilder.or(codeQuery, nameQuery));
+				}
 				if (query.getApplyId() != null) {
 					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getApplyId()));
 				}
-				if (query.getOrgId() != null) {
-					Join<WithdrawalsApply, Organization> join = root.join("org", JoinType.LEFT);
-					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getOrgId()));
-				}
-				if (query.getStates() != null && query.getStates().length > 0) {
-					WithdrawalsApplyState[] stateArr = new WithdrawalsApplyState[query.getStates().length];
-					for (int i = 0; i < query.getStates().length; i++) {
-						stateArr[i] = WithdrawalsApplyState.getByIndex(query.getStates()[i]);
+				if (!StringUtil.isEmpty(query.getStates())) {
+					String[] stateStrArr = query.getStates().split(",");
+					WithdrawalsApplyState[] stateArr = new WithdrawalsApplyState[stateStrArr.length];
+					for (int i = 0; i < stateStrArr.length; i++) {
+						stateArr[i] = WithdrawalsApplyState.getByIndex(stateStrArr[i].trim());
 					}
 					predicateList.add(root.get("state").in(stateArr));
 				}
@@ -114,14 +121,18 @@ public class WithdrawalsApplyService {
 		return pages;
 	}
 
-	public WithdrawalsApply changeState(Long applyId, WithdrawalsApplyState state) {
+	public WithdrawalsApply changeState(Long applyId, WithdrawalsApplyState state, String refusedRemark) {
 		WithdrawalsApply withdrawalsApply = withdrawalsApplyDao.retrieve(applyId);
 		WithdrawalsApplyState oldState = withdrawalsApply.getState();
 		if (oldState != state) {
 			withdrawalsApply.setState(state);
 			withdrawalsApply.setUpdateTime(new Date());
 			if (state == WithdrawalsApplyState.REFUSED || state == WithdrawalsApplyState.FAILURE) {
-				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount(), withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
+				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount(),
+						withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
+			}
+			if(state == WithdrawalsApplyState.REFUSED) {
+				withdrawalsApply.setRefusedRemark(refusedRemark);
 			}
 			withdrawalsApplyDao.update(withdrawalsApply);
 		}

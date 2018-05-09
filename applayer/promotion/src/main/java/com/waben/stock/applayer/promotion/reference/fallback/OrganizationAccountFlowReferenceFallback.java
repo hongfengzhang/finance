@@ -16,15 +16,6 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlo
 
 @Component
 public class OrganizationAccountFlowReferenceFallback implements OrganizationAccountFlowReference {
-    @Override
-    public Response<PageInfo<OrganizationAccountFlowDto>> pages(OrganizationAccountFlowQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
-
-    @Override
-    public Response<PageInfo<OrganizationAccountFlowDto>> childpages(OrganizationAccountFlowQuery query) {
-        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
-    }
 
     @Override
     public Response<List<OrganizationAccountFlowDto>> list() {

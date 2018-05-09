@@ -47,6 +47,10 @@ public class WithdrawalsApply {
 	@Convert(converter = WithdrawalsApplyStateConverter.class)
 	private WithdrawalsApplyState state;
 	/**
+	 * 拒绝的原因
+	 */
+	private String refusedRemark;
+	/**
 	 * 更新时间
 	 */
 	private Date updateTime;
@@ -255,6 +259,14 @@ public class WithdrawalsApply {
 
 	public void setThirdWithdrawalsNo(String thirdWithdrawalsNo) {
 		this.thirdWithdrawalsNo = thirdWithdrawalsNo;
+	}
+
+	public String getRefusedRemark() {
+		return refusedRemark;
+	}
+
+	public void setRefusedRemark(String refusedRemark) {
+		this.refusedRemark = refusedRemark;
 	}
 
 }

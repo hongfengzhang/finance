@@ -63,6 +63,16 @@ public class SwiftPayParam {
 	 */
 	@JsonProperty("timestamp")
 	private String timestamp;
+	/**
+	 * 姓名
+	 */
+	@JsonProperty("acct_name")
+	private String acctName;
+	/**
+	 * 身份证号
+	 */
+	@JsonProperty("id_num")
+	private String idNum;
 
 	public String getAppId() {
 		return appId;
@@ -150,6 +160,22 @@ public class SwiftPayParam {
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public String getAcctName() {
+		return acctName;
+	}
+
+	public void setAcctName(String acctName) {
+		this.acctName = acctName;
+	}
+
+	public String getIdNum() {
+		return idNum;
+	}
+
+	public void setIdNum(String idNum) {
+		this.idNum = idNum;
 	}
 
 }

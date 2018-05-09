@@ -18,11 +18,15 @@ public class CustomerDto {
 	 */
 	private String publisherName;
 	/**
-	 * 从属机构代码
+	 * 从属代理商ID
+	 */
+	private Long orgId;
+	/**
+	 * 从属代理商代码
 	 */
 	private String orgCode;
 	/**
-	 * 从属机构名称
+	 * 从属代理商名称
 	 */
 	private String orgName;
 	/**
@@ -49,6 +53,14 @@ public class CustomerDto {
 	 * 是否测试用户
 	 */
 	private Boolean isTest;
+	/**
+	 * 状态
+	 * <ul>
+	 * <li>1正常，因为该字段为新加的字段，所以数据为空的情况也是表示正常状态</li>
+	 * <li>2黑名单，不能正常登陆</li>
+	 * </ul>
+	 */
+	private Integer state;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -136,6 +148,22 @@ public class CustomerDto {
 
 	public void setPublisherName(String publisherName) {
 		this.publisherName = publisherName;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 
 }

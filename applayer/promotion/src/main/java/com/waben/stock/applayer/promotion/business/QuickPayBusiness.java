@@ -102,7 +102,7 @@ public class QuickPayBusiness {
 				WithdrawalsApplyDto apply = applyBusiness.fetchByApplyNo(paymentNo);
 				apply.setThirdWithdrawalsNo(thirdNo);
 				applyBusiness.revision(apply);
-				applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.SUCCESS.getIndex());
+				applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.SUCCESS.getIndex(), null);
 				return "SUCCESS";
 			}
 		}
@@ -140,7 +140,7 @@ public class QuickPayBusiness {
 		JSONObject jsStr = JSONObject.parseObject(result);
 		// 修改提现状态
 		applyBusiness.changeState(apply.getId(), "200".equals(jsStr.getString("code"))
-				? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex());
+				? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex(), null);
 		// 如果请求失败 抛出异常
 		if (!"200".equals(jsStr.getString("code"))) {
 			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("message"));
@@ -220,7 +220,7 @@ public class QuickPayBusiness {
 		}
 		// 修改提现状态
 		applyBusiness.changeState(apply.getId(), "0000".equals(jsStr.getString("ret_code"))
-				? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex());
+				? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex(), null);
 		// 如果请求失败 抛出异常
 		if (!"0000".equals(jsStr.getString("ret_code"))) {
 			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("ret_msg"));
@@ -230,7 +230,7 @@ public class QuickPayBusiness {
 	public void payPalWithholdCallback(String applyNo, WithdrawalsApplyState state, String thirdRespCode,
 			String thirdRespMsg) {
 		WithdrawalsApplyDto apply = applyBusiness.fetchByApplyNo(applyNo);
-		applyBusiness.changeState(apply.getId(), state.getIndex());
+		applyBusiness.changeState(apply.getId(), state.getIndex(), null);
 	}
 
 	public static String genSignData(com.alibaba.fastjson.JSONObject jsonObject) {
