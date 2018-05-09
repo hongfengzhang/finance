@@ -102,7 +102,7 @@ public class OrganizationAccountController {
 
 	@RequestMapping(value = "/state/{id}/{state}", method = RequestMethod.PUT)
 	@ApiImplicitParams({@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "代理商资产id", required = true),@ApiImplicitParam(paramType = "path", dataType = "Integer", name = "state", value = "代理商资产状态（1正常，2冻结）", required = true)})
-	@ApiOperation(value = "代理商资产分页")
+	@ApiOperation(value = "修改代理商资产状态")
 	public Response<OrganizationAccountDto> modifyState(@PathVariable Long id, @PathVariable Integer state) {
 		OrganizationAccountDto result = accountBusiness.revisionState(id,state);
 		return new Response<>(result);

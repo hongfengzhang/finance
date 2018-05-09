@@ -31,8 +31,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/role")
-@Api(description="角色")
-// @Controller
+@Api(description = "角色")
 public class RoleController {
 
     @Autowired
