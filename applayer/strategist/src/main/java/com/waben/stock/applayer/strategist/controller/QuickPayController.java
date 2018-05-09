@@ -3,6 +3,7 @@ package com.waben.stock.applayer.strategist.controller;
 import com.waben.stock.applayer.strategist.business.*;
 import com.waben.stock.applayer.strategist.payapi.czpay.config.CzBankType;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
+import com.waben.stock.interfaces.commonapi.wabenpay.common.WabenBankType;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -149,13 +150,14 @@ public class QuickPayController {
         }
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
-        CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
+        // CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
+        WabenBankType bankType = WabenBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
         if (bankType == null) {
             throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
         }
         logger.info("验证通过,提现开始");
         quickPayBusiness.wbWithdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
-                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bindCard.getBranchName());
+                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bankType.getBank());
         resp.setResult("success");
         return resp;
     }

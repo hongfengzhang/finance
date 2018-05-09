@@ -9,7 +9,7 @@ import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
 
 /**
  * 提现申请 Business
@@ -64,8 +64,8 @@ public class WithdrawalsApplyBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public WithdrawalsApplyDto changeState(Long applyId, String stateIndex) {
-		Response<WithdrawalsApplyDto> response = reference.changeState(applyId, stateIndex);
+	public WithdrawalsApplyDto changeState(Long applyId, String stateIndex, String refusedRemark) {
+		Response<WithdrawalsApplyDto> response = reference.changeState(applyId, stateIndex, refusedRemark);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.vo.manage;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.Set;
 
@@ -7,15 +10,23 @@ import java.util.Set;
  * @author Created by yuyidi on 2017/11/16.
  * @desc
  */
+@ApiModel(value="RoleVo",description="角色对象")
 public class RoleVo implements Serializable{
-
+    @ApiModelProperty(value = "角色id")
     private Long id;
+    @ApiModelProperty(value = "角色名称")
     private String name;
+    @ApiModelProperty(value = "角色代码")
     private String code;
+    @ApiModelProperty(value = "角色描述")
     private String description;
+    @ApiModelProperty(value = "角色权限", hidden = true)
     private Set<PermissionVo> permissionVos;
+    @ApiModelProperty(value = "角色菜单", hidden = true)
     private Set<MenuVo> menusVos;
+    @ApiModelProperty(value = "代理商名称")
     private String organizationName;
+    @ApiModelProperty(value = "代理商id")
     private Long organization;
     public Long getId() {
         return id;

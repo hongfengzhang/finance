@@ -142,6 +142,15 @@ public class BindCardBusiness {
         return null;
     }
 
+
+	public BindCardDto findOrgBindCardByName(String name) {
+		Response<BindCardDto> response = service.fetchOrgBindCardByName(name);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
     public BindCardDto orgBindCard(Long orgId, BindCardDto bindCardDto) {
         if (bindCardDto.getId() != null && bindCardDto.getId() > 0) {
             if (bindCardDto.getResourceType() == BindCardResourceType.ORGANIZATION

@@ -47,6 +47,10 @@ public class WithdrawalsApply {
 	@Convert(converter = WithdrawalsApplyStateConverter.class)
 	private WithdrawalsApplyState state;
 	/**
+	 * 拒绝的原因
+	 */
+	private String refusedRemark;
+	/**
 	 * 更新时间
 	 */
 	private Date updateTime;
@@ -70,6 +74,14 @@ public class WithdrawalsApply {
 	 * 银行卡号
 	 */
 	private String bankCard;
+	/**
+	 * 银行代码
+	 */
+	private String bankCode;
+	/**
+	 * 银行名称
+	 */
+	private String bankName;
 	/**
 	 * 第三方代扣接口响应代码
 	 */
@@ -255,6 +267,30 @@ public class WithdrawalsApply {
 
 	public void setThirdWithdrawalsNo(String thirdWithdrawalsNo) {
 		this.thirdWithdrawalsNo = thirdWithdrawalsNo;
+	}
+
+	public String getRefusedRemark() {
+		return refusedRemark;
+	}
+
+	public void setRefusedRemark(String refusedRemark) {
+		this.refusedRemark = refusedRemark;
+	}
+
+	public String getBankCode() {
+		return bankCode;
+	}
+
+	public void setBankCode(String bankCode) {
+		this.bankCode = bankCode;
+	}
+
+	public String getBankName() {
+		return bankName;
+	}
+
+	public void setBankName(String bankName) {
+		this.bankName = bankName;
 	}
 
 }

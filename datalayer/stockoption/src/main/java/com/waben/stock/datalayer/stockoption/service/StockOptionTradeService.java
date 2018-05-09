@@ -41,6 +41,7 @@ import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
+import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.OutsideMessageType;
@@ -51,6 +52,7 @@ import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
+import com.waben.stock.interfaces.pojo.query.promotion.stockoption.StockOptionPromotionQuery;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
@@ -515,6 +517,117 @@ public class StockOptionTradeService {
 		setMethodMap.put(new Integer(20), new MethodDesc("setState", new Class<?>[] { StockOptionTradeState.class }));
 		setMethodMap.put(new Integer(21), new MethodDesc("setRightTime", new Class<?>[] { Date.class }));
 		List<StockOptionAdminDto> content = sqlDao.execute(StockOptionAdminDto.class, sql, setMethodMap);
+		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+				totalElements != null ? totalElements.longValue() : 0);
+	}
+	
+	public Page<StockOptionPromotionDto> promotionPagesByQuery(StockOptionPromotionQuery query) {
+		String publisherNameCondition = "";
+		if (!StringUtil.isEmpty(query.getPublisherName())) {
+			publisherNameCondition = " and t4.name like '%" + query.getPublisherName() + "%' ";
+		}
+		String publisherPhoneCondition = "";
+		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
+			publisherPhoneCondition = " and t3.phone like '%" + query.getPublisherPhone() + "%' ";
+		}
+		String stockCodeOrNameCondition = "";
+		if (!StringUtil.isEmpty(query.getStockCodeOrName())) {
+			stockCodeOrNameCondition = " and (t1.stock_code like '%" + query.getStockCodeOrName() + "%' or t1.stock_name like '%" + query.getStockCodeOrName() + "%') ";
+		}
+		String nominalAmountCondition = "";
+		if (query.getNominalAmount() != null) {
+			stockCodeOrNameCondition = " and t1.nominal_amount='" + query.getNominalAmount() + "' ";
+		}
+		String cycleNameCondition = "";
+		if (!StringUtil.isEmpty(query.getCycleId())) {
+			cycleNameCondition = " and t1.cycle_id='" + query.getCycleId() + "' ";
+		}
+		String stateCondition = "";
+		if (!StringUtil.isEmpty(query.getState()) && !"0".equals(query.getState().trim())) {
+			stateCondition = " and t1.state in(" + query.getState() + ") ";
+		}
+		String isTestCondition = "";
+		if (query.getIsTest() != null) {
+			if (query.getIsTest()) {
+				isTestCondition = " and t1.is_test=1 ";
+			} else {
+				isTestCondition = " and (t1.is_test is null or t1.is_test=0) ";
+			}
+		}
+		String isMarkCondition = "";
+		if (query.getIsMark() != null) {
+			if (query.getIsMark()) {
+				isMarkCondition = " and t1.is_mark=1 ";
+			} else {
+				isMarkCondition = " and (t1.is_mark is null or t1.is_mark=0) ";
+			}
+		}
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.apply_time>='" + sdf.format(query.getStartTime()) + "' ";
+		}
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.apply_time<'" + sdf.format(query.getEndTime()) + "' ";
+		}
+		String startRatioCondition = "";
+		if (query.getStartRatio() != null) {
+			startRatioCondition = " and t1.right_money_ratio>='"
+					+ query.getStartRatio().divide(new BigDecimal("100")).toString() + "' ";
+		}
+		String endRatioCondition = "";
+		if (query.getEndRatio() != null) {
+			endRatioCondition = " and t1.right_money_ratio<='"
+					+ query.getEndRatio().divide(new BigDecimal("100")).toString() + "' ";
+		}
+		String orgCodeOrNameConditon = "";
+		if(!StringUtil.isEmpty(query.getOrgCodeOrName())) {
+			orgCodeOrNameConditon = " and (t5.code like '%" + query.getOrgCodeOrName() + "%' or t5.name like '%" + query.getOrgCodeOrName() + "%') ";
+		}
+		
+		String sql = String.format(
+				"select t1.id, t1.trade_no, t4.name, t3.phone, t1.stock_code, t1.stock_name, t1.cycle_name, t1.nominal_amount, t1.right_money_ratio, "
+						+ "t1.right_money, t2.right_money_ratio as org_right_money_ratio, t2.right_money as org_right_money, t1.apply_time, t1.buying_time, t1.buying_price, t1.selling_time, t1.selling_price, "
+						+ "t1.profit, t1.is_test, t1.is_mark, t1.state, t1.right_time, t5.id as org_id, t5.code as org_code, t5.name as org_name from stock_option_trade t1 "
+						+ "LEFT JOIN offline_stock_option_trade t2 on t1.offline_trade=t2.id "
+						+ "LEFT JOIN publisher t3 on t1.publisher_id=t3.id "
+						+ "LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
+						+ "LEFT JOIN p_organization t5 on t5.id=t1.promotion_org_id "
+						+ "LEFT JOIN p_organization t6 on t6.id=" + query.getCurrentOrgId() + " "
+						+ "where 1=1 %s %s %s %s %s %s %s %s %s %s %s %s %s and (t6.level=1 or (t5.id=t6.id or t5.parent_id=t6.id)) order by t1.apply_time desc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				publisherNameCondition, publisherPhoneCondition, stockCodeOrNameCondition, nominalAmountCondition,
+				cycleNameCondition, stateCondition, isTestCondition, isMarkCondition, startTimeCondition,
+				endTimeCondition, startRatioCondition, endRatioCondition, orgCodeOrNameConditon);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setTradeNo", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setPublisherName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setPublisherPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setStockCode", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(5), new MethodDesc("setStockName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(6), new MethodDesc("setCycleName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setNominalAmount", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setRightMoneyRatio", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setRightMoney", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(10), new MethodDesc("setOrgRightMoneyRatio", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(11), new MethodDesc("setOrgRightMoney", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(12), new MethodDesc("setApplyTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(13), new MethodDesc("setBuyingTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(14), new MethodDesc("setBuyingPrice", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(15), new MethodDesc("setSellingTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(16), new MethodDesc("setSellingPrice", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(17), new MethodDesc("setProfit", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(18), new MethodDesc("setIsTest", new Class<?>[] { Boolean.class }));
+		setMethodMap.put(new Integer(19), new MethodDesc("setIsMark", new Class<?>[] { Boolean.class }));
+		setMethodMap.put(new Integer(20), new MethodDesc("setState", new Class<?>[] { StockOptionTradeState.class }));
+		setMethodMap.put(new Integer(21), new MethodDesc("setRightTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(22), new MethodDesc("setOrgId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(23), new MethodDesc("setOrgCode", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(24), new MethodDesc("setOrgName", new Class<?>[] { String.class }));
+		List<StockOptionPromotionDto> content = sqlDao.execute(StockOptionPromotionDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);

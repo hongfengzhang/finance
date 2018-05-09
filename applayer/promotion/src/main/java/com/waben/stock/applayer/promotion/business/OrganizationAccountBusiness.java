@@ -5,6 +5,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
 import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,8 +50,19 @@ public class OrganizationAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public PageInfo<OrganizationVo> pages(OrganizationAccountQuery query) {
-		OrganizationQuery organizationQuery = new OrganizationQuery();
-		return null;
+	public PageInfo<OrganizationAccountDto> pages(OrganizationAccountQuery query) {
+		Response<PageInfo<OrganizationAccountDto>> response = reference.pages(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public OrganizationAccountDto revisionState(Long id, Integer state) {
+		Response<OrganizationAccountDto> response = reference.modifyState(id, state);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
 	}
 }

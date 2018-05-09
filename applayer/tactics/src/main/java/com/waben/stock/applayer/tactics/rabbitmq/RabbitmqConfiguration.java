@@ -17,6 +17,8 @@ public class RabbitmqConfiguration {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	public static final String withdrawQueryQueueName = "tactics-withdrawQuery";
+	
+	public static final String payQueryQueueName = "tactics-payQuery";
 
 	@Autowired
 	private ConnectionFactory connectionFactory;
@@ -37,4 +39,12 @@ public class RabbitmqConfiguration {
 		return new Queue(withdrawQueryQueueName);
 	}
 
+	/**
+	 * 创建 查询支付 队列
+	 */
+	@Bean
+	public Queue payQueryQueue() {
+		return new Queue(payQueryQueueName);
+	}
+	
 }

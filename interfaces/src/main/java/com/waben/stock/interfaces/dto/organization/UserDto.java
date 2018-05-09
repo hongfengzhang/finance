@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.Date;
 
 @JsonIgnoreProperties
-public class UserDto {
+public class  UserDto {
 	private Long id;
 	/**
 	 * 登陆用户名
@@ -29,11 +29,16 @@ public class UserDto {
 	private OrganizationDto org;
 
 	private Long role;
+
+	private Long orgId;
 	/**
 	 * 是否只有期权功能
 	 */
 	private boolean onlyStockoption;
-
+	/**
+	 * 状态（0正常，1冻结）
+	 */
+	private Boolean state;
 	public Long getId() {
 		return id;
 	}
@@ -98,4 +103,19 @@ public class UserDto {
 		this.onlyStockoption = onlyStockoption;
 	}
 
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
+
+	public Boolean getState() {
+		return state;
+	}
+
+	public void setState(Boolean state) {
+		this.state = state;
+	}
 }

@@ -147,4 +147,11 @@ public class UserService {
 		user.setPassword(PasswordCrypt.crypt(password));
 		userDao.update(user);
 	}
+
+	@Transactional
+	public User revisionState(Long id) {
+		User user = userDao.retrieve(id);
+		user.setState(!user.getState());
+		return user;
+	}
 }

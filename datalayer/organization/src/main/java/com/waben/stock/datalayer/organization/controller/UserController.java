@@ -86,10 +86,8 @@ public class UserController implements UserInterface {
     @Override
 //    @ApiOperation(value = "添加机构管理用户", hidden = true)
     public Response<UserDto> addition(@RequestBody UserDto user) {
-
         User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
         request.setOrg(CopyBeanUtils.copyBeanProperties(Organization.class,user.getOrg(),false));
-        request.setRole(user.getRole());
         request.setCreateTime(new Date());
         User result = userService.addUser(request);
         UserDto response = CopyBeanUtils.copyBeanProperties(UserDto.class, result, false);
@@ -148,4 +146,11 @@ public class UserController implements UserInterface {
 		userService.modifyPassword(userId, oldPassword, password);
 		return new Response<>();
 	}
+
+    @Override
+    public Response<UserDto> modifyState(@PathVariable Long id) {
+        User result = userService.revisionState(id);
+        UserDto response = CopyBeanUtils.copyBeanProperties(result, new UserDto(), false);
+        return new Response<>(response);
+    }
 }

@@ -15,17 +15,23 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.manage.MenuVo;
 import com.waben.stock.interfaces.vo.manage.PermissionVo;
 import com.waben.stock.interfaces.vo.manage.RoleVo;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-// @Controller
-// @RequestMapping("/role")
+@RestController
+@RequestMapping("/role")
+@Api(description = "角色")
 public class RoleController {
 
     @Autowired
@@ -34,54 +40,55 @@ public class RoleController {
     @Autowired
     private OrganizationBusiness organizationBusiness;
 
-    @PreAuthorize("hasRole('SAVE')")
-    @RequestMapping("/save")
-    @ResponseBody
-    public Response<RoleVo> add(RoleVo vo){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        vo.setOrganization(userDto.getOrg().getId());
-        RoleDto requestDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, vo, false);
-        RoleDto roleDto = roleBusiness.save(requestDto);
+//    @PreAuthorize("hasRole('SAVE')")
+    @RequestMapping(value = "/",method = RequestMethod.POST)
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "角色名称", required = true),@ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "permissionIds", value = "权限id数组", required = true)})
+    @ApiOperation(value = "添加角色")
+    public Response<RoleVo> add(@RequestParam String name, @RequestParam List<Long> permissionIds){
+        RoleDto roleDto = roleBusiness.save(name,permissionIds);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
 
-    @PreAuthorize("hasRole('REVISION')")
-    @RequestMapping("/modify")
-    @ResponseBody
-    public Response<RoleVo> modify(RoleVo vo){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        vo.setOrganization(userDto.getOrg().getId());
-        RoleDto requestDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, vo, false);
-        RoleDto roleDto = roleBusiness.revision(requestDto);
+//    @PreAuthorize("hasRole('REVISION')")
+    @RequestMapping(value = "/",method = RequestMethod.PUT)
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "Long", name = "id", value = "角色id", required = true),@ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "角色名称", required = true),@ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "permissionIds", value = "权限id数组", required = true)})
+    @ApiOperation(value = "修改角色")
+    public Response<RoleVo> modify(@RequestParam Long id,@RequestParam String name,@RequestParam List<Long> permissionIds){
+        RoleDto roleDto = roleBusiness.revision(id,name,permissionIds);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
 
-    @PreAuthorize("hasRole('BIND_MENU')")
-    @RequestMapping("/menu/{id}")
-    @ResponseBody
-    public Response<RoleVo> addRoleMenu(@PathVariable Long id,Long[] menuIds){
-        RoleDto roleDto = roleBusiness.saveRoleMenu(id,menuIds);
-        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
-        return new Response<>(roleVo);
+//    @PreAuthorize("hasRole('DELETE')")
+    @RequestMapping(value = "/{id}",method = RequestMethod.DELETE)
+    @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "角色id", required = true)
+    @ApiOperation(value = "删除角色")
+    public Response<Long> drop(@PathVariable Long id) {
+        roleBusiness.remove(id);
+        return new Response<>(id);
     }
+//    @PreAuthorize("hasRole('BIND_MENU')")
+//    @RequestMapping("/menu/{id}")
+//    public Response<RoleVo> addRoleMenu(@PathVariable Long id,Long[] menuIds){
+//        RoleDto roleDto = roleBusiness.saveRoleMenu(id,menuIds);
+//        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
+//        return new Response<>(roleVo);
+//    }
 
-    @PreAuthorize("hasRole('AUTHORIZE')")
-    @RequestMapping("/permission/{id}")
-    @ResponseBody
-    public Response<RoleVo> addRolePermission(@PathVariable Long id,final Long[] permissionIds){
-        RoleDto roleDto = roleBusiness.saveRolePermission(id,permissionIds);
-        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
-        return new Response<>(roleVo);
-    }
+//    @PreAuthorize("hasRole('AUTHORIZE')")
+//    @RequestMapping("/permission/{id}")
+//    public Response<RoleVo> addRolePermission(@PathVariable Long id,final Long[] permissionIds){
+//        RoleDto roleDto = roleBusiness.saveRolePermission(id,permissionIds);
+//        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
+//        return new Response<>(roleVo);
+//    }
 
-    @RequestMapping("/pages")
-    @ResponseBody
-    public Response<PageInfo<RoleVo>> pages(@RequestBody RoleQuery roleQuery) {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        roleQuery.setOrganization(userDto.getOrg().getId());
-        PageInfo<RoleDto> pageInfo = roleBusiness.pages(roleQuery);
+    @RequestMapping(value = "/pages",method = RequestMethod.GET)
+    @ApiImplicitParam(paramType = "query", dataType = "RoleQuery", name = "query", value = "角色查询对象", required = false)
+    @ApiOperation(value = "角色分页")
+    public Response<PageInfo<RoleVo>> pages(RoleQuery query) {
+        PageInfo<RoleDto> pageInfo = roleBusiness.pages(query);
         List<RoleVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), RoleVo.class);
         PageInfo<RoleVo> response = new PageInfo<>(roleVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
         for (RoleVo role : response.getContent()) {
@@ -93,44 +100,43 @@ public class RoleController {
         return new Response<>(response);
     }
 
-    @RequestMapping("/permissions")
-    @ResponseBody
+    @RequestMapping(value = "/permissions",method = RequestMethod.GET)
+    @ApiOperation(value = "获取权限")
     public Response<List<PermissionVo>> permissions() {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        Set<PermissionDto> permissionDtos = roleBusiness.findById(userDto.getRole()).getPermissionDtos();
-        List<PermissionDto> permissions = new ArrayList<>();
-        permissions.addAll(permissionDtos);
+        List<PermissionDto> permissions = SecurityAccount.current().getPermissions();
         List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissions, PermissionVo.class);
+        for(PermissionVo permissionVo : permissionVos) {
+            if(permissionVo.getPid()==0) {
+                List<PermissionVo> childPermissions = new ArrayList();
+                for(PermissionVo permission : permissionVos) {
+                    if(permission.getPid()==permissionVo.getId()) {
+                        childPermissions.add(permission);
+                        permissionVos.remove(permission);
+                    }
+                }
+                permissionVo.setChildPermissions(childPermissions);
+            }
+        }
         return new Response<>(permissionVos);
     }
 
-    @RequestMapping("/menus")
-    @ResponseBody
-    public Response<List<MenuVo>> menus() {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        Set<MenuDto> menuDtos = roleBusiness.findById(userDto.getRole()).getMenusDtos();
-        List<MenuDto> menus = new ArrayList<>();
-        menus.addAll(menuDtos);
-        List<MenuVo> menuVos = CopyBeanUtils.copyListBeanPropertiesToList(menus, MenuVo.class);
-        return new Response<>(menuVos);
-    }
+//    @RequestMapping("/menus")
+//    public Response<List<MenuVo>> menus() {
+//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+//        Set<MenuDto> menuDtos = roleBusiness.findById(userDto.getRole()).getMenusDtos();
+//        List<MenuDto> menus = new ArrayList<>();
+//        menus.addAll(menuDtos);
+//        List<MenuVo> menuVos = CopyBeanUtils.copyListBeanPropertiesToList(menus, MenuVo.class);
+//        return new Response<>(menuVos);
+//    }
 
-    @RequestMapping("/{id}")
-    @ResponseBody
-    public Response<RoleVo> fetchById(@PathVariable Long id){
-        RoleDto roleDto = roleBusiness.findById(id);
-        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
-        return new Response<>(roleVo);
-    }
+//    @RequestMapping("/{id}")
+//    public Response<RoleVo> fetchById(@PathVariable Long id){
+//        RoleDto roleDto = roleBusiness.findById(id);
+//        RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
+//        return new Response<>(roleVo);
+//    }
 
-    @RequestMapping("/")
-    @ResponseBody
-    public Response<List<RoleVo>> fetchByOrganization(){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
-        List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
-        return new Response<>(roleVos);
-    }
 
 
 }

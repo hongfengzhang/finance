@@ -8,7 +8,7 @@ import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
 
 /**
  * 提现申请 reference服务接口fallback
@@ -29,7 +29,7 @@ public class WithdrawalsApplyReferenceFallback implements WithdrawalsApplyRefere
 	}
 
 	@Override
-	public Response<WithdrawalsApplyDto> changeState(Long applyId, String stateIndex) {
+	public Response<WithdrawalsApplyDto> changeState(Long applyId, String stateIndex, String refusedRemark) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

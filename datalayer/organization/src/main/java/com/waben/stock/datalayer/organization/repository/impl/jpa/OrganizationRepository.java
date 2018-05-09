@@ -20,6 +20,8 @@ public interface OrganizationRepository extends CustomJpaRepository<Organization
 
 	Organization findByCode(String orgCode);
 
+	Organization findOrganizationByName(String orgName);
+
 	List<Organization> findByName(String orgName);
 
 	List<Organization> findByLevel(Integer level);

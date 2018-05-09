@@ -1,9 +1,11 @@
 package com.waben.stock.datalayer.manage.controller;
 
 import com.fasterxml.jackson.core.JsonEncoding;
+import com.waben.stock.datalayer.manage.entity.Permission;
 import com.waben.stock.datalayer.manage.entity.Role;
 import com.waben.stock.datalayer.manage.entity.Staff;
 import com.waben.stock.datalayer.manage.service.RoleService;
+import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
@@ -24,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Created by yuyidi on 2017/11/16.
@@ -73,8 +75,15 @@ public class RoleController implements RoleInterface {
     @Override
     public Response<RoleDto> add(@RequestBody RoleDto roleDto) {
         Role role = CopyBeanUtils.copyBeanProperties(Role.class, roleDto, false);
-        RoleDto result = CopyBeanUtils.copyBeanProperties(RoleDto.class, roleService.save(role), false);
-        return new Response<>(result);
+        List<PermissionDto> permissionDtos = new ArrayList<>();
+        permissionDtos.addAll(roleDto.getPermissionDtos());
+        List<Permission> permissions = CopyBeanUtils.copyListBeanPropertiesToList(permissionDtos, Permission.class);
+        Set<Permission> permission = new HashSet<>();
+        permission.addAll(permissions);
+        role.setPermissions(permission);
+        Role result = roleService.save(role);
+        RoleDto response = CopyBeanUtils.copyBeanProperties(RoleDto.class, result, false);
+        return new Response<>(response);
     }
 
     @Override

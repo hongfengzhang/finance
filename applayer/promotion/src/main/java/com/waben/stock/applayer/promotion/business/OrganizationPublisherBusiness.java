@@ -11,6 +11,8 @@ import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 
+import java.util.List;
+
 /**
  * 机构推广的发布人 Business
  * 
@@ -37,4 +39,11 @@ public class OrganizationPublisherBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+    public List<OrganizationPublisherDto> findOrganizationPublishersByCode(String code) {
+		Response<List<OrganizationPublisherDto>> response = reference.fetchOrganizationPublishersByCode(code);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+    }
 }

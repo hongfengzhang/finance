@@ -53,7 +53,14 @@ public class OrganizationAccount {
 	@OneToOne
 	@JoinColumn(name = "org_id")
 	private Organization org;
-
+	/**
+	 * 状态
+	 * <ul>
+	 * <li>1正常，因为该字段为新加的字段，所以数据为空的情况也是表示正常状态</li>
+	 * <li>2冻结，不能提现、不能交易</li>
+	 * </ul>
+	 */
+	private Integer state;
 	public Long getId() {
 		return id;
 	}
@@ -110,4 +117,11 @@ public class OrganizationAccount {
 		this.org = org;
 	}
 
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
 }

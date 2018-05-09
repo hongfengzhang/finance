@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.organization.controller;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -53,8 +55,21 @@ public class OrganizationAccountController implements OrganizationAccountInterfa
 	public Response<PageInfo<OrganizationAccountDto>> pages(@RequestBody OrganizationAccountQuery query) {
 		Page<OrganizationAccount> page = organizationAccountService.pagesByQuery(query);
 		PageInfo<OrganizationAccountDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountDto.class);
+		for (int i=0; i<page.getContent().size(); i++) {
+			Organization org = page.getContent().get(i).getOrg();
+			OrganizationDto organizationDto = CopyBeanUtils.copyBeanProperties(OrganizationDto.class, org, false);
+			result.getContent().get(i).setOrg(organizationDto);
+		}
 		return new Response<>(result);
 	}
+
+	@Override
+	public Response<OrganizationAccountDto> modifyState(@PathVariable Long id,@PathVariable Integer state) {
+		OrganizationAccount result = organizationAccountService.revisionState(id,state);
+		OrganizationAccountDto response = CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class, result, false);
+		return new Response<>(response);
+	}
+
 
 	@Override
 	public Response<OrganizationAccountDto> fetchByOrgId(@PathVariable Long orgId) {

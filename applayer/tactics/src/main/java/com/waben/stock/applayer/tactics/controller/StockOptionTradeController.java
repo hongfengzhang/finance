@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.tactics.business.OrganizationPublisherBusiness;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.business.StockOptionCycleBusiness;
@@ -26,6 +27,7 @@ import com.waben.stock.applayer.tactics.dto.stockoption.StockOptionTradeDynamicD
 import com.waben.stock.applayer.tactics.dto.stockoption.StockOptionTradeWithMarketDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -73,9 +75,12 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
-	
+
 	@Autowired
 	private PublisherBusiness publisherBusiness;
+
+	@Autowired
+	private OrganizationPublisherBusiness orgPublisherBusiness;
 
 	@GetMapping("/cyclelists")
 	@ApiOperation(value = "期权周期列表")
@@ -98,7 +103,7 @@ public class StockOptionTradeController {
 				.setAvailableBalance(accountBusiness.findByPublisherId(SecurityUtil.getUserId()).getAvailableBalance());
 		return new Response<>(resultQuote);
 	}
-	
+
 	@PostMapping("/buy")
 	@ApiOperation(value = "申购", notes = "buyingType买入方式:1市价买入")
 	public Response<StockOptionTradeWithMarketDto> buy(@RequestParam(required = true) Integer buyingType,
@@ -153,10 +158,15 @@ public class StockOptionTradeController {
 		dto.setRightMoneyRatio(quote.getRightMoneyRatio());
 		dto.setStockCode(stockCode);
 		dto.setStockName(stock.getName());
+		// 获取当前用户所属的推广代理商
+		OrganizationPublisherDto orgPublisher = orgPublisherBusiness.fetchOrgPublisher(SecurityUtil.getUserId());
+		if (orgPublisher != null) {
+			dto.setPromotionOrgId(orgPublisher.getOrgId());
+		}
 		// 获取是否为测试单
 		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
 		dto.setIsTest(publisher.getIsTest());
-		
+
 		StockOptionTradeDto tradeDto = tradeBusiness.add(dto);
 		return new Response<>(tradeBusiness.wrapMarketInfo(tradeDto));
 	}
@@ -166,7 +176,8 @@ public class StockOptionTradeController {
 	public Response<PageInfo<StockOptionTradeWithMarketDto>> pagesHoldPosition(int page, int size) {
 		StockOptionTradeUserQuery query = new StockOptionTradeUserQuery(page, size, SecurityUtil.getUserId(),
 				new StockOptionTradeState[] { StockOptionTradeState.WAITCONFIRMED, StockOptionTradeState.TURNOVER,
-						StockOptionTradeState.APPLYRIGHT, StockOptionTradeState.INSETTLEMENT, StockOptionTradeState.AUTOEXPIRE });
+						StockOptionTradeState.APPLYRIGHT, StockOptionTradeState.INSETTLEMENT,
+						StockOptionTradeState.AUTOEXPIRE });
 		PageInfo<StockOptionTradeDto> pageInfo = tradeBusiness.pagesByUserQuery(query);
 		List<StockOptionTradeWithMarketDto> content = tradeBusiness.wrapMarketInfo(pageInfo.getContent());
 		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),

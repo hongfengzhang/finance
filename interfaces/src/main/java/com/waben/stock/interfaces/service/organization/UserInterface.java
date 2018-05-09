@@ -58,4 +58,8 @@ public interface UserInterface {
     @RequestMapping(value = "/{userId}/password", method = RequestMethod.PUT)
 	Response<Void> modifyPassword(@PathVariable("userId") Long userId, @RequestParam(name = "oldPassword") String oldPassword,
 			@RequestParam(name = "password") String password);
+
+
+    @RequestMapping(value = "/state/{id}", method = RequestMethod.PUT)
+    Response<UserDto> modifyState(@PathVariable("id") Long id);
 }

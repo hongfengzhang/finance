@@ -1,8 +1,6 @@
 package com.waben.stock.applayer.tactics.business;
 
-import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -35,6 +33,7 @@ import com.waben.stock.applayer.tactics.payapi.shande.utils.FormRequest;
 import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
 import com.waben.stock.applayer.tactics.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.applayer.tactics.rabbitmq.RabbitmqProducer;
+import com.waben.stock.applayer.tactics.rabbitmq.message.PayQueryMessage;
 import com.waben.stock.applayer.tactics.rabbitmq.message.WithdrawQueryMessage;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
@@ -96,6 +95,14 @@ public class QuickPayBusiness {
 
     public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
         Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+    
+    public PaymentOrderDto modifyPaymentOrder(PaymentOrderDto paymentOrder) {
+        Response<PaymentOrderDto> orderResp = paymentOrderReference.modifyPaymentOrder(paymentOrder);
         if ("200".equals(orderResp.getCode())) {
             return orderResp.getResult();
         }
@@ -599,7 +606,7 @@ public class QuickPayBusiness {
         paymentOrder.setPublisherId(publisher.getId());
         paymentOrder.setCreateTime(new Date());
         paymentOrder.setUpdateTime(new Date());
-        this.savePaymentOrder(paymentOrder);
+        paymentOrder = this.savePaymentOrder(paymentOrder);
         // 封装请求参数
         /* 以下注释的代码为旧网贝支付系统
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMddhhmmss");
@@ -643,32 +650,30 @@ public class QuickPayBusiness {
 		param.setBody(userId + "充值" + amount + "元");
 		param.setTotalFee(new BigDecimal("0.01"));
 		param.setOutOrderNo(paymentNo);
-		param.setFrontSkipUrl(wbConfig.getNotifyUrl());
-		param.setReturnUrl("H5".equals(endType) ? wbConfig.getH5ProxyfrontUrl() : wbConfig.getFrontUrl());
+		param.setFrontSkipUrl("H5".equals(endType) ? wbConfig.getH5ProxyfrontUrl() : wbConfig.getFrontUrl());
+		param.setReturnUrl(wbConfig.getNotifyUrl());
 		param.setTimestamp(sdf.format(new Date()));
 		param.setUserId(String.valueOf(userId));
 		param.setVersion("1.0");
+		param.setAcctName(realNameDto.getName());
+		param.setIdNum(realNameDto.getIdCard());
 		SwiftPayRet payRet = WabenPayOverHttp.swiftPay(param, wbConfig.getKey());
+		if(payRet != null && payRet.getTradeNo() != null) {
+			paymentOrder.setThirdPaymentNo(payRet.getTradeNo());
+			this.modifyPaymentOrder(paymentOrder);
+		}
 		Response<Map<String, String>> resp = new Response<Map<String, String>>();
         if (payRet.getCode() == 1) {
             Map<String, String> resultUrl = new HashMap<>();
-            String payUrl = payRet.getPayUrl();
-            if(payUrl.indexOf("?") > 0) {
-            	try {
-					payUrl += "&acct_name=" + URLEncoder.encode(realNameDto.getName(), "UTF-8") + "&id_num=" + realNameDto.getIdCard();
-				} catch (UnsupportedEncodingException e) {
-					throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
-				}
-            }else {
-            	try {
-					payUrl += "?acct_name=" + URLEncoder.encode(realNameDto.getName(), "UTF-8") + "&id_num=" + realNameDto.getIdCard();
-				} catch (UnsupportedEncodingException e) {
-					throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
-				}
-            }
-            resultUrl.put("url", payUrl);
+            // resultUrl.put("url", payRet.getPayUrl());
+            resultUrl.put("url", payRet.getPayUrl().replace("47.106.62.170", "47.106.134.204"));
             resp.setResult(resultUrl);
-            logger.info("网贝支付返回给前端的充值地址：" + payUrl);
+            // 支付请求成功，使用队列查询
+        	PayQueryMessage message = new PayQueryMessage();
+    		message.setAppId(wbConfig.getMerchantNo());
+    		message.setOutOrderNo(paymentOrder.getPaymentNo());
+    		message.setOrderNo(paymentOrder.getThirdPaymentNo());
+    		producer.sendMessage(RabbitmqConfiguration.payQueryQueueName, message);
         } else {
         	throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
         }
@@ -791,13 +796,13 @@ public class QuickPayBusiness {
     	Map<String, String> result = paramter2Map(request);
         logger.info("网贝支付回调的结果是:{}", result);
         String paymentNo = result.get("out_order_no");
-        String orderNo = result.get("orderNo");
+        String orderNo = result.get("order_no");
         String sign = result.get("sign");
         String code = result.get("code");
         // 验证签名
         String checkSign = Md5Util.md5(wbConfig.getMerchantNo() + orderNo + wbConfig.getKey()).toUpperCase();
         if(sign.equalsIgnoreCase(checkSign)) {
-        	if("2".equals(code)) {
+        	if("1".equals(code)) {
         		payCallback(paymentNo, PaymentState.Paid);
         	}
         	return "success";

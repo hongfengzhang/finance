@@ -39,6 +39,10 @@ public class PaymentOrderService {
 		paymentOrder.setCreateTime(new Date());
 		return paymentOrderDao.create(paymentOrder);
 	}
+	
+	public PaymentOrder revision(PaymentOrder paymentOrder) {
+		return paymentOrderDao.update(paymentOrder);
+	}
 
 	public PaymentOrder changeState(String paymentNo, PaymentState state) {
 		PaymentOrder paymentOrder = paymentOrderDao.retrieveByPaymentNo(paymentNo);

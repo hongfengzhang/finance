@@ -12,10 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,7 +32,7 @@ import com.waben.stock.interfaces.enums.WithdrawalsApplyState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
@@ -66,7 +63,6 @@ public class WithdrawalsApplyController {
 	@Autowired
 	private QuickPayBusiness payBusiness;
 
-	@PreAuthorize("hasRole('APPLICATION_FOR_CASH')")
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public Response<WithdrawalsApplyDto> addition(@RequestParam(required = true) Long orgId,
 			@RequestParam(required = true) BigDecimal amount, @RequestParam(required = true) String paymentPassword) {
@@ -94,27 +90,26 @@ public class WithdrawalsApplyController {
 		apply.setName(bindCard.getName());
 		apply.setBankCard(bindCard.getBankCard());
 		apply.setIdCard(bindCard.getIdCard());
+		apply.setBankCode(bindCard.getBankCode());
+		apply.setBankName(bindCard.getBankName());
 		apply.setOrgId(orgId);
 		apply.setAmount(amount);
 		return new Response<>(business.addition(apply));
 	}
 
-	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public Response<PageInfo<WithdrawalsApplyDto>> pagesByQuery(@RequestBody WithdrawalsApplyQuery applyQuery) {
+	@RequestMapping(value = "/pages", method = RequestMethod.GET)
+	public Response<PageInfo<WithdrawalsApplyDto>> pagesByQuery(WithdrawalsApplyQuery applyQuery) {
 		return new Response<>(business.pagesByQuery(applyQuery));
 	}
 
-	@PreAuthorize("hasRole('REFUSE_CASH')")
 	@RequestMapping(value = "/refuse/{applyId}", method = RequestMethod.POST)
-	public Response<WithdrawalsApplyDto> refuse(@PathVariable("applyId") Long applyId) {
-		return new Response<>(business.changeState(applyId, WithdrawalsApplyState.REFUSED.getIndex()));
+	public Response<WithdrawalsApplyDto> refuse(@PathVariable("applyId") Long applyId, String refusedRemark) {
+		return new Response<>(business.changeState(applyId, WithdrawalsApplyState.REFUSED.getIndex(), refusedRemark));
 	}
 
-	@PreAuthorize("hasRole('AGREE_CASH')")
 	@RequestMapping(value = "/confirm/{applyId}", method = RequestMethod.POST)
-	public Response<String> paypalcsa(@PathVariable("applyId") Long applyId) {
+	public Response<String> confirm(@PathVariable("applyId") Long applyId) {
 		WithdrawalsApplyDto apply = business.fetchById(applyId);
-		// payBusiness.payPalCSA(apply);
 		payBusiness.payWabenWithdrawals(apply);
 		Response<String> resp = new Response<String>();
 		resp.setResult("success");
@@ -122,7 +117,7 @@ public class WithdrawalsApplyController {
 	}
 	
 	@RequestMapping("/protocolcallback")
-    @ApiOperation(value = "网贝提现异步通知")
+    @ApiOperation(value = "网贝提现异步通知", hidden = true)
     @ResponseBody
     public String protocolCallBack(HttpServletRequest request){
         String result = payBusiness.wabenProtocolCallBack(request);
@@ -130,7 +125,7 @@ public class WithdrawalsApplyController {
     }
 
 	@RequestMapping("/paypalnotify")
-	@ApiOperation(value = "连连支付代付回调接口")
+	@ApiOperation(value = "连连支付代付回调接口", hidden = true)
 	@ResponseBody
 	public JSONObject payPalWithholdCallback(HttpServletRequest request, HttpServletResponse httpResp)
 			throws IOException {

@@ -21,24 +21,8 @@ public class OrganizationAccountFlowBusiness {
     @Qualifier("organizationAccountFlowReference")
     private OrganizationAccountFlowReference organizationAccountFlowReference;
 
-    public PageInfo<OrganizationAccountFlowDto> pages(OrganizationAccountFlowQuery query) {
-        Response<PageInfo<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.pages(query);
-        if ("200".equals(response.getCode())) {
-            return response.getResult();
-        }
-        throw new ServiceException(response.getCode());
-    }
-    
     public PageInfo<OrganizationAccountFlowWithTradeInfoDto> pagesWithTradeInfo(OrganizationAccountFlowQuery query) {
         Response<PageInfo<OrganizationAccountFlowWithTradeInfoDto>> response = organizationAccountFlowReference.pagesWithTradeInfo(query);
-        if ("200".equals(response.getCode())) {
-            return response.getResult();
-        }
-        throw new ServiceException(response.getCode());
-    }
-
-    public PageInfo<OrganizationAccountFlowDto> childPages(OrganizationAccountFlowQuery query) {
-        Response<PageInfo<OrganizationAccountFlowDto>> response = organizationAccountFlowReference.childpages(query);
         if ("200".equals(response.getCode())) {
             return response.getResult();
         }
