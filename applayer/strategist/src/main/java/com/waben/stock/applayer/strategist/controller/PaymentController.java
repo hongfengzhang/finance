@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,6 +26,7 @@ import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.strategist.business.PaymentBusiness;
 import com.waben.stock.applayer.strategist.business.PublisherBusiness;
 import com.waben.stock.applayer.strategist.payapi.czpay.config.CzBankType;
+import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
@@ -33,6 +37,7 @@ import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.Md5Util;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
@@ -62,6 +67,9 @@ public class PaymentController {
 
 	@Autowired
 	private PublisherBusiness publisherBusiness;
+	
+	@Autowired
+    private WBConfig wbConfig;
 
 	@GetMapping("/recharge")
 	@ApiOperation(value = "充值", notes = "paymentType:1银联支付")
@@ -102,18 +110,35 @@ public class PaymentController {
 	@ApiOperation(value = "网贝网银支付通知")
 	@ResponseBody
 	public String wabenNetbankPayNotify(HttpServletRequest request) {
-		String amount = request.getParameter("amount");
-		String merchantNo = request.getParameter("merchantNo");
-		String outTradeNo = request.getParameter("outTradeNo");
-		String transactNo = request.getParameter("transactNo");
-		String transactTime = request.getParameter("transactTime");
-		String tradeType = request.getParameter("tradeType");
-		String sign = request.getParameter("sign");
-		logger.info("接收网贝网银支付:outTradeNo_{}_transactNo_{}_amount_{}", outTradeNo, transactNo, amount);
-		// TODO 验签
-		// 完成支付
-		paymentBusiness.payCallback(outTradeNo, PaymentState.Paid);
-		return "SUCCESS";
+//		String amount = request.getParameter("amount");
+//		String merchantNo = request.getParameter("merchantNo");
+//		String outTradeNo = request.getParameter("outTradeNo");
+//		String transactNo = request.getParameter("transactNo");
+//		String transactTime = request.getParameter("transactTime");
+//		String tradeType = request.getParameter("tradeType");
+//		String sign = request.getParameter("sign");
+//		logger.info("接收网贝网银支付:outTradeNo_{}_transactNo_{}_amount_{}", outTradeNo, transactNo, amount);
+//		// TODO 验签
+//		// 完成支付
+//		paymentBusiness.payCallback(outTradeNo, PaymentState.Paid);
+//		return "SUCCESS";
+		Map<String, String> result = paramter2Map(request);
+        logger.info("网贝支付回调的结果是:{}", result);
+        String paymentNo = result.get("out_order_no");
+        String orderNo = result.get("order_no");
+        String sign = result.get("sign");
+        String code = result.get("code");
+        // 验证签名
+        String checkSign = Md5Util.md5(wbConfig.getMerchantNo() + orderNo + wbConfig.getKey()).toUpperCase();
+        if(sign.equalsIgnoreCase(checkSign)) {
+        	if("1".equals(code)) {
+        		paymentBusiness.payCallback(paymentNo, PaymentState.Paid);
+        	}
+        	return "success";
+        } else {
+        	logger.error("网贝支付回调验证签名失败");
+        	return "failed";
+        }
 	}
 
 	@RequestMapping("/wabennetbankpay/h5wbreturn")
@@ -299,5 +324,23 @@ public class PaymentController {
 			throw new RuntimeException("http write interrupt");
 		}
 	}
+	
+	private Map<String, String> paramter2Map(HttpServletRequest request) {
+        Map<String, String> params = new HashMap<>();
+        Map requestParams = request.getParameterMap();
+        for (Iterator iter = requestParams.keySet().iterator(); iter.hasNext(); ) {
+            String name = (String) iter.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            // 乱码解决，这段代码在出现乱码时使用。
+            // valueStr = new String(valueStr.getBytes("ISO-8859-1"),
+            // "utf-8");
+            params.put(name, valueStr);
+        }
+        return params;
+    }
 
 }

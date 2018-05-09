@@ -90,6 +90,8 @@ public class WithdrawalsApplyController {
 		apply.setName(bindCard.getName());
 		apply.setBankCard(bindCard.getBankCard());
 		apply.setIdCard(bindCard.getIdCard());
+		apply.setBankCode(bindCard.getBankCode());
+		apply.setBankName(bindCard.getBankName());
 		apply.setOrgId(orgId);
 		apply.setAmount(amount);
 		return new Response<>(business.addition(apply));
@@ -106,9 +108,8 @@ public class WithdrawalsApplyController {
 	}
 
 	@RequestMapping(value = "/confirm/{applyId}", method = RequestMethod.POST)
-	public Response<String> paypalcsa(@PathVariable("applyId") Long applyId) {
+	public Response<String> confirm(@PathVariable("applyId") Long applyId) {
 		WithdrawalsApplyDto apply = business.fetchById(applyId);
-		// payBusiness.payPalCSA(apply);
 		payBusiness.payWabenWithdrawals(apply);
 		Response<String> resp = new Response<String>();
 		resp.setResult("success");

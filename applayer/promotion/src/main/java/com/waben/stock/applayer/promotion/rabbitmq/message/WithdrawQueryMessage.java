@@ -1,41 +1,34 @@
-package com.waben.stock.interfaces.commonapi.wabenpay.bean;
+package com.waben.stock.applayer.promotion.rabbitmq.message;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-public class WithdrawQueryOrderParam {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class WithdrawQueryMessage {
 
-	/**
-	 * 提现申请ID
-	 */
 	private Long applyId;
 	/**
 	 * 应用id
 	 */
-	@JsonProperty("app_id")
 	private String appId;
-	/**
-	 * 签名
-	 * <p>
-	 * md5(AppId+appSecre+timestamp+out_order_no)
-	 * </p>
-	 */
-	@JsonProperty("sign")
-	private String sign;
 	/**
 	 * 平台订单号
 	 */
-	@JsonProperty("order_no")
 	private String orderNo;
 	/**
 	 * 商户订单号
 	 */
-	@JsonProperty("out_order_no")
 	private String outOrderNo;
 	/**
 	 * 时间戳
 	 */
-	@JsonProperty("timestamp")
 	private String timestamp;
+	/**
+	 * 当前消息消费次数
+	 */
+	private int consumeCount;
+
+	public WithdrawQueryMessage() {
+	}
 
 	public String getAppId() {
 		return appId;
@@ -43,14 +36,6 @@ public class WithdrawQueryOrderParam {
 
 	public void setAppId(String appId) {
 		this.appId = appId;
-	}
-
-	public String getSign() {
-		return sign;
-	}
-
-	public void setSign(String sign) {
-		this.sign = sign;
 	}
 
 	public String getOrderNo() {
@@ -75,6 +60,14 @@ public class WithdrawQueryOrderParam {
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+
+	public int getConsumeCount() {
+		return consumeCount;
+	}
+
+	public void setConsumeCount(int consumeCount) {
+		this.consumeCount = consumeCount;
 	}
 
 	public Long getApplyId() {
