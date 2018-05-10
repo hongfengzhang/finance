@@ -25,7 +25,7 @@ public class Swagger2 {
 	@Bean
 	public Docket createRestApi() {
 
-		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQXBwLCIsInVzZXJJZCI6MTAsInNlcmlhbENvZGUiOiJiNzJhM2ZmZi00MjlhLTQzZjUtOWQ4ZC03MDFmMjRmN2M1MTgiLCJzdWIiOiIxMzkyODk1MjI1NCIsImV4cCI6NDMyMDAwMTUxMTg0MDg0MH0.qhG7I4q8E8kfdSxdJQDSKfgpBeVJzDiUCFZc7O3HtTwadj_bQObNm4ubfUjiBc3wA-uamlOnQ9PYbQF7xy7QFg";
+		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQWRtaW4sIiwidXNlcklkIjoxLCJuaWNrbmFtZSI6IueuoeeQhuWRmCIsIm9yZ0lkIjoxLCJvcmdDb2RlIjoiMDEiLCJvcmdOYW1lIjoi5LyY6IKh572RIiwib3JnTGV2ZWwiOjEsInN1YiI6ImFkbWluIiwiZXhwIjo0MzIwMDAxNTI1OTYzNDI4fQ.QUUjl0w1LXvUb-3D9WeZpUPHX11RNePaRpQOUyQQ0Im4n6x-nBttrMZCBzlTjxu8vS16CAuNhfNeLu1rCIUbKw";
 		ParameterBuilder tokenPar = new ParameterBuilder();
 		List<Parameter> pars = new ArrayList<Parameter>();
 		tokenPar.name("Authorization").description("token令牌").modelRef(new ModelRef("string")).parameterType("header")
