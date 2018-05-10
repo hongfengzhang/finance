@@ -71,6 +71,7 @@ public class OrganizationAccountController {
 	@ApiImplicitParam(paramType = "query", dataType = "OrganizationAccountQuery", name = "query", value = "代理商资产查询对象", required = false)
 	@ApiOperation(value = "代理商资产分页")
 	public Response<PageInfo<OrganizationAccountVo>> pages(OrganizationAccountQuery query){
+		long start = System.currentTimeMillis();
 		if(query.getName()!=null) {
 			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getName());
 			if(orgBindCard!=null) {
@@ -101,6 +102,8 @@ public class OrganizationAccountController {
 				response.getContent().get(i).setOrgName(bindCardDto.getName());
 			}
 		}
+		long end = System.currentTimeMillis();
+		logger.info("用时：{}",end-start);
 		return new Response<>(response);
 	}
 
