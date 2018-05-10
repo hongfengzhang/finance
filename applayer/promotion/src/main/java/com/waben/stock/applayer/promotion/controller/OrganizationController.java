@@ -97,7 +97,7 @@ public class OrganizationController {
 	}
 
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	@ApiOperation(value = "获取登录平台或代理商账号详细信息")
+	// @ApiOperation(value = "获取登录平台或代理商账号详细信息")
 	public Response<OrganizationDetailDto> detail(Long orgId) {
 		// OrganizationQuery query = new OrganizationQuery();
 		// query.setOrgId(orgId);
@@ -144,7 +144,7 @@ public class OrganizationController {
 	}
 
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	@ApiOperation(value = "获取代理商列表")
+	// @ApiOperation(value = "获取代理商列表")
 	public Response<PageInfo<OrganizationDetailDto>> adminAgentPage(@RequestBody OrganizationQuery query) {
 		return new Response<>(business.adminAgentPageByQuery(query));
 	}
@@ -167,8 +167,8 @@ public class OrganizationController {
 
 	@RequestMapping(value = "/childrenSta/{currentOrgId}", method = RequestMethod.GET)
 	@ApiOperation(value = "下级代理商数据统计")
-	public Response<PageInfo<OrganizationStaDto>> childrenSta(@PathVariable("currentOrgId") Long currentOrgId,
-			OrganizationStaQuery query) {
+	public Response<PageInfo<OrganizationStaDto>> childrenSta(OrganizationStaQuery query,
+			@PathVariable("currentOrgId") Long currentOrgId) {
 		query.setCurrentOrgId(currentOrgId);
 		query.setQueryType(2);
 		return new Response<>(business.adminStaPageByQuery(query));
@@ -176,10 +176,10 @@ public class OrganizationController {
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
 	@ApiOperation(value = "导出代理商数据")
-	public void export(OrganizationQuery query, HttpServletResponse svrResponse) {
+	public void export(OrganizationStaQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		PageInfo<OrganizationDetailDto> result = business.adminAgentPageByQuery(query);
+		PageInfo<OrganizationStaDto> result = business.adminStaPageByQuery(query);
 		File file = null;
 		FileInputStream is = null;
 		try {
@@ -210,9 +210,9 @@ public class OrganizationController {
 		}
 	}
 
-	private List<List<String>> dataList(List<OrganizationDetailDto> content) {
+	private List<List<String>> dataList(List<OrganizationStaDto> content) {
 		List<List<String>> result = new ArrayList<>();
-		for (OrganizationDetailDto trade : content) {
+		for (OrganizationStaDto trade : content) {
 			String state = "";
 			if (trade.getState() != null) {
 				state = trade.getState().getState();
@@ -222,11 +222,11 @@ public class OrganizationController {
 			data.add(trade.getCode() == null ? "" : trade.getCode());
 			data.add(trade.getName() == null ? "" : trade.getName());
 			data.add(String.valueOf(trade.getLevel() == null ? "" : (trade.getLevel() + "级")));
-			data.add(String.valueOf(trade.getChildOrgCount() == null ? "" : trade.getChildOrgCount()));
-			data.add(String.valueOf(trade.getPublisherCount() == null ? "" : trade.getPublisherCount()));
-			data.add(String.valueOf(trade.getBalance() == null ? "" : trade.getBalance()));
-			data.add(trade.getAgnetName() == null ? "" : trade.getAgnetName());
-			data.add(trade.getPhone() == null ? "" : trade.getPhone());
+			data.add(String.valueOf(trade.getChildrenCount() == null ? "" : trade.getChildrenCount()));
+			data.add(String.valueOf(trade.getPromotionCount() == null ? "" : trade.getPromotionCount()));
+			data.add(String.valueOf(trade.getAvailableBalance() == null ? "" : trade.getAvailableBalance()));
+			data.add(trade.getBindName() == null ? "" : trade.getBindName());
+			data.add(trade.getBingPhone() == null ? "" : trade.getBingPhone());
 			data.add(state);
 			data.add(trade.getCreateTime() != null ? sdf.format(trade.getCreateTime()) : "");
 			result.add(data);
@@ -239,7 +239,7 @@ public class OrganizationController {
 		result.add("代理商ID");
 		result.add("代理商代码");
 		result.add("代理商名称");
-		result.add("代理商成级");
+		result.add("代理商层级");
 		result.add("下线代理");
 		result.add("推广客户");
 		result.add("账户余额");
