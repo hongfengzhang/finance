@@ -94,6 +94,8 @@ public class WithdrawalsApplyController {
 		apply.setName(bindCard.getName());
 		apply.setBankCard(bindCard.getBankCard());
 		apply.setIdCard(bindCard.getIdCard());
+		apply.setBankCode(bindCard.getBankCode());
+		apply.setBankName(bindCard.getBankName());
 		apply.setOrgId(orgId);
 		apply.setAmount(amount);
 		return new Response<>(business.addition(apply));
@@ -112,9 +114,8 @@ public class WithdrawalsApplyController {
 
 	@PreAuthorize("hasRole('AGREE_CASH')")
 	@RequestMapping(value = "/confirm/{applyId}", method = RequestMethod.POST)
-	public Response<String> paypalcsa(@PathVariable("applyId") Long applyId) {
+	public Response<String> confirm(@PathVariable("applyId") Long applyId) {
 		WithdrawalsApplyDto apply = business.fetchById(applyId);
-		// payBusiness.payPalCSA(apply);
 		payBusiness.payWabenWithdrawals(apply);
 		Response<String> resp = new Response<String>();
 		resp.setResult("success");
@@ -122,7 +123,7 @@ public class WithdrawalsApplyController {
 	}
 	
 	@RequestMapping("/protocolcallback")
-    @ApiOperation(value = "网贝提现异步通知")
+    @ApiOperation(value = "网贝提现异步通知", hidden = true)
     @ResponseBody
     public String protocolCallBack(HttpServletRequest request){
         String result = payBusiness.wabenProtocolCallBack(request);
@@ -130,7 +131,7 @@ public class WithdrawalsApplyController {
     }
 
 	@RequestMapping("/paypalnotify")
-	@ApiOperation(value = "连连支付代付回调接口")
+	@ApiOperation(value = "连连支付代付回调接口", hidden = true)
 	@ResponseBody
 	public JSONObject payPalWithholdCallback(HttpServletRequest request, HttpServletResponse httpResp)
 			throws IOException {

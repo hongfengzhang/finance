@@ -12,84 +12,84 @@ import java.util.Date;
 @Table(name = "banner")
 public class Banner {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(nullable = false)
-    private String link;
-    @Column
-    private String description;
-    @Column
-    private Integer sort;
-    @Column(length = 1)
-    private Boolean enable;
-    @Column(name = "create_time")
-    private Date createTime;
-    
-    @JoinColumn(name = "forward")
-    @ManyToOne(targetEntity = BannerForward.class)
-    private BannerForward bannerForward;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+	@Column(nullable = false)
+	private String link;
+	@Column
+	private String description;
+	@Column
+	private Integer sort;
+	@Column(length = 1)
+	private Boolean enable;
+	@Column(name = "create_time")
+	private Date createTime;
 
-    public Long getId() {
-        return id;
-    }
+	@JoinColumn(name = "forward")
+	@ManyToOne(targetEntity = BannerForward.class)
+	private BannerForward bannerForward;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getLink() {
-        return link;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public void setLink(String link) {
-        this.link = link;
-    }
+	public String getLink() {
+		return link;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public void setLink(String link) {
+		this.link = link;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public Integer getSort() {
-        return sort;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-    public void setSort(Integer sort) {
-        this.sort = sort;
-    }
+	public Integer getSort() {
+		return sort;
+	}
 
-    public Boolean getEnable() {
-        return enable;
-    }
+	public void setSort(Integer sort) {
+		this.sort = sort;
+	}
 
-    public void setEnable(Boolean enable) {
-        this.enable = enable;
-    }
+	public Boolean getEnable() {
+		return enable;
+	}
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
+	}
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+	public Date getCreateTime() {
+		return createTime;
+	}
 
-    public BannerForward getBannerForward() {
-        return bannerForward;
-    }
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
+	}
 
-    public void setBannerForward(BannerForward bannerForward) {
-        this.bannerForward = bannerForward;
-    }
+	public BannerForward getBannerForward() {
+		return bannerForward;
+	}
 
-    public String getForward() {
-        if (getBannerForward() != null) {
+	public void setBannerForward(BannerForward bannerForward) {
+		this.bannerForward = bannerForward;
+	}
+
+	public String getForward() {
+		if (getBannerForward() != null) {
 			return getBannerForward().getForward();
 		}
 		return null;
-    }
+	}
 }

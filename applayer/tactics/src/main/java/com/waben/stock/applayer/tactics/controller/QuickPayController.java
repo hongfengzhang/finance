@@ -186,9 +186,9 @@ public class QuickPayController {
     @RequestMapping("/quickbank")
     @ApiOperation(value = "网贝收银台支付调接口")
     @ResponseBody
-    public Response<Map> quickBank(@RequestParam(required = true) BigDecimal amount, HttpServletRequest request) {
+    public Response<Map<String, String>> quickBank(@RequestParam(required = true) BigDecimal amount, HttpServletRequest request) {
     	String endType = request.getHeader("endType");
-        Response<Map> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId(), endType);
+        Response<Map<String, String>> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId(), endType);
         return result;
     }
 

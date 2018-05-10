@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 
@@ -27,23 +28,27 @@ import com.waben.stock.applayer.strategist.payapi.czpay.bean.CzWithholdResponse;
 import com.waben.stock.applayer.strategist.payapi.czpay.config.CzPayConfig;
 import com.waben.stock.applayer.strategist.payapi.tfbpay.util.RSAUtils;
 import com.waben.stock.applayer.strategist.payapi.tfbpay.util.RequestUtils;
-import com.waben.stock.applayer.strategist.payapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.MessageRequestBean;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.MessageResponseBean;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.PayRequestBean;
-import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.UnionPayRequestBean;
-import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.UnionPayResponseBean;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WabenPayConfig;
+import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqProducer;
 import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
+import com.waben.stock.interfaces.commonapi.wabenpay.WabenPayOverHttp;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.GatewayPayParam;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.GatewayPayRet;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.RealNameDto;
 import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -68,9 +73,18 @@ public class PaymentBusiness {
 
 	@Autowired
 	private BindCardBusiness bindCardBusiness;
+	
+	@Autowired
+	private PublisherBusiness publisherBusiness;
+	
+	@Autowired
+    private RealNameBusiness realNameBusiness;
+	
+	@Autowired
+	private RabbitmqProducer producer;
 
 	@Autowired
-	private WBConfig config;
+	private WBConfig wbConfig;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
@@ -133,6 +147,14 @@ public class PaymentBusiness {
 		}
 		throw new ServiceException(orderResp.getCode());
 	}
+	
+	public PaymentOrderDto modifyPaymentOrder(PaymentOrderDto paymentOrder) {
+        Response<PaymentOrderDto> orderResp = paymentOrderReference.modifyPaymentOrder(paymentOrder);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
 
 	public WithdrawalsOrderDto saveWithdrawalsOrder(WithdrawalsOrderDto withdrawalsOrderDto) {
 		Response<WithdrawalsOrderDto> orderResp = withdrawalsOrderReference.addWithdrawalsOrder(withdrawalsOrderDto);
@@ -332,7 +354,7 @@ public class PaymentBusiness {
 		request.setContractNo(bindCard.getContractNo());
 		request.setMember(String.valueOf(bindCard.getResourceId()));
 		try {
-			MessageResponseBean msgResp = WabenPayOverHttp.message(request);
+			MessageResponseBean msgResp = com.waben.stock.applayer.strategist.payapi.wabenpay.WabenPayOverHttp.message(request);
 			// 请求成功，创建订单，并返回订单号
 			PaymentOrderDto paymentOrder = new PaymentOrderDto();
 			paymentOrder.setAmount(amount);
@@ -375,7 +397,7 @@ public class PaymentBusiness {
 		request.setTransactNo(paymentOrder.getThirdPaymentNo());
 		request.setAmount(paymentOrder.getAmount().multiply(new BigDecimal(100)).setScale(0).toString());
 		try {
-			WabenPayOverHttp.pay(request);
+			com.waben.stock.applayer.strategist.payapi.wabenpay.WabenPayOverHttp.pay(request);
 			return paymentOrder.getPaymentNo();
 		} catch (Exception ex) {
 			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, ex.getMessage());
@@ -383,29 +405,78 @@ public class PaymentBusiness {
 	}
 
 	public String wabenNetbankPay(Long publisherId, BigDecimal amount) {
+//		CapitalAccountDto account = accountBusiness.findByPublisherId(publisherId);
+//    	if (account.getState() != null && account.getState() == 2) {
+//			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+//		}
+//		// 保存支付订单
+//		PaymentOrderDto paymentOrder = new PaymentOrderDto();
+//		paymentOrder.setAmount(amount);
+//		paymentOrder.setPaymentNo(UniqueCodeGenerator.generatePaymentNo());
+//		paymentOrder.setPublisherId(publisherId);
+//		paymentOrder.setType(PaymentType.UnionPay);
+//		paymentOrder.setState(PaymentState.Unpaid);
+//		paymentOrder = this.savePaymentOrder(paymentOrder);
+//		// 请求第三方支付
+//		UnionPayRequestBean request = new UnionPayRequestBean();
+//		request.setAmount(String.valueOf(amount.multiply(new BigDecimal("100")).setScale(0, RoundingMode.DOWN)));
+//		request.setBankCode("CCB");
+//		request.setOutTradeNo(paymentOrder.getPaymentNo());
+//		request.setTimeStart(sdf.format(new Date()));
+//		UnionPayResponseBean response = WabenPayOverHttp.netbankPay(request, config);
+//		// 更新第三方支付单号
+//		paymentOrder.setThirdPaymentNo(response.getTransNo());
+//		savePaymentOrder(paymentOrder);
+//		return "http://b.waben.com.cn" + response.getRedirectURL();
+		
 		CapitalAccountDto account = accountBusiness.findByPublisherId(publisherId);
     	if (account.getState() != null && account.getState() == 2) {
 			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
 		}
-		// 保存支付订单
-		PaymentOrderDto paymentOrder = new PaymentOrderDto();
-		paymentOrder.setAmount(amount);
-		paymentOrder.setPaymentNo(UniqueCodeGenerator.generatePaymentNo());
-		paymentOrder.setPublisherId(publisherId);
-		paymentOrder.setType(PaymentType.UnionPay);
-		paymentOrder.setState(PaymentState.Unpaid);
-		paymentOrder = this.savePaymentOrder(paymentOrder);
-		// 请求第三方支付
-		UnionPayRequestBean request = new UnionPayRequestBean();
-		request.setAmount(String.valueOf(amount.multiply(new BigDecimal("100")).setScale(0, RoundingMode.DOWN)));
-		request.setBankCode("CCB");
-		request.setOutTradeNo(paymentOrder.getPaymentNo());
-		request.setTimeStart(sdf.format(new Date()));
-		UnionPayResponseBean response = WabenPayOverHttp.netbankPay(request, config);
-		// 更新第三方支付单号
-		paymentOrder.setThirdPaymentNo(response.getTransNo());
-		savePaymentOrder(paymentOrder);
-		return "http://b.waben.com.cn" + response.getRedirectURL();
+        PublisherDto publisher = publisherBusiness.findById(publisherId);
+        RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, publisherId);
+        //创建订单
+        PaymentOrderDto paymentOrder = new PaymentOrderDto();
+        paymentOrder.setAmount(amount);
+        String paymentNo = UniqueCodeGenerator.generatePaymentNo();
+        paymentOrder.setPaymentNo(paymentNo);
+        paymentOrder.setType(PaymentType.QuickPay);
+        paymentOrder.setState(PaymentState.Unpaid);
+        paymentOrder.setPublisherId(publisher.getId());
+        paymentOrder.setCreateTime(new Date());
+        paymentOrder.setUpdateTime(new Date());
+        paymentOrder = this.savePaymentOrder(paymentOrder);
+        // 封装请求参数
+        GatewayPayParam param = new GatewayPayParam();
+		param.setAppId(wbConfig.getMerchantNo());
+		param.setUserId(String.valueOf(publisherId));
+		param.setSubject(publisherId + "充值");
+		param.setBody(publisherId + "充值" + amount + "元");
+		param.setTotalFee(isProd ? amount : new BigDecimal("0.01"));
+		param.setOutOrderNo(paymentNo);
+		param.setFrontSkipUrl(wbConfig.getUnionpayFrontUrl());
+		param.setReturnUrl(wbConfig.getUnionpayNotifyUrl());
+		param.setTimestamp(sdf.format(new Date()));
+		param.setVersion("1.0");
+		param.setBankCode("01050000");
+		GatewayPayRet payRet = WabenPayOverHttp.gatewayPay(param, wbConfig.getKey());
+		if(payRet != null && payRet.getTradeNo() != null) {
+			paymentOrder.setThirdPaymentNo(payRet.getTradeNo());
+			this.modifyPaymentOrder(paymentOrder);
+		}
+        if (payRet.getCode() == 1) {
+            Map<String, String> resultUrl = new HashMap<>();
+            resultUrl.put("url", payRet.getPayUrl());
+            // 支付请求成功，使用队列查询
+//        	PayQueryMessage message = new PayQueryMessage();
+//    		message.setAppId(wbConfig.getMerchantNo());
+//    		message.setOutOrderNo(paymentOrder.getPaymentNo());
+//    		message.setOrderNo(paymentOrder.getThirdPaymentNo());
+//    		producer.sendMessage(RabbitmqConfiguration.payQueryQueueName, message);
+    		return resultUrl.get("url");
+        } else {
+        	throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
+        }
 	}
 
 }
