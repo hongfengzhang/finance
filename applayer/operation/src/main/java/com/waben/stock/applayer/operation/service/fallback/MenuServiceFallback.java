@@ -20,4 +20,14 @@ public class MenuServiceFallback implements MenuService {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
 
+    @Override
+    public Response<List<MenuDto>> fetchMenusByVariety(Long variety) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<MenuDto> fetchById(Long id) {
+        return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
 }

@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.promotion.business;
 
+import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
@@ -17,16 +19,16 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class RoleBusiness {
     @Autowired
     @Qualifier("roleReference")
     private RoleReference roleReference;
+
+    @Autowired
+    private MenuBusiness menuBusiness;
 
     public RoleDto saveRoleMenu(Long id, Long[] menuIds) {
         Response<RoleDto> response = roleReference.addRoleMenu(id,menuIds);
@@ -51,12 +53,16 @@ public class RoleBusiness {
     }
 
     public PageInfo<RoleDto> pages(RoleQuery roleQuery) {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        roleQuery.setOrganization(userDto.getOrg().getId());
+//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+//        roleQuery.setOrganization(userDto.getOrg().getId());
+        roleQuery.setOrganization(1L);
         roleQuery.setType(4);
         Response<PageInfo<RoleDto>> response = roleReference.pages(roleQuery);
         String code = response.getCode();
         if ("200".equals(code)) {
+            for (RoleDto roleDto : response.getResult().getContent()) {
+               menuBusiness.childsMenu(roleDto.getMenusDtos());
+            }
             return response.getResult();
         }else if(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)){
             throw new NetflixCircuitException(code);
@@ -111,15 +117,16 @@ public class RoleBusiness {
     }
 
 
-    public RoleDto save(String name, List<Long> permissionIds) {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+    public RoleDto save(String name, String menuIds) {
+
+//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
         RoleDto roleDto = new RoleDto();
         roleDto.setName(name);
-        roleDto.setOrganization(userDto.getOrg().getId());
+//        roleDto.setOrganization(userDto.getOrg().getId());
+        roleDto.setOrganization(1L);
         roleDto.setCreateTime(new Date());
         roleDto.setType(4);
-        roleDto.setPermissionDtos(permissionDtos(permissionIds));
-
+        roleDto.setMenusDtos(menuDtos(parentMenuIds(getMenusId(menuIds))));
         Response<RoleDto> response = roleReference.add(roleDto);
         String code = response.getCode();
         if ("200".equals(code)) {
@@ -130,9 +137,18 @@ public class RoleBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public RoleDto revision(Long id, String name, List<Long> permissionIds) {
+    public List<Long> getMenusId(String menuIds) {
+        String[] split = menuIds.split(",");
+        List<Long> ids = new ArrayList<>();
+        for(String id : split) {
+            ids.add(Long.parseLong(id));
+        }
+        return ids;
+    }
+
+    public RoleDto revision(Long id, String name, String menuIds) {
         RoleDto roleDto = roleReference.role(id).getResult();
-        roleDto.setPermissionDtos(permissionDtos(permissionIds));
+        roleDto.setMenusDtos(menuDtos(parentMenuIds(getMenusId(menuIds))));
         roleDto.setName(name);
         Response<RoleDto> response = roleReference.add(roleDto);
         String code = response.getCode();
@@ -144,14 +160,24 @@ public class RoleBusiness {
         throw new ServiceException(response.getCode());
     }
 
-    public Set<PermissionDto> permissionDtos(List<Long> permissionIds) {
-        Set<PermissionDto> permissionDtos = new HashSet();
-        for(Long permissionId : permissionIds) {
-            PermissionDto permissionDto = new PermissionDto();
-            permissionDto.setId(permissionId);
-            permissionDtos.add(permissionDto);
+    public Set<MenuDto> menuDtos(List<Long> menuIds) {
+        Set<MenuDto> menuDtos = new HashSet();
+        for(Long menuId : menuIds) {
+            MenuDto menuDto = new MenuDto();
+            menuDto.setId(menuId);
+            menuDtos.add(menuDto);
         }
-        return permissionDtos;
+        return menuDtos;
+    }
+
+    public List<Long> parentMenuIds(List<Long> menuIds) {
+        Set<Long> menus = new HashSet<>();
+        for(Long menuId : menuIds) {
+            MenuDto menu = menuBusiness.findById(menuId);
+            menus.add(menu.getPid());
+        }
+        menuIds.addAll(menus);
+        return menuIds;
     }
 
     public void remove(Long id) {

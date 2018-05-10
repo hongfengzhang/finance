@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.promotion.controller;
 
+import com.waben.stock.applayer.promotion.business.MenuBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
+import com.waben.stock.applayer.promotion.business.PermissionBusiness;
 import com.waben.stock.applayer.promotion.business.RoleBusiness;
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
@@ -24,6 +26,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,22 +48,25 @@ public class RoleController {
     @Autowired
     private OrganizationBusiness organizationBusiness;
 
+    @Autowired
+    private MenuBusiness menuBusiness;
+
 //    @PreAuthorize("hasRole('SAVE')")
     @RequestMapping(value = "/",method = RequestMethod.POST)
-    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "角色名称", required = true),@ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "permissionIds", value = "权限id数组", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "角色名称", required = true),@ApiImplicitParam(paramType = "query", dataType = "String", name = "menuIds", value = "菜单id数组", required = true)})
     @ApiOperation(value = "添加角色")
-    public Response<RoleVo> add(@RequestParam String name, @RequestParam List<Long> permissionIds){
-        RoleDto roleDto = roleBusiness.save(name,permissionIds);
+    public Response<RoleVo> add(@RequestParam String name, @RequestParam String menuIds){
+        RoleDto roleDto = roleBusiness.save(name,menuIds);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
 
 //    @PreAuthorize("hasRole('REVISION')")
     @RequestMapping(value = "/",method = RequestMethod.PUT)
-    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "Long", name = "id", value = "角色id", required = true),@ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "角色名称", required = true),@ApiImplicitParam(paramType = "query", dataType = "List<Long>", name = "permissionIds", value = "权限id数组", required = true)})
+    @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "Long", name = "id", value = "角色id", required = true),@ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "角色名称", required = true),@ApiImplicitParam(paramType = "query", dataType = "String", name = "menuIds", value = "菜单id数组", required = true)})
     @ApiOperation(value = "修改角色")
-    public Response<RoleVo> modify(@RequestParam Long id,@RequestParam String name,@RequestParam List<Long> permissionIds){
-        RoleDto roleDto = roleBusiness.revision(id,name,permissionIds);
+    public Response<RoleVo> modify(@RequestParam Long id,@RequestParam String name,@RequestParam String menuIds){
+        RoleDto roleDto = roleBusiness.revision(id,name,menuIds);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);
     }
@@ -100,24 +111,34 @@ public class RoleController {
         return new Response<>(response);
     }
 
-    @RequestMapping(value = "/permissions",method = RequestMethod.GET)
-    @ApiOperation(value = "获取权限")
-    public Response<List<PermissionVo>> permissions() {
-        List<PermissionDto> permissions = SecurityAccount.current().getPermissions();
-        List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissions, PermissionVo.class);
-        for(PermissionVo permissionVo : permissionVos) {
-            if(permissionVo.getPid()==0) {
-                List<PermissionVo> childPermissions = new ArrayList();
-                for(PermissionVo permission : permissionVos) {
-                    if(permission.getPid()==permissionVo.getId()) {
-                        childPermissions.add(permission);
-                        permissionVos.remove(permission);
-                    }
-                }
-                permissionVo.setChildPermissions(childPermissions);
-            }
-        }
-        return new Response<>(permissionVos);
+//    @RequestMapping(value = "/permissions",method = RequestMethod.GET)
+//    @ApiOperation(value = "获取权限")
+//    public Response<List<PermissionVo>> permissions() {
+////        List<PermissionDto> permissions = SecurityAccount.current().getPermissions();
+//        List<PermissionDto> permissions = permissionBusiness.findPermissionsByVariety();
+//        List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissions, PermissionVo.class);
+//        for(PermissionVo permissionVo : permissionVos) {
+//            if(permissionVo.getPid()==0) {
+//                List<PermissionVo> childPermissions = new ArrayList();
+//                for(PermissionVo permission : permissionVos) {
+//                    if(permission.getPid()==permissionVo.getId()) {
+//                        childPermissions.add(permission);
+//                        permissionVos.remove(permission);
+//                    }
+//                }
+//                permissionVo.setChildPermissions(childPermissions);
+//            }
+//        }
+//        return new Response<>(permissionVos);
+//    }
+
+    @RequestMapping(value = "/menus",method = RequestMethod.GET)
+    @ApiOperation(value = "获取菜单")
+    public Response<List<MenuVo>> menus() {
+//        List<MenuDto> menuDtos = SecurityAccount.current().getMenus();
+        List<MenuDto> menuDtos = menuBusiness.findMenusByVariety(4L);
+        List<MenuVo> menuVos = CopyBeanUtils.copyListBeanPropertiesToList(menuDtos, MenuVo.class);
+        return new Response<>(menuVos);
     }
 
 //    @RequestMapping("/menus")

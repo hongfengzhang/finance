@@ -25,4 +25,7 @@ public class MenuService {
         return menuDao.retrieveAllByVariety(variety);
     }
 
+    public Menu findById(Long id) {
+        return menuDao.retrieve(id);
+    }
 }

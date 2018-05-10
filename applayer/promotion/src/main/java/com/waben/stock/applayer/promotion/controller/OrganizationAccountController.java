@@ -8,6 +8,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
+import com.waben.stock.interfaces.request.organization.OrganizationAccountRequest;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.manage.RoleVo;
 import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
@@ -19,10 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.waben.stock.applayer.promotion.business.OrganizationAccountBusiness;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
@@ -73,10 +71,11 @@ public class OrganizationAccountController {
 	@ApiImplicitParam(paramType = "query", dataType = "OrganizationAccountQuery", name = "query", value = "代理商资产查询对象", required = false)
 	@ApiOperation(value = "代理商资产分页")
 	public Response<PageInfo<OrganizationAccountVo>> pages(OrganizationAccountQuery query){
-
-		BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getName());
-		if(orgBindCard!=null) {
-			query.setId(orgBindCard.getResourceId());
+		if(query.getName()!=null) {
+			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getName());
+			if(orgBindCard!=null) {
+				query.setId(orgBindCard.getResourceId());
+			}
 		}
 		PageInfo<OrganizationAccountDto> pageInfo = accountBusiness.pages(query);
 		List<OrganizationAccountVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), OrganizationAccountVo.class);
@@ -100,11 +99,30 @@ public class OrganizationAccountController {
 		return new Response<>(response);
 	}
 
-	@RequestMapping(value = "/state/{id}/{state}", method = RequestMethod.PUT)
-	@ApiImplicitParams({@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "代理商资产id", required = true),@ApiImplicitParam(paramType = "path", dataType = "Integer", name = "state", value = "代理商资产状态（1正常，2冻结）", required = true)})
-	@ApiOperation(value = "修改代理商资产状态")
-	public Response<OrganizationAccountDto> modifyState(@PathVariable Long id, @PathVariable Integer state) {
-		OrganizationAccountDto result = accountBusiness.revisionState(id,state);
+//	@RequestMapping(value = "/state/{id}", method = RequestMethod.PUT)
+//	@ApiImplicitParams({@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "代理商资产id", required = true),@ApiImplicitParam(paramType = "path", dataType = "Integer", name = "state", value = "代理商资产状态（1正常，2冻结）", required = true)})
+//	@ApiOperation(value = "修改代理商资产状态")
+//	public Response<OrganizationAccountDto> modifyState(@PathVariable Long id, @PathVariable Integer state) {
+//		OrganizationAccountDto result = accountBusiness.revisionState(id,state);
+//		return new Response<>(result);
+//	}
+
+
+	@ApiImplicitParam(paramType = "query", dataType = "OrganizationAccountRequest", name = "request", value = "代理商资产对象", required = true)
+	@ApiOperation(value = "冻结")
+	@RequestMapping(value = "/freeze", method = RequestMethod.PUT)
+	public Response<OrganizationAccountDto> freeze(OrganizationAccountRequest request) {
+		OrganizationAccountDto organizationAccountDto = CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class,
+				request, false);
+		OrganizationAccountDto result = accountBusiness.freeze(organizationAccountDto);
+		return new Response<>(result);
+	}
+
+	@RequestMapping(value = "/state/{id}", method = RequestMethod.PUT)
+	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "代理商资产id", required = true)
+	@ApiOperation(value = "解冻")
+	public Response<OrganizationAccountDto> recover(@PathVariable Long id) {
+		OrganizationAccountDto result = accountBusiness.recover(id);
 		return new Response<>(result);
 	}
 

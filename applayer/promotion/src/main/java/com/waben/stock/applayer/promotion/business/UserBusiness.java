@@ -3,6 +3,7 @@ package com.waben.stock.applayer.promotion.business;
 import com.waben.stock.applayer.promotion.util.SecurityAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.userdetails.UserDetailsChecker;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -73,8 +74,9 @@ public class UserBusiness {
     }
 
     public PageInfo<UserDto> pages(UserQuery userQuery) {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        userQuery.setOrganization(userDto.getOrg().getId());
+//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+//        userQuery.setOrganization(userDto.getOrg().getId());
+        userQuery.setOrganization(1L);
         Response<PageInfo<UserDto>> response = userReference.pages(userQuery);
         String code = response.getCode();
         if ("200".equals(code)) {

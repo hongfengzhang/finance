@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.organization;
 
 import java.util.List;
 
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,4 +33,10 @@ public interface OrganizationAccountInterface {
 
 	@RequestMapping(value = "/state/{id}/{state}",method = RequestMethod.PUT)
 	Response<OrganizationAccountDto> modifyState(@PathVariable("id") Long id, @PathVariable("state") Integer state);
+
+	@RequestMapping(value = "/recover/{id}",method = RequestMethod.PUT)
+    Response<OrganizationAccountDto> recover(@PathVariable("id") Long id);
+
+	@RequestMapping(value = "/freeze", method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<OrganizationAccountDto> freeze(@RequestBody OrganizationAccountDto accountDto);
 }

@@ -151,7 +151,11 @@ public class UserService {
 	@Transactional
 	public User revisionState(Long id) {
 		User user = userDao.retrieve(id);
-		user.setState(!user.getState());
+		if(user.getState()==null) {
+			user.setState(true);
+		}else {
+			user.setState(!user.getState());
+		}
 		return user;
 	}
 }
