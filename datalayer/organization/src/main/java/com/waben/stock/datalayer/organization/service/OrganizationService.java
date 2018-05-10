@@ -26,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.organization.business.BindCardBusiness;
 import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.datalayer.organization.entity.SettlementMethod;
 import com.waben.stock.datalayer.organization.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
+import com.waben.stock.datalayer.organization.repository.SettlementMethodDao;
 import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
@@ -62,6 +64,9 @@ public class OrganizationService {
 
 	@Autowired
 	public OrganizationService organizationService;
+
+	@Autowired
+	private SettlementMethodDao settlementMethodDao;
 
 	public Organization getOrganizationInfo(Long id) {
 		return organizationDao.retrieve(id);
@@ -343,16 +348,23 @@ public class OrganizationService {
 	}
 
 	@Transactional
-	public Organization modifyName(Long id, String name, String billCharge, String level) {
+	public Organization modifyName(Long id, String name, BigDecimal billCharge, Integer settlementType) {
 		Organization org = organizationDao.retrieve(id);
 		org.setName(name);
-		if (!StringUtil.isEmpty(billCharge)) {
+		if (billCharge != null) {
 			org.setBillCharge(billCharge);
 		}
-		if (!StringUtil.isEmpty(level)) {
-
+		Organization otion = organizationDao.update(org);
+		if (settlementType != null) {
+			SettlementMethod smethod = new SettlementMethod();
+			List<SettlementMethod> menthod = settlementMethodDao.list();
+			if (menthod != null && menthod.size() > 0) {
+				smethod = menthod.get(0);
+			}
+			smethod.setSettlementType(settlementType);
+			settlementMethodDao.create(smethod);
 		}
-		return organizationDao.update(org);
+		return otion;
 	}
 
 	public BindCardDto getBindCard(Long orgId) {
@@ -496,7 +508,7 @@ public class OrganizationService {
 			orgNameCondition = " and t4.name like '%" + query.getOrgName() + "%' ";
 		}
 		String sql = String
-				.format("select t4.id, t4.parent_id, t4.code, t4.name, t4.level, t4.state, t4.create_time, t5.promotion_count, IF(t6.pid is null, 0, t6.children_count) as children_count, IFNULL(t7.available_balance, 0) as available_balance, t8.name as bind_name, t8.phone as bing_phone from p_organization t4 "
+				.format("select t4.id, t4.parent_id, t4.code, t4.name, t4.level, t4.state, t4.create_time, t5.promotion_count, IF(t6.pid is null, 0, t6.children_count) as children_count, IFNULL(t7.available_balance, 0) as available_balance, t8.name as bind_name, t8.phone as bing_phone, (SELECT settlement_type FROM settlement_method LIMIT 1) AS ws_type from p_organization t4 "
 						+ "LEFT JOIN "
 						+ "(select t0.id, sum(t3.promotion_count) as promotion_count from p_organization t0, "
 						+ "(select t1.id, t1.parent_id, IF(t2.id is null, 0, count(t1.id)) as promotion_count from p_organization t1 "
@@ -523,10 +535,15 @@ public class OrganizationService {
 		setMethodMap.put(new Integer(9), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(10), new MethodDesc("setBindName", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(11), new MethodDesc("setBingPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(12), new MethodDesc("setWsType", new Class<?>[] { Integer.class }));
 		List<OrganizationStaDto> content = sqlDao.execute(OrganizationStaDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
+	}
+
+	public List<Organization> findAll() {
+		return organizationDao.list();
 	}
 
 }

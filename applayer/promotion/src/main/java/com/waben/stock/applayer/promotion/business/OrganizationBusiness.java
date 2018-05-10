@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,8 +87,17 @@ public class OrganizationBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public OrganizationDto modifyName(Long id, String name, String billCharge, String level) {
-		Response<OrganizationDto> response = reference.modifyName(id, name, billCharge, level);
+	public OrganizationDto modifyName(Long id, String name, BigDecimal billCharge, Integer settlementType) {
+		Response<OrganizationDto> response = reference.modifyName(id, name, billCharge, settlementType);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+
+	public OrganizationDto findByCode(String code) {
+		Response<OrganizationDto> response = reference.fetchByCode(code);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -110,5 +120,12 @@ public class OrganizationBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public List<OrganizationDto> findAll() {
+		Response<List<OrganizationDto>> response = reference.fetchAll();
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 }

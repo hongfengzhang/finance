@@ -81,15 +81,20 @@ public class OrganizationAccountController {
 		List<OrganizationAccountVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), OrganizationAccountVo.class);
 		PageInfo<OrganizationAccountVo> response = new PageInfo<>(roleVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
 		for (int i=0; i<pageInfo.getContent().size(); i++) {
+
 			OrganizationDto organizationDto = pageInfo.getContent().get(i).getOrg();
 			response.getContent().get(i).setCode(organizationDto.getCode());
 			response.getContent().get(i).setName(organizationDto.getName());
 			response.getContent().get(i).setLevel(organizationDto.getLevel());
-			response.getContent().get(i).setLevel(organizationDto.getLevel());
-			List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(organizationDto.getParentId());
-			response.getContent().get(i).setChildOrgCount(organizationDtos.size());
-			List<OrganizationPublisherDto> organizationPublisherDtos = publisherBusiness.findOrganizationPublishersByCode(organizationDto.getCode());
-			response.getContent().get(i).setPopPulisherCount(organizationPublisherDtos.size());
+			if(organizationDto.getLevel()==1) {
+				response.getContent().get(i).setChildOrgCount(organizationBusiness.findAll().size()-1);
+				response.getContent().get(i).setPopPulisherCount(publisherBusiness.findAll().size());
+			}else {
+				List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(organizationDto.getParentId());
+				response.getContent().get(i).setChildOrgCount(organizationDtos.size());
+				List<OrganizationPublisherDto> organizationPublisherDtos = publisherBusiness.findOrganizationPublishersByCode(organizationDto.getCode());
+				response.getContent().get(i).setPopPulisherCount(organizationPublisherDtos.size());
+			}
 			BindCardDto bindCardDto = bindCardBusiness.getOrgBindCard(organizationDto.getId());
 			if(bindCardDto!=null) {
 				response.getContent().get(i).setOrgPhone(bindCardDto.getPhone());

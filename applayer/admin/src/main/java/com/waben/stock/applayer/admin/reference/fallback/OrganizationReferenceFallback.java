@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.admin.reference.fallback;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
@@ -52,7 +53,7 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 	}
 
 	@Override
-	public Response<OrganizationDto> modifyName(Long id, String name, String billCharge, String level) {
+	public Response<OrganizationDto> modifyName(Long id, String name, BigDecimal billCharge, Integer settlementType) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.organization;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -92,6 +93,9 @@ public interface OrganizationInterface {
 	@RequestMapping(value = "/listByParentId", method = RequestMethod.GET)
 	Response<List<OrganizationDto>> listByParentId(@RequestParam("parentId") Long parentId);
 
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	Response<List<OrganizationDto>> fetchAll();
+
 	/**
 	 * 获取机构详情
 	 * 
@@ -112,7 +116,7 @@ public interface OrganizationInterface {
 	 * @return 机构
 	 */
 	@RequestMapping(value = "/modifyName", method = RequestMethod.PUT)
-	Response<OrganizationDto> modifyName(@RequestParam("id") Long id, @RequestParam("name") String name, @RequestParam(name="billCharge", required = false) String billCharge, @RequestParam(name="level", required = false) String level);
+	Response<OrganizationDto> modifyName(@RequestParam("id") Long id, @RequestParam("name") String name, @RequestParam(name="billCharge", required = false) BigDecimal billCharge, @RequestParam(name="settlementType", required = false) Integer settlementType);
 
 	/**
 	 * 获取机构绑卡信息

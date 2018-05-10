@@ -61,4 +61,7 @@ public class OrganizationPublisherService {
 		return dao.retrieveByPublisherId(publisherId);
 	}
 
+    public List<OrganizationPublisher> findAll() {
+		return dao.list();
+    }
 }

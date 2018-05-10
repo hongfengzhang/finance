@@ -1,15 +1,12 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.util.SecurityAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetailsChecker;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.promotion.reference.organization.UserReference;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -17,6 +14,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 @Service
 public class UserBusiness {
@@ -26,8 +24,6 @@ public class UserBusiness {
     private UserReference userReference;
     @Autowired
     private RoleBusiness roleBusiness;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public UserDto fetchByUserName(String userName) {
         Response<UserDto> response = userReference.fetchByUserName(userName);
@@ -44,20 +40,22 @@ public class UserBusiness {
     public UserDto save(UserDto userDto) {
         //获取用户所属机构的管理员角色并绑定给当前用户
         Response<UserDto> userDtoResponse = userReference.fetchByUserName(userDto.getUsername());
-
-        OrganizationDto organizationDto = new OrganizationDto();
-        organizationDto.setId(userDto.getOrgId());
-        userDto.setOrg(organizationDto);
-        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        Response<UserDto> response = userReference.addition(userDto);
-        String code = response.getCode();
-        if ("200".equals(code)) {
-            return response.getResult();
-        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
-            throw new NetflixCircuitException(code);
+        if(userDtoResponse==null) {
+            OrganizationDto organizationDto = new OrganizationDto();
+            organizationDto.setId(userDto.getOrgId());
+            userDto.setOrg(organizationDto);
+            userDto.setPassword(PasswordCrypt.crypt(userDto.getPassword()));
+            Response<UserDto> response = userReference.addition(userDto);
+            String code = response.getCode();
+            if ("200".equals(code)) {
+                return response.getResult();
+            } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+                throw new NetflixCircuitException(code);
+            }
+            throw new ServiceException(response.getCode());
+        }else {
+            throw new ServiceException(ExceptionConstant.ORGANIZATION_USER_EXIST);
         }
-        throw new ServiceException(response.getCode());
-
     }
 
     public UserDto saveUserRole(Long id, Long roleId) {
@@ -72,9 +70,7 @@ public class UserBusiness {
     }
 
     public PageInfo<UserDto> pages(UserQuery userQuery) {
-//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-//        userQuery.setOrganization(userDto.getOrg().getId());
-        userQuery.setOrganization(1L);
+        userQuery.setOrganization(SecurityUtil.getUserDetails().getOrgId());
         Response<PageInfo<UserDto>> response = userReference.pages(userQuery);
         String code = response.getCode();
         if ("200".equals(code)) {

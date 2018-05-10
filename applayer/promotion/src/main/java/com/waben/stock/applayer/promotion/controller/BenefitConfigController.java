@@ -17,6 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.BenefitConfigForm;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 分成配置 Controller
@@ -35,6 +36,7 @@ public class BenefitConfigController {
 	public BenefitConfigBusiness business;
 
 	@RequestMapping(value = "/benefitConfigList", method = RequestMethod.GET)
+	@ApiOperation(value = "获取返佣比例列表")
 	public Response<List<BenefitConfigDto>> benefitConfigList(Long orgId, Integer resourceType) {
 		return new Response<>(business.benefitConfigList(orgId, resourceType));
 	}
@@ -48,6 +50,7 @@ public class BenefitConfigController {
 	}
 
 	@RequestMapping(value = "/stockoption/config", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "编辑返佣比例")
 	public Response<String> stockoptionBenefitConfig(@RequestBody List<BenefitConfigForm> configFormList) {
 		String result = business.stockoptionBenefitConfig(configFormList);
 		Response<String> response = new Response<>();

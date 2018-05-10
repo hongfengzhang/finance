@@ -4,6 +4,7 @@ import com.waben.stock.datalayer.organization.entity.SettlementMethod;
 
 /**
  * 结算方式 DAO
+ * 
  * @author sunliang
  *
  */

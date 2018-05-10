@@ -46,4 +46,12 @@ public class OrganizationPublisherBusiness {
 		}
 		throw new ServiceException(response.getCode());
     }
+
+	public List<OrganizationPublisherDto> findAll() {
+		Response<List<OrganizationPublisherDto>> response = reference.fetchAll();
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 }
