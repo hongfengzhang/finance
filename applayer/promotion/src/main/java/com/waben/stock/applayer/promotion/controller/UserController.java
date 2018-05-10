@@ -3,27 +3,31 @@ package com.waben.stock.applayer.promotion.controller;
 import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
-import com.waben.stock.interfaces.request.organization.UserRequest;
-import com.waben.stock.interfaces.vo.manage.RoleVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.applayer.promotion.business.RoleBusiness;
 import com.waben.stock.applayer.promotion.business.UserBusiness;
-import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
+import com.waben.stock.interfaces.request.organization.UserRequest;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.manage.RoleVo;
 import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import com.waben.stock.interfaces.vo.organization.UserVo;
+
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/user")
@@ -45,9 +49,7 @@ public class UserController {
     @RequestMapping(value = "/role",method = RequestMethod.GET)
     @ApiOperation(value = "获取角色")
     public Response<List<RoleVo>> fetchRoleByOrganization(){
-//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-//        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
-        List<RoleDto> roleDtos = roleBusiness.findByOrganization(1L);
+        List<RoleDto> roleDtos = roleBusiness.findByOrganization(SecurityUtil.getUserDetails().getOrgId());
         List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
         return new Response<>(roleVos);
     }
@@ -55,17 +57,12 @@ public class UserController {
     @RequestMapping(value = "/org",method = RequestMethod.GET)
     @ApiOperation(value = "获取机构")
     public Response<List<OrganizationDto>> fetchOrgByParentOrg(){
-//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-//        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(userDto.getOrg().getId());
-        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(1L);
-        OrganizationDto organizationDto = new OrganizationDto();
-        organizationDto.setId(1L);
+        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(SecurityUtil.getUserDetails().getOrgId());
+        OrganizationDto organizationDto = organizationBusiness.findByCode(SecurityUtil.getUserDetails().getOrgCode());
         organizationDtos.add(organizationDto);
-//        organizationDtos.add(userDto.getOrg());
         return new Response<>(organizationDtos);
     }
-//
-////    @PreAuthorize("hasRole('USER_SAVE')")
+
     @ApiOperation(value = "添加管理员")
     @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
     @RequestMapping(value = "/",method = RequestMethod.POST)
@@ -73,19 +70,11 @@ public class UserController {
         request.setState(false);
         request.setCreateTime(new Date());
         UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, request, false);
-//        OrganizationDto org = null;
-//        if(vo.getOrg()!=null) {
-//            org = CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false);
-//        }else{
-//        UserDto current = (UserDto) SecurityAccount.current().getSecurity();
-//            org = current.getOrg();
-//        }
-//        requestDto.setOrg(org);
         UserDto userDto = userBusiness.save(requestDto);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }
-//
+
     @RequestMapping(value = "/",method = RequestMethod.PUT)
     @ApiOperation(value = "修改管理员")
     @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
@@ -116,40 +105,16 @@ public class UserController {
             OrganizationVo organizationVo = CopyBeanUtils.copyBeanProperties(
                     OrganizationVo.class, pageInfo.getContent().get(i).getOrg(), false);
             userVoContent.get(i).setOrgName(organizationVo.getName());
+            userVoContent.get(i).setOrgId(organizationVo.getId());
             Long role = pageInfo.getContent().get(i).getRole();
             if(role!=null) {
                 RoleDto roleDto = roleBusiness.findById(role);
                 userVoContent.get(i).setRoleName(roleDto.getName());
                 userVoContent.get(i).setCode(roleDto.getCode());
+                userVoContent.get(i).setRole(roleDto.getId());
             }
         }
         return new Response<>(response);
     }
 
-//    @Deprecated
-//    @PreAuthorize("hasRole('USER_ROLE_REVISION')")
-//    @RequestMapping("/{id}/role")
-//    public Response<UserVo> bindRole(@PathVariable Long id, Long roleId){
-//        UserDto userDto = userBusiness.saveUserRole(id,roleId);
-//        UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
-//        return new Response<>(userVo);
-//    }
-//
-//    @RequestMapping(value = "/getCurrent", method = RequestMethod.GET)
-//	public Response<UserDto> getCurrent() {
-//    	AccountCredentials details = SecurityAccount.current();
-//    	UserDto result = (UserDto)details.getSecurity();
-//    	result.setOnlyStockoption(onlyStockoption);
-//    	result.setPassword(null);
-//		return new Response<>(result);
-//	}
-//
-//    @RequestMapping(value = "/password", method = RequestMethod.PUT)
-//	public Response<Void> modifyPassword(String oldPassword, String password) {
-//    	AccountCredentials details = SecurityAccount.current();
-//    	UserDto result = (UserDto)details.getSecurity();
-//    	userBusiness.modifyPassword(result.getId(), oldPassword, password);
-//		return new Response<>();
-//	}
-    
 }

@@ -365,7 +365,7 @@ public class QuickPayBusiness {
         WithdrawParam param = new WithdrawParam();
 		param.setAppId(wbConfig.getMerchantNo());
 		param.setBankAcctName(name);
-		param.setBankNo(idCard);
+		param.setBankNo(bankCard);
 		param.setBankCode(bankCode);
 		param.setBankName(bankName);
 		param.setCardType("0");

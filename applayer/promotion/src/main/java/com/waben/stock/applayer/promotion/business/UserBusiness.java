@@ -1,15 +1,12 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.util.SecurityAccount;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.userdetails.UserDetailsChecker;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.promotion.reference.organization.UserReference;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -17,6 +14,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 @Service
 public class UserBusiness {
@@ -26,8 +24,6 @@ public class UserBusiness {
     private UserReference userReference;
     @Autowired
     private RoleBusiness roleBusiness;
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     public UserDto fetchByUserName(String userName) {
         Response<UserDto> response = userReference.fetchByUserName(userName);
@@ -48,7 +44,7 @@ public class UserBusiness {
             OrganizationDto organizationDto = new OrganizationDto();
             organizationDto.setId(userDto.getOrgId());
             userDto.setOrg(organizationDto);
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            userDto.setPassword(PasswordCrypt.crypt(userDto.getPassword()));
             Response<UserDto> response = userReference.addition(userDto);
             String code = response.getCode();
             if ("200".equals(code)) {
@@ -74,9 +70,7 @@ public class UserBusiness {
     }
 
     public PageInfo<UserDto> pages(UserQuery userQuery) {
-//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-//        userQuery.setOrganization(userDto.getOrg().getId());
-        userQuery.setOrganization(1L);
+        userQuery.setOrganization(SecurityUtil.getUserDetails().getOrgId());
         Response<PageInfo<UserDto>> response = userReference.pages(userQuery);
         String code = response.getCode();
         if ("200".equals(code)) {

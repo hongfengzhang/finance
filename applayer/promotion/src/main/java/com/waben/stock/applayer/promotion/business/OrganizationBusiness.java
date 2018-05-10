@@ -97,6 +97,15 @@ public class OrganizationBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+
+	public OrganizationDto findByCode(String code) {
+		Response<OrganizationDto> response = reference.fetchByCode(code);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 	public PageInfo<OrganizationDetailDto> adminAgentPageByQuery(OrganizationQuery query) {
 		Response<PageInfo<OrganizationDetailDto>> response = reference.adminAgentPageByQuery(query);
 		if ("200".equals(response.getCode())) {
@@ -123,6 +132,14 @@ public class OrganizationBusiness {
 
 	public PageInfo<TradingFowDto> tradingFowPageByQuery(TradingFowQuery query) {
 		Response<PageInfo<TradingFowDto>> response = reference.tradingFowPageByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
+	public List<OrganizationDto> findAll() {
+		Response<List<OrganizationDto>> response = reference.fetchAll();
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

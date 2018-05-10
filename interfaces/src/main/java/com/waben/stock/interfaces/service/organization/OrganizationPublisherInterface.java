@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.organization;
 
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,5 +23,8 @@ public interface OrganizationPublisherInterface {
 
 	@RequestMapping(value = "/publisherId/{publisherId}", method = RequestMethod.GET)
 	Response<OrganizationPublisherDto> fetchOrgPublisher(@PathVariable("publisherId") Long publisherId);
+
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	Response<List<OrganizationPublisherDto>> fetchAll();
 
 }

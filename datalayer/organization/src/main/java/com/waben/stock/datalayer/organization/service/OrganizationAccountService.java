@@ -276,6 +276,8 @@ public class OrganizationAccountService {
 	@Transactional
     public OrganizationAccount recover(Long id) {
 		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(id);
+		organizationAccount.setAvailableBalance(organizationAccount.getAvailableBalance().add(organizationAccount.getFrozenCapital()));
+		organizationAccount.setFrozenCapital(new BigDecimal("0"));
 		organizationAccount.setState(1);
 		return organizationAccount;
 	}
@@ -283,9 +285,10 @@ public class OrganizationAccountService {
 	@Transactional
 	public OrganizationAccount freeze(OrganizationAccount account) {
 		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(account.getId());
-		organizationAccount.setFrozenCapital(account.getFrozenCapital());
+		organizationAccount.setFrozenCapital(organizationAccount.getFrozenCapital().add(account.getFrozenCapital()));
+		organizationAccount.setAvailableBalance(organizationAccount.getAvailableBalance().subtract(account.getFrozenCapital()));
 		organizationAccount.setReason(account.getReason());
-		organizationAccount.setBalance(account.getFrozenCapital().add(organizationAccount.getAvailableBalance()));
+		organizationAccount.setBalance(organizationAccount.getFrozenCapital().add(organizationAccount.getAvailableBalance()));
 		organizationAccount.setState(2);
 		return organizationAccount;
 	}

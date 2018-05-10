@@ -11,6 +11,8 @@ import java.util.Date;
  */
 @ApiModel(description = "请求参数用户对象")
 public class UserRequest {
+    @ApiModelProperty(value = "id")
+    private Long id;
 
     /**
      * 登陆用户名
@@ -40,8 +42,17 @@ public class UserRequest {
     /**
      * 状态（0正常，1冻结）
      */
-    @ApiModelProperty(value = "状态（0正常，1冻结）")
+    @ApiModelProperty(value = "状态（0正常，1冻结）",hidden = true)
     private Boolean state;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getUsername() {
         return username;
     }

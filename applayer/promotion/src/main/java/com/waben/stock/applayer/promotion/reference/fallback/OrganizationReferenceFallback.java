@@ -50,6 +50,11 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 	}
 
 	@Override
+	public Response<List<OrganizationDto>> fetchAll() {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
 	public Response<OrganizationDetailDto> detail(Long orgId) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}

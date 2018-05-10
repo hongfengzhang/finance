@@ -5,10 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class WithdrawQueryOrderParam {
 
 	/**
-	 * 提现申请ID
-	 */
-	private Long applyId;
-	/**
 	 * 应用id
 	 */
 	@JsonProperty("app_id")
@@ -21,11 +17,6 @@ public class WithdrawQueryOrderParam {
 	 */
 	@JsonProperty("sign")
 	private String sign;
-	/**
-	 * 平台订单号
-	 */
-	@JsonProperty("order_no")
-	private String orderNo;
 	/**
 	 * 商户订单号
 	 */
@@ -53,14 +44,6 @@ public class WithdrawQueryOrderParam {
 		this.sign = sign;
 	}
 
-	public String getOrderNo() {
-		return orderNo;
-	}
-
-	public void setOrderNo(String orderNo) {
-		this.orderNo = orderNo;
-	}
-
 	public String getOutOrderNo() {
 		return outOrderNo;
 	}
@@ -75,14 +58,6 @@ public class WithdrawQueryOrderParam {
 
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
-	}
-
-	public Long getApplyId() {
-		return applyId;
-	}
-
-	public void setApplyId(Long applyId) {
-		this.applyId = applyId;
 	}
 
 }

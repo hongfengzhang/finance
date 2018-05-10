@@ -28,6 +28,7 @@ import com.google.common.collect.Maps;
 import com.google.zxing.WriterException;
 import com.waben.stock.applayer.promotion.business.BindCardBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.applayer.promotion.util.PoiUtil;
 import com.waben.stock.applayer.promotion.util.QRCodeUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -134,16 +135,16 @@ public class OrganizationController {
 		return new Response<>(business.modifyName(id, name, billCharge, settlementType));
 	}
 
-	@RequestMapping(value = "/{orgid}/bindcard", method = RequestMethod.GET)
+	@RequestMapping(value = "/bindcard", method = RequestMethod.GET)
 	@ApiOperation(value = "获取绑卡信息")
-	public Response<BindCardDto> fetchBindCard(@PathVariable("orgid") Long orgId) {
-		return new Response<>(bindCardBusiness.getOrgBindCard(orgId));
+	public Response<BindCardDto> fetchBindCard() {
+		return new Response<>(bindCardBusiness.getOrgBindCard(SecurityUtil.getUserDetails().getOrgId()));
 	}
 
-	@RequestMapping(value = "/{orgid}/bindcard", method = RequestMethod.POST)
+	@RequestMapping(value = "/bindcard", method = RequestMethod.POST)
 	@ApiOperation(value = "编辑绑卡信息")
-	public Response<BindCardDto> saveBindCard(@PathVariable("orgid") Long orgId, BindCardDto bindCardDto) {
-		return new Response<>(bindCardBusiness.orgBindCard(orgId, bindCardDto));
+	public Response<BindCardDto> saveBindCard(BindCardDto bindCardDto) {
+		return new Response<>(bindCardBusiness.orgBindCard(SecurityUtil.getUserDetails().getOrgId(), bindCardDto));
 	}
 
 	@RequestMapping(value = "/qrcode", method = RequestMethod.GET)

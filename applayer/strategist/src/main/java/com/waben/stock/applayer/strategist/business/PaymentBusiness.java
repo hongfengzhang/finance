@@ -33,12 +33,12 @@ import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.MessageResponseB
 import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.PayRequestBean;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WabenPayConfig;
-import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqProducer;
-import com.waben.stock.applayer.strategist.rabbitmq.message.PayQueryMessage;
 import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.commonapi.wabenpay.WabenPayOverHttp;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.GatewayPayParam;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.GatewayPayRet;
 import com.waben.stock.interfaces.commonapi.wabenpay.bean.SwiftPayParam;
 import com.waben.stock.interfaces.commonapi.wabenpay.bean.SwiftPayRet;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -449,35 +449,32 @@ public class PaymentBusiness {
         paymentOrder.setUpdateTime(new Date());
         paymentOrder = this.savePaymentOrder(paymentOrder);
         // 封装请求参数
-        SwiftPayParam param = new SwiftPayParam();
+        GatewayPayParam param = new GatewayPayParam();
 		param.setAppId(wbConfig.getMerchantNo());
+		param.setUserId(String.valueOf(publisherId));
 		param.setSubject(publisherId + "充值");
 		param.setBody(publisherId + "充值" + amount + "元");
 		param.setTotalFee(new BigDecimal("0.01"));
 		param.setOutOrderNo(paymentNo);
-	
 		param.setFrontSkipUrl(wbConfig.getUnionpayFrontUrl());
 		param.setReturnUrl(wbConfig.getUnionpayNotifyUrl());
 		param.setTimestamp(sdf.format(new Date()));
-		param.setUserId(String.valueOf(publisherId));
 		param.setVersion("1.0");
-		param.setAcctName(realNameDto.getName());
-		param.setIdNum(realNameDto.getIdCard());
-		SwiftPayRet payRet = WabenPayOverHttp.swiftPay(param, wbConfig.getKey());
+		param.setBankCode("01050000");
+		GatewayPayRet payRet = WabenPayOverHttp.gatewayPay(param, wbConfig.getKey());
 		if(payRet != null && payRet.getTradeNo() != null) {
 			paymentOrder.setThirdPaymentNo(payRet.getTradeNo());
 			this.modifyPaymentOrder(paymentOrder);
 		}
         if (payRet.getCode() == 1) {
             Map<String, String> resultUrl = new HashMap<>();
-            // resultUrl.put("url", payRet.getPayUrl());
-            resultUrl.put("url", payRet.getPayUrl().replace("47.106.62.170", "47.106.134.204"));
+            resultUrl.put("url", payRet.getPayUrl());
             // 支付请求成功，使用队列查询
-        	PayQueryMessage message = new PayQueryMessage();
-    		message.setAppId(wbConfig.getMerchantNo());
-    		message.setOutOrderNo(paymentOrder.getPaymentNo());
-    		message.setOrderNo(paymentOrder.getThirdPaymentNo());
-    		producer.sendMessage(RabbitmqConfiguration.payQueryQueueName, message);
+//        	PayQueryMessage message = new PayQueryMessage();
+//    		message.setAppId(wbConfig.getMerchantNo());
+//    		message.setOutOrderNo(paymentOrder.getPaymentNo());
+//    		message.setOrderNo(paymentOrder.getThirdPaymentNo());
+//    		producer.sendMessage(RabbitmqConfiguration.payQueryQueueName, message);
     		return resultUrl.get("url");
         } else {
         	throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
