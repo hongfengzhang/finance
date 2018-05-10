@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.promotion.business.stockoption.StockOptionCycleBusiness;
 import com.waben.stock.applayer.promotion.business.stockoption.StockOptionTradeBusiness;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -49,6 +50,7 @@ public class PromotionStockOptionTradeController {
 
 	@RequestMapping(value = "/pages", method = RequestMethod.GET)
 	public Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(StockOptionPromotionQuery query) {
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		return new Response<>(business.promotionPagesByQuery(query));
 	}
 

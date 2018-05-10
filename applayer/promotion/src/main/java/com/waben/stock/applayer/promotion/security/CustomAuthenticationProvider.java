@@ -52,6 +52,7 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			userDetails.setOrgCode(org.getCode());
 			userDetails.setOrgName(org.getName());
 			userDetails.setOrgLevel(org.getLevel());
+			// 查菜单
 			return userDetails;
 		} catch (ServiceException ex) {
 			if (ExceptionConstant.STAFF_NOT_FOUND_EXCEPTION.equals(ex.getType())) {

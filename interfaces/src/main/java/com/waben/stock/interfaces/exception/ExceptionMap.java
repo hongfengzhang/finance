@@ -87,15 +87,16 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_BUY_ERROR, "投资人券商账户委托下单失败");
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR, "投资人券商账户委托单查询异常");
 
-		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "机构不存在");
-		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "机构类别不存在");
-		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND, "机构用户不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "代理商不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "代理商类别不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND, "代理商用户不存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_EXIST, "用户名已存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION, "原始支付密码不匹配");
 		exceptionMap.put(ExceptionConstant.ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION, "原始登陆密码不匹配");
-		exceptionMap.put(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION, "该发布人已绑定过机构码");
+		exceptionMap.put(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION, "该发布人已绑定过代理商代理");
 		exceptionMap.put(ExceptionConstant.WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION, "尚未绑卡，不能申请提现");
-		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "机构名称已存在");
+		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "代理商名称已存在");
+		exceptionMap.put(ExceptionConstant.LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION, "一级代理商不能申请提现");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,

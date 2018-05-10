@@ -1,34 +1,34 @@
 package com.waben.stock.applayer.promotion.controller;
 
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.waben.stock.applayer.promotion.business.BindCardBusiness;
+import com.waben.stock.applayer.promotion.business.OrganizationAccountBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationPublisherBusiness;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
+import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.request.organization.OrganizationAccountRequest;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.manage.RoleVo;
 import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiOperation;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.*;
-
-import com.waben.stock.applayer.promotion.business.OrganizationAccountBusiness;
-import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
-import com.waben.stock.interfaces.pojo.Response;
 
 import io.swagger.annotations.Api;
-
-import java.util.List;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 机构账户 Controller
@@ -55,10 +55,9 @@ public class OrganizationAccountController {
 	@Autowired
 	private BindCardBusiness bindCardBusiness;
 
-	@PreAuthorize("hasRole('CASH_PASSWORD')")
-	@RequestMapping(value = "/{orgId}/modifyPaymentPassword", method = RequestMethod.PUT)
-	public Response<Void> modifyPaymentPassword(@PathVariable("orgId") Long orgId, String oldPaymentPassword, String paymentPassword) {
-		accountBusiness.modifyPaymentPassword(orgId, oldPaymentPassword, paymentPassword);
+	@RequestMapping(value = "/modifyPaymentPassword", method = RequestMethod.PUT)
+	public Response<Void> modifyPaymentPassword(String oldPaymentPassword, String paymentPassword) {
+		accountBusiness.modifyPaymentPassword(SecurityUtil.getUserDetails().getOrgId(), oldPaymentPassword, paymentPassword);
 		return new Response<>();
 	}
 

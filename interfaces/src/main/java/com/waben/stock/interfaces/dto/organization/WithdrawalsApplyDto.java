@@ -86,6 +86,10 @@ public class WithdrawalsApplyDto {
 	 * 对应的第三方提现单号
 	 */
 	private String thirdWithdrawalsNo;
+	/**
+	 * 拒绝的原因
+	 */
+	private String refusedRemark;
 
 	public Long getId() {
 		return id;
@@ -237,6 +241,14 @@ public class WithdrawalsApplyDto {
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
+	}
+
+	public String getRefusedRemark() {
+		return refusedRemark;
+	}
+
+	public void setRefusedRemark(String refusedRemark) {
+		this.refusedRemark = refusedRemark;
 	}
 
 }

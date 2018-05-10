@@ -151,16 +151,16 @@ public class ExceptionConstant {
 	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
 	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
 
-	// 经纪人服务异常
-	// 机构不存在
+	// 代理商服务异常
+	// 代理商不存在
 	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
-	// 机构类别不存在
+	// 代理商类别不存在
 	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
-	// 机构用户不存在
+	// 代理商用户不存在
 	public static final String ORGANIZATION_USER_NOT_FOUND = "8003";
 	// 原始支付密码不匹配
 	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8004";
-	// 机构用户已存在
+	// 代理商用户已存在
 	public static final String ORGANIZATION_USER_EXIST = "8005";
 	// 原始登陆密码不匹配
 	public static final String ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION = "8006";
@@ -168,8 +168,10 @@ public class ExceptionConstant {
 	public static final String ORGPUBLISHER_EXIST_EXCEPTION = "8007";
 	// 尚未绑卡，不能申请提现
 	public static final String WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION = "8008";
-	// 机构名称已存在
+	// 代理商名称已存在
 	public static final String ORGNAME_EXIST_EXCEPTION = "8009";
+	// 一级代理商不能申请提现
+	public static final String LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION = "8010";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍

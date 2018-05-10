@@ -49,6 +49,11 @@ public class OrganizationAccountFlow {
 	@Column(name = "origin_amount")
 	private BigDecimal originAmount;
 	/**
+	 * 账户可用余额
+	 */
+	@Column(name = "available_balance")
+	private BigDecimal availableBalance;
+	/**
 	 * 流水类型
 	 */
 	@Convert(converter = OrganizationAccountFlowTypeConverter.class)
@@ -163,6 +168,7 @@ public class OrganizationAccountFlow {
 	public void setOrgDto(OrganizationDto orgDto) {
 		this.orgDto = orgDto;
 	}
+
 	public BigDecimal getOriginAmount() {
 		return originAmount;
 	}
@@ -177,6 +183,14 @@ public class OrganizationAccountFlow {
 
 	public void setResourceTradeNo(String resourceTradeNo) {
 		this.resourceTradeNo = resourceTradeNo;
+	}
+
+	public BigDecimal getAvailableBalance() {
+		return availableBalance;
+	}
+
+	public void setAvailableBalance(BigDecimal availableBalance) {
+		this.availableBalance = availableBalance;
 	}
 
 }

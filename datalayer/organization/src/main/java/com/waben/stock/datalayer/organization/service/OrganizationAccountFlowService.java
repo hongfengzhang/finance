@@ -65,8 +65,7 @@ public class OrganizationAccountFlowService {
 		}
 		String tradeNoCondition = "";
 		if (!StringUtil.isEmpty(query.getTradeNo())) {
-			tradeNoCondition = " and ((t2.id is not null and t2.trade_no like '%" + query.getTradeNo()
-					+ "%') or (t3.id is not null and t3.trade_no like '%" + query.getTradeNo() + "%')) ";
+			tradeNoCondition = " and  t1.resource_trade_no like '%" + query.getTradeNo() + "%' ";
 		}
 		String flowNoCondition = "";
 		if (!StringUtil.isEmpty(query.getFlowNo())) {
@@ -81,7 +80,7 @@ public class OrganizationAccountFlowService {
 		String publisherNameCondition = "";
 		if (!StringUtil.isEmpty(query.getPublisherName())) {
 			publisherNameCondition = " and ((t2.id is not null and t5.name like '%" + query.getPublisherName()
-					+ "%') or (t3.id is not null and t3.name like '%" + query.getPublisherName() + "%')) ";
+					+ "%') or (t3.id is not null and t6.name like '%" + query.getPublisherName() + "%')) ";
 		}
 		String cycleIdCondition = "";
 		if (query.getCycleId() != null && query.getCycleId() > 0) {
@@ -94,9 +93,9 @@ public class OrganizationAccountFlowService {
 		}
 		String stockCodeOrNameConditon = "";
 		if (!StringUtil.isEmpty(query.getStockCodeOrName())) {
-			stockCodeOrNameConditon = " and ((t2.id is not null and (t2.stock_coke like '%" + query.getStockCodeOrName()
+			stockCodeOrNameConditon = " and ((t2.id is not null and (t2.stock_code like '%" + query.getStockCodeOrName()
 					+ "%' or t2.stock_name like '%" + query.getStockCodeOrName()
-					+ "%')) or (t3.id is not null and (t3.stock_coke like '%" + query.getStockCodeOrName()
+					+ "%')) or (t3.id is not null and (t3.stock_code like '%" + query.getStockCodeOrName()
 					+ "%' or t3.stock_name like '%" + query.getStockCodeOrName() + "%'))) ";
 		}
 		String startTimeCondition = "";
@@ -117,7 +116,7 @@ public class OrganizationAccountFlowService {
 						+ "t2.publisher_id as b_publisher_id, t2.publisher_phone as b_publisher_phone, t2.stock_code as b_stock_code, t2.stock_name as b_stock_name, "
 						+ "t3.publisher_id as s_publisher_id, t3.publisher_phone as s_publisher_phone, t3.stock_code as s_stock_code, t3.stock_name as s_stock_name, "
 						+ "t3.cycle_id, t3.cycle_name, t4.code as org_code, t4.name as org_name, "
-						+ "t5.name as b_publisher_name, t6.name as s_publisher_name "
+						+ "t5.name as b_publisher_name, t6.name as s_publisher_name, t1.available_balance "
 						+ "from p_organization_account_flow t1 "
 						+ "LEFT JOIN buy_record t2 on t1.resource_type=1 and t1.resource_id=t2.id "
 						+ "LEFT JOIN stock_option_trade t3 on t1.resource_type=3 and t1.resource_id=t3.id "
@@ -157,6 +156,7 @@ public class OrganizationAccountFlowService {
 		setMethodMap.put(new Integer(22), new MethodDesc("setOrgName", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(23), new MethodDesc("setbPublisherName", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(24), new MethodDesc("setsPublisherName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(25), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
 		List<OrganizationAccountFlowWithTradeInfoDto> content = dynamicQuerySqlDao
 				.execute(OrganizationAccountFlowWithTradeInfoDto.class, sql, setMethodMap);
 		BigInteger totalElements = dynamicQuerySqlDao.executeComputeSql(countSql);

@@ -75,6 +75,10 @@ public class JwtTokenUtil {
 		result.put("userId", claims.get("userId"));
 		result.put("nickname", claims.get("nickname"));
 		result.put("authorities", claims.get("authorities"));
+		result.put("orgId", claims.get("orgId"));
+		result.put("orgCode", claims.get("orgCode"));
+		result.put("orgName", claims.get("orgName"));
+		result.put("orgLevel", claims.get("orgLevel"));
 		result.put("exp", claims.getExpiration());
 		return result;
 	}
