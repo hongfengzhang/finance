@@ -49,4 +49,11 @@ public class OrganizationPublisherController implements OrganizationPublisherInt
 				service.findOrgPulisher(publisherId), false));
 	}
 
+	@Override
+	public Response<List<OrganizationPublisherDto>> fetchAll() {
+		List<OrganizationPublisher> result = service.findAll();
+		List<OrganizationPublisherDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, OrganizationPublisherDto.class);
+		return new Response<>(response);
+	}
+
 }

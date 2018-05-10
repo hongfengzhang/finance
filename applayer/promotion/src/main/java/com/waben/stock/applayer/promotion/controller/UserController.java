@@ -58,14 +58,11 @@ public class UserController {
     @ApiOperation(value = "获取机构")
     public Response<List<OrganizationDto>> fetchOrgByParentOrg(){
         List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(SecurityUtil.getUserDetails().getOrgId());
-        OrganizationDto organizationDto = new OrganizationDto();
-        organizationDto.setId(1L);
+        OrganizationDto organizationDto = organizationBusiness.findByCode(SecurityUtil.getUserDetails().getOrgCode());
         organizationDtos.add(organizationDto);
-//        organizationDtos.add(userDto.getOrg());
         return new Response<>(organizationDtos);
     }
-//
-////    @PreAuthorize("hasRole('USER_SAVE')")
+
     @ApiOperation(value = "添加管理员")
     @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
     @RequestMapping(value = "/",method = RequestMethod.POST)
@@ -73,19 +70,11 @@ public class UserController {
         request.setState(false);
         request.setCreateTime(new Date());
         UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, request, false);
-//        OrganizationDto org = null;
-//        if(vo.getOrg()!=null) {
-//            org = CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false);
-//        }else{
-//        UserDto current = (UserDto) SecurityAccount.current().getSecurity();
-//            org = current.getOrg();
-//        }
-//        requestDto.setOrg(org);
         UserDto userDto = userBusiness.save(requestDto);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }
-//
+
     @RequestMapping(value = "/",method = RequestMethod.PUT)
     @ApiOperation(value = "修改管理员")
     @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
@@ -116,40 +105,16 @@ public class UserController {
             OrganizationVo organizationVo = CopyBeanUtils.copyBeanProperties(
                     OrganizationVo.class, pageInfo.getContent().get(i).getOrg(), false);
             userVoContent.get(i).setOrgName(organizationVo.getName());
+            userVoContent.get(i).setOrgId(organizationVo.getId());
             Long role = pageInfo.getContent().get(i).getRole();
             if(role!=null) {
                 RoleDto roleDto = roleBusiness.findById(role);
                 userVoContent.get(i).setRoleName(roleDto.getName());
                 userVoContent.get(i).setCode(roleDto.getCode());
+                userVoContent.get(i).setRole(roleDto.getId());
             }
         }
         return new Response<>(response);
     }
 
-//    @Deprecated
-//    @PreAuthorize("hasRole('USER_ROLE_REVISION')")
-//    @RequestMapping("/{id}/role")
-//    public Response<UserVo> bindRole(@PathVariable Long id, Long roleId){
-//        UserDto userDto = userBusiness.saveUserRole(id,roleId);
-//        UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
-//        return new Response<>(userVo);
-//    }
-//
-//    @RequestMapping(value = "/getCurrent", method = RequestMethod.GET)
-//	public Response<UserDto> getCurrent() {
-//    	AccountCredentials details = SecurityAccount.current();
-//    	UserDto result = (UserDto)details.getSecurity();
-//    	result.setOnlyStockoption(onlyStockoption);
-//    	result.setPassword(null);
-//		return new Response<>(result);
-//	}
-//
-//    @RequestMapping(value = "/password", method = RequestMethod.PUT)
-//	public Response<Void> modifyPassword(String oldPassword, String password) {
-//    	AccountCredentials details = SecurityAccount.current();
-//    	UserDto result = (UserDto)details.getSecurity();
-//    	userBusiness.modifyPassword(result.getId(), oldPassword, password);
-//		return new Response<>();
-//	}
-    
 }

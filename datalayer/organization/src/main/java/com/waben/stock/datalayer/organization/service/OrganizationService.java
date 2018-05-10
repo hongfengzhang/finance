@@ -542,4 +542,8 @@ public class OrganizationService {
 				totalElements != null ? totalElements.longValue() : 0);
 	}
 
+	public List<Organization> findAll() {
+		return organizationDao.list();
+	}
+
 }

@@ -93,6 +93,9 @@ public interface OrganizationInterface {
 	@RequestMapping(value = "/listByParentId", method = RequestMethod.GET)
 	Response<List<OrganizationDto>> listByParentId(@RequestParam("parentId") Long parentId);
 
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	Response<List<OrganizationDto>> fetchAll();
+
 	/**
 	 * 获取机构详情
 	 * 

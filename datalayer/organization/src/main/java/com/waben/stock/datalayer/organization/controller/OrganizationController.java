@@ -162,6 +162,12 @@ public class OrganizationController implements OrganizationInterface {
 	}
 
 	@Override
+	public Response<List<OrganizationDto>> fetchAll() {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(organizationService.findAll(),
+				OrganizationDto.class));
+	}
+
+	@Override
 	public Response<OrganizationDetailDto> detail(Long orgId) {
 		return new Response<>(organizationService.detail(orgId));
 	}

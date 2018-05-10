@@ -30,6 +30,10 @@ public class CustomUserDetails implements UserDetails {
 	 * 代理商层级
 	 */
 	private Integer orgLevel;
+	/**
+	 * 角色ID
+	 */
+	private Long roleId;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
@@ -148,4 +152,11 @@ public class CustomUserDetails implements UserDetails {
 		this.orgLevel = orgLevel;
 	}
 
+	public Long getRoleId() {
+		return roleId;
+	}
+
+	public void setRoleId(Long roleId) {
+		this.roleId = roleId;
+	}
 }

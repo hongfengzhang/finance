@@ -44,15 +44,15 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			throws AuthenticationException {
 		try {
 			UserDto user = userBusiness.fetchByUserName(username);
-			CustomUserDetails userDetails = new CustomUserDetails(user.getId(), user.getNickname(), username, user.getPassword(),
-					getAdminGrantedAuthList());
+			CustomUserDetails userDetails = new CustomUserDetails(user.getId(), user.getNickname(), username,
+					user.getPassword(), getAdminGrantedAuthList());
 			// 设置所属代理商相关的信息
 			OrganizationDto org = user.getOrg();
 			userDetails.setOrgId(org.getId());
 			userDetails.setOrgCode(org.getCode());
 			userDetails.setOrgName(org.getName());
 			userDetails.setOrgLevel(org.getLevel());
-			// 查菜单
+			userDetails.setRoleId(user.getRole());
 			return userDetails;
 		} catch (ServiceException ex) {
 			if (ExceptionConstant.STAFF_NOT_FOUND_EXCEPTION.equals(ex.getType())) {
