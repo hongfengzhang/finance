@@ -15,7 +15,7 @@ import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
 import com.waben.stock.interfaces.enums.WithdrawalsApplyState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
 import com.waben.stock.interfaces.service.organization.WithdrawalsApplyInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -59,9 +59,9 @@ public class WithdrawalsApplyController implements WithdrawalsApplyInterface {
 	}
 
 	@Override
-	public Response<WithdrawalsApplyDto> changeState(@PathVariable Long applyId, String stateIndex) {
+	public Response<WithdrawalsApplyDto> changeState(@PathVariable Long applyId, String stateIndex, String refusedRemark) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(WithdrawalsApplyDto.class,
-				service.changeState(applyId, WithdrawalsApplyState.getByIndex(stateIndex)), false));
+				service.changeState(applyId, WithdrawalsApplyState.getByIndex(stateIndex), refusedRemark), false));
 	}
 
 	@Override

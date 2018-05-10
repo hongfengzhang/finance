@@ -21,17 +21,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.reference.BindCardReference;
 import com.waben.stock.datalayer.organization.service.OrganizationService;
-import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
-import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -166,9 +166,9 @@ public class OrganizationController implements OrganizationInterface {
 	}
 
 	@Override
-	public Response<OrganizationDto> modifyName(Long id, String name) {
+	public Response<OrganizationDto> modifyName(Long id, String name, String billCharge, String level) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,
-				organizationService.modifyName(id, name), false));
+				organizationService.modifyName(id, name, billCharge, level), false));
 	}
 
 	@Override
@@ -188,9 +188,16 @@ public class OrganizationController implements OrganizationInterface {
 	}
 
 	@Override
-	public Response<PageInfo<AdminAgentDetailDto>> adminAgentPageByQuery(OrganizationQuery query) {
-		Page<AdminAgentDetailDto> page = organizationService.adminPagesByQuery(query);
-		PageInfo<AdminAgentDetailDto> result = PageToPageInfo.pageToPageInfo(page, AdminAgentDetailDto.class);
+	public Response<PageInfo<OrganizationDetailDto>> adminAgentPageByQuery(@RequestBody OrganizationQuery query) {
+		Page<OrganizationDetailDto> page = organizationService.adminPagesByQuery(query);
+		PageInfo<OrganizationDetailDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationDetailDto.class);
+		return new Response<>(result);
+	}
+
+	@Override
+	public Response<PageInfo<OrganizationStaDto>> adminStaPageByQuery(@RequestBody OrganizationStaQuery query) {
+		Page<OrganizationStaDto> page = organizationService.adminStaPagesByQuery(query);
+		PageInfo<OrganizationStaDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationStaDto.class);
 		return new Response<>(result);
 	}
 }

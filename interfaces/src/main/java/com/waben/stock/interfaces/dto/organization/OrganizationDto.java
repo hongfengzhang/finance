@@ -1,6 +1,5 @@
 package com.waben.stock.interfaces.dto.organization;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import com.waben.stock.interfaces.enums.OrganizationState;
@@ -11,7 +10,7 @@ import com.waben.stock.interfaces.enums.OrganizationState;
  * @author luomengan
  *
  */
-public class OrganizationDto implements Serializable{
+public class OrganizationDto {
 
 	private Long id;
 	/**

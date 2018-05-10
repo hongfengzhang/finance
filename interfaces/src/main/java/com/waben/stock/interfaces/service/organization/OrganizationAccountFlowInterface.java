@@ -15,21 +15,8 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlo
 
 public interface OrganizationAccountFlowInterface {
 
-    /**
-     * 获取结算流水列表
-     *
-     * @param query
-     *            查询条件
-     * @return 结算流水
-     */
-    @RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
-    Response<PageInfo<OrganizationAccountFlowDto>> pages(@RequestBody OrganizationAccountFlowQuery query);
-    
     @RequestMapping(value = "/pagesWithTradeInfo", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<PageInfo<OrganizationAccountFlowWithTradeInfoDto>> pagesWithTradeInfo(@RequestBody OrganizationAccountFlowQuery query);
-
-    @RequestMapping(value = "/childpages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
-    Response<PageInfo<OrganizationAccountFlowDto>> childpages(@RequestBody OrganizationAccountFlowQuery query);
 
     @RequestMapping(value = "/list", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<List<OrganizationAccountFlowDto>> list();

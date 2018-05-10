@@ -20,9 +20,9 @@ public class StockOptionPromotionQuery extends PageAndSortQuery {
 	 */
 	private String publisherPhone;
 	/**
-	 * 股票代码
+	 * 股票代码或者名称
 	 */
-	private String stockCode;
+	private String stockCodeOrName;
 	/**
 	 * 名义本金
 	 */
@@ -86,12 +86,12 @@ public class StockOptionPromotionQuery extends PageAndSortQuery {
 		this.publisherPhone = publisherPhone;
 	}
 
-	public String getStockCode() {
-		return stockCode;
+	public String getStockCodeOrName() {
+		return stockCodeOrName;
 	}
 
-	public void setStockCode(String stockCode) {
-		this.stockCode = stockCode;
+	public void setStockCodeOrName(String stockCodeOrName) {
+		this.stockCodeOrName = stockCodeOrName;
 	}
 
 	public BigDecimal getNominalAmount() {

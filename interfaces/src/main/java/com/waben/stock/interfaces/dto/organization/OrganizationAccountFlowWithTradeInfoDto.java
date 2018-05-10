@@ -53,6 +53,22 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	 */
 	private Long orgId;
 	/**
+	 * 代理商代码
+	 */
+	private String orgCode;
+	/**
+	 * 代理商名称
+	 */
+	private String orgName;
+	/**
+	 * 周期ID
+	 */
+	private Long cycleId;
+	/**
+	 * 周期名称
+	 */
+	private String cycleName;
+	/**
 	 * 发布人ID
 	 */
 	private Long publisherId;
@@ -60,6 +76,10 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	 * 发布人手机号
 	 */
 	private String publisherPhone;
+	/**
+	 * 发布人姓名
+	 */
+	private String publisherName;
 	/**
 	 * 股票代码
 	 */
@@ -69,6 +89,10 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	 */
 	private String stockName;
 	/**
+	 * 交易编号
+	 */
+	private String tradeNo;
+	/**
 	 * 发布人ID（点买记录）
 	 */
 	private Long bPublisherId;
@@ -76,6 +100,10 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	 * 发布人手机号（点买记录）
 	 */
 	private String bPublisherPhone;
+	/**
+	 * 发布人姓名（点买记录）
+	 */
+	private String bPublisherName;
 	/**
 	 * 股票代码（点买记录）
 	 */
@@ -85,6 +113,10 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	 */
 	private String bStockName;
 	/**
+	 * 交易编号（点买记录）
+	 */
+	private String bTradeNo;
+	/**
 	 * 发布人ID（期权交易）
 	 */
 	private Long sPublisherId;
@@ -93,6 +125,10 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	 */
 	private String sPublisherPhone;
 	/**
+	 * 发布人姓名（期权交易）
+	 */
+	private String sPublisherName;
+	/**
 	 * 股票代码（期权交易）
 	 */
 	private String sStockCode;
@@ -100,6 +136,10 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	 * 股票名称（期权交易）
 	 */
 	private String sStockName;
+	/**
+	 * 交易编号（期权交易）
+	 */
+	private String sTradeNo;
 
 	public Long getId() {
 		return id;
@@ -190,9 +230,9 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	}
 
 	public Long getPublisherId() {
-		if(resourceType != null && resourceType.intValue() == 1) {
+		if (resourceType != null && resourceType.intValue() == 1) {
 			return bPublisherId;
-		} else if(resourceType != null && resourceType.intValue() == 3) {
+		} else if (resourceType != null && resourceType.intValue() == 3) {
 			return sPublisherId;
 		}
 		return publisherId;
@@ -203,9 +243,9 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	}
 
 	public String getPublisherPhone() {
-		if(resourceType != null && resourceType.intValue() == 1) {
+		if (resourceType != null && resourceType.intValue() == 1) {
 			return bPublisherPhone;
-		} else if(resourceType != null && resourceType.intValue() == 3) {
+		} else if (resourceType != null && resourceType.intValue() == 3) {
 			return sPublisherPhone;
 		}
 		return publisherPhone;
@@ -216,9 +256,9 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	}
 
 	public String getStockCode() {
-		if(resourceType != null && resourceType.intValue() == 1) {
+		if (resourceType != null && resourceType.intValue() == 1) {
 			return bStockCode;
-		} else if(resourceType != null && resourceType.intValue() == 3) {
+		} else if (resourceType != null && resourceType.intValue() == 3) {
 			return sStockCode;
 		}
 		return stockCode;
@@ -229,9 +269,9 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 	}
 
 	public String getStockName() {
-		if(resourceType != null && resourceType.intValue() == 1) {
+		if (resourceType != null && resourceType.intValue() == 1) {
 			return bStockName;
-		} else if(resourceType != null && resourceType.intValue() == 3) {
+		} else if (resourceType != null && resourceType.intValue() == 3) {
 			return sStockName;
 		}
 		return stockName;
@@ -303,6 +343,96 @@ public class OrganizationAccountFlowWithTradeInfoDto {
 
 	public void setsStockName(String sStockName) {
 		this.sStockName = sStockName;
+	}
+
+	public String getOrgCode() {
+		return orgCode;
+	}
+
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
+
+	public Long getCycleId() {
+		return cycleId;
+	}
+
+	public void setCycleId(Long cycleId) {
+		this.cycleId = cycleId;
+	}
+
+	public String getCycleName() {
+		return cycleName;
+	}
+
+	public void setCycleName(String cycleName) {
+		this.cycleName = cycleName;
+	}
+
+	public String getPublisherName() {
+		if (resourceType != null && resourceType.intValue() == 1) {
+			return bPublisherName;
+		} else if (resourceType != null && resourceType.intValue() == 3) {
+			return sPublisherName;
+		}
+		return publisherName;
+	}
+
+	public void setPublisherName(String publisherName) {
+		this.publisherName = publisherName;
+	}
+
+	public String getbPublisherName() {
+		return bPublisherName;
+	}
+
+	public void setbPublisherName(String bPublisherName) {
+		this.bPublisherName = bPublisherName;
+	}
+
+	public String getsPublisherName() {
+		return sPublisherName;
+	}
+
+	public void setsPublisherName(String sPublisherName) {
+		this.sPublisherName = sPublisherName;
+	}
+
+	public String getTradeNo() {
+		if (resourceType != null && resourceType.intValue() == 1) {
+			return bTradeNo;
+		} else if (resourceType != null && resourceType.intValue() == 3) {
+			return sTradeNo;
+		}
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
+
+	public String getbTradeNo() {
+		return bTradeNo;
+	}
+
+	public void setbTradeNo(String bTradeNo) {
+		this.bTradeNo = bTradeNo;
+	}
+
+	public String getsTradeNo() {
+		return sTradeNo;
+	}
+
+	public void setsTradeNo(String sTradeNo) {
+		this.sTradeNo = sTradeNo;
 	}
 
 }

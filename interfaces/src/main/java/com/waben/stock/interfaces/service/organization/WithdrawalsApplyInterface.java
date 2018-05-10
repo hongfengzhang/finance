@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
 
 public interface WithdrawalsApplyInterface {
 
@@ -67,6 +67,6 @@ public interface WithdrawalsApplyInterface {
 	 */
 	@RequestMapping(value = "/{applyId}", method = RequestMethod.PUT)
 	public Response<WithdrawalsApplyDto> changeState(@PathVariable("applyId") Long applyId,
-			@RequestParam("stateIndex") String stateIndex);
+			@RequestParam("stateIndex") String stateIndex, @RequestParam("refusedRemark") String refusedRemark);
 
 }

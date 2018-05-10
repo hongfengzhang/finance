@@ -531,13 +531,13 @@ public class StockOptionTradeService {
 		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
 			publisherPhoneCondition = " and t3.phone like '%" + query.getPublisherPhone() + "%' ";
 		}
-		String stockCodeCondition = "";
-		if (!StringUtil.isEmpty(query.getStockCode())) {
-			stockCodeCondition = " and t1.stock_code like '%" + query.getStockCode() + "%' ";
+		String stockCodeOrNameCondition = "";
+		if (!StringUtil.isEmpty(query.getStockCodeOrName())) {
+			stockCodeOrNameCondition = " and (t1.stock_code like '%" + query.getStockCodeOrName() + "%' or t1.stock_name like '%" + query.getStockCodeOrName() + "%') ";
 		}
 		String nominalAmountCondition = "";
 		if (query.getNominalAmount() != null) {
-			stockCodeCondition = " and t1.nominal_amount='" + query.getNominalAmount() + "' ";
+			stockCodeOrNameCondition = " and t1.nominal_amount='" + query.getNominalAmount() + "' ";
 		}
 		String cycleNameCondition = "";
 		if (!StringUtil.isEmpty(query.getCycleId())) {
@@ -597,7 +597,7 @@ public class StockOptionTradeService {
 						+ "LEFT JOIN p_organization t6 on t6.id=" + query.getCurrentOrgId() + " "
 						+ "where 1=1 %s %s %s %s %s %s %s %s %s %s %s %s %s and (t6.level=1 or (t5.id=t6.id or t5.parent_id=t6.id)) order by t1.apply_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				publisherNameCondition, publisherPhoneCondition, stockCodeCondition, nominalAmountCondition,
+				publisherNameCondition, publisherPhoneCondition, stockCodeOrNameCondition, nominalAmountCondition,
 				cycleNameCondition, stateCondition, isTestCondition, isMarkCondition, startTimeCondition,
 				endTimeCondition, startRatioCondition, endRatioCondition, orgCodeOrNameConditon);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));

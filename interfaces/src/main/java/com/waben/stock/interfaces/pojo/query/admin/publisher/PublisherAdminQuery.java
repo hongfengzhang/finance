@@ -16,12 +16,12 @@ public class PublisherAdminQuery extends PageAndSortQuery {
 	 */
 	private String phone;
 	/**
-	 * 流水时间-查询开始时间
+	 * 注册时间-查询开始时间
 	 */
 	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date startTime;
 	/**
-	 * 流水时间-查询结束时间
+	 * 注册时间-查询结束时间
 	 */
 	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date endTime;

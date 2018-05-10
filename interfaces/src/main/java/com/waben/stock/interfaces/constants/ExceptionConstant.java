@@ -55,7 +55,7 @@ public class ExceptionConstant {
 	public static final String REALNAME_EXIST_EXCEPTION = "2016";
 	// 实名认证信息错误
 	public static final String REALNAME_WRONG_EXCEPTION = "2017";
-	// 机构代码不存在
+	// 代理商代码不存在
 	public static final String ORGCODE_NOTEXIST_EXCEPTION = "2018";
 	// 该银行卡已被使用
 	public static final String BANKCARD_ALREADY_USERED_EXCEPTION = "2019";

@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.pojo.query.organization;
 
+import java.util.Date;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
@@ -13,6 +16,10 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 public class CustomerQuery extends PageAndSortQuery {
 
 	/**
+	 * 当前登陆用户所属的代理商ID
+	 */
+	private Long currentOrgId;
+	/**
 	 * 客户ID
 	 */
 	private String publisherId;
@@ -21,21 +28,35 @@ public class CustomerQuery extends PageAndSortQuery {
 	 */
 	private String publisherPhone;
 	/**
-	 * 当前机构代码
+	 * 发布人姓名
 	 */
-	private String currentOrgCode;
+	private String publisherName;
 	/**
-	 * 查询的机构代码
+	 * 查询的代理商代码或名称
 	 */
-	private String orgCode;
+	private String orgCodeOrName;
 	/**
-	 * 查询的机构名称
+	 * 状态
+	 * <ul>
+	 * <li>1正常，因为该字段为新加的字段，所以数据为空的情况也是表示正常状态</li>
+	 * <li>2黑名单，不能正常登陆</li>
+	 * </ul>
 	 */
-	private String orgName;
+	private Integer state;
 	/**
-	 * 用户类型，0表示所有，1表示正式用户，2表示测试用户
+	 * 是否为测试
 	 */
-	private Integer userType;
+	private Boolean isTest;
+	/**
+	 * 注册时间-查询开始时间
+	 */
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date startTime;
+	/**
+	 * 注册时间-查询结束时间
+	 */
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+	private Date endTime;
 
 	public String getPublisherId() {
 		return publisherId;
@@ -53,36 +74,60 @@ public class CustomerQuery extends PageAndSortQuery {
 		this.publisherPhone = publisherPhone;
 	}
 
-	public String getOrgCode() {
-		return orgCode;
+	public Long getCurrentOrgId() {
+		return currentOrgId;
 	}
 
-	public void setOrgCode(String orgCode) {
-		this.orgCode = orgCode;
+	public void setCurrentOrgId(Long currentOrgId) {
+		this.currentOrgId = currentOrgId;
 	}
 
-	public String getOrgName() {
-		return orgName;
+	public String getPublisherName() {
+		return publisherName;
 	}
 
-	public void setOrgName(String orgName) {
-		this.orgName = orgName;
+	public void setPublisherName(String publisherName) {
+		this.publisherName = publisherName;
 	}
 
-	public String getCurrentOrgCode() {
-		return currentOrgCode;
+	public String getOrgCodeOrName() {
+		return orgCodeOrName;
 	}
 
-	public void setCurrentOrgCode(String currentOrgCode) {
-		this.currentOrgCode = currentOrgCode;
+	public void setOrgCodeOrName(String orgCodeOrName) {
+		this.orgCodeOrName = orgCodeOrName;
 	}
 
-	public Integer getUserType() {
-		return userType;
+	public Integer getState() {
+		return state;
 	}
 
-	public void setUserType(Integer userType) {
-		this.userType = userType;
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
+	}
+
+	public Date getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Date startTime) {
+		this.startTime = startTime;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 }
