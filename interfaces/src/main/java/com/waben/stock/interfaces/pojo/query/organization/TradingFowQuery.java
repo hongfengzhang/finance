@@ -14,9 +14,9 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 public class TradingFowQuery extends PageAndSortQuery {
 
 	/**
-	 * 代理商ID
+	 * 当前登陆用户所属的代理商ID
 	 */
-	private Long orgId;
+	private Long currentOrgId;
 
 	/**
 	 * 客户姓名
@@ -117,20 +117,12 @@ public class TradingFowQuery extends PageAndSortQuery {
 		this.agentCodeName = agentCodeName;
 	}
 
-	/*public Integer getQueryType() {
-		return queryType;
+	public Long getCurrentOrgId() {
+		return currentOrgId;
 	}
 
-	public void setQueryType(Integer queryType) {
-		this.queryType = queryType;
-	}*/
-
-	public Long getOrgId() {
-		return orgId;
-	}
-
-	public void setOrgId(Long orgId) {
-		this.orgId = orgId;
+	public void setCurrentOrgId(Long currentOrgId) {
+		this.currentOrgId = currentOrgId;
 	}
 
 }

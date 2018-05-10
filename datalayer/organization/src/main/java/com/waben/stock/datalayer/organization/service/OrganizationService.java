@@ -597,7 +597,7 @@ public class OrganizationService {
 						+ " LEFT JOIN bind_card t8 on t7.bank_card=t8.bank_card"
 						+ " LEFT JOIN p_organization_publisher t9 ON t9.publisher_id = t5.id"
 						+ " LEFT JOIN p_organization t10 ON t10.code = t9.org_code"
-						+ " LEFT JOIN p_organization t11 on t11.id=" + query.getOrgId() + ""
+						+ " LEFT JOIN p_organization t11 on t11.id=" + query.getCurrentOrgId() + ""
 						+ " WHERE 1=1 and t10.id is not null and (t11.level=1 or (t11.level>1 and (t11.id=t10.id or t11.id=t10.parent_id))) %s %s %s %s %s %s %s order by t1.occurrence_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
 				customerNameQuery, tradingNumberQuery, occurrenceTimeStartQuery, occurrenceTimeEndQuery, typeQuery,

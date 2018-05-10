@@ -200,10 +200,10 @@ public class OrganizationController {
 		return new Response<>(business.adminStaPageByQuery(query));
 	}
 
-	@RequestMapping(value = "/tradingFow/{orgId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/tradingFow/", method = RequestMethod.GET)
 	@ApiOperation(value = "查询交易流水")
-	public Response<PageInfo<TradingFowDto>> tradingFow(TradingFowQuery query, @PathVariable("orgId") Long orgId) {
-		query.setOrgId(orgId);
+	public Response<PageInfo<TradingFowDto>> tradingFow(TradingFowQuery query) {
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		return new Response<>(business.tradingFowPageByQuery(query));
 	}
 
