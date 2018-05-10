@@ -55,7 +55,7 @@ public class RoleController {
     @RequestMapping(value = "/",method = RequestMethod.POST)
     @ApiImplicitParams({@ApiImplicitParam(paramType = "query", dataType = "String", name = "name", value = "角色名称", required = true),@ApiImplicitParam(paramType = "query", dataType = "String", name = "menuIds", value = "菜单id数组", required = true)})
     @ApiOperation(value = "添加角色")
-    public Response<RoleVo> add(@RequestParam String name, @RequestParam String menuIds){
+    public Response<RoleVo> add(String name, String menuIds){
         RoleDto roleDto = roleBusiness.save(name,menuIds);
         RoleVo roleVo = CopyBeanUtils.copyBeanProperties(RoleVo.class,roleDto , false);
         return new Response<>(roleVo);

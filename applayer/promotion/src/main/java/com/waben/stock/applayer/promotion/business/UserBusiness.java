@@ -44,22 +44,20 @@ public class UserBusiness {
     public UserDto save(UserDto userDto) {
         //获取用户所属机构的管理员角色并绑定给当前用户
         Response<UserDto> userDtoResponse = userReference.fetchByUserName(userDto.getUsername());
-        if(userDtoResponse==null) {
-            OrganizationDto organizationDto = new OrganizationDto();
-            organizationDto.setId(userDto.getOrgId());
-            userDto.setOrg(organizationDto);
-            userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
-            Response<UserDto> response = userReference.addition(userDto);
-            String code = response.getCode();
-            if ("200".equals(code)) {
-                return response.getResult();
-            } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
-                throw new NetflixCircuitException(code);
-            }
-            throw new ServiceException(response.getCode());
-        }else {
-            throw new ServiceException(ExceptionConstant.ORGANIZATION_USER_EXIST);
+
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setId(userDto.getOrgId());
+        userDto.setOrg(organizationDto);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        Response<UserDto> response = userReference.addition(userDto);
+        String code = response.getCode();
+        if ("200".equals(code)) {
+            return response.getResult();
+        } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+            throw new NetflixCircuitException(code);
         }
+        throw new ServiceException(response.getCode());
+
     }
 
     public UserDto saveUserRole(Long id, Long roleId) {

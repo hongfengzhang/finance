@@ -116,11 +116,13 @@ public class UserController {
             OrganizationVo organizationVo = CopyBeanUtils.copyBeanProperties(
                     OrganizationVo.class, pageInfo.getContent().get(i).getOrg(), false);
             userVoContent.get(i).setOrgName(organizationVo.getName());
+            userVoContent.get(i).setOrgId(organizationVo.getId());
             Long role = pageInfo.getContent().get(i).getRole();
             if(role!=null) {
                 RoleDto roleDto = roleBusiness.findById(role);
                 userVoContent.get(i).setRoleName(roleDto.getName());
                 userVoContent.get(i).setCode(roleDto.getCode());
+                userVoContent.get(i).setRole(roleDto.getId());
             }
         }
         return new Response<>(response);
