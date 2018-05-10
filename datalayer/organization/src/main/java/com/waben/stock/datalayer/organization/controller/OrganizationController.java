@@ -26,6 +26,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
+import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -33,6 +34,7 @@ import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
+import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
@@ -201,4 +203,12 @@ public class OrganizationController implements OrganizationInterface {
 		PageInfo<OrganizationStaDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationStaDto.class);
 		return new Response<>(result);
 	}
+
+	@Override
+	public Response<PageInfo<TradingFowDto>> tradingFowPageByQuery(@RequestBody TradingFowQuery query) {
+		Page<TradingFowDto> page = organizationService.tradingFowPageByQuery(query);
+		PageInfo<TradingFowDto> result = PageToPageInfo.pageToPageInfo(page, TradingFowDto.class);
+		return new Response<>(result);
+	}
+
 }

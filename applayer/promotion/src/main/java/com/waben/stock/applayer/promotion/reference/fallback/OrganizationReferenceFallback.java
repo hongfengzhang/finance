@@ -10,6 +10,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
+import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -18,6 +19,7 @@ import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
+import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 
 /**
  * 机构 reference服务接口fallback
@@ -84,6 +86,11 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 
 	@Override
 	public Response<PageInfo<OrganizationStaDto>> adminStaPageByQuery(OrganizationStaQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<TradingFowDto>> tradingFowPageByQuery(TradingFowQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
