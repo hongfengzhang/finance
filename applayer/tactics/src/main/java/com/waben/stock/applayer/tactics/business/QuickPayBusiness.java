@@ -33,7 +33,6 @@ import com.waben.stock.applayer.tactics.payapi.shande.utils.FormRequest;
 import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
 import com.waben.stock.applayer.tactics.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.applayer.tactics.rabbitmq.RabbitmqProducer;
-import com.waben.stock.applayer.tactics.rabbitmq.message.PayQueryMessage;
 import com.waben.stock.applayer.tactics.rabbitmq.message.WithdrawQueryMessage;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
@@ -563,7 +562,7 @@ public class QuickPayBusiness {
         WithdrawParam param = new WithdrawParam();
 		param.setAppId(wbConfig.getMerchantNo());
 		param.setBankAcctName(name);
-		param.setBankNo(idCard);
+		param.setBankNo(bankCard);
 		param.setBankCode(bankCode);
 		param.setBankName(bankName);
 		param.setCardType("0");
@@ -665,15 +664,14 @@ public class QuickPayBusiness {
 		Response<Map<String, String>> resp = new Response<Map<String, String>>();
         if (payRet.getCode() == 1) {
             Map<String, String> resultUrl = new HashMap<>();
-            // resultUrl.put("url", payRet.getPayUrl());
-            resultUrl.put("url", payRet.getPayUrl().replace("47.106.62.170", "47.106.134.204"));
+            resultUrl.put("url", payRet.getPayUrl());
             resp.setResult(resultUrl);
             // 支付请求成功，使用队列查询
-        	PayQueryMessage message = new PayQueryMessage();
-    		message.setAppId(wbConfig.getMerchantNo());
-    		message.setOutOrderNo(paymentOrder.getPaymentNo());
-    		message.setOrderNo(paymentOrder.getThirdPaymentNo());
-    		producer.sendMessage(RabbitmqConfiguration.payQueryQueueName, message);
+//        	PayQueryMessage message = new PayQueryMessage();
+//    		message.setAppId(wbConfig.getMerchantNo());
+//    		message.setOutOrderNo(paymentOrder.getPaymentNo());
+//    		message.setOrderNo(paymentOrder.getThirdPaymentNo());
+//    		producer.sendMessage(RabbitmqConfiguration.payQueryQueueName, message);
         } else {
         	throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
         }

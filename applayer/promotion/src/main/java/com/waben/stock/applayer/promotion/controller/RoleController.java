@@ -1,33 +1,29 @@
 package com.waben.stock.applayer.promotion.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.applayer.promotion.business.RoleBusiness;
-import com.waben.stock.applayer.promotion.util.SecurityAccount;
-import com.waben.stock.interfaces.dto.manage.MenuDto;
-import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
-import com.waben.stock.interfaces.dto.organization.UserDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.manage.MenuVo;
 import com.waben.stock.interfaces.vo.manage.PermissionVo;
 import com.waben.stock.interfaces.vo.manage.RoleVo;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/role")
@@ -103,21 +99,22 @@ public class RoleController {
     @RequestMapping(value = "/permissions",method = RequestMethod.GET)
     @ApiOperation(value = "获取权限")
     public Response<List<PermissionVo>> permissions() {
-        List<PermissionDto> permissions = SecurityAccount.current().getPermissions();
-        List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissions, PermissionVo.class);
-        for(PermissionVo permissionVo : permissionVos) {
-            if(permissionVo.getPid()==0) {
-                List<PermissionVo> childPermissions = new ArrayList();
-                for(PermissionVo permission : permissionVos) {
-                    if(permission.getPid()==permissionVo.getId()) {
-                        childPermissions.add(permission);
-                        permissionVos.remove(permission);
-                    }
-                }
-                permissionVo.setChildPermissions(childPermissions);
-            }
-        }
-        return new Response<>(permissionVos);
+//        List<PermissionDto> permissions = SecurityAccount.current().getPermissions();
+//        List<PermissionVo> permissionVos = CopyBeanUtils.copyListBeanPropertiesToList(permissions, PermissionVo.class);
+//        for(PermissionVo permissionVo : permissionVos) {
+//            if(permissionVo.getPid()==0) {
+//                List<PermissionVo> childPermissions = new ArrayList();
+//                for(PermissionVo permission : permissionVos) {
+//                    if(permission.getPid()==permissionVo.getId()) {
+//                        childPermissions.add(permission);
+//                        permissionVos.remove(permission);
+//                    }
+//                }
+//                permissionVo.setChildPermissions(childPermissions);
+//            }
+//        }
+//        return new Response<>(permissionVos);
+    	return null;
     }
 
 //    @RequestMapping("/menus")

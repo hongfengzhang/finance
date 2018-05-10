@@ -1,26 +1,25 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.util.SecurityAccount;
-import com.waben.stock.interfaces.dto.manage.PermissionDto;
-import com.waben.stock.interfaces.dto.organization.OrganizationDto;
-import com.waben.stock.interfaces.dto.organization.UserDto;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.promotion.reference.manage.RoleReference;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.manage.PermissionDto;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
-
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class RoleBusiness {
@@ -51,8 +50,7 @@ public class RoleBusiness {
     }
 
     public PageInfo<RoleDto> pages(RoleQuery roleQuery) {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        roleQuery.setOrganization(userDto.getOrg().getId());
+        roleQuery.setOrganization(SecurityUtil.getUserDetails().getOrgId());
         roleQuery.setType(4);
         Response<PageInfo<RoleDto>> response = roleReference.pages(roleQuery);
         String code = response.getCode();
@@ -112,10 +110,9 @@ public class RoleBusiness {
 
 
     public RoleDto save(String name, List<Long> permissionIds) {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
         RoleDto roleDto = new RoleDto();
         roleDto.setName(name);
-        roleDto.setOrganization(userDto.getOrg().getId());
+        roleDto.setOrganization(SecurityUtil.getUserDetails().getOrgId());
         roleDto.setCreateTime(new Date());
         roleDto.setType(4);
         roleDto.setPermissionDtos(permissionDtos(permissionIds));

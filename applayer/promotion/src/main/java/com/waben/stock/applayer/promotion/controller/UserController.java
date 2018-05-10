@@ -3,17 +3,18 @@ package com.waben.stock.applayer.promotion.controller;
 import java.util.Date;
 import java.util.List;
 
-import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
-import com.waben.stock.interfaces.vo.manage.RoleVo;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
 import com.waben.stock.applayer.promotion.business.RoleBusiness;
 import com.waben.stock.applayer.promotion.business.UserBusiness;
-import com.waben.stock.applayer.promotion.util.SecurityAccount;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.UserDto;
@@ -21,8 +22,13 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.vo.manage.RoleVo;
 import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import com.waben.stock.interfaces.vo.organization.UserVo;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("/user")
@@ -44,8 +50,7 @@ public class UserController {
     @RequestMapping(value = "/role",method = RequestMethod.GET)
     @ApiOperation(value = "获取角色")
     public Response<List<RoleVo>> fetchRoleByOrganization(){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
+        List<RoleDto> roleDtos = roleBusiness.findByOrganization(SecurityUtil.getUserDetails().getOrgId());
         List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
         return new Response<>(roleVos);
     }
@@ -53,9 +58,8 @@ public class UserController {
     @RequestMapping(value = "/org",method = RequestMethod.GET)
     @ApiOperation(value = "获取机构")
     public Response<List<OrganizationDto>> fetchOrgByParentOrg(){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(userDto.getOrg().getId());
-        organizationDtos.add(userDto.getOrg());
+        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(SecurityUtil.getUserDetails().getOrgId());
+//        organizationDtos.add(userDto.getOrg());
         return new Response<>(organizationDtos);
     }
 //

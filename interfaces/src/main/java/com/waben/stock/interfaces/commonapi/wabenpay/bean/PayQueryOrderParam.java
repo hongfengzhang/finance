@@ -7,7 +7,7 @@ public class PayQueryOrderParam {
 	/**
 	 * 应用id
 	 */
-	@JsonProperty("AppId")
+	@JsonProperty("app_id")
 	private String appId;
 	/**
 	 * 签名
