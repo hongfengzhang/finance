@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.organization;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.http.MediaType;
@@ -9,18 +10,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 
 public interface OrganizationInterface {
 
+	
+	
 	/**
 	 * 根据机构代码获取机构
 	 * 
@@ -57,7 +61,17 @@ public interface OrganizationInterface {
 	 * @return 代理商数据
 	 */
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	Response<PageInfo<AdminAgentDetailDto>> adminAgentPageByQuery(@RequestBody OrganizationQuery query);
+	Response<PageInfo<OrganizationDetailDto>> adminAgentPageByQuery(@RequestBody OrganizationQuery query);
+	
+	/**
+	 * 查询代理商统计数据
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 代理商统计数据
+	 */
+	@RequestMapping(value = "/adminStaPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<OrganizationStaDto>> adminStaPageByQuery(@RequestBody OrganizationStaQuery query);
 
 	/**
 	 * 获取机构树
@@ -99,7 +113,7 @@ public interface OrganizationInterface {
 	 * @return 机构
 	 */
 	@RequestMapping(value = "/modifyName", method = RequestMethod.PUT)
-	Response<OrganizationDto> modifyName(@RequestParam("id") Long id, @RequestParam("name") String name);
+	Response<OrganizationDto> modifyName(@RequestParam("id") Long id, @RequestParam("name") String name, @RequestParam(name="billCharge", required = false) BigDecimal billCharge, @RequestParam(name="settlementType", required = false) Integer settlementType);
 
 	/**
 	 * 获取机构绑卡信息

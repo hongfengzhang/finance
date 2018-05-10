@@ -1,14 +1,15 @@
 package com.waben.stock.applayer.promotion.reference.fallback;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
 import com.waben.stock.applayer.promotion.reference.organization.OrganizationReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.organization.AdminAgentDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -16,6 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 
 /**
  * 机构 reference服务接口fallback
@@ -51,7 +53,7 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 	}
 
 	@Override
-	public Response<OrganizationDto> modifyName(Long id, String name) {
+	public Response<OrganizationDto> modifyName(Long id, String name, BigDecimal billCharge, Integer settlementType) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
@@ -76,7 +78,12 @@ public class OrganizationReferenceFallback implements OrganizationReference {
 	}
 
 	@Override
-	public Response<PageInfo<AdminAgentDetailDto>> adminAgentPageByQuery(OrganizationQuery query) {
+	public Response<PageInfo<OrganizationDetailDto>> adminAgentPageByQuery(OrganizationQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<OrganizationStaDto>> adminStaPageByQuery(OrganizationStaQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

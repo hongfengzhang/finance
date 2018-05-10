@@ -17,6 +17,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.PriceMarkupForm;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 
 /**
  * 加价配置 Controller
@@ -35,11 +36,13 @@ public class PriceMarkupConfigController {
 	public PriceMarkupConfigBusiness business;
 
 	@RequestMapping(value = "/priceMarkupConfigList", method = RequestMethod.GET)
+	@ApiOperation(value = "获取加价比例列表")
 	public Response<List<PriceMarkupConfigDto>> priceMarkupConfigList(Long orgId, Integer resourceType) {
 		return new Response<>(business.priceMarkupConfigList(orgId, resourceType));
 	}
 
 	@RequestMapping(value = "/priceMarkupConfig", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ApiOperation(value = "编辑加价比例")
 	public Response<String> priceMarkupConfig(@RequestBody List<PriceMarkupForm> configFormList) {
 		String result = business.priceMarkupConfig(configFormList);
 		Response<String> response = new Response<>();

@@ -1,5 +1,9 @@
 package com.waben.stock.interfaces.dto.organization;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import springfox.documentation.annotations.ApiIgnore;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -11,7 +15,6 @@ import java.util.Date;
  *
  */
 public class OrganizationAccountDto implements Serializable{
-
 	private Long id;
 	/**
 	 * 账户余额
@@ -45,6 +48,9 @@ public class OrganizationAccountDto implements Serializable{
 	 * </ul>
 	 */
 	private Integer state;
+
+	private String reason;
+
 	public Long getId() {
 		return id;
 	}
@@ -108,4 +114,13 @@ public class OrganizationAccountDto implements Serializable{
 	public void setState(Integer state) {
 		this.state = state;
 	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
+	}
+
 }

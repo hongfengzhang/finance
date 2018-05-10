@@ -1,5 +1,8 @@
 package com.waben.stock.interfaces.vo.manage;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +11,24 @@ import java.util.List;
  * @author Created by yuyidi on 2017/11/16.
  * @desc
  */
+@ApiModel(value="MenuVo",description="菜单对象")
 public class MenuVo implements Serializable {
-
+    @ApiModelProperty(value = "菜单id")
     private Long id;
+    @ApiModelProperty(value = "菜单名称")
     private String name;
+    @ApiModelProperty(value = "父菜单id")
     private Long pid;
+    @ApiModelProperty(value = "菜单状态")
     private Boolean state;
+    @ApiModelProperty(value = "菜单顺序")
     private Integer sort;
+    @ApiModelProperty(value = "菜单链接")
     private String url;
+    @ApiModelProperty(value = "菜单图片")
     private String icon;
 
-
+    @ApiModelProperty(value = "子菜单集合")
     private List<MenuVo> childs = new ArrayList<>();
 
     public Long getId() {

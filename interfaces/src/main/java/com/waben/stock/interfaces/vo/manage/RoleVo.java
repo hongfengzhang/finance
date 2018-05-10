@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -28,10 +29,11 @@ public class RoleVo implements Serializable{
     private String organizationName;
     @ApiModelProperty(value = "代理商id")
     private Long organization;
+    @ApiModelProperty(value = "创建时间")
+    private Date createTime;
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -98,5 +100,13 @@ public class RoleVo implements Serializable{
 
     public void setOrganizationName(String organizationName) {
         this.organizationName = organizationName;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 }

@@ -10,6 +10,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.enums.OrganizationState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -269,6 +270,23 @@ public class OrganizationAccountService {
 	public OrganizationAccount revisionState(Long id, Integer state) {
 		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(id);
 		organizationAccount.setState(state);
+		return organizationAccount;
+	}
+
+	@Transactional
+    public OrganizationAccount recover(Long id) {
+		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(id);
+		organizationAccount.setState(1);
+		return organizationAccount;
+	}
+
+	@Transactional
+	public OrganizationAccount freeze(OrganizationAccount account) {
+		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(account.getId());
+		organizationAccount.setFrozenCapital(account.getFrozenCapital());
+		organizationAccount.setReason(account.getReason());
+		organizationAccount.setBalance(account.getFrozenCapital().add(organizationAccount.getAvailableBalance()));
+		organizationAccount.setState(2);
 		return organizationAccount;
 	}
 }

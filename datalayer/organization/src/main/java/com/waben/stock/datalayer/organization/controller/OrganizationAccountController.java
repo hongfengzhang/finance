@@ -70,6 +70,21 @@ public class OrganizationAccountController implements OrganizationAccountInterfa
 		return new Response<>(response);
 	}
 
+	@Override
+	public Response<OrganizationAccountDto> recover(@PathVariable Long id) {
+		OrganizationAccount result = organizationAccountService.recover(id);
+		OrganizationAccountDto response = CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class, result, false);
+		return new Response<>(response);	}
+
+	@Override
+	public Response<OrganizationAccountDto> freeze(@RequestBody OrganizationAccountDto accountDto) {
+		OrganizationAccount organizationAccount = CopyBeanUtils.copyBeanProperties(OrganizationAccount.class,
+				accountDto, false);
+		OrganizationAccount result = organizationAccountService.freeze(organizationAccount);
+		OrganizationAccountDto response = CopyBeanUtils.copyBeanProperties(OrganizationAccountDto.class, result, false);
+		return new Response<>(response);
+	}
+
 
 	@Override
 	public Response<OrganizationAccountDto> fetchByOrgId(@PathVariable Long orgId) {

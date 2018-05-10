@@ -17,4 +17,14 @@ public class MenuReferenceFallback implements MenuReference {
     public Response<List<MenuDto>> menusByRole(Long role) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<List<MenuDto>> fetchMenusByVariety(Long variety) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
+
+    @Override
+    public Response<MenuDto> fetchById(Long id) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

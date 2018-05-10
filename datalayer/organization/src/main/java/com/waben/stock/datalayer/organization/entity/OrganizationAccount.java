@@ -61,6 +61,8 @@ public class OrganizationAccount {
 	 * </ul>
 	 */
 	private Integer state;
+
+	private String reason;
 	public Long getId() {
 		return id;
 	}
@@ -123,5 +125,13 @@ public class OrganizationAccount {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public String getReason() {
+		return reason;
+	}
+
+	public void setReason(String reason) {
+		this.reason = reason;
 	}
 }

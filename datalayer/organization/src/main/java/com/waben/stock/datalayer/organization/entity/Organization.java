@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.organization.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.*;
@@ -69,10 +70,15 @@ public class Organization {
 	private String parentName;
 
 	@OneToOne(mappedBy = "org")
-	private  OrganizationAccount account;
+	private OrganizationAccount account;
 
 	@Transient
 	private OrganizationAccountDto accountDto;
+
+	/**
+	 * 提现手续费
+	 */
+	private BigDecimal billCharge;
 
 	public Long getId() {
 		return id;
@@ -159,7 +165,6 @@ public class Organization {
 		return null;
 	}
 
-
 	public OrganizationAccount getAccount() {
 		return account;
 	}
@@ -175,4 +180,13 @@ public class Organization {
 	public void setAccountDto(OrganizationAccountDto accountDto) {
 		this.accountDto = accountDto;
 	}
+
+	public BigDecimal getBillCharge() {
+		return billCharge;
+	}
+
+	public void setBillCharge(BigDecimal billCharge) {
+		this.billCharge = billCharge;
+	}
+
 }
