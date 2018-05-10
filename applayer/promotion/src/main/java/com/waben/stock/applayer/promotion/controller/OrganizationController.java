@@ -35,6 +35,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
+import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -43,6 +44,7 @@ import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
+import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -147,13 +149,23 @@ public class OrganizationController {
 	@RequestMapping(value = "/qrcode", method = RequestMethod.GET)
 	@ApiOperation(value = "获取推广二维码")
 	public Response<String> qrcode(Long orgId) throws IOException, WriterException {
-		OrganizationDetailDto dto = business.detail(orgId);
-		Map<String, String> contentMap = Maps.newHashMap();
-		contentMap.put("name", String.valueOf(dto.getName()));
-		contentMap.put("code", String.valueOf(dto.getCode()));
-		contentMap.put("state", String.valueOf(dto.getState()));
-		String content = JSON.toJSONString(contentMap);
-		return new Response<>("200", QRCodeUtil.create(content, 200, 200), "响应成功");
+		OrganizationStaQuery query = new OrganizationStaQuery();
+		query.setCurrentOrgId(orgId);
+		query.setQueryType(1);
+		query.setPage(0);
+		query.setSize(1);
+		PageInfo<OrganizationStaDto> pages = business.adminStaPageByQuery(query);
+		OrganizationStaDto result = null;
+		if (pages.getContent() != null && pages.getContent().size() > 0) {
+			result = pages.getContent().get(0);
+			Map<String, String> contentMap = Maps.newHashMap();
+			contentMap.put("name", String.valueOf(result.getName()));
+			contentMap.put("code", String.valueOf(result.getCode()));
+			contentMap.put("state", String.valueOf(result.getState()));
+			String content = JSON.toJSONString(contentMap);
+			return new Response<>("200", QRCodeUtil.create(content, 200, 200), "响应成功");
+		}
+		return new Response<>();
 	}
 
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -185,6 +197,19 @@ public class OrganizationController {
 		query.setCurrentOrgId(currentOrgId);
 		query.setQueryType(2);
 		return new Response<>(business.adminStaPageByQuery(query));
+	}
+
+	@RequestMapping(value = "/tradingFow/", method = RequestMethod.GET)
+	@ApiOperation(value = "查询交易流水")
+	public Response<PageInfo<TradingFowDto>> tradingFow(TradingFowQuery query) {
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		return new Response<>(business.tradingFowPageByQuery(query));
+	}
+
+	@RequestMapping(value = "add/agent", method = RequestMethod.POST)
+	@ApiOperation(value = "添加代理商")
+	public Response<OrganizationDto> agent(OrganizationForm orgForm) {
+		return new Response<>(business.agent(orgForm));
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)

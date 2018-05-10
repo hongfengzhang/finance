@@ -12,6 +12,7 @@ import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
+import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -19,6 +20,7 @@ import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
+import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 
 /**
  * 机构 Business
@@ -111,7 +113,7 @@ public class OrganizationBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
+
 	public PageInfo<OrganizationStaDto> adminStaPageByQuery(OrganizationStaQuery query) {
 		Response<PageInfo<OrganizationStaDto>> response = reference.adminStaPageByQuery(query);
 		if ("200".equals(response.getCode())) {
@@ -120,6 +122,22 @@ public class OrganizationBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public OrganizationDto agent(OrganizationForm orgForm) {
+		Response<OrganizationDto> response = reference.addition(orgForm);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<TradingFowDto> tradingFowPageByQuery(TradingFowQuery query) {
+		Response<PageInfo<TradingFowDto>> response = reference.tradingFowPageByQuery(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
 	public List<OrganizationDto> findAll() {
 		Response<List<OrganizationDto>> response = reference.fetchAll();
 		if ("200".equals(response.getCode())) {
