@@ -25,6 +25,12 @@ public class OrganizationStaDto extends OrganizationDto {
 	 */
 	private String bingPhone;
 
+	/**
+	 * 结算方式
+	 * 
+	 */
+	private Integer wsType;
+
 	public Integer getPromotionCount() {
 		return promotionCount;
 	}
@@ -63,6 +69,14 @@ public class OrganizationStaDto extends OrganizationDto {
 
 	public void setBingPhone(String bingPhone) {
 		this.bingPhone = bingPhone;
+	}
+
+	public Integer getWsType() {
+		return wsType;
+	}
+
+	public void setWsType(Integer wsType) {
+		this.wsType = wsType;
 	}
 
 }

@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.organization.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.*;
@@ -77,7 +78,7 @@ public class Organization {
 	/**
 	 * 提现手续费
 	 */
-	private String billCharge;
+	private BigDecimal billCharge;
 
 	public Long getId() {
 		return id;
@@ -180,11 +181,11 @@ public class Organization {
 		this.accountDto = accountDto;
 	}
 
-	public String getBillCharge() {
+	public BigDecimal getBillCharge() {
 		return billCharge;
 	}
 
-	public void setBillCharge(String billCharge) {
+	public void setBillCharge(BigDecimal billCharge) {
 		this.billCharge = billCharge;
 	}
 

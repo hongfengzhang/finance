@@ -3,6 +3,7 @@ package com.waben.stock.applayer.promotion.controller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +54,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/organization")
-@Api(description = "机构接口列表")
+@Api(description = "代理商接口列表")
 public class OrganizationController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
@@ -113,10 +114,22 @@ public class OrganizationController {
 		return new Response<>(business.detail(orgId));
 	}
 
+	/**
+	 * 
+	 * @param id
+	 *            代理ID
+	 * @param name
+	 *            代理名称
+	 * @param billCharge
+	 *            提现手续费
+	 * @param settlementType
+	 *            结算方式
+	 * @return
+	 */
 	@RequestMapping(value = "/modifyName", method = RequestMethod.POST)
 	@ApiOperation(value = "编辑代理商信息")
-	public Response<OrganizationDto> modifyName(Long id, String name, String billCharge, String level) {
-		return new Response<>(business.modifyName(id, name, billCharge, level));
+	public Response<OrganizationDto> modifyName(Long id, String name, BigDecimal billCharge, Integer settlementType) {
+		return new Response<>(business.modifyName(id, name, billCharge, settlementType));
 	}
 
 	@RequestMapping(value = "/{orgid}/bindcard", method = RequestMethod.GET)
@@ -133,14 +146,14 @@ public class OrganizationController {
 
 	@RequestMapping(value = "/qrcode", method = RequestMethod.GET)
 	@ApiOperation(value = "获取推广二维码")
-	public Response<OrganizationDetailDto> qrcode(Long orgId) throws IOException, WriterException {
+	public Response<String> qrcode(Long orgId) throws IOException, WriterException {
 		OrganizationDetailDto dto = business.detail(orgId);
 		Map<String, String> contentMap = Maps.newHashMap();
 		contentMap.put("name", String.valueOf(dto.getName()));
 		contentMap.put("code", String.valueOf(dto.getCode()));
 		contentMap.put("state", String.valueOf(dto.getState()));
 		String content = JSON.toJSONString(contentMap);
-		return new Response<>(QRCodeUtil.create(content, 200, 200));
+		return new Response<>("200", QRCodeUtil.create(content, 200, 200), "响应成功");
 	}
 
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)

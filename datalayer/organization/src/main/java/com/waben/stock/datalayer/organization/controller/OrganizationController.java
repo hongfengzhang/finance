@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.organization.controller;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -166,9 +167,9 @@ public class OrganizationController implements OrganizationInterface {
 	}
 
 	@Override
-	public Response<OrganizationDto> modifyName(Long id, String name, String billCharge, String level) {
+	public Response<OrganizationDto> modifyName(Long id, String name, BigDecimal billCharge, Integer settlementType) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(OrganizationDto.class,
-				organizationService.modifyName(id, name, billCharge, level), false));
+				organizationService.modifyName(id, name, billCharge, settlementType), false));
 	}
 
 	@Override
