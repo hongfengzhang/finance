@@ -49,7 +49,7 @@ public class MenuDaoImpl implements MenuDao {
 
     @Override
     public Menu retrieve(Long id) {
-        return null;
+        return repository.findById(id);
     }
 
     @Override

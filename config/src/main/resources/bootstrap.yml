@@ -7,7 +7,7 @@ spring:
     config:
       server:
         git:
-          uri: http://39.108.10.146/cmi/config-repo
+          uri: http://gitlab.youguwang.com.cn/cmi/config-repo.git
           clone-on-start: true
         encrypt:
           enabled: true

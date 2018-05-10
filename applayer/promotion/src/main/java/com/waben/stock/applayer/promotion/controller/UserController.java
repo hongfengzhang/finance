@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
+import com.waben.stock.interfaces.request.organization.UserRequest;
 import com.waben.stock.interfaces.vo.manage.RoleVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,7 +27,7 @@ import com.waben.stock.interfaces.vo.organization.UserVo;
 
 @RestController
 @RequestMapping("/user")
-@Api(description = "管理员")
+//@Api(description = "管理员")
 public class UserController {
 
     @Autowired
@@ -44,8 +45,9 @@ public class UserController {
     @RequestMapping(value = "/role",method = RequestMethod.GET)
     @ApiOperation(value = "获取角色")
     public Response<List<RoleVo>> fetchRoleByOrganization(){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
+//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+//        List<RoleDto> roleDtos = roleBusiness.findByOrganization(userDto.getOrg().getId());
+        List<RoleDto> roleDtos = roleBusiness.findByOrganization(1L);
         List<RoleVo> roleVos = CopyBeanUtils.copyListBeanPropertiesToList(roleDtos,RoleVo.class);
         return new Response<>(roleVos);
     }
@@ -53,20 +55,24 @@ public class UserController {
     @RequestMapping(value = "/org",method = RequestMethod.GET)
     @ApiOperation(value = "获取机构")
     public Response<List<OrganizationDto>> fetchOrgByParentOrg(){
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(userDto.getOrg().getId());
-        organizationDtos.add(userDto.getOrg());
+//        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+//        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(userDto.getOrg().getId());
+        List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(1L);
+        OrganizationDto organizationDto = new OrganizationDto();
+        organizationDto.setId(1L);
+        organizationDtos.add(organizationDto);
+//        organizationDtos.add(userDto.getOrg());
         return new Response<>(organizationDtos);
     }
 //
 ////    @PreAuthorize("hasRole('USER_SAVE')")
     @ApiOperation(value = "添加管理员")
-    @ApiImplicitParam(paramType = "query", dataType = "UserVo", name = "vo", value = "管理员对象", required = true)
+    @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
     @RequestMapping(value = "/",method = RequestMethod.POST)
-     public Response<UserVo> add(@RequestBody UserVo vo){
-        vo.setState(false);
-        vo.setCreateTime(new Date());
-        UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
+     public Response<UserVo> add(UserRequest request){
+        request.setState(false);
+        request.setCreateTime(new Date());
+        UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, request, false);
 //        OrganizationDto org = null;
 //        if(vo.getOrg()!=null) {
 //            org = CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false);
@@ -82,14 +88,14 @@ public class UserController {
 //
     @RequestMapping(value = "/",method = RequestMethod.PUT)
     @ApiOperation(value = "修改管理员")
-    @ApiImplicitParam(paramType = "query", dataType = "UserVo", name = "vo", value = "管理员对象", required = true)
-    public Response<UserVo> modify(@RequestBody UserVo vo){
-        UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
+    @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
+    public Response<UserVo> modify(UserRequest request){
+        UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, request, false);
         UserDto userDto = userBusiness.save(requestDto);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }
-//
+
     @RequestMapping(value = "/state/{id}",method = RequestMethod.PUT)
     @ApiOperation(value = "冻结/恢复 管理员")
     @ApiImplicitParam(paramType = "path", dataType = "Long", name = "id", value = "管理员id", required = true)
@@ -98,7 +104,7 @@ public class UserController {
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }
-//
+
     @RequestMapping(value = "/pages",method = RequestMethod.GET)
     @ApiImplicitParam(paramType = "query", dataType = "UserQuery", name = "query", value = "管理员查询对象", required = false)
     @ApiOperation(value = "管理员分页")

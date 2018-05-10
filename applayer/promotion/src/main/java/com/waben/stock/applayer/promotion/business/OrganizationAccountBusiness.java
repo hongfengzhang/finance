@@ -65,4 +65,20 @@ public class OrganizationAccountBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+
+    public OrganizationAccountDto recover(Long id) {
+		Response<OrganizationAccountDto> response = reference.recover(id);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+    }
+
+	public OrganizationAccountDto freeze(OrganizationAccountDto accountDto) {
+		Response<OrganizationAccountDto> response = reference.freeze(accountDto);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 }
