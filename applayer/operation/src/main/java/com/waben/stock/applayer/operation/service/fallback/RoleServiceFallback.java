@@ -72,4 +72,9 @@ public class RoleServiceFallback implements RoleService {
 	public Response<RoleDto> fetchByOrganizationAdmin(Long organization) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
+
+	@Override
+	public Response<List<RoleDto>> fetchRolesByOrganization(Long org) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }
