@@ -97,6 +97,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION, "尚未绑卡，不能申请提现");
 		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "代理商名称已存在");
 		exceptionMap.put(ExceptionConstant.LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION, "一级代理商不能申请提现");
+		exceptionMap.put(ExceptionConstant.BALANCE_NOTENOUGHFROZEN_EXCEPTION, "账户余额不足以冻结");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,

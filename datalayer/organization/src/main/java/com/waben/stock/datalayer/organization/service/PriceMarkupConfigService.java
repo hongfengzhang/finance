@@ -179,19 +179,39 @@ public class PriceMarkupConfigService {
 		if (topRatio == null || topRatio.compareTo(BigDecimal.ZERO) <= 0) {
 			return result;
 		}
-		List<Organization> orgTree = getPublisherOrgTreeList(publisherId);
-		if (orgTree != null && orgTree.size() > 0) {
-			for (Organization org : orgTree) {
-				List<PriceMarkupConfig> configList = priceMarkupConfigDao.retrieveByOrgAndResourceTypeAndResourceId(org,
-						resourceType, resourceId);
-				if (configList != null && configList.size() > 0) {
-					if (configList.get(0).getRatio() != null && topRatio.compareTo(BigDecimal.ZERO) > 0) {
-						result.add(configList.get(0).getRatio());
-					}
-				}
+		// List<Organization> orgTree = getPublisherOrgTreeList(publisherId);
+		// if (orgTree != null && orgTree.size() > 0) {
+		// for (Organization org : orgTree) {
+		// List<PriceMarkupConfig> configList =
+		// priceMarkupConfigDao.retrieveByOrgAndResourceTypeAndResourceId(org,
+		// resourceType, resourceId);
+		// if (configList != null && configList.size() > 0) {
+		// if (configList.get(0).getRatio() != null &&
+		// topRatio.compareTo(BigDecimal.ZERO) > 0) {
+		// result.add(configList.get(0).getRatio());
+		// }
+		// }
+		// }
+		// } else {
+		// // 使用一级机构的加价比例
+		// result.add(topRatio);
+		// }
+
+		// 获取该用户关联的代理商，如果该代理商设置了加价比例，则使用该代理商的，没有则使用一级代理商的
+		boolean isUseTopRatio = true;
+		OrganizationPublisher orgPublisher = orgPublisherDao.retrieveByPublisherId(publisherId);
+		if (orgPublisher != null) {
+			Organization org = orgDao.retrieveByCode(orgPublisher.getOrgCode());
+			List<PriceMarkupConfig> configList = priceMarkupConfigDao.retrieveByOrgAndResourceTypeAndResourceId(org,
+					resourceType, resourceId);
+			if (configList != null && configList.size() > 0 && configList.get(0).getRatio() != null
+					&& configList.get(0).getRatio().compareTo(BigDecimal.ZERO) > 0) {
+				isUseTopRatio = false;
+				result.add(configList.get(0).getRatio());
 			}
-		} else {
-			// 使用一级机构的加价比例
+		}
+		// 使用一级机构的加价比例
+		if (isUseTopRatio) {
 			result.add(topRatio);
 		}
 		return result;

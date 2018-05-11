@@ -10,8 +10,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
-import com.waben.stock.interfaces.dto.organization.OrganizationDto;
-import com.waben.stock.interfaces.enums.OrganizationState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -286,10 +284,12 @@ public class OrganizationAccountService {
 	@Transactional
 	public OrganizationAccount freeze(OrganizationAccount account) {
 		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(account.getId());
-		organizationAccount.setFrozenCapital(organizationAccount.getFrozenCapital().add(account.getFrozenCapital()));
-		organizationAccount.setAvailableBalance(organizationAccount.getAvailableBalance().subtract(account.getFrozenCapital()));
+		if(account.getFrozenCapital().abs().compareTo(organizationAccount.getAvailableBalance()) > 0) {
+			throw new ServiceException(ExceptionConstant.BALANCE_NOTENOUGHFROZEN_EXCEPTION);
+		}
+		organizationAccount.setFrozenCapital(organizationAccount.getFrozenCapital().add(account.getFrozenCapital().abs()));
+		organizationAccount.setAvailableBalance(organizationAccount.getAvailableBalance().subtract(account.getFrozenCapital().abs()));
 		organizationAccount.setReason(account.getReason());
-		organizationAccount.setBalance(organizationAccount.getFrozenCapital().add(organizationAccount.getAvailableBalance()));
 		organizationAccount.setState(2);
 		return organizationAccount;
 	}
