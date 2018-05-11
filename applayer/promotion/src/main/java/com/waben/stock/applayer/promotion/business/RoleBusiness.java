@@ -103,12 +103,10 @@ public class RoleBusiness {
     }
 
     public List<RoleDto> findByOrganization(Long id) {
-        RoleQuery roleQuery = new RoleQuery();
-        roleQuery.setOrganization(id);
-        Response<PageInfo<RoleDto>> response = roleReference.pages(roleQuery);
+        Response<List<RoleDto>> response = roleReference.fetchRolesByOrganization(id);
         String code = response.getCode();
         if ("200".equals(code)) {
-            return response.getResult().getContent();
+            return response.getResult();
         } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
             throw new NetflixCircuitException(code);
         }

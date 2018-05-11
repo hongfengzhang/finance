@@ -144,6 +144,15 @@ public class RoleService {
         return role;
     }
 
+    public List<Role> findRolesByOrganization(Long organization) {
+        List<Role> role = roleDao.retrieveRolesByOrganization(organization);
+        if (role == null) {
+            throw new ServiceException(ExceptionConstant.ROLE_NOT_FOUND_EXCEPTION);
+        }
+        return role;
+    }
+
+
     public Role bindRoleWithPermissionAndMenu(Long id,Long variety) {
         Role role = findById(id);
         List<Permission> permissions = permissionService.findPermissionsByVariety(variety);

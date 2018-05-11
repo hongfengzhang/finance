@@ -16,6 +16,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
+import java.util.Date;
+
 @Service
 public class UserBusiness {
 
@@ -40,9 +42,11 @@ public class UserBusiness {
     public UserDto save(UserDto userDto) {
         //获取用户所属机构的管理员角色并绑定给当前用户
         Response<UserDto> userDtoResponse = userReference.fetchByUserName(userDto.getUsername());
-        if(userDtoResponse==null) {
+        if(userDtoResponse.getResult()==null) {
             OrganizationDto organizationDto = new OrganizationDto();
             organizationDto.setId(userDto.getOrgId());
+            userDto.setState(false);
+            userDto.setCreateTime(new Date());
             userDto.setOrg(organizationDto);
             userDto.setPassword(PasswordCrypt.crypt(userDto.getPassword()));
             Response<UserDto> response = userReference.addition(userDto);
@@ -56,6 +60,22 @@ public class UserBusiness {
         }else {
             throw new ServiceException(ExceptionConstant.ORGANIZATION_USER_EXIST);
         }
+    }
+
+    public UserDto revision(UserDto userDto) {
+        UserDto result = userReference.fetchByUserName(userDto.getUsername()).getResult();
+        userDto.setPassword(PasswordCrypt.crypt(userDto.getPassword()));
+        userDto.setCreateTime(result.getCreateTime());
+        userDto.setState(result.getState());
+        userDto.setOnlyStockoption(result.isOnlyStockoption());
+            Response<UserDto> response = userReference.modification(userDto);
+            String code = response.getCode();
+            if ("200".equals(code)) {
+                return response.getResult();
+            } else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
+                throw new NetflixCircuitException(code);
+            }
+            throw new ServiceException(response.getCode());
     }
 
     public UserDto saveUserRole(Long id, Long roleId) {

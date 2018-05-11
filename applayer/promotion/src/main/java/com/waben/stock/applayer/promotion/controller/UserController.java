@@ -3,6 +3,9 @@ package com.waben.stock.applayer.promotion.controller;
 import java.util.Date;
 import java.util.List;
 
+import com.waben.stock.interfaces.util.JacksonUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,6 +36,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/user")
 //@Api(description = "管理员")
 public class UserController {
+
+    Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
     private UserBusiness userBusiness;
@@ -67,8 +72,6 @@ public class UserController {
     @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
     @RequestMapping(value = "/",method = RequestMethod.POST)
      public Response<UserVo> add(UserRequest request){
-        request.setState(false);
-        request.setCreateTime(new Date());
         UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, request, false);
         UserDto userDto = userBusiness.save(requestDto);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
@@ -80,7 +83,7 @@ public class UserController {
     @ApiImplicitParam(paramType = "query", dataType = "UserRequest", name = "request", value = "管理员对象", required = true)
     public Response<UserVo> modify(UserRequest request){
         UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, request, false);
-        UserDto userDto = userBusiness.save(requestDto);
+        UserDto userDto = userBusiness.revision(requestDto);
         UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
         return new Response<>(userVo);
     }
@@ -109,8 +112,9 @@ public class UserController {
             Long role = pageInfo.getContent().get(i).getRole();
             if(role!=null) {
                 RoleDto roleDto = roleBusiness.findById(role);
+//                logger.info("结果：{}", JacksonUtil.encode(roleDto));
+//                logger.info("role：{}", role);
                 userVoContent.get(i).setRoleName(roleDto.getName());
-                userVoContent.get(i).setCode(roleDto.getCode());
                 userVoContent.get(i).setRole(roleDto.getId());
             }
         }
