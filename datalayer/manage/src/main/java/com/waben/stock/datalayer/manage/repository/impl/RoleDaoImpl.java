@@ -28,6 +28,11 @@ public class RoleDaoImpl implements RoleDao {
     }
 
     @Override
+    public List<Role> retrieveRolesByOrganization(Long organization) {
+        return repository.findRolesByOrganization(organization);
+    }
+
+    @Override
     public Role create(Role role) {
         return repository.save(role);
     }

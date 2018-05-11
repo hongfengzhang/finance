@@ -17,4 +17,6 @@ public interface RoleRepository extends CustomJpaRepository<Role, Long> {
 //    @Query("select r from Role as r join r.staffs as staffs where staffs.id=:staffId")
 //    List<Role> findAllByStaffId(@Param("staffId") Long staffId);
 
+    List<Role> findRolesByOrganization(Long organization);
+
 }

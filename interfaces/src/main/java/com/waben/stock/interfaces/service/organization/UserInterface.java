@@ -37,7 +37,7 @@ public interface UserInterface {
     @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<UserDto> addition(@RequestBody UserDto user);
 
-    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     Response<UserDto> modification(@RequestBody UserDto user);
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

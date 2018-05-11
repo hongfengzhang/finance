@@ -122,4 +122,12 @@ public class RoleController implements RoleInterface {
         RoleDto roleDto = CopyBeanUtils.copyBeanProperties(RoleDto.class, result, false);
         return new Response<>(roleDto);
     }
+
+    @Override
+    public Response<List<RoleDto>> fetchRolesByOrganization(@PathVariable Long org) {
+        List<Role> roles = roleService.findRolesByOrganization(org);
+        List<RoleDto> roleDtos = CopyBeanUtils.copyListBeanPropertiesToList(roles,
+                RoleDto.class);
+        return new Response<>(roleDtos);
+    }
 }

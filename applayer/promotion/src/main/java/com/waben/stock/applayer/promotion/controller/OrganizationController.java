@@ -215,6 +215,7 @@ public class OrganizationController {
 	public void export(OrganizationStaQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
+		// query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		PageInfo<OrganizationStaDto> result = business.adminStaPageByQuery(query);
 		File file = null;
 		FileInputStream is = null;
@@ -285,14 +286,13 @@ public class OrganizationController {
 		result.add("创建时间");
 		return result;
 	}
-	
-	
-	
+
 	@RequestMapping(value = "/trading/export", method = RequestMethod.GET)
 	@ApiOperation(value = "导出交易流水数据")
 	public void tradingExport(TradingFowQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
+//		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		PageInfo<TradingFowDto> result = business.tradingFowPageByQuery(query);
 		File file = null;
 		FileInputStream is = null;
@@ -334,8 +334,11 @@ public class OrganizationController {
 			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
 			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
 			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
-			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
-			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
+			data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
+			data.add(String.valueOf(trade.getAvailableBalance() == null ? "" : trade.getAvailableBalance()));
+			data.add(trade.getStockCode() == null ? "" : trade.getStockCode());
+			data.add(trade.getMarkedStock() == null ? "" : trade.getMarkedStock());
+			data.add(trade.getAgentCode() + "/" + trade.getAgentCodeName());
 			result.add(data);
 		}
 		return result;
@@ -349,6 +352,7 @@ public class OrganizationController {
 		result.add("交易编码");
 		result.add("交易时间");
 		result.add("业务类型");
+		result.add("交易金额");
 		result.add("账户余额");
 		result.add("股票代码");
 		result.add("标的股票");

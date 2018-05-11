@@ -68,4 +68,9 @@ public class RoleReferenceFallback implements RoleReference {
     public Response<RoleDto> fetchByOrganizationAdmin(Long organization) {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+    @Override
+    public Response<List<RoleDto>> fetchRolesByOrganization(Long org) {
+        throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+    }
 }

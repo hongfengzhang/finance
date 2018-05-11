@@ -58,4 +58,7 @@ public interface RoleInterface {
     Response<RoleDto> fetchByOrganizationAdmin(@PathVariable("organization") Long organization);
 
 
+    @RequestMapping(value = "/org/{org}", method = RequestMethod.GET)
+    Response<List<RoleDto>> fetchRolesByOrganization(@PathVariable("org") Long org);
+
 }
