@@ -28,6 +28,10 @@ public class OrganizationAccountFlowDto {
 	 */
 	private BigDecimal originAmount;
 	/**
+	 * 账户可用余额
+	 */
+	private BigDecimal availableBalance;
+	/**
 	 * 流水类型
 	 */
 	private OrganizationAccountFlowType type;
@@ -142,6 +146,14 @@ public class OrganizationAccountFlowDto {
 
 	public void setResourceTradeNo(String resourceTradeNo) {
 		this.resourceTradeNo = resourceTradeNo;
+	}
+
+	public BigDecimal getAvailableBalance() {
+		return availableBalance;
+	}
+
+	public void setAvailableBalance(BigDecimal availableBalance) {
+		this.availableBalance = availableBalance;
 	}
 
 }

@@ -59,6 +59,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 					}
 				}
 			} catch (Exception ex) {
+				ex.printStackTrace();
 				HttpServletResponse httpResponse = (HttpServletResponse) response;
 				httpResponse.setStatus(HttpStatus.FORBIDDEN.value());
 			}

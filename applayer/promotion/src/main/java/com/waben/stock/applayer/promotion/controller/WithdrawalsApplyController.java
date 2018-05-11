@@ -24,6 +24,7 @@ import com.waben.stock.applayer.promotion.business.BindCardBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationAccountBusiness;
 import com.waben.stock.applayer.promotion.business.QuickPayBusiness;
 import com.waben.stock.applayer.promotion.business.WithdrawalsApplyBusiness;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
@@ -64,8 +65,11 @@ public class WithdrawalsApplyController {
 	private QuickPayBusiness payBusiness;
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Response<WithdrawalsApplyDto> addition(@RequestParam(required = true) Long orgId,
-			@RequestParam(required = true) BigDecimal amount, @RequestParam(required = true) String paymentPassword) {
+	public Response<WithdrawalsApplyDto> addition(@RequestParam(required = true) BigDecimal amount, @RequestParam(required = true) String paymentPassword) {
+		if(SecurityUtil.getUserDetails().getOrgLevel() == 1) {
+			throw new ServiceException(ExceptionConstant.LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION);
+		}
+		Long orgId = SecurityUtil.getUserDetails().getOrgId();
 		// 验证支付密码
 		OrganizationAccountDto account = accountBusiness.fetchByOrgId(orgId);
 		String storePaymentPassword = account.getPaymentPassword();

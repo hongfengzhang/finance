@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
+import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -20,11 +21,10 @@ import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
+import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 
 public interface OrganizationInterface {
 
-	
-	
 	/**
 	 * 根据机构代码获取机构
 	 * 
@@ -62,7 +62,7 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<OrganizationDetailDto>> adminAgentPageByQuery(@RequestBody OrganizationQuery query);
-	
+
 	/**
 	 * 查询代理商统计数据
 	 * 
@@ -116,7 +116,9 @@ public interface OrganizationInterface {
 	 * @return 机构
 	 */
 	@RequestMapping(value = "/modifyName", method = RequestMethod.PUT)
-	Response<OrganizationDto> modifyName(@RequestParam("id") Long id, @RequestParam("name") String name, @RequestParam(name="billCharge", required = false) BigDecimal billCharge, @RequestParam(name="settlementType", required = false) Integer settlementType);
+	Response<OrganizationDto> modifyName(@RequestParam("id") Long id, @RequestParam("name") String name,
+			@RequestParam(name = "billCharge", required = false) BigDecimal billCharge,
+			@RequestParam(name = "settlementType", required = false) Integer settlementType);
 
 	/**
 	 * 获取机构绑卡信息
@@ -149,4 +151,14 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<OrganizationDto>> pages(@RequestBody OrganizationQuery query);
+
+	/**
+	 * 查询交易流水记录
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 交易流水数据
+	 */
+	@RequestMapping(value = "/tradingFowPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<TradingFowDto>> tradingFowPageByQuery(@RequestBody TradingFowQuery query);
 }

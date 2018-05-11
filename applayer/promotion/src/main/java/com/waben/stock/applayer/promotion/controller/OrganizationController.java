@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,12 +27,14 @@ import com.google.common.collect.Maps;
 import com.google.zxing.WriterException;
 import com.waben.stock.applayer.promotion.business.BindCardBusiness;
 import com.waben.stock.applayer.promotion.business.OrganizationBusiness;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.applayer.promotion.util.PoiUtil;
 import com.waben.stock.applayer.promotion.util.QRCodeUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
+import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -42,6 +43,7 @@ import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
+import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,7 +69,6 @@ public class OrganizationController {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	@PreAuthorize("hasRole('ORG_MANAGE')")
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public Response<OrganizationDto> addition(OrganizationForm orgForm) {
 		return new Response<>(business.addition(orgForm));
@@ -88,8 +89,8 @@ public class OrganizationController {
 	}
 
 	@RequestMapping(value = "/adminTree", method = RequestMethod.GET)
-	public List<TreeNode> adminTree(Long orgId) {
-		return business.adminTree(orgId);
+	public Response<List<TreeNode>> adminTree() {
+		return new Response<>(business.adminTree(SecurityUtil.getUserDetails().getOrgId()));
 	}
 
 	@RequestMapping(value = "/listByParentId", method = RequestMethod.GET)
@@ -132,28 +133,38 @@ public class OrganizationController {
 		return new Response<>(business.modifyName(id, name, billCharge, settlementType));
 	}
 
-	@RequestMapping(value = "/{orgid}/bindcard", method = RequestMethod.GET)
+	@RequestMapping(value = "/bindcard", method = RequestMethod.GET)
 	@ApiOperation(value = "获取绑卡信息")
-	public Response<BindCardDto> fetchBindCard(@PathVariable("orgid") Long orgId) {
-		return new Response<>(bindCardBusiness.getOrgBindCard(orgId));
+	public Response<BindCardDto> fetchBindCard() {
+		return new Response<>(bindCardBusiness.getOrgBindCard(SecurityUtil.getUserDetails().getOrgId()));
 	}
 
-	@RequestMapping(value = "/{orgid}/bindcard", method = RequestMethod.POST)
+	@RequestMapping(value = "/bindcard", method = RequestMethod.POST)
 	@ApiOperation(value = "编辑绑卡信息")
-	public Response<BindCardDto> saveBindCard(@PathVariable("orgid") Long orgId, BindCardDto bindCardDto) {
-		return new Response<>(bindCardBusiness.orgBindCard(orgId, bindCardDto));
+	public Response<BindCardDto> saveBindCard(BindCardDto bindCardDto) {
+		return new Response<>(bindCardBusiness.orgBindCard(SecurityUtil.getUserDetails().getOrgId(), bindCardDto));
 	}
 
 	@RequestMapping(value = "/qrcode", method = RequestMethod.GET)
 	@ApiOperation(value = "获取推广二维码")
 	public Response<String> qrcode(Long orgId) throws IOException, WriterException {
-		OrganizationDetailDto dto = business.detail(orgId);
-		Map<String, String> contentMap = Maps.newHashMap();
-		contentMap.put("name", String.valueOf(dto.getName()));
-		contentMap.put("code", String.valueOf(dto.getCode()));
-		contentMap.put("state", String.valueOf(dto.getState()));
-		String content = JSON.toJSONString(contentMap);
-		return new Response<>("200", QRCodeUtil.create(content, 200, 200), "响应成功");
+		OrganizationStaQuery query = new OrganizationStaQuery();
+		query.setCurrentOrgId(orgId);
+		query.setQueryType(1);
+		query.setPage(0);
+		query.setSize(1);
+		PageInfo<OrganizationStaDto> pages = business.adminStaPageByQuery(query);
+		OrganizationStaDto result = null;
+		if (pages.getContent() != null && pages.getContent().size() > 0) {
+			result = pages.getContent().get(0);
+			Map<String, String> contentMap = Maps.newHashMap();
+			contentMap.put("name", String.valueOf(result.getName()));
+			contentMap.put("code", String.valueOf(result.getCode()));
+			contentMap.put("state", String.valueOf(result.getState()));
+			String content = JSON.toJSONString(contentMap);
+			return new Response<>("200", QRCodeUtil.create(content, 200, 200), "响应成功");
+		}
+		return new Response<>();
 	}
 
 	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -178,13 +189,25 @@ public class OrganizationController {
 		return new Response<>(result);
 	}
 
-	@RequestMapping(value = "/childrenSta/{currentOrgId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/childrenSta", method = RequestMethod.GET)
 	@ApiOperation(value = "下级代理商数据统计")
-	public Response<PageInfo<OrganizationStaDto>> childrenSta(OrganizationStaQuery query,
-			@PathVariable("currentOrgId") Long currentOrgId) {
-		query.setCurrentOrgId(currentOrgId);
+	public Response<PageInfo<OrganizationStaDto>> childrenSta(OrganizationStaQuery query) {
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		query.setQueryType(2);
 		return new Response<>(business.adminStaPageByQuery(query));
+	}
+
+	@RequestMapping(value = "/tradingFow/", method = RequestMethod.GET)
+	@ApiOperation(value = "查询交易流水")
+	public Response<PageInfo<TradingFowDto>> tradingFow(TradingFowQuery query) {
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		return new Response<>(business.tradingFowPageByQuery(query));
+	}
+
+	@RequestMapping(value = "add/agent", method = RequestMethod.POST)
+	@ApiOperation(value = "添加代理商")
+	public Response<OrganizationDto> agent(OrganizationForm orgForm) {
+		return new Response<>(business.agent(orgForm));
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
@@ -260,6 +283,76 @@ public class OrganizationController {
 		result.add("手机号");
 		result.add("状态");
 		result.add("创建时间");
+		return result;
+	}
+	
+	
+	
+	@RequestMapping(value = "/trading/export", method = RequestMethod.GET)
+	@ApiOperation(value = "导出交易流水数据")
+	public void tradingExport(TradingFowQuery query, HttpServletResponse svrResponse) {
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
+		PageInfo<TradingFowDto> result = business.tradingFowPageByQuery(query);
+		File file = null;
+		FileInputStream is = null;
+		try {
+			String fileName = "trading_" + String.valueOf(System.currentTimeMillis());
+			file = File.createTempFile(fileName, ".xls");
+			List<String> columnDescList = columnTradingList();
+			List<List<String>> dataList = tradingList(result.getContent());
+			PoiUtil.writeDataToExcel("交易流水数据", file, columnDescList, dataList);
+
+			is = new FileInputStream(file);
+			svrResponse.setContentType("application/vnd.ms-excel");
+			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			IOUtils.copy(is, svrResponse.getOutputStream());
+			svrResponse.getOutputStream().flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "导出交易流水数据到excel异常：" + e.getMessage());
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+			if (file != null) {
+				file.delete();
+			}
+		}
+	}
+
+	private List<List<String>> tradingList(List<TradingFowDto> content) {
+		List<List<String>> result = new ArrayList<>();
+		for (TradingFowDto trade : content) {
+			List<String> data = new ArrayList<>();
+			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
+			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
+			data.add(trade.getTradingNumber() == null ? "" : trade.getTradingNumber());
+			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
+			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
+			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
+			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
+			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
+			result.add(data);
+		}
+		return result;
+	}
+
+	private List<String> columnTradingList() {
+		List<String> result = new ArrayList<>();
+		result.add("订单ID");
+		result.add("客户姓名");
+		result.add("交易帐号");
+		result.add("交易编码");
+		result.add("交易时间");
+		result.add("业务类型");
+		result.add("账户余额");
+		result.add("股票代码");
+		result.add("标的股票");
+		result.add("所属代理商代码/名称");
 		return result;
 	}
 

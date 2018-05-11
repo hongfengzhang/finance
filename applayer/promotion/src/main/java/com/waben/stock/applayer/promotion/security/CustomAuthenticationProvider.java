@@ -44,8 +44,8 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			throws AuthenticationException {
 		try {
 			UserDto user = userBusiness.fetchByUserName(username);
-			CustomUserDetails userDetails = new CustomUserDetails(user.getId(), user.getNickname(), username, user.getPassword(),
-					getAdminGrantedAuthList());
+			CustomUserDetails userDetails = new CustomUserDetails(user.getId(), user.getNickname(), username,
+					user.getPassword(), getAdminGrantedAuthList());
 			// 设置所属代理商相关的信息
 			OrganizationDto org = user.getOrg();
 			userDetails.setOrgId(org.getId());
