@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -90,8 +89,8 @@ public class OrganizationController {
 	}
 
 	@RequestMapping(value = "/adminTree", method = RequestMethod.GET)
-	public List<TreeNode> adminTree(Long orgId) {
-		return business.adminTree(orgId);
+	public Response<List<TreeNode>> adminTree() {
+		return new Response<>(business.adminTree(SecurityUtil.getUserDetails().getOrgId()));
 	}
 
 	@RequestMapping(value = "/listByParentId", method = RequestMethod.GET)
@@ -190,11 +189,10 @@ public class OrganizationController {
 		return new Response<>(result);
 	}
 
-	@RequestMapping(value = "/childrenSta/{currentOrgId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/childrenSta", method = RequestMethod.GET)
 	@ApiOperation(value = "下级代理商数据统计")
-	public Response<PageInfo<OrganizationStaDto>> childrenSta(OrganizationStaQuery query,
-			@PathVariable("currentOrgId") Long currentOrgId) {
-		query.setCurrentOrgId(currentOrgId);
+	public Response<PageInfo<OrganizationStaDto>> childrenSta(OrganizationStaQuery query) {
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		query.setQueryType(2);
 		return new Response<>(business.adminStaPageByQuery(query));
 	}

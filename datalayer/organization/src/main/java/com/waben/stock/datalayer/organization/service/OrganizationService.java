@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.organization.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,8 +27,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.organization.business.BindCardBusiness;
 import com.waben.stock.datalayer.organization.entity.Organization;
+import com.waben.stock.datalayer.organization.entity.OrganizationAccount;
 import com.waben.stock.datalayer.organization.entity.SettlementMethod;
 import com.waben.stock.datalayer.organization.repository.DynamicQuerySqlDao;
+import com.waben.stock.datalayer.organization.repository.OrganizationAccountDao;
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.repository.SettlementMethodDao;
 import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
@@ -60,6 +63,9 @@ public class OrganizationService {
 	private OrganizationDao organizationDao;
 
 	@Autowired
+	private OrganizationAccountDao accountDao;
+
+	@Autowired
 	private BindCardBusiness bindCardBusiness;
 
 	@Autowired
@@ -70,6 +76,8 @@ public class OrganizationService {
 
 	@Autowired
 	private SettlementMethodDao settlementMethodDao;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public Organization getOrganizationInfo(Long id) {
 		return organizationDao.retrieve(id);
@@ -121,7 +129,17 @@ public class OrganizationService {
 		org.setParent(parent);
 		org.setRemark(orgForm.getRemark());
 		org.setState(OrganizationState.NORMAL);
-		return organizationDao.create(org);
+		org = organizationDao.create(org);
+		// 创建机构账户
+		OrganizationAccount account = new OrganizationAccount();
+		account.setAvailableBalance(BigDecimal.ZERO);
+		account.setBalance(BigDecimal.ZERO);
+		account.setFrozenCapital(BigDecimal.ZERO);
+		account.setOrg(org);
+		account.setState(1);
+		account.setUpdateTime(new Date());
+		accountDao.create(account);
+		return org;
 	}
 
 	@Transactional
@@ -510,8 +528,8 @@ public class OrganizationService {
 		if (!StringUtil.isEmpty(query.getOrgName())) {
 			orgNameCondition = " and t4.name like '%" + query.getOrgName() + "%' ";
 		}
-		String sql = String
-				.format("select t4.id, t4.parent_id, t4.code, t4.name, t4.level, t4.state, t4.create_time, t5.promotion_count, IF(t6.pid is null, 0, t6.children_count) as children_count, IFNULL(t7.available_balance, 0) as available_balance, t8.name as bind_name, t8.phone as bing_phone, (SELECT settlement_type FROM settlement_method LIMIT 1) AS ws_type from p_organization t4 "
+		String sql = String.format(
+				"select t4.id, t4.parent_id, t4.code, t4.name, t4.level, t4.state, t4.create_time, t5.promotion_count, IF(t6.pid is null, 0, t6.children_count) as children_count, IFNULL(t7.available_balance, 0) as available_balance, t8.name as bind_name, t8.phone as bing_phone, (SELECT settlement_type FROM settlement_method LIMIT 1) AS ws_type from p_organization t4 "
 						+ "LEFT JOIN "
 						+ "(select t0.id, sum(t3.promotion_count) as promotion_count from p_organization t0, "
 						+ "(select t1.id, t1.parent_id, IF(t2.id is null, 0, count(t1.id)) as promotion_count from p_organization t1 "
@@ -522,8 +540,9 @@ public class OrganizationService {
 						+ "(select 1 as pid, (count(*)-1) as children_count from p_organization)) as t6 on t4.id=t6.pid "
 						+ "LEFT JOIN p_organization_account t7 on t4.id=t7.org_id "
 						+ "LEFT JOIN bind_card t8 on t8.resource_type=2 and t8.resource_id=t4.id "
-						+ "where 1=1 %s %s %s order by t4.level desc limit " + query.getPage() * query.getSize() + ","
-						+ query.getSize(), queryTypeCondition, orgCodeCondition, orgNameCondition);
+						+ "where 1=1 %s %s %s order by t4.level desc, t4.create_time asc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				queryTypeCondition, orgCodeCondition, orgNameCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
@@ -548,44 +567,40 @@ public class OrganizationService {
 	public Page<TradingFowDto> tradingFowPageByQuery(TradingFowQuery query) {
 
 		String customerNameQuery = "";
-		if (!StringUtil.isEmpty(query.getCustomerName())) {
-			customerNameQuery = " and t4.name like '%" + query.getCustomerName() + "%'";
+		if (!StringUtil.isEmpty(query.getPublisherName())) {
+			customerNameQuery = " and t4.name like '%" + query.getPublisherName() + "%'";
 		}
 
 		String tradingNumberQuery = "";
-		if (!StringUtil.isEmpty(query.getTradingNumber())) {
-			tradingNumberQuery = " and t7.bank_card like '%" + query.getTradingNumber() + "%'";
+		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
+			tradingNumberQuery = " and t5.phone like '%" + query.getPublisherPhone() + "%'";
 		}
-
-		String occurrenceTimeStartQuery = "";
-		if (query.getOccurrenceTimeStart() != null) {
-			occurrenceTimeStartQuery = " and unix_timestamp(t1.occurrence_time) >= " + query.getOccurrenceTimeStart()
-					+ "";
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.occurrence_time>='" + sdf.format(query.getStartTime()) + "' ";
 		}
-
-		String occurrenceTimeEndQuery = "";
-		if (query.getOccurrenceTimeEnd() != null) {
-			occurrenceTimeEndQuery = " and unix_timestamp(t1.occurrence_time) <= " + query.getOccurrenceTimeEnd() + "";
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.occurrence_time<'" + sdf.format(query.getEndTime()) + "' ";
 		}
-
 		String typeQuery = "";
-		if (query.getType() != null) {
-			typeQuery = " and t1.type = " + query.getType().getIndex() + "";
+		if (!StringUtil.isEmpty(query.getTypes())) {
+			typeQuery = " and t1.type in(" + query.getTypes() + ") ";
 		}
-
 		String stockCodeQuery = "";
-		if (!StringUtil.isEmpty(query.getStockCode())) {
-			stockCodeQuery = " and t3.stock_code like '%" + query.getStockCode() + "%'";
+		if (!StringUtil.isEmpty(query.getStockCodeOrName())) {
+			stockCodeQuery = " and (t3.stock_code like '%" + query.getStockCodeOrName() + "%' or t3.stock_name like '%"
+					+ query.getStockCodeOrName() + "%')";
 		}
 
 		String agentCodeNameQuery = "";
-		if (!StringUtil.isEmpty(query.getAgentCodeName())) {
-			agentCodeNameQuery = " and (t10.code like '%" + query.getAgentCodeName() + "%' or t10.name like '%"
-					+ query.getAgentCodeName() + "%')";
+		if (!StringUtil.isEmpty(query.getOrgCodeOrName())) {
+			agentCodeNameQuery = " and (t10.code like '%" + query.getOrgCodeOrName() + "%' or t10.name like '%"
+					+ query.getOrgCodeOrName() + "%')";
 		}
 
 		String sql = String.format(
-				"select t1.id, t4.name as publisher_name, t7.bank_card, t1.flow_no, t1.occurrence_time, t1.type, t1.amount, t1.available_balance, "
+				"select t1.id, t4.name as publisher_name, t5.phone, t1.flow_no, t1.occurrence_time, t1.type, t1.amount, t1.available_balance, "
 						+ " IF(t3.stock_code IS NULL,t2.stock_code,t3.stock_code) AS stock_code,  IF(t3.stock_name IS NULL,t2.stock_name,t3.stock_name) AS stcode_name,"
 						+ " t10.code,t10.name AS agentName " + " from capital_flow t1 "
 						+ " LEFT JOIN buy_record t2 on t1.extend_type=1 and t1.extend_id=t2.id "
@@ -600,8 +615,8 @@ public class OrganizationService {
 						+ " LEFT JOIN p_organization t11 on t11.id=" + query.getCurrentOrgId() + ""
 						+ " WHERE 1=1 and t10.id is not null and (t11.level=1 or (t11.level>1 and (t11.id=t10.id or t11.id=t10.parent_id))) %s %s %s %s %s %s %s order by t1.occurrence_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				customerNameQuery, tradingNumberQuery, occurrenceTimeStartQuery, occurrenceTimeEndQuery, typeQuery,
-				stockCodeQuery, agentCodeNameQuery);
+				customerNameQuery, tradingNumberQuery, startTimeCondition, endTimeCondition, typeQuery, stockCodeQuery,
+				agentCodeNameQuery);
 		String countSql = "select count(*) from (" + sql.substring(0, sql.indexOf("limit")) + ") c";
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class })); // ID
