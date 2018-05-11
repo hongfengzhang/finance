@@ -267,6 +267,10 @@ public class StockOptionTradeController {
 			} else {
 				mark = "否";
 			}
+			String state = "";
+			if (trade.getState() != null) {
+				state = trade.getState().getState();
+			}
 			List<String> data = new ArrayList<>();
 			if (type == 0 || type == 3) {
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
@@ -287,7 +291,7 @@ public class StockOptionTradeController {
 				data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
 				data.add(test);
 				data.add(trade.getRightTime() == null ? "" : sdf.format(trade.getRightTime()));
-				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(state);
 				data.add(mark);
 			}else if(type == 1){
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
@@ -302,7 +306,7 @@ public class StockOptionTradeController {
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(test);
-				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(state);
 			}else if(type == 2){
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
@@ -320,7 +324,7 @@ public class StockOptionTradeController {
 				data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
 				data.add(test);
 				data.add(trade.getRightTime() == null ? "" : sdf.format(trade.getRightTime()));
-				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(state);
 				data.add(mark);
 			}else if(type == 4){
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
@@ -335,7 +339,7 @@ public class StockOptionTradeController {
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(test);
-				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(state);
 			}else{
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
@@ -354,7 +358,7 @@ public class StockOptionTradeController {
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(String.valueOf(trade.getProfit() != null ? trade.getProfit() : ""));
 				data.add(test);
-				data.add(String.valueOf(trade.getState().getState() != null ? trade.getState().getState() : ""));
+				data.add(state);
 				data.add(mark);
 			}
 			
