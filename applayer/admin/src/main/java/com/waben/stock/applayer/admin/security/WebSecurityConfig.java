@@ -35,6 +35,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/swagger-resources/**").permitAll();
 		http.authorizeRequests().antMatchers("/v2/api-docs").permitAll();
 		http.authorizeRequests().antMatchers("/configuration/**").permitAll();
+		// 部分开放接口
+		http.authorizeRequests().antMatchers("/file/upload").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 		// 添加一个过滤器，拦截所有POST访问/login的请求，进行初步处理
