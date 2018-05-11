@@ -133,5 +133,6 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>tactics</finalName>
 	</build>
 </project>

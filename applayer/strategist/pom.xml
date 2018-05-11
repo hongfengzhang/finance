@@ -128,5 +128,6 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>strategist</finalName>
 	</build>
 </project>

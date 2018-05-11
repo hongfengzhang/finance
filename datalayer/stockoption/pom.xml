@@ -54,6 +54,7 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>stockoption</finalName>
 	</build>
 
 

@@ -95,5 +95,6 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>promotion</finalName>
 	</build>
 </project>

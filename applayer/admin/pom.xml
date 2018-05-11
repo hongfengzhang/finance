@@ -69,5 +69,6 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>admin</finalName>
 	</build>
 </project>
