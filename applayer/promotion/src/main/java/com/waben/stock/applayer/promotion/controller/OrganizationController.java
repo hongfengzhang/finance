@@ -70,7 +70,6 @@ public class OrganizationController {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	@PreAuthorize("hasRole('ORG_MANAGE')")
 	@RequestMapping(value = "/", method = RequestMethod.POST)
 	public Response<OrganizationDto> addition(OrganizationForm orgForm) {
 		return new Response<>(business.addition(orgForm));
