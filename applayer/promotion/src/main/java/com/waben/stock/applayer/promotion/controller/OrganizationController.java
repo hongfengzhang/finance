@@ -215,7 +215,7 @@ public class OrganizationController {
 	public void export(OrganizationStaQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		// query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		PageInfo<OrganizationStaDto> result = business.adminStaPageByQuery(query);
 		File file = null;
 		FileInputStream is = null;
@@ -292,7 +292,7 @@ public class OrganizationController {
 	public void tradingExport(TradingFowQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+//		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		PageInfo<TradingFowDto> result = business.tradingFowPageByQuery(query);
 		File file = null;
 		FileInputStream is = null;
