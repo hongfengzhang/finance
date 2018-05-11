@@ -157,6 +157,7 @@ public class OrganizationAccountService {
 		if(paymentPassword != null) {
 			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
 		}
+		account.setState(1);
 		account.setUpdateTime(new Date());
 		return organizationAccountDao.create(account);
 	}
