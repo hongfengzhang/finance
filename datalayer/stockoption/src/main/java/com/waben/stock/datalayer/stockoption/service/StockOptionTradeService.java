@@ -253,12 +253,12 @@ public class StockOptionTradeService {
 			// 用户收益
 			accountBusiness.optionProfit(trade.getPublisherId(), trade.getId(), profit);
 		}
-		// 给机构结算
-		if (trade.getOfflineTrade().getRightMoney() != null) {
-			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
-			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
-					trade.getCycleId(), rightMoneyProfit);
-		}
+//		// 给机构结算
+//		if (trade.getOfflineTrade().getRightMoney() != null) {
+//			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
+//			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
+//					trade.getCycleId(), rightMoneyProfit);
+//		}
 		// 站外消息推送
 		sendOutsideMessage(trade);
 		return trade;

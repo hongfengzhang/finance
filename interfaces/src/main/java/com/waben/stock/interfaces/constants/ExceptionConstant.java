@@ -172,6 +172,8 @@ public class ExceptionConstant {
 	public static final String ORGNAME_EXIST_EXCEPTION = "8009";
 	// 一级代理商不能申请提现
 	public static final String LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION = "8010";
+	// 账户余额不足以冻结
+	public static final String BALANCE_NOTENOUGHFROZEN_EXCEPTION = "8011";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
