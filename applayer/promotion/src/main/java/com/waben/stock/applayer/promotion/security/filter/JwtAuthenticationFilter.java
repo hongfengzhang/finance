@@ -40,6 +40,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 				String orgCode = (String) tokenInfo.get("orgCode");
 				String orgName = (String) tokenInfo.get("orgName");
 				Integer	orgLevel = (Integer) tokenInfo.get("orgLevel");
+				Long roleId = new Long((Integer) tokenInfo.get("roleId"));
 				if (username != null && !"".equals(username)) {
 					Date exp = (Date) tokenInfo.get("exp");
 					if (exp != null && exp.getTime() * 1000 > System.currentTimeMillis()) {
@@ -52,6 +53,7 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 						userDeatails.setOrgCode(orgCode);
 						userDeatails.setOrgName(orgName);
 						userDeatails.setOrgLevel(orgLevel);
+						userDeatails.setRoleId(roleId);
 						UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 								username, null, authorities);
 						authentication.setDetails(userDeatails);
