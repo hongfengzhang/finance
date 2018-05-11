@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.organization.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -134,6 +135,9 @@ public class BenefitConfigService {
 							}
 						}
 					}
+					/*if (configBean.getRightMoneyRatio() == null) {
+						configBean.setRightMoneyRatio(BigDecimal.ZERO);
+					}*/
 					result.add(configBean);
 				}
 			}
