@@ -14,7 +14,7 @@ import java.util.TreeSet;
  * @author luomengan
  *
  */
-@ApiModel(value = "StockOptionCycleDto",description = "期权周期对象")
+@ApiModel(value = "StockOptionCycleDto", description = "期权周期对象")
 public class StockOptionCycleDto {
 	@ApiModelProperty(value = "周期id")
 	private Long id;
@@ -28,6 +28,10 @@ public class StockOptionCycleDto {
 	 */
 	@ApiModelProperty(value = "周期天数")
 	private Integer cycle;
+	/**
+	 * 是否可用
+	 */
+	private Boolean enable;
 	/**
 	 * 周期月数
 	 */
@@ -86,6 +90,14 @@ public class StockOptionCycleDto {
 
 	public void setCycleMonth(String cycleMonth) {
 		this.cycleMonth = cycleMonth;
+	}
+
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 }

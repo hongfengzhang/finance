@@ -40,6 +40,10 @@ public class StockOptionCycle {
 	 */
 	private String cycleMonth;
 	/**
+	 * 是否可用
+	 */
+	private Boolean enable;
+	/**
 	 * 名义本金集合
 	 */
 	@JsonManagedReference
@@ -85,6 +89,14 @@ public class StockOptionCycle {
 
 	public void setCycleMonth(String cycleMonth) {
 		this.cycleMonth = cycleMonth;
+	}
+
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 }

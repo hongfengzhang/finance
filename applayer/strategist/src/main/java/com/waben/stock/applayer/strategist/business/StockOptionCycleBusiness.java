@@ -35,6 +35,12 @@ public class StockOptionCycleBusiness {
 	public List<StockOptionCycleDto> lists() {
 		Response<List<StockOptionCycleDto>> response = stockOptionCycleReference.lists();
 		if (response.getCode().equals("200")) {
+			List<StockOptionCycleDto> list = response.getResult();
+			for (int i = list.size() - 1; i >= 0; i--) {
+				if (list.get(i).getEnable() != null && !list.get(i).getEnable()) {
+					list.remove(i);
+				}
+			}
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
