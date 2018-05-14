@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -19,6 +20,7 @@ public interface OrganizationSettlementInterface {
 	@RequestMapping(value = "stockoptionsettlement/{publisherId}/{stockOptionTradeId}/{tradeNo}/{cycleId}/{rightMoneyProfit}", method = RequestMethod.POST)
 	public Response<String> stockoptionSettlement(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("stockOptionTradeId") Long stockOptionTradeId, @PathVariable("tradeNo") String tradeNo,
-			@PathVariable("cycleId") Long cycleId, @PathVariable("rightMoneyProfit") BigDecimal rightMoneyProfit);
+			@PathVariable("cycleId") Long cycleId, @PathVariable("rightMoneyProfit") BigDecimal rightMoneyProfit,
+			@RequestParam("rightMoney") BigDecimal rightMoney);
 
 }

@@ -61,7 +61,7 @@ public class OrganizationAccountFlowService {
 		if (query.getQueryType() != null && query.getQueryType() == 1) {
 			queryTypeCondition = " and t1.org_id=" + query.getCurrentOrgId() + " ";
 		} else {
-			queryTypeCondition = " and (t7.level=1 or (t7.id=t1.org_id or t7.parent_id=t1.org_id)) ";
+			queryTypeCondition = " and (t7.level=1 or (t4.id=t7.id or t4.parent_id=t7.id and t7.level>1)) ";
 		}
 		String tradeNoCondition = "";
 		if (!StringUtil.isEmpty(query.getTradeNo())) {

@@ -232,6 +232,7 @@ public class StockOptionTradeService {
 	}
 
 	@Transactional
+	@Deprecated
 	public StockOptionTrade settlement(Long id) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
 		if (StockOptionTradeState.SETTLEMENTED == trade.getState()) {
@@ -253,12 +254,12 @@ public class StockOptionTradeService {
 			// 用户收益
 			accountBusiness.optionProfit(trade.getPublisherId(), trade.getId(), profit);
 		}
-//		// 给机构结算
-//		if (trade.getOfflineTrade().getRightMoney() != null) {
-//			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
-//			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
-//					trade.getCycleId(), rightMoneyProfit);
-//		}
+		// 给机构结算
+		if (trade.getOfflineTrade().getRightMoney() != null) {
+			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
+			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
+					trade.getCycleId(), rightMoneyProfit, trade.getRightMoney());
+		}
 		// 站外消息推送
 		sendOutsideMessage(trade);
 		return trade;
@@ -521,7 +522,7 @@ public class StockOptionTradeService {
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
-	
+
 	public Page<StockOptionPromotionDto> promotionPagesByQuery(StockOptionPromotionQuery query) {
 		String publisherNameCondition = "";
 		if (!StringUtil.isEmpty(query.getPublisherName())) {
@@ -533,7 +534,8 @@ public class StockOptionTradeService {
 		}
 		String stockCodeOrNameCondition = "";
 		if (!StringUtil.isEmpty(query.getStockCodeOrName())) {
-			stockCodeOrNameCondition = " and (t1.stock_code like '%" + query.getStockCodeOrName() + "%' or t1.stock_name like '%" + query.getStockCodeOrName() + "%') ";
+			stockCodeOrNameCondition = " and (t1.stock_code like '%" + query.getStockCodeOrName()
+					+ "%' or t1.stock_name like '%" + query.getStockCodeOrName() + "%') ";
 		}
 		String nominalAmountCondition = "";
 		if (query.getNominalAmount() != null) {
@@ -582,10 +584,11 @@ public class StockOptionTradeService {
 					+ query.getEndRatio().divide(new BigDecimal("100")).toString() + "' ";
 		}
 		String orgCodeOrNameConditon = "";
-		if(!StringUtil.isEmpty(query.getOrgCodeOrName())) {
-			orgCodeOrNameConditon = " and (t5.code like '%" + query.getOrgCodeOrName() + "%' or t5.name like '%" + query.getOrgCodeOrName() + "%') ";
+		if (!StringUtil.isEmpty(query.getOrgCodeOrName())) {
+			orgCodeOrNameConditon = " and (t5.code like '%" + query.getOrgCodeOrName() + "%' or t5.name like '%"
+					+ query.getOrgCodeOrName() + "%') ";
 		}
-		
+
 		String sql = String.format(
 				"select t1.id, t1.trade_no, t4.name, t3.phone, t1.stock_code, t1.stock_name, t1.cycle_name, t1.nominal_amount, t1.right_money_ratio, "
 						+ "t1.right_money, t2.right_money_ratio as org_right_money_ratio, t2.right_money as org_right_money, t1.apply_time, t1.buying_time, t1.buying_price, t1.selling_time, t1.selling_price, "
@@ -693,6 +696,11 @@ public class StockOptionTradeService {
 		OfflineStockOptionTrade offlineTrade = saveOfflineTrade(trade, orgId, orgRightMoneyRatio);
 		trade.setOfflineTrade(offlineTrade);
 		StockOptionTrade result = stockOptionTradeDao.update(trade);
+		// 给渠道推广机构结算
+		if (trade.getOfflineTrade().getRightMoney() != null) {
+			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
+					trade.getCycleId(), null, trade.getRightMoney());
+		}
 		// 站外消息推送
 		sendOutsideMessage(result);
 		return result;
@@ -708,7 +716,8 @@ public class StockOptionTradeService {
 	@Transactional
 	public StockOptionTrade insettlement(Long id, BigDecimal sellingPrice) {
 		StockOptionTrade trade = stockOptionTradeDao.retrieve(id);
-		if (!(StockOptionTradeState.APPLYRIGHT == trade.getState() || StockOptionTradeState.AUTOEXPIRE == trade.getState())) {
+		if (!(StockOptionTradeState.APPLYRIGHT == trade.getState()
+				|| StockOptionTradeState.AUTOEXPIRE == trade.getState())) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
 		}
 		trade.setSellingPrice(sellingPrice);
@@ -748,7 +757,7 @@ public class StockOptionTradeService {
 		if (trade.getOfflineTrade().getRightMoney() != null) {
 			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
 			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
-					trade.getCycleId(), rightMoneyProfit);
+					trade.getCycleId(), rightMoneyProfit, trade.getRightMoney());
 		}
 		// 站外消息推送
 		sendOutsideMessage(trade);

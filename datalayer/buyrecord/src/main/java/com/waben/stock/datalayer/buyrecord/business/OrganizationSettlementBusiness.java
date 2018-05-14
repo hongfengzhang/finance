@@ -47,10 +47,10 @@ public class OrganizationSettlementBusiness {
 	}
 
 	public void stockoptionSettlement(Long publisherId, Long stockOptionTradeId, String tradeNo, Long cycleId,
-			BigDecimal rightMoneyProfit) {
+			BigDecimal rightMoneyProfit, BigDecimal rightMoney) {
 		try {
 			Response<String> response = service.stockoptionSettlement(publisherId, stockOptionTradeId, tradeNo, cycleId,
-					rightMoneyProfit);
+					rightMoneyProfit, rightMoney);
 			String code = response.getCode();
 			if ("200".equals(code)) {
 				return;
