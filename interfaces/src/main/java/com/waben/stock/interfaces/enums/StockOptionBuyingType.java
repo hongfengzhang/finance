@@ -11,7 +11,9 @@ import java.util.Map;
  */
 public enum StockOptionBuyingType implements CommonalityEnum {
 
-	MARKETBUYING("1", "市价买入");
+	MARKETBUYING("1", "市价买入"),
+	
+	AVGBUYING("2", "均价买入");
 
 	private String index;
 
