@@ -58,7 +58,7 @@ public class OrganizationAccountFlowController {
 	public void export(OrganizationAccountFlowQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-//		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		// query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		PageInfo<OrganizationAccountFlowWithTradeInfoDto> result = organizationAccountFlowBusiness
 				.pagesWithTradeInfo(query);
 		File file = null;
@@ -138,8 +138,8 @@ public class OrganizationAccountFlowController {
 			List<String> data = new ArrayList<>();
 			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
 			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
-			data.add(trade.getbPublisherName() == null ? "" : trade.getbPublisherName());
-			data.add(trade.getbPublisherPhone() == null ? "" : trade.getbPublisherPhone());
+			data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
+			data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
 			data.add(trade.getStockCode() + "/" + trade.getStockName());
 			data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
 			data.add(String.valueOf(trade.getOriginAmount() == null ? "" : trade.getOriginAmount())); // 原始收入

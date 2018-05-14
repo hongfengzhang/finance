@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;
@@ -53,6 +54,9 @@ public class CustomAuthenticationProvider extends AbstractUserDetailsAuthenticat
 			userDetails.setOrgName(org.getName());
 			userDetails.setOrgLevel(org.getLevel());
 			userDetails.setRoleId(user.getRole());
+			if (user.getState() != null && user.getState()) {
+				throw new DisabledException("当前用户已被冻结");
+			}
 			return userDetails;
 		} catch (ServiceException ex) {
 			if (ExceptionConstant.STAFF_NOT_FOUND_EXCEPTION.equals(ex.getType())) {

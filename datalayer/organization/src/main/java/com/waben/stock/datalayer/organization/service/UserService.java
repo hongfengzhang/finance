@@ -48,7 +48,12 @@ public class UserService {
 	}
 
 	@Transactional
-	public User addUser(User user) {
+	public User addUser(User user, Long orgId) {
+		Organization org = organizationDao.retrieve(orgId);
+		if(org == null) {
+			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
+		}
+		user.setOrg(org);
 		return userDao.create(user);
 	}
 

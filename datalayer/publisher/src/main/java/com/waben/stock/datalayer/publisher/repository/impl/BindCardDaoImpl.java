@@ -73,12 +73,12 @@ public class BindCardDaoImpl implements BindCardDao {
 	}
 
 	@Override
-	public List<BindCard> retrieveByBankCard(String bankCard) {
-		return repository.findByBankCard(bankCard);
+	public List<BindCard> retrieveByBankCardAndResourceType(String bankCard, BindCardResourceType resourceType) {
+		return repository.findByBankCardAndResourceType(bankCard, resourceType);
 	}
 
 	@Override
-	public BindCard retrieveBindCardByNameAndResourceType(String name,BindCardResourceType resourceType) {
-		return repository.findBindCardByNameAndResourceType(name,resourceType);
+	public BindCard retrieveBindCardByNameAndResourceType(String name, BindCardResourceType resourceType) {
+		return repository.findBindCardByNameAndResourceType(name, resourceType);
 	}
 }

@@ -89,7 +89,7 @@ public class UserController implements UserInterface {
         User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
         request.setOrg(CopyBeanUtils.copyBeanProperties(Organization.class,user.getOrg(),false));
         request.setCreateTime(new Date());
-        User result = userService.addUser(request);
+        User result = userService.addUser(request, user.getOrgId());
         UserDto response = CopyBeanUtils.copyBeanProperties(UserDto.class, result, false);
         return new Response<>(response);
     }
@@ -97,8 +97,7 @@ public class UserController implements UserInterface {
     @Override
     @ApiOperation(value = "修改机构管理用户", hidden = true)
     public Response<UserDto> modification(@RequestBody UserDto user) {
-        User request = CopyBeanUtils.copyBeanProperties(user, new User(), false);
-        User result = userService.addUser(request);
+        User result = userService.addUser(CopyBeanUtils.copyBeanProperties(User.class, user, false), user.getOrgId());
         UserDto response = CopyBeanUtils.copyBeanProperties(result, new UserDto(), false);
         return new Response<>(response);
     }

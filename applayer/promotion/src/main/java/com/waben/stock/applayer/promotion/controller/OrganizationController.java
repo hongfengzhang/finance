@@ -15,6 +15,7 @@ import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -66,6 +67,9 @@ public class OrganizationController {
 
 	@Autowired
 	public BindCardBusiness bindCardBusiness;
+	
+	@Value("${register.url:}")
+	private String registerUrl;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -99,19 +103,8 @@ public class OrganizationController {
 	}
 
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	// @ApiOperation(value = "获取登录平台或代理商账号详细信息")
+	//@ApiOperation(value = "根据代理商ID获取代理商信息")
 	public Response<OrganizationDetailDto> detail(Long orgId) {
-		// OrganizationQuery query = new OrganizationQuery();
-		// query.setOrgId(orgId);
-		// query.setState("DETAIL");
-		// PageInfo<OrganizationDetailDto> pageInfo =
-		// business.adminAgentPageByQuery(query);
-		// if (pageInfo.getContent() != null && pageInfo.getContent().size() >
-		// 0) {
-		// return new Response<>(pageInfo.getContent().get(0));
-		// } else {
-		// return new Response<>();
-		// }
 		return new Response<>(business.detail(orgId));
 	}
 
@@ -157,11 +150,7 @@ public class OrganizationController {
 		OrganizationStaDto result = null;
 		if (pages.getContent() != null && pages.getContent().size() > 0) {
 			result = pages.getContent().get(0);
-			Map<String, String> contentMap = Maps.newHashMap();
-			contentMap.put("name", String.valueOf(result.getName()));
-			contentMap.put("code", String.valueOf(result.getCode()));
-			contentMap.put("state", String.valueOf(result.getState()));
-			String content = JSON.toJSONString(contentMap);
+			String content = registerUrl + "?orgCode=" + result.getCode();
 			return new Response<>("200", QRCodeUtil.create(content, 200, 200), "响应成功");
 		}
 		return new Response<>();

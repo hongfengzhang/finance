@@ -150,6 +150,11 @@ public class ExceptionConstant {
 	public static final String INVESTOR_STOCKACCOUNT_NOT_EXIST = "7005";
 	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
 	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
+	//当前用户已被冻结
+	public static final String AGENT_DISABLED_EXCEPITON = "7008";
+	//该角色已被使用
+	public static final String USER_ROLE_EXCEPITON = "7009";
+	
 
 	// 代理商服务异常
 	// 代理商不存在

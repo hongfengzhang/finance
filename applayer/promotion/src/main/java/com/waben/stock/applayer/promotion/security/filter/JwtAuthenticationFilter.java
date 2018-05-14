@@ -41,6 +41,9 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 				String orgName = (String) tokenInfo.get("orgName");
 				Integer	orgLevel = (Integer) tokenInfo.get("orgLevel");
 				Long roleId = new Long((Integer) tokenInfo.get("roleId"));
+				
+				
+				
 				if (username != null && !"".equals(username)) {
 					Date exp = (Date) tokenInfo.get("exp");
 					if (exp != null && exp.getTime() * 1000 > System.currentTimeMillis()) {

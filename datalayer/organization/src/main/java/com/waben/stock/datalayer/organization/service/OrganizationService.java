@@ -305,67 +305,15 @@ public class OrganizationService {
 		return result;
 	}
 
-	// private List<TreeNode> loopTree(Organization parent) {
-	// List<TreeNode> result = new ArrayList<>();
-	// List<Organization> childList = organizationDao.listByParent(parent);
-	// if (childList != null && childList.size() > 0) {
-	// for (Organization child : childList) {
-	// // 添加当前栏目
-	// result.add(new TreeNode(child.getId(), child.getName(), child.getLevel(),
-	// child.getParent() != null ? child.getParent().getId() : 0, false));
-	// // 添加子栏目
-	// result.addAll(loopTree(child));
-	// }
-	// }
-	// return result;
-	// }
-
 	public OrganizationDetailDto detail(Long orgId) {
-		/*
-		 * Organization org = organizationDao.retrieve(orgId); if (org != null)
-		 * {
-		 */
 
-		String sql = "SELECT" + " p.id," + " p.`code`," + " p.`name`," + " p.`level`," + " p.create_time,"
-				+ " p2.`name` AS agnetName," + " pc.balance," + " p2.phone," + " p.state" + " FROM"
-				+ " p_organization p" + " LEFT JOIN p_organization_publisher p1 ON p1.org_code = p.`code`"
-				+ " LEFT JOIN p_organization_account pc ON pc.org_id = p.id"
-				+ " LEFT JOIN bind_card p2 ON p2.resource_type = 2" + " AND p2.resource_id = p.id" + " where p.id= "
-				+ orgId + "" + " GROUP BY" + " p.id" + " ORDER BY p.create_time DESC ";
-
-		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
-		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
-		setMethodMap.put(new Integer(1), new MethodDesc("setCode", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(2), new MethodDesc("setName", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(3), new MethodDesc("setLevel", new Class<?>[] { Integer.class }));
-		setMethodMap.put(new Integer(4), new MethodDesc("setCreateTime", new Class<?>[] { Date.class }));
-		setMethodMap.put(new Integer(5), new MethodDesc("setAgnetName", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(6), new MethodDesc("setBalance", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(7), new MethodDesc("setPhone", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(8), new MethodDesc("setState", new Class<?>[] { OrganizationState.class }));
-		List<OrganizationDetailDto> content = sqlDao.execute(OrganizationDetailDto.class, sql, setMethodMap);
-
-		OrganizationDetailDto result = CopyBeanUtils.copyBeanProperties(OrganizationDetailDto.class, content.get(0),
-				false);
-
-		String publisherSql = "select count(*) from publisher t1"
-				+ " INNER JOIN p_organization_publisher t2 on t1.id=t2.publisher_id"
-				+ " LEFT JOIN p_organization t3 on t2.org_code=t3.code" + " LEFT JOIN p_organization t4 on t4.id= "
-				+ orgId + "" + " where (t4.level=1 or (t3.id=t4.id or t3.parent_id=t4.id))";
-
-		BigInteger publisher = sqlDao.executeComputeSql(publisherSql);
-		result.setPublisherCount(publisher != null ? publisher.intValue() : 0);
-
-		String childSql = "select count(*) from p_organization t1" + " LEFT JOIN p_organization t2 on t2.id=" + orgId
-				+ "" + " where (t2.level=1 or (t2.level>1 and t1.parent_id=t2.id))";
-
-		BigInteger child = sqlDao.executeComputeSql(childSql);
-		result.setChildOrgCount(child != null ? child.intValue() : 0);
+		OrganizationDetailDto result = null;
+		Organization org = organizationDao.retrieve(orgId);
+		if (org != null) {
+			result = CopyBeanUtils.copyBeanProperties(OrganizationDetailDto.class, org, false);
+		}
 
 		return result;
-		/*
-		 * } return null;
-		 */
 	}
 
 	@Transactional

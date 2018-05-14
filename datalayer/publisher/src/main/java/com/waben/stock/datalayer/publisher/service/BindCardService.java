@@ -31,7 +31,8 @@ public class BindCardService {
 		if (check != null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_ALREADY_BIND_EXCEPTION);
 		}
-		List<BindCard> checkList = bindCardDao.retrieveByBankCard(bindCard.getBankCard());
+		List<BindCard> checkList = bindCardDao.retrieveByBankCardAndResourceType(bindCard.getBankCard(),
+				bindCard.getResourceType());
 		if (checkList != null && checkList.size() > 0) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_ALREADY_USERED_EXCEPTION);
 		}
@@ -69,7 +70,7 @@ public class BindCardService {
 		return id;
 	}
 
-    public BindCard findOrgBindCardByName(String name) {
-		return bindCardDao.retrieveBindCardByNameAndResourceType(name,BindCardResourceType.ORGANIZATION);
-    }
+	public BindCard findOrgBindCardByName(String name) {
+		return bindCardDao.retrieveBindCardByNameAndResourceType(name, BindCardResourceType.ORGANIZATION);
+	}
 }
