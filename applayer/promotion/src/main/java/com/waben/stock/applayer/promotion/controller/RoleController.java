@@ -80,7 +80,7 @@ public class RoleController {
 		List<UserDto> list = response.getResult();
 		if (list != null && list.size() > 0) {
 			for (UserDto userDto : list) {
-				if (userDto.getRole() == id) {
+				if (userDto.getRole().equals(id)) {
 					throw new ServiceException(ExceptionConstant.USER_ROLE_EXCEPITON);
 				}
 			}

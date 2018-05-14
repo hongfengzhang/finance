@@ -28,13 +28,11 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
-import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.request.organization.OrganizationAccountRequest;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
@@ -87,10 +85,10 @@ public class OrganizationAccountController {
 	@ApiOperation(value = "代理商资产分页")
 	public Response<PageInfo<OrganizationAccountVo>> pages(OrganizationAccountQuery query) {
 		long start = System.currentTimeMillis();
-		if (query.getName() != null) {
-			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getName());
+		if (query.getOrgName() != null) {
+			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
 			if (orgBindCard != null) {
-				query.setId(orgBindCard.getResourceId());
+				query.setOrgId(orgBindCard.getResourceId());
 			}
 		}
 		PageInfo<OrganizationAccountDto> pageInfo = accountBusiness.pages(query);
@@ -162,10 +160,10 @@ public class OrganizationAccountController {
 	public void export(OrganizationAccountQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		if (query.getName() != null) {
-			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getName());
+		if (query.getOrgName() != null) {
+			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
 			if (orgBindCard != null) {
-				query.setId(orgBindCard.getResourceId());
+				query.setOrgId(orgBindCard.getResourceId());
 			}
 		}
 		PageInfo<OrganizationAccountDto> pageInfo = accountBusiness.pages(query);

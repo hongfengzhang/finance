@@ -19,13 +19,20 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
+import com.waben.stock.applayer.promotion.business.cache.RedisCache;
 import com.waben.stock.applayer.promotion.security.CustomUserDetails;
 
 public class JwtAuthenticationFilter extends GenericFilterBean {
 
+	private static final String PROMOTION_BLACKUSER_REDISKEY = "PROMOTION_BLACKUSER";
+
+	private RedisCache redisCache;
+
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
 			throws IOException, ServletException {
+
+		HttpServletRequest httpRequest = (HttpServletRequest) request;
 		// 获取请求中的token
 		String token = ((HttpServletRequest) request).getHeader(JwtTokenUtil.HEADER_STRING);
 		if (token != null && !"".equals(token)) {
@@ -39,11 +46,21 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 				Long orgId = new Long((Integer) tokenInfo.get("orgId"));
 				String orgCode = (String) tokenInfo.get("orgCode");
 				String orgName = (String) tokenInfo.get("orgName");
-				Integer	orgLevel = (Integer) tokenInfo.get("orgLevel");
+				Integer orgLevel = (Integer) tokenInfo.get("orgLevel");
 				Long roleId = new Long((Integer) tokenInfo.get("roleId"));
-				
-				
-				
+
+				String isFrozen = redisCache.get(PROMOTION_BLACKUSER_REDISKEY + "_" + String.valueOf(userId));
+				// 判断该用户是否为冻结用户
+				if (isFrozen != null && "true".equals(isFrozen)) {
+					httpRequest.getSession().invalidate();
+					HttpServletResponse httpResponse = (HttpServletResponse) response;
+					httpResponse.setStatus(403);
+					if (SecurityContextHolder.getContext().getAuthentication() != null) {
+						SecurityContextHolder.getContext().getAuthentication().setAuthenticated(false);
+					}
+					return;
+				}
+
 				if (username != null && !"".equals(username)) {
 					Date exp = (Date) tokenInfo.get("exp");
 					if (exp != null && exp.getTime() * 1000 > System.currentTimeMillis()) {
@@ -70,6 +87,10 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
 			}
 		}
 		filterChain.doFilter(request, response);
+	}
+
+	public void setRedisCache(RedisCache redisCache) {
+		this.redisCache = redisCache;
 	}
 
 }

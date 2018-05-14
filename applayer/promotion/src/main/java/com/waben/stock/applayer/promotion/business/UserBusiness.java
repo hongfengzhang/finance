@@ -123,7 +123,13 @@ public class UserBusiness {
 		Response<UserDto> response = userReference.modifyState(id);
 		String code = response.getCode();
 		if ("200".equals(code)) {
-			redisCache.set(PROMOTION_BLACKUSER_REDISKEY + "_" + String.valueOf(id), "true");
+			if (response.getResult() != null) {
+				if (response.getResult().getState()) {
+					redisCache.set(PROMOTION_BLACKUSER_REDISKEY + "_" + String.valueOf(id), "true");
+				}else{
+					redisCache.remove(PROMOTION_BLACKUSER_REDISKEY + "_" + String.valueOf(id));
+				}
+			}
 			return response.getResult();
 		} else if (ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION.equals(code)) {
 			throw new NetflixCircuitException(code);

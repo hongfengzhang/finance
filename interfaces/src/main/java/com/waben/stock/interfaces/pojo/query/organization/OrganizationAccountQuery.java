@@ -4,40 +4,40 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
-@ApiModel(value="OrganizationAccountVo",description="代理商资产查询对象")
+@ApiModel(value = "OrganizationAccountVo", description = "代理商资产查询对象")
 public class OrganizationAccountQuery extends PageAndSortQuery {
-    //机构代码
-    @ApiModelProperty(value = "代理商代码")
-    private String code;
-    //机构名称
-    @ApiModelProperty(value = "代理商名称")
-    private String name;
-    //机构ID
-    @ApiModelProperty(value = "代理商id")
-    private Long  id;
+	// 机构代码
+	@ApiModelProperty(value = "代理商代码")
+	private String orgCode;
+	// 机构名称
+	@ApiModelProperty(value = "代理商名称")
+	private String orgName;
+	// 机构ID
+	@ApiModelProperty(value = "代理商id")
+	private Long orgId;
 
-    public String getCode() {
-        return code;
-    }
+	public String getOrgCode() {
+		return orgCode;
+	}
 
-    public void setCode(String code) {
-        this.code = code;
-    }
+	public void setOrgCode(String orgCode) {
+		this.orgCode = orgCode;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getOrgName() {
+		return orgName;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getOrgId() {
+		return orgId;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
+	}
 
 }

@@ -1,12 +1,5 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
-import com.waben.stock.interfaces.dto.organization.OrganizationDto;
-import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
-import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
-import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
-import com.waben.stock.interfaces.vo.organization.OrganizationVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -15,8 +8,8 @@ import com.waben.stock.applayer.promotion.reference.organization.OrganizationAcc
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-
-import java.util.List;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 
 /**
  * 机构账户 Business

@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -109,7 +111,8 @@ public class OrganizationAccountService {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		if (account != null) {
 			String dbOldPaymentPassword = account.getPaymentPassword();
-			if (dbOldPaymentPassword!= null && !"".equals(dbOldPaymentPassword.trim()) && !PasswordCrypt.match(oldPaymentPassword, dbOldPaymentPassword)) {
+			if (dbOldPaymentPassword != null && !"".equals(dbOldPaymentPassword.trim())
+					&& !PasswordCrypt.match(oldPaymentPassword, dbOldPaymentPassword)) {
 				throw new ServiceException(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION);
 			}
 			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
@@ -152,7 +155,7 @@ public class OrganizationAccountService {
 		account.setBalance(new BigDecimal("0"));
 		account.setFrozenCapital(new BigDecimal("0"));
 		account.setOrg(org);
-		if(paymentPassword != null) {
+		if (paymentPassword != null) {
 			account.setPaymentPassword(PasswordCrypt.crypt(paymentPassword));
 		}
 		account.setState(1);
@@ -160,7 +163,8 @@ public class OrganizationAccountService {
 		return organizationAccountDao.create(account);
 	}
 
-	public synchronized OrganizationAccount withdrawals(Organization org, BigDecimal amount, Long applyId, String applyNo) {
+	public synchronized OrganizationAccount withdrawals(Organization org, BigDecimal amount, Long applyId,
+			String applyNo) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		Date date = new Date();
 		reduceAmount(account, amount, date);
@@ -180,7 +184,8 @@ public class OrganizationAccountService {
 		return account;
 	}
 
-	public synchronized OrganizationAccount withdrawalsFailure(Organization org, BigDecimal amount, Long applyId, String applyNo) {
+	public synchronized OrganizationAccount withdrawalsFailure(Organization org, BigDecimal amount, Long applyId,
+			String applyNo) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
 		Date date = new Date();
 		increaseAmount(account, amount, date);
@@ -243,20 +248,17 @@ public class OrganizationAccountService {
 			public Predicate toPredicate(Root<OrganizationAccount> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
-				if (query.getCode() != null && !"".equals(query.getCode().trim())) {
-					Organization organization = organizationDao.retrieveByCode(query.getCode());
-					predicateList.add(
-							criteriaBuilder.equal(root.get("org").as(Organization.class), organization));
+				Join<Organization, Organization> parentJoin = root.join("org", JoinType.LEFT);
+				if (query.getOrgCode() != null && !"".equals(query.getOrgCode().trim())) {
+					predicateList.add(criteriaBuilder.like(parentJoin.get("code").as(String.class),
+							"%" + query.getOrgCode() + "%"));
 				}
-				if (query.getName() != null && !"".equals(query.getName().trim())) {
-					Organization organization = organizationDao.retrieveOrganizationByName(query.getName());
-					predicateList.add(
-							criteriaBuilder.equal(root.get("org").as(Organization.class), organization));
+				if (query.getOrgName() != null && !"".equals(query.getOrgName().trim())) {
+					predicateList.add(criteriaBuilder.like(parentJoin.get("name").as(String.class),
+							"%" + query.getOrgName() + "%"));
 				}
-				if (query.getId() != null) {
-					Organization organization = organizationDao.retrieve(query.getId());
-					predicateList.add(
-							criteriaBuilder.equal(root.get("org").as(Organization.class), organization));
+				if (query.getOrgId() != null) {
+					predicateList.add(criteriaBuilder.equal(parentJoin.get("id").as(Long.class), query.getOrgId()));
 				}
 				criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				return criteriaQuery.getRestriction();
@@ -273,9 +275,10 @@ public class OrganizationAccountService {
 	}
 
 	@Transactional
-    public OrganizationAccount recover(Long id) {
+	public OrganizationAccount recover(Long id) {
 		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(id);
-		organizationAccount.setAvailableBalance(organizationAccount.getAvailableBalance().add(organizationAccount.getFrozenCapital()));
+		organizationAccount.setAvailableBalance(
+				organizationAccount.getAvailableBalance().add(organizationAccount.getFrozenCapital()));
 		organizationAccount.setFrozenCapital(new BigDecimal("0"));
 		organizationAccount.setState(1);
 		return organizationAccount;
@@ -284,11 +287,13 @@ public class OrganizationAccountService {
 	@Transactional
 	public OrganizationAccount freeze(OrganizationAccount account) {
 		OrganizationAccount organizationAccount = organizationAccountDao.retrieve(account.getId());
-		if(account.getFrozenCapital().abs().compareTo(organizationAccount.getAvailableBalance()) > 0) {
+		if (account.getFrozenCapital().abs().compareTo(organizationAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.BALANCE_NOTENOUGHFROZEN_EXCEPTION);
 		}
-		organizationAccount.setFrozenCapital(organizationAccount.getFrozenCapital().add(account.getFrozenCapital().abs()));
-		organizationAccount.setAvailableBalance(organizationAccount.getAvailableBalance().subtract(account.getFrozenCapital().abs()));
+		organizationAccount
+				.setFrozenCapital(organizationAccount.getFrozenCapital().add(account.getFrozenCapital().abs()));
+		organizationAccount.setAvailableBalance(
+				organizationAccount.getAvailableBalance().subtract(account.getFrozenCapital().abs()));
 		organizationAccount.setReason(account.getReason());
 		organizationAccount.setState(2);
 		return organizationAccount;

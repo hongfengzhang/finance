@@ -87,7 +87,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_BUY_ERROR, "投资人券商账户委托下单失败");
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR, "投资人券商账户委托单查询异常");
 
-		exceptionMap.put(ExceptionConstant.USER_ROLE_EXCEPITON, "该角色已被使用");
+		exceptionMap.put(ExceptionConstant.USER_ROLE_EXCEPITON, "该角色已被使用,不能删除。");
 		exceptionMap.put(ExceptionConstant.AGENT_DISABLED_EXCEPITON, "当前用户已被冻结");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "代理商不存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "代理商类别不存在");

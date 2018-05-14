@@ -71,6 +71,7 @@ public class BindCardService {
 	}
 
 	public BindCard findOrgBindCardByName(String name) {
-		return bindCardDao.retrieveBindCardByNameAndResourceType(name, BindCardResourceType.ORGANIZATION);
+		BindCardResourceType resourceType = BindCardResourceType.ORGANIZATION;
+		return bindCardDao.retrieveBindCardByNameAndResourceType(name, resourceType);
 	}
 }
