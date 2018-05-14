@@ -106,6 +106,10 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
      */
     public String buyRecordEntrust(SecuritiesStockEntrust securitiesStockEntrust, String token, String
             stockAccount, String type,EntrustType entrustType) {
+    	if(true) {
+    		// 此分支不进行真实的股票市场交易，以最新的行情买入卖出
+    		return String.valueOf(System.currentTimeMillis());
+    	}
         String entrustUrl =context+ entrustPath + "?token={token}&" +
                 "exchange_type={exchange_type}&" +
                 "stock_account={stock_account}&" +
@@ -162,6 +166,10 @@ public class StockJyRest extends StockResponseHander implements SecuritiesInterf
      * @description 委托申请撤单
      */
     public String withdraw(SecuritiesStockEntrust securitiesStockEntrust,String stockAccount) {
+    	if(true) {
+    		// 此分支不进行真实的股票市场交易，以最新的行情买入卖出
+    		return String.valueOf(System.currentTimeMillis());
+    	}
         String withdrawEntrusUrl = context+ withdrawPath + "?token={token}&stock_account={stock_account}&stock_code={stock_code}&exchange_type={exchange_type}&entrust_no={entrust_no}";
         Map<String, String> params = new HashMap<>();
         params.put("token", securitiesStockEntrust.getTradeSession());

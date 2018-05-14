@@ -27,6 +27,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
+import com.waben.stock.interfaces.pojo.query.admin.buyrecord.BuyRecordAdminQuery;
 import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -66,6 +67,13 @@ public class BuyRecordController implements BuyRecordInterface {
         PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
         return new Response<>(result);
     }
+    
+    @Override
+	public Response<PageInfo<BuyRecordDto>> adminPagesByQuery(@RequestBody BuyRecordAdminQuery query) {
+    	Page<BuyRecord> page = buyRecordService.adminPagesByQuery(query);
+        PageInfo<BuyRecordDto> result = PageToPageInfo.pageToPageInfo(page, BuyRecordDto.class);
+        return new Response<>(result);
+	}
 
     @Override
     public Response<BuyRecordDto> buyLock(@PathVariable Long investorId, @PathVariable Long id, String delegateNumber) {

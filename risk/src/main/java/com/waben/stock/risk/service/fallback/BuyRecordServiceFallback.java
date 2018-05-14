@@ -1,18 +1,20 @@
 package com.waben.stock.risk.service.fallback;
 
-import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.BuyRecordState;
-import com.waben.stock.interfaces.exception.NetflixCircuitException;
-import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.pojo.query.*;
-import com.waben.stock.risk.service.BuyRecordService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
-
 import java.math.BigDecimal;
 import java.util.List;
+
+import org.springframework.stereotype.Component;
+
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
+import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
+import com.waben.stock.interfaces.pojo.query.admin.buyrecord.BuyRecordAdminQuery;
+import com.waben.stock.risk.service.BuyRecordService;
 
 /**
  * @author Created by yuyidi on 2017/12/2.
@@ -132,4 +134,9 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<Boolean> echo() {
         return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> adminPagesByQuery(BuyRecordAdminQuery query) {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

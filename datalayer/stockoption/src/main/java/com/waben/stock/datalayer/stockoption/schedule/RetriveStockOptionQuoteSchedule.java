@@ -39,7 +39,8 @@ import com.waben.stock.interfaces.util.JacksonUtil;
  * @author luomengan
  *
  */
-@Component
+// 该项目只有股票没有配资，无需配置该作业
+// @Component
 public class RetriveStockOptionQuoteSchedule {
 
 	/**

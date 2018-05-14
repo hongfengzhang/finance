@@ -15,6 +15,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
+import com.waben.stock.interfaces.pojo.query.admin.buyrecord.BuyRecordAdminQuery;
 
 /**
  * 点买记录 reference服务接口fallback
@@ -132,6 +133,11 @@ public class BuyRecordReferenceFallback implements BuyRecordReference {
 
 	@Override
 	public Response<Boolean> echo() {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> adminPagesByQuery(BuyRecordAdminQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 }

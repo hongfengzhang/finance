@@ -137,6 +137,10 @@ public class BuyRecordDto {
 	 */
 	private Long strategyTypeId;
 	/**
+	 * 策略类型名称
+	 */
+	private String strategyTypeName;
+	/**
 	 * 投资人ID
 	 */
 	private Long investorId;
@@ -159,6 +163,11 @@ public class BuyRecordDto {
 
 	private StockDto stockDto;
 	private SettlementDto settlement;
+	/**
+	 * 是否为测试单
+	 */
+	private Boolean isTest;
+
 	public Long getId() {
 		return id;
 	}
@@ -499,4 +508,21 @@ public class BuyRecordDto {
 	public void setSettlement(SettlementDto settlement) {
 		this.settlement = settlement;
 	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
+	}
+
+	public String getStrategyTypeName() {
+		return strategyTypeName;
+	}
+
+	public void setStrategyTypeName(String strategyTypeName) {
+		this.strategyTypeName = strategyTypeName;
+	}
+
 }

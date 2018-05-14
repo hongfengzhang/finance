@@ -205,6 +205,10 @@ public class BuyRecord {
 
 	@OneToOne(mappedBy = "buyRecord")
 	private Settlement settlement;
+	/**
+	 * 是否为测试单
+	 */
+	private Boolean isTest;
 
 	public Long getId() {
 		return id;
@@ -507,4 +511,13 @@ public class BuyRecord {
 	public void setSettlement(Settlement settlement) {
 		this.settlement = settlement;
 	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
+	}
+
 }

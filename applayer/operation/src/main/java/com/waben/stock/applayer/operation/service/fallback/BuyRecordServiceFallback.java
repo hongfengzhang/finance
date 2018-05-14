@@ -7,6 +7,8 @@ import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.*;
+import com.waben.stock.interfaces.pojo.query.admin.buyrecord.BuyRecordAdminQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -133,4 +135,9 @@ public class BuyRecordServiceFallback implements BuyRecordService {
     public Response<Boolean> echo() {
         throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
     }
+
+	@Override
+	public Response<PageInfo<BuyRecordDto>> adminPagesByQuery(BuyRecordAdminQuery query) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
 }

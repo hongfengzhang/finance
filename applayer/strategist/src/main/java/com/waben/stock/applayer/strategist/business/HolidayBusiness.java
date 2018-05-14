@@ -66,6 +66,8 @@ public class HolidayBusiness {
 				if (holiday.indexOf(dayStr) >= 0) {
 					return false;
 				}
+			} else {
+				throw new RuntimeException("请补充节假日信息！");
 			}
 			// 判断是否为9:30~11:30 13:00~14:50
 			try {
@@ -100,6 +102,8 @@ public class HolidayBusiness {
 			if (holiday.indexOf(dayStr) >= 0) {
 				return false;
 			}
+		} else {
+			throw new RuntimeException("请补充节假日信息！");
 		}
 		return true;
 	}

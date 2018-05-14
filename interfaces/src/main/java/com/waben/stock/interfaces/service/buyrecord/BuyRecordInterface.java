@@ -17,6 +17,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
+import com.waben.stock.interfaces.pojo.query.admin.buyrecord.BuyRecordAdminQuery;
 
 public interface BuyRecordInterface {
 
@@ -165,6 +166,16 @@ public interface BuyRecordInterface {
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<BuyRecordDto>> pagesByQuery(@RequestBody BuyRecordQuery buyRecordQuery);
+	
+	/**
+	 * 分页查询点买记录（后台管理）
+	 *
+	 * @param query
+	 *            查询条件
+	 * @return 点买记录
+	 */
+	@RequestMapping(value = "/adminPages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<BuyRecordDto>> adminPagesByQuery(@RequestBody BuyRecordAdminQuery query);
 
 	@RequestMapping(value = "/posted/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<BuyRecordDto>> pagesByPostedQuery(@RequestBody StrategyPostedQuery strategyPostedQuery);

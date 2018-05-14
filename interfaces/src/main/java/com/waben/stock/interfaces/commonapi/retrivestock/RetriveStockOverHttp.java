@@ -31,6 +31,20 @@ public class RetriveStockOverHttp {
 		}
 	}
 
+	public static StockMarket singleStockMarket(RestTemplate restTemplate, String code) {
+		String url = "http://lemi.esongbai.com/stk/stk/list.do?codes=" + code;
+		String response = restTemplate.getForObject(url, String.class);
+		try {
+			JsonNode dataNode = JacksonUtil.objectMapper.readValue(response, JsonNode.class).get("data");
+			JavaType javaType = JacksonUtil.objectMapper.getTypeFactory().constructParametricType(ArrayList.class,
+					StockMarket.class);
+			List<StockMarket> list = JacksonUtil.objectMapper.readValue(dataNode.toString(), javaType);
+			return list.get(0);
+		} catch (IOException e) {
+			throw new RuntimeException("http获取单支股票行情异常!", e);
+		}
+	}
+
 	public static List<StockMarket> listStockMarket(RestTemplate restTemplate, List<String> codes) {
 		String url = "http://lemi.esongbai.com/stk/stk/list.do?codes="
 				+ codes.toString().substring(1, codes.toString().length() - 1).replaceAll(" ", "");
@@ -42,7 +56,7 @@ public class RetriveStockOverHttp {
 			List<StockMarket> list = JacksonUtil.objectMapper.readValue(dataNode.toString(), javaType);
 			return list;
 		} catch (IOException e) {
-			throw new RuntimeException("http获取股票行情异常!", e);
+			throw new RuntimeException("http获取多支股票行情异常!", e);
 		}
 	}
 

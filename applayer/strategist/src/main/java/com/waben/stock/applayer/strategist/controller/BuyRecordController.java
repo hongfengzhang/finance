@@ -17,6 +17,7 @@ import com.waben.stock.applayer.strategist.business.BuyRecordBusiness;
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.strategist.business.ExperienceBusiness;
 import com.waben.stock.applayer.strategist.business.HolidayBusiness;
+import com.waben.stock.applayer.strategist.business.PublisherBusiness;
 import com.waben.stock.applayer.strategist.business.StockBusiness;
 import com.waben.stock.applayer.strategist.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.strategist.dto.buyrecord.TradeDynamicDto;
@@ -24,6 +25,7 @@ import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -56,9 +58,12 @@ public class BuyRecordController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
-	
+
 	@Autowired
 	private ExperienceBusiness experienceBusiness;
+	
+	@Autowired
+	private PublisherBusiness publisherBusiness;
 
 	@GetMapping("/isTradeTime")
 	@ApiOperation(value = "是否为交易时间段")
@@ -128,9 +133,9 @@ public class BuyRecordController {
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-		if(strategyTypeId.longValue() == 3) {
+		if (strategyTypeId.longValue() == 3) {
 			experienceBusiness.join();
-		} 
+		}
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();
 		dto.setStrategyTypeId(strategyTypeId);
@@ -147,6 +152,9 @@ public class BuyRecordController {
 		// 设置对应的publisher
 		dto.setPublisherId(SecurityUtil.getUserId());
 		dto.setPublisherSerialCode(SecurityUtil.getSerialCode());
+		// 获取是否为测试单
+		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+		dto.setIsTest(publisher.getIsTest());
 		BuyRecordDto buyRecordDto = buyRecordBusiness.buy(dto);
 		return new Response<>(buyRecordBusiness.wrapMarketInfo(buyRecordDto));
 	}
