@@ -35,7 +35,6 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.request.organization.OrganizationAccountRequest;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
 
 import io.swagger.annotations.Api;

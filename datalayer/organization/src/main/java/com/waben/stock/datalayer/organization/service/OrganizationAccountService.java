@@ -286,17 +286,21 @@ public class OrganizationAccountService {
 			@Override
 			public Predicate toPredicate(Root<OrganizationAccount> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
- 				List<Predicate> predicateList = new ArrayList<>();
-				Join<OrganizationAccount, Organization> parentJoin = root.join("org", JoinType.LEFT);
+				List<Predicate> predicateList = new ArrayList<>();
 				if (query.getOrgCode() != null && !"".equals(query.getOrgCode().trim())) {
-					predicateList.add(criteriaBuilder.like(parentJoin.get("code").as(String.class),
-							"%" + query.getOrgCode() + "%"));
+					Join<Organization, OrganizationAccount> parentJoin = root.join("org", JoinType.LEFT);
+					Predicate orgCode = criteriaBuilder.like(parentJoin.get("code").as(String.class),
+							"%" + query.getOrgCode() + "%");
+					predicateList.add(orgCode);
 				}
 				if (query.getOrgName() != null && !"".equals(query.getOrgName().trim())) {
-					predicateList.add(criteriaBuilder.like(parentJoin.get("name").as(String.class),
-							"%" + query.getOrgName() + "%"));
+					Join<Organization, OrganizationAccount> parentJoin = root.join("org", JoinType.LEFT);
+					Predicate orgName = criteriaBuilder.like(parentJoin.get("name").as(String.class),
+							"%" + query.getOrgName() + "%");
+					predicateList.add(orgName);
 				}
 				if (query.getOrgId() != null) {
+					Join<Organization, OrganizationAccount> parentJoin = root.join("org", JoinType.LEFT);
 					predicateList.add(criteriaBuilder.equal(parentJoin.get("id").as(Long.class), query.getOrgId()));
 				}
 				criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
