@@ -8,6 +8,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
@@ -64,7 +65,7 @@ public class OrganizationDaoImpl implements OrganizationDao {
 
 	@Override
 	public List<Organization> listByParent(Organization parent) {
-		List<Organization> list = repository.findByParent(parent); 
+		List<Organization> list = repository.findByParent(parent);
 		return list;
 	}
 
@@ -91,6 +92,16 @@ public class OrganizationDaoImpl implements OrganizationDao {
 	@Override
 	public List<Organization> listByLevel(Integer level) {
 		return repository.findByLevel(level);
+	}
+
+	@Override
+	public Organization getNewestOrg() {
+		Pageable pageRequest = new PageRequest(0, 1, new Sort(new Order(Direction.DESC, "id")));
+		Page<Organization> page = repository.findAll(pageRequest);
+		if (page.getContent() != null && page.getContent().size() > 0) {
+			return page.getContent().get(0);
+		}
+		return null;
 	}
 
 }

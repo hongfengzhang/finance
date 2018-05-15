@@ -24,4 +24,6 @@ public interface OrganizationDao extends BaseDao<Organization, Long> {
 
 	Organization retrieveOrganizationByName(String orgName);
 
+	Organization getNewestOrg();
+
 }

@@ -180,6 +180,8 @@ public class ExceptionConstant {
 	public static final String USER_ROLE_EXCEPITON = "8013";
 	// 该结算下代理商尚有未完成订单，请完成订单后再切换结算方式
 	public static final String SETTLEMENT_METHOD_EXCEPITON = "8014";
+	// 返佣比例设置错误，下级比例不能大于上级比例
+	public static final String RAKEBACK_RATIO_WRONG_EXCEPTION = "8015";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍

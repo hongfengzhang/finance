@@ -21,9 +21,11 @@ import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlow
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.repository.OrganizationPublisherDao;
 import com.waben.stock.datalayer.organization.repository.SettlementMethodDao;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.enums.BenefitConfigType;
 import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
 import com.waben.stock.interfaces.enums.ResourceType;
+import com.waben.stock.interfaces.exception.ServiceException;
 
 /**
  * 机构结算 Service
@@ -113,32 +115,29 @@ public class OrganizationSettlementService {
 					benefitResourceType, benefitResourceId);
 			if (benefitConfigList != null && benefitConfigList.size() > 0
 					&& benefitConfigList.get(0).getRatio().compareTo(BigDecimal.ZERO) > 0) {
-				// 先等到二级机构的比例，算出来的权利金作为可分配的金额
-				BigDecimal secondLevelRatio = benefitConfigList.get(0).getRatio();
-				BigDecimal currentFee = amount.multiply(secondLevelRatio.divide(new BigDecimal("100"))).setScale(2,
-						RoundingMode.DOWN);
+				int length = benefitConfigList.size();
+				// 检查分佣比例是否正确，必须保证
+				for (int i = length - 1; i > 0; i--) {
+					BigDecimal childRatio = benefitConfigList.get(i).getRatio();
+					BigDecimal parentRatio = benefitConfigList.get(i - 1).getRatio();
+					if (childRatio.compareTo(parentRatio) > 0) {
+						throw new ServiceException(ExceptionConstant.RAKEBACK_RATIO_WRONG_EXCEPTION);
+					}
+				}
 				// 自底向上结算
-				int lenth = benefitConfigList.size();
-				for (int i = lenth - 1; i >= 0; i--) {
+				for (int i = length - 1; i >= 0; i--) {
 					BenefitConfig config = benefitConfigList.get(i);
 					BigDecimal ratio = config.getRatio();
-					if (ratio.compareTo(secondLevelRatio) > 0) {
-						ratio = secondLevelRatio;
+					BigDecimal computeRatio = ratio;
+					if (i != length - 1) {
+						computeRatio = ratio.subtract(benefitConfigList.get(i + 1).getRatio());
 					}
 					// 给当前机构计算
-					BigDecimal childFee = amount.multiply(ratio.divide(new BigDecimal("100"))).setScale(2,
+					BigDecimal childFee = amount.multiply(computeRatio.divide(new BigDecimal("100"))).setScale(2,
 							RoundingMode.DOWN);
-					if (childFee.compareTo(currentFee) > 0) {
-						childFee = currentFee;
-					}
 					if (childFee.compareTo(BigDecimal.ZERO) > 0) {
 						accountService.benefit(config.getOrg(), amount, childFee, flowType, flowResourceType,
 								flowResourceId, tradeNo);
-					}
-					// 计算剩余的金额
-					currentFee = currentFee.subtract(childFee);
-					if (currentFee.compareTo(BigDecimal.ZERO) <= 0) {
-						break;
 					}
 				}
 			}

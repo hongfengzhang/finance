@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.organization.repository.impl.jpa;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
 import com.waben.stock.datalayer.organization.entity.Organization;
@@ -25,5 +27,7 @@ public interface OrganizationRepository extends CustomJpaRepository<Organization
 	List<Organization> findByName(String orgName);
 
 	List<Organization> findByLevel(Integer level);
+
+	Page<Organization> findOrderById(Pageable page);
 
 }
