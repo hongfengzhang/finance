@@ -65,7 +65,7 @@ public interface StockOptionTradeInterface {
 	 *            查询条件
 	 * @return 名义本金、权利金总和
 	 */
-	@RequestMapping(value = "/promotionpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/promotionSta", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<StockOptionStaDto> promotionSta(@RequestBody StockOptionPromotionQuery query);
 
 	/**
