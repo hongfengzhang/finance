@@ -54,4 +54,9 @@ public class SettlementMethodDaoImpl implements SettlementMethodDao {
 		return repository.findAll();
 	}
 
+	@Override
+	public SettlementMethod getMethodOne() {
+		return repository.getMethodOne();
+	}
+
 }

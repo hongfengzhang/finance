@@ -93,4 +93,9 @@ public class OrganizationDaoImpl implements OrganizationDao {
 		return repository.findByLevel(level);
 	}
 
+	@Override
+	public Organization retrieveById(Long orgId) {
+		return repository.findById(orgId);
+	}
+
 }

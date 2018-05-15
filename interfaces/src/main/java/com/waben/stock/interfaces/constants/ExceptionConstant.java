@@ -180,6 +180,12 @@ public class ExceptionConstant {
 	public static final String USER_ROLE_EXCEPITON = "8013";
 	// 该结算下代理商尚有未完成订单，请完成订单后再切换结算方式
 	public static final String SETTLEMENT_METHOD_EXCEPITON = "8014";
+	// 上级的比例不能为空,请设置上级表单比例
+	public static final String FORM_RATIO_EXCEPITON = "8015";
+	// 当前的表单的比例不能大于上级的比例
+	public static final String FORM_RATIO_COMPARE_EXCEPITON = "8016";
+	// 该角色已存在，请重新输入
+	public static final String ROLE_EXISTENCE_EXCEPITON = "8017";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍

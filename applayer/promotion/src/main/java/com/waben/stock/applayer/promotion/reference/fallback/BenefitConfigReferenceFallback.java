@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.waben.stock.applayer.promotion.reference.organization.BenefitConfigReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.BenefitConfigDto;
+import com.waben.stock.interfaces.dto.organization.SettlementMethodDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.BenefitConfigForm;
@@ -31,6 +32,11 @@ public class BenefitConfigReferenceFallback implements BenefitConfigReference {
 
 	@Override
 	public Response<String> stockoptionBenefitConfig(List<BenefitConfigForm> configFormList) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<SettlementMethodDto> getSettlement() {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 

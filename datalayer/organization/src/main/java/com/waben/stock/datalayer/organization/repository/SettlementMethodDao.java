@@ -10,4 +10,5 @@ import com.waben.stock.datalayer.organization.entity.SettlementMethod;
  */
 public interface SettlementMethodDao extends BaseDao<SettlementMethod, Long> {
 
+	SettlementMethod getMethodOne(); 
 }

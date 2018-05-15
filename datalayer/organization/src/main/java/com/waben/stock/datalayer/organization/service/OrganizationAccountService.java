@@ -254,8 +254,8 @@ public class OrganizationAccountService {
 			@Override
 			public Predicate toPredicate(Root<OrganizationAccount> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicateList = new ArrayList<>();
-				Join<Organization, Organization> parentJoin = root.join("org", JoinType.LEFT);
+ 				List<Predicate> predicateList = new ArrayList<>();
+				Join<OrganizationAccount, Organization> parentJoin = root.join("org", JoinType.LEFT);
 				if (query.getOrgCode() != null && !"".equals(query.getOrgCode().trim())) {
 					predicateList.add(criteriaBuilder.like(parentJoin.get("code").as(String.class),
 							"%" + query.getOrgCode() + "%"));

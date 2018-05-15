@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.organization.repository.impl.jpa;
 
+import org.springframework.data.jpa.repository.Query;
+
 import com.waben.stock.datalayer.organization.entity.SettlementMethod;
 
 /**
@@ -10,4 +12,6 @@ import com.waben.stock.datalayer.organization.entity.SettlementMethod;
  */
 public interface SettlementMethodRepository extends CustomJpaRepository<SettlementMethod, Long> {
 
+	@Query("select s from SettlementMethod s")
+	SettlementMethod getMethodOne();
 }
