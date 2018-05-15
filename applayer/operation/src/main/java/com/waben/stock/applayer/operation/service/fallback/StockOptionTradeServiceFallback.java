@@ -14,6 +14,7 @@ import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotion
 import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
@@ -151,6 +152,11 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService{
 	@Override
 	public Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(StockOptionPromotionQuery query) {
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<Integer> countStockOptionTradeState() {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
     
 }

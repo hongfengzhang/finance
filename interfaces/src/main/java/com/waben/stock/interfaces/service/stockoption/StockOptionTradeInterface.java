@@ -270,4 +270,7 @@ public interface StockOptionTradeInterface {
 
 	@RequestMapping(value = "/duetreatment/{id}", method = RequestMethod.GET)
 	Response<StockOptionTradeDto> dueTreatmentExercise(@PathVariable("id") Long id);
+	
+	@RequestMapping(value = "/count/stockoptiontrade", method = RequestMethod.GET)
+	Response<Integer> countStockOptionTradeState();
 }

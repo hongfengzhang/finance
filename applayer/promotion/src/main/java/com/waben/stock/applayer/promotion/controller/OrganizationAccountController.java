@@ -35,6 +35,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 import com.waben.stock.interfaces.request.organization.OrganizationAccountRequest;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.vo.organization.OrganizationAccountVo;
 
 import io.swagger.annotations.Api;
@@ -85,7 +86,7 @@ public class OrganizationAccountController {
 	@ApiOperation(value = "代理商资产分页")
 	public Response<PageInfo<OrganizationAccountVo>> pages(OrganizationAccountQuery query) {
 		long start = System.currentTimeMillis();
-		if (query.getOrgName() != null) {
+		if (!StringUtil.isEmpty(query.getOrgName())) {
 			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
 			if (orgBindCard != null) {
 				query.setOrgId(orgBindCard.getResourceId());
@@ -160,7 +161,7 @@ public class OrganizationAccountController {
 	public void export(OrganizationAccountQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		if (query.getOrgName() != null) {
+		if (!StringUtil.isEmpty(query.getOrgName())) {
 			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
 			if (orgBindCard != null) {
 				query.setOrgId(orgBindCard.getResourceId());

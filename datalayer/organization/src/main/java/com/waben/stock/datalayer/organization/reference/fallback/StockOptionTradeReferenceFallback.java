@@ -1,11 +1,11 @@
-package com.waben.stock.applayer.admin.reference.fallback;
+package com.waben.stock.datalayer.organization.reference.fallback;
 
 import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.applayer.admin.reference.StockOptionTradeReference;
+import com.waben.stock.datalayer.organization.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;

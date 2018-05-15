@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.organization.business.BindCardBusiness;
+import com.waben.stock.datalayer.organization.business.StockOptionTradeBusiness;
 import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccount;
 import com.waben.stock.datalayer.organization.entity.SettlementMethod;
@@ -76,6 +77,9 @@ public class OrganizationService {
 
 	@Autowired
 	private SettlementMethodDao settlementMethodDao;
+
+	@Autowired
+	private StockOptionTradeBusiness tradeBusiness;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -327,6 +331,12 @@ public class OrganizationService {
 		if (settlementType != null) {
 			SettlementMethod smethod = new SettlementMethod();
 			List<SettlementMethod> menthod = settlementMethodDao.list();
+			if (menthod.get(0).getSettlementType() != settlementType) {
+				Integer count = tradeBusiness.countStockOptionTradeState();
+				if (count > 0) {
+					throw new ServiceException(ExceptionConstant.SETTLEMENT_METHOD_EXCEPITON);
+				}
+			}
 			if (menthod != null && menthod.size() > 0) {
 				smethod = menthod.get(0);
 			}

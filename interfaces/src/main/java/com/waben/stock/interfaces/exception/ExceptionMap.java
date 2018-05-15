@@ -87,6 +87,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_BUY_ERROR, "投资人券商账户委托下单失败");
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR, "投资人券商账户委托单查询异常");
 
+		
 		exceptionMap.put(ExceptionConstant.USER_ROLE_EXCEPITON, "该角色已被使用,不能删除。");
 		exceptionMap.put(ExceptionConstant.AGENT_DISABLED_EXCEPITON, "当前用户已被冻结");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "代理商不存在");
@@ -100,6 +101,8 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "代理商名称已存在");
 		exceptionMap.put(ExceptionConstant.LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION, "一级代理商不能申请提现");
 		exceptionMap.put(ExceptionConstant.BALANCE_NOTENOUGHFROZEN_EXCEPTION, "账户余额不足以冻结");
+		exceptionMap.put(ExceptionConstant.SETTLEMENT_METHOD_EXCEPITON, "该结算下代理商尚有未完成订单，请完成订单后再切换结算方式!");
+		
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,

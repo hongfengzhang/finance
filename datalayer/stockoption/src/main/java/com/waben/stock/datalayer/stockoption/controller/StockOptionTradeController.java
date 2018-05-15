@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionAmountLimit;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionQuote;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionTrade;
+import com.waben.stock.datalayer.stockoption.repository.StockOptionTradeDao;
 import com.waben.stock.datalayer.stockoption.service.StockOptionRiskService;
 import com.waben.stock.datalayer.stockoption.service.StockOptionTradeService;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
@@ -49,6 +50,9 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 
 	@Autowired
 	private StockOptionRiskService riskService;
+
+	@Autowired
+	private StockOptionTradeDao stockOptionTradeDao;
 
 	@Override
 	public Response<PageInfo<StockOptionTradeDto>> pagesByQuery(@RequestBody StockOptionTradeQuery query) {
@@ -193,7 +197,7 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 		StockOptionTrade trade = stockOptionTradeService.insettlement(id, sellingPrice);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(StockOptionTradeDto.class, trade, false));
 	}
-	
+
 	@Override
 	public Response<StockOptionTradeDto> dosettlement(@PathVariable Long id) {
 		logger.info("给用户结算权期权交易{}_{}!", id);
@@ -255,10 +259,16 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(@RequestBody StockOptionPromotionQuery query) {
+	public Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(
+			@RequestBody StockOptionPromotionQuery query) {
 		Page<StockOptionPromotionDto> page = stockOptionTradeService.promotionPagesByQuery(query);
 		PageInfo<StockOptionPromotionDto> result = PageToPageInfo.pageToPageInfo(page, StockOptionPromotionDto.class);
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<Integer> countStockOptionTradeState() {
+		return new Response<>(stockOptionTradeDao.countStockOptionTradeState());
 	}
 
 }
