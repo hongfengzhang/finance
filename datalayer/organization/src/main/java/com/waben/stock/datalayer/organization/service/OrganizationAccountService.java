@@ -126,11 +126,13 @@ public class OrganizationAccountService {
 			OrganizationAccountFlowType flowType, ResourceType resourceType, Long resourceId, String resourceTradeNo) {
 		Date date = new Date();
 		OrganizationAccount account = null;
+		BigDecimal oldAvailableBalance = BigDecimal.ZERO;
 		if (org != null) {
 			account = organizationAccountDao.retrieveByOrg(org);
 			if (account == null) {
 				account = initAccount(org, null);
 			}
+			oldAvailableBalance = account.getAvailableBalance();
 			increaseAmount(account, amount, date);
 		}
 		// 产生流水
@@ -145,6 +147,7 @@ public class OrganizationAccountService {
 		flow.setType(flowType);
 		flow.setResourceTradeNo(resourceTradeNo);
 		flow.setRemark(flowType.getType());
+		flow.setAvailableBalance(oldAvailableBalance);
 		flowDao.create(flow);
 		return account;
 	}
@@ -166,6 +169,7 @@ public class OrganizationAccountService {
 	public synchronized OrganizationAccount withdrawals(Organization org, BigDecimal amount, Long applyId,
 			String applyNo) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
+		BigDecimal oldAvailableBalance = account.getAvailableBalance();
 		Date date = new Date();
 		reduceAmount(account, amount, date);
 		// 生成流水
@@ -180,6 +184,7 @@ public class OrganizationAccountService {
 		flow.setResourceTradeNo(applyNo);
 		flow.setType(OrganizationAccountFlowType.Withdrawals);
 		flow.setRemark(OrganizationAccountFlowType.Withdrawals.getType());
+		flow.setAvailableBalance(oldAvailableBalance);
 		flowDao.create(flow);
 		return account;
 	}
@@ -187,6 +192,7 @@ public class OrganizationAccountService {
 	public synchronized OrganizationAccount withdrawalsFailure(Organization org, BigDecimal amount, Long applyId,
 			String applyNo) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
+		BigDecimal oldAvailableBalance = account.getAvailableBalance();
 		Date date = new Date();
 		increaseAmount(account, amount, date);
 		// 生成流水
@@ -201,6 +207,7 @@ public class OrganizationAccountService {
 		flow.setResourceTradeNo(applyNo);
 		flow.setType(OrganizationAccountFlowType.WithdrawalsFailure);
 		flow.setRemark(OrganizationAccountFlowType.WithdrawalsFailure.getType());
+		flow.setAvailableBalance(oldAvailableBalance);
 		flowDao.create(flow);
 		return account;
 	}

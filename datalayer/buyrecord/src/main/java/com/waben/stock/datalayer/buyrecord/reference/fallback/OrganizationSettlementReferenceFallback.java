@@ -20,7 +20,7 @@ public class OrganizationSettlementReferenceFallback implements OrganizationSett
 
 	@Override
 	public Response<String> stockoptionSettlement(Long publisherId, Long stockOptionTradeId, String tradeNo,
-			Long cycleId, BigDecimal rightMoneyProfit) {
+			Long cycleId, BigDecimal rightMoneyProfit, BigDecimal rightMoney) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
