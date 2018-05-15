@@ -85,19 +85,28 @@ public class WithdrawalsApplyService {
 	}
 
 	public Page<WithdrawalsApply> pagesByQuery(final WithdrawalsApplyQuery query) {
+		final Organization currentOrg = organizationDao.retrieve(query.getCurrentOrgId());
+		final Integer level = currentOrg.getLevel();
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<WithdrawalsApply> pages = withdrawalsApplyDao.page(new Specification<WithdrawalsApply>() {
 			@Override
 			public Predicate toPredicate(Root<WithdrawalsApply> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<>();
+				Join<WithdrawalsApply, Organization> join = root.join("org", JoinType.LEFT);
 				if (!StringUtil.isEmpty(query.getOrgCodeOrName())) {
-					Join<WithdrawalsApply, Organization> join = root.join("org", JoinType.LEFT);
 					Predicate codeQuery = criteriaBuilder.like(join.get("code").as(String.class),
 							"%" + query.getOrgCodeOrName() + "%");
 					Predicate nameQuery = criteriaBuilder.like(join.get("name").as(String.class),
 							"%" + query.getOrgCodeOrName() + "%");
 					predicateList.add(criteriaBuilder.or(codeQuery, nameQuery));
+				}
+				if (level > 1) {
+					Predicate orgIdQuery = criteriaBuilder.equal(join.get("id").as(Long.class),
+							query.getCurrentOrgId());
+					Predicate parentQuery = criteriaBuilder.equal(join.get("parent").as(Organization.class),
+							currentOrg);
+					predicateList.add(criteriaBuilder.or(orgIdQuery, parentQuery));
 				}
 				if (query.getApplyId() != null) {
 					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getApplyId()));
@@ -131,7 +140,7 @@ public class WithdrawalsApplyService {
 				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount(),
 						withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
 			}
-			if(state == WithdrawalsApplyState.REFUSED) {
+			if (state == WithdrawalsApplyState.REFUSED) {
 				withdrawalsApply.setRefusedRemark(refusedRemark);
 			}
 			withdrawalsApplyDao.update(withdrawalsApply);
