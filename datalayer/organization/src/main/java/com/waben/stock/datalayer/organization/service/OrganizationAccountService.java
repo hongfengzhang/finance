@@ -126,13 +126,11 @@ public class OrganizationAccountService {
 			OrganizationAccountFlowType flowType, ResourceType resourceType, Long resourceId, String resourceTradeNo) {
 		Date date = new Date();
 		OrganizationAccount account = null;
-		BigDecimal oldAvailableBalance = BigDecimal.ZERO;
 		if (org != null) {
 			account = organizationAccountDao.retrieveByOrg(org);
 			if (account == null) {
 				account = initAccount(org, null);
 			}
-			oldAvailableBalance = account.getAvailableBalance();
 			increaseAmount(account, amount, date);
 		}
 		// 产生流水
@@ -147,7 +145,7 @@ public class OrganizationAccountService {
 		flow.setType(flowType);
 		flow.setResourceTradeNo(resourceTradeNo);
 		flow.setRemark(flowType.getType());
-		flow.setAvailableBalance(oldAvailableBalance);
+		flow.setAvailableBalance(account.getAvailableBalance());
 		flowDao.create(flow);
 		return account;
 	}
@@ -166,10 +164,10 @@ public class OrganizationAccountService {
 		return organizationAccountDao.create(account);
 	}
 
+	@Transactional
 	public synchronized OrganizationAccount withdrawals(Organization org, BigDecimal amount, Long applyId,
-			String applyNo) {
+			String applyNo, BigDecimal processFee) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
-		BigDecimal oldAvailableBalance = account.getAvailableBalance();
 		Date date = new Date();
 		reduceAmount(account, amount, date);
 		// 生成流水
@@ -184,15 +182,31 @@ public class OrganizationAccountService {
 		flow.setResourceTradeNo(applyNo);
 		flow.setType(OrganizationAccountFlowType.Withdrawals);
 		flow.setRemark(OrganizationAccountFlowType.Withdrawals.getType());
-		flow.setAvailableBalance(oldAvailableBalance);
+		flow.setAvailableBalance(account.getAvailableBalance());
 		flowDao.create(flow);
+		// 提现手续费
+		if (processFee != null && processFee.compareTo(BigDecimal.ZERO) > 0) {
+			reduceAmount(account, amount, date);
+			OrganizationAccountFlow processFeeFlow = new OrganizationAccountFlow();
+			processFeeFlow.setAmount(processFee.abs().multiply(new BigDecimal("-1")));
+			processFeeFlow.setOriginAmount(processFee.abs().multiply(new BigDecimal("-1")));
+			processFeeFlow.setFlowNo(UniqueCodeGenerator.generateFlowNo());
+			processFeeFlow.setOccurrenceTime(date);
+			processFeeFlow.setOrg(org);
+			processFeeFlow.setResourceId(applyId);
+			processFeeFlow.setResourceType(ResourceType.ORGWITHDRAWALSAPPLY);
+			processFeeFlow.setResourceTradeNo(applyNo);
+			processFeeFlow.setType(OrganizationAccountFlowType.ProcessFee);
+			processFeeFlow.setRemark(OrganizationAccountFlowType.ProcessFee.getType());
+			processFeeFlow.setAvailableBalance(account.getAvailableBalance());
+			flowDao.create(flow);
+		}
 		return account;
 	}
 
 	public synchronized OrganizationAccount withdrawalsFailure(Organization org, BigDecimal amount, Long applyId,
-			String applyNo) {
+			String applyNo, BigDecimal processFee) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
-		BigDecimal oldAvailableBalance = account.getAvailableBalance();
 		Date date = new Date();
 		increaseAmount(account, amount, date);
 		// 生成流水
@@ -207,8 +221,26 @@ public class OrganizationAccountService {
 		flow.setResourceTradeNo(applyNo);
 		flow.setType(OrganizationAccountFlowType.WithdrawalsFailure);
 		flow.setRemark(OrganizationAccountFlowType.WithdrawalsFailure.getType());
-		flow.setAvailableBalance(oldAvailableBalance);
+		flow.setAvailableBalance(account.getAvailableBalance());
 		flowDao.create(flow);
+		// 提现失败退回提现手续费
+		if (processFee != null && processFee.compareTo(BigDecimal.ZERO) > 0) {
+			increaseAmount(account, processFee, date);
+			// 生成流水
+			OrganizationAccountFlow returnProcessFeeFlow = new OrganizationAccountFlow();
+			returnProcessFeeFlow.setAmount(processFee.abs());
+			returnProcessFeeFlow.setOriginAmount(processFee.abs());
+			returnProcessFeeFlow.setFlowNo(UniqueCodeGenerator.generateFlowNo());
+			returnProcessFeeFlow.setOccurrenceTime(date);
+			returnProcessFeeFlow.setOrg(org);
+			returnProcessFeeFlow.setResourceId(applyId);
+			returnProcessFeeFlow.setResourceType(ResourceType.ORGWITHDRAWALSAPPLY);
+			returnProcessFeeFlow.setResourceTradeNo(applyNo);
+			returnProcessFeeFlow.setType(OrganizationAccountFlowType.ReturnProcessFee);
+			returnProcessFeeFlow.setRemark(OrganizationAccountFlowType.ReturnProcessFee.getType());
+			returnProcessFeeFlow.setAvailableBalance(account.getAvailableBalance());
+			flowDao.create(flow);
+		}
 		return account;
 	}
 

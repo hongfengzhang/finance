@@ -186,6 +186,9 @@ public class ExceptionConstant {
 	public static final String FORM_RATIO_COMPARE_EXCEPITON = "8016";
 	// 该角色已存在，请重新输入
 	public static final String ROLE_EXISTENCE_EXCEPITON = "8017";
+	// 返佣比例设置错误，下级比例不能大于上级比例
+	public static final String RAKEBACK_RATIO_WRONG_EXCEPTION = "8018";
+
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍

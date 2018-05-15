@@ -107,22 +107,47 @@ public class OrganizationService {
 			throw new ServiceException(ExceptionConstant.ORGNAME_EXIST_EXCEPTION);
 		}
 		// 生成机构代码
-		List<Organization> childList = organizationDao.listByParentOrderByCodeDesc(parent);
-		String code = parent.getCode();
-		if (childList != null && childList.size() > 0) {
-			Organization max = childList.get(0);
-			String suffix = max.getCode().substring(code.length());
-			Long seria = Long.parseLong(suffix) + 1;
-			String seriaStr = seria.toString();
-			if (seriaStr.length() < suffix.length()) {
-				int lack = suffix.length() - seriaStr.length();
-				for (int i = 0; i < lack; i++) {
-					seriaStr = "0" + seriaStr;
+		// List<Organization> childList =
+		// organizationDao.listByParentOrderByCodeDesc(parent);
+		// String code = parent.getCode();
+		// if (childList != null && childList.size() > 0) {
+		// Organization max = childList.get(0);
+		// String suffix = max.getCode().substring(code.length());
+		// Long seria = Long.parseLong(suffix) + 1;
+		// String seriaStr = seria.toString();
+		// if (seriaStr.length() < suffix.length()) {
+		// int lack = suffix.length() - seriaStr.length();
+		// for (int i = 0; i < lack; i++) {
+		// seriaStr = "0" + seriaStr;
+		// }
+		// }
+		// code += seriaStr;
+		// } else {
+		// code += "001";
+		// }
+		// 生成机构代码
+		Organization newest = organizationDao.getNewestOrg();
+		Integer currentIndex = 0;
+		if (newest != null) {
+			if (!newest.getCode().startsWith("01")) {
+				currentIndex = Integer.parseInt(newest.getCode());
+			}
+		}
+		String code = "";
+		while (true) {
+			currentIndex += 1;
+			code = String.valueOf(currentIndex);
+			if (code.length() < 3) {
+				int codeLength = code.length();
+				for (int i = 0; i < 3 - codeLength; i++) {
+					code = "0" + code;
 				}
 			}
-			code += seriaStr;
-		} else {
-			code += "001";
+			// 验证该code是否已经存在
+			Organization checkCode = organizationDao.retrieveByCode(code);
+			if (checkCode == null) {
+				break;
+			}
 		}
 		// 保存机构
 		Organization org = new Organization();

@@ -17,10 +17,10 @@ public interface OrganizationSettlementInterface {
 			@PathVariable("strategyTypeId") Long strategyTypeId, @PathVariable("serviceFee") BigDecimal serviceFee,
 			@PathVariable("deferredFee") BigDecimal deferredFee);
 
-	@RequestMapping(value = "stockoptionsettlement/{publisherId}/{stockOptionTradeId}/{tradeNo}/{cycleId}/{rightMoneyProfit}", method = RequestMethod.POST)
+	@RequestMapping(value = "stockoptionsettlement/{publisherId}/{stockOptionTradeId}/{tradeNo}/{cycleId}", method = RequestMethod.POST)
 	public Response<String> stockoptionSettlement(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("stockOptionTradeId") Long stockOptionTradeId, @PathVariable("tradeNo") String tradeNo,
-			@PathVariable("cycleId") Long cycleId, @PathVariable("rightMoneyProfit") BigDecimal rightMoneyProfit,
+			@PathVariable("cycleId") Long cycleId, @RequestParam("rightMoneyProfit") BigDecimal rightMoneyProfit,
 			@RequestParam("rightMoney") BigDecimal rightMoney);
 
 }

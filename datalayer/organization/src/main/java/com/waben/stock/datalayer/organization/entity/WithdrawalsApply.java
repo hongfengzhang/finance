@@ -34,6 +34,10 @@ public class WithdrawalsApply {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 手续费
+	 */
+	private BigDecimal processFee;
+	/**
 	 * 申请单号
 	 */
 	private String applyNo;
@@ -291,6 +295,14 @@ public class WithdrawalsApply {
 
 	public void setBankName(String bankName) {
 		this.bankName = bankName;
+	}
+
+	public BigDecimal getProcessFee() {
+		return processFee;
+	}
+
+	public void setProcessFee(BigDecimal processFee) {
+		this.processFee = processFee;
 	}
 
 }

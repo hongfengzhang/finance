@@ -28,4 +28,6 @@ public interface OrganizationDao extends BaseDao<Organization, Long> {
 	
 	
 
+	Organization getNewestOrg();
+
 }

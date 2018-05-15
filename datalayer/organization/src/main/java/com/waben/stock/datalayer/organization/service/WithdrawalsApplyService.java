@@ -68,9 +68,10 @@ public class WithdrawalsApplyService {
 		withdrawalsApply.setUpdateTime(date);
 		withdrawalsApply.setState(WithdrawalsApplyState.TOBEAUDITED);
 		withdrawalsApply.setApplyNo(UniqueCodeGenerator.generateWithdrawalsNo());
+		withdrawalsApply.setProcessFee(org.getBillCharge());
 		withdrawalsApplyDao.create(withdrawalsApply);
 		accountService.withdrawals(org, withdrawalsApply.getAmount(), withdrawalsApply.getId(),
-				withdrawalsApply.getApplyNo());
+				withdrawalsApply.getApplyNo(), org.getBillCharge());
 		return withdrawalsApply;
 	}
 
@@ -138,7 +139,7 @@ public class WithdrawalsApplyService {
 			withdrawalsApply.setUpdateTime(new Date());
 			if (state == WithdrawalsApplyState.REFUSED || state == WithdrawalsApplyState.FAILURE) {
 				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount(),
-						withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
+						withdrawalsApply.getId(), withdrawalsApply.getApplyNo(), withdrawalsApply.getProcessFee());
 			}
 			if (state == WithdrawalsApplyState.REFUSED) {
 				withdrawalsApply.setRefusedRemark(refusedRemark);
