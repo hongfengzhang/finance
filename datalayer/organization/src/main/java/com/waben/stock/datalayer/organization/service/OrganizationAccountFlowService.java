@@ -57,12 +57,12 @@ public class OrganizationAccountFlowService {
 	}
 
 	public Page<OrganizationAccountFlowWithTradeInfoDto> pagesWithTradeInfoByQuery(OrganizationAccountFlowQuery query) {
-		String queryTypeCondition = "";
-		if (query.getQueryType() != null && query.getQueryType() == 1) {
-			queryTypeCondition = " and t1.org_id=" + query.getCurrentOrgId() + " ";
-		} else {
-			queryTypeCondition = " and (t7.level=1 or (t4.id=t7.id or t4.parent_id=t7.id and t7.level>1)) ";
-		}
+		String queryTypeCondition = " and (t7.level=1 or (t4.id=t7.id or t4.parent_id=t7.id and t7.level>1)) ";
+//		if (query.getQueryType() != null && query.getQueryType() == 1) {
+//			queryTypeCondition = " and t1.org_id=" + query.getCurrentOrgId() + " ";
+//		} else {
+//			queryTypeCondition = " and (t7.level=1 or (t4.id=t7.id or t4.parent_id=t7.id and t7.level>1)) ";
+//		}
 		String tradeNoCondition = "";
 		if (!StringUtil.isEmpty(query.getTradeNo())) {
 			tradeNoCondition = " and  t1.resource_trade_no like '%" + query.getTradeNo() + "%' ";
