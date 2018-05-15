@@ -150,11 +150,6 @@ public class ExceptionConstant {
 	public static final String INVESTOR_STOCKACCOUNT_NOT_EXIST = "7005";
 	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
 	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
-	//当前用户已被冻结
-	public static final String AGENT_DISABLED_EXCEPITON = "7008";
-	//该角色已被使用
-	public static final String USER_ROLE_EXCEPITON = "7009";
-	
 
 	// 代理商服务异常
 	// 代理商不存在
@@ -179,6 +174,12 @@ public class ExceptionConstant {
 	public static final String LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION = "8010";
 	// 账户余额不足以冻结
 	public static final String BALANCE_NOTENOUGHFROZEN_EXCEPTION = "8011";
+	// 当前用户已被冻结
+	public static final String AGENT_DISABLED_EXCEPITON = "8012";
+	// 该角色已被使用
+	public static final String USER_ROLE_EXCEPITON = "8013";
+	// 该结算下代理商尚有未完成订单，请完成订单后再切换结算方式
+	public static final String SETTLEMENT_METHOD_EXCEPITON = "8014";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
@@ -212,8 +213,7 @@ public class ExceptionConstant {
 	// 奖品已空
 	public static final String PRIZE_IS_EMPTY = "11003";
 
-
-	//上传文件
-	//上传图片失败
+	// 上传文件
+	// 上传图片失败
 	public static final String FAILED_TO_UPLOAD_PICTURES = "12001";
 }

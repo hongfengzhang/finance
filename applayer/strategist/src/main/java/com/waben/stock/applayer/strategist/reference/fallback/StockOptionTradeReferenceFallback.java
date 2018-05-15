@@ -161,4 +161,9 @@ public class StockOptionTradeReferenceFallback implements StockOptionTradeRefere
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<Integer> countStockOptionTradeState() {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

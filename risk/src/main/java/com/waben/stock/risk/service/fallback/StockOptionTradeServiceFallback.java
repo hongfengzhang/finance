@@ -153,4 +153,9 @@ public class StockOptionTradeServiceFallback implements StockOptionTradeService 
 		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<Integer> countStockOptionTradeState() {
+		return new Response<>(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }
