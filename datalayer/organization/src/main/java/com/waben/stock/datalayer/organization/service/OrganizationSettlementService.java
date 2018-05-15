@@ -140,6 +140,12 @@ public class OrganizationSettlementService {
 								flowResourceId, tradeNo);
 					}
 				}
+				// 剩余的结算给一级机构
+				BigDecimal platformFee = amount.multiply(new BigDecimal("100")
+						.subtract(benefitConfigList.get(0).getRatio()).divide(new BigDecimal("100")))
+						.setScale(2, RoundingMode.DOWN);
+				accountService.benefit(orgTreeList.get(0), amount, platformFee, flowType, flowResourceType,
+						flowResourceId, tradeNo);
 			}
 		}
 		accountService.benefit(null, amount, amount, flowType, flowResourceType, flowResourceId, tradeNo);

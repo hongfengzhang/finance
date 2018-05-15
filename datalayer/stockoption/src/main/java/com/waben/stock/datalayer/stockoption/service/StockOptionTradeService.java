@@ -42,6 +42,7 @@ import com.waben.stock.datalayer.stockoption.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
+import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionStaDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.enums.OutsideMessageType;
@@ -521,6 +522,96 @@ public class StockOptionTradeService {
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
+	}
+
+	public StockOptionStaDto promotionSta(StockOptionPromotionQuery query) {
+		String publisherNameCondition = "";
+		if (!StringUtil.isEmpty(query.getPublisherName())) {
+			publisherNameCondition = " and t4.name like '%" + query.getPublisherName() + "%' ";
+		}
+		String publisherPhoneCondition = "";
+		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
+			publisherPhoneCondition = " and t3.phone like '%" + query.getPublisherPhone() + "%' ";
+		}
+		String stockCodeOrNameCondition = "";
+		if (!StringUtil.isEmpty(query.getStockCodeOrName())) {
+			stockCodeOrNameCondition = " and (t1.stock_code like '%" + query.getStockCodeOrName()
+					+ "%' or t1.stock_name like '%" + query.getStockCodeOrName() + "%') ";
+		}
+		String nominalAmountCondition = "";
+		if (query.getNominalAmount() != null) {
+			stockCodeOrNameCondition = " and t1.nominal_amount='" + query.getNominalAmount() + "' ";
+		}
+		String cycleNameCondition = "";
+		if (!StringUtil.isEmpty(query.getCycleId())) {
+			cycleNameCondition = " and t1.cycle_id='" + query.getCycleId() + "' ";
+		}
+		String stateCondition = "";
+		if (!StringUtil.isEmpty(query.getState()) && !"0".equals(query.getState().trim())) {
+			stateCondition = " and t1.state in(" + query.getState() + ") ";
+		}
+		String isTestCondition = "";
+		if (query.getIsTest() != null) {
+			if (query.getIsTest()) {
+				isTestCondition = " and t1.is_test=1 ";
+			} else {
+				isTestCondition = " and (t1.is_test is null or t1.is_test=0) ";
+			}
+		}
+		String isMarkCondition = "";
+		if (query.getIsMark() != null) {
+			if (query.getIsMark()) {
+				isMarkCondition = " and t1.is_mark=1 ";
+			} else {
+				isMarkCondition = " and (t1.is_mark is null or t1.is_mark=0) ";
+			}
+		}
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.apply_time>='" + sdf.format(query.getStartTime()) + "' ";
+		}
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.apply_time<'" + sdf.format(query.getEndTime()) + "' ";
+		}
+		String startRatioCondition = "";
+		if (query.getStartRatio() != null) {
+			startRatioCondition = " and t1.right_money_ratio>='"
+					+ query.getStartRatio().divide(new BigDecimal("100")).toString() + "' ";
+		}
+		String endRatioCondition = "";
+		if (query.getEndRatio() != null) {
+			endRatioCondition = " and t1.right_money_ratio<='"
+					+ query.getEndRatio().divide(new BigDecimal("100")).toString() + "' ";
+		}
+		String orgCodeOrNameConditon = "";
+		if (!StringUtil.isEmpty(query.getOrgCodeOrName())) {
+			orgCodeOrNameConditon = " and (t5.code like '%" + query.getOrgCodeOrName() + "%' or t5.name like '%"
+					+ query.getOrgCodeOrName() + "%') ";
+		}
+
+		String sql = String.format(
+				"select t1.id, t1.trade_no, t4.name, t3.phone, t1.stock_code, t1.stock_name, t1.cycle_name, t1.nominal_amount, t1.right_money_ratio, "
+						+ "t1.right_money, t2.right_money_ratio as org_right_money_ratio, t2.right_money as org_right_money, t1.apply_time, t1.buying_time, t1.buying_price, t1.selling_time, t1.selling_price, "
+						+ "t1.profit, t1.is_test, t1.is_mark, t1.state, t1.right_time, t5.id as org_id, t5.code as org_code, t5.name as org_name from stock_option_trade t1 "
+						+ "LEFT JOIN offline_stock_option_trade t2 on t1.offline_trade=t2.id "
+						+ "LEFT JOIN publisher t3 on t1.publisher_id=t3.id "
+						+ "LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
+						+ "LEFT JOIN p_organization t5 on t5.id=t1.promotion_org_id "
+						+ "LEFT JOIN p_organization t6 on t6.id=" + query.getCurrentOrgId() + " "
+						+ "where 1=1 %s %s %s %s %s %s %s %s %s %s %s %s %s and (t6.level=1 or (t5.id=t6.id or t5.parent_id=t6.id)) order by t1.apply_time desc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				publisherNameCondition, publisherPhoneCondition, stockCodeOrNameCondition, nominalAmountCondition,
+				cycleNameCondition, stateCondition, isTestCondition, isMarkCondition, startTimeCondition,
+				endTimeCondition, startRatioCondition, endRatioCondition, orgCodeOrNameConditon);
+		String sumSql1 = "select sum(x.nominal_amount) from (" + sql.substring(0, sql.indexOf("limit")) + ") x";
+		String sumSql2 = "select sum(x.right_money) from (" + sql.substring(0, sql.indexOf("limit")) + ") x";
+		BigDecimal totalNominalAmount = sqlDao.executeComputeSql(sumSql1);
+		BigDecimal totalRightMoney = sqlDao.executeComputeSql(sumSql2);
+		StockOptionStaDto result = new StockOptionStaDto();
+		result.setTotalNominalAmount(totalNominalAmount != null ? totalNominalAmount : BigDecimal.ZERO);
+		result.setTotalRightMoney(totalRightMoney != null ? totalRightMoney : BigDecimal.ZERO);
+		return result;
 	}
 
 	public Page<StockOptionPromotionDto> promotionPagesByQuery(StockOptionPromotionQuery query) {
