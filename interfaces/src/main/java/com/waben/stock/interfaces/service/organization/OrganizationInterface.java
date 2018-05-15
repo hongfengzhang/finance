@@ -161,4 +161,12 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/tradingFowPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<TradingFowDto>> tradingFowPageByQuery(@RequestBody TradingFowQuery query);
+
+	/**
+	 * 根据机id获取代理商
+	 * 
+	 * @return 代理商
+	 */
+	@RequestMapping(value = "/org/{id}", method = RequestMethod.GET)
+	Response<OrganizationDto> fetchByOrgId(@PathVariable("id") Long id);
 }

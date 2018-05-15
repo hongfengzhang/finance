@@ -66,4 +66,9 @@ public class RoleDaoImpl implements RoleDao {
     public List<Role> list() {
         return repository.findAll();
     }
+
+	@Override
+	public List<Role> findByRoleName(String name) {
+		return repository.findByRoleName(name);
+	}
 }

@@ -162,4 +162,8 @@ public class RoleService {
         Role result = roleDao.update(role);
         return result;
     }
+    
+    public List<Role> findByRoleName(String name){
+    	return roleDao.findByRoleName(name);
+    }
 }

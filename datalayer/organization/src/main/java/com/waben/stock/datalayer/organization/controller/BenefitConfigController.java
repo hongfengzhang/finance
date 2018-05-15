@@ -17,11 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.organization.entity.BenefitConfig;
+import com.waben.stock.datalayer.organization.repository.SettlementMethodDao;
 import com.waben.stock.datalayer.organization.service.BenefitConfigService;
 import com.waben.stock.interfaces.dto.organization.BenefitConfigDto;
+import com.waben.stock.interfaces.dto.organization.SettlementMethodDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.BenefitConfigForm;
 import com.waben.stock.interfaces.service.organization.BenefitConfigInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,6 +44,9 @@ public class BenefitConfigController implements BenefitConfigInterface {
 
 	@Autowired
 	public BenefitConfigService benefitConfigService;
+
+	@Autowired
+	private SettlementMethodDao settlementMethodDao;
 
 	@GetMapping("/{id}")
 	@ApiOperation(value = "根据id获取分成配置")
@@ -112,6 +118,12 @@ public class BenefitConfigController implements BenefitConfigInterface {
 		Response<String> result = new Response<>();
 		result.setResult("success");
 		return result;
+	}
+
+	@Override
+	public Response<SettlementMethodDto> getSettlement() {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(SettlementMethodDto.class, settlementMethodDao.getMethodOne(), false));
 	}
 
 }

@@ -102,6 +102,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION, "一级代理商不能申请提现");
 		exceptionMap.put(ExceptionConstant.BALANCE_NOTENOUGHFROZEN_EXCEPTION, "账户余额不足以冻结");
 		exceptionMap.put(ExceptionConstant.SETTLEMENT_METHOD_EXCEPITON, "该结算下代理商尚有未完成订单，请完成订单后再切换结算方式!");
+		exceptionMap.put(ExceptionConstant.FORM_RATIO_EXCEPITON, "上级的比例不能为空,请设置上级表单比例");
+		exceptionMap.put(ExceptionConstant.FORM_RATIO_COMPARE_EXCEPITON, "当前的表单的比例不能大于上级的比例");
+		exceptionMap.put(ExceptionConstant.ROLE_EXISTENCE_EXCEPITON, "该角色已存在，请重新输入！");
 		exceptionMap.put(ExceptionConstant.RAKEBACK_RATIO_WRONG_EXCEPTION, "返佣比例设置错误，下级比例不能大于上级比例");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");

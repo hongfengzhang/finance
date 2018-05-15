@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.reference.BindCardReference;
+import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.service.OrganizationService;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
@@ -61,6 +62,9 @@ public class OrganizationController implements OrganizationInterface {
 	@Autowired
 	@Qualifier("bindCardReference")
 	private BindCardReference bindCardReference;
+
+	@Autowired
+	private OrganizationDao organizationDao;
 
 	@GetMapping("/{id}")
 	@ApiOperation(value = "根据id获取机构")
@@ -165,8 +169,8 @@ public class OrganizationController implements OrganizationInterface {
 
 	@Override
 	public Response<List<OrganizationDto>> fetchAll() {
-		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(organizationService.findAll(),
-				OrganizationDto.class));
+		return new Response<>(
+				CopyBeanUtils.copyListBeanPropertiesToList(organizationService.findAll(), OrganizationDto.class));
 	}
 
 	@Override
@@ -215,6 +219,12 @@ public class OrganizationController implements OrganizationInterface {
 		Page<TradingFowDto> page = organizationService.tradingFowPageByQuery(query);
 		PageInfo<TradingFowDto> result = PageToPageInfo.pageToPageInfo(page, TradingFowDto.class);
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<OrganizationDto> fetchByOrgId(Long id) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(OrganizationDto.class, organizationDao.retrieveById(id), false));
 	}
 
 }

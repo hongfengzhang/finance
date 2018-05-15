@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.organization.BenefitConfigDto;
+import com.waben.stock.interfaces.dto.organization.SettlementMethodDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.BenefitConfigForm;
 
@@ -44,5 +45,10 @@ public interface BenefitConfigInterface {
 	 */
 	@RequestMapping(value = "/stockoption/config", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<String> stockoptionBenefitConfig(@RequestBody List<BenefitConfigForm> configFormList);
+	
+	@RequestMapping(value = "/settlement/method", method = RequestMethod.GET)
+	Response<SettlementMethodDto> getSettlement();
+	
+	
 
 }

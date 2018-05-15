@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.dto.organization;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import com.waben.stock.interfaces.enums.OrganizationState;
@@ -53,6 +54,11 @@ public class OrganizationDto {
 	 * 机构对应的账户信息
 	 */
 	private OrganizationAccountDto accountDto;
+
+	/**
+	 * 提现手续费
+	 */
+	private BigDecimal billCharge;
 
 	public Long getId() {
 		return id;
@@ -141,4 +147,13 @@ public class OrganizationDto {
 	public void setAccountDto(OrganizationAccountDto accountDto) {
 		this.accountDto = accountDto;
 	}
+
+	public BigDecimal getBillCharge() {
+		return billCharge;
+	}
+
+	public void setBillCharge(BigDecimal billCharge) {
+		this.billCharge = billCharge;
+	}
+
 }

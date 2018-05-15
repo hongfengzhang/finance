@@ -95,6 +95,11 @@ public class OrganizationDaoImpl implements OrganizationDao {
 	}
 
 	@Override
+
+	public Organization retrieveById(Long orgId) {
+		return repository.findById(orgId);
+	}
+
 	public Organization getNewestOrg() {
 		Pageable pageRequest = new PageRequest(0, 1, new Sort(new Order(Direction.DESC, "id")));
 		Page<Organization> page = repository.findAll(pageRequest);

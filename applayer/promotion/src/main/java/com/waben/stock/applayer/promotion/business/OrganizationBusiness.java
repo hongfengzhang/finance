@@ -145,5 +145,13 @@ public class OrganizationBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	
+	public OrganizationDto findByOrgId(Long orgId) {
+		Response<OrganizationDto> response = reference.fetchByOrgId(orgId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 }

@@ -86,12 +86,12 @@ public class OrganizationAccountController {
 	@ApiOperation(value = "代理商资产分页")
 	public Response<PageInfo<OrganizationAccountVo>> pages(OrganizationAccountQuery query) {
 		long start = System.currentTimeMillis();
-		if (!StringUtil.isEmpty(query.getOrgName())) {
-			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
-			if (orgBindCard != null) {
-				query.setOrgId(orgBindCard.getResourceId());
-			}
-		}
+//		if (!StringUtil.isEmpty(query.getOrgName())) {
+//			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
+//			if (orgBindCard != null) {
+//				query.setOrgId(orgBindCard.getResourceId());
+//			}
+//		}
 		PageInfo<OrganizationAccountDto> pageInfo = accountBusiness.pages(query);
 		List<OrganizationAccountVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(),
 				OrganizationAccountVo.class);
@@ -161,12 +161,12 @@ public class OrganizationAccountController {
 	public void export(OrganizationAccountQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		if (!StringUtil.isEmpty(query.getOrgName())) {
-			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
-			if (orgBindCard != null) {
-				query.setOrgId(orgBindCard.getResourceId());
-			}
-		}
+//		if (!StringUtil.isEmpty(query.getOrgName())) {
+//			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
+//			if (orgBindCard != null) {
+//				query.setOrgId(orgBindCard.getResourceId());
+//			}
+//		}
 		PageInfo<OrganizationAccountDto> pageInfo = accountBusiness.pages(query);
 		List<OrganizationAccountVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(),
 				OrganizationAccountVo.class);

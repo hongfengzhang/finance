@@ -23,6 +23,10 @@ public interface OrganizationDao extends BaseDao<Organization, Long> {
 	List<Organization> listByLevel(Integer level);
 
 	Organization retrieveOrganizationByName(String orgName);
+	
+	Organization retrieveById(Long orgId);
+	
+	
 
 	Organization getNewestOrg();
 
