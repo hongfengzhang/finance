@@ -59,7 +59,7 @@ public class OrganizationSettlementBusiness {
 			}
 			throw new ServiceException(response.getCode());
 		} catch (Exception ex) {
-			logger.error("调用机构期权结算发生异常!{}_{}_{}", publisherId, stockOptionTradeId, cycleId);
+			logger.error("调用机构期权结算发生异常!{}_{}_{}", publisherId, stockOptionTradeId, cycleId, ex);
 		}
 	}
 

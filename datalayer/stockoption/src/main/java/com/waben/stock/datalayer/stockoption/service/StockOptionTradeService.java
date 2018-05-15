@@ -697,9 +697,11 @@ public class StockOptionTradeService {
 		trade.setOfflineTrade(offlineTrade);
 		StockOptionTrade result = stockOptionTradeDao.update(trade);
 		// 给渠道推广机构结算
-		if (trade.getOfflineTrade().getRightMoney() != null) {
+		if (trade.getOfflineTrade().getRightMoney() != null
+				&& (trade.getIsTest() == null || trade.getIsTest() == false)) {
+			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
 			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
-					trade.getCycleId(), null, trade.getRightMoney());
+					trade.getCycleId(), rightMoneyProfit, trade.getRightMoney());
 		}
 		// 站外消息推送
 		sendOutsideMessage(result);
@@ -752,12 +754,6 @@ public class StockOptionTradeService {
 		if (profit.compareTo(BigDecimal.ZERO) > 0) {
 			// 用户收益
 			accountBusiness.optionProfit(trade.getPublisherId(), trade.getId(), profit);
-		}
-		// 给渠道推广机构结算
-		if (trade.getOfflineTrade().getRightMoney() != null) {
-			BigDecimal rightMoneyProfit = trade.getRightMoney().subtract(trade.getOfflineTrade().getRightMoney());
-			orgSettlementBusiness.stockoptionSettlement(trade.getPublisherId(), trade.getId(), trade.getTradeNo(),
-					trade.getCycleId(), rightMoneyProfit, trade.getRightMoney());
 		}
 		// 站外消息推送
 		sendOutsideMessage(trade);

@@ -42,7 +42,7 @@ public class OrganizationSettlementController implements OrganizationSettlementI
 	}
 
 	public Response<String> stockoptionSettlement(@PathVariable Long publisherId, @PathVariable Long stockOptionTradeId,
-			@PathVariable String tradeNo, @PathVariable Long cycleId, @PathVariable BigDecimal rightMoneyProfit,
+			@PathVariable String tradeNo, @PathVariable Long cycleId, BigDecimal rightMoneyProfit,
 			BigDecimal rightMoney) {
 		logger.info("机构结算期权交易{}，周期{}，平台权利金收益{}，权利金{}!", stockOptionTradeId, cycleId, rightMoneyProfit, rightMoney);
 		service.stockoptionSettlement(publisherId, stockOptionTradeId, tradeNo, cycleId, rightMoneyProfit, rightMoney);

@@ -84,7 +84,7 @@ public class OrganizationSettlementService {
 		if (checkFlowList != null && checkFlowList.size() > 0) {
 			return;
 		}
-		// 没有结算过，
+		// 没有结算过
 		SettlementMethod settlementMethod = settlementMethodDao.list().get(0);
 		if (settlementMethod.getSettlementType() == 1) {
 			// 分成结算，结算权利金收益
