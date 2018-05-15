@@ -65,8 +65,9 @@ public class WithdrawalsApplyController {
 	private QuickPayBusiness payBusiness;
 
 	@RequestMapping(value = "/", method = RequestMethod.POST)
-	public Response<WithdrawalsApplyDto> addition(@RequestParam(required = true) BigDecimal amount, @RequestParam(required = true) String paymentPassword) {
-		if(SecurityUtil.getUserDetails().getOrgLevel() == 1) {
+	public Response<WithdrawalsApplyDto> addition(@RequestParam(required = true) BigDecimal amount,
+			@RequestParam(required = true) String paymentPassword) {
+		if (SecurityUtil.getUserDetails().getOrgLevel() == 1) {
 			throw new ServiceException(ExceptionConstant.LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION);
 		}
 		Long orgId = SecurityUtil.getUserDetails().getOrgId();
@@ -103,6 +104,7 @@ public class WithdrawalsApplyController {
 
 	@RequestMapping(value = "/pages", method = RequestMethod.GET)
 	public Response<PageInfo<WithdrawalsApplyDto>> pagesByQuery(WithdrawalsApplyQuery applyQuery) {
+		applyQuery.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		return new Response<>(business.pagesByQuery(applyQuery));
 	}
 
@@ -119,14 +121,14 @@ public class WithdrawalsApplyController {
 		resp.setResult("success");
 		return resp;
 	}
-	
+
 	@RequestMapping("/protocolcallback")
-    @ApiOperation(value = "网贝提现异步通知", hidden = true)
-    @ResponseBody
-    public String protocolCallBack(HttpServletRequest request){
-        String result = payBusiness.wabenProtocolCallBack(request);
-        return result;
-    }
+	@ApiOperation(value = "网贝提现异步通知", hidden = true)
+	@ResponseBody
+	public String protocolCallBack(HttpServletRequest request) {
+		String result = payBusiness.wabenProtocolCallBack(request);
+		return result;
+	}
 
 	@RequestMapping("/paypalnotify")
 	@ApiOperation(value = "连连支付代付回调接口", hidden = true)

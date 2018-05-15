@@ -35,6 +35,7 @@ public class CustomerService {
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public Page<CustomerDto> pagesByQuery(CustomerQuery query) {
+		String currentOrgCondition = " and (t6.level=1 or (t4.id=t6.id or t4.parent_id=t6.id and t6.level>1)) ";
 		String publisherIdCondition = "";
 		if (query.getPublisherId() != null && !"".equals(query.getPublisherId().trim())) {
 			publisherIdCondition = " and t1.id='" + query.getPublisherId().trim() + "' ";
@@ -82,10 +83,11 @@ public class CustomerService {
 						+ "LEFT JOIN p_organization t4 on t2.org_code=t4.code "
 						+ "LEFT JOIN p_organization t6 on t6.id=" + query.getCurrentOrgId() + " "
 						+ "LEFT JOIN capital_account t3 on t1.id=t3.publisher_id "
-						+ "where 1=1 %s %s %s %s %s %s %s %s order by t1.create_time desc limit "
+						+ "where 1=1 %s %s %s %s %s %s %s %s %s order by t1.create_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				startTimeCondition, endTimeCondition, publisherIdCondition, publisherPhoneCondition,
-				publisherNameCondition, orgCodeOrNameConditon, isTestCondition, stateCondition);
+				currentOrgCondition, startTimeCondition, endTimeCondition, publisherIdCondition,
+				publisherPhoneCondition, publisherNameCondition, orgCodeOrNameConditon, isTestCondition,
+				stateCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setPublisherId", new Class<?>[] { Long.class }));
