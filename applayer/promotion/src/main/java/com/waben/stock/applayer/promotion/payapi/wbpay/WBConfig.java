@@ -6,15 +6,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class WBConfig {
 	
-//	@Value("${pay.merchant}")
+	@Value("${pay.merchant}")
 	private String merchantNo;
-//	@Value("${pay.key}")
+	@Value("${pay.key}")
 	private String key;
-//	@Value("${pay.notifyUrl}")
+	@Value("${pay.notifyUrl}")
 	private String notifyUrl;
-//	@Value("${pay.frontUrl}")
+	@Value("${pay.frontUrl}")
 	private String frontUrl;
-//	@Value("${pay.protocolcallback}")
+	@Value("${pay.protocolcallback}")
 	private String protocol_callback;
 
 	public static final String tradeType = "quick_bank";
