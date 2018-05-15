@@ -63,7 +63,7 @@ public class BenefitConfigBusiness {
 				if (benefitConfigForm.getOrgId() != null) {
 					OrganizationDto dto = orgBusiness.findByOrgId(benefitConfigForm.getOrgId());
 					// 如果是第三级或者更低层级的代理商，需要判断上级的比例不能为空，且当前的表单的比例不能大于上级的比例
-					if (dto.getLevel() >= 3) {
+					if (dto != null && dto.getLevel() != null && dto.getLevel() >= 3) {
 						List<BenefitConfigDto> parentConfigList = this.benefitConfigList(dto.getParentId(),
 								benefitConfigForm.getResourceId().intValue());
 						for (int i = 0; i < configFormList.size(); i++) {
