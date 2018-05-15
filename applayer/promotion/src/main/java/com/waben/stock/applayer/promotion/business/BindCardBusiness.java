@@ -78,10 +78,10 @@ public class BindCardBusiness {
 				return response.getResult();
 			}
 			throw new ServiceException(response.getCode());
-		} catch(ServiceException ex) {
+		} catch (ServiceException ex) {
 			String type = ex.getType();
-			if(type.equals("2014") || type.equals("1003")) {
-				throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION); 
+			if (type.equals("2014") || type.equals("1003")) {
+				throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION);
 			}
 			throw ex;
 		}
@@ -113,10 +113,10 @@ public class BindCardBusiness {
 				return response.getResult();
 			}
 			throw new ServiceException(response.getCode());
-		} catch(ServiceException ex) {
+		} catch (ServiceException ex) {
 			String type = ex.getType();
-			if(type.equals("2014") || type.equals("1003")) {
-				throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION); 
+			if (type.equals("2014") || type.equals("1003")) {
+				throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION);
 			}
 			throw ex;
 		}
@@ -133,15 +133,14 @@ public class BindCardBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
-	public BindCardDto getOrgBindCard(Long orgId) {
-        List<BindCardDto> bindCardList = this.listsByOrgId(orgId);
-        if (bindCardList != null && bindCardList.size() > 0) {
-            return bindCardList.get(bindCardList.size() - 1);
-        }
-        return null;
-    }
 
+	public BindCardDto getOrgBindCard(Long orgId) {
+		List<BindCardDto> bindCardList = this.listsByOrgId(orgId);
+		if (bindCardList != null && bindCardList.size() > 0) {
+			return bindCardList.get(bindCardList.size() - 1);
+		}
+		return null;
+	}
 
 	public BindCardDto findOrgBindCardByName(String name) {
 		Response<BindCardDto> response = service.fetchOrgBindCardByName(name);
@@ -151,19 +150,19 @@ public class BindCardBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-    public BindCardDto orgBindCard(Long orgId, BindCardDto bindCardDto) {
-        if (bindCardDto.getId() != null && bindCardDto.getId() > 0) {
-            if (bindCardDto.getResourceType() == BindCardResourceType.ORGANIZATION
-                    && bindCardDto.getResourceId().longValue() == orgId.longValue()) {
-                return this.revision(bindCardDto);
-            } else {
-                throw new ServiceException(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION);
-            }
-        } else {
-            bindCardDto.setResourceType(BindCardResourceType.ORGANIZATION);
-            bindCardDto.setResourceId(orgId);
-            return this.save(bindCardDto);
-        }
-    }
+	public BindCardDto orgBindCard(Long orgId, BindCardDto bindCardDto) {
+		if (bindCardDto.getId() != null && bindCardDto.getId() > 0) {
+			BindCardDto oldBindCardDto = getOrgBindCard(orgId);
+			oldBindCardDto.setBankCard(bindCardDto.getBankCard());
+			oldBindCardDto.setIdCard(bindCardDto.getIdCard());
+			oldBindCardDto.setName(bindCardDto.getName());
+			oldBindCardDto.setPhone(bindCardDto.getPhone());
+			return this.revision(oldBindCardDto);
+		} else {
+			bindCardDto.setResourceType(BindCardResourceType.ORGANIZATION);
+			bindCardDto.setResourceId(orgId);
+			return this.save(bindCardDto);
+		}
+	}
 
 }
