@@ -186,7 +186,7 @@ public class OrganizationAccountService {
 		flowDao.create(flow);
 		// 提现手续费
 		if (processFee != null && processFee.compareTo(BigDecimal.ZERO) > 0) {
-			reduceAmount(account, amount, date);
+			reduceAmount(account, processFee, date);
 			OrganizationAccountFlow processFeeFlow = new OrganizationAccountFlow();
 			processFeeFlow.setAmount(processFee.abs().multiply(new BigDecimal("-1")));
 			processFeeFlow.setOriginAmount(processFee.abs().multiply(new BigDecimal("-1")));
