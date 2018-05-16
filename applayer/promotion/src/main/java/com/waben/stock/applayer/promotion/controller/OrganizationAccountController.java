@@ -108,7 +108,7 @@ public class OrganizationAccountController {
 				response.getContent().get(i).setPopPulisherCount(publisherBusiness.findAll().size());
 			} else {
 				List<OrganizationDto> organizationDtos = organizationBusiness
-						.listByParentId(organizationDto.getParentId());
+						.listByParentId(organizationDto.getId());
 				response.getContent().get(i).setChildOrgCount(organizationDtos.size());
 				List<OrganizationPublisherDto> organizationPublisherDtos = publisherBusiness
 						.findOrganizationPublishersByCode(organizationDto.getCode());
