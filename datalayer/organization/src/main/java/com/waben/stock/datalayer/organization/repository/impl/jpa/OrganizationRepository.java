@@ -28,9 +28,9 @@ public interface OrganizationRepository extends CustomJpaRepository<Organization
 	List<Organization> findByName(String orgName);
 
 	List<Organization> findByLevel(Integer level);
-	
-	@Query("select o from Organization o where o.id=?1")
-	Organization retrieveById(Long orgId);
+
+	@Query(value = "select * from p_organization o where o.id = ?1", nativeQuery = true)
+	Organization findByOrgId(Long orgId);
 
 	Page<Organization> findOrderById(Pageable page);
 

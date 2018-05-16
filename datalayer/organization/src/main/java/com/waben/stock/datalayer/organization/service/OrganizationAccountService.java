@@ -324,6 +324,8 @@ public class OrganizationAccountService {
 				organizationAccount.getAvailableBalance().add(organizationAccount.getFrozenCapital()));
 		organizationAccount.setFrozenCapital(new BigDecimal("0"));
 		organizationAccount.setState(1);
+		organizationAccount.setReason(null);
+		organizationAccountDao.update(organizationAccount);
 		return organizationAccount;
 	}
 
@@ -339,6 +341,7 @@ public class OrganizationAccountService {
 				organizationAccount.getAvailableBalance().subtract(account.getFrozenCapital().abs()));
 		organizationAccount.setReason(account.getReason());
 		organizationAccount.setState(2);
+		organizationAccountDao.update(organizationAccount);
 		return organizationAccount;
 	}
 }

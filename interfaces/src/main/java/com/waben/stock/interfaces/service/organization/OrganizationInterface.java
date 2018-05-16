@@ -167,6 +167,6 @@ public interface OrganizationInterface {
 	 * 
 	 * @return 代理商
 	 */
-	@RequestMapping(value = "/org/{id}", method = RequestMethod.GET)
-	Response<OrganizationDto> fetchByOrgId(@PathVariable("id") Long id);
+	@RequestMapping(value = "/organization/orgId", method = RequestMethod.GET)
+	Response<OrganizationDto> fetchByOrgId(@RequestParam("id") Long id);
 }

@@ -99,8 +99,7 @@ public class BenefitConfigController implements BenefitConfigInterface {
 	}
 
 	@Override
-	public Response<List<BenefitConfigDto>> benefitConfigList(@RequestParam(required = true) Long orgId,
-			@RequestParam(required = true) Integer resourceType) {
+	public Response<List<BenefitConfigDto>> benefitConfigList(Long orgId, Integer resourceType) {
 		return new Response<>(benefitConfigService.benefitConfigList(orgId, resourceType));
 	}
 

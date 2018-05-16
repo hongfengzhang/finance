@@ -224,7 +224,7 @@ public class OrganizationController implements OrganizationInterface {
 	@Override
 	public Response<OrganizationDto> fetchByOrgId(Long id) {
 		return new Response<>(
-				CopyBeanUtils.copyBeanProperties(OrganizationDto.class, organizationDao.retrieveById(id), false));
+				CopyBeanUtils.copyBeanProperties(OrganizationDto.class, organizationDao.findByOrgId(id), false));
 	}
 
 }

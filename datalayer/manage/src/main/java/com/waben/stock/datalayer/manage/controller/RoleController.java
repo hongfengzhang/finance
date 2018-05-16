@@ -79,10 +79,10 @@ public class RoleController implements RoleInterface {
 
 	@Override
 	public Response<RoleDto> add(@RequestBody RoleDto roleDto) {
-		List<Role> roleList = roleService.findByRoleName(roleDto.getName());
-		if (roleList != null && roleList.size() > 0) {
-			throw new ServiceException(ExceptionConstant.ROLE_EXISTENCE_EXCEPITON);
-		}
+//		List<Role> roleList = roleService.findByRoleName(roleDto.getName());
+//		if (roleList != null && roleList.size() > 0) {
+//			throw new ServiceException(ExceptionConstant.ROLE_EXISTENCE_EXCEPITON);
+//		}
 		Role role = CopyBeanUtils.copyBeanProperties(Role.class, roleDto, false);
 		List<MenuDto> menuDtos = new ArrayList<>();
 		menuDtos.addAll(roleDto.getMenusDtos());

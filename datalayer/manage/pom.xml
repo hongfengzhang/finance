@@ -34,5 +34,6 @@
 				<artifactId>maven-dependency-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>manage</finalName>
 	</build>
 </project>

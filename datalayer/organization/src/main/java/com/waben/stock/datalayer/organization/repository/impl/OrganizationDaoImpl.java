@@ -95,9 +95,8 @@ public class OrganizationDaoImpl implements OrganizationDao {
 	}
 
 	@Override
-
-	public Organization retrieveById(Long orgId) {
-		return repository.findById(orgId);
+	public Organization findByOrgId(Long orgId) {
+		return repository.findByOrgId(orgId);
 	}
 
 	public Organization getNewestOrg() {

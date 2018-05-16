@@ -55,7 +55,7 @@ public class ExceptionConstant {
 	public static final String REALNAME_EXIST_EXCEPTION = "2016";
 	// 实名认证信息错误
 	public static final String REALNAME_WRONG_EXCEPTION = "2017";
-	// 代理商代码不存在
+	// 用户修改不成功，有未完成订单
 	public static final String ORGCODE_NOTEXIST_EXCEPTION = "2018";
 	// 该银行卡已被使用
 	public static final String BANKCARD_ALREADY_USERED_EXCEPTION = "2019";
@@ -186,7 +186,7 @@ public class ExceptionConstant {
 	public static final String FORM_RATIO_COMPARE_EXCEPITON = "8016";
 	// 该角色已存在，请重新输入
 	public static final String ROLE_EXISTENCE_EXCEPITON = "8017";
-	// 返佣比例设置错误，下级比例不能大于上级比例
+	// 返佣比例设置错误，当前比例不能大于上级比例
 	public static final String RAKEBACK_RATIO_WRONG_EXCEPTION = "8018";
 
 

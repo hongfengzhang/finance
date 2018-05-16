@@ -64,8 +64,7 @@ public class BenefitConfigBusiness {
 					OrganizationDto dto = orgBusiness.findByOrgId(benefitConfigForm.getOrgId());
 					// 如果是第三级或者更低层级的代理商，需要判断上级的比例不能为空，且当前的表单的比例不能大于上级的比例
 					if (dto != null && dto.getLevel() != null && dto.getLevel() >= 3) {
-						List<BenefitConfigDto> parentConfigList = this.benefitConfigList(dto.getParentId(),
-								benefitConfigForm.getResourceId().intValue());
+						List<BenefitConfigDto> parentConfigList = this.benefitConfigList(dto.getParentId(), 2);
 						for (int i = 0; i < configFormList.size(); i++) {
 							BigDecimal formRatio = configFormList.get(i).getRightMoneyRatio();
 							BigDecimal parentRatio = parentConfigList.get(i).getRightMoneyRatio();
@@ -73,7 +72,7 @@ public class BenefitConfigBusiness {
 								throw new ServiceException(ExceptionConstant.FORM_RATIO_EXCEPITON);
 							}
 							if (formRatio != null && formRatio.compareTo(parentRatio) > 0) {
-								throw new ServiceException(ExceptionConstant.FORM_RATIO_EXCEPITON);
+								throw new ServiceException(ExceptionConstant.RAKEBACK_RATIO_WRONG_EXCEPTION);
 							}
 						}
 					}
