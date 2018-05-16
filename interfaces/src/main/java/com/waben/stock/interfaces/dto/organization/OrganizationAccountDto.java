@@ -49,6 +49,9 @@ public class OrganizationAccountDto implements Serializable{
 	 */
 	private Integer state;
 
+	/**
+	 * 冻结原因
+	 */
 	private String reason;
 
 	public Long getId() {
