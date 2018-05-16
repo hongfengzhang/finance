@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.organization.service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -69,9 +70,12 @@ public class WithdrawalsApplyService {
 		withdrawalsApply.setState(WithdrawalsApplyState.TOBEAUDITED);
 		withdrawalsApply.setApplyNo(UniqueCodeGenerator.generateWithdrawalsNo());
 		withdrawalsApply.setProcessFee(org.getBillCharge());
+		if (org.getBillCharge() != null && org.getBillCharge().compareTo(withdrawalsApply.getAmount()) > 0) {
+			throw new ServiceException(ExceptionConstant.PROCESSFEE_NOT_ENOUGH_EXCEPTION);
+		}
 		withdrawalsApplyDao.create(withdrawalsApply);
 		accountService.withdrawals(org, withdrawalsApply.getAmount(), withdrawalsApply.getId(),
-				withdrawalsApply.getApplyNo(), org.getBillCharge());
+				withdrawalsApply.getApplyNo());
 		return withdrawalsApply;
 	}
 
@@ -131,6 +135,7 @@ public class WithdrawalsApplyService {
 		return pages;
 	}
 
+	@Transactional
 	public WithdrawalsApply changeState(Long applyId, WithdrawalsApplyState state, String refusedRemark) {
 		WithdrawalsApply withdrawalsApply = withdrawalsApplyDao.retrieve(applyId);
 		WithdrawalsApplyState oldState = withdrawalsApply.getState();
@@ -139,10 +144,15 @@ public class WithdrawalsApplyService {
 			withdrawalsApply.setUpdateTime(new Date());
 			if (state == WithdrawalsApplyState.REFUSED || state == WithdrawalsApplyState.FAILURE) {
 				accountService.withdrawalsFailure(withdrawalsApply.getOrg(), withdrawalsApply.getAmount(),
-						withdrawalsApply.getId(), withdrawalsApply.getApplyNo(), withdrawalsApply.getProcessFee());
+						withdrawalsApply.getId(), withdrawalsApply.getApplyNo());
 			}
 			if (state == WithdrawalsApplyState.REFUSED) {
 				withdrawalsApply.setRefusedRemark(refusedRemark);
+			}
+			if (state == WithdrawalsApplyState.SUCCESS) {
+				BigDecimal processFee = withdrawalsApply.getProcessFee();
+				accountService.processFee(withdrawalsApply.getOrg(), processFee, applyId,
+						withdrawalsApply.getApplyNo());
 			}
 			withdrawalsApplyDao.update(withdrawalsApply);
 		}
