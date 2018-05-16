@@ -14,6 +14,7 @@ import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionBlacklistAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionRiskAdminDto;
 import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
+import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionStaDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionAmountLimitDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
@@ -56,6 +57,16 @@ public interface StockOptionTradeInterface {
 	 */
 	@RequestMapping(value = "/promotionpages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(@RequestBody StockOptionPromotionQuery query);
+	
+	/**
+	 * 统计名义本金、权利金总和
+	 * 
+	 * @param query
+	 *            查询条件
+	 * @return 名义本金、权利金总和
+	 */
+	@RequestMapping(value = "/promotionSta", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<StockOptionStaDto> promotionSta(@RequestBody StockOptionPromotionQuery query);
 
 	/**
 	 * 分页查询期权交易（终端用户）

@@ -14,6 +14,7 @@ import com.waben.stock.applayer.promotion.reference.stockoption.StockOptionTrade
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
+import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionStaDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -33,6 +34,14 @@ public class StockOptionTradeBusiness {
 
 	@Autowired
 	private RestTemplate restTemplate;
+
+	public StockOptionStaDto promotionSta(StockOptionPromotionQuery query) {
+		Response<StockOptionStaDto> response = reference.promotionSta(query);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 	public PageInfo<StockOptionPromotionDto> promotionPagesByQuery(StockOptionPromotionQuery query) {
 		Response<PageInfo<StockOptionPromotionDto>> response = reference.promotionPagesByQuery(query);

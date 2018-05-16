@@ -24,6 +24,7 @@ import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.applayer.promotion.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
+import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionStaDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -60,8 +61,16 @@ public class PromotionStockOptionTradeController {
 		List<StockOptionCycleDto> response = cycleBusiness.findAll();
 		return new Response<>(response);
 	}
+	
+	@RequestMapping(value = "/sta", method = RequestMethod.GET)
+	@ApiOperation(value = "统计名义本金、权利金总和")
+	public Response<StockOptionStaDto> promotionSta(StockOptionPromotionQuery query) {
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		return new Response<>(business.promotionSta(query));
+	}
 
 	@RequestMapping(value = "/pages", method = RequestMethod.GET)
+	@ApiOperation(value = "查询期权订单")
 	public Response<PageInfo<StockOptionPromotionDto>> promotionPagesByQuery(StockOptionPromotionQuery query) {
 		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		return new Response<>(business.promotionPagesByQuery(query));

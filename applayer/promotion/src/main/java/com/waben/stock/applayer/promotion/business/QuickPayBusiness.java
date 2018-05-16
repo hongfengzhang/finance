@@ -54,10 +54,10 @@ public class QuickPayBusiness {
 
 	@Autowired
 	private WBConfig wbConfig;
-	
+
 	@Autowired
 	private RabbitmqProducer producer;
-	
+
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
 	private boolean isProd = true;
@@ -123,48 +123,53 @@ public class QuickPayBusiness {
 	}
 
 	public void payWabenWithdrawals(WithdrawalsApplyDto apply) {
-//		logger.info("发起提现申请");
-//		Map<String, String> request = new TreeMap<>();
-//		SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
-//		request.put("cardNo", apply.getBankCard());
-//		request.put("bankCode", "CCB");
-//		request.put("name", apply.getName());
-//		request.put("phone", apply.getPhone());
-//		request.put("outTradeNo", apply.getApplyNo());
-//		request.put("notifyUrl", wbConfig.getProtocol_callback());
-//		request.put("amount", apply.getAmount().movePointRight(2).toString());
-//		request.put("signType", WBConfig.sign_type);
-//		request.put("cardType", WBConfig.card_type);
-//		request.put("tradeType", WBConfig.protocol_type);
-//		request.put("merchantNo", wbConfig.getMerchantNo());
-//		request.put("timeStart", time.format(new Date()));
-//		request.put("product", "quick");
-//        request.put("payment", "d0");
-//        logger.info("发起提现申请:{}_{}_{}_{}", apply.getName(), apply.getIdCard(), apply.getPhone(), apply.getBankCard());
-//		String signStr = "";
-//		for (String keys : request.keySet()) {
-//			signStr += request.get(keys);
-//		}
-//		signStr += wbConfig.getKey();
-//		String sign = DigestUtils.md5Hex(signStr);
-//		request.put("sign", sign);
-//		String result = FormRequest.doPost(request, WBConfig.protocol_url);
-//		logger.info("提现返回:" + result);
-//		JSONObject jsStr = JSONObject.parseObject(result);
-//		// 修改提现状态
-//		applyBusiness.changeState(apply.getId(), "200".equals(jsStr.getString("code"))
-//				? WithdrawalsApplyState.PROCESSING.getIndex() : WithdrawalsApplyState.FAILURE.getIndex(), null);
-//		// 如果请求失败 抛出异常
-//		if (!"200".equals(jsStr.getString("code"))) {
-//			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("message"));
-//		}
-		
+		// logger.info("发起提现申请");
+		// Map<String, String> request = new TreeMap<>();
+		// SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
+		// request.put("cardNo", apply.getBankCard());
+		// request.put("bankCode", "CCB");
+		// request.put("name", apply.getName());
+		// request.put("phone", apply.getPhone());
+		// request.put("outTradeNo", apply.getApplyNo());
+		// request.put("notifyUrl", wbConfig.getProtocol_callback());
+		// request.put("amount",
+		// apply.getAmount().movePointRight(2).toString());
+		// request.put("signType", WBConfig.sign_type);
+		// request.put("cardType", WBConfig.card_type);
+		// request.put("tradeType", WBConfig.protocol_type);
+		// request.put("merchantNo", wbConfig.getMerchantNo());
+		// request.put("timeStart", time.format(new Date()));
+		// request.put("product", "quick");
+		// request.put("payment", "d0");
+		// logger.info("发起提现申请:{}_{}_{}_{}", apply.getName(), apply.getIdCard(),
+		// apply.getPhone(), apply.getBankCard());
+		// String signStr = "";
+		// for (String keys : request.keySet()) {
+		// signStr += request.get(keys);
+		// }
+		// signStr += wbConfig.getKey();
+		// String sign = DigestUtils.md5Hex(signStr);
+		// request.put("sign", sign);
+		// String result = FormRequest.doPost(request, WBConfig.protocol_url);
+		// logger.info("提现返回:" + result);
+		// JSONObject jsStr = JSONObject.parseObject(result);
+		// // 修改提现状态
+		// applyBusiness.changeState(apply.getId(),
+		// "200".equals(jsStr.getString("code"))
+		// ? WithdrawalsApplyState.PROCESSING.getIndex() :
+		// WithdrawalsApplyState.FAILURE.getIndex(), null);
+		// // 如果请求失败 抛出异常
+		// if (!"200".equals(jsStr.getString("code"))) {
+		// throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION,
+		// jsStr.getString("message"));
+		// }
+
 		WabenBankType bankType = WabenBankType.getByPlateformBankType(BankType.getByCode(apply.getBankCode()));
-        if (bankType == null) {
-            throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
-        }
+		if (bankType == null) {
+			throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
+		}
 		logger.info("发起提现申请:{}_{}_{}_{}", apply.getName(), apply.getIdCard(), apply.getPhone(), apply.getBankCard());
-        WithdrawParam param = new WithdrawParam();
+		WithdrawParam param = new WithdrawParam();
 		param.setAppId(wbConfig.getMerchantNo());
 		param.setBankAcctName(apply.getName());
 		param.setBankNo(apply.getBankCard());
@@ -173,25 +178,29 @@ public class QuickPayBusiness {
 		param.setCardType("0");
 		param.setOutOrderNo(apply.getApplyNo());
 		param.setTimestamp(sdf.format(new Date()));
-		param.setTotalAmt(new BigDecimal("0.01"));
+		BigDecimal realAmount = apply.getAmount();
+		if (apply.getProcessFee() != null && apply.getProcessFee().compareTo(BigDecimal.ZERO) > 0) {
+			realAmount = realAmount.subtract(apply.getProcessFee());
+		}
+		param.setTotalAmt(isProd ? realAmount : new BigDecimal("0.01"));
 		param.setVersion("1.0");
 		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
-        if(1 == withdrawRet.getStatus()) {
-        	// 提现请求成功，使用队列查询
-        	WithdrawQueryMessage message = new WithdrawQueryMessage();
-        	message.setApplyId(apply.getId());
-    		message.setAppId(wbConfig.getMerchantNo());
-    		message.setOutOrderNo(apply.getApplyNo());
-    		message.setOrderNo(withdrawRet.getOrderNo());
-    		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
-    		// 更新订单状态
-    		applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex(), null);
-        	apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
-        	applyBusiness.revision(apply);
-        } else {
-        	applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.FAILURE.getIndex(), null);
-            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
-        }
+		if (1 == withdrawRet.getStatus()) {
+			// 提现请求成功，使用队列查询
+			WithdrawQueryMessage message = new WithdrawQueryMessage();
+			message.setApplyId(apply.getId());
+			message.setAppId(wbConfig.getMerchantNo());
+			message.setOutOrderNo(apply.getApplyNo());
+			message.setOrderNo(withdrawRet.getOrderNo());
+			producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+			// 更新订单状态
+			applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.PROCESSING.getIndex(), null);
+			apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+			applyBusiness.revision(apply);
+		} else {
+			applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.FAILURE.getIndex(), null);
+			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
+		}
 	}
 
 	public void payPalCSA(WithdrawalsApplyDto apply) {

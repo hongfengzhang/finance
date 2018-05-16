@@ -19,6 +19,10 @@ public class WithdrawalsApplyDto {
 	 */
 	private BigDecimal amount;
 	/**
+	 * 手续费
+	 */
+	private BigDecimal processFee;
+	/**
 	 * 申请单号
 	 */
 	private String applyNo;
@@ -249,6 +253,14 @@ public class WithdrawalsApplyDto {
 
 	public void setRefusedRemark(String refusedRemark) {
 		this.refusedRemark = refusedRemark;
+	}
+
+	public BigDecimal getProcessFee() {
+		return processFee;
+	}
+
+	public void setProcessFee(BigDecimal processFee) {
+		this.processFee = processFee;
 	}
 
 }

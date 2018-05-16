@@ -106,6 +106,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.FORM_RATIO_COMPARE_EXCEPITON, "当前的表单的比例不能大于上级的比例");
 		exceptionMap.put(ExceptionConstant.ROLE_EXISTENCE_EXCEPITON, "该角色已存在，请重新输入！");
 		exceptionMap.put(ExceptionConstant.RAKEBACK_RATIO_WRONG_EXCEPTION, "返佣比例设置错误，当前比例不能大于上级比例");
+		exceptionMap.put(ExceptionConstant.PROCESSFEE_NOT_ENOUGH_EXCEPTION, "提现金额不足以支付提现手续费");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,
