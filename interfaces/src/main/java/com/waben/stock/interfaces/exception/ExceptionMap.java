@@ -41,7 +41,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION, "信息输入有误");
 		exceptionMap.put(ExceptionConstant.REALNAME_EXIST_EXCEPTION, "已实名认证，不能重复操作");
 		exceptionMap.put(ExceptionConstant.REALNAME_WRONG_EXCEPTION, "实名认证信息错误");
-		exceptionMap.put(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION, "用户修改不成功，有未完成订单");
+		exceptionMap.put(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION, "代理商代码不存在");
 		exceptionMap.put(ExceptionConstant.BANKCARD_ALREADY_USERED_EXCEPTION, "该银行卡已被使用");
 		exceptionMap.put(ExceptionConstant.REALNAME_ALREADY_USERED_EXCEPTION, "该实名信息已被使用");
 		exceptionMap.put(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION, "资金账户已冻结，不能执行资金相关的操作");
@@ -107,6 +107,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.ROLE_EXISTENCE_EXCEPITON, "该角色已存在，请重新输入！");
 		exceptionMap.put(ExceptionConstant.RAKEBACK_RATIO_WRONG_EXCEPTION, "返佣比例设置错误，当前比例不能大于上级比例");
 		exceptionMap.put(ExceptionConstant.PROCESSFEE_NOT_ENOUGH_EXCEPTION, "提现金额不足以支付提现手续费");
+		exceptionMap.put(ExceptionConstant.MODIFY_DISABLED_EXCEPITON, "修改不成功，该用户有未完成订单");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,

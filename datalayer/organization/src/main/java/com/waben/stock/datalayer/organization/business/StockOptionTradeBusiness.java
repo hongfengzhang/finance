@@ -20,8 +20,8 @@ public class StockOptionTradeBusiness {
 	@Qualifier("stockOptionTradeReference")
 	private StockOptionTradeReference reference;
 
-	public Integer countStockOptionTradeState() {
-		Response<Integer> response = reference.countStockOptionTradeState();
+	public Integer countStockOptionTradeState(Long publisherId) {
+		Response<Integer> response = reference.countStockOptionTradeState(publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

@@ -273,8 +273,8 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 
 	@Override
-	public Response<Integer> countStockOptionTradeState() {
-		return new Response<>(stockOptionTradeDao.countStockOptionTradeState());
+	public Response<Integer> countStockOptionTradeState(Long publisherId) {
+		return new Response<>(stockOptionTradeDao.countStockOptionTradeState(publisherId));
 	}
 
 }

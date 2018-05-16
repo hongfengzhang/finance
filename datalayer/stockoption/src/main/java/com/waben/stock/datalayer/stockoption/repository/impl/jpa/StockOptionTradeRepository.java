@@ -11,6 +11,6 @@ public interface StockOptionTradeRepository extends CustomJpaRepository<StockOpt
 
 	List<StockOptionTrade> findByState(StockOptionTradeState stockOptionTradeState);
 
-	@Query(value = "select count(s.id) as counts from stock_option_trade s where s.state in( 1,3,4,5,7 )", nativeQuery = true)
-	Integer countStockOptionTradeState();
+	@Query(value = "select count(s.id) as counts from stock_option_trade s where s.state in( 1,3,4,5,7 ) and s.publisher_id = ?1", nativeQuery = true)
+	Integer countStockOptionTradeState(Long publisherId);
 }

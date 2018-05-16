@@ -18,6 +18,6 @@ public interface StockOptionTradeDao extends BaseDao<StockOptionTrade, Long> {
 
     List<StockOptionTrade> retieveByState(StockOptionTradeState stockOptionTradeState);
     
-    Integer countStockOptionTradeState();
+    Integer countStockOptionTradeState(Long publisherId);
 
 }

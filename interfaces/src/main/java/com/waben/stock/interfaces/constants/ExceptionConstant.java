@@ -55,7 +55,7 @@ public class ExceptionConstant {
 	public static final String REALNAME_EXIST_EXCEPTION = "2016";
 	// 实名认证信息错误
 	public static final String REALNAME_WRONG_EXCEPTION = "2017";
-	// 用户修改不成功，有未完成订单
+	// 代理商代码不存在
 	public static final String ORGCODE_NOTEXIST_EXCEPTION = "2018";
 	// 该银行卡已被使用
 	public static final String BANKCARD_ALREADY_USERED_EXCEPTION = "2019";
@@ -65,6 +65,8 @@ public class ExceptionConstant {
 	public static final String CAPITALACCOUNT_FROZEN_EXCEPTION = "2021";
 	// 您的账号已被冻结无法登录
 	public static final String PUBLISHER_DISABLED_EXCEPITON = "2022";
+	// 用户修改不成功，有未完成订单
+	public static final String MODIFY_DISABLED_EXCEPITON = "2023";
 
 	/* 业务异常 */
 	// 系统管理业务异常

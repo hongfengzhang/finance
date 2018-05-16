@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.datalayer.organization.business.StockOptionTradeBusiness;
 import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.entity.OrganizationPublisher;
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
@@ -28,6 +29,9 @@ public class OrganizationPublisherService {
 
 	@Autowired
 	private OrganizationDao orgDao;
+	
+	@Autowired
+	private StockOptionTradeBusiness tradeBusiness;
 
 	@Transactional
 	public OrganizationPublisher addOrgPublisher(String orgCode, Long publisherId) {
@@ -38,6 +42,11 @@ public class OrganizationPublisherService {
 		if (org == null) {
 			throw new ServiceException(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION);
 		}
+		Integer count = tradeBusiness.countStockOptionTradeState(publisherId);
+		if (count > 0) {
+			throw new ServiceException(ExceptionConstant.MODIFY_DISABLED_EXCEPITON);
+		}
+		
 		OrganizationPublisher orgPublisher = dao.retrieveByPublisherId(publisherId);
 		if (orgPublisher != null) {
 			if (orgPublisher.getOrgCode().equals(orgCode)) {

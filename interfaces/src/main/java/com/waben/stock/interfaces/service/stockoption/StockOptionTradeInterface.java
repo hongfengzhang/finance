@@ -283,5 +283,5 @@ public interface StockOptionTradeInterface {
 	Response<StockOptionTradeDto> dueTreatmentExercise(@PathVariable("id") Long id);
 	
 	@RequestMapping(value = "/count/stockoptiontrade", method = RequestMethod.GET)
-	Response<Integer> countStockOptionTradeState();
+	Response<Integer> countStockOptionTradeState(@RequestParam("publisherId") Long publisherId);
 }

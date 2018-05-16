@@ -59,7 +59,7 @@ public class StockOptionTradeDaoImpl implements StockOptionTradeDao {
 	}
 
 	@Override
-	public Integer countStockOptionTradeState() {
-		return stockOptionTradeRepository.countStockOptionTradeState();
+	public Integer countStockOptionTradeState(Long publisherId) {
+		return stockOptionTradeRepository.countStockOptionTradeState(publisherId);
 	}
 }
