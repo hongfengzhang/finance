@@ -194,7 +194,7 @@ public class QuickPayBusiness {
 			message.setOrderNo(withdrawRet.getOrderNo());
 			producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
 			// 更新订单状态
-			applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.PROCESSING.getIndex(), null);
+			apply = applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.PROCESSING.getIndex(), null);
 			apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
 			applyBusiness.revision(apply);
 		} else {

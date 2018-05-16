@@ -118,5 +118,11 @@ public class UserController {
         }
         return new Response<>(response);
     }
+    
+    @RequestMapping(value = "/password", method = RequestMethod.PUT)
+	public Response<Void> modifyPassword(String oldPassword, String password) {
+	  	userBusiness.modifyPassword(SecurityUtil.getUserId(), oldPassword, password);
+		return new Response<>();
+	}
 
 }
