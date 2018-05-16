@@ -268,7 +268,7 @@ public class StockOptionTradeController implements StockOptionTradeInterface {
 	}
 	
 	@Override
-	public Response<StockOptionStaDto> promotionSta(StockOptionPromotionQuery query) {
+	public Response<StockOptionStaDto> promotionSta(@RequestBody StockOptionPromotionQuery query) {
 		return new Response<>(stockOptionTradeService.promotionSta(query));
 	}
 
