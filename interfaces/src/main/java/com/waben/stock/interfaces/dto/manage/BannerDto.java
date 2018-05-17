@@ -11,7 +11,7 @@ import java.util.Date;
  * @author luomengan
  *
  */
-@ApiModel(value="BannerDto",description="轮播图对象")
+@ApiModel(value = "BannerDto", description = "轮播图对象")
 public class BannerDto {
 	@ApiModelProperty(value = "轮播图id")
 	private Long id;

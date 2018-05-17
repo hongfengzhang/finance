@@ -55,7 +55,7 @@ public class ExceptionConstant {
 	public static final String REALNAME_EXIST_EXCEPTION = "2016";
 	// 实名认证信息错误
 	public static final String REALNAME_WRONG_EXCEPTION = "2017";
-	// 机构代码不存在
+	// 代理商代码不存在
 	public static final String ORGCODE_NOTEXIST_EXCEPTION = "2018";
 	// 该银行卡已被使用
 	public static final String BANKCARD_ALREADY_USERED_EXCEPTION = "2019";
@@ -65,12 +65,14 @@ public class ExceptionConstant {
 	public static final String CAPITALACCOUNT_FROZEN_EXCEPTION = "2021";
 	// 您的账号已被冻结无法登录
 	public static final String PUBLISHER_DISABLED_EXCEPITON = "2022";
+	// 用户修改不成功，有未完成订单
+	public static final String MODIFY_DISABLED_EXCEPITON = "2023";
 	// 您的账户尚未实名认证
-	public static final String NOTREALNAME_EXEPTION = "2023";
+	public static final String NOTREALNAME_EXEPTION = "2024";
 	// 身份证号码格式有误
-	public static final String IDCARD_FORMAT_WRONG_EXCEPTION = "2024";
+	public static final String IDCARD_FORMAT_WRONG_EXCEPTION = "2025";
 	// 年龄必须介于18~65周岁
-	public static final String AGENOTBETTEN18AND65_EXCEPTION = "2025";
+	public static final String AGENOTBETTEN18AND65_EXCEPTION = "2026";
 
 	/* 业务异常 */
 	// 系统管理业务异常
@@ -157,16 +159,16 @@ public class ExceptionConstant {
 	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
 	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
 
-	// 经纪人服务异常
-	// 机构不存在
+	// 代理商服务异常
+	// 代理商不存在
 	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
-	// 机构类别不存在
+	// 代理商类别不存在
 	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
-	// 机构用户不存在
+	// 代理商用户不存在
 	public static final String ORGANIZATION_USER_NOT_FOUND = "8003";
 	// 原始支付密码不匹配
 	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8004";
-	// 机构用户已存在
+	// 代理商用户已存在
 	public static final String ORGANIZATION_USER_EXIST = "8005";
 	// 原始登陆密码不匹配
 	public static final String ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION = "8006";
@@ -174,8 +176,28 @@ public class ExceptionConstant {
 	public static final String ORGPUBLISHER_EXIST_EXCEPTION = "8007";
 	// 尚未绑卡，不能申请提现
 	public static final String WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION = "8008";
-	// 机构名称已存在
+	// 代理商名称已存在
 	public static final String ORGNAME_EXIST_EXCEPTION = "8009";
+	// 一级代理商不能申请提现
+	public static final String LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION = "8010";
+	// 账户余额不足以冻结
+	public static final String BALANCE_NOTENOUGHFROZEN_EXCEPTION = "8011";
+	// 当前用户已被冻结
+	public static final String AGENT_DISABLED_EXCEPITON = "8012";
+	// 该角色已被使用
+	public static final String USER_ROLE_EXCEPITON = "8013";
+	// 该结算下代理商尚有未完成订单，请完成订单后再切换结算方式
+	public static final String SETTLEMENT_METHOD_EXCEPITON = "8014";
+	// 上级的比例不能为空,请设置上级表单比例
+	public static final String FORM_RATIO_EXCEPITON = "8015";
+	// 当前的表单的比例不能大于上级的比例
+	public static final String FORM_RATIO_COMPARE_EXCEPITON = "8016";
+	// 该角色已存在，请重新输入
+	public static final String ROLE_EXISTENCE_EXCEPITON = "8017";
+	// 返佣比例设置错误，当前比例不能大于上级比例
+	public static final String RAKEBACK_RATIO_WRONG_EXCEPTION = "8018";
+	// 提现金额不足以支付提现手续费
+	public static final String PROCESSFEE_NOT_ENOUGH_EXCEPTION = "8019";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
@@ -209,8 +231,7 @@ public class ExceptionConstant {
 	// 奖品已空
 	public static final String PRIZE_IS_EMPTY = "11003";
 
-
-	//上传文件
-	//上传图片失败
+	// 上传文件
+	// 上传图片失败
 	public static final String FAILED_TO_UPLOAD_PICTURES = "12001";
 }

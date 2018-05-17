@@ -41,7 +41,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION, "信息输入有误");
 		exceptionMap.put(ExceptionConstant.REALNAME_EXIST_EXCEPTION, "已实名认证，不能重复操作");
 		exceptionMap.put(ExceptionConstant.REALNAME_WRONG_EXCEPTION, "实名认证信息错误");
-		exceptionMap.put(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION, "机构代码不存在");
+		exceptionMap.put(ExceptionConstant.ORGCODE_NOTEXIST_EXCEPTION, "代理商代码不存在");
 		exceptionMap.put(ExceptionConstant.BANKCARD_ALREADY_USERED_EXCEPTION, "该银行卡已被使用");
 		exceptionMap.put(ExceptionConstant.REALNAME_ALREADY_USERED_EXCEPTION, "该实名信息已被使用");
 		exceptionMap.put(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION, "资金账户已冻结，不能执行资金相关的操作");
@@ -90,15 +90,27 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_BUY_ERROR, "投资人券商账户委托下单失败");
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR, "投资人券商账户委托单查询异常");
 
-		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "机构不存在");
-		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "机构类别不存在");
-		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND, "机构用户不存在");
+		
+		exceptionMap.put(ExceptionConstant.USER_ROLE_EXCEPITON, "该角色已被使用,不能删除。");
+		exceptionMap.put(ExceptionConstant.AGENT_DISABLED_EXCEPITON, "当前用户已被冻结");
+		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "代理商不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "代理商类别不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND, "代理商用户不存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_EXIST, "用户名已存在");
 		exceptionMap.put(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION, "原始支付密码不匹配");
 		exceptionMap.put(ExceptionConstant.ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION, "原始登陆密码不匹配");
-		exceptionMap.put(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION, "该发布人已绑定过机构码");
+		exceptionMap.put(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION, "该发布人已绑定过代理商代理");
 		exceptionMap.put(ExceptionConstant.WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION, "尚未绑卡，不能申请提现");
-		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "机构名称已存在");
+		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "代理商名称已存在");
+		exceptionMap.put(ExceptionConstant.LEVELONE_CANNOT_WITHDRAWAL_EXCEPTION, "一级代理商不能申请提现");
+		exceptionMap.put(ExceptionConstant.BALANCE_NOTENOUGHFROZEN_EXCEPTION, "账户余额不足以冻结");
+		exceptionMap.put(ExceptionConstant.SETTLEMENT_METHOD_EXCEPITON, "该结算下代理商尚有未完成订单，请完成订单后再切换结算方式!");
+		exceptionMap.put(ExceptionConstant.FORM_RATIO_EXCEPITON, "上级的比例不能为空,请设置上级表单比例");
+		exceptionMap.put(ExceptionConstant.FORM_RATIO_COMPARE_EXCEPITON, "当前的表单的比例不能大于上级的比例");
+		exceptionMap.put(ExceptionConstant.ROLE_EXISTENCE_EXCEPITON, "该角色已存在，请重新输入！");
+		exceptionMap.put(ExceptionConstant.RAKEBACK_RATIO_WRONG_EXCEPTION, "返佣比例设置错误，当前比例不能大于上级比例");
+		exceptionMap.put(ExceptionConstant.PROCESSFEE_NOT_ENOUGH_EXCEPTION, "提现金额不足以支付提现手续费");
+		exceptionMap.put(ExceptionConstant.MODIFY_DISABLED_EXCEPITON, "修改不成功，该用户有未完成订单");
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,

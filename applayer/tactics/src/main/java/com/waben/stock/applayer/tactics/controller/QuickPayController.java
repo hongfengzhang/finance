@@ -191,14 +191,6 @@ public class QuickPayController {
         return result;
     }
 
-    @RequestMapping("/platform")
-    @ApiOperation(value = "网贝收银台支付调接口")
-    @ResponseBody
-    public Response<Map> platform(@RequestParam(required = true) BigDecimal amount,String paytype) {
-//        Response<Map> result = quickPayBusiness.platform(amount, SecurityUtil.getUserId(),paytype);
-        return null;
-    }
-
     @RequestMapping("/wbreturn")
     @ApiOperation(value = "网贝收银台同步回调接口")
     @ResponseBody
@@ -236,7 +228,7 @@ public class QuickPayController {
     @PostMapping("/wbcsa")
     @ApiOperation(value = "网贝提现")
     @ResponseBody
-    public Response<String> sdwithdrawals(@RequestParam(required = true) BigDecimal amount,
+    public Response<String> wbcsa(@RequestParam(required = true) BigDecimal amount,
                                           @RequestParam(required = true) Long bindCardId, @RequestParam(required = true) String paymentPassword) {
         // 判断是否为测试用户，测试用户不能提现
         PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());

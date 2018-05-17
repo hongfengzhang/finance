@@ -14,7 +14,7 @@ import java.util.TreeSet;
  * @author luomengan
  *
  */
-@ApiModel(value = "StockOptionCycleDto", description = "期权周期对象")
+@ApiModel(value = "StockOptionCycleDto",description = "期权周期对象")
 public class StockOptionCycleDto {
 	@ApiModelProperty(value = "周期id")
 	private Long id;
