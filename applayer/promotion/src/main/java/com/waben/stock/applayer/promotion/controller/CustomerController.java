@@ -73,7 +73,7 @@ public class CustomerController {
 	public void export(CustomerQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-//		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		// query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		PageInfo<CustomerDto> result = customerBusiness.adminPage(query);
 		File file = null;
 		FileInputStream is = null;
@@ -113,6 +113,15 @@ public class CustomerController {
 			if (ste != null && ste == 2) {
 				state = "黑名单";
 			}
+			Boolean isTest = trade.getIsTest();
+			String test = "";
+			if (isTest != null) {
+				if (isTest) {
+					test = "是";
+				} else {
+					test = "否";
+				}
+			}
 			List<String> data = new ArrayList<>();
 			data.add(String.valueOf(trade.getPublisherId() == null ? "" : trade.getPublisherId()));
 			data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
@@ -121,6 +130,7 @@ public class CustomerController {
 			data.add(String.valueOf(trade.getBalance() == null ? "" : trade.getBalance()));
 			data.add(trade.getCreateTime() != null ? sdf.format(trade.getCreateTime()) : "");
 			data.add(trade.getEndType() == null ? "" : trade.getEndType());
+			data.add(test);
 			data.add(state);
 			result.add(data);
 		}
@@ -136,6 +146,7 @@ public class CustomerController {
 		result.add("账户余额");
 		result.add("注册时间");
 		result.add("注册来源");
+		result.add("是否测试");
 		result.add("状态");
 		return result;
 	}

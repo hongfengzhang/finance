@@ -85,12 +85,13 @@ public class OrganizationAccountController {
 	@ApiOperation(value = "代理商资产分页")
 	public Response<PageInfo<OrganizationAccountVo>> pages(OrganizationAccountQuery query) {
 		long start = System.currentTimeMillis();
-//		if (!StringUtil.isEmpty(query.getOrgName())) {
-//			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
-//			if (orgBindCard != null) {
-//				query.setOrgId(orgBindCard.getResourceId());
-//			}
-//		}
+		// if (!StringUtil.isEmpty(query.getOrgName())) {
+		// BindCardDto orgBindCard =
+		// bindCardBusiness.findOrgBindCardByName(query.getOrgName());
+		// if (orgBindCard != null) {
+		// query.setOrgId(orgBindCard.getResourceId());
+		// }
+		// }
 		PageInfo<OrganizationAccountDto> pageInfo = accountBusiness.pages(query);
 		List<OrganizationAccountVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(),
 				OrganizationAccountVo.class);
@@ -107,8 +108,7 @@ public class OrganizationAccountController {
 				response.getContent().get(i).setChildOrgCount(organizationBusiness.findAll().size() - 1);
 				response.getContent().get(i).setPopPulisherCount(publisherBusiness.findAll().size());
 			} else {
-				List<OrganizationDto> organizationDtos = organizationBusiness
-						.listByParentId(organizationDto.getId());
+				List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(organizationDto.getId());
 				response.getContent().get(i).setChildOrgCount(organizationDtos.size());
 				List<OrganizationPublisherDto> organizationPublisherDtos = publisherBusiness
 						.findOrganizationPublishersByCode(organizationDto.getCode());
@@ -160,12 +160,13 @@ public class OrganizationAccountController {
 	public void export(OrganizationAccountQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-//		if (!StringUtil.isEmpty(query.getOrgName())) {
-//			BindCardDto orgBindCard = bindCardBusiness.findOrgBindCardByName(query.getOrgName());
-//			if (orgBindCard != null) {
-//				query.setOrgId(orgBindCard.getResourceId());
-//			}
-//		}
+		// if (!StringUtil.isEmpty(query.getOrgName())) {
+		// BindCardDto orgBindCard =
+		// bindCardBusiness.findOrgBindCardByName(query.getOrgName());
+		// if (orgBindCard != null) {
+		// query.setOrgId(orgBindCard.getResourceId());
+		// }
+		// }
 		PageInfo<OrganizationAccountDto> pageInfo = accountBusiness.pages(query);
 		List<OrganizationAccountVo> roleVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(),
 				OrganizationAccountVo.class);
@@ -182,8 +183,7 @@ public class OrganizationAccountController {
 				response.getContent().get(i).setChildOrgCount(organizationBusiness.findAll().size() - 1);
 				response.getContent().get(i).setPopPulisherCount(publisherBusiness.findAll().size());
 			} else {
-				List<OrganizationDto> organizationDtos = organizationBusiness
-						.listByParentId(organizationDto.getParentId());
+				List<OrganizationDto> organizationDtos = organizationBusiness.listByParentId(organizationDto.getId());
 				response.getContent().get(i).setChildOrgCount(organizationDtos.size());
 				List<OrganizationPublisherDto> organizationPublisherDtos = publisherBusiness
 						.findOrganizationPublishersByCode(organizationDto.getCode());
