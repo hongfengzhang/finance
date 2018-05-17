@@ -2,6 +2,7 @@ package com.waben.stock.applayer.tactics.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
+import com.waben.stock.applayer.tactics.business.RealNameBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.business.StockOptionCycleBusiness;
 import com.waben.stock.applayer.tactics.business.StockOptionQuoteBusiness;
@@ -28,16 +30,19 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.RealNameDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.util.IdCardUtil;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
@@ -75,6 +80,9 @@ public class StockOptionTradeController {
 	private StockBusiness stockBusiness;
 	
 	@Autowired
+    private RealNameBusiness realNameBusiness;
+	
+	@Autowired
 	private PublisherBusiness publisherBusiness;
 
 	@GetMapping("/cyclelists")
@@ -105,6 +113,19 @@ public class StockOptionTradeController {
 			@RequestParam(required = true) Long cycleId, @RequestParam(required = true) BigDecimal nominalAmount,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) String paymentPassword) {
 		logger.info("APP调用接口发布人{}申购期权{}，名义本金{}!", SecurityUtil.getUserId(), stockCode, nominalAmount);
+		// 验证实名认证信息
+		RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, SecurityUtil.getUserId());
+		if(realNameDto == null) {
+			throw new ServiceException(ExceptionConstant.NOTREALNAME_EXEPTION);
+		}
+		try {
+			boolean ageCheck = IdCardUtil.isBetten18And65(realNameDto.getIdCard());
+			if (!ageCheck) {
+				throw new ServiceException(ExceptionConstant.AGENOTBETTEN18AND65_EXCEPTION);
+			}
+		} catch (ParseException e) {
+			throw new ServiceException(ExceptionConstant.IDCARD_FORMAT_WRONG_EXCEPTION);
+		}
 		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
 		stockBusiness.checkStockOpton(stockCode, cycleId, nominalAmount);
 		// 判断是否连续两个涨停

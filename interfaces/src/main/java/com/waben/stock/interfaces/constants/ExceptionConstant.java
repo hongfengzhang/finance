@@ -65,6 +65,12 @@ public class ExceptionConstant {
 	public static final String CAPITALACCOUNT_FROZEN_EXCEPTION = "2021";
 	// 您的账号已被冻结无法登录
 	public static final String PUBLISHER_DISABLED_EXCEPITON = "2022";
+	// 您的账户尚未实名认证
+	public static final String NOTREALNAME_EXEPTION = "2023";
+	// 身份证号码格式有误
+	public static final String IDCARD_FORMAT_WRONG_EXCEPTION = "2024";
+	// 年龄必须介于18~65周岁
+	public static final String AGENOTBETTEN18AND65_EXCEPTION = "2025";
 
 	/* 业务异常 */
 	// 系统管理业务异常

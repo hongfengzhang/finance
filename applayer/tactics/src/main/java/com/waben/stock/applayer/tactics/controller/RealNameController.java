@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.controller;
 
+import java.text.ParseException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,9 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.RealNameBusiness;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.RealNameDto;
 import com.waben.stock.interfaces.enums.ResourceType;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.IdCardUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,6 +39,14 @@ public class RealNameController {
 	@ApiOperation(value = "添加实名认证")
 	public Response<RealNameDto> addRealName(@RequestParam(required = true) String name,
 			@RequestParam(required = true) String idCard) {
+		try {
+			boolean ageCheck = IdCardUtil.isBetten18And65(idCard);
+			if (!ageCheck) {
+				throw new ServiceException(ExceptionConstant.AGENOTBETTEN18AND65_EXCEPTION);
+			}
+		} catch (ParseException e) {
+			throw new ServiceException(ExceptionConstant.IDCARD_FORMAT_WRONG_EXCEPTION);
+		}
 		RealNameDto realName = new RealNameDto();
 		realName.setIdCard(idCard);
 		realName.setName(name);
