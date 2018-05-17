@@ -389,7 +389,6 @@ public class QuickPayBusiness {
 		param.setOutOrderNo(withdrawalsNo);
 		param.setTimestamp(sdf.format(date));
 		param.setTotalAmt(isProd ? amount : new BigDecimal("0.01"));
-		param.setTotalAmt(new BigDecimal("0.01"));
 		param.setVersion("1.0");
 //		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
 //        if(1 == withdrawRet.getStatus()) {
