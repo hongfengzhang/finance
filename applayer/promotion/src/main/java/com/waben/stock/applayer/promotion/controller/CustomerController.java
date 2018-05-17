@@ -115,12 +115,10 @@ public class CustomerController {
 			}
 			Boolean isTest = trade.getIsTest();
 			String test = "";
-			if (isTest != null) {
-				if (isTest) {
-					test = "是";
-				} else {
-					test = "否";
-				}
+			if (isTest != null && isTest) {
+				test = "是";
+			} else {
+				test = "否";
 			}
 			List<String> data = new ArrayList<>();
 			data.add(String.valueOf(trade.getPublisherId() == null ? "" : trade.getPublisherId()));
