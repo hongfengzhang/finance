@@ -2,6 +2,7 @@ package com.waben.stock.applayer.tactics.controller;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.business.OrganizationPublisherBusiness;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
+import com.waben.stock.applayer.tactics.business.RealNameBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.business.StockOptionCycleBusiness;
 import com.waben.stock.applayer.tactics.business.StockOptionQuoteBusiness;
@@ -30,16 +32,19 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.RealNameDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.StockOptionBuyingType;
 import com.waben.stock.interfaces.enums.StockOptionTradeState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.util.IdCardUtil;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
@@ -75,9 +80,9 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
-	
+
 	@Autowired
-    private RealNameBusiness realNameBusiness;
+	private RealNameBusiness realNameBusiness;
 
 	@Autowired
 	private PublisherBusiness publisherBusiness;
@@ -115,7 +120,7 @@ public class StockOptionTradeController {
 		logger.info("APP调用接口发布人{}申购期权{}，名义本金{}!", SecurityUtil.getUserId(), stockCode, nominalAmount);
 		// 验证实名认证信息
 		RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, SecurityUtil.getUserId());
-		if(realNameDto == null) {
+		if (realNameDto == null) {
 			throw new ServiceException(ExceptionConstant.NOTREALNAME_EXEPTION);
 		}
 		try {
