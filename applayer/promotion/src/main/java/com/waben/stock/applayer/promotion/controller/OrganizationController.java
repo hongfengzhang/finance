@@ -38,6 +38,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
@@ -67,7 +68,7 @@ public class OrganizationController {
 
 	@Autowired
 	public BindCardBusiness bindCardBusiness;
-	
+
 	@Value("${register.url:}")
 	private String registerUrl;
 
@@ -103,7 +104,7 @@ public class OrganizationController {
 	}
 
 	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	//@ApiOperation(value = "根据代理商ID获取代理商信息")
+	// @ApiOperation(value = "根据代理商ID获取代理商信息")
 	public Response<OrganizationDetailDto> detail(Long orgId) {
 		return new Response<>(business.detail(orgId));
 	}
@@ -281,7 +282,7 @@ public class OrganizationController {
 	public void tradingExport(TradingFowQuery query, HttpServletResponse svrResponse) {
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-//		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		// query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
 		PageInfo<TradingFowDto> result = business.tradingFowPageByQuery(query);
 		File file = null;
 		FileInputStream is = null;
@@ -316,13 +317,18 @@ public class OrganizationController {
 	private List<List<String>> tradingList(List<TradingFowDto> content) {
 		List<List<String>> result = new ArrayList<>();
 		for (TradingFowDto trade : content) {
+			CapitalFlowType type = trade.getType();
+			String busType = "";
+			if (type != null) {
+				busType = type.getType();
+			}
 			List<String> data = new ArrayList<>();
 			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
 			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
 			data.add(trade.getTradingNumber() == null ? "" : trade.getTradingNumber());
 			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
 			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
-			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
+			data.add(busType);
 			data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
 			data.add(String.valueOf(trade.getAvailableBalance() == null ? "" : trade.getAvailableBalance()));
 			data.add(trade.getStockCode() == null ? "" : trade.getStockCode());
