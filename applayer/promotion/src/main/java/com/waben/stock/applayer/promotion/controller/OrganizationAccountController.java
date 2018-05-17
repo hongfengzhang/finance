@@ -232,7 +232,7 @@ public class OrganizationAccountController {
 			String state = "正常";
 			Integer ste = trade.getState();
 			if (ste != null && ste == 2) {
-				state = "异常";
+				state = "冻结";
 			}
 			List<String> data = new ArrayList<>();
 			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
@@ -245,7 +245,7 @@ public class OrganizationAccountController {
 			data.add(trade.getOrgPhone() == null ? "" : trade.getOrgPhone());
 			data.add(String.valueOf(trade.getAvailableBalance() == null ? "" : trade.getAvailableBalance()));
 			data.add(String.valueOf(trade.getFrozenCapital() == null ? "" : trade.getFrozenCapital()));
-			data.add(trade.getCreateTime() != null ? sdf.format(trade.getCreateTime()) : "");
+			data.add(trade.getUpdateTime() != null ? sdf.format(trade.getUpdateTime()) : "");
 			data.add(state);
 			result.add(data);
 		}
@@ -264,7 +264,7 @@ public class OrganizationAccountController {
 		result.add("手机号");
 		result.add("账户余额");
 		result.add("冻结金额");
-		result.add("创建时间");
+		result.add("更新时间");
 		result.add("资产状态");
 		return result;
 	}
