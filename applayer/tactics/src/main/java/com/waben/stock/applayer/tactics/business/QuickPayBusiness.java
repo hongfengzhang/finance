@@ -56,6 +56,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.Md5Util;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -570,22 +571,34 @@ public class QuickPayBusiness {
 		param.setTimestamp(sdf.format(date));
 		param.setTotalAmt(new BigDecimal("0.01"));
 		param.setVersion("1.0");
+//		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
+//        if(1 == withdrawRet.getStatus()) {
+//        	// 提现请求成功，使用队列查询
+//        	WithdrawQueryMessage message = new WithdrawQueryMessage();
+//    		message.setAppId(wbConfig.getMerchantNo());
+//    		message.setOutOrderNo(withdrawalsNo);
+//    		message.setOrderNo(withdrawRet.getOrderNo());
+//    		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+//    		// 更新订单状态
+//        	order.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+//        	this.revisionWithdrawalsOrder(order);
+//        } else {
+//        	WithdrawalsOrderDto orders = this.findByWithdrawalsNo(withdrawalsNo);
+//            accountBusiness.withdrawals(publisherId, orders.getId(),WithdrawalsState.FAILURE);
+//            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
+//        }
+		// 发起提现请求前，预使用队列查询
+    	WithdrawQueryMessage message = new WithdrawQueryMessage();
+		message.setAppId(wbConfig.getMerchantNo());
+		message.setOutOrderNo(withdrawalsNo);
+		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+		// 发起提现请求
 		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
-        if(1 == withdrawRet.getStatus()) {
-        	// 提现请求成功，使用队列查询
-        	WithdrawQueryMessage message = new WithdrawQueryMessage();
-    		message.setAppId(wbConfig.getMerchantNo());
-    		message.setOutOrderNo(withdrawalsNo);
-    		message.setOrderNo(withdrawRet.getOrderNo());
-    		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
-    		// 更新订单状态
+		if(withdrawRet != null && !StringUtil.isEmpty(withdrawRet.getOrderNo())) {
+			// 更新支付系统第三方订单状态
         	order.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
         	this.revisionWithdrawalsOrder(order);
-        } else {
-        	WithdrawalsOrderDto orders = this.findByWithdrawalsNo(withdrawalsNo);
-            accountBusiness.withdrawals(publisherId, orders.getId(),WithdrawalsState.FAILURE);
-            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
-        }
+		}
     }
 
     public Response<Map<String, String>> wabenPay(BigDecimal amount, Long userId, String endType) {
