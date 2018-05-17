@@ -46,6 +46,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.REALNAME_ALREADY_USERED_EXCEPTION, "该实名信息已被使用");
 		exceptionMap.put(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION, "资金账户已冻结，不能执行资金相关的操作");
 		exceptionMap.put(ExceptionConstant.PUBLISHER_DISABLED_EXCEPITON, "您的账号已被冻结无法登录");
+		exceptionMap.put(ExceptionConstant.NOTREALNAME_EXEPTION, "您的账户尚未实名认证");
+		exceptionMap.put(ExceptionConstant.IDCARD_FORMAT_WRONG_EXCEPTION, "身份证号码格式有误");
+		exceptionMap.put(ExceptionConstant.AGENOTBETTEN18AND65_EXCEPTION, "年龄必须介于18~65周岁");
 
 		exceptionMap.put(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION, "账户可用余额不足");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION, "买入或者卖出前需进行锁定操作");

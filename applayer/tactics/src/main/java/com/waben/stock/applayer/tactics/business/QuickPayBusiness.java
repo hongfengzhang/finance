@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -19,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -92,6 +94,20 @@ public class QuickPayBusiness {
     
     @Autowired
 	private RabbitmqProducer producer;
+    
+    @Value("${spring.profiles.active}")
+	private String activeProfile;
+    
+    private boolean isProd = true;
+    
+    @PostConstruct
+	public void init() {
+		if ("prod".equals(activeProfile)) {
+			isProd = true;
+		} else {
+			isProd = false;
+		}
+	}
 
     public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
         Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
@@ -569,7 +585,7 @@ public class QuickPayBusiness {
 		param.setCardType("0");
 		param.setOutOrderNo(withdrawalsNo);
 		param.setTimestamp(sdf.format(date));
-		param.setTotalAmt(new BigDecimal("0.01"));
+		param.setTotalAmt(isProd ? amount : new BigDecimal("0.01"));
 		param.setVersion("1.0");
 //		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
 //        if(1 == withdrawRet.getStatus()) {
@@ -660,7 +676,7 @@ public class QuickPayBusiness {
 		param.setAppId(wbConfig.getMerchantNo());
 		param.setSubject(userId + "充值");
 		param.setBody(userId + "充值" + amount + "元");
-		param.setTotalFee(new BigDecimal("0.01"));
+		param.setTotalFee(isProd ? amount : new BigDecimal("0.01"));
 		param.setOutOrderNo(paymentNo);
 		param.setFrontSkipUrl("H5".equals(endType) ? wbConfig.getH5ProxyfrontUrl() : wbConfig.getFrontUrl());
 		param.setReturnUrl(wbConfig.getNotifyUrl());

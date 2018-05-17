@@ -40,6 +40,10 @@ public class StockOptionCycle {
 	 */
 	private String cycleMonth;
 	/**
+	 * 是否可用
+	 */
+	private Boolean enable;
+	/**
 	 * 名义本金集合
 	 */
 	@JsonManagedReference

@@ -67,6 +67,12 @@ public class ExceptionConstant {
 	public static final String PUBLISHER_DISABLED_EXCEPITON = "2022";
 	// 用户修改不成功，有未完成订单
 	public static final String MODIFY_DISABLED_EXCEPITON = "2023";
+	// 您的账户尚未实名认证
+	public static final String NOTREALNAME_EXEPTION = "2024";
+	// 身份证号码格式有误
+	public static final String IDCARD_FORMAT_WRONG_EXCEPTION = "2025";
+	// 年龄必须介于18~65周岁
+	public static final String AGENOTBETTEN18AND65_EXCEPTION = "2026";
 
 	/* 业务异常 */
 	// 系统管理业务异常

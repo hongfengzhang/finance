@@ -1,33 +1,42 @@
 package com.waben.stock.interfaces.util;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class IdCardUtil {
 
-	/** 中国公民身份证号码最小长度。 */
-	public final int CHINA_ID_MIN_LENGTH = 15;
+	public static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+	public static SimpleDateFormat sdfFull = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	/** 中国公民身份证号码最大长度。 */
-	public final int CHINA_ID_MAX_LENGTH = 18;
-
-	/**
-	 * 根据身份编号获取年龄
-	 *
-	 * @param idCard
-	 *            身份编号
-	 * @return 年龄
-	 */
-	public static int getAgeByIdCard(String idCard) {
-		int iAge = 0;
-		Calendar cal = Calendar.getInstance();
-		String year = idCard.substring(6, 10);
-		int iCurrYear = cal.get(Calendar.YEAR);
-		iAge = iCurrYear - Integer.valueOf(year);
-		return iAge;
+	public static Date getBirthday(String idCard) throws ParseException {
+		String birthdayStr = idCard.substring(6, 14);
+		return sdf.parse(birthdayStr);
 	}
-	
-	public static void testMain(String[] args) {
-		System.out.println(getAgeByIdCard("360730199112094312"));
+
+	public static Date getAgeDate(String idCard, int age) throws ParseException {
+		Date birthday = getBirthday(idCard);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(birthday);
+		cal.set(Calendar.YEAR, cal.get(Calendar.YEAR) + age);
+		return cal.getTime();
+	}
+
+	public static boolean isBetten18And65(String idCard) throws ParseException {
+		Date age18 = getAgeDate(idCard, 18);
+		Date age65 = getAgeDate(idCard, 65);
+		Date now = new Date();
+		if (now.getTime() >= age18.getTime() && now.getTime() < age65.getTime()) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static void testMain(String[] args) throws ParseException {
+		String idCard = "360730199112091111";
+		System.out.println(isBetten18And65(idCard));
 	}
 
 }

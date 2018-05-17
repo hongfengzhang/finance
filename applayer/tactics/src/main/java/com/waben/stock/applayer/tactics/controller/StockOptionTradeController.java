@@ -75,6 +75,9 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
+	
+	@Autowired
+    private RealNameBusiness realNameBusiness;
 
 	@Autowired
 	private PublisherBusiness publisherBusiness;
@@ -110,6 +113,19 @@ public class StockOptionTradeController {
 			@RequestParam(required = true) Long cycleId, @RequestParam(required = true) BigDecimal nominalAmount,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) String paymentPassword) {
 		logger.info("APP调用接口发布人{}申购期权{}，名义本金{}!", SecurityUtil.getUserId(), stockCode, nominalAmount);
+		// 验证实名认证信息
+		RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, SecurityUtil.getUserId());
+		if(realNameDto == null) {
+			throw new ServiceException(ExceptionConstant.NOTREALNAME_EXEPTION);
+		}
+		try {
+			boolean ageCheck = IdCardUtil.isBetten18And65(realNameDto.getIdCard());
+			if (!ageCheck) {
+				throw new ServiceException(ExceptionConstant.AGENOTBETTEN18AND65_EXCEPTION);
+			}
+		} catch (ParseException e) {
+			throw new ServiceException(ExceptionConstant.IDCARD_FORMAT_WRONG_EXCEPTION);
+		}
 		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
 		stockBusiness.checkStockOpton(stockCode, cycleId, nominalAmount);
 		// 判断是否连续两个涨停
