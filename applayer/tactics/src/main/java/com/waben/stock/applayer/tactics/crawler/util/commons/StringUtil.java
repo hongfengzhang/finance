@@ -1,12 +1,12 @@
 package com.waben.stock.applayer.tactics.crawler.util.commons;
 
 
-import org.springframework.util.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.StringTokenizer;
+
+import org.springframework.util.StringUtils;
 
 /**
  * Created by framework on 2014/11/7.

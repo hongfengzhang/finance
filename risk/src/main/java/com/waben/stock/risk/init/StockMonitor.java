@@ -5,6 +5,7 @@ import static org.quartz.TriggerBuilder.newTrigger;
 
 import java.util.Date;
 
+import com.waben.stock.risk.schedule.job.*;
 import org.quartz.CronScheduleBuilder;
 import org.quartz.DateBuilder;
 import org.quartz.JobBuilder;
@@ -24,13 +25,6 @@ import org.springframework.stereotype.Component;
 
 import com.waben.stock.interfaces.constants.HolidayConstant;
 import com.waben.stock.risk.schedule.WorkCalendar;
-import com.waben.stock.risk.schedule.job.BuyInStopJob;
-import com.waben.stock.risk.schedule.job.SellOutStopJob;
-import com.waben.stock.risk.schedule.job.StockApplyEntrustBuyInJob;
-import com.waben.stock.risk.schedule.job.StockApplyEntrustSellOutJob;
-import com.waben.stock.risk.schedule.job.StockApplyEntrustWithdrawJob;
-import com.waben.stock.risk.schedule.job.StockQuotationJob;
-import com.waben.stock.risk.schedule.job.WithdrawStopJob;
 
 /**
  * @author Created by yuyidi on 2017/11/6.
@@ -59,9 +53,9 @@ public class StockMonitor implements CommandLineRunner {
         //排除特定的日期
         WorkCalendar workCalendar = new WorkCalendar(workDay, HolidayConstant.holiyday_2018);
         //排除在外的时间  通过使用invertTimeRange=true  表示倒置
-        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "11:45");
+        DailyCalendar am = new DailyCalendar(workCalendar, "09:30", "12:59");
         am.setInvertTimeRange(true);
-        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "15:15");
+        DailyCalendar pm = new DailyCalendar(workCalendar, "13:00", "23:15");
         pm.setInvertTimeRange(true);
         scheduler.addCalendar("calendarAM", am, false, false);
         scheduler.addCalendar("calendarPM", pm, false, false);
@@ -84,9 +78,13 @@ public class StockMonitor implements CommandLineRunner {
                 .modifiedByCalendar("calendarPM")
                 .build();
 
-        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 15 11,13 * * ?");
-        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 11 * * ?");
-        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 15 * * ?");
+        CronScheduleBuilder scheduleEntrustBuilder = CronScheduleBuilder.cronSchedule("0 24 9,19 * * ?");
+        CronScheduleBuilder scheduleBuilderAMStop = CronScheduleBuilder.cronSchedule("0 30 10 * * ?");
+        CronScheduleBuilder scheduleBuilderPMStop = CronScheduleBuilder.cronSchedule("0 0 23 * * ?");
+
+        //期权到期处理启动时间
+        CronScheduleBuilder scheduleDueTreatmentBuilderBegin = CronScheduleBuilder.cronSchedule("0 31 19 * * ?");
+        CronScheduleBuilder scheduleDueTreatmentBuilderStop = CronScheduleBuilder.cronSchedule("0 0 21 * * ?");
         //买入任务
         JobDetail jobBuyIn = JobBuilder.newJob(StockApplyEntrustBuyInJob.class).withIdentity("jobBuyIn", "groupBuyIn")
                 .storeDurably(true)
@@ -166,6 +164,28 @@ public class StockMonitor implements CommandLineRunner {
                 .forJob(jobWithdrawStop)
                 .build();
 
+        //期权到期处理任务
+        JobDetail jobStockOption = JobBuilder.newJob(StockOptionDueTreatmentJob.class).withIdentity("jobStockOption",
+                "groupStockOption")
+                .storeDurably(true)
+                .build();
+        JobDetail jobStockOptionStop = JobBuilder.newJob(StockOptionStopJob.class).withIdentity("jobStockOptionStop",
+                "groupStockOption")
+                .storeDurably(true)
+                .build();
+        Trigger stockOptionTriggerBegin = newTrigger().withIdentity("stockOptionTriggerBegin", "groupStockOption").startAt(runTime)
+                .withSchedule(scheduleDueTreatmentBuilderBegin)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobStockOption)
+                .build();
+        Trigger stockOptionTriggerStop = newTrigger().withIdentity("stockOptionTriggerStop", "groupStockOption").startAt
+                (runTime)
+                .withSchedule(scheduleDueTreatmentBuilderStop)
+                .modifiedByCalendar("workCalendar")
+                .forJob(jobStockOptionStop)
+                .build();
+
+
         scheduler.addJob(jobQuotation, true);
         scheduler.scheduleJob(stockQuotationAM);
         scheduler.scheduleJob(stockQuotationPM);
@@ -187,6 +207,12 @@ public class StockMonitor implements CommandLineRunner {
         scheduler.addJob(jobWithdrawStop, true);
         scheduler.scheduleJob(withdrawTriggerAMStop);
         scheduler.scheduleJob(withdrawTriggerPMStop);
+
+        scheduler.addJob(jobStockOption,true);
+        scheduler.scheduleJob(stockOptionTriggerBegin);
+        scheduler.addJob(jobStockOptionStop,true);
+        scheduler.scheduleJob(stockOptionTriggerStop);
+
         schedulerInstance = scheduler;
         scheduler.start();
     }

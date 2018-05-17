@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.waben.stock.datalayer.publisher.entity.BindCard;
 import com.waben.stock.datalayer.publisher.repository.BindCardDao;
 import com.waben.stock.datalayer.publisher.repository.impl.jpa.BindCardRepository;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 
 /**
  * 绑卡 Dao实现
@@ -61,13 +62,14 @@ public class BindCardDaoImpl implements BindCardDao {
 	}
 
 	@Override
-	public BindCard retriveByPublisherIdAndBankCard(Long publisherId, String bankCard) {
-		return repository.findByPublisherIdAndBankCard(publisherId, bankCard);
+	public List<BindCard> listByResourceTypeAndResourceId(BindCardResourceType resourceType, Long resourceId) {
+		return repository.findByResourceTypeAndResourceId(resourceType, resourceId);
 	}
 
 	@Override
-	public List<BindCard> listByPublisherId(Long publisherId) {
-		return repository.findByPublisherId(publisherId);
+	public BindCard retriveByResourceTypeAndResourceIdAndBankCard(BindCardResourceType resourceType, Long resourceId,
+			String bankCard) {
+		return repository.findByResourceTypeAndResourceIdAndBankCard(resourceType, resourceId, bankCard);
 	}
 
 }

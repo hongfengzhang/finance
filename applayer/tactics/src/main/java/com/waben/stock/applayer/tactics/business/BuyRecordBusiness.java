@@ -19,8 +19,8 @@ import com.waben.stock.applayer.tactics.reference.DeferredRecordReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.reference.SettlementReference;
 import com.waben.stock.applayer.tactics.reference.StockReference;
-import com.waben.stock.applayer.tactics.retrivestock.RetriveStockOverHttp;
-import com.waben.stock.applayer.tactics.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.buyrecord.DeferredRecordDto;
@@ -154,6 +154,7 @@ public class BuyRecordBusiness {
 					record.setLastPrice(market.getLastPrice());
 					record.setUpDropPrice(market.getUpDropPrice());
 					record.setUpDropSpeed(market.getUpDropSpeed());
+					record.setStockStatus(market.getStatus());
 				}
 			}
 		}
@@ -194,6 +195,7 @@ public class BuyRecordBusiness {
 					inner.setTradeType(2);
 					inner.setPublisherId(settlement.getBuyRecord().getPublisherId());
 					inner.setStockCode(settlement.getBuyRecord().getStockCode());
+					inner.setNumberOfStrand(settlement.getBuyRecord().getNumberOfStrand());
 					inner.setStockName(settlement.getBuyRecord().getStockName());
 					inner.setPhone(settlement.getBuyRecord().getPublisherPhone());
 					inner.setProfit(settlement.getPublisherProfitOrLoss());
@@ -205,6 +207,7 @@ public class BuyRecordBusiness {
 						TradeDynamicDto inner = new TradeDynamicDto();
 						inner.setTradeType(1);
 						inner.setPublisherId(buyRecord.getPublisherId());
+						inner.setNumberOfStrand(buyRecord.getNumberOfStrand());
 						inner.setStockCode(buyRecord.getStockCode());
 						inner.setStockName(buyRecord.getStockName());
 						inner.setPhone(buyRecord.getPublisherPhone());

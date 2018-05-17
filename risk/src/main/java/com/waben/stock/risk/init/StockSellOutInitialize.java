@@ -1,7 +1,9 @@
 package com.waben.stock.risk.init;
 
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.EntrustState;
+import com.waben.stock.interfaces.enums.EntrustType;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.risk.business.BuyRecordBusiness;
 import com.waben.stock.risk.business.StockBusiness;
@@ -39,19 +41,21 @@ public class StockSellOutInitialize implements CommandLineRunner {
             securitiesStockEntrust.setBuyRecordId(buyRecord.getId());
             securitiesStockEntrust.setSerialCode(buyRecord.getSerialCode());
             securitiesStockEntrust.setInvestor(buyRecord.getInvestorId());
-//            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
-//            securitiesStockEntrust.setStockName(stockDto.getName());
-//            securitiesStockEntrust.setStockCode(stockDto.getCode());
-//            securitiesStockEntrust.setExponent(stockDto.getStockExponentDto().getExponentCode());
+            StockDto stockDto = stockBusiness.fetchByCode(buyRecord.getStockCode());
+            securitiesStockEntrust.setStockName(stockDto.getName());
+            securitiesStockEntrust.setStockCode(stockDto.getCode());
+            securitiesStockEntrust.setExponent(stockDto.getExponent().getExponentCode());
             securitiesStockEntrust.setEntrustNumber(buyRecord.getNumberOfStrand());
             securitiesStockEntrust.setEntrustPrice(buyRecord.getDelegatePrice());
             securitiesStockEntrust.setBuyRecordState(buyRecord.getState());
+            securitiesStockEntrust.setEntrustType(EntrustType.SELL);
 //            securitiesStockEntrust.setTradeSession(investorDto.getSecuritiesSession());
             securitiesStockEntrust.setTradeNo(buyRecord.getTradeNo());
             securitiesStockEntrust.setEntrustNo(buyRecord.getDelegateNumber());
             securitiesStockEntrust.setEntrustState(EntrustState.HASBEENREPORTED);
             securitiesStockEntrust.setLossPosition(buyRecord.getLossPosition());
             securitiesStockEntrust.setProfitPosition(buyRecord.getProfitPosition());
+            securitiesStockEntrust.setWindControlType(buyRecord.getWindControlType().getIndex());
             securitiesStockEntrust.setEntrustTime(buyRecord.getUpdateTime());
             stockApplyEntrustSellOutContainer.add(securitiesStockEntrust);
         }

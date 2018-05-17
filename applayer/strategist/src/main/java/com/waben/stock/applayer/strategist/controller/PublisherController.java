@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.waben.stock.applayer.strategist.business.BindCardBusiness;
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.strategist.business.OrganizationPublisherBusiness;
 import com.waben.stock.applayer.strategist.business.PublisherBusiness;
 import com.waben.stock.applayer.strategist.business.SmsBusiness;
 import com.waben.stock.applayer.strategist.dto.publisher.PublisherCapitalAccountDto;
@@ -54,6 +55,9 @@ public class PublisherController {
 
 	@Autowired
 	private SmsBusiness smsBusiness;
+	
+	@Autowired
+	private OrganizationPublisherBusiness orgPublisherBusiness;
 
 	@Autowired
 	private SmsCache smsCache;
@@ -75,7 +79,7 @@ public class PublisherController {
 	@ApiOperation(value = "注册发布策略人")
 	public Response<PublisherCapitalAccountDto> register(@RequestParam(required = true) String phone,
 			@RequestParam(required = true) String password, @RequestParam(required = true) String verificationCode,
-			String promoter, HttpServletRequest request) {
+			String promoter, String orgCode, HttpServletRequest request) {
 		// 检查验证码
 		smsCache.matchVerificationCode(SmsType.RegistVerificationCode, phone, "code", verificationCode);
 		// 注册
@@ -85,6 +89,8 @@ public class PublisherController {
 		String token = JWTTokenUtil.generateToken(new CustomUserDetails(publisher.getId(), publisher.getSerialCode(),
 				publisher.getPhone(), null, JWTTokenUtil.getAppGrantedAuthList()));
 		data.setToken(token);
+		// 关联结构代码
+		orgPublisherBusiness.addOrgPublisher(data.getId(), orgCode);
 		return new Response<>(data);
 	}
 

@@ -20,13 +20,13 @@ import com.waben.stock.applayer.strategist.dto.stockcontent.StockMarketWithFavor
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockRecommendWithMarketDto;
 import com.waben.stock.applayer.strategist.reference.FavoriteStockReference;
 import com.waben.stock.applayer.strategist.reference.StockReference;
-import com.waben.stock.applayer.strategist.retrivestock.RetriveStockOverHttp;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockKLine;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockMarket;
-import com.waben.stock.applayer.strategist.retrivestock.bean.StockTimeLine;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.applayer.strategist.service.RedisCache;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
+import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockKLine;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockTimeLine;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
@@ -63,7 +63,7 @@ public class StockBusiness {
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;
-	
+
 	@Autowired
 	private RedisCache redisCache;
 
@@ -192,7 +192,7 @@ public class StockBusiness {
 		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
 		return market.getStatus() == 0;
 	}
-	
+
 	/**
 	 * 检查股票是否可以购买，停牌、涨停、跌停不能购买
 	 */
@@ -206,9 +206,17 @@ public class StockBusiness {
 			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION);
 		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(-0.1)) <= 0) {
 			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION);
+		} else if (market.getName().toUpperCase().startsWith("ST") || market.getName().toUpperCase().startsWith("*ST")
+				|| market.getName().toUpperCase().startsWith("S*ST")) {
+			throw new ServiceException(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION);
+		}
+		// 判断数据库中的状态是否可用
+		StockDto stock = findByCode(stockCode);
+		if (!stock.getStatus()) {
+			throw new ServiceException(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION);
 		}
 	}
-	
+
 	public List<StockMarket> ranking(String exponent, int rankType, int size) {
 		String code = "4609";
 		if ("2A01".equals(exponent)) {
@@ -230,13 +238,13 @@ public class StockBusiness {
 		if (rankType == 1) {
 			// 涨幅榜
 			Collections.sort(stockList, new SpeedUpComparator());
-		} else if(rankType == 2) {
+		} else if (rankType == 2) {
 			// 跌幅榜
 			Collections.sort(stockList, new SpeedDownComparator());
-		} else if(rankType == 3) {
+		} else if (rankType == 3) {
 			// 价格降序
 			Collections.sort(stockList, new PriceUpComparator());
-		} else if(rankType == 4) {
+		} else if (rankType == 4) {
 			// 价格升序
 			Collections.sort(stockList, new PriceDownComparator());
 		}
@@ -267,7 +275,7 @@ public class StockBusiness {
 			return upDropSpeed1.compareTo(upDropSpeed2);
 		}
 	}
-	
+
 	private class PriceUpComparator implements Comparator<StockMarket> {
 		@Override
 		public int compare(StockMarket o1, StockMarket o2) {

@@ -1,9 +1,9 @@
 package com.waben.stock.applayer.tactics.crawler.util.base.util;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicInteger;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by 12 on 2017/5/24.

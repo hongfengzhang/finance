@@ -37,17 +37,6 @@ public class StockQuotationHttp {
         if ("200".equals(result.getCode())) {
             list = result.getData();
         }
-//        try {
-//            JsonNode dataNode = JacksonUtil.objectMapper.readValue(resonse, JsonNode.class).get("data");
-//            JavaType javaType = JacksonUtil.objectMapper.getTypeFactory().constructParametricType(ArrayList.class,
-//                    StockMarket.class);
-//            list = JacksonUtil.objectMapper.readValue(dataNode.toString(), javaType);
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//            logger.error("获取股票行情信息异常:{}",e);
-//            throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION);
-//        }
         if (list != null) {
             return list;
         }

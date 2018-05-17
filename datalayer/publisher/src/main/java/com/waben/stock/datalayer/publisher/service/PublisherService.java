@@ -1,8 +1,6 @@
 package com.waben.stock.datalayer.publisher.service;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,6 +26,7 @@ import com.waben.stock.datalayer.publisher.repository.PublisherDao;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 import com.waben.stock.interfaces.util.ShareCodeUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -63,7 +62,7 @@ public class PublisherService {
 		Publisher publisher = new Publisher();
 		publisher.setSerialCode(UniqueCodeGenerator.generateSerialCode());
 		publisher.setPhone(phone);
-		publisher.setPassword(password);
+		publisher.setPassword(PasswordCrypt.crypt(password));
 		publisher.setCreateTime(new Date());
 		publisher.setPromoter(promoter);
 		publisher.setEndType(endType);
@@ -77,6 +76,7 @@ public class PublisherService {
 		account.setFrozenCapital(new BigDecimal(0.00));
 		account.setPublisherSerialCode(publisher.getSerialCode());
 		account.setPublisherId(publisher.getId());
+		account.setPublisher(publisher);
 		account.setUpdateTime(new Date());
 		capitalAccountDao.create(account);
 		// 返回
@@ -98,7 +98,7 @@ public class PublisherService {
 			throw new ServiceException(ExceptionConstant.PHONE_ISNOT_REGISTERED_EXCEPTION);
 		}
 		// 更新密码
-		publisher.setPassword(password);
+		publisher.setPassword(PasswordCrypt.crypt(password));
 		publisherDao.update(publisher);
 		return publisher;
 	}

@@ -15,6 +15,7 @@ import com.waben.stock.applayer.tactics.dto.publisher.BindCardFullDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.service.SmsCache;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
@@ -35,7 +36,7 @@ public class BindCardController {
 
 	@Autowired
 	private BindCardBusiness bindCardBusiness;
-	
+
 	@Autowired
 	private SmsCache smsCache;
 
@@ -52,11 +53,12 @@ public class BindCardController {
 		bindCardDto.setIdCard(idCard);
 		bindCardDto.setName(name);
 		bindCardDto.setPhone(phone);
-		bindCardDto.setPublisherId(SecurityUtil.getUserId());
+		bindCardDto.setResourceType(BindCardResourceType.PUBLISHER);
+		bindCardDto.setResourceId(SecurityUtil.getUserId());
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(BindCardFullDto.class, bindCardBusiness.save(bindCardDto), false));
 	}
-	
+
 	@PostMapping("/unbundling/{id}")
 	@ApiOperation(value = "解绑银行卡")
 	public Response<Long> unbundling(@PathVariable("id") Long id) {

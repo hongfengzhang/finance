@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.strategist.controller;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +91,15 @@ public class SystemController {
 		result.getResult().setCircularsList(circularsBusiness.fetchCirculars(true));
 		// 获取股票市场指数
 		result.getResult().setStockMarketIndexList(stockMarketService.listStockExponent());
+		return result;
+	}
+	
+	@GetMapping("/serverTime")
+	@ApiOperation(value = "获取服务器最新时间")
+	public Response<String> serverTime() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Response<String> result = new Response<>();
+		result.setResult(sdf.format(new Date()));
 		return result;
 	}
 

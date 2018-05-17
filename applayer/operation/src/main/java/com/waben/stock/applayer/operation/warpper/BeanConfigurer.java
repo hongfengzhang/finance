@@ -3,6 +3,7 @@ package com.waben.stock.applayer.operation.warpper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.sun.mail.util.MailSSLSocketFactory;
 import com.waben.stock.applayer.operation.exception.AuthMethodNotSupportedException;
 import com.waben.stock.applayer.operation.service.security.InvestorUserDetailService;
 import com.waben.stock.applayer.operation.service.security.ManagerUserDetailService;
@@ -20,6 +21,7 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,10 +37,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 
 import javax.servlet.http.HttpServletResponse;
+import java.security.GeneralSecurityException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * @author Created by yuyidi on 2017/9/19.
@@ -45,6 +50,12 @@ import java.util.List;
  */
 @Configuration
 public class BeanConfigurer {
+
+    @Value("${mail.username}")
+    private String username;
+    @Value("${mail.password}")
+    private String password;
+
 
     Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -176,35 +187,10 @@ public class BeanConfigurer {
         return new Queue("entrustApplySellOut");
     }
 
-//    /**
-//     * 点买交易风控交换机
-//     */
-//    @Bean("risk")
-//    public TopicExchange riskExchange() {
-//        return new TopicExchange("risk");
-//    }
-
     @Bean("buyRecord")
     public TopicExchange buyRecordExchange() {
         return new TopicExchange("buyRecord");
     }
-
-
-//    @Bean
-//    public Binding bindingExchangeShangSecurity(@Qualifier("shangSecurity") Queue queue,
-//                                                @Qualifier("risk")TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("shang");
-//    }
-//    @Bean
-//    public Binding bindingExchangeShenSecurity(@Qualifier("shenSecurity") Queue queue,
-//                                               @Qualifier("risk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("shen");
-//    }
-//    @Bean
-//    public Binding bindingExchangeDevelopSecurity(@Qualifier("developSecurity") Queue queue,
-//                                                  @Qualifier("risk") TopicExchange riskExchange) {
-//        return BindingBuilder.bind(queue).to(riskExchange).with("develop");
-//    }
 
 
     /**绑定申请买入卖出路由与队列*/
@@ -218,4 +204,32 @@ public class BeanConfigurer {
                                          @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
         return BindingBuilder.bind(queue).to(buyRecordExchange).with("applySellOut");
     }
+
+    @Bean
+    public JavaMailSenderImpl javaMailSender() {
+        JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
+        javaMailSender.setHost("smtp.exmail.qq.com");
+        javaMailSender.setPort(465);
+        javaMailSender.setUsername(username);
+        javaMailSender.setPassword(password);
+        Properties properties = new Properties();
+        MailSSLSocketFactory sf = null;
+        try {
+            sf = new MailSSLSocketFactory();
+            sf.setTrustAllHosts(true);
+        } catch (GeneralSecurityException e1) {
+            e1.printStackTrace();
+        }
+        properties.setProperty("mail.transport.protocol", "smtp");
+        properties.put("mail.smtp.ssl.enable", "true");
+        properties.put("mail.smtp.ssl.socketFactory", sf);
+        properties.setProperty("mail.smtp.auth", "true");
+        properties.setProperty("mail.smtp.starttls.enable", "true");
+//        Session session = Session.getDefaultInstance(properties, new MailAuthenricator(username, password));
+//        javaMailSender.setSession(session);
+        javaMailSender.setJavaMailProperties(properties);
+        return javaMailSender;
+    }
+
+
 }

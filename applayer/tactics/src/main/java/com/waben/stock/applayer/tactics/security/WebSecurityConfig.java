@@ -15,6 +15,7 @@ import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
 import com.waben.stock.applayer.tactics.service.RedisCache;
+import com.waben.stock.applayer.tactics.wrapper.filter.HiddenParamProcessFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -78,10 +79,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		// 开放接口
 		http.authorizeRequests().antMatchers("/publisher/sendSms", "/publisher/register", "/publisher/modifyPassword")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/system/getEnabledBannerList", "/system/banner/lists",
-				"/system/getEnabledCircularsList", "/system/stockMarketExponent", "/system/getAppHomeTopData")
+		http.authorizeRequests()
+				.antMatchers("/system/getEnabledBannerList", "/system/banner/lists", "/system/getEnabledCircularsList",
+						"/system/stockMarketExponent", "/system/getAppHomeTopData", "/system/serverTime")
 				.permitAll();
-		http.authorizeRequests().antMatchers("/strategytype/lists").permitAll();
+		http.authorizeRequests().antMatchers("/strategytype/lists", "/strategytype/experience").permitAll();
 		http.authorizeRequests().antMatchers("/buyRecord/tradeDynamic", "/buyRecord/isTradeTime").permitAll();
 		http.authorizeRequests().antMatchers("/stock/stockRecommend", "/stock/selectStock", "/stock/kLine",
 				"/stock/timeLine/{code}", "/stock/market/{code}", "/stock/disc/{code}", "/stock/{exponent}/ranking")
@@ -101,21 +103,40 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests().antMatchers("/appversion/currentAppVersion", "/appversionupgrade/checkUpgrade")
 				.permitAll();
 		http.authorizeRequests().antMatchers("/turbine/**").permitAll();
+		http.authorizeRequests().antMatchers("/stockoptiontrade/cyclelists", "/stockoptiontrade/tradeDynamic").permitAll();
+		//回调放权
+		//杉德快捷放权
+		http.authorizeRequests().antMatchers("/quickpay/sdpaycallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/sdpayreturn").permitAll();
+		//彩拓京东QQ放权
+		http.authorizeRequests().antMatchers("/quickpay/qqcallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/jdcallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/qqpayreturn").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/jdpayreturn").permitAll();
+		//连连快捷放权
+		http.authorizeRequests().antMatchers("/quickpay/paypalreturn").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/paypalcallback").permitAll();
+		http.authorizeRequests().antMatchers("/quickpay/paypalnotify").permitAll();
+//		//测试放权  paypalnotify
+//		http.authorizeRequests().antMatchers("/quickpay/paypal").permitAll();
+//		http.authorizeRequests().antMatchers("/quickpay/paypalcsa").permitAll();
 		// 其余接口
 		http.authorizeRequests().antMatchers("/**").authenticated();
 
 		// 添加一个过滤器 所有访问 /login 的请求交给 JWTLoginFilter 来处理 这个类处理所有的JWT相关内容
 		http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		// 添加一个过滤器验证其他请求的Token是否合法
+		http.addFilterBefore(new HiddenParamProcessFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(jWTAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
 		http.addFilterBefore(new CustomCorsFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		http.logout().logoutSuccessHandler(new CustomLogoutSuccessHandler());
-		http.sessionManagement().maximumSessions(1);
 	}
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
 		super.configure(web);
-		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**");
+		web.ignoring().antMatchers("/css/**", "/image/**", "/js/**","/static/js/**");
 	}
 }

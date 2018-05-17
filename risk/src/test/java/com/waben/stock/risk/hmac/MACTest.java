@@ -228,12 +228,12 @@ public class MACTest {
         pay.put("body", "chongzhi");
         pay.put("callBackUrl", "http://vzz5yu.natappfree.cc/tfb/callback1");
         pay.put("cardType", "0");
-        pay.put("mobile", "13265306324");
+        pay.put("mobile", "13525565487");
         pay.put("name", "BankPay");
         pay.put("notifyUrl", "http://vzz5yu.natappfree.cc/tfb/callback");
-        pay.put("organizationId", "283683895");
+        pay.put("organizationId", "283673885");
         pay.put("payType", "T1");
-        pay.put("sendSeqId", "201801181341034875");
+        pay.put("sendSeqId", "201801181341034879");
         pay.put("sendTime", "201801181341335");
         pay.put("transAmt", "300");
         pay.put("transType", "BP02");
@@ -248,7 +248,7 @@ public class MACTest {
         //BDBEA61420BAEA211846DEB12FC99EC5   283673885
 
         //14CE14C92727EBEAD73F533A0EBF503A   283683895
-        String mac = MakeMacUtil.md5MakeMac(JacksonUtil.encode(pay), "14CE14C92727EBEAD73F533A0EBF503A");
+        String mac = MakeMacUtil.md5MakeMac(JacksonUtil.encode(pay), "BDBEA61420BAEA211846DEB12FC99EC5");
         pay.put("mac", mac);
         System.out.println(JacksonUtil.encode(pay));
 

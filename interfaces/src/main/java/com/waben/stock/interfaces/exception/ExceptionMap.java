@@ -38,6 +38,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION, "不支持的银行卡号");
 		exceptionMap.put(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION, "用户不匹配");
 		exceptionMap.put(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION, "银行卡信息有误，请检查输入的信息是否正确");
+		exceptionMap.put(ExceptionConstant.BANKCARDINFO_WRONG_EXCEPTION, "信息输入有误");
 
 		exceptionMap.put(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION, "账户可用余额不足");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION, "买入或者卖出前需进行锁定操作");
@@ -66,6 +67,8 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.UNIONPAY_SINGLELIMIT_EXCEPTION, "银联支付单笔最大额度为5000");
 		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION, "该股票已涨停，不能购买");
 		exceptionMap.put(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION, "该股票已跌停，不能购买");
+		exceptionMap.put(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION, "ST、*ST不能购买");
+		exceptionMap.put(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION, "不支持的股票，请更换股票");
 
 		exceptionMap.put(ExceptionConstant.INVESTOR_NOT_FOUND_EXCEPTION, "投资人信息未找到");
 		exceptionMap.put(ExceptionConstant.INVESTOR_SECURITIES_LOGIN_EXCEPTION, "投资人券商账户登陆异常");
@@ -75,5 +78,21 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_BUY_ERROR, "投资人券商账户委托下单失败");
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR, "投资人券商账户委托单查询异常");
 
+		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "机构不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION, "机构类别不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_NOT_FOUND, "机构用户不存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATION_USER_EXIST, "用户名已存在");
+		exceptionMap.put(ExceptionConstant.ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION, "原始支付密码不匹配");
+		exceptionMap.put(ExceptionConstant.ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION, "原始登陆密码不匹配");
+		exceptionMap.put(ExceptionConstant.ORGPUBLISHER_EXIST_EXCEPTION, "该发布人已绑定过机构码");
+		exceptionMap.put(ExceptionConstant.WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION, "尚未绑卡，不能申请提现");
+		exceptionMap.put(ExceptionConstant.ORGNAME_EXIST_EXCEPTION, "机构名称已存在");
+
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION, "期权交易状态不匹配，不支持该操作");
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION, "自主行权发布人不匹配，不支持该操作");
+		exceptionMap.put(ExceptionConstant.USERRIGHT_NOTMATCH_EXCEPTION, "持仓第二天之后才能申请行权");
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION, "该只股票暂时没有机构报价，请更换一只股票");
+		exceptionMap.put(ExceptionConstant.INQUIRY_RESULT_NOT_FOUND, "期权询价结果不存在");
 	}
 }

@@ -11,4 +11,6 @@ import java.util.List;
 public interface MenuDao extends BaseDao<Menu, Long> {
 
     List<Menu> retrieveByRole(Long role);
+
+    List<Menu> retrieveAllByVariety(Long variety);
 }

@@ -35,6 +35,7 @@ import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -142,7 +143,7 @@ public class PaymentController {
 		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
 		}
-		if (!storePaymentPassword.equals(paymentPassword)) {
+		if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
@@ -156,6 +157,7 @@ public class PaymentController {
 		if (bankType == null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
 		}
+
 		paymentBusiness.withdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
 				bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode());
 		resp.setResult("success");

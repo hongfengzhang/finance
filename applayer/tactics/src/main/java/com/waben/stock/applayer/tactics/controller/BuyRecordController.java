@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.BuyRecordBusiness;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.tactics.business.ExperienceBusiness;
 import com.waben.stock.applayer.tactics.business.HolidayBusiness;
 import com.waben.stock.applayer.tactics.business.StockBusiness;
 import com.waben.stock.applayer.tactics.dto.buyrecord.BuyRecordWithMarketDto;
@@ -25,12 +26,12 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -59,11 +60,14 @@ public class BuyRecordController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
+	
+	@Autowired
+	private ExperienceBusiness experienceBusiness;
 
 	@GetMapping("/isTradeTime")
 	@ApiOperation(value = "是否为交易时间段")
 	public Response<Boolean> isTradeTime() {
-		return new Response<>(holidayBusiness.isTradeTime());
+		return new Response<>(true);
 	}
 
 	@GetMapping("/strategyqualify/{strategyTypeId}")
@@ -84,10 +88,10 @@ public class BuyRecordController {
 			@RequestParam(required = true) String paymentPassword) {
 		logger.info("APP调用接口发布人{}点买股票{}，申请资金{}!", SecurityUtil.getUserId(), stockCode, applyAmount);
 		// 检查交易时间段
-		boolean isTradeTime = holidayBusiness.isTradeTime();
-		if (!isTradeTime) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
-		}
+//		boolean isTradeTime = holidayBusiness.isTradeTime();
+//		if (!isTradeTime) {
+//			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+//		}
 		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
 		stockBusiness.checkStock(stockCode);
 		// 判断是否有资格参与该策略
@@ -122,7 +126,7 @@ public class BuyRecordController {
 		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
 		}
-		if (!storePaymentPassword.equals(paymentPassword)) {
+		if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
@@ -134,6 +138,9 @@ public class BuyRecordController {
 		}
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+		}
+		if(strategyTypeId.longValue() == 3) {
+			experienceBusiness.join();
 		}
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();
@@ -185,10 +192,10 @@ public class BuyRecordController {
 	@ApiOperation(value = "用户申请卖出")
 	public Response<BuyRecordDto> sellapply(@PathVariable("id") Long id) {
 		// 检查交易时间段
-		boolean isTradeTime = holidayBusiness.isTradeTime();
-		if (!isTradeTime) {
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
-		}
+//		boolean isTradeTime = holidayBusiness.isTradeTime();
+//		if (!isTradeTime) {
+//			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+//		}
 		return new Response<>(buyRecordBusiness.sellApply(SecurityUtil.getUserId(), id));
 	}
 

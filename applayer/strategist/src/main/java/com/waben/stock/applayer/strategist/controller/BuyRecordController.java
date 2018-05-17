@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.strategist.business.BuyRecordBusiness;
 import com.waben.stock.applayer.strategist.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.strategist.business.ExperienceBusiness;
 import com.waben.stock.applayer.strategist.business.HolidayBusiness;
 import com.waben.stock.applayer.strategist.business.StockBusiness;
 import com.waben.stock.applayer.strategist.dto.buyrecord.BuyRecordWithMarketDto;
@@ -23,12 +24,12 @@ import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -55,6 +56,9 @@ public class BuyRecordController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
+	
+	@Autowired
+	private ExperienceBusiness experienceBusiness;
 
 	@GetMapping("/isTradeTime")
 	@ApiOperation(value = "是否为交易时间段")
@@ -111,7 +115,7 @@ public class BuyRecordController {
 		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
 		}
-		if (!storePaymentPassword.equals(paymentPassword)) {
+		if (!PasswordCrypt.match(paymentPassword, storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
 		// 检查余额
@@ -124,6 +128,9 @@ public class BuyRecordController {
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
+		if(strategyTypeId.longValue() == 3) {
+			experienceBusiness.join();
+		} 
 		// 初始化点买数据
 		BuyRecordDto dto = new BuyRecordDto();
 		dto.setStrategyTypeId(strategyTypeId);

@@ -10,118 +10,126 @@ import com.waben.stock.interfaces.enums.CapitalFlowType;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CapitalFlowDto {
 
-	private Long id;
-	/**
-	 * 冻结资金
-	 */
-	private BigDecimal amount;
-	/**
-	 * 流水号
-	 */
-	private String flowNo;
-	/**
-	 * 流水类型
-	 */
-	private CapitalFlowType type;
-	/**
-	 * 备注
-	 */
-	private String remark;
-	/**
-	 * 产生时间
-	 */
-	private Date occurrenceTime;
-	/**
-	 * 发布人ID
-	 */
-	private Long publisherId;
-	/**
-	 * 发布人序列号
-	 */
-	private String publisherSerialCode;
-	/**
-	 * 流水扩展列表
-	 */
-	private Set<CapitalFlowExtendDto> extendList;
+    private Long id;
+    /**
+     * 金额
+     */
+    private BigDecimal amount;
+    /**
+     * 流水号
+     */
+    private String flowNo;
+    /**
+     * 流水类型
+     */
+    private CapitalFlowType type;
+    /**
+     * 备注
+     */
+    private String remark;
+    /**
+     * 产生时间
+     */
+    private Date occurrenceTime;
+    /**
+     * 发布人ID
+     */
+    private Long publisherId;
+    private String publisherPhone;
+    /**
+     * 发布人序列号
+     */
+    private String publisherSerialCode;
+    /**
+     * 流水扩展列表
+     */
+    private Set<CapitalFlowExtendDto> extendList;
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public BigDecimal getAmount() {
-		return amount;
-	}
+    public BigDecimal getAmount() {
+        return amount;
+    }
 
-	public void setAmount(BigDecimal amount) {
-		this.amount = amount;
-	}
+    public void setAmount(BigDecimal amount) {
+        this.amount = amount;
+    }
 
-	public CapitalFlowType getType() {
-		return type;
-	}
+    public CapitalFlowType getType() {
+        return type;
+    }
 
-	public void setType(CapitalFlowType type) {
-		this.type = type;
-	}
+    public void setType(CapitalFlowType type) {
+        this.type = type;
+    }
 
-	public String getRemark() {
-		return remark;
-	}
+    public String getRemark() {
+        return remark;
+    }
 
-	public void setRemark(String remark) {
-		this.remark = remark;
-	}
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
 
-	public Date getOccurrenceTime() {
-		return occurrenceTime;
-	}
+    public Date getOccurrenceTime() {
+        return occurrenceTime;
+    }
 
-	public void setOccurrenceTime(Date occurrenceTime) {
-		this.occurrenceTime = occurrenceTime;
-	}
+    public void setOccurrenceTime(Date occurrenceTime) {
+        this.occurrenceTime = occurrenceTime;
+    }
 
-	public Long getPublisherId() {
-		return publisherId;
-	}
+    public Long getPublisherId() {
+        return publisherId;
+    }
 
-	public void setPublisherId(Long publisherId) {
-		this.publisherId = publisherId;
-	}
+    public void setPublisherId(Long publisherId) {
+        this.publisherId = publisherId;
+    }
 
-	public String getPublisherSerialCode() {
-		return publisherSerialCode;
-	}
+    public String getPublisherSerialCode() {
+        return publisherSerialCode;
+    }
 
-	public void setPublisherSerialCode(String publisherSerialCode) {
-		this.publisherSerialCode = publisherSerialCode;
-	}
-	
-	public String getFlowNo() {
-		return flowNo;
-	}
+    public void setPublisherSerialCode(String publisherSerialCode) {
+        this.publisherSerialCode = publisherSerialCode;
+    }
 
-	public void setFlowNo(String flowNo) {
-		this.flowNo = flowNo;
-	}
+    public String getFlowNo() {
+        return flowNo;
+    }
 
-	public Set<CapitalFlowExtendDto> getExtendList() {
-		return extendList;
-	}
+    public void setFlowNo(String flowNo) {
+        this.flowNo = flowNo;
+    }
 
-	public void setExtendList(Set<CapitalFlowExtendDto> extendList) {
-		this.extendList = extendList;
-	}
-	
-	public String getCapitalFlowType(){
-		String capitalFlowType = null;
-		if(type != null){
-			capitalFlowType = type.getType();
-		}
-		return capitalFlowType;
-	}
+    public Set<CapitalFlowExtendDto> getExtendList() {
+        return extendList;
+    }
 
+    public void setExtendList(Set<CapitalFlowExtendDto> extendList) {
+        this.extendList = extendList;
+    }
+
+    public String getCapitalFlowType() {
+        String capitalFlowType = null;
+        if (type != null) {
+            capitalFlowType = type.getType();
+        }
+        return capitalFlowType;
+    }
+
+    public String getPublisherPhone() {
+        return publisherPhone;
+    }
+
+    public void setPublisherPhone(String publisherPhone) {
+        this.publisherPhone = publisherPhone;
+    }
 }

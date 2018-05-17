@@ -22,6 +22,7 @@
         <module>operation</module><!--8082-->
         <module>tactics</module><!--8083-->
         <module>strategist</module><!--8084-->
+        <module>promotion</module><!--8085-->
     </modules>
 
     <dependencies>

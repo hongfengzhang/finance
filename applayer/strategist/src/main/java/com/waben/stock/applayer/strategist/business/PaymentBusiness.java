@@ -301,7 +301,7 @@ public class PaymentBusiness {
 		if (bindCard == null) {
 			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
 		}
-		if (publisherId.compareTo(bindCard.getPublisherId()) != 0) {
+		if (publisherId.compareTo(bindCard.getResourceId()) != 0) {
 			throw new ServiceException(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION);
 		}
 		if (bindCard.getContractNo() == null || "".equals(bindCard.getContractNo().trim())) {
@@ -313,14 +313,14 @@ public class PaymentBusiness {
 		MessageRequestBean request = new MessageRequestBean();
 		request.setAmount(amount.multiply(new BigDecimal(100)).setScale(0).toString());
 		request.setContractNo(bindCard.getContractNo());
-		request.setMember(String.valueOf(bindCard.getPublisherId()));
+		request.setMember(String.valueOf(bindCard.getResourceId()));
 		try {
 			MessageResponseBean msgResp = WabenPayOverHttp.message(request);
 			// 请求成功，创建订单，并返回订单号
 			PaymentOrderDto paymentOrder = new PaymentOrderDto();
 			paymentOrder.setAmount(amount);
 			paymentOrder.setPaymentNo(UniqueCodeGenerator.generatePaymentNo());
-			paymentOrder.setPublisherId(bindCard.getPublisherId());
+			paymentOrder.setPublisherId(bindCard.getResourceId());
 			paymentOrder.setType(PaymentType.QuickPay);
 			paymentOrder.setState(PaymentState.Unpaid);
 			paymentOrder.setThirdPaymentNo(msgResp.getTransactNo());
@@ -344,7 +344,7 @@ public class PaymentBusiness {
 		if (bindCard == null) {
 			throw new ServiceException(ExceptionConstant.DATANOTFOUND_EXCEPTION);
 		}
-		if (publisherId.compareTo(bindCard.getPublisherId()) != 0) {
+		if (publisherId.compareTo(bindCard.getResourceId()) != 0) {
 			throw new ServiceException(ExceptionConstant.PUBLISHERID_NOTMATCH_EXCEPTION);
 		}
 		// 请求快捷支付

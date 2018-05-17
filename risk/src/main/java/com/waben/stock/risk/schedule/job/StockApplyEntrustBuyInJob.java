@@ -3,12 +3,14 @@ package com.waben.stock.risk.schedule.job;
 import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.risk.container.StockApplyEntrustBuyInContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrustHttp;
+import com.waben.stock.risk.web.StockQuotationHttp;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -17,7 +19,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,7 +32,7 @@ import java.util.Map;
 public class StockApplyEntrustBuyInJob implements InterruptableJob {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-
+    private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
     private StockApplyEntrustBuyInContainer securitiesStockEntrustContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustBuyInContainer.class);
     private SecuritiesEntrustHttp securitiesEntrust = ApplicationContextBeanFactory.getBean(SecuritiesEntrustHttp
@@ -72,13 +76,13 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
                         StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
                         stockEntrustQueryResult.setEntrustStatus(EntrustState.HASBEENSUCCESS.getIndex());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
-                        if (stockEntrustQueryResult == null) {
-                            logger.info("委托买入轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
-                            stockEntrusts.remove(entry.getKey());
-                        } else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex
+                        if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex
                                 ())) {
-                            //废单
-                            logger.info("委托买入轮询点买记录买入废单:{}", entry.getKey());
+                            if(stockEntrustQueryResult == null) {
+                                logger.info("委托买入轮询点买记录不存在，删除容器中该交易记录,进行废单操作:{}", securitiesStockEntrust.getTradeNo());
+                            }else {
+                                logger.info("委托买入轮询点买记录买入废单:{}", entry.getKey());
+                            }
                             // 将点买废单放入废单处理队列中
                             entrustProducer.entrustWaste(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
@@ -107,6 +111,10 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
 //                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
 //                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
 //                                    .getBusinessPrice()));
+                            List<String> stock = new ArrayList();
+                            stock.add(securitiesStockEntrust.getStockCode());
+                            List<StockMarket> stockMarkets = stockQuotationHttp.fetQuotationByCode(stock);
+                            securitiesStockEntrust.setEntrustPrice(stockMarkets.get(0).getLastPrice());
                             entrustProducer.entrustBuyIn(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                         }

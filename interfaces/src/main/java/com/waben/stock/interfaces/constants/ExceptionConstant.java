@@ -6,19 +6,19 @@ package com.waben.stock.interfaces.constants;
  */
 public class ExceptionConstant {
 
-	// 系统内部异常
-	public static final String NETFLIX_CIRCUIT_EXCEPTION = "1000";
-	public static final String UNKNOW_EXCEPTION = "1001";
-	public static final String DATETIME_ERROR = "1002";
-	public static final String DATANOTFOUND_EXCEPTION = "1003";
-	public static final String ARGUMENT_EXCEPTION = "1004";
+    // 系统内部异常
+    public static final String NETFLIX_CIRCUIT_EXCEPTION = "1000";
+    public static final String UNKNOW_EXCEPTION = "1001";
+    public static final String DATETIME_ERROR = "1002";
+    public static final String DATANOTFOUND_EXCEPTION = "1003";
+    public static final String ARGUMENT_EXCEPTION = "1004";
 
-	// 发送短信失败
-	public static final String SENDMESSAGE_FAILED_EXCEPTION = "1005";
-	// 短信发送间隔时间太短
-	public static final String SENDMESSAGE_INTERVAL_TOOSHORT_EXCEPTION = "1006";
-	// 验证码错误或者验证码已过期
-	public static final String VERIFICATIONCODE_INVALID_EXCEPTION = "1007";
+    // 发送短信失败
+    public static final String SENDMESSAGE_FAILED_EXCEPTION = "1005";
+    // 短信发送间隔时间太短
+    public static final String SENDMESSAGE_INTERVAL_TOOSHORT_EXCEPTION = "1006";
+    // 验证码错误或者验证码已过期
+    public static final String VERIFICATIONCODE_INVALID_EXCEPTION = "1007";
 
 	// 发布人服务异常
 	// 该手机号已被注册
@@ -49,18 +49,20 @@ public class ExceptionConstant {
 	public static final String PUBLISHERID_NOTMATCH_EXCEPTION = "2013";
 	// 银行卡信息有误，请检查输入的信息是否正确
 	public static final String BANKCARDINFO_NOTMATCH_EXCEPTION = "2014";
+	// 信息输入有误
+	public static final String BANKCARDINFO_WRONG_EXCEPTION = "2015";
 
-	/* 业务异常 */
-	// 系统管理业务异常
-	// 菜单服务异常
-	public static final String MENU_SERVICE_EXCEPTION = "3001";
-	// 权限服务异常
-	public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "3002";
-	// 员工服务异常
-	public static final String STAFF_NOT_FOUND_EXCEPTION = "3003";
-	// 角色服务异常
-	public static final String ROLE_NOT_FOUND_EXCEPTION = "3004";
-	public static final String PERMISSION_NOT_FOUND_EXCEPTION = "3005";
+    /* 业务异常 */
+    // 系统管理业务异常
+    // 菜单服务异常
+    public static final String MENU_SERVICE_EXCEPTION = "3001";
+    // 权限服务异常
+    public static final String SECURITY_METHOD_UNSUPPORT_EXCEPTION = "3002";
+    // 员工服务异常
+    public static final String STAFF_NOT_FOUND_EXCEPTION = "3003";
+    // 角色服务异常
+    public static final String ROLE_NOT_FOUND_EXCEPTION = "3004";
+    public static final String PERMISSION_NOT_FOUND_EXCEPTION = "3005";
 
 	// 点买服务、股票异常
 	// 账户可用余额不足
@@ -117,6 +119,10 @@ public class ExceptionConstant {
 	public static final String STOCK_ARRIVEUPLIMIT_EXCEPTION = "6026";
 	// 该股票已跌停，不能购买
 	public static final String STOCK_ARRIVEDOWNLIMIT_EXCEPTION = "6027";
+	// ST、*ST不能购买
+	public static final String ST_STOCK_CANNOTBUY_EXCEPTION = "6028";
+	// 不支持的股票，请更换股票
+	public static final String BLACKLIST_STOCK_EXCEPTION = "6029";
 
 	// 投资人服务异常
 	public static final String INVESTOR_NOT_FOUND_EXCEPTION = "7001";
@@ -126,4 +132,39 @@ public class ExceptionConstant {
 	public static final String INVESTOR_STOCKACCOUNT_NOT_EXIST = "7005";
 	public static final String INVESTOR_STOCKENTRUST_BUY_ERROR = "7006";
 	public static final String INVESTOR_STOCKENTRUST_FETCH_ERROR = "7007";
+
+	// 经纪人服务异常
+	// 机构不存在
+	public static final String ORGANIZATION_NOTEXIST_EXCEPTION = "8001";
+	// 机构类别不存在
+	public static final String ORGANIZATIONCATEGORY_NOTEXIST_EXCEPTION = "8002";
+	//机构用户不存在
+	public static final String ORGANIZATION_USER_NOT_FOUND = "8003";
+	// 原始支付密码不匹配
+	public static final String ORGANIZATIONACCOUNT_OLDPAYMENTPASSWORD_NOTMATCH_EXCEPTION = "8004";
+	//机构用户不存在
+	public static final String ORGANIZATION_USER_EXIST = "8005";
+	// 原始登陆密码不匹配
+	public static final String ORGUSER_OLDPASSWORD_NOTMATCH_EXCEPTION = "8006";
+	// 该发布人已绑定过机构码
+	public static final String ORGPUBLISHER_EXIST_EXCEPTION = "8007";
+	// 尚未绑卡，不能申请提现
+	public static final String WITHDRAWALSAPPLY_NOTSUPPORTED_EXCEPTION = "8008";
+	// 机构名称已存在
+	public static final String ORGNAME_EXIST_EXCEPTION = "8009";
+
+	// 期权服务异常
+	// 名义本金20万起，且必须为10万的整数倍
+	public static final String STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION = "9001";
+	// 期权交易状态不匹配，不支持该操作
+	public static final String STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "9002";
+	// 自主行权发布人不匹配，不支持该操作
+	public static final String STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION = "9003";
+	// 持仓第二天之后才能申请行权
+	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
+	// 该只股票暂时没有机构报价，请更换一只股票
+	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
+	//期权询价结果不存在
+    public static final String INQUIRY_RESULT_NOT_FOUND = "9006";
+
 }

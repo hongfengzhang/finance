@@ -12,8 +12,14 @@ import java.util.Map;
 public enum ResourceType implements CommonalityEnum {
 
 	BUYRECORD("1", "点买记录"),
+
+	PUBLISHER("2", "发布人"),
+
+	STOCKOPTIONTRADE("3", "期权交易记录"),
 	
-	PUBLISHER("2", "发布人");
+	ORGWITHDRAWALSAPPLY("4", "机构提现申请"),
+	
+	ORGANIZATION("5", "机构");
 
 	private String index;
 	private String type;

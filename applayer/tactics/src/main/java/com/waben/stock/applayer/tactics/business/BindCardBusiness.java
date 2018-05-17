@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.payapi.juhe.BankCardInfoVerifier;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindRequestBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindResponseBean;
@@ -22,6 +21,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.enums.BankType;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -68,7 +68,7 @@ public class BindCardBusiness {
 	public String getWabenContractNo(BindCardDto bindCard) {
 		// 获取对应的支付平台编号
 		BindRequestBean request = new BindRequestBean();
-		request.setMember(String.valueOf(bindCard.getPublisherId()));
+		request.setMember(String.valueOf(bindCard.getResourceId()));
 		request.setIdNo(bindCard.getIdCard());
 		request.setName(bindCard.getName());
 		request.setPhone(bindCard.getPhone());
@@ -90,7 +90,6 @@ public class BindCardBusiness {
 		if (bankIconMap.size() == 0) {
 			init();
 		}
-		// TODO 先判断这个卡号之前是否绑定过
 		// 判断是哪个银行
 		BankInfoDto bankInfoDto = cnapsBusiness.findBankInfo(bindCard.getBankCard());
 		if (bankInfoDto == null) {
@@ -98,13 +97,7 @@ public class BindCardBusiness {
 		}
 		bindCard.setBankName(bankInfoDto.getBankName());
 		bindCard.setBankCode(bankInfoDto.getBankCode());
-		bindCard.setContractNo(this.getWabenContractNo(bindCard));
-		// 判断四要素
-		boolean isValid = BankCardInfoVerifier.verify(bindCard.getName(), bindCard.getIdCard(), bindCard.getPhone(),
-				bindCard.getBankCard());
-		if (!isValid) {
-			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
-		}
+		// bindCard.setContractNo(this.getWabenContractNo(bindCard));
 		// 执行绑卡操作
 		Response<BindCardDto> response = service.addBankCard(bindCard);
 		if ("200".equals(response.getCode())) {
@@ -133,7 +126,8 @@ public class BindCardBusiness {
 		if (bankIconMap.size() == 0) {
 			init();
 		}
-		Response<List<BindCardDto>> response = service.listsByPublisherId(publisherId);
+		Response<List<BindCardDto>> response = service
+				.listsByResourceTypeAndResourceId(BindCardResourceType.PUBLISHER.getIndex(), publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

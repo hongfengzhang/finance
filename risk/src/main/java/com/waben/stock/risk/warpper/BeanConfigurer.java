@@ -61,6 +61,14 @@ public class BeanConfigurer {
         return rabbitTemplate;
     }
 
+    /**
+     * 创建 重新委托卖出队列
+     * @return
+     */
+    @Bean(name = "againEntrust")
+    public Queue againEntrustQueue() {
+        return new Queue("againEntrust");
+    }
 
     /**
      * 创建 委托单已买入成功队列
@@ -104,6 +112,12 @@ public class BeanConfigurer {
 //    public TopicExchange riskExchange() {
 //        return new TopicExchange("risk");
 //    }
+
+    @Bean
+    public Binding bindingExchangAgainEntrust(@Qualifier("againEntrust") Queue queue,
+                                              @Qualifier("buyRecord") TopicExchange buyRecordExchange) {
+        return BindingBuilder.bind(queue).to(buyRecordExchange).with("again");
+    }
 
     @Bean
     public Binding bindingExchangEntrustBuyIn(@Qualifier("entrustBuyIn") Queue queue,

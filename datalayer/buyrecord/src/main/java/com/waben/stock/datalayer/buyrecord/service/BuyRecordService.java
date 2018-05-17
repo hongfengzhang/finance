@@ -29,6 +29,7 @@ import org.springframework.web.client.RestTemplate;
 import com.waben.stock.datalayer.buyrecord.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.buyrecord.business.HolidayBusiness;
 import com.waben.stock.datalayer.buyrecord.business.InvestorBusiness;
+import com.waben.stock.datalayer.buyrecord.business.OrganizationSettlementBusiness;
 import com.waben.stock.datalayer.buyrecord.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.buyrecord.business.StrategyTypeBusiness;
 import com.waben.stock.datalayer.buyrecord.entity.BuyRecord;
@@ -94,7 +95,10 @@ public class BuyRecordService {
 
 	@Autowired
 	private VoluntarilyBuyInProducer producer;
-	
+
+	@Autowired
+	private OrganizationSettlementBusiness orgSettlementBusiness;
+
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -239,10 +243,7 @@ public class BuyRecordService {
 		}
 		record.setState(next);
 		record.setUpdateTime(new Date());
-		BuyRecord result = buyRecordDao.update(record);
-		// 站外消息推送
-		sendOutsideMessage(record);
-		return result;
+		return buyRecordDao.update(record);
 	}
 
 	private void sendOutsideMessage(BuyRecord record) {
@@ -303,7 +304,7 @@ public class BuyRecordService {
 				extras.put("type", OutsideMessageType.BUY_UNWIND.getIndex());
 				break;
 			case REVOKE:
-				if (record.getWindControlType() != null) {
+				if (record.getWindControlType() == null) {
 					message.setTitle("点买通知");
 					message.setContent(String.format("您所购买的“%s %s”策略“委托第三方买入”失败，系统已发起自动退款", record.getStockName(),
 							record.getStockCode()));
@@ -395,9 +396,13 @@ public class BuyRecordService {
 		buyRecord.setWindControlType(WindControlType.PUBLISHERAPPLY);
 		// 获取股票的跌停价
 		StockMarket market = RetriveStockOverHttp.stockMarket(restTemplate, buyRecord.getStockCode());
-		if(market == null || market.getDownLimitPrice() == null || market.getDownLimitPrice().compareTo(new BigDecimal(0)) <= 0) {
-			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, String.format("获取股票{}的跌停价失败!", buyRecord.getStockCode()));
+		if (market == null || market.getDownLimitPrice() == null
+				|| market.getDownLimitPrice().compareTo(new BigDecimal(0)) <= 0) {
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION,
+					String.format("获取股票{}的跌停价失败!", buyRecord.getStockCode()));
 		}
+		// 修改点买记录状态
+		changeState(buyRecord, false);
 		// 放入自动卖出股票队列
 		SecuritiesStockEntrust entrust = new SecuritiesStockEntrust();
 		entrust.setBuyRecordId(buyRecord.getId());
@@ -409,8 +414,7 @@ public class BuyRecordService {
 		entrust.setEntrustPrice(market.getDownLimitPrice());
 		entrust.setWindControlType(WindControlType.PUBLISHERAPPLY.getIndex());
 		producer.voluntarilyEntrustApplySellOut(entrust);
-		// 修改点买记录状态
-		changeState(buyRecord, false);
+		// 推送站外消息
 		sendOutsideMessage(buyRecord);
 		return buyRecord;
 	}
@@ -479,6 +483,7 @@ public class BuyRecordService {
 		}
 		// 如果点买记录勾选了递延，判断是否递延了，如果没递延，退回递延费，递延了则产生递延记录
 		Date expireTime = buyRecord.getExpireTime();
+		BigDecimal deferredFee = buyRecord.getDeferred() ? buyRecord.getDeferredFee() : BigDecimal.ZERO;
 		if (buyRecord.getDeferred() && buyRecord.getDeferredFee() != null
 				&& buyRecord.getDeferredFee().compareTo(new BigDecimal(0)) > 0 && expireTime != null) {
 			String nowStr = sdf.format(new Date());
@@ -487,6 +492,7 @@ public class BuyRecordService {
 				// 退回递延费
 				accountBusiness.returnDeferredFee(buyRecord.getPublisherId(), buyRecord.getId(),
 						buyRecord.getDeferredFee());
+				deferredFee = BigDecimal.ZERO;
 			} else {
 				// 生成递延记录
 				StrategyTypeDto strategyType = strategyTypeBusiness.fetchById(buyRecord.getStrategyTypeId());
@@ -501,6 +507,9 @@ public class BuyRecordService {
 				deferredRecordDao.create(deferredRecord);
 			}
 		}
+		// 给机构结算
+		orgSettlementBusiness.strategySettlement(buyRecord.getPublisherId(), buyRecord.getId(), buyRecord.getTradeNo(),
+				buyRecord.getStrategyTypeId(), buyRecord.getServiceFee(), deferredFee);
 		// 修改点买记录状态
 		changeState(buyRecord, false);
 		sendOutsideMessage(buyRecord);
@@ -684,7 +693,7 @@ public class BuyRecordService {
 		Page<BuyRecord> pages = buyRecordDao.page(new Specification<BuyRecord>() {
 			@Override
 			public Predicate toPredicate(Root<BuyRecord> root, CriteriaQuery<?> criteriaQuery,
-										 CriteriaBuilder criteriaBuilder) {
+					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicatesList = new ArrayList<Predicate>();
 				Predicate state = criteriaBuilder.in(root.get("state")).value(BuyRecordState.WITHDRAWLOCK)
 						.value(BuyRecordState.REVOKE);
@@ -712,7 +721,8 @@ public class BuyRecordService {
 		return pages;
 	}
 
-    public BuyRecord revisionState(BuyRecord buyRecord) {
+	public BuyRecord revisionState(BuyRecord buyRecord) {
 		return changeState(buyRecord, false);
 	}
+
 }

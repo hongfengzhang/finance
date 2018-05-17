@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.pojo.Response;
 
 /**
@@ -57,13 +58,16 @@ public interface BindCardInterface {
 	Response<Long> dropBankCard(@PathVariable("id") Long id);
 
 	/**
-	 * 获取某个发布人的绑卡列表
+	 * 获取某个资源对象的绑卡列表
 	 * 
-	 * @param publisherId
-	 *            发布人ID
+	 * @param resourceType
+	 *            绑卡资源 类型 {@link BindCardResourceType}
+	 * @param resourceId
+	 *            资源ID
 	 * @return 绑卡列表
 	 */
-	@RequestMapping(value = "/{publisherId}/lists", method = RequestMethod.GET)
-	Response<List<BindCardDto>> listsByPublisherId(@PathVariable("publisherId") Long publisherId);
+	@RequestMapping(value = "/{resourceType}/{resourceId}/lists", method = RequestMethod.GET)
+	Response<List<BindCardDto>> listsByResourceTypeAndResourceId(@PathVariable("resourceType") String resourceType,
+			@PathVariable("resourceId") Long resourceId);
 
 }

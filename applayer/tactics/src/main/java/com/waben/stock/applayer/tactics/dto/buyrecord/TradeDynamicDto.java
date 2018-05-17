@@ -28,6 +28,10 @@ public class TradeDynamicDto {
 	 * 盈利
 	 */
 	private BigDecimal profit;
+	/**
+	 * 持股数
+	 */
+	private Integer numberOfStrand;
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -78,6 +82,14 @@ public class TradeDynamicDto {
 
 	public void setProfit(BigDecimal profit) {
 		this.profit = profit;
+	}
+
+	public Integer getNumberOfStrand() {
+		return numberOfStrand;
+	}
+
+	public void setNumberOfStrand(Integer numberOfStrand) {
+		this.numberOfStrand = numberOfStrand;
 	}
 
 }

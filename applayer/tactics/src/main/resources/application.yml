@@ -1,5 +1,6 @@
 server:
   port: 8083
+  maxHttpPostSize: 10485760
 management:
   port: 3033
   context-path: /turbine
@@ -10,6 +11,8 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+  thymeleaf:
+    prefix: classpath:/templates/
 hystrix:
   command:
     default:
@@ -21,10 +24,3 @@ ribbon:
   OkToRetryOnAllOperations: false
   ReadTimeout: 30000
   ConnectTimeout: 30000
-redis:
-  host: ${redis.host}
-  port: ${redis.port}
-  password: ${redis.password}
-custom:
-  operation:
-    server: ${operation.server}

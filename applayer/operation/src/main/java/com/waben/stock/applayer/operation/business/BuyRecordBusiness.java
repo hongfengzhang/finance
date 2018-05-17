@@ -49,4 +49,5 @@ public class BuyRecordBusiness {
     public void delete(Long id) {
         buyRecordService.delete(id);
     }
+
 }

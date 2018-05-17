@@ -1,13 +1,6 @@
 package com.waben.stock.applayer.tactics.crawler.util.commons;
 
 
-import org.springframework.core.GenericTypeResolver;
-import org.springframework.core.io.Resource;
-import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
-import org.springframework.core.type.classreading.MetadataReader;
-import org.springframework.util.Assert;
-import org.springframework.util.ClassUtils;
-
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
@@ -18,6 +11,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.springframework.core.GenericTypeResolver;
+import org.springframework.core.io.Resource;
+import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
+import org.springframework.core.type.classreading.MetadataReader;
+import org.springframework.util.Assert;
+import org.springframework.util.ClassUtils;
 
 /**
  * 

@@ -34,7 +34,7 @@ public class PublisherBusiness {
 	@Qualifier("publisherReference")
 	private PublisherReference publisherReference;
 	
-	@Value("${custom.operation.server}")
+	@Value("${operation.server}")
 	private String operationServer;
 	
 	@Autowired

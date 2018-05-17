@@ -3,22 +3,28 @@ package com.waben.stock.applayer.operation.controller;
 import com.waben.stock.applayer.operation.business.MenuBusiness;
 import com.waben.stock.applayer.operation.util.SecurityAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.SessionAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
  * @author Created by yuyidi on 2017/11/6.
  * @desc
  */
-@SessionAttributes(value = {"menus","userName"})
+@SessionAttributes(value = {"menus", "userName"})
 @Controller
 public class SystemController {
 
     @Autowired
     private MenuBusiness systemManageBusiness;
+
+    @Value("${mail.contextPath}")
+    private String contextPath;
 
     @GetMapping("/login")
     public String login() {
@@ -28,7 +34,7 @@ public class SystemController {
     @GetMapping("/index")
     public String index(Model model) {
         model.addAttribute("userName", SecurityAccount.current().getUsername());
-        model.addAttribute("menus",systemManageBusiness.menus());
+        model.addAttribute("menus", systemManageBusiness.menus());
         return "index";
     }
 

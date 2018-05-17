@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.publisher.entity.BindCard;
 import com.waben.stock.datalayer.publisher.service.BindCardService;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.service.publisher.BindCardInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
@@ -39,8 +40,9 @@ public class BindCardController implements BindCardInterface {
 	}
 
 	@Override
-	public Response<List<BindCardDto>> listsByPublisherId(@PathVariable Long publisherId) {
-		List<BindCard> bindCards = bindCardService.list(publisherId);
+	public Response<List<BindCardDto>> listsByResourceTypeAndResourceId(@PathVariable String resourceType,
+			@PathVariable Long resourceId) {
+		List<BindCard> bindCards = bindCardService.list(BindCardResourceType.getByIndex(resourceType), resourceId);
 		List<BindCardDto> result = CopyBeanUtils.copyListBeanPropertiesToList(bindCards, BindCardDto.class);
 		return new Response<>(result);
 	}

@@ -17,7 +17,7 @@ public class MenuDto implements Serializable {
     private Integer sort;
     private String url;
     private String icon;
-
+    private Long variety;
 
     private List<MenuDto> childs = new ArrayList<>();
 
@@ -83,5 +83,13 @@ public class MenuDto implements Serializable {
 
     public void setUrl(String url) {
         this.url = url;
+    }
+
+    public Long getVariety() {
+        return variety;
+    }
+
+    public void setVariety(Long variety) {
+        this.variety = variety;
     }
 }

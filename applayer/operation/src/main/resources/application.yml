@@ -25,5 +25,3 @@ ribbon:
   OkToRetryOnAllOperations: false
   ReadTimeout: 30000
   ConnectTimeout: 30000
-fileSystem : ${fs.path}
-uploadFilePath : ${fs.uploaddir}

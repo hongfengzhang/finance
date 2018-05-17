@@ -82,4 +82,12 @@ public class PermissionService {
     public List<Permission> findPermissions() {
         return permissionDao.list();
     }
+
+    public List<Permission> findPermissionsByVariety(Long variety) {
+        return permissionDao.retrieveAllByVariety(variety);
+    }
+
+    public List<Permission> findPermissionsByRole(Long role) {
+        return permissionDao.retrieveAllByRole(role);
+    }
 }

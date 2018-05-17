@@ -4,6 +4,7 @@ import com.waben.stock.interfaces.enums.EntrustState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
 import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
+import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
 import com.waben.stock.interfaces.pojo.stock.stockjy.data.StockEntrustQueryResult;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.risk.container.PositionStockContainer;
@@ -11,6 +12,7 @@ import com.waben.stock.risk.container.StockApplyEntrustSellOutContainer;
 import com.waben.stock.risk.warpper.ApplicationContextBeanFactory;
 import com.waben.stock.risk.warpper.messagequeue.rabbitmq.EntrustProducer;
 import com.waben.stock.risk.web.SecuritiesEntrustHttp;
+import com.waben.stock.risk.web.StockQuotationHttp;
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -19,9 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author Created by yuyidi on 2017/12/17.
@@ -31,7 +31,6 @@ import java.util.Map;
 public class StockApplyEntrustSellOutJob implements InterruptableJob {
 
     Logger logger = LoggerFactory.getLogger(getClass());
-
     private StockApplyEntrustSellOutContainer stockApplyEntrustSellOutContainer = ApplicationContextBeanFactory.getBean
             (StockApplyEntrustSellOutContainer.class);
     private PositionStockContainer positionStockContainer = ApplicationContextBeanFactory.getBean
@@ -39,7 +38,7 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
     private SecuritiesEntrustHttp securitiesEntrust = ApplicationContextBeanFactory.getBean(SecuritiesEntrustHttp
             .class);
     private EntrustProducer entrustProducer = ApplicationContextBeanFactory.getBean(EntrustProducer.class);
-
+    private StockQuotationHttp stockQuotationHttp = ApplicationContextBeanFactory.getBean(StockQuotationHttp.class);
     private Boolean interrupted = false;
     private long millisOfDay = 24 * 60 * 60 * 1000;
 
@@ -82,16 +81,17 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
                         StockEntrustQueryResult stockEntrustQueryResult = new StockEntrustQueryResult();
                         stockEntrustQueryResult.setEntrustStatus(EntrustState.HASBEENSUCCESS.getIndex());
                         logger.info("委托结果：{}", JacksonUtil.encode(stockEntrustQueryResult));
-                        if(stockEntrustQueryResult == null) {
-                            logger.info("委托卖出轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
-                            stockEntrusts.remove(entry.getKey());
-                        }else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
-                            //废单
-                            logger.info("委托卖出轮询点买记录卖出废单:{}", entry.getKey());
-                            entrustProducer.entrustWaste(securitiesStockEntrust);
+                       if (stockEntrustQueryResult == null||stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.WASTEORDER.getIndex())) {
+                            //如果上游返回结果是废单，则重新委托
+                            if(stockEntrustQueryResult == null) {
+                                logger.info("委托卖出轮询点买记录不存在，删除容器中该交易记录:{}", securitiesStockEntrust.getTradeNo());
+                            }else {
+                                logger.info("委托卖出轮询点买记录卖出废单:{}", entry.getKey());
+                            }
+                            entrustProducer.againEntrust(securitiesStockEntrust);
                             stockEntrusts.remove(entry.getKey());
                             continue;
-                        }else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
+                        } else if (stockEntrustQueryResult.getEntrustStatus().equals(EntrustState.HASBEENSUCCESS
                                 .getIndex())) {
                             // 若执行结果为true 代表订单状态已成功，则  删除集合中的数据
                             //发送给队列处理，提高委托单轮询处理速度
@@ -101,6 +101,10 @@ public class StockApplyEntrustSellOutJob implements InterruptableJob {
 //                            securitiesStockEntrust.setEntrustNumber(amount.intValue());
 //                            securitiesStockEntrust.setEntrustPrice(new BigDecimal(stockEntrustQueryResult
 //                                    .getBusinessPrice()));
+                           List<String> stock = new ArrayList();
+                           stock.add(securitiesStockEntrust.getStockCode());
+                           List<StockMarket> stockMarkets = stockQuotationHttp.fetQuotationByCode(stock);
+                           securitiesStockEntrust.setEntrustPrice(stockMarkets.get(0).getLastPrice());
                             entrustProducer.entrustSellOut(entry.getValue());
                             stockEntrusts.remove(entry.getKey());
                             logger.info("交易委托单已交易成功，删除容器中交易单号为:{},委托数量为:{},委托价格:{}", securitiesStockEntrust

@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.publisher.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.publisher.entity.BindCard;
 import com.waben.stock.datalayer.publisher.repository.BindCardDao;
+import com.waben.stock.interfaces.commonapi.juhe.BankCardInfoVerifier;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 
 /**
@@ -23,17 +26,25 @@ public class BindCardService {
 	private BindCardDao bindCardDao;
 
 	public BindCard save(BindCard bindCard) {
-		BindCard check = bindCardDao.retriveByPublisherIdAndBankCard(bindCard.getPublisherId(), bindCard.getBankCard());
+		BindCard check = bindCardDao.retriveByResourceTypeAndResourceIdAndBankCard(bindCard.getResourceType(),
+				bindCard.getResourceId(), bindCard.getBankCard());
 		if (check != null) {
 			throw new ServiceException(ExceptionConstant.BANKCARD_ALREADY_BIND_EXCEPTION);
 		} else {
+			// 判断四要素
+			boolean isValid = BankCardInfoVerifier.verify(bindCard.getName(), bindCard.getIdCard(), bindCard.getPhone(),
+					bindCard.getBankCard());
+			if (!isValid) {
+				throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
+			}
+			bindCard.setCreateTime(new Date());
 			bindCardDao.create(bindCard);
 		}
 		return bindCard;
 	}
 
-	public List<BindCard> list(Long publisherId) {
-		return bindCardDao.listByPublisherId(publisherId);
+	public List<BindCard> list(BindCardResourceType resourceType, Long resourceId) {
+		return bindCardDao.listByResourceTypeAndResourceId(resourceType, resourceId);
 	}
 
 	public BindCard findById(Long id) {
@@ -41,6 +52,12 @@ public class BindCardService {
 	}
 
 	public BindCard revision(BindCard bindCard) {
+		// 判断四要素
+		boolean isValid = BankCardInfoVerifier.verify(bindCard.getName(), bindCard.getIdCard(), bindCard.getPhone(),
+				bindCard.getBankCard());
+		if (!isValid) {
+			throw new ServiceException(ExceptionConstant.BANKCARDINFO_NOTMATCH_EXCEPTION);
+		}
 		return bindCardDao.update(bindCard);
 	}
 

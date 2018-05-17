@@ -23,6 +23,11 @@ public class RoleDaoImpl implements RoleDao {
     private RoleRepository repository;
 
     @Override
+    public Role retrieveRoleAdminByOrganization(Long organization) {
+        return repository.findByOrganizationAndCode(organization, "ADMIN");
+    }
+
+    @Override
     public Role create(Role role) {
         return repository.save(role);
     }
