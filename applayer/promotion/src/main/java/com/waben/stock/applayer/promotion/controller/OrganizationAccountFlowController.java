@@ -106,6 +106,7 @@ public class OrganizationAccountFlowController {
 		List<List<String>> result = new ArrayList<>();
 		for (OrganizationAccountFlowWithTradeInfoDto trade : content) {
 			List<String> data = new ArrayList<>();
+			data.add(String.valueOf(trade.getResourceTradeNo() == null ? "" : trade.getResourceTradeNo()));
 			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
 			data.add(trade.getType() != null
 					? OrganizationAccountFlowType.getByIndex(String.valueOf(trade.getType())).getType() : "");
@@ -121,6 +122,7 @@ public class OrganizationAccountFlowController {
 
 	private List<String> columnDescList() {
 		List<String> result = new ArrayList<>();
+		result.add("订单编号");
 		result.add("交易时间");
 		result.add("交易类型");
 		result.add("交易金额");
@@ -136,7 +138,7 @@ public class OrganizationAccountFlowController {
 		List<List<String>> result = new ArrayList<>();
 		for (OrganizationAccountFlowWithTradeInfoDto trade : content) {
 			List<String> data = new ArrayList<>();
-			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
+			data.add(String.valueOf(trade.getResourceTradeNo() == null ? "" : trade.getResourceTradeNo()));
 			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
 			data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 			data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
