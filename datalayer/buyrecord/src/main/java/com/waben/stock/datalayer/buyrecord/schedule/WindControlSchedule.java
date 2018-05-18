@@ -69,13 +69,13 @@ public class WindControlSchedule {
 			// 当前是工作日
 			String nowStr = sdf.format(now);
 			String nowFullStr = fullSdf.format(now);
-			if (nowFullStr.compareTo(nowStr + " 09:00:00") < 0) {
+			if (nowFullStr.compareTo(nowStr + " 09:30:00") < 0) {
 				Timer timer = new Timer();
 				timer.schedule(new WindControlTask(), getAmExecuteTime(now, false));
 			} else if (nowFullStr.compareTo(nowStr + " 15:00:00") > 0) {
 				Timer timer = new Timer();
 				timer.schedule(new WindControlTask(), getAmExecuteTime(now, true));
-			} else if (nowFullStr.compareTo(nowStr + " 11:00:00") > 0
+			} else if (nowFullStr.compareTo(nowStr + " 11:30:00") > 0
 					&& nowFullStr.compareTo(nowStr + " 13:00:00") < 0) {
 				Timer timer = new Timer();
 				timer.schedule(new WindControlTask(), getPmExecuteTime(now));
@@ -98,7 +98,7 @@ public class WindControlSchedule {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(executeDay);
 		cal.set(Calendar.HOUR_OF_DAY, 9);
-		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.MINUTE, 30);
 		cal.set(Calendar.SECOND, 30);
 		cal.set(Calendar.MILLISECOND, 0);
 		Date nextExecuteTime = cal.getTime();
