@@ -19,6 +19,8 @@ public class ExceptionConstant {
 	public static final String SENDMESSAGE_INTERVAL_TOOSHORT_EXCEPTION = "1006";
 	// 验证码错误或者验证码已过期
 	public static final String VERIFICATIONCODE_INVALID_EXCEPTION = "1007";
+	// 暂停交易
+	public static final String SUSPENSION_TRADE_EXCEPTION = "1008";
 
 	// 发布人服务异常
 	// 该手机号已被注册

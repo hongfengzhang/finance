@@ -8,6 +8,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,12 +79,15 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
-	
+
 	@Autowired
-    private RealNameBusiness realNameBusiness;
-	
+	private RealNameBusiness realNameBusiness;
+
 	@Autowired
 	private PublisherBusiness publisherBusiness;
+
+	@Value("${openstockoptiontrade:true}")
+	private boolean openTrade = true;
 
 	@GetMapping("/cyclelists")
 	@ApiOperation(value = "期权周期列表")
@@ -106,16 +110,19 @@ public class StockOptionTradeController {
 				.setAvailableBalance(accountBusiness.findByPublisherId(SecurityUtil.getUserId()).getAvailableBalance());
 		return new Response<>(resultQuote);
 	}
-	
+
 	@PostMapping("/buy")
 	@ApiOperation(value = "申购", notes = "buyingType买入方式:1市价买入")
 	public Response<StockOptionTradeWithMarketDto> buy(@RequestParam(required = true) Integer buyingType,
 			@RequestParam(required = true) Long cycleId, @RequestParam(required = true) BigDecimal nominalAmount,
 			@RequestParam(required = true) String stockCode, @RequestParam(required = true) String paymentPassword) {
 		logger.info("APP调用接口发布人{}申购期权{}，名义本金{}!", SecurityUtil.getUserId(), stockCode, nominalAmount);
+		if (!openTrade) {
+			throw new ServiceException(ExceptionConstant.SUSPENSION_TRADE_EXCEPTION);
+		}
 		// 验证实名认证信息
 		RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, SecurityUtil.getUserId());
-		if(realNameDto == null) {
+		if (realNameDto == null) {
 			throw new ServiceException(ExceptionConstant.NOTREALNAME_EXEPTION);
 		}
 		try {
@@ -177,7 +184,7 @@ public class StockOptionTradeController {
 		// 获取是否为测试单
 		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
 		dto.setIsTest(publisher.getIsTest());
-		
+
 		StockOptionTradeDto tradeDto = tradeBusiness.add(dto);
 		return new Response<>(tradeBusiness.wrapMarketInfo(tradeDto));
 	}
@@ -187,7 +194,8 @@ public class StockOptionTradeController {
 	public Response<PageInfo<StockOptionTradeWithMarketDto>> pagesHoldPosition(int page, int size) {
 		StockOptionTradeUserQuery query = new StockOptionTradeUserQuery(page, size, SecurityUtil.getUserId(),
 				new StockOptionTradeState[] { StockOptionTradeState.WAITCONFIRMED, StockOptionTradeState.TURNOVER,
-						StockOptionTradeState.APPLYRIGHT, StockOptionTradeState.INSETTLEMENT, StockOptionTradeState.AUTOEXPIRE });
+						StockOptionTradeState.APPLYRIGHT, StockOptionTradeState.INSETTLEMENT,
+						StockOptionTradeState.AUTOEXPIRE });
 		PageInfo<StockOptionTradeDto> pageInfo = tradeBusiness.pagesByUserQuery(query);
 		List<StockOptionTradeWithMarketDto> content = tradeBusiness.wrapMarketInfo(pageInfo.getContent());
 		return new Response<>(new PageInfo<>(content, pageInfo.getTotalPages(), pageInfo.getLast(),
