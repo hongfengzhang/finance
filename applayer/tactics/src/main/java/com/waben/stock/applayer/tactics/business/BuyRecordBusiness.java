@@ -65,6 +65,9 @@ public class BuyRecordBusiness {
 
 	@Autowired
 	private StrategyTypeBusiness strategyTypeBusiness;
+	
+	@Autowired
+	private StockBusiness stockBusiness;
 
 	public BuyRecordDto findById(Long id) {
 		Response<BuyRecordDto> response = buyRecordReference.fetchBuyRecord(id);
@@ -163,6 +166,8 @@ public class BuyRecordBusiness {
 
 	public BuyRecordDto sellApply(Long userId, Long id) {
 		BuyRecordDto buyRecord = this.findById(id);
+		// 检查股票是否可以购买，停牌、涨停、跌停不能购买
+		stockBusiness.checkSellStock(buyRecord.getStockCode());
 		// 持仓中的才能申请卖出
 		if (buyRecord.getState() == BuyRecordState.HOLDPOSITION && buyRecord.getBuyingTime() != null
 				&& !sdf.format(new Date()).equals(sdf.format(buyRecord.getBuyingTime()))) {

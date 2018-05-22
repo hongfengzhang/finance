@@ -206,7 +206,7 @@ public class StockBusiness {
 	}
 
 	/**
-	 * 检查股票是否可以购买，停牌、涨停、跌停不能购买
+	 * 检查股票是否可以购买，停牌、涨停、跌停、ST不能购买
 	 */
 	public void checkStock(String stockCode) {
 		List<String> codes = new ArrayList<>();
@@ -221,6 +221,22 @@ public class StockBusiness {
 		} else if (market.getName().toUpperCase().startsWith("ST") || market.getName().toUpperCase().startsWith("*ST")
 				|| market.getName().toUpperCase().startsWith("S*ST")) {
 			throw new ServiceException(ExceptionConstant.ST_STOCK_CANNOTBUY_EXCEPTION);
+		}
+	}
+	
+	/**
+	 * 检查股票是否可以购买，停牌、涨停、跌停不能卖出
+	 */
+	public void checkSellStock(String stockCode) {
+		List<String> codes = new ArrayList<>();
+		codes.add(stockCode);
+		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+		if (market.getStatus() == 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_SUSPENSION_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(0.1)) >= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEUPLIMIT_EXCEPTION);
+		} else if (market.getUpDropSpeed().compareTo(new BigDecimal(-0.1)) <= 0) {
+			throw new ServiceException(ExceptionConstant.STOCK_ARRIVEDOWNLIMIT_EXCEPTION);
 		}
 	}
 

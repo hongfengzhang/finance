@@ -129,9 +129,9 @@ public class ExceptionConstant {
 	public static final String DEVELOPSTOCK_NOTSUPPORT_EXCEPTION = "6024";
 	// 银联支付单笔最大额度为5000
 	public static final String UNIONPAY_SINGLELIMIT_EXCEPTION = "6025";
-	// 该股票已涨停，不能购买
+	// 该股票已涨停，暂时不能交易
 	public static final String STOCK_ARRIVEUPLIMIT_EXCEPTION = "6026";
-	// 该股票已跌停，不能购买
+	// 该股票已跌停，暂时不能交易
 	public static final String STOCK_ARRIVEDOWNLIMIT_EXCEPTION = "6027";
 	// ST股无法申购请购买其它股票
 	public static final String ST_STOCK_CANNOTBUY_EXCEPTION = "6028";

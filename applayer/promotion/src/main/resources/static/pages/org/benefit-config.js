@@ -26,6 +26,18 @@ $(function() {
 				$(this).addClass("layui-show");
 			}
 		});
+	} else if(parent.window.onlyStockbar == true) {
+		$("#tab-title li").each(function(index, element) {
+			if(index == 1) {
+				$(this).css("display", "none");
+			}
+		});
+		
+		$("#tab-content .layui-tab-item").each(function(index, element) {
+			if(index == 1) {
+				$(this).css("display", "none");
+			}
+		});
 	}
 	// 初始化配资分成比例表格
 	$.ajax({

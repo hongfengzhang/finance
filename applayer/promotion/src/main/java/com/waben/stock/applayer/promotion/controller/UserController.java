@@ -32,83 +32,87 @@ import com.waben.stock.interfaces.vo.organization.UserVo;
 @RequestMapping("/user")
 public class UserController {
 
-    @Autowired
-    private UserBusiness userBusiness;
+	@Autowired
+	private UserBusiness userBusiness;
 
-    @Autowired
-    private RoleBusiness roleBusiness;
-    
-    @Value("${onlystockoption:false}")
-    private boolean onlyStockoption;
+	@Autowired
+	private RoleBusiness roleBusiness;
 
-    @PreAuthorize("hasRole('USER_SAVE')")
-    @RequestMapping("/save")
-    @ResponseBody
-    public Response<UserVo> add(UserVo vo){
-        UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
-        OrganizationDto org = null;
-        if(vo.getOrg()!=null) {
-            org = CopyBeanUtils.copyBeanProperties(OrganizationDto.class,vo.getOrg(),false);
-        }else{
-        UserDto current = (UserDto) SecurityAccount.current().getSecurity();
-            org = current.getOrg();
-        }
-        requestDto.setOrg(org);
-        UserDto userDto = userBusiness.save(requestDto, org);
-        UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
-        return new Response<>(userVo);
-    }
+	@Value("${onlystockoption:false}")
+	private boolean onlystockoption;
 
+	@Value("${onlystockbar:false}")
+	private boolean onlystockbar;
 
-    @Deprecated
-    @PreAuthorize("hasRole('USER_ROLE_REVISION')")
-    @RequestMapping("/{id}/role")
-    @ResponseBody
-    public Response<UserVo> bindRole(@PathVariable Long id, Long roleId){
-        UserDto userDto = userBusiness.saveUserRole(id,roleId);
-        UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class,userDto , false);
-        return new Response<>(userVo);
-    }
+	@PreAuthorize("hasRole('USER_SAVE')")
+	@RequestMapping("/save")
+	@ResponseBody
+	public Response<UserVo> add(UserVo vo) {
+		UserDto requestDto = CopyBeanUtils.copyBeanProperties(UserDto.class, vo, false);
+		OrganizationDto org = null;
+		if (vo.getOrg() != null) {
+			org = CopyBeanUtils.copyBeanProperties(OrganizationDto.class, vo.getOrg(), false);
+		} else {
+			UserDto current = (UserDto) SecurityAccount.current().getSecurity();
+			org = current.getOrg();
+		}
+		requestDto.setOrg(org);
+		UserDto userDto = userBusiness.save(requestDto, org);
+		UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class, userDto, false);
+		return new Response<>(userVo);
+	}
 
-    @RequestMapping("/pages")
-    @ResponseBody
-    public Response<PageInfo<UserVo>> pages(@RequestBody UserQuery userQuery) {
-        UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-        userQuery.setOrganization(userDto.getOrg().getId());
-        PageInfo<UserDto> pageInfo = userBusiness.pages(userQuery);
-        List<UserVo> userVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), UserVo.class);
-        PageInfo<UserVo> response = new PageInfo<>(userVoContent, pageInfo.getTotalPages(), pageInfo.getLast(), pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
-        for (int i = 0; i < pageInfo.getContent().size(); i++) {
-            OrganizationVo organizationVo = CopyBeanUtils.copyBeanProperties(
-                    OrganizationVo.class, pageInfo.getContent().get(i).getOrg(), false);
-            userVoContent.get(i).setOrg(organizationVo);
-            Long role = pageInfo.getContent().get(i).getRole();
-            if(role!=null) {
-                RoleDto roleDto = roleBusiness.findById(role);
-                userVoContent.get(i).setRoleName(roleDto.getName());
-                userVoContent.get(i).setCode(roleDto.getCode());
-            }
-        }
-        return new Response<>(response);
-    }
-    
-    @RequestMapping(value = "/getCurrent", method = RequestMethod.GET)
-    @ResponseBody
+	@Deprecated
+	@PreAuthorize("hasRole('USER_ROLE_REVISION')")
+	@RequestMapping("/{id}/role")
+	@ResponseBody
+	public Response<UserVo> bindRole(@PathVariable Long id, Long roleId) {
+		UserDto userDto = userBusiness.saveUserRole(id, roleId);
+		UserVo userVo = CopyBeanUtils.copyBeanProperties(UserVo.class, userDto, false);
+		return new Response<>(userVo);
+	}
+
+	@RequestMapping("/pages")
+	@ResponseBody
+	public Response<PageInfo<UserVo>> pages(@RequestBody UserQuery userQuery) {
+		UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
+		userQuery.setOrganization(userDto.getOrg().getId());
+		PageInfo<UserDto> pageInfo = userBusiness.pages(userQuery);
+		List<UserVo> userVoContent = CopyBeanUtils.copyListBeanPropertiesToList(pageInfo.getContent(), UserVo.class);
+		PageInfo<UserVo> response = new PageInfo<>(userVoContent, pageInfo.getTotalPages(), pageInfo.getLast(),
+				pageInfo.getTotalElements(), pageInfo.getSize(), pageInfo.getNumber(), pageInfo.getFrist());
+		for (int i = 0; i < pageInfo.getContent().size(); i++) {
+			OrganizationVo organizationVo = CopyBeanUtils.copyBeanProperties(OrganizationVo.class,
+					pageInfo.getContent().get(i).getOrg(), false);
+			userVoContent.get(i).setOrg(organizationVo);
+			Long role = pageInfo.getContent().get(i).getRole();
+			if (role != null) {
+				RoleDto roleDto = roleBusiness.findById(role);
+				userVoContent.get(i).setRoleName(roleDto.getName());
+				userVoContent.get(i).setCode(roleDto.getCode());
+			}
+		}
+		return new Response<>(response);
+	}
+
+	@RequestMapping(value = "/getCurrent", method = RequestMethod.GET)
+	@ResponseBody
 	public Response<UserDto> getCurrent() {
-    	AccountCredentials details = SecurityAccount.current();
-    	UserDto result = (UserDto)details.getSecurity();
-    	result.setOnlyStockoption(onlyStockoption);
-    	result.setPassword(null);
+		AccountCredentials details = SecurityAccount.current();
+		UserDto result = (UserDto) details.getSecurity();
+		result.setOnlyStockoption(onlystockoption);
+		result.setOnlyStockbar(onlystockbar);
+		result.setPassword(null);
 		return new Response<>(result);
 	}
-    
-    @RequestMapping(value = "/password", method = RequestMethod.PUT)
-    @ResponseBody
+
+	@RequestMapping(value = "/password", method = RequestMethod.PUT)
+	@ResponseBody
 	public Response<Void> modifyPassword(String oldPassword, String password) {
-    	AccountCredentials details = SecurityAccount.current();
-    	UserDto result = (UserDto)details.getSecurity();
-    	userBusiness.modifyPassword(result.getId(), oldPassword, password);
+		AccountCredentials details = SecurityAccount.current();
+		UserDto result = (UserDto) details.getSecurity();
+		userBusiness.modifyPassword(result.getId(), oldPassword, password);
 		return new Response<>();
 	}
-    
+
 }

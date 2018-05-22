@@ -56,6 +56,7 @@ $(function() {
         	window.currentOrgCode = jsonResult.result.org.code;
         	window.level = jsonResult.result.org.level;
         	window.onlyStockoption = jsonResult.result.onlyStockoption;
+        	window.onlyStockbar = jsonResult.result.onlyStockbar;
         	$("#nickname").html(jsonResult.result.nickname);
         }
     });

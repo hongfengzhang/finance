@@ -71,7 +71,7 @@ $(function() {
 	            	} else {
 	            		result = "<a class='detail' level='" + full.level + "' pid='"+full.parentId+"' orgid='" + full.id + "' href='javascript:;'>详情</a>";
 	            	}
-	            	if(window.currentOrgId == full.id) {
+	            	if(window.currentOrgId == full.id && window.onlyStockbar != true) {
 	            		result = "<a class='markup mr10' orgid='" + full.id + "' href='javascript:;'>加价比例</a>" + result;
 	            	}
 	            	return result;

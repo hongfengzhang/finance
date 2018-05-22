@@ -33,6 +33,10 @@ public class UserDto {
 	 * 是否只有期权功能
 	 */
 	private boolean onlyStockoption;
+	/**
+	 * 是否只有股票功能
+	 */
+	private boolean onlyStockbar;
 
 	public Long getId() {
 		return id;
@@ -96,6 +100,14 @@ public class UserDto {
 
 	public void setOnlyStockoption(boolean onlyStockoption) {
 		this.onlyStockoption = onlyStockoption;
+	}
+
+	public boolean isOnlyStockbar() {
+		return onlyStockbar;
+	}
+
+	public void setOnlyStockbar(boolean onlyStockbar) {
+		this.onlyStockbar = onlyStockbar;
 	}
 
 }
