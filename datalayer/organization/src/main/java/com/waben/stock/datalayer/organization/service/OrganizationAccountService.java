@@ -212,10 +212,9 @@ public class OrganizationAccountService {
 	public synchronized OrganizationAccount processFee(Organization org, BigDecimal processFee, Long applyId,
 			String applyNo) {
 		OrganizationAccount account = organizationAccountDao.retrieveByOrg(org);
-		// 提现手续费
+		// 保存提现手续费流水
 		if (processFee != null && processFee.compareTo(BigDecimal.ZERO) > 0) {
 			Date date = new Date();
-			reduceAmount(account, processFee, date);
 			OrganizationAccountFlow processFeeFlow = new OrganizationAccountFlow();
 			processFeeFlow.setAmount(processFee.abs().multiply(new BigDecimal("-1")));
 			processFeeFlow.setOriginAmount(processFee.abs().multiply(new BigDecimal("-1")));

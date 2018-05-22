@@ -202,7 +202,7 @@ public class QuickPayBusiness {
 //			applyBusiness.changeState(apply.getId(), WithdrawalsApplyState.FAILURE.getIndex(), null);
 //			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
 //		}
-		applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex(), null);
+		apply = applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex(), null);
 		// 发起提现请求前，预使用队列查询
     	WithdrawQueryMessage message = new WithdrawQueryMessage();
     	message.setApplyId(apply.getId());
