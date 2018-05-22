@@ -2,7 +2,7 @@ package com.waben.stock.interfaces.service.organization;
 
 import java.util.List;
 
-import com.waben.stock.interfaces.dto.organization.OrganizationDto;
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +15,12 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
 
+/**
+ * 机构账户 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "organization", path = "organizationAccount", qualifier = "organizationAccountInterface")
 public interface OrganizationAccountInterface {
 
 	@RequestMapping(value = "/orgId/{orgId}", method = RequestMethod.GET)
@@ -25,18 +31,18 @@ public interface OrganizationAccountInterface {
 			@RequestParam(name = "oldPaymentPassword") String oldPaymentPassword,
 			@RequestParam(name = "paymentPassword") String paymentPassword);
 
-	@RequestMapping(value = "/pages", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<OrganizationAccountDto>> pages(@RequestBody OrganizationAccountQuery query);
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	Response<List<OrganizationAccountDto>> list();
 
-	@RequestMapping(value = "/state/{id}/{state}",method = RequestMethod.PUT)
+	@RequestMapping(value = "/state/{id}/{state}", method = RequestMethod.PUT)
 	Response<OrganizationAccountDto> modifyState(@PathVariable("id") Long id, @PathVariable("state") Integer state);
 
-	@RequestMapping(value = "/recover/{id}",method = RequestMethod.PUT)
-    Response<OrganizationAccountDto> recover(@PathVariable("id") Long id);
+	@RequestMapping(value = "/recover/{id}", method = RequestMethod.PUT)
+	Response<OrganizationAccountDto> recover(@PathVariable("id") Long id);
 
-	@RequestMapping(value = "/freeze", method = RequestMethod.PUT,consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value = "/freeze", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<OrganizationAccountDto> freeze(@RequestBody OrganizationAccountDto accountDto);
 }

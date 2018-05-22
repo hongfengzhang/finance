@@ -28,8 +28,6 @@ import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageRequestBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.MessageResponseBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.PayRequestBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WabenPayConfig;
-import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
-import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
@@ -39,6 +37,8 @@ import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
+import com.waben.stock.interfaces.service.publisher.WithdrawalsOrderInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -48,12 +48,12 @@ public class PaymentBusiness {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	@Qualifier("paymentOrderReference")
-	private PaymentOrderReference paymentOrderReference;
+	@Qualifier("paymentOrderInterface")
+	private PaymentOrderInterface paymentOrderReference;
 
 	@Autowired
-	@Qualifier("withdrawalsOrderReference")
-	private WithdrawalsOrderReference withdrawalsOrderReference;
+	@Qualifier("withdrawalsOrderInterface")
+	private WithdrawalsOrderInterface withdrawalsOrderReference;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;

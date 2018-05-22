@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.reference.OrganizationReference;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.organization.OrganizationInterface;
 
 /**
  * 机构 Business
@@ -18,8 +18,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class OrganizationBusiness {
 
 	@Autowired
-	@Qualifier("organizationReference")
-	private OrganizationReference reference;
+	@Qualifier("organizationInterface")
+	private OrganizationInterface reference;
 
 	public OrganizationDto fetchByCode(String code) {
 		Response<OrganizationDto> response = reference.fetchByCode(code);

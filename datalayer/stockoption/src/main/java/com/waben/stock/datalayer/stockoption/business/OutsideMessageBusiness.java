@@ -4,19 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.stockoption.reference.OutsideMessageReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
+import com.waben.stock.interfaces.service.message.OutsideMessageInterface;
 
 @Service
 public class OutsideMessageBusiness {
 
 	@Autowired
-	@Qualifier("outsideMessageReference")
-	private OutsideMessageReference outsideMessageReference;
+	@Qualifier("outsideMessageInterface")
+	private OutsideMessageInterface outsideMessageReference;
 
 	public void send(OutsideMessage message) {
 		Response<String> response = outsideMessageReference.send(message);

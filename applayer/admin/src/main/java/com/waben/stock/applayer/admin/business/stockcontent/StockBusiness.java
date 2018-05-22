@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.admin.reference.StockReference;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 
 /**
  * 股票 Business
@@ -19,8 +19,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class StockBusiness {
 
 	@Autowired
-	@Qualifier("stockReference")
-	private StockReference stockReference;
+	@Qualifier("stockInterface")
+	private StockInterface stockReference;
 
 	public StockDto downline(String code, String stockOptionBlackRemark) {
 		Response<StockDto> response = stockReference.downline(code, stockOptionBlackRemark);

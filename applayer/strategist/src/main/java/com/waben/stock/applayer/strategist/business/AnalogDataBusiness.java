@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.strategist.reference.AnalogDataReference;
 import com.waben.stock.interfaces.dto.manage.AnalogDataDto;
 import com.waben.stock.interfaces.enums.AnalogDataType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.manage.AnalogDataInterface;
 
 /**
  * 模拟数据 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class AnalogDataBusiness {
 
 	@Autowired
-	@Qualifier("analogDataReference")
-	private AnalogDataReference reference;
+	@Qualifier("analogDataInterface")
+	private AnalogDataInterface reference;
 
 	public PageInfo<AnalogDataDto> pagesByType(AnalogDataType type, int page, int limit) {
 		Response<PageInfo<AnalogDataDto>> response = reference.pagesByType(type.getIndex(), page, limit);

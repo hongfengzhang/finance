@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.OrganizationAccountReference;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQuery;
+import com.waben.stock.interfaces.service.organization.OrganizationAccountInterface;
 
 /**
  * 机构账户 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountQue
 public class OrganizationAccountBusiness {
 
 	@Autowired
-	@Qualifier("organizationAccountReference")
-	private OrganizationAccountReference reference;
+	@Qualifier("organizationAccountInterface")
+	private OrganizationAccountInterface reference;
 
 	@Autowired
 	private OrganizationBusiness organizationBusiness;

@@ -1,21 +1,19 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.manage.PermissionService;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.PermissionDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
-import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PermissionQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.manage.PermissionInterface;
 
 /**
  * @author Created by yuyidi on 2017/12/11.
@@ -25,8 +23,8 @@ import java.util.List;
 public class PermissionBusiness {
 
     @Autowired
-    @Qualifier("permissionFeignService")
-    private PermissionService permissionService;
+    @Qualifier("permissionInterface")
+    private PermissionInterface permissionService;
 
     public PageInfo<PermissionDto> pages(PermissionQuery query) {
         Response<PageInfo<PermissionDto>> response = permissionService.pages(query);

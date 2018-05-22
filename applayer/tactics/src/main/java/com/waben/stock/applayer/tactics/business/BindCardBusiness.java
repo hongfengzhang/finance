@@ -16,7 +16,6 @@ import com.waben.stock.applayer.tactics.payapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindRequestBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.bean.BindResponseBean;
 import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WaBenBankType;
-import com.waben.stock.applayer.tactics.reference.BindCardReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
@@ -24,6 +23,7 @@ import com.waben.stock.interfaces.enums.BankType;
 import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.BindCardInterface;
 
 /**
  * 绑卡 Business
@@ -39,8 +39,8 @@ public class BindCardBusiness {
 	public static Map<String, String> bankIconMap = new HashMap<>();
 
 	@Autowired
-	@Qualifier("bindCardReference")
-	private BindCardReference service;
+	@Qualifier("bindCardInterface")
+	private BindCardInterface service;
 
 	@Autowired
 	private CnapsBusiness cnapsBusiness;

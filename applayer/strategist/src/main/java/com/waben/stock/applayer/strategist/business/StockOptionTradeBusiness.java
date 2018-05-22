@@ -13,7 +13,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeDynamicDto;
 import com.waben.stock.applayer.strategist.dto.stockoption.StockOptionTradeWithMarketDto;
-import com.waben.stock.applayer.strategist.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -27,6 +26,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
+import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
@@ -45,8 +45,8 @@ public class StockOptionTradeBusiness {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	@Qualifier("stockOptionTradeReference")
-	private StockOptionTradeReference tradeReference;
+	@Qualifier("stockOptionTradeInterface")
+	private StockOptionTradeInterface tradeReference;
 
 	@Autowired
 	private AnalogDataBusiness analogDataBusiness;

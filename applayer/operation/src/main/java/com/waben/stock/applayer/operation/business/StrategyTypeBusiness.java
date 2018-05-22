@@ -1,21 +1,19 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.stock.StrategyTypeService;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StrategyTypeQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.stockcontent.StrategyTypeInterface;
 
 /**
  * @author Created by yuyidi on 2017/12/6.
@@ -25,8 +23,8 @@ import java.util.List;
 public class StrategyTypeBusiness {
 
     @Autowired
-    @Qualifier("strategyTypeFeignService")
-    private StrategyTypeService strategyTypeService;
+    @Qualifier("strategyTypeInterface")
+    private StrategyTypeInterface strategyTypeService;
 
     public PageInfo<StrategyTypeDto> pages(StrategyTypeQuery query) {
         Response<PageInfo<StrategyTypeDto>> response = strategyTypeService.pages(query);

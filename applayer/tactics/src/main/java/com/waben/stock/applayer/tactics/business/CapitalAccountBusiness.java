@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.stockoption.StockOptionTradeWithMarketDto;
-import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -23,6 +22,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeUserQuery;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
@@ -35,8 +35,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 public class CapitalAccountBusiness {
 
 	@Autowired
-	@Qualifier("capitalAccountReference")
-	private CapitalAccountReference service;
+	@Qualifier("capitalAccountInterface")
+	private CapitalAccountInterface service;
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;

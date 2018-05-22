@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @EnableDiscoveryClient
 //服务调用
-@EnableFeignClients
+@EnableFeignClients(basePackages = { "com.waben.stock" })
 //断路器
 @EnableHystrix
 //扫描包

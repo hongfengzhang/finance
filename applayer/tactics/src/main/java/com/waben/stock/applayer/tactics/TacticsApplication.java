@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 // 服务发现客户端
 @EnableDiscoveryClient
 // 服务调用
-@EnableFeignClients
+@EnableFeignClients(basePackages = { "com.waben.stock" })
 // 断路器
 @EnableHystrix
 // 扫描包

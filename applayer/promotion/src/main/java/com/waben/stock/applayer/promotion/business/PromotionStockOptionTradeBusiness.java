@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.PromotionStockOptionTradeReference;
 import com.waben.stock.interfaces.dto.organization.PromotionStockOptionTradeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.PromotionStockOptionTradeQuery;
+import com.waben.stock.interfaces.service.organization.PromotionStockOptionTradeInterface;
 
 /**
  * 推广渠道产生的期权交易 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.organization.PromotionStockOptionTr
 public class PromotionStockOptionTradeBusiness {
 
 	@Autowired
-	@Qualifier("promotionStockOptionTradeReference")
-	private PromotionStockOptionTradeReference reference;
+	@Qualifier("promotionStockOptionTradeInterface")
+	private PromotionStockOptionTradeInterface reference;
 
 	public PageInfo<PromotionStockOptionTradeDto> adminPage(PromotionStockOptionTradeQuery query) {
 		Response<PageInfo<PromotionStockOptionTradeDto>> response = reference.adminPage(query);

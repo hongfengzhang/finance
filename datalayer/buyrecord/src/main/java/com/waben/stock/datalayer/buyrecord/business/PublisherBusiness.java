@@ -1,19 +1,20 @@
 package com.waben.stock.datalayer.buyrecord.business;
 
-import com.waben.stock.datalayer.buyrecord.reference.PublisherReference;
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 @Service
 public class PublisherBusiness {
 
     @Autowired
-    @Qualifier("publisherFeignReference")
-    private PublisherReference publisherReference;
+    @Qualifier("publisherInterface")
+    private PublisherInterface publisherReference;
 
     public PublisherDto findById(Long id) {
         Response<PublisherDto> response = publisherReference.fetchById(id);

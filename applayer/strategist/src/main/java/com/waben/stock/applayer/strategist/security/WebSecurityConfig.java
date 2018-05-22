@@ -11,24 +11,24 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.waben.stock.applayer.strategist.reference.CapitalAccountReference;
-import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.strategist.security.jwt.JWTLoginFilter;
 import com.waben.stock.applayer.strategist.service.RedisCache;
 import com.waben.stock.applayer.strategist.wrapper.filter.HiddenParamProcessFilter;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference publisherReference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherReference;
 
 	@Autowired
-	@Qualifier("capitalAccountReference")
-	private CapitalAccountReference capitalAccountReference;
+	@Qualifier("capitalAccountInterface")
+	private CapitalAccountInterface capitalAccountReference;
 	
 	@Autowired
 	private RedisCache redisCache;

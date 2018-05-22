@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.manage.RoleReference;
 import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
@@ -21,12 +20,13 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
+import com.waben.stock.interfaces.service.manage.RoleInterface;
 
 @Service
 public class RoleBusiness {
     @Autowired
-    @Qualifier("roleReference")
-    private RoleReference roleReference;
+    @Qualifier("roleInterface")
+    private RoleInterface roleReference;
 
     @Autowired
     private MenuBusiness menuBusiness;

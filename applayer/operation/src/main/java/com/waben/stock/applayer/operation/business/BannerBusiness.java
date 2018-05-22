@@ -1,26 +1,24 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.manage.BannerService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
-import com.waben.stock.interfaces.dto.manage.CircularsDto;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
-import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BannerQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import com.waben.stock.interfaces.service.manage.BannerInterface;
 
 @Service
 public class BannerBusiness {
 
     @Autowired
-    @Qualifier("bannerFeignService")
-    private BannerService bannerService;
+    @Qualifier("bannerInterface")
+    private BannerInterface bannerService;
 
 
     public PageInfo<BannerDto> pages(BannerQuery bannerQuery) {

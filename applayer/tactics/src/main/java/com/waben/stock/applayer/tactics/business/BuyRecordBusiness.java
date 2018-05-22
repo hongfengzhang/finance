@@ -14,11 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.tactics.dto.buyrecord.BuyRecordWithMarketDto;
 import com.waben.stock.applayer.tactics.dto.buyrecord.TradeDynamicDto;
-import com.waben.stock.applayer.tactics.reference.BuyRecordReference;
-import com.waben.stock.applayer.tactics.reference.DeferredRecordReference;
-import com.waben.stock.applayer.tactics.reference.PublisherReference;
-import com.waben.stock.applayer.tactics.reference.SettlementReference;
-import com.waben.stock.applayer.tactics.reference.StockReference;
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -33,6 +28,11 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.SettlementQuery;
+import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
+import com.waben.stock.interfaces.service.buyrecord.DeferredRecordInterface;
+import com.waben.stock.interfaces.service.buyrecord.SettlementInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
+import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 @Service
@@ -44,24 +44,24 @@ public class BuyRecordBusiness {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	@Qualifier("buyRecordReference")
-	private BuyRecordReference buyRecordReference;
+	@Qualifier("buyRecordInterface")
+	private BuyRecordInterface buyRecordReference;
 
 	@Autowired
-	@Qualifier("settlementReference")
-	private SettlementReference settlementReference;
+	@Qualifier("settlementInterface")
+	private SettlementInterface settlementReference;
 
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference publisherReference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherReference;
 
 	@Autowired
-	@Qualifier("stockReference")
-	private StockReference stockReference;
+	@Qualifier("stockInterface")
+	private StockInterface stockReference;
 
 	@Autowired
-	@Qualifier("deferredRecordReference")
-	private DeferredRecordReference deferredRecordReference;
+	@Qualifier("deferredRecordInterface")
+	private DeferredRecordInterface deferredRecordReference;
 
 	@Autowired
 	private StrategyTypeBusiness strategyTypeBusiness;

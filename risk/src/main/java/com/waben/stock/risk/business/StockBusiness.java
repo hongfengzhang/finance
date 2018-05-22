@@ -1,15 +1,15 @@
 package com.waben.stock.risk.business;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.util.JacksonUtil;
-import com.waben.stock.risk.service.StockService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 
 /**
  * @author Created by yuyidi on 2017/12/14.
@@ -18,8 +18,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class StockBusiness {
     @Autowired
-    @Qualifier("stockFeignService")
-    private StockService stockService;
+    @Qualifier("stockInterface")
+    private StockInterface stockService;
 
 
     public StockDto fetchByCode(String stockCode) {

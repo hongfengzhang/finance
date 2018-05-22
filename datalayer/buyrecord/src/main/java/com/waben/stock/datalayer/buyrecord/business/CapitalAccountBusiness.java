@@ -6,18 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.buyrecord.reference.CapitalAccountReference;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 
 @Service
 public class CapitalAccountBusiness {
 
 	@Autowired
-	@Qualifier("capitalAccountFeignReference")
-	private CapitalAccountReference service;
+	@Qualifier("capitalAccountInterface")
+	private CapitalAccountInterface service;
 
 	public CapitalAccountDto fetchByPublisherId(Long publisherId) {
 		Response<CapitalAccountDto> response = service.fetchByPublisherId(publisherId);

@@ -7,8 +7,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.publisher.CapitalFlowWithExtendDto;
-import com.waben.stock.applayer.tactics.reference.CapitalFlowReference;
-import com.waben.stock.applayer.tactics.reference.StrategyTypeReference;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
@@ -20,6 +18,8 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.publisher.CapitalFlowInterface;
+import com.waben.stock.interfaces.service.stockcontent.StrategyTypeInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
@@ -32,8 +32,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 public class CapitalFlowBusiness {
 
 	@Autowired
-	@Qualifier("capitalFlowReference")
-	private CapitalFlowReference service;
+	@Qualifier("capitalFlowInterface")
+	private CapitalFlowInterface service;
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
@@ -42,8 +42,8 @@ public class CapitalFlowBusiness {
 	private StockBusiness stockBusiness;
 
 	@Autowired
-	@Qualifier("strategyTypeReference")
-	private StrategyTypeReference strategyTypeReference;
+	@Qualifier("strategyTypeInterface")
+	private StrategyTypeInterface strategyTypeReference;
 
 	@Autowired
 	private StockOptionTradeBusiness tradeBusiness;

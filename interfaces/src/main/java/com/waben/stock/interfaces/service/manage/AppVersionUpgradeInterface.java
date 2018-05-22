@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.manage;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,6 +15,7 @@ import com.waben.stock.interfaces.pojo.Response;
  * @author luomengan
  *
  */
+@FeignClient(name = "manage", path = "appversionupgrade", qualifier = "appVersionUpgradeInterface")
 public interface AppVersionUpgradeInterface {
 
 	@RequestMapping(value = "/{versionCode}/checkUpgrade/{deviceType}", method = RequestMethod.GET)

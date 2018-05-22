@@ -15,11 +15,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 /**
  * 发布人 Business
@@ -31,8 +31,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class PublisherBusiness {
 
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference publisherReference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherReference;
 	
 	@Value("${operation.server}")
 	private String operationServer;

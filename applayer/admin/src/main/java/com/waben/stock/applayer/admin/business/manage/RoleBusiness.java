@@ -1,6 +1,11 @@
 package com.waben.stock.applayer.admin.business.manage;
 
-import com.waben.stock.applayer.admin.reference.RoleReference;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -8,11 +13,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.RoleQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.manage.RoleInterface;
 
 /**
  * @author Created by yuyidi on 2017/12/11.
@@ -22,8 +23,8 @@ import java.util.List;
 public class RoleBusiness {
 
     @Autowired
-    @Qualifier("roleFeignService")
-    private RoleReference roleReference;
+    @Qualifier("roleInterface")
+    private RoleInterface roleReference;
 
     public PageInfo<RoleDto> pages(RoleQuery query) {
         query.setType(1);

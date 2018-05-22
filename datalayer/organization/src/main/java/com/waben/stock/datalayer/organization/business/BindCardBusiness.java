@@ -12,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.organization.reference.BindCardReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.BindCardInterface;
 
 /**
  * 绑卡 Business
@@ -34,8 +34,8 @@ public class BindCardBusiness {
 	public static Map<String, String> bankIconMap = new HashMap<>();
 
 	@Autowired
-	@Qualifier("bindCardReference")
-	private BindCardReference service;
+	@Qualifier("bindCardInterface")
+	private BindCardInterface service;
 
 	@Autowired
 	private CnapsBusiness cnapsBusiness;

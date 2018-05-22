@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.strategist.reference.BannerReference;
 import com.waben.stock.interfaces.dto.manage.BannerDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BannerQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.manage.BannerInterface;
 
 /**
  * 轮播图 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class BannerBusiness {
 
 	@Autowired
-	@Qualifier("bannerReference")
-	private BannerReference bannerReference;
+	@Qualifier("bannerInterface")
+	private BannerInterface bannerReference;
 
 	public PageInfo<BannerDto> pages(BannerQuery query) {
 		Response<PageInfo<BannerDto>> response = bannerReference.pages(query);

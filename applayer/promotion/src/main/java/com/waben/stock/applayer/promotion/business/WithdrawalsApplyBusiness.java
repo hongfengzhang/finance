@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.WithdrawalsApplyReference;
 import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
+import com.waben.stock.interfaces.service.organization.WithdrawalsApplyInterface;
 
 /**
  * 提现申请 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
 public class WithdrawalsApplyBusiness {
 
 	@Autowired
-	@Qualifier("withdrawalsApplyReference")
-	private WithdrawalsApplyReference reference;
+	@Qualifier("withdrawalsApplyInterface")
+	private WithdrawalsApplyInterface reference;
 
 	public WithdrawalsApplyDto addition(WithdrawalsApplyDto apply) {
 		Response<WithdrawalsApplyDto> response = reference.addition(apply);

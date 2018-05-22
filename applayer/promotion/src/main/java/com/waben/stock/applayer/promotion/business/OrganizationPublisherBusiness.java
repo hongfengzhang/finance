@@ -1,17 +1,17 @@
 package com.waben.stock.applayer.promotion.business;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.OrganizationPublisherReference;
 import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.organization.OrganizationPublisherInterface;
 
 /**
  * 机构推广的发布人 Business
@@ -25,8 +25,8 @@ public class OrganizationPublisherBusiness {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	@Qualifier("organizationPublisherReference")
-	private OrganizationPublisherReference reference;
+	@Qualifier("organizationPublisherInterface")
+	private OrganizationPublisherInterface reference;
 
 	public OrganizationPublisherDto addOrgPublisher(Long publisherId, String orgCode) {
 		OrganizationPublisherDto orgPublisher = new OrganizationPublisherDto();

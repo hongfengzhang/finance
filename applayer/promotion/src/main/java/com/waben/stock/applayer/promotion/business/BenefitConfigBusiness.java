@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.BenefitConfigReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.BenefitConfigDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -15,6 +14,7 @@ import com.waben.stock.interfaces.dto.organization.SettlementMethodDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.BenefitConfigForm;
+import com.waben.stock.interfaces.service.organization.BenefitConfigInterface;
 
 /**
  * 分成配置 Business
@@ -26,8 +26,8 @@ import com.waben.stock.interfaces.pojo.form.organization.BenefitConfigForm;
 public class BenefitConfigBusiness {
 
 	@Autowired
-	@Qualifier("benefitConfigReference")
-	private BenefitConfigReference reference;
+	@Qualifier("benefitConfigInterface")
+	private BenefitConfigInterface reference;
 
 	@Autowired
 	private OrganizationBusiness orgBusiness;

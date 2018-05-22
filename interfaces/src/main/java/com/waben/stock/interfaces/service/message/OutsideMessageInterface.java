@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.message;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -7,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 
+@FeignClient(name = "message", path = "outsidemsg", qualifier = "outsideMessageInterface")
 public interface OutsideMessageInterface {
 
 	/**

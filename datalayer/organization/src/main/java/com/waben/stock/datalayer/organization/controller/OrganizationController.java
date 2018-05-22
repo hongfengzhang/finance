@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.organization.entity.Organization;
-import com.waben.stock.datalayer.organization.reference.BindCardReference;
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.service.OrganizationService;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
@@ -37,6 +36,7 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationInterface;
+import com.waben.stock.interfaces.service.publisher.BindCardInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.PageToPageInfo;
@@ -60,8 +60,8 @@ public class OrganizationController implements OrganizationInterface {
 	public OrganizationService organizationService;
 
 	@Autowired
-	@Qualifier("bindCardReference")
-	private BindCardReference bindCardReference;
+	@Qualifier("bindCardInterface")
+	private BindCardInterface bindCardReference;
 
 	@Autowired
 	private OrganizationDao organizationDao;

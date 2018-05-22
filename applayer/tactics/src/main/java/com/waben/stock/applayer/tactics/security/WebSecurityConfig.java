@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.tactics.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,22 +11,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
-import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.jwt.JWTAuthenticationFilter;
 import com.waben.stock.applayer.tactics.security.jwt.JWTLoginFilter;
 import com.waben.stock.applayer.tactics.service.RedisCache;
 import com.waben.stock.applayer.tactics.wrapper.filter.HiddenParamProcessFilter;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
-	private PublisherReference publisherReference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherReference;
 
 	@Autowired
-	private CapitalAccountReference accountService;
+	private CapitalAccountInterface accountService;
 
 	@Autowired
 	private RedisCache redisCache;

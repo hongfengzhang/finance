@@ -1,31 +1,25 @@
 package com.waben.stock.applayer.operation.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import com.waben.stock.applayer.operation.business.LossBusiness;
 import com.waben.stock.applayer.operation.business.StrategyTypeBusiness;
-import com.waben.stock.applayer.operation.service.stock.LossService;
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.dto.stockcontent.AmountValueDto;
 import com.waben.stock.interfaces.dto.stockcontent.LossDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StrategyTypeQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
-import com.waben.stock.interfaces.vo.publisher.PublisherVo;
 import com.waben.stock.interfaces.vo.stockcontent.LossVo;
-import com.waben.stock.interfaces.vo.stockcontent.StockExponentVo;
-import com.waben.stock.interfaces.vo.stockcontent.StockVo;
 import com.waben.stock.interfaces.vo.stockcontent.StrategyTypeVo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * @author Created by yuyidi on 2017/12/6.

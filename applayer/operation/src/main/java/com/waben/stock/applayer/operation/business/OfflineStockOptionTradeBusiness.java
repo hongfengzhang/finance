@@ -1,6 +1,15 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.stockoption.OfflineStockOptionTradeService;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionTradeDto;
@@ -8,19 +17,13 @@ import com.waben.stock.interfaces.enums.OfflineStockOptionTradeState;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.waben.stock.interfaces.service.stockoption.OfflineStockOptionTradeInterface;
 
 @Service
 public class OfflineStockOptionTradeBusiness {
     @Autowired
-    @Qualifier("offlinestockoptiontradeFeignService")
-    private OfflineStockOptionTradeService offlineStockOptionTradeService;
+    @Qualifier("offlineStockOptionTradeInterface")
+    private OfflineStockOptionTradeInterface offlineStockOptionTradeService;
     @Autowired
     private StockOptionTradeBusiness stockOptionTradeBusiness;
     public OfflineStockOptionTradeDto add(OfflineStockOptionTradeDto offlineStockOptionTradeDto) {

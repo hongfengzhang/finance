@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.publisher;
 
 import java.math.BigDecimal;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +18,13 @@ import com.waben.stock.interfaces.pojo.query.CapitalAccountQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
 
+/**
+ * 资金账号 reference服务接口
+ * 
+ * @author luomengan
+ *
+ */
+@FeignClient(name = "publisher", path = "capitalAccount", qualifier = "capitalAccountInterface")
 public interface CapitalAccountInterface {
 
 	/**

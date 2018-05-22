@@ -2,13 +2,12 @@ package com.waben.stock.applayer.admin.business.manage;
 
 import java.util.Date;
 
-import com.waben.stock.applayer.admin.security.CustomUserDetails;
-import com.waben.stock.applayer.admin.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.admin.reference.StaffReference;
+import com.waben.stock.applayer.admin.security.CustomUserDetails;
+import com.waben.stock.applayer.admin.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -16,6 +15,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
+import com.waben.stock.interfaces.service.manage.StaffInterface;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 /**
@@ -27,8 +27,8 @@ import com.waben.stock.interfaces.util.PasswordCrypt;
 public class StaffBusiness {
 
 	@Autowired
-	@Qualifier("staffReference")
-	private StaffReference reference;
+	@Qualifier("staffInterface")
+	private StaffInterface reference;
 
 	public StaffDto fetchByUserName(String username) {
 		Response<StaffDto> response = reference.fetchByUserName(username);

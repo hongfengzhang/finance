@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.promotion.business.cache.RedisCache;
-import com.waben.stock.applayer.promotion.reference.organization.UserReference;
 import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -18,6 +17,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
+import com.waben.stock.interfaces.service.organization.UserInterface;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 @Service
@@ -25,8 +25,8 @@ public class UserBusiness {
 
 	private static final List<UserDto> Response = null;
 	@Autowired
-	@Qualifier("userReference")
-	private UserReference userReference;
+	@Qualifier("userInterface")
+	private UserInterface userReference;
 	@Autowired
 	private RoleBusiness roleBusiness;
 	@Autowired

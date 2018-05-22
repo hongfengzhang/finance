@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.stockoption.reference.OrganizationSettlementReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.organization.OrganizationSettlementInterface;
 
 /**
  * 机构结算 Business
@@ -26,8 +26,8 @@ public class OrganizationSettlementBusiness {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	@Qualifier("organizationSettlementReference")
-	private OrganizationSettlementReference service;
+	@Qualifier("organizationSettlementInterface")
+	private OrganizationSettlementInterface service;
 
 	public void strategySettlement(Long publisherId, Long buyRecordId, String tradeNo, Long strategyTypeId,
 			BigDecimal serviceFee, BigDecimal deferredFee) {

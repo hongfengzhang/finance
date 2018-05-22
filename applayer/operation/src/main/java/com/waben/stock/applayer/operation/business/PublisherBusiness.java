@@ -1,28 +1,26 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
-import com.waben.stock.applayer.operation.service.publisher.PublisherService;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
-import com.waben.stock.interfaces.exception.ExecptionHandler;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PublisherQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 @Service
 public class PublisherBusiness {
 
     @Autowired
-    @Qualifier("publisherFeignService")
-    private PublisherService publisherService;
+    @Qualifier("publisherInterface")
+    private PublisherInterface publisherService;
 
     public PageInfo<PublisherDto> pages(PublisherQuery query) {
         Response<PageInfo<PublisherDto>> response = publisherService.pages(query);

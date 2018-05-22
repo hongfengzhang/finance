@@ -15,8 +15,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.waben.stock.applayer.strategist.dto.publisher.PublisherCapitalAccountDto;
-import com.waben.stock.applayer.strategist.reference.CapitalAccountReference;
-import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.security.CustomUserDetails;
 import com.waben.stock.applayer.strategist.security.CustomUsernamePasswordAuthenticationToken;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -24,6 +22,8 @@ import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
 import io.swagger.models.HttpMethod;
@@ -32,9 +32,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	private static final String loginUrl = "/login";
 
-	private PublisherReference publisherReference;
+	private PublisherInterface publisherReference;
 
-	private CapitalAccountReference accountReference;
+	private CapitalAccountInterface accountReference;
 
 	public JWTLoginFilter(AuthenticationManager authManager) {
 		super(new AntPathRequestMatcher(loginUrl, HttpMethod.POST.name()));
@@ -83,11 +83,11 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		response.getWriter().println(JacksonUtil.encode(result));
 	}
 
-	public void setPublisherReference(PublisherReference publisherReference) {
+	public void setPublisherReference(PublisherInterface publisherReference) {
 		this.publisherReference = publisherReference;
 	}
 
-	public void setAccountReference(CapitalAccountReference accountReference) {
+	public void setAccountReference(CapitalAccountInterface accountReference) {
 		this.accountReference = accountReference;
 	}
 

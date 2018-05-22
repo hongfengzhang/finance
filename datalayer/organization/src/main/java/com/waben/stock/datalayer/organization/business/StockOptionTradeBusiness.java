@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.organization.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 
 /**
  * 期权交易 Business
@@ -17,8 +17,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class StockOptionTradeBusiness {
 
 	@Autowired
-	@Qualifier("stockOptionTradeReference")
-	private StockOptionTradeReference reference;
+	@Qualifier("stockOptionTradeInterface")
+	private StockOptionTradeInterface reference;
 
 	public Integer countStockOptionTradeState(Long publisherId) {
 		Response<Integer> response = reference.countStockOptionTradeState(publisherId);

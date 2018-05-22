@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.publisher;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +11,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
 import com.waben.stock.interfaces.pojo.Response;
 
+/**
+ * 支提现订单 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "publisher", path = "withdrawalsorder", qualifier = "withdrawalsOrderInterface")
 public interface WithdrawalsOrderInterface {
 
 	@RequestMapping(value = "/{withdrawalsNo}", method = RequestMethod.GET)

@@ -1,23 +1,23 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.stockoption.StockOptionOrgService;
-import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
-import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
-import com.waben.stock.interfaces.exception.NetflixCircuitException;
-import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.Response;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionOrgDto;
+import com.waben.stock.interfaces.exception.NetflixCircuitException;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockoption.StockOptionOrgInterface;
 
 @Service
 public class StockOptionOrgBusiness {
     @Autowired
-    @Qualifier("stockoptionorgFeignService")
-    private StockOptionOrgService stockOptionOrgService;
+    @Qualifier("stockOptionOrgInterface")
+    private StockOptionOrgInterface stockOptionOrgService;
 
 
     public List<StockOptionOrgDto> fetchStockOptionOrgs() {

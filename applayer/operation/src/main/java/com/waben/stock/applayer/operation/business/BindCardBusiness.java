@@ -6,20 +6,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.operation.service.publisher.BindCardService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.BindCardInterface;
 
 @Service
 public class BindCardBusiness {
 
 	@Autowired
-	@Qualifier("bindCardFeignService")
-	private BindCardService bindCardService;
+	@Qualifier("bindCardInterface")
+	private BindCardInterface bindCardService;
 
 	public List<BindCardDto> fetchBindCardByPublisherId(Long publisherId) {
 		Response<List<BindCardDto>> response = bindCardService

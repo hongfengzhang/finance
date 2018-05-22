@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.organization;
 
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.waben.stock.interfaces.pojo.query.organization.UserQuery;
  * @author Created by yuyidi on 2018/3/12.
  * @desc
  */
+@FeignClient(name = "organization", path = "user", qualifier = "userInterface")
 public interface UserInterface {
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)

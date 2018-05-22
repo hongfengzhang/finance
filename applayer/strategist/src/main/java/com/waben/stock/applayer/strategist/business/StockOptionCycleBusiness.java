@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.strategist.reference.StockOptionCycleReference;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockoption.StockOptionCycleInterface;
 
 /**
  * 期权周期 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class StockOptionCycleBusiness {
 
 	@Autowired
-	@Qualifier("stockOptionCycleReference")
-	private StockOptionCycleReference stockOptionCycleReference;
+	@Qualifier("stockOptionCycleInterface")
+	private StockOptionCycleInterface stockOptionCycleReference;
 
 	public StockOptionCycleDto fetchByCycle(Integer cycle) {
 		Response<StockOptionCycleDto> response = stockOptionCycleReference.fetchByCycle(cycle);

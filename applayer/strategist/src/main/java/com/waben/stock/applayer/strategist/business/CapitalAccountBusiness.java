@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.strategist.dto.buyrecord.BuyRecordWithMarketDto;
-import com.waben.stock.applayer.strategist.reference.CapitalAccountReference;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -19,6 +18,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 
 /**
  * 资金账户 Business
@@ -30,8 +30,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class CapitalAccountBusiness {
 
 	@Autowired
-	@Qualifier("capitalAccountReference")
-	private CapitalAccountReference capitalAccountReference;
+	@Qualifier("capitalAccountInterface")
+	private CapitalAccountInterface capitalAccountReference;
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;

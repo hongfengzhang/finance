@@ -1,20 +1,21 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.stockoption.InquiryResultService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import com.waben.stock.interfaces.service.stockoption.InquiryResultInterface;
 
 @Service
 public class InquiryResultBusiness {
     @Autowired
-    @Qualifier("inquiryresultFeignService")
-    private InquiryResultService inquiryResultService;
+    @Qualifier("inquiryResultInterface")
+    private InquiryResultInterface inquiryResultService;
 
     public InquiryResultDto add(InquiryResultDto inquiryResultDto) {
         Response<InquiryResultDto> response = inquiryResultService.add(inquiryResultDto);

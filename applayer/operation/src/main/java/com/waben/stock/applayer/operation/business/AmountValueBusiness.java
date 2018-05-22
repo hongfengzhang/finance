@@ -1,27 +1,24 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.stock.AmountValueService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockcontent.AmountValueDto;
-import com.waben.stock.interfaces.dto.stockcontent.LossDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockDto;
-import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.AmountValueQuery;
-import com.waben.stock.interfaces.pojo.query.LossQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import com.waben.stock.interfaces.service.stockcontent.AmountValueInterface;
 
 @Service
 public class AmountValueBusiness {
 
     @Autowired
-    @Qualifier("amountvalueFeignService")
-    private AmountValueService amountValueService;
+    @Qualifier("amountValueInterface")
+    private AmountValueInterface amountValueService;
 
     public PageInfo<AmountValueDto> pages(AmountValueQuery query) {
         Response<PageInfo<AmountValueDto>> response = amountValueService.pagesByQuery(query);

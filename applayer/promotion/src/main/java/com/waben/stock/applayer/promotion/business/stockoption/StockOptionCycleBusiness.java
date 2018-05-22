@@ -3,18 +3,20 @@ package com.waben.stock.applayer.promotion.business.stockoption;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.stockoption.StockOptionCycleReference;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockoption.StockOptionCycleInterface;
 
 @Service
 public class StockOptionCycleBusiness {
 
 	@Autowired
-	private StockOptionCycleReference reference;
+	@Qualifier("stockOptionCycleInterface")
+	private StockOptionCycleInterface reference;
 
 	public List<StockOptionCycleDto> findAll() {
 		Response<List<StockOptionCycleDto>> response = reference.lists();

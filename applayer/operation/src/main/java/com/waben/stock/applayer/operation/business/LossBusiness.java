@@ -1,27 +1,26 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.stock.LossService;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.stockcontent.AmountValueDto;
 import com.waben.stock.interfaces.dto.stockcontent.LossDto;
-import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.LossQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.stockcontent.LossInterface;
 
 @Service
 public class LossBusiness {
 
     @Autowired
-    @Qualifier("lossFeignService")
-    private LossService lossService;
+    @Qualifier("lossInterface")
+    private LossInterface lossService;
 
     public PageInfo<LossDto> pages(LossQuery query) {
         Response<PageInfo<LossDto>> response = lossService.pagesByQuery(query);

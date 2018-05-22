@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.organization;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,12 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.WithdrawalsApplyQuery;
 
+/**
+ * 提现申请 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "organization", path = "withdrawalsApply", qualifier = "withdrawalsApplyInterface")
 public interface WithdrawalsApplyInterface {
 
 	/**

@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.publisher;
 
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,12 @@ import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 
+/**
+ * 收藏股票 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "publisher", path = "favoriteStock", qualifier = "favoriteStockInterface")
 public interface FavoriteStockInterface {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
