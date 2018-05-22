@@ -176,7 +176,7 @@ public class QuickPayBusiness {
 		param.setTimestamp(sdf.format(new Date()));
 		param.setTotalAmt(isProd ? apply.getAmount() : new BigDecimal("0.01"));
 		param.setVersion("1.0");
-		applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
+		apply = applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
 		// 发起提现请求前，预使用队列查询
     	WithdrawQueryMessage message = new WithdrawQueryMessage();
     	message.setApplyId(apply.getId());
@@ -200,7 +200,7 @@ public class QuickPayBusiness {
 //    		message.setOrderNo(withdrawRet.getOrderNo());
 //    		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
 //    		// 更新订单状态
-//    		applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
+//    		apply = applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
 //        	apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
 //        	applyBusiness.revision(apply);
 //        } else {
