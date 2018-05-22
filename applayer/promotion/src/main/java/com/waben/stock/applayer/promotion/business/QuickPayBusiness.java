@@ -40,6 +40,7 @@ import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
 import com.waben.stock.interfaces.enums.BankType;
 import com.waben.stock.interfaces.enums.WithdrawalsApplyState;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.util.StringUtil;
 
 @Service
 public class QuickPayBusiness {
@@ -175,23 +176,37 @@ public class QuickPayBusiness {
 		param.setTimestamp(sdf.format(new Date()));
 		param.setTotalAmt(isProd ? apply.getAmount() : new BigDecimal("0.01"));
 		param.setVersion("1.0");
+		apply = applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
+		// 发起提现请求前，预使用队列查询
+    	WithdrawQueryMessage message = new WithdrawQueryMessage();
+    	message.setApplyId(apply.getId());
+		message.setAppId(wbConfig.getMerchantNo());
+		message.setOutOrderNo(apply.getApplyNo());
+		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+		// 发起提现请求
 		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
-        if(1 == withdrawRet.getStatus()) {
-        	// 提现请求成功，使用队列查询
-        	WithdrawQueryMessage message = new WithdrawQueryMessage();
-        	message.setApplyId(apply.getId());
-    		message.setAppId(wbConfig.getMerchantNo());
-    		message.setOutOrderNo(apply.getApplyNo());
-    		message.setOrderNo(withdrawRet.getOrderNo());
-    		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
-    		// 更新订单状态
-    		applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
-        	apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+		if(withdrawRet != null && !StringUtil.isEmpty(withdrawRet.getOrderNo())) {
+			// 更新支付系统第三方订单状态
+			apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
         	applyBusiness.revision(apply);
-        } else {
-        	applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.FAILURE.getIndex());
-            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
-        }
+		}
+//		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
+//        if(1 == withdrawRet.getStatus()) {
+//        	// 提现请求成功，使用队列查询
+//        	WithdrawQueryMessage message = new WithdrawQueryMessage();
+//        	message.setApplyId(apply.getId());
+//    		message.setAppId(wbConfig.getMerchantNo());
+//    		message.setOutOrderNo(apply.getApplyNo());
+//    		message.setOrderNo(withdrawRet.getOrderNo());
+//    		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+//    		// 更新订单状态
+//    		applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
+//        	apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+//        	applyBusiness.revision(apply);
+//        } else {
+//        	applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.FAILURE.getIndex());
+//            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
+//        }
 	}
 
 	public void payPalCSA(WithdrawalsApplyDto apply) {
