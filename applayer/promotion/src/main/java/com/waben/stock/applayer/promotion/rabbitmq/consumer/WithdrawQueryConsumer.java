@@ -49,9 +49,12 @@ public class WithdrawQueryConsumer {
 			param.setTimestamp(sdf.format(new Date()));
 			WithdrawQueryOrderRet queryRet = WabenPayOverHttp.withdrawQuery(param, wbConfig.getKey());
 			if (queryRet.getPayStatus() == 4) {
-				applyBusiness.changeState(messgeObj.getApplyId(),  WithdrawalsApplyState.SUCCESS.getIndex(), null);
+				applyBusiness.changeState(messgeObj.getApplyId(), WithdrawalsApplyState.SUCCESS.getIndex(), null);
 			} else if (queryRet.getPayStatus() == 5) {
-				applyBusiness.changeState(messgeObj.getApplyId(),  WithdrawalsApplyState.FAILURE.getIndex(), null);
+				applyBusiness.changeState(messgeObj.getApplyId(), WithdrawalsApplyState.FAILURE.getIndex(), null);
+			} else if (messgeObj.getConsumeCount() > 50 && queryRet.getStatus() == 3 && queryRet.getMsg() != null
+					&& queryRet.getMsg().indexOf("不存在") > 0) {
+				applyBusiness.changeState(messgeObj.getApplyId(), WithdrawalsApplyState.FAILURE.getIndex(), null);
 			} else {
 				retry(messgeObj);
 			}
