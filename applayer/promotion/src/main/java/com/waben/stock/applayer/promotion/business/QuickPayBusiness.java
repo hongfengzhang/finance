@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.promotion.business;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,14 +25,22 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.waben.stock.applayer.promotion.payapi.paypal.config.PayPalConfig;
 import com.waben.stock.applayer.promotion.payapi.paypal.config.RSAUtil;
-import com.waben.stock.applayer.promotion.payapi.paypal.utils.FormRequest;
 import com.waben.stock.applayer.promotion.payapi.paypal.utils.HttpUtil;
 import com.waben.stock.applayer.promotion.payapi.paypal.utils.LianLianRSA;
 import com.waben.stock.applayer.promotion.payapi.wbpay.WBConfig;
+import com.waben.stock.applayer.promotion.rabbitmq.RabbitmqConfiguration;
+import com.waben.stock.applayer.promotion.rabbitmq.RabbitmqProducer;
+import com.waben.stock.applayer.promotion.rabbitmq.message.WithdrawQueryMessage;
+import com.waben.stock.interfaces.commonapi.wabenpay.WabenPayOverHttp;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawParam;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawRet;
+import com.waben.stock.interfaces.commonapi.wabenpay.common.WabenBankType;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.WithdrawalsApplyDto;
+import com.waben.stock.interfaces.enums.BankType;
 import com.waben.stock.interfaces.enums.WithdrawalsApplyState;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.util.StringUtil;
 
 @Service
 public class QuickPayBusiness {
@@ -46,6 +55,11 @@ public class QuickPayBusiness {
 
 	@Autowired
 	private WBConfig wbConfig;
+	
+	@Autowired
+	private RabbitmqProducer producer;
+	
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 
 	private boolean isProd = true;
 
@@ -109,6 +123,7 @@ public class QuickPayBusiness {
 		return "FALSE";
 	}
 
+	/*
 	public void payWabenWithdrawals(WithdrawalsApplyDto apply) {
 		logger.info("发起提现申请");
 		Map<String, String> request = new TreeMap<>();
@@ -142,6 +157,40 @@ public class QuickPayBusiness {
 		// 如果请求失败 抛出异常
 		if (!"200".equals(jsStr.getString("code"))) {
 			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("message"));
+		}
+	}
+	*/
+	
+	public void payWabenWithdrawals(WithdrawalsApplyDto apply) {
+		WabenBankType bankType = WabenBankType.getByPlateformBankType(BankType.getByCode(apply.getBankCode()));
+		if (bankType == null) {
+			throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
+		}
+		logger.info("发起提现申请:{}_{}_{}_{}", apply.getName(), apply.getIdCard(), apply.getPhone(), apply.getBankCard());
+		WithdrawParam param = new WithdrawParam();
+		param.setAppId(wbConfig.getMerchantNo());
+		param.setBankAcctName(apply.getName());
+		param.setBankNo(apply.getBankCard());
+		param.setBankCode(bankType.getCode());
+		param.setBankName(bankType.getBank());
+		param.setCardType("0");
+		param.setOutOrderNo(apply.getApplyNo());
+		param.setTimestamp(sdf.format(new Date()));
+		param.setTotalAmt(isProd ? apply.getAmount() : new BigDecimal("0.01"));
+		param.setVersion("1.0");
+		apply = applyBusiness.changeState(apply.getId(),  WithdrawalsApplyState.PROCESSING.getIndex());
+		// 发起提现请求前，预使用队列查询
+    	WithdrawQueryMessage message = new WithdrawQueryMessage();
+    	message.setApplyId(apply.getId());
+		message.setAppId(wbConfig.getMerchantNo());
+		message.setOutOrderNo(apply.getApplyNo());
+		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+		// 发起提现请求
+		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
+		if(withdrawRet != null && !StringUtil.isEmpty(withdrawRet.getOrderNo())) {
+			// 更新支付系统第三方订单状态
+			apply.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+        	applyBusiness.revision(apply);
 		}
 	}
 

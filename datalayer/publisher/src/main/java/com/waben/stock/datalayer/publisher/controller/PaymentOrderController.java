@@ -68,5 +68,11 @@ public class PaymentOrderController implements PaymentOrderInterface {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(PaymentOrderDto.class, service.findById(id), false));
 	}
+	
+	@Override
+	public Response<PaymentOrderDto> modifyPaymentOrder(@RequestBody PaymentOrderDto paymentOrderDto) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(PaymentOrderDto.class,
+				service.revision(CopyBeanUtils.copyBeanProperties(PaymentOrder.class, paymentOrderDto, false)), false));
+	}
 
 }

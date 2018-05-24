@@ -25,6 +25,9 @@ public interface PaymentOrderInterface {
 
 	@RequestMapping(value = "/", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public Response<PaymentOrderDto> addPaymentOrder(@RequestBody PaymentOrderDto paymentOrderDto);
+	
+	@RequestMapping(value = "/", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public Response<PaymentOrderDto> modifyPaymentOrder(@RequestBody PaymentOrderDto paymentOrderDto);
 
 	@RequestMapping(value = "/{paymentNo}", method = RequestMethod.PUT)
 	public Response<PaymentOrderDto> changeState(@PathVariable("paymentNo") String paymentNo,

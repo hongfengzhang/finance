@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -18,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
@@ -26,9 +28,15 @@ import com.waben.stock.applayer.strategist.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.strategist.payapi.shande.config.SandPayConfig;
 import com.waben.stock.applayer.strategist.payapi.shande.utils.FormRequest;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
+import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqConfiguration;
+import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqProducer;
+import com.waben.stock.applayer.strategist.rabbitmq.message.WithdrawQueryMessage;
 import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.applayer.strategist.reference.PublisherReference;
 import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
+import com.waben.stock.interfaces.commonapi.wabenpay.WabenPayOverHttp;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawParam;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawRet;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
@@ -39,6 +47,7 @@ import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -62,6 +71,23 @@ public class QuickPayBusiness {
 
 	@Autowired
 	private WBConfig wbConfig;
+	
+	@Autowired
+	private RabbitmqProducer producer;
+	
+	@Value("${spring.profiles.active}")
+	private String activeProfile;
+    
+    private boolean isProd = true;
+    
+    @PostConstruct
+	public void init() {
+		if ("prod".equals(activeProfile)) {
+			isProd = true;
+		} else {
+			isProd = false;
+		}
+	}
 
 	public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
 		Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
@@ -280,6 +306,7 @@ public class QuickPayBusiness {
 		throw new ServiceException(orderResp.getCode());
 	}
 
+	/*
 	public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
 			String bankCard, String bankCode, String branchName) {
 		logger.info("保存提现订单");
@@ -328,6 +355,50 @@ public class QuickPayBusiness {
             accountBusiness.withdrawals(publisherId, orders.getId(),WithdrawalsState.FAILURE);
             throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
         }
+	}
+	*/
+	
+	public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
+			String bankCard, String bankCode, String bankName) {
+        logger.info("保存提现订单");
+        String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+        WithdrawalsOrderDto order = new WithdrawalsOrderDto();
+        order.setWithdrawalsNo(withdrawalsNo);
+        order.setAmount(amount);
+        order.setState(WithdrawalsState.PROCESSING);
+        order.setName(name);
+        order.setIdCard(idCard);
+        order.setBankCard(bankCard);
+        order.setPublisherId(publisherId);
+        Date date = new Date();
+        order.setCreateTime(date);
+        order.setUpdateTime(date);
+        order = this.saveWithdrawalsOrders(order);
+
+        logger.info("发起提现申请:{}_{}_{}_{}", name, idCard, phone, bankCard);
+        WithdrawParam param = new WithdrawParam();
+		param.setAppId(wbConfig.getMerchantNo());
+		param.setBankAcctName(name);
+		param.setBankNo(bankCard);
+		param.setBankCode(bankCode);
+		param.setBankName(bankName);
+		param.setCardType("0");
+		param.setOutOrderNo(withdrawalsNo);
+		param.setTimestamp(sdf.format(date));
+		param.setTotalAmt(isProd ? amount : new BigDecimal("0.01"));
+		param.setVersion("1.0");
+		// 发起提现请求前，预使用队列查询
+    	WithdrawQueryMessage message = new WithdrawQueryMessage();
+		message.setAppId(wbConfig.getMerchantNo());
+		message.setOutOrderNo(withdrawalsNo);
+		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+		// 发起提现请求
+		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
+		if(withdrawRet != null && !StringUtil.isEmpty(withdrawRet.getOrderNo())) {
+			// 更新支付系统第三方订单状态
+        	order.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+        	this.revisionWithdrawalsOrder(order);
+		}
 	}
 
 	public String protocolCallBack(HttpServletRequest request) {

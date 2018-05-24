@@ -1,7 +1,29 @@
 package com.waben.stock.applayer.tactics.business;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.alibaba.fastjson.JSONObject;
-import com.netflix.client.http.HttpRequest;
 import com.waben.stock.applayer.tactics.payapi.caituopay.config.PayConfig;
 import com.waben.stock.applayer.tactics.payapi.paypal.config.PayPalConfig;
 import com.waben.stock.applayer.tactics.payapi.paypal.config.RSAUtil;
@@ -10,14 +32,23 @@ import com.waben.stock.applayer.tactics.payapi.paypal.utils.LianLianRSA;
 import com.waben.stock.applayer.tactics.payapi.shande.bean.PayRequestBean;
 import com.waben.stock.applayer.tactics.payapi.shande.config.SandPayConfig;
 import com.waben.stock.applayer.tactics.payapi.shande.utils.FormRequest;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WabenPayConfig;
 import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
+import com.waben.stock.applayer.tactics.rabbitmq.RabbitmqConfiguration;
+import com.waben.stock.applayer.tactics.rabbitmq.RabbitmqProducer;
+import com.waben.stock.applayer.tactics.rabbitmq.message.WithdrawQueryMessage;
 import com.waben.stock.applayer.tactics.reference.PaymentOrderReference;
 import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.reference.WithdrawalsOrderReference;
-import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.interfaces.commonapi.wabenpay.WabenPayOverHttp;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.SwiftPayParam;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.SwiftPayRet;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawParam;
+import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawRet;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.*;
+import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.dto.publisher.RealNameDto;
+import com.waben.stock.interfaces.dto.publisher.WithdrawalsOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.ResourceType;
@@ -25,24 +56,9 @@ import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.interfaces.util.Md5Util;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @Service
 public class QuickPayBusiness {
@@ -74,9 +90,34 @@ public class QuickPayBusiness {
     
     @Autowired
     private WBConfig wbConfig;
+    
+    @Autowired
+	private RabbitmqProducer producer;
+    
+    @Value("${spring.profiles.active}")
+	private String activeProfile;
+    
+    private boolean isProd = true;
+    
+    @PostConstruct
+	public void init() {
+		if ("prod".equals(activeProfile)) {
+			isProd = true;
+		} else {
+			isProd = false;
+		}
+	}
 
     public PaymentOrderDto savePaymentOrder(PaymentOrderDto paymentOrder) {
         Response<PaymentOrderDto> orderResp = paymentOrderReference.addPaymentOrder(paymentOrder);
+        if ("200".equals(orderResp.getCode())) {
+            return orderResp.getResult();
+        }
+        throw new ServiceException(orderResp.getCode());
+    }
+    
+    public PaymentOrderDto modifyPaymentOrder(PaymentOrderDto paymentOrder) {
+        Response<PaymentOrderDto> orderResp = paymentOrderReference.modifyPaymentOrder(paymentOrder);
         if ("200".equals(orderResp.getCode())) {
             return orderResp.getResult();
         }
@@ -512,7 +553,7 @@ public class QuickPayBusiness {
 
     }
 
-
+    /*
     public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
                               String bankCard, String bankCode, String branchName){
         logger.info("保存提现订单");
@@ -562,7 +603,52 @@ public class QuickPayBusiness {
             throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
         }
     }
+    */
+    
+    public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
+    	String bankCard, String bankCode, String bankName) {
+		logger.info("保存提现订单");
+		String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+		WithdrawalsOrderDto order = new WithdrawalsOrderDto();
+		order.setWithdrawalsNo(withdrawalsNo);
+		order.setAmount(amount);
+		order.setState(WithdrawalsState.PROCESSING);
+		order.setName(name);
+		order.setIdCard(idCard);
+		order.setBankCard(bankCard);
+		order.setPublisherId(publisherId);
+		Date date = new Date();
+		order.setCreateTime(date);
+		order.setUpdateTime(date);
+		order = this.saveWithdrawalsOrders(order);
+		
+		logger.info("发起提现申请:{}_{}_{}_{}", name, idCard, phone, bankCard);
+		WithdrawParam param = new WithdrawParam();
+		param.setAppId(wbConfig.getMerchantNo());
+		param.setBankAcctName(name);
+		param.setBankNo(bankCard);
+		param.setBankCode(bankCode);
+		param.setBankName(bankName);
+		param.setCardType("0");
+		param.setOutOrderNo(withdrawalsNo);
+		param.setTimestamp(sdf.format(date));
+		param.setTotalAmt(isProd ? amount : new BigDecimal("0.01"));
+		param.setVersion("1.0");
+		// 发起提现请求前，预使用队列查询
+		WithdrawQueryMessage message = new WithdrawQueryMessage();
+		message.setAppId(wbConfig.getMerchantNo());
+		message.setOutOrderNo(withdrawalsNo);
+		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+		// 发起提现请求
+		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
+		if(withdrawRet != null && !StringUtil.isEmpty(withdrawRet.getOrderNo())) {
+			// 更新支付系统第三方订单状态
+			order.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+			this.revisionWithdrawalsOrder(order);
+		}
+	}
 
+    /*
     public Response<Map> wabenPay(BigDecimal amount, Long userId, String endType) {
         PublisherDto publisher = publisherBusiness.findById(userId);
         RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
@@ -614,7 +700,51 @@ public class QuickPayBusiness {
         return resp;
 
     }
-
+    */
+    
+    public Response<Map<String, String>> wabenPay(BigDecimal amount, Long userId, String endType) {
+        PublisherDto publisher = publisherBusiness.findById(userId);
+        RealNameDto realNameDto = realNameBusiness.fetch(ResourceType.PUBLISHER, userId);
+        //创建订单
+        PaymentOrderDto paymentOrder = new PaymentOrderDto();
+        paymentOrder.setAmount(amount);
+        String paymentNo = UniqueCodeGenerator.generatePaymentNo();
+        paymentOrder.setPaymentNo(paymentNo);
+        paymentOrder.setType(PaymentType.QuickPay);
+        paymentOrder.setState(PaymentState.Unpaid);
+        paymentOrder.setPublisherId(publisher.getId());
+        paymentOrder.setCreateTime(new Date());
+        paymentOrder.setUpdateTime(new Date());
+        paymentOrder = this.savePaymentOrder(paymentOrder);
+        // 封装请求参数
+        SwiftPayParam param = new SwiftPayParam();
+		param.setAppId(wbConfig.getMerchantNo());
+		param.setSubject(userId + "充值");
+		param.setBody(userId + "充值" + amount + "元");
+		param.setTotalFee(isProd ? amount : new BigDecimal("0.01"));
+		param.setOutOrderNo(paymentNo);
+		param.setFrontSkipUrl("H5".equals(endType) ? wbConfig.getH5ProxyfrontUrl() : wbConfig.getFrontUrl());
+		param.setReturnUrl(wbConfig.getNotifyUrl());
+		param.setTimestamp(sdf.format(new Date()));
+		param.setUserId(String.valueOf(userId));
+		param.setVersion("1.0");
+		param.setAcctName(realNameDto.getName());
+		param.setIdNum(realNameDto.getIdCard());
+		SwiftPayRet payRet = WabenPayOverHttp.swiftPay(param, wbConfig.getKey());
+		if(payRet != null && payRet.getTradeNo() != null) {
+			paymentOrder.setThirdPaymentNo(payRet.getTradeNo());
+			this.modifyPaymentOrder(paymentOrder);
+		}
+		Response<Map<String, String>> resp = new Response<Map<String, String>>();
+        if (payRet.getCode() == 1) {
+            Map<String, String> resultUrl = new HashMap<>();
+            resultUrl.put("url", payRet.getPayUrl());
+            resp.setResult(resultUrl);
+        } else {
+        	throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
+        }
+        return resp;
+    }
 
     public Response<Map> platform(BigDecimal amount, Long userId,String paytype){
         PublisherDto publisher = publisherBusiness.findById(userId);
@@ -699,6 +829,7 @@ public class QuickPayBusiness {
         return "FALSE";
     }
 
+    /*
     public String wbCallback(HttpServletRequest request) {
         Map<String, String> result = paramter2Map(request);
         logger.info("网贝回调的结果是:{}", result);
@@ -725,6 +856,55 @@ public class QuickPayBusiness {
             }
         }
         return "FALSE";
+    }
+    */
+    
+    public String wbCallback(HttpServletRequest request) {
+    	// 以下注释的代码为旧网贝支付系统
+    	/*
+        Map<String, String> result = paramter2Map(request);
+        logger.info("网贝回调的结果是:{}", result);
+        String paymentNo = result.get("outTradeNo");
+        String sign = result.get("signValue");
+        Map<String,String> checksign = new TreeMap<>(result);
+
+        checksign.put("transactTime",checksign.get("transactTime").replaceAll("-","").replaceAll(":","").replaceAll(" ",""));
+        String  signStr = "";
+        for (String keys : checksign.keySet()) {
+            if(!"signValue".equals(keys)){
+                signStr += checksign.get(keys);
+            }
+        }
+        signStr+= wbConfig.getKey();
+        String check =  DigestUtils.md5Hex(signStr);
+        //签名验证
+        if (paymentNo != null && !"".equals(paymentNo)) {
+            //验证签名
+            if (check.equals(sign)) {
+                logger.info("网贝快捷验证签名通过");
+                payCallback(paymentNo, PaymentState.Paid);
+                return "SUCCESS";
+            }
+        }
+        return "FALSE";
+        */
+    	Map<String, String> result = paramter2Map(request);
+        logger.info("网贝支付回调的结果是:{}", result);
+        String paymentNo = result.get("out_order_no");
+        String orderNo = result.get("order_no");
+        String sign = result.get("sign");
+        String code = result.get("code");
+        // 验证签名
+        String checkSign = Md5Util.md5(wbConfig.getMerchantNo() + orderNo + wbConfig.getKey()).toUpperCase();
+        if(sign.equalsIgnoreCase(checkSign)) {
+        	if("1".equals(code)) {
+        		payCallback(paymentNo, PaymentState.Paid);
+        	}
+        	return "success";
+        } else {
+        	logger.error("网贝支付回调验证签名失败");
+        	return "failed";
+        }
     }
 
     public void payCallback(String paymentNo, PaymentState state) {

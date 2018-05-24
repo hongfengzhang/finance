@@ -37,7 +37,7 @@ public class PaymentOrderReferenceFallback implements PaymentOrderReference {
 	public Response<PageInfo<PaymentOrderDto>> pages(PaymentOrderQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
-	
+
 	@Override
 	public Response<PageInfo<PaymentOrderDto>> pagesByQuery(PaymentOrderQuery query) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
@@ -45,6 +45,11 @@ public class PaymentOrderReferenceFallback implements PaymentOrderReference {
 
 	@Override
 	public Response<PaymentOrderDto> fetchById(Long paymentId) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
+	@Override
+	public Response<PaymentOrderDto> modifyPaymentOrder(PaymentOrderDto paymentOrderDto) {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
