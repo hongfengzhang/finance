@@ -24,7 +24,7 @@ public class WithdrawQueryOrderRet {
 	/**
 	 * 响应信息
 	 */
-	@JsonProperty("Msg")
+	@JsonProperty("msg")
 	private String msg;
 	/**
 	 * 代付金额
