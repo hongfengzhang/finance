@@ -52,10 +52,10 @@ public class SystemController {
 
     @GetMapping("/index")
     public String index(ModelMap model) {
-        Map<String,Object> buyRecordProfitAndPosition = buyRecordBusiness.fetchBuyRecordProfitAndPosition();
-        Map<String,Object>stockOptionTradeProfitAndPosition = stockOptionTradeBusiness.fetchStockOptionTradeProfitAndPosition();
-        model.addAttribute("buyRecordProfitAndPosition", buyRecordProfitAndPosition);
-        model.addAttribute("stockOptionTradeProfitAndPosition", stockOptionTradeProfitAndPosition);
+//        Map<String,Object> buyRecordProfitAndPosition = buyRecordBusiness.fetchBuyRecordProfitAndPosition();
+//        Map<String,Object>stockOptionTradeProfitAndPosition = stockOptionTradeBusiness.fetchStockOptionTradeProfitAndPosition();
+//        model.addAttribute("buyRecordProfitAndPosition", buyRecordProfitAndPosition);
+//        model.addAttribute("stockOptionTradeProfitAndPosition", stockOptionTradeProfitAndPosition);
         model.addAttribute("userName", SecurityAccount.current().getUsername());
         model.addAttribute("menus", systemManageBusiness.menus());
         return "index";

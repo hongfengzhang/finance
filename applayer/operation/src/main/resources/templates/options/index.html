@@ -881,7 +881,7 @@
                                         success: function (response) {
                                             if (response.code = '200') {
                                                 $table.bootstrapTable('refresh');
-                                                if(response.result==true) {
+                                                if(response.result=='true') {
                                                     swal("向机构行权成功");
                                                 }else {
                                                     swal("本地行权成功");
