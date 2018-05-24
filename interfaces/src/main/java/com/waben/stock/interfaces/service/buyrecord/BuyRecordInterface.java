@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.service.buyrecord;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,12 @@ import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
 
+/**
+ * 点买记录 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "buyrecord", path = "buyrecord", qualifier = "buyRecordInterface")
 public interface BuyRecordInterface {
 
 	@RequestMapping(value = "/{buyrecord}", method = RequestMethod.GET)
@@ -100,7 +107,6 @@ public interface BuyRecordInterface {
 			@RequestParam(name = "delegateNumber") String delegateNumber,
 			@RequestParam(name = "windControlTypeIndex") String windControlTypeIndex);
 
-
 	@RequestMapping(value = "/{entrustNo}/withdraw/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> withdrawLock(@PathVariable("entrustNo") String entrustNo, @PathVariable("id") Long id);
 
@@ -128,7 +134,7 @@ public interface BuyRecordInterface {
 	 */
 	@RequestMapping(value = "/deferred/{id}", method = RequestMethod.PUT)
 	Response<BuyRecordDto> deferred(@PathVariable("id") Long id);
-	
+
 	/**
 	 * 撤单
 	 *
@@ -155,7 +161,6 @@ public interface BuyRecordInterface {
 	@RequestMapping(value = "/state/{state}", method = RequestMethod.GET)
 	Response<List<BuyRecordDto>> buyRecordsWithStatus(@PathVariable("state") Integer state);
 
-
 	/**
 	 * 分页查询点买记录
 	 *
@@ -180,13 +185,14 @@ public interface BuyRecordInterface {
 
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	void delete(@PathVariable("id") Long id);
+
 	@RequestMapping(value = "/update", method = RequestMethod.PUT)
 	Response<BuyRecordDto> updateState(@RequestBody BuyRecordDto buyRecordDto);
 
 	@RequestMapping(value = "/monthsProfit/{year}", method = RequestMethod.GET)
 	Response<List<BuyRecordDto>> fetchMonthsProfit(@PathVariable("year") String year);
 
-	@RequestMapping(value = "/echo",method = RequestMethod.GET)
+	@RequestMapping(value = "/echo", method = RequestMethod.GET)
 	Response<Boolean> echo();
 
 }

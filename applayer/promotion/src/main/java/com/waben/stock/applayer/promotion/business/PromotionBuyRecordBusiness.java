@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.PromotionBuyRecordReference;
 import com.waben.stock.interfaces.dto.organization.PromotionBuyRecordDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.PromotionBuyRecordQuery;
+import com.waben.stock.interfaces.service.organization.PromotionBuyRecordInterface;
 
 /**
  * 推广渠道产生的策略 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.organization.PromotionBuyRecordQuer
 public class PromotionBuyRecordBusiness {
 
 	@Autowired
-	@Qualifier("promotionBuyRecordReference")
-	private PromotionBuyRecordReference reference;
+	@Qualifier("promotionBuyRecordInterface")
+	private PromotionBuyRecordInterface reference;
 
 	public PageInfo<PromotionBuyRecordDto> adminPage(PromotionBuyRecordQuery query) {
 		Response<PageInfo<PromotionBuyRecordDto>> response = reference.adminPage(query);

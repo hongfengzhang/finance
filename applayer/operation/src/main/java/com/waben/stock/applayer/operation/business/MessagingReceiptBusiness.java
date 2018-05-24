@@ -1,20 +1,21 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.message.MessagingReceiptService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.message.MessageReceiptDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import com.waben.stock.interfaces.service.message.MessageReceiptInterface;
 
 @Service
 public class MessagingReceiptBusiness {
     @Autowired
-    @Qualifier("messagingReceiptFeignService")
-    private MessagingReceiptService messagingReceiptService;
+    @Qualifier("messageReceiptInterface")
+    private MessageReceiptInterface messagingReceiptService;
 
     public MessageReceiptDto save(MessageReceiptDto messageReceiptDto) {
         Response<MessageReceiptDto> response = messagingReceiptService.addMessageReceipt(messageReceiptDto);

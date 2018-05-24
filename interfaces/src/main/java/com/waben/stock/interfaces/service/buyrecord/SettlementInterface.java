@@ -1,6 +1,6 @@
 package com.waben.stock.interfaces.service.buyrecord;
 
-import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +12,12 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.SettlementQuery;
 
+/**
+ * 点买记录 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "buyrecord", path = "settlement", qualifier = "settlementInterface")
 public interface SettlementInterface {
 
 	/**
@@ -25,5 +31,5 @@ public interface SettlementInterface {
 	Response<PageInfo<SettlementDto>> pagesByQuery(@RequestBody SettlementQuery query);
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    Response<SettlementDto> fetchByBuyRecord(@PathVariable("id")  Long id);
+	Response<SettlementDto> fetchByBuyRecord(@PathVariable("id") Long id);
 }

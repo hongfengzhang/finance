@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.waben.stock.applayer.promotion.reference.stockoption.StockOptionTradeReference;
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.dto.promotion.stockoption.StockOptionPromotionDto;
@@ -19,6 +18,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.promotion.stockoption.StockOptionPromotionQuery;
+import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 
 /**
  * 期权交易 Business
@@ -29,8 +29,8 @@ import com.waben.stock.interfaces.pojo.query.promotion.stockoption.StockOptionPr
 public class StockOptionTradeBusiness {
 
 	@Autowired
-	@Qualifier("stockOptionTradeReference")
-	private StockOptionTradeReference reference;
+	@Qualifier("stockOptionTradeInterface")
+	private StockOptionTradeInterface reference;
 
 	@Autowired
 	private RestTemplate restTemplate;

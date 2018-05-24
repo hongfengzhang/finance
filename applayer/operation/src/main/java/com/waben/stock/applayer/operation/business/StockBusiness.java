@@ -1,7 +1,13 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.stock.StockExponentService;
-import com.waben.stock.applayer.operation.service.stock.StockService;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockExponentDto;
@@ -10,13 +16,8 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.stockcontent.StockExponentInterface;
+import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 
 
 /**
@@ -29,12 +30,12 @@ public class StockBusiness {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    @Qualifier("stockFeignService")
-    private StockService stockService;
+    @Qualifier("stockInterface")
+    private StockInterface stockService;
 
     @Autowired
-    @Qualifier("stockExponentFeignService")
-    private StockExponentService stockExponentService;
+    @Qualifier("stockExponentInterface")
+    private StockExponentInterface stockExponentService;
 
     public PageInfo<StockDto> pages(StockQuery stockQuery) {
         Response<PageInfo<StockDto>> response = stockService.pagesByQuery(stockQuery);

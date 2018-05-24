@@ -4,12 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.CustomerReference;
 import com.waben.stock.interfaces.dto.organization.CustomerDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.CustomerQuery;
+import com.waben.stock.interfaces.service.organization.CustomerInterface;
 
 /**
  * 推广系统推广的客户 Business
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.organization.CustomerQuery;
 public class CustomerBusiness {
 
 	@Autowired
-	@Qualifier("customerReference")
-	private CustomerReference reference;
+	@Qualifier("customerInterface")
+	private CustomerInterface reference;
 
 	public PageInfo<CustomerDto> adminPage(CustomerQuery query) {
 		Response<PageInfo<CustomerDto>> response = reference.adminPage(query);

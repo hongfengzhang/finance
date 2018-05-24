@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.organization;
 
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 
+@FeignClient(name = "organization", path = "organizationAccountFlow", qualifier = "organizationAccountFlowInterface")
 public interface OrganizationAccountFlowInterface {
 
     @RequestMapping(value = "/pagesWithTradeInfo", method = RequestMethod.GET,consumes = MediaType.APPLICATION_JSON_VALUE)

@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.message;
 
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
  * @author Created by hujian on 2018年1月4日
  *
  */
+@FeignClient(name = "message", path = "messaging", qualifier = "messagingInterface")
 public interface MessagingInterface {
 
 	/**

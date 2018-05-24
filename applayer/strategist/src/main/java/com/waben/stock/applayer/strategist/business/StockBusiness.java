@@ -19,8 +19,6 @@ import org.springframework.web.client.RestTemplate;
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockDiscDto;
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockMarketWithFavoriteDto;
 import com.waben.stock.applayer.strategist.dto.stockcontent.StockRecommendWithMarketDto;
-import com.waben.stock.applayer.strategist.reference.FavoriteStockReference;
-import com.waben.stock.applayer.strategist.reference.StockReference;
 import com.waben.stock.applayer.strategist.security.SecurityUtil;
 import com.waben.stock.applayer.strategist.service.RedisCache;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
@@ -38,6 +36,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
+import com.waben.stock.interfaces.service.publisher.FavoriteStockInterface;
+import com.waben.stock.interfaces.service.stockcontent.StockInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
@@ -54,15 +54,15 @@ public class StockBusiness {
 	private RestTemplate restTemplate;
 
 	@Autowired
-	@Qualifier("stockReference")
-	private StockReference stockReference;
+	@Qualifier("stockInterface")
+	private StockInterface stockReference;
 
 	@Autowired
 	private StockMarketService stockMarketService;
 
 	@Autowired
-	@Qualifier("favoriteStockReference")
-	private FavoriteStockReference favoriteStockReference;
+	@Qualifier("favoriteStockInterface")
+	private FavoriteStockInterface favoriteStockReference;
 	
 	@Autowired
 	private StockOptionTradeBusiness optionTradeBusiness;

@@ -1,25 +1,20 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.manage.StaffService;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.investor.InvestorDto;
-import com.waben.stock.interfaces.dto.manage.CircularsDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StaffQuery;
-import com.waben.stock.interfaces.util.JacksonUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.Date;
+import com.waben.stock.interfaces.service.manage.StaffInterface;
 
 /**
  * @author Created by yuyidi on 2017/11/19.
@@ -33,8 +28,8 @@ public class StaffBusiness {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    @Qualifier("staffFeignService")
-    private StaffService staffService;
+    @Qualifier("staffInterface")
+    private StaffInterface staffService;
 
     public PageInfo<StaffDto> staffs(StaffQuery staffQuery) {
         Response<PageInfo<StaffDto>> response = staffService.pagesByQuery(staffQuery);

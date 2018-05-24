@@ -8,13 +8,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.strategist.dto.publisher.FavoriteStockWithMarketDto;
-import com.waben.stock.applayer.strategist.reference.FavoriteStockReference;
 import com.waben.stock.applayer.strategist.service.StockMarketService;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.dto.publisher.FavoriteStockDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.publisher.FavoriteStockInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 /**
@@ -27,8 +27,8 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 public class FavoriteStockBusiness {
 
 	@Autowired
-	@Qualifier("favoriteStockReference")
-	private FavoriteStockReference favoriteStockReference;
+	@Qualifier("favoriteStockInterface")
+	private FavoriteStockInterface favoriteStockReference;
 
 	@Autowired
 	private StockMarketService stockMarketService;

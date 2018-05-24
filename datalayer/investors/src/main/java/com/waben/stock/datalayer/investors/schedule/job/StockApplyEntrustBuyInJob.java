@@ -1,21 +1,23 @@
 package com.waben.stock.datalayer.investors.schedule.job;
 
-import com.waben.stock.datalayer.investors.container.VoluntarilyApplyEntrustBuyInContainer;
-import com.waben.stock.datalayer.investors.reference.BuyRecordReference;
-import com.waben.stock.datalayer.investors.service.InvestorService;
-import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
-import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.enums.BuyRecordState;
-import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
-import com.waben.stock.interfaces.util.JacksonUtil;
+import java.util.Date;
+import java.util.Map;
+
 import org.quartz.InterruptableJob;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.UnableToInterruptJobException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Date;
-import java.util.Map;
+
+import com.waben.stock.datalayer.investors.container.VoluntarilyApplyEntrustBuyInContainer;
+import com.waben.stock.datalayer.investors.service.InvestorService;
+import com.waben.stock.datalayer.investors.warpper.ApplicationContextBeanFactory;
+import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
+import com.waben.stock.interfaces.enums.BuyRecordState;
+import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
+import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
+import com.waben.stock.interfaces.util.JacksonUtil;
 
 /**
  * @author Created by yuyidi on 2017/12/15.
@@ -29,7 +31,7 @@ public class StockApplyEntrustBuyInJob implements InterruptableJob {
     private VoluntarilyApplyEntrustBuyInContainer securitiesStockEntrustContainer = ApplicationContextBeanFactory.getBean
             (VoluntarilyApplyEntrustBuyInContainer.class);
     private InvestorService investorService = ApplicationContextBeanFactory.getBean(InvestorService.class);
-    private BuyRecordReference buyRecordReference = ApplicationContextBeanFactory.getBean(BuyRecordReference.class);
+    private BuyRecordInterface buyRecordReference = ApplicationContextBeanFactory.getBean(BuyRecordInterface.class);
     private Boolean interrupted = false;
     private long millisOfDay = 24 * 60 * 60 * 1000;
     @Override

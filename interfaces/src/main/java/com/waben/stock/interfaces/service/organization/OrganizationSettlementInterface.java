@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.organization;
 
 import java.math.BigDecimal;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -9,6 +10,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.pojo.Response;
 
+/**
+ * 机构结算 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "organization", path = "organizationSettlement", qualifier = "organizationSettlementInterface")
 public interface OrganizationSettlementInterface {
 
 	@RequestMapping(value = "/strategysettlement/{publisherId}/{buyRecordId}/{tradeNo}/{strategyTypeId}/{serviceFee}/{deferredFee}", method = RequestMethod.POST)

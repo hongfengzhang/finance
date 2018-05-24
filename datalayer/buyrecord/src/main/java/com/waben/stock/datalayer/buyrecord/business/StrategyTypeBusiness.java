@@ -5,16 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.buyrecord.reference.StrategyTypeReference;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockcontent.StrategyTypeInterface;
 
 @Service
 public class StrategyTypeBusiness {
 	
 	@Autowired
-    @Qualifier("strategyTypeFeignReference")
-	private StrategyTypeReference reference;
+    @Qualifier("strategyTypeInterface")
+	private StrategyTypeInterface reference;
 
 	public StrategyTypeDto fetchById(Long strategyTypeId) {
 		Response<StrategyTypeDto> response = reference.fetchById(strategyTypeId);

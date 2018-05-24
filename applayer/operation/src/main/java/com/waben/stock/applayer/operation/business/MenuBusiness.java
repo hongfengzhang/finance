@@ -1,6 +1,13 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.manage.MenuService;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.applayer.operation.util.SecurityAccount;
 import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -8,14 +15,7 @@ import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.util.JacksonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.manage.MenuInterface;
 
 /**
  * @author Created by yuyidi on 2017/11/17.
@@ -27,8 +27,8 @@ public class MenuBusiness {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    @Qualifier("menuFeignService")
-    private MenuService menuService;
+    @Qualifier("menuInterface")
+    private MenuInterface menuService;
 
     public List<MenuDto> menus() {
         AccountCredentials current = SecurityAccount.current();

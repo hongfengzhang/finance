@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.service.stockoption;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,6 +27,12 @@ import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQ
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
 import com.waben.stock.interfaces.pojo.query.promotion.stockoption.StockOptionPromotionQuery;
 
+/**
+ * 期权交易 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "stockoption", path = "stockoptiontrade", qualifier = "stockOptionTradeInterface")
 public interface StockOptionTradeInterface {
 
 	/**

@@ -1,19 +1,19 @@
 package com.waben.stock.applayer.admin.business.publisher;
 
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.util.PasswordCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import com.waben.stock.applayer.admin.business.cache.RedisCache;
-import com.waben.stock.applayer.admin.reference.PublisherReference;
 import com.waben.stock.interfaces.dto.admin.publisher.PublisherAdminDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
+import com.waben.stock.interfaces.util.PasswordCrypt;
 
 /**
  * 发布人 Business
@@ -24,8 +24,8 @@ import com.waben.stock.interfaces.pojo.query.admin.publisher.PublisherAdminQuery
 public class PublisherBusiness {
 
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference reference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface reference;
 
 	@Autowired
 	private RedisCache redisCache;

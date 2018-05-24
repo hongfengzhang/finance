@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.organization;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,12 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.PromotionStockOptionTradeQuery;
 
+/**
+ * 推广渠道产生的期权交易 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "organization", path = "promotionStockOptionTrade", qualifier = "promotionStockOptionTradeInterface")
 public interface PromotionStockOptionTradeInterface {
 
 	/**

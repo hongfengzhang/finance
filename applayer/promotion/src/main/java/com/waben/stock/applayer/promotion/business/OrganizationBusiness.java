@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.promotion.reference.organization.OrganizationReference;
 import com.waben.stock.interfaces.dto.manage.RoleDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -21,6 +20,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
+import com.waben.stock.interfaces.service.organization.OrganizationInterface;
 
 /**
  * 机构 Business
@@ -31,8 +31,8 @@ import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 public class OrganizationBusiness {
 
 	@Autowired
-	@Qualifier("organizationReference")
-	private OrganizationReference reference;
+	@Qualifier("organizationInterface")
+	private OrganizationInterface reference;
 	@Autowired
 	private RoleBusiness roleBusiness;
 

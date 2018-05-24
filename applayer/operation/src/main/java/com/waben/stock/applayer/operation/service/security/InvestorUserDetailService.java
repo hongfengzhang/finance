@@ -1,15 +1,8 @@
 package com.waben.stock.applayer.operation.service.security;
 
-import com.waben.stock.applayer.operation.service.investor.InvestorService;
-import com.waben.stock.applayer.operation.service.manage.RoleService;
-import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
-import com.waben.stock.applayer.operation.warpper.auth.RolePermissionAuthority;
-import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.investor.InvestorDto;
-import com.waben.stock.interfaces.dto.manage.RoleDto;
-import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.util.JacksonUtil;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +12,16 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.waben.stock.applayer.operation.warpper.auth.AccountCredentials;
+import com.waben.stock.applayer.operation.warpper.auth.RolePermissionAuthority;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.investor.InvestorDto;
+import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.inverstors.InvestorInterface;
+import com.waben.stock.interfaces.service.manage.RoleInterface;
+import com.waben.stock.interfaces.util.JacksonUtil;
 
 /**
  * @author yuyidi 2017-07-13 10:16:15
@@ -33,11 +34,11 @@ public class InvestorUserDetailService implements UserDetailsService {
     Logger logger = LoggerFactory.getLogger(getClass());
 
     @Autowired
-    @Qualifier("investerFeignService")
-    private InvestorService investorService;
+    @Qualifier("investorInterface")
+    private InvestorInterface investorService;
     @Autowired
-    @Qualifier("roleFeignService")
-    private RoleService roleService;
+    @Qualifier("roleInterface")
+    private RoleInterface roleService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

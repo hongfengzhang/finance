@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.publisher;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -9,6 +10,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import com.waben.stock.interfaces.dto.publisher.RealNameDto;
 import com.waben.stock.interfaces.pojo.Response;
 
+/**
+ * 实名认证 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "publisher", path = "realname", qualifier = "realNameInterface")
 public interface RealNameInterface {
 
 	/**

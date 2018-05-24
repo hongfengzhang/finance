@@ -7,12 +7,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.publisher.PromotionBaseDto;
-import com.waben.stock.applayer.tactics.reference.CapitalFlowReference;
-import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.publisher.CapitalFlowInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 /**
  * 推广 Business
@@ -24,12 +24,12 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class PromotionBusiness {
 
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference publisherReference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherReference;
 
 	@Autowired
-	@Qualifier("capitalFlowReference")
-	private CapitalFlowReference capitalFlowReference;
+	@Qualifier("capitalFlowInterface")
+	private CapitalFlowInterface capitalFlowReference;
 
 	public PromotionBaseDto getPromotionBase(Long publisherId) {
 		PromotionBaseDto result = new PromotionBaseDto();

@@ -4,13 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.reference.PublisherReference;
-import com.waben.stock.applayer.tactics.reference.SmsReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.message.SmsInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 
 /**
  * 绑卡 Business
@@ -22,12 +22,12 @@ import com.waben.stock.interfaces.pojo.Response;
 public class SmsBusiness {
 
 	@Autowired
-	@Qualifier("smsReference")
-	private SmsReference smsReference;
+	@Qualifier("smsInterface")
+	private SmsInterface smsReference;
 
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference publisherReference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherReference;
 
 	public void sendAuthCode(String phone, SmsType type) {
 		if (type == SmsType.RegistVerificationCode) {

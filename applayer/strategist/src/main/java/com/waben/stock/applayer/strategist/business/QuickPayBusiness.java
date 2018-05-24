@@ -31,9 +31,6 @@ import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqProducer;
 import com.waben.stock.applayer.strategist.rabbitmq.message.WithdrawQueryMessage;
-import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
-import com.waben.stock.applayer.strategist.reference.PublisherReference;
-import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.commonapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawParam;
 import com.waben.stock.interfaces.commonapi.wabenpay.bean.WithdrawRet;
@@ -47,6 +44,9 @@ import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
+import com.waben.stock.interfaces.service.publisher.WithdrawalsOrderInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
@@ -56,14 +56,14 @@ public class QuickPayBusiness {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	@Autowired
-	@Qualifier("paymentOrderReference")
-	private PaymentOrderReference paymentOrderReference;
+	@Qualifier("paymentOrderInterface")
+	private PaymentOrderInterface paymentOrderReference;
 	@Autowired
-	@Qualifier("publisherReference")
-	private PublisherReference publisherReference;
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherReference;
 	@Autowired
-	@Qualifier("withdrawalsOrderReference")
-	private WithdrawalsOrderReference withdrawalsOrderReference;
+	@Qualifier("withdrawalsOrderInterface")
+	private WithdrawalsOrderInterface withdrawalsOrderReference;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 

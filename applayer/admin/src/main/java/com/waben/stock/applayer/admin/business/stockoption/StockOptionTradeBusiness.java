@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.waben.stock.applayer.admin.reference.StockOptionOrgReference;
-import com.waben.stock.applayer.admin.reference.StockOptionTradeReference;
 import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -29,6 +27,8 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAdminQuery;
+import com.waben.stock.interfaces.service.stockoption.StockOptionOrgInterface;
+import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 
 /**
  * 期权交易 Business
@@ -39,12 +39,12 @@ import com.waben.stock.interfaces.pojo.query.admin.stockoption.StockOptionRiskAd
 public class StockOptionTradeBusiness {
 
 	@Autowired
-	@Qualifier("stockOptionTradeReference")
-	private StockOptionTradeReference reference;
+	@Qualifier("stockOptionTradeInterface")
+	private StockOptionTradeInterface reference;
 
 	@Autowired
-	@Qualifier("stockOptionOrgReference")
-	private StockOptionOrgReference orgReference;
+	@Qualifier("stockOptionOrgInterface")
+	private StockOptionOrgInterface orgReference;
 
 	@Autowired
 	private HolidayBusiness holidayBusiness;

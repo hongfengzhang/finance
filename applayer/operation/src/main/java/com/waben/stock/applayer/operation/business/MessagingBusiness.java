@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.operation.service.message.MessagingService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.message.MessagingDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -12,6 +11,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.MessagingQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.message.MessagingInterface;
 
 /**
  * 
@@ -21,8 +21,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class MessagingBusiness {
 
 	@Autowired
-	@Qualifier("messagingFeignService")
-	private MessagingService messagingService;
+	@Qualifier("messagingInterface")
+	private MessagingInterface messagingService;
 	
 	public MessagingDto addMessaging(MessagingDto messagingDto){
 		Response<MessagingDto> response = messagingService.addMessaging(messagingDto);

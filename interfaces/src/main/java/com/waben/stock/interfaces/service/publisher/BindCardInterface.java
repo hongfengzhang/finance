@@ -2,6 +2,7 @@ package com.waben.stock.interfaces.service.publisher;
 
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,9 +14,11 @@ import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.pojo.Response;
 
 /**
- * 
- * @author Created by hujian on 2018年1月18日
+ * 绑卡 reference服务接口
+ *
+ * @author luomengan
  */
+@FeignClient(name = "publisher", path = "bindCard", qualifier = "bindCardInterface")
 public interface BindCardInterface {
 
 	/**

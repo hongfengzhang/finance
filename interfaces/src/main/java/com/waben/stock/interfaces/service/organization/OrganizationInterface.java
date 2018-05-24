@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.service.organization;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +24,12 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 
+/**
+ * 机构 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "organization", path = "organization", qualifier = "organizationInterface")
 public interface OrganizationInterface {
 
 	/**

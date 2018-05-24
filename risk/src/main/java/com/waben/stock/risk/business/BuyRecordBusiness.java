@@ -1,16 +1,17 @@
 package com.waben.stock.risk.business;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.risk.service.BuyRecordService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 
 /**
  * @author Created by yuyidi on 2017/12/14.
@@ -20,8 +21,8 @@ import java.util.List;
 public class BuyRecordBusiness {
 
     @Autowired
-    @Qualifier("buyRecordFeignService")
-    private BuyRecordService buyRecordService;
+    @Qualifier("buyRecordInterface")
+    private BuyRecordInterface buyRecordService;
 
     public List<BuyRecordDto> buyRecordsWithBuyInLock() {
         Response<List<BuyRecordDto>> response = buyRecordService.buyRecordsWithStatus(2);

@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.stockoption.reference.PriceMarkupConfigReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.organization.PriceMarkupConfigInterface;
 
 /**
  * 加价配置 Business
@@ -28,8 +28,8 @@ public class PriceMarkupConfigBusiness {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	@Qualifier("priceMarkupConfigReference")
-	private PriceMarkupConfigReference service;
+	@Qualifier("priceMarkupConfigInterface")
+	private PriceMarkupConfigInterface service;
 
 	public List<BigDecimal> priceMarkupRatioList(Integer resourceType, Long resourceId, Long publisherId) {
 		try {

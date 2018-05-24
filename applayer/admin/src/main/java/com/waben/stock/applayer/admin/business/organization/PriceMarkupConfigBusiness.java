@@ -6,11 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.admin.reference.PriceMarkupConfigReference;
 import com.waben.stock.interfaces.dto.organization.PriceMarkupConfigDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.PriceMarkupForm;
+import com.waben.stock.interfaces.service.organization.PriceMarkupConfigInterface;
 
 /**
  * 加价配置 Business
@@ -22,8 +22,8 @@ import com.waben.stock.interfaces.pojo.form.organization.PriceMarkupForm;
 public class PriceMarkupConfigBusiness {
 
 	@Autowired
-	@Qualifier("priceMarkupConfigReference")
-	private PriceMarkupConfigReference reference;
+	@Qualifier("priceMarkupConfigInterface")
+	private PriceMarkupConfigInterface reference;
 
 	public List<PriceMarkupConfigDto> priceMarkupConfigList(Long orgId, Integer resourceType) {
 		Response<List<PriceMarkupConfigDto>> response = reference.priceMarkupConfigList(orgId, resourceType);

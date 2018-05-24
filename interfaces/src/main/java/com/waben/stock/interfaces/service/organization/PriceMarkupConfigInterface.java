@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.service.organization;
 import java.math.BigDecimal;
 import java.util.List;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,12 @@ import com.waben.stock.interfaces.dto.organization.PriceMarkupConfigDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.PriceMarkupForm;
 
+/**
+ * 加价配置 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "organization", path = "priceMarkupConfig", qualifier = "priceMarkupConfigInterface")
 public interface PriceMarkupConfigInterface {
 
 	/**

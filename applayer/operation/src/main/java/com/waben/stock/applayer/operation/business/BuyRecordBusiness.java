@@ -1,23 +1,25 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
-import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
-import com.waben.stock.interfaces.dto.stockoption.OfflineStockOptionTradeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.BuyRecordQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import javax.sql.rowset.serial.SerialException;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 
 /**
  * @author Created by yuyidi on 2017/12/2.
@@ -27,8 +29,8 @@ import java.util.*;
 public class BuyRecordBusiness {
 
     @Autowired
-    @Qualifier("buyRecordFeignService")
-    private BuyRecordService buyRecordService;
+    @Qualifier("buyRecordInterface")
+    private BuyRecordInterface buyRecordService;
 
 
     public BuyRecordDto fetchBuyRecord(Long buyRecord) {

@@ -1,13 +1,33 @@
 package com.waben.stock.applayer.operation.business;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.applayer.operation.dto.websocket.StockRequestMessage;
-import com.waben.stock.applayer.operation.service.stockoption.MailUrlInfoService;
-import com.waben.stock.applayer.operation.service.stockoption.StockOptionOrgService;
-import com.waben.stock.applayer.operation.service.stockoption.StockOptionTradeService;
-import com.waben.stock.applayer.operation.warpper.mail.*;
+import com.waben.stock.applayer.operation.warpper.mail.ExcelUtil;
+import com.waben.stock.applayer.operation.warpper.mail.ExeriseMessage;
+import com.waben.stock.applayer.operation.warpper.mail.MailMessage;
+import com.waben.stock.applayer.operation.warpper.mail.MailService;
+import com.waben.stock.applayer.operation.warpper.mail.PurchaseMessage;
+import com.waben.stock.applayer.operation.warpper.mail.QuotoExenise;
+import com.waben.stock.applayer.operation.warpper.mail.QuotoInquiry;
+import com.waben.stock.applayer.operation.warpper.mail.QuotoPurchase;
 import com.waben.stock.applayer.operation.web.StockQuotationHttp;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockoption.InquiryResultDto;
 import com.waben.stock.interfaces.dto.stockoption.MailUrlInfoDto;
@@ -20,17 +40,10 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockOptionTradeQuery;
 import com.waben.stock.interfaces.pojo.stock.quotation.StockMarket;
+import com.waben.stock.interfaces.service.stockoption.MailUrlInfoInterface;
+import com.waben.stock.interfaces.service.stockoption.StockOptionOrgInterface;
+import com.waben.stock.interfaces.service.stockoption.StockOptionTradeInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 @Service
 public class StockOptionTradeBusiness {
@@ -40,20 +53,20 @@ public class StockOptionTradeBusiness {
     private OfflineStockOptionTradeBusiness offlineStockOptionTradeBusiness;
 
     @Autowired
-    @Qualifier("stockoptiontradeFeignService")
-    private StockOptionTradeService stockOptionTradeService;
+    @Qualifier("stockOptionTradeInterface")
+    private StockOptionTradeInterface stockOptionTradeService;
     @Autowired
     private MailService mailService;
     @Autowired
-    @Qualifier("stockoptionorgFeignService")
-    private StockOptionOrgService stockOptionOrgService;
+    @Qualifier("stockOptionOrgInterface")
+    private StockOptionOrgInterface stockOptionOrgService;
     @Autowired
     private InquiryResultBusiness inquiryResultBusiness;
     @Value("${mail.contextPath}")
     private String contextPath;
     @Autowired
-    @Qualifier("mailUrlInfoFeignService")
-    private MailUrlInfoService mailUrlInfoService;
+    @Qualifier("mailUrlInfoInterface")
+    private MailUrlInfoInterface mailUrlInfoService;
 
     @Autowired
     private StockQuotationHttp stockQuotationHttp;

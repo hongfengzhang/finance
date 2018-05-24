@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.admin.reference.CircularsReference;
 import com.waben.stock.applayer.admin.security.CustomUserDetails;
 import com.waben.stock.applayer.admin.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -15,6 +14,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CircularsQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.service.manage.CircularsInterface;
 
 
 /**
@@ -25,8 +25,8 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 public class CircularsBusiness {
 
     @Autowired
-    @Qualifier("circularsReference")
-    private CircularsReference circularsReference;
+    @Qualifier("circularsInterface")
+    private CircularsInterface circularsReference;
 
     public PageInfo<CircularsDto> pages(CircularsQuery query) {
         Response<PageInfo<CircularsDto>> response = circularsReference.pages(query);

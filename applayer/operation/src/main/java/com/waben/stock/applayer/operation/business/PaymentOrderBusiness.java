@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.operation.service.publisher.PaymentOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
@@ -15,13 +14,14 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.PaymentOrderQuery;
+import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
 
 @Service
 public class PaymentOrderBusiness {
 
 	@Autowired
-	@Qualifier("paymentOrderReference")
-	private PaymentOrderReference paymentOrderReference;
+	@Qualifier("paymentOrderInterface")
+	private PaymentOrderInterface paymentOrderReference;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;

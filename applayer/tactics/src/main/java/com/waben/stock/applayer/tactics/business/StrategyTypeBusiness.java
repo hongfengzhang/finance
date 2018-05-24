@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.reference.StrategyTypeReference;
 import com.waben.stock.interfaces.dto.stockcontent.StrategyTypeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.stockcontent.StrategyTypeInterface;
 
 /**
  * 策略类型 Business
@@ -25,8 +25,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class StrategyTypeBusiness {
 
 	@Autowired
-	@Qualifier("strategyTypeReference")
-	private StrategyTypeReference service;
+	@Qualifier("strategyTypeInterface")
+	private StrategyTypeInterface service;
 
 	public List<StrategyTypeDto> lists() {
 		Response<List<StrategyTypeDto>> response = service.lists(true);

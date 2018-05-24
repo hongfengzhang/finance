@@ -15,8 +15,6 @@ import org.springframework.security.web.authentication.AbstractAuthenticationPro
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.waben.stock.applayer.tactics.dto.publisher.PublisherCapitalAccountDto;
-import com.waben.stock.applayer.tactics.reference.CapitalAccountReference;
-import com.waben.stock.applayer.tactics.reference.PublisherReference;
 import com.waben.stock.applayer.tactics.security.CustomUserDetails;
 import com.waben.stock.applayer.tactics.security.CustomUsernamePasswordAuthenticationToken;
 import com.waben.stock.applayer.tactics.service.RedisCache;
@@ -26,6 +24,8 @@ import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.RedisCacheKeyType;
 import com.waben.stock.interfaces.exception.ExceptionMap;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
 
 import io.swagger.models.HttpMethod;
@@ -34,9 +34,9 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 
 	private static final String loginUrl = "/login";
 
-	private PublisherReference publisherReference;
+	private PublisherInterface publisherReference;
 
-	private CapitalAccountReference accountService;
+	private CapitalAccountInterface accountService;
 
 	private RedisCache redisCache;
 
@@ -90,11 +90,11 @@ public class JWTLoginFilter extends AbstractAuthenticationProcessingFilter {
 		response.getWriter().println(JacksonUtil.encode(result));
 	}
 
-	public void setPublisherService(PublisherReference publisherReference) {
+	public void setPublisherService(PublisherInterface publisherReference) {
 		this.publisherReference = publisherReference;
 	}
 
-	public void setAccountService(CapitalAccountReference accountService) {
+	public void setAccountService(CapitalAccountInterface accountService) {
 		this.accountService = accountService;
 	}
 

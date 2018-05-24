@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.admin.reference.CapitalFlowReference;
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQuery;
+import com.waben.stock.interfaces.service.publisher.CapitalFlowInterface;
 
 /**
  * 资金流水 Business
@@ -22,8 +22,8 @@ import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQue
 public class CapitalFlowBusiness {
 
 	@Autowired
-	@Qualifier("capitalFlowReference")
-	private CapitalFlowReference reference;
+	@Qualifier("capitalFlowInterface")
+	private CapitalFlowInterface reference;
 
 	public PageInfo<CapitalFlowAdminDto> adminPagesByQuery(CapitalFlowAdminQuery query) {
 		Response<PageInfo<CapitalFlowAdminDto>> response = reference.adminPagesByQuery(query);

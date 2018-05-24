@@ -1,24 +1,25 @@
 package com.waben.stock.applayer.admin.business.manage;
 
 
-import com.waben.stock.applayer.admin.reference.BannerForwardReference;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BannerForwardDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.manage.BannerForwardInterface;
 
 @Service
 public class BannerForwardBusiness {
 
     @Autowired
-    @Qualifier("bannerForwardReference")
-    private BannerForwardReference reference;
+    @Qualifier("bannerForwardInterface")
+    private BannerForwardInterface reference;
 
 
     public List<BannerForwardDto> findAll() {

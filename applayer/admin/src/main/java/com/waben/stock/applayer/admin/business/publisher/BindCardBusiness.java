@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.admin.reference.BindCardReference;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.enums.BindCardResourceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.BindCardInterface;
 
 /**
  * 绑卡 Business
@@ -26,8 +26,8 @@ public class BindCardBusiness {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	@Qualifier("bindCardReference")
-	private BindCardReference service;
+	@Qualifier("bindCardInterface")
+	private BindCardInterface service;
 
 	public List<BindCardDto> listsByPublisherId(Long publisherId) {
 		Response<List<BindCardDto>> response = service

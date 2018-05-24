@@ -1,6 +1,9 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.buyrecord.BuyRecordService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
@@ -10,15 +13,13 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StrategyHoldingQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyPostedQuery;
 import com.waben.stock.interfaces.pojo.query.StrategyUnwindQuery;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import com.waben.stock.interfaces.service.buyrecord.BuyRecordInterface;
 
 @Service
 public class StrategyBusiness {
     @Autowired
-    @Qualifier("buyRecordFeignService")
-    private BuyRecordService buyRecordService;
+    @Qualifier("buyRecordInterface")
+    private BuyRecordInterface buyRecordService;
 
     public PageInfo<BuyRecordDto> postedPages(StrategyPostedQuery strategyPostedQuery) {
         Response<PageInfo<BuyRecordDto>> response = buyRecordService.pagesByPostedQuery(strategyPostedQuery);

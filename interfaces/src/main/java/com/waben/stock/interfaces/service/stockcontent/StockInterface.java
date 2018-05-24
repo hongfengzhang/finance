@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.stockcontent;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,11 +13,13 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.StockQuery;
 
-/***
- * @author yuyidi 2017-11-22 10:06:54
- * @class com.waben.stock.interfaces.service.stockcontent.StockInterface
- * @description
+/**
+ * 股票 reference服务接口
+ * 
+ * @author luomengan
+ *
  */
+@FeignClient(name = "stockcontent", path = "stock", qualifier = "stockInterface")
 public interface StockInterface {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)

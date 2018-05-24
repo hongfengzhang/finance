@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.message;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
  * 
  * @author Created by hujian on 2018年1月7日
  */
+@FeignClient(name = "message", path = "messagingReceipt", qualifier = "messageReceiptInterface")
 public interface MessageReceiptInterface {
 
 	/**
@@ -56,5 +58,5 @@ public interface MessageReceiptInterface {
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<MessageReceiptDto>> pages(@RequestBody MessageReceiptQuery messageReceiptQuery);
-	
+
 }

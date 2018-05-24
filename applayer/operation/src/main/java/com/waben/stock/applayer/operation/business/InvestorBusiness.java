@@ -1,11 +1,16 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.investor.InvestorService;
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.applayer.operation.warpper.messagequeue.rabbitmq.EntrustApplyProducer;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.buyrecord.BuyRecordDto;
 import com.waben.stock.interfaces.dto.investor.InvestorDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.stockcontent.StockDto;
 import com.waben.stock.interfaces.enums.BuyRecordState;
 import com.waben.stock.interfaces.enums.EntrustState;
@@ -15,15 +20,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.InvestorQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.stock.SecuritiesStockEntrust;
-import com.waben.stock.interfaces.pojo.stock.quotation.PositionStock;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.logging.Logger;
+import com.waben.stock.interfaces.service.inverstors.InvestorInterface;
 
 /**
  * @author Created by yuyidi on 2017/11/30.
@@ -32,8 +29,8 @@ import java.util.logging.Logger;
 @Service
 public class InvestorBusiness {
     @Autowired
-    @Qualifier("investerFeignService")
-    private InvestorService investorService;
+    @Qualifier("investorInterface")
+    private InvestorInterface investorService;
     @Autowired
     private StockBusiness stockBusiness;
     @Autowired

@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.reference.AppVersionUpgradeReference;
 import com.waben.stock.interfaces.dto.manage.AppVersionUpgradeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.manage.AppVersionUpgradeInterface;
 
 /**
  * app版本升级 Business
@@ -20,7 +20,7 @@ public class AppVersionUpgradeBusiness {
 
 	@Autowired
 	@Qualifier("appVersionUpgradeInterface")
-	private AppVersionUpgradeReference reference;
+	private AppVersionUpgradeInterface reference;
 
 	public AppVersionUpgradeDto checkUpgrade(Integer versionCode, Integer deviceType, Integer shellIndex) {
 		Response<AppVersionUpgradeDto> response = reference.checkUpgrade(versionCode, deviceType, shellIndex);

@@ -21,13 +21,13 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.request.AlipayTradeQueryRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.alipay.api.response.AlipayTradeQueryResponse;
-import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.PaymentOrderDto;
 import com.waben.stock.interfaces.enums.PaymentState;
 import com.waben.stock.interfaces.enums.PaymentType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -42,8 +42,8 @@ public class AliPayBusiness {
 			AliPayConfigConstant.ALIPAY_PUBLIC_KEY, AliPayConfigConstant.SIGNTYPE);
 
 	@Autowired
-	@Qualifier("paymentOrderReference")
-	private PaymentOrderReference paymentOrderReference;
+	@Qualifier("paymentOrderInterface")
+	private PaymentOrderInterface paymentOrderReference;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;

@@ -2,19 +2,19 @@ package com.waben.stock.applayer.admin.business.publisher;
 
 import java.math.BigDecimal;
 
-import com.waben.stock.applayer.admin.security.CustomUserDetails;
-import com.waben.stock.applayer.admin.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.admin.reference.CapitalAccountReference;
+import com.waben.stock.applayer.admin.security.CustomUserDetails;
+import com.waben.stock.applayer.admin.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalAccountAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdminQuery;
+import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 
 /**
  * 资金账户 Business
@@ -25,8 +25,8 @@ import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalAccountAdmin
 public class CapitalAccountBusiness {
 
 	@Autowired
-	@Qualifier("capitalAccountReference")
-	private CapitalAccountReference reference;
+	@Qualifier("capitalAccountInterface")
+	private CapitalAccountInterface reference;
 
 	public PageInfo<CapitalAccountAdminDto> adminPagesByQuery(CapitalAccountAdminQuery query) {
 		Response<PageInfo<CapitalAccountAdminDto>> response = reference.adminPagesByQuery(query);

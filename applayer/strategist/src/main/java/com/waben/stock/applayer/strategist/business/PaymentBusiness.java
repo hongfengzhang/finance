@@ -34,13 +34,9 @@ import com.waben.stock.applayer.strategist.payapi.wabenpay.bean.PayRequestBean;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WBConfig;
 import com.waben.stock.applayer.strategist.payapi.wabenpay.config.WabenPayConfig;
 import com.waben.stock.applayer.strategist.rabbitmq.RabbitmqProducer;
-import com.waben.stock.applayer.strategist.reference.PaymentOrderReference;
-import com.waben.stock.applayer.strategist.reference.WithdrawalsOrderReference;
 import com.waben.stock.interfaces.commonapi.wabenpay.WabenPayOverHttp;
 import com.waben.stock.interfaces.commonapi.wabenpay.bean.GatewayPayParam;
 import com.waben.stock.interfaces.commonapi.wabenpay.bean.GatewayPayRet;
-import com.waben.stock.interfaces.commonapi.wabenpay.bean.SwiftPayParam;
-import com.waben.stock.interfaces.commonapi.wabenpay.bean.SwiftPayRet;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -54,6 +50,8 @@ import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.publisher.PaymentOrderInterface;
+import com.waben.stock.interfaces.service.publisher.WithdrawalsOrderInterface;
 import com.waben.stock.interfaces.util.JacksonUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
@@ -63,12 +61,12 @@ public class PaymentBusiness {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	@Qualifier("paymentOrderReference")
-	private PaymentOrderReference paymentOrderReference;
+	@Qualifier("paymentOrderInterface")
+	private PaymentOrderInterface paymentOrderReference;
 
 	@Autowired
-	@Qualifier("withdrawalsOrderReference")
-	private WithdrawalsOrderReference withdrawalsOrderReference;
+	@Qualifier("withdrawalsOrderInterface")
+	private WithdrawalsOrderInterface withdrawalsOrderReference;
 
 	@Autowired
 	private CapitalAccountBusiness accountBusiness;

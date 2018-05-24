@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.manage;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,6 +14,7 @@ import com.waben.stock.interfaces.pojo.Response;
  * @author luomengan
  *
  */
+@FeignClient(name = "manage", path = "appversionaudit", qualifier = "appVersionAuditInterface")
 public interface AppVersionAuditInterface {
 
 	@RequestMapping(value = "/getAppVersionAudit", method = RequestMethod.GET)

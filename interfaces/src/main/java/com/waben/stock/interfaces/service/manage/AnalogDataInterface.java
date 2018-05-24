@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.manage;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -14,6 +15,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
  * @author luomengan
  *
  */
+@FeignClient(name = "manage", path = "analogdata", qualifier = "analogDataInterface")
 public interface AnalogDataInterface {
 
 	@RequestMapping(value = "/pagesByType", method = RequestMethod.GET)

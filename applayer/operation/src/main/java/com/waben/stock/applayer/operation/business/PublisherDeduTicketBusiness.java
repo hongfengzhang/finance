@@ -1,24 +1,23 @@
 package com.waben.stock.applayer.operation.business;
 
-import com.waben.stock.applayer.operation.service.activity.PublisherDeduTicketService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.activity.PublisherDeduTicketDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
+import com.waben.stock.interfaces.service.activity.PublisherDeduTicketInterface;
 
 @Service
 public class PublisherDeduTicketBusiness {
 
     @Autowired
-    @Qualifier("publisherDeduTicketFeignService")
-    private PublisherDeduTicketService publisherDeduTicketService;
+    @Qualifier("publisherDeduTicketInterface")
+    private PublisherDeduTicketInterface publisherDeduTicketService;
 
     public PageInfo<PublisherDeduTicketDto> pages(int pageNo,Integer pageSize) {
         Response<PageInfo<PublisherDeduTicketDto>> response = publisherDeduTicketService.getPublisherDeduTicketList(pageNo, pageSize);

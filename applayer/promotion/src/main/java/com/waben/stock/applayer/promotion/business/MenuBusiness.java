@@ -1,20 +1,20 @@
 package com.waben.stock.applayer.promotion.business;
 
-import com.waben.stock.applayer.promotion.reference.manage.MenuReference;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.MenuDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.annotation.Id;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
+import com.waben.stock.interfaces.service.manage.MenuInterface;
 
 /**
  * @author Created by yuyidi on 2018/3/14.
@@ -24,8 +24,8 @@ import java.util.List;
 public class MenuBusiness {
 
     @Autowired
-    @Qualifier("menuReference")
-    private MenuReference menuReference;
+    @Qualifier("menuInterface")
+    private MenuInterface menuReference;
 
     public List<MenuDto> menus(Long role) {
         Response<List<MenuDto>> response = menuReference.menusByRole(role);

@@ -10,7 +10,7 @@ import org.springframework.context.annotation.ComponentScan;
 //服务发现客户端
 @EnableDiscoveryClient
 //服务调用
-@EnableFeignClients
+@EnableFeignClients(basePackages = { "com.waben.stock" })
 //扫描包
 @ComponentScan(basePackages = { "com.waben.stock" })
 public class OrganizationApplication {

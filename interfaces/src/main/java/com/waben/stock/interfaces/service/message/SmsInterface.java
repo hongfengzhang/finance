@@ -1,5 +1,6 @@
 package com.waben.stock.interfaces.service.message;
 
+import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -7,6 +8,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.waben.stock.interfaces.enums.SmsType;
 import com.waben.stock.interfaces.pojo.Response;
 
+/**
+ * 短消息 reference服务接口
+ *
+ * @author luomengan
+ */
+@FeignClient(name = "message", path = "sms", qualifier = "smsInterface")
 public interface SmsInterface {
 
 	/**

@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.applayer.tactics.reference.CnapsReference;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.manage.BankInfoDto;
 import com.waben.stock.interfaces.dto.manage.CnapsDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.service.manage.CnapsInterface;
 
 /**
  * Cnaps Business
@@ -23,8 +23,8 @@ import com.waben.stock.interfaces.pojo.Response;
 public class CnapsBusiness {
 
 	@Autowired
-	@Qualifier("cnapsReference")
-	private CnapsReference cnapsReference;
+	@Qualifier("cnapsInterface")
+	private CnapsInterface cnapsReference;
 
 	public List<CnapsDto> findByCityCodeAndClsCode(String cityCode, String clsCode) {
 		Response<List<CnapsDto>> response = cnapsReference.fetchByCityCodeAndClsCode(cityCode, clsCode);
