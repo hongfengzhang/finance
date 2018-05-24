@@ -59,6 +59,10 @@ public class WithdrawQueryConsumer {
 			} else if (queryRet.getPayStatus() == 5) {
 				WithdrawalsOrderDto order = quickPayBusiness.findByWithdrawalsNo(param.getOutOrderNo());
 				accountBusiness.withdrawals(order.getPublisherId(), order.getId(), WithdrawalsState.FAILURE);
+			} else if (messgeObj.getConsumeCount() > 50 && queryRet.getStatus() == 3 && queryRet.getMsg() != null
+					&& queryRet.getMsg().indexOf("不存在") > 0) {
+				WithdrawalsOrderDto order = quickPayBusiness.findByWithdrawalsNo(param.getOutOrderNo());
+				accountBusiness.withdrawals(order.getPublisherId(), order.getId(), WithdrawalsState.FAILURE);
 			} else {
 				retry(messgeObj);
 			}
