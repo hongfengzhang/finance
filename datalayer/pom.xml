@@ -24,6 +24,7 @@
         <module>stockoption</module> <!--8009-->
         <module>organization</module><!--8010-->
         <module>activity</module><!--8011--> <!-- add by guowei 2018/4/10 -->
+        <module>futures</module><!--8012-->
     </modules>
 
     <properties>

@@ -30,4 +30,3 @@ ribbon:
   OkToRetryOnAllOperations: false
   ReadTimeout: 30000
   ConnectTimeout: 30000
-needquotetask: true

@@ -7,36 +7,34 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 期货市场实体
+ * 期货券商
+ * 
+ * <p>
+ * 提供行情和交易接口的券商，如盈透、易盛、直达
+ * </p>
  * 
  * @author sl
  *
  */
 @Entity
-@Table(name = "f_futures_market")
-public class FuturesMarket {
+@Table(name = "f_futures_broker")
+public class FuturesBroker {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
 	/**
-	 * 市场类别
-	 */
-	private String marketType;
-
-	/**
-	 * 市场名称
+	 * 券商名称
 	 */
 	private String name;
-
 	/**
-	 * 境外标记
-	 * 
-	 * <p> 1  外盘 </p>
-	 * <p> 2  内盘 </p>
+	 * 网关地址
 	 */
-	private Boolean sign;
+	private String gatewayAddress;
+	/**
+	 * 是否可用
+	 */
+	private Boolean enable;
 
 	public Long getId() {
 		return id;
@@ -44,14 +42,6 @@ public class FuturesMarket {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getMarketType() {
-		return marketType;
-	}
-
-	public void setMarketType(String marketType) {
-		this.marketType = marketType;
 	}
 
 	public String getName() {
@@ -62,12 +52,20 @@ public class FuturesMarket {
 		this.name = name;
 	}
 
-	public Boolean getSign() {
-		return sign;
+	public String getGatewayAddress() {
+		return gatewayAddress;
 	}
 
-	public void setSign(Boolean sign) {
-		this.sign = sign;
+	public void setGatewayAddress(String gatewayAddress) {
+		this.gatewayAddress = gatewayAddress;
+	}
+
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 }
