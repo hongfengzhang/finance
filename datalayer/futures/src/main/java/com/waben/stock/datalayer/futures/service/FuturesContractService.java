@@ -1,6 +1,9 @@
 package com.waben.stock.datalayer.futures.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 
 /**
  * 期货合约 service
@@ -9,6 +12,8 @@ import org.springframework.stereotype.Service;
  *
  */
 @Service
-public interface FuturesContractService {
+public class FuturesContractService {
 
+	@Autowired
+	private FuturesContractInterface futuresContractInterface;
 }
