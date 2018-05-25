@@ -32,6 +32,18 @@ public class FuturesExchange {
 	 */
 	private String name;
 	/**
+	 * 交易所类型
+	 * <ul>
+	 * <li>1外盘</li>
+	 * <li>2内盘</li>
+	 * </ul>
+	 */
+	private Integer exchangeType;
+	/**
+	 * 是否可用
+	 */
+	private Boolean enable;
+	/**
 	 * 北京时间的时差和交易所
 	 */
 	private Integer timeZoneGap;
@@ -74,6 +86,22 @@ public class FuturesExchange {
 
 	public void setTimeZoneGap(Integer timeZoneGap) {
 		this.timeZoneGap = timeZoneGap;
+	}
+
+	public Integer getExchangeType() {
+		return exchangeType;
+	}
+
+	public void setExchangeType(Integer exchangeType) {
+		this.exchangeType = exchangeType;
+	}
+
+	public Boolean getEnable() {
+		return enable;
+	}
+
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 }
