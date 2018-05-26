@@ -22,4 +22,5 @@ public interface FuturesContractInterface {
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = "application/json")
 	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery);
+
 }

@@ -18,11 +18,12 @@ import com.waben.stock.interfaces.util.PageToPageInfo;
 import io.swagger.annotations.Api;
 
 @RestController
-@RequestMapping("/futurescontract")
+@RequestMapping("/contract")
 @Api(description = "期货合约接口列表")
 public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
+
 	private FuturesContractService futuresContractService;
 
 	@Override
@@ -31,5 +32,4 @@ public class FuturesContractController implements FuturesContractInterface {
 		PageInfo<FuturesContractDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractDto.class);
 		return new Response<>(result);
 	}
-
 }

@@ -44,7 +44,7 @@ public class FuturesContractService {
 	@Autowired
 	private FuturesContractDao futuresContractDao;
 
-	public Page<FuturesContract> pagesContract(FuturesContractQuery query) {
+	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<FuturesContract> pages = futuresContractDao.page(new Specification<FuturesContract>() {
 
@@ -52,6 +52,15 @@ public class FuturesContractService {
 			public Predicate toPredicate(Root<FuturesContract> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
+				// Join<FuturesExchange, FuturesContract> parentJoin =
+				// root.join("exchange", JoinType.LEFT);
+				if (query.getContractId() != null && query.getContractId() != 0) {
+					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getContractId()));
+				}
+
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
 
 				return criteriaQuery.getRestriction();
 			}

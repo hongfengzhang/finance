@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesOrderRepository;
+import com.waben.stock.interfaces.enums.FuturesOrderState;
 
 /**
  * 期货订单 Impl
@@ -58,6 +59,12 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	@Override
 	public List<FuturesOrder> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public FuturesOrder editOrder(Long id, FuturesOrderState state) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
