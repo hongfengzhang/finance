@@ -39,6 +39,21 @@ public class Swagger2 {
 				.build()
 				.apiInfo(apiInfo());
 	}
+	
+	@Bean
+	public Docket futuresApi() {
+
+		return new Docket(DocumentationType.SWAGGER_2)
+				.groupName("futuresApi")
+				.genericModelSubstitutes(DeferredResult.class)
+				.useDefaultResponseMessages(false)
+				.forCodeGeneration(true)
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.applayer.tactics.controller.futures"))
+				.paths(PathSelectors.any())
+				.build()
+				.apiInfo(apiInfo());
+	}
 
 	@Bean
 	public Docket createRestApi() {

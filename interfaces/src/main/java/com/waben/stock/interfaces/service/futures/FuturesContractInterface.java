@@ -13,6 +13,13 @@ import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 @FeignClient(name = "futurescontract", path = "futurescontract", qualifier = "futurescontractInterface")
 public interface FuturesContractInterface {
 
-	@RequestMapping(value = "/pages", method = RequestMethod.GET, consumes = "application/json")
-	Response<PageInfo<FuturesContractDto>> pagesByQuery(@RequestBody FuturesContractQuery lossQuery);
+	/**
+	 * 查询期货合约数据
+	 * 
+	 * @param futuresContractQuery
+	 *            查询条件
+	 * @return 期货合约
+	 */
+	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = "application/json")
+	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery);
 }

@@ -67,7 +67,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		"/quickpay/protocolcallback",
 		"/activity/**",
 		"/ticket/**",
-		"/drawactivity/**"
+		"/drawactivity/**",
+		"/futures/**"
 	};
 
 	public JWTAuthenticationFilter jWTAuthenticationFilter() {

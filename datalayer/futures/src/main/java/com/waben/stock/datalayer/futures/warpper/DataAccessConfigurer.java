@@ -7,7 +7,7 @@ import org.springframework.data.repository.query.QueryLookupStrategy;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
-@EnableJpaRepositories(queryLookupStrategy = QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND, basePackages = "com.waben.stock.datalayer.futures.repository")
+@EnableJpaRepositories(queryLookupStrategy = QueryLookupStrategy.Key.CREATE_IF_NOT_FOUND, basePackages = "com.waben.stock.datalayer.futures.repository.impl.jpa")
 @EntityScan(basePackages = "com.waben.stock.datalayer.futures.entity")
 @Configuration
 public class DataAccessConfigurer {
