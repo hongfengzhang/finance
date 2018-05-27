@@ -1,12 +1,6 @@
-package com.waben.stock.futuresgateway.entity;
+package com.waben.stock.interfaces.commonapi.retrivefutures.bean;
 
 import java.math.BigDecimal;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * 期货合约
@@ -14,12 +8,8 @@ import javax.persistence.Table;
  * @author luomengan
  *
  */
-@Entity
-@Table(name = "f_gateway_futures_contract")
-public class FuturesContract {
+public class FuturesContractMarket {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * 第三方合约ID
