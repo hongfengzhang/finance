@@ -1,27 +1,9 @@
-package com.waben.stock.datalayer.futures.entity;
+package com.waben.stock.interfaces.dto.futures;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+public class FuturesContractDto {
 
-/**
- * 期货合约
- * 
- * @author luomengan
- *
- */
-@Entity
-@Table(name = "f_futures_contract")
-public class FuturesContract {
-
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * 对应的网关合约ID
@@ -103,12 +85,6 @@ public class FuturesContract {
 	 * 是否可用
 	 */
 	private Boolean enable;
-	/**
-	 * 对应的交易所
-	 */
-	@ManyToOne
-	@JoinColumn(name = "exchange_id")
-	private FuturesExchange exchange;
 
 	public Long getId() {
 		return id;
@@ -150,22 +126,6 @@ public class FuturesContract {
 		this.currency = currency;
 	}
 
-	public FuturesExchange getExchange() {
-		return exchange;
-	}
-
-	public void setExchange(FuturesExchange exchange) {
-		this.exchange = exchange;
-	}
-
-	public Boolean getEnable() {
-		return enable;
-	}
-
-	public void setEnable(Boolean enable) {
-		this.enable = enable;
-	}
-
 	public Integer getMultiplier() {
 		return multiplier;
 	}
@@ -204,6 +164,14 @@ public class FuturesContract {
 
 	public void setPerUnitUnwindPoint(BigDecimal perUnitUnwindPoint) {
 		this.perUnitUnwindPoint = perUnitUnwindPoint;
+	}
+
+	public Integer getUnwindPointType() {
+		return unwindPointType;
+	}
+
+	public void setUnwindPointType(Integer unwindPointType) {
+		this.unwindPointType = unwindPointType;
 	}
 
 	public BigDecimal getTotalLimit() {
@@ -262,12 +230,12 @@ public class FuturesContract {
 		this.overnightPerUnitDeferredFee = overnightPerUnitDeferredFee;
 	}
 
-	public Integer getUnwindPointType() {
-		return unwindPointType;
+	public Boolean getEnable() {
+		return enable;
 	}
 
-	public void setUnwindPointType(Integer unwindPointType) {
-		this.unwindPointType = unwindPointType;
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
 }
