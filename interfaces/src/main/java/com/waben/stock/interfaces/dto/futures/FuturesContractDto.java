@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.dto.futures;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class FuturesContractDto {
 
@@ -81,10 +82,43 @@ public class FuturesContractDto {
 	 * 一手隔夜递延费
 	 */
 	private BigDecimal overnightPerUnitDeferredFee;
+
 	/**
 	 * 是否可用
 	 */
 	private Boolean enable;
+
+	/**
+	 * 期货合约状态
+	 * 
+	 * <p>
+	 * 1 交易中
+	 * </p>
+	 * <p>
+	 * 2 休市中
+	 * </p>
+	 * <p>
+	 * 3 异常
+	 * </p>
+	 */
+	private Integer state;
+
+	/**
+	 * 每个合约的描述
+	 */
+	private String describe;
+
+	/**
+	 * 交易所是否可用
+	 */
+	private Boolean changeEnable;
+
+	/**
+	 * 北京时间的时差和交易所
+	 */
+	private Integer timeZoneGap;
+
+	private List<FuturesContractTermDto> futuresContractTermDto;
 
 	public Long getId() {
 		return id;
@@ -236,6 +270,46 @@ public class FuturesContractDto {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public List<FuturesContractTermDto> getFuturesContractTermDto() {
+		return futuresContractTermDto;
+	}
+
+	public void setFuturesContractTermDto(List<FuturesContractTermDto> futuresContractTermDto) {
+		this.futuresContractTermDto = futuresContractTermDto;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
+	}
+
+	public String getDescribe() {
+		return describe;
+	}
+
+	public void setDescribe(String describe) {
+		this.describe = describe;
+	}
+
+	public Boolean getChangeEnable() {
+		return changeEnable;
+	}
+
+	public void setChangeEnable(Boolean changeEnable) {
+		this.changeEnable = changeEnable;
+	}
+
+	public Integer getTimeZoneGap() {
+		return timeZoneGap;
+	}
+
+	public void setTimeZoneGap(Integer timeZoneGap) {
+		this.timeZoneGap = timeZoneGap;
 	}
 
 }

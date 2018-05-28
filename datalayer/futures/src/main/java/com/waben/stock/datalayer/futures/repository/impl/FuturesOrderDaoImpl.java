@@ -13,6 +13,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesOrderRepository;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
+import com.waben.stock.interfaces.enums.FuturesOrderType;
 
 /**
  * 期货订单 Impl
@@ -65,6 +66,11 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	public FuturesOrder editOrder(Long id, FuturesOrderState state) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Integer countOrderByType(Long contractId, FuturesOrderType orderType) {
+		return repository.countOrderByType(contractId, orderType);
 	}
 
 }

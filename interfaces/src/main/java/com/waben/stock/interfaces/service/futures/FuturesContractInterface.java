@@ -10,7 +10,7 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 
-@FeignClient(name = "futurescontract", path = "futurescontract", qualifier = "futurescontractInterface")
+@FeignClient(name = "futures", path = "contract", qualifier = "futurescontractInterface")
 public interface FuturesContractInterface {
 
 	/**
@@ -21,6 +21,7 @@ public interface FuturesContractInterface {
 	 * @return 期货合约
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = "application/json")
-	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery);
+	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery)
+			throws Throwable;
 
 }
