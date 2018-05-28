@@ -94,7 +94,15 @@ public class FuturesOrder {
 	 */
 	private BigDecimal overnightPerUnitDeferredFee;
 	/**
-	 * 一手止盈金额
+	 * 触发止盈类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitProfitType;
+	/**
+	 * 一手止盈金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitProfitAmount;
 	/**
@@ -102,9 +110,18 @@ public class FuturesOrder {
 	 */
 	private BigDecimal perUnitLimitProfitPositon;
 	/**
-	 * 一手止损金额
+	 * 触发止损类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitLossType;
+	/**
+	 * 一手止损金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitLossAmount;
+
 	/**
 	 * 一手止损价格点位
 	 */
@@ -472,6 +489,22 @@ public class FuturesOrder {
 
 	public void setWindControlType(FuturesWindControlType windControlType) {
 		this.windControlType = windControlType;
+	}
+
+	public Integer getLimitProfitType() {
+		return limitProfitType;
+	}
+
+	public void setLimitProfitType(Integer limitProfitType) {
+		this.limitProfitType = limitProfitType;
+	}
+
+	public Integer getLimitLossType() {
+		return limitLossType;
+	}
+
+	public void setLimitLossType(Integer limitLossType) {
+		this.limitLossType = limitLossType;
 	}
 
 }
