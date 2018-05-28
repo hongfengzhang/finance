@@ -58,6 +58,12 @@
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 		</dependency>
+		<!-- tws -->
+		<dependency>
+			<groupId>com.waben.twsapi</groupId>
+			<artifactId>tws-api</artifactId>
+			<version>1.0.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

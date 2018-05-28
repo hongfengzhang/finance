@@ -21,12 +21,13 @@ import com.ib.client.OrderState;
 import com.ib.client.OrderStatus;
 import com.ib.client.SoftDollarTier;
 import com.ib.client.TickType;
+import com.waben.stock.futuresgateway.cache.CommonDataCache;
+import com.waben.stock.futuresgateway.cache.RedisCache;
 import com.waben.stock.futuresgateway.entity.FuturesContract;
 import com.waben.stock.futuresgateway.entity.FuturesOrder;
 import com.waben.stock.futuresgateway.pojo.FuturesContractLineData;
 import com.waben.stock.futuresgateway.service.FuturesContractService;
 import com.waben.stock.futuresgateway.service.FuturesOrderService;
-import com.waben.stock.futuresgateway.service.RedisCache;
 import com.waben.stock.futuresgateway.util.JacksonUtil;
 
 public class WabenEWrapper implements EWrapper {
@@ -92,7 +93,10 @@ public class WabenEWrapper implements EWrapper {
 			contractId = Long.parseLong(tickerIdStr.substring(3));
 		}
 		// step 2 : 获取期货合约
-		FuturesContract contract = futuresContractService.getContractInfo(contractId);
+		FuturesContract contract = CommonDataCache.contractMap.get(contractId);
+		if (contract == null) {
+			contract = futuresContractService.getContractInfo(contractId);
+		}
 		// step 3 : 更新期货合约的相关价格
 		boolean isNeedUpdate = true;
 		if (field == 1) {
@@ -110,8 +114,13 @@ public class WabenEWrapper implements EWrapper {
 		} else {
 			isNeedUpdate = false;
 		}
-		if (isNeedUpdate) {
-			futuresContractService.addContract(contract);
+		if (contract != null && isNeedUpdate) {
+			futuresContractService.modifyContract(contract);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	// ! [tickprice]
@@ -127,7 +136,10 @@ public class WabenEWrapper implements EWrapper {
 			contractId = Long.parseLong(tickerIdStr.substring(3));
 		}
 		// step 2 : 获取期货合约
-		FuturesContract contract = futuresContractService.getContractInfo(contractId);
+		FuturesContract contract = CommonDataCache.contractMap.get(contractId);
+		if (contract == null) {
+			contract = futuresContractService.getContractInfo(contractId);
+		}
 		// step 3 : 更新期货合约的相关size
 		boolean isNeedUpdate = true;
 		if (field == 0) {
@@ -141,8 +153,13 @@ public class WabenEWrapper implements EWrapper {
 		} else {
 			isNeedUpdate = false;
 		}
-		if (isNeedUpdate) {
-			futuresContractService.addContract(contract);
+		if (contract != null && isNeedUpdate) {
+			futuresContractService.modifyContract(contract);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	// ! [ticksize]
@@ -356,7 +373,10 @@ public class WabenEWrapper implements EWrapper {
 			contractId = Long.parseLong(tickerIdStr.substring(3));
 		}
 		// step 2 : 获取期货合约
-		FuturesContract contract = futuresContractService.getContractInfo(contractId);
+		FuturesContract contract = CommonDataCache.contractMap.get(contractId);
+		if (contract == null) {
+			contract = futuresContractService.getContractInfo(contractId);
+		}
 		// step 3 : 保存历史行情数据到redis
 		try {
 			String redisKey = null;
@@ -383,10 +403,10 @@ public class WabenEWrapper implements EWrapper {
 			}
 			if (redisKey != null) {
 				FuturesContractLineData data = new FuturesContractLineData();
-				data.setOpen(new BigDecimal(open));
-				data.setClose(new BigDecimal(close));
-				data.setHigh(new BigDecimal(high));
-				data.setLow(new BigDecimal(low));
+				data.setOpen(new BigDecimal(String.valueOf(open)));
+				data.setClose(new BigDecimal(String.valueOf(close)));
+				data.setHigh(new BigDecimal(String.valueOf(high)));
+				data.setLow(new BigDecimal(String.valueOf(low)));
 				data.setVolume(volume);
 				data.setCount(count);
 				data.setTime(sdf.parse(date));

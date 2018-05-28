@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.EReader;
+import com.waben.stock.futuresgateway.cache.RedisCache;
 import com.waben.stock.futuresgateway.entity.FuturesContract;
 import com.waben.stock.futuresgateway.service.FuturesContractService;
 import com.waben.stock.futuresgateway.service.FuturesOrderService;
-import com.waben.stock.futuresgateway.service.RedisCache;
 
 @Service
 public class TwsEngine {
@@ -41,7 +41,7 @@ public class TwsEngine {
 		this.wrapper.setFuturesOrderService(futuresOrderService);
 		this.wrapper.setRedisCache(redisCache);
 		this.client = wrapper.getClient();
-		client.eConnect("127.0.0.1", 7497, 0);
+		client.eConnect("10.0.0.99", 7497, 0);
 		final EReader reader = new EReader(client, wrapper.getSignal());
 		reader.start();
 		new Thread() {
@@ -64,23 +64,13 @@ public class TwsEngine {
 		initLineData(contractList);
 	}
 
-	public void initMarketData(List<FuturesContract> contractList) {
+	private void initMarketData(List<FuturesContract> contractList) {
 		if (contractList != null && contractList.size() > 0) {
 			for (FuturesContract futuresContract : contractList) {
-				Contract contract = new Contract();
-				contract.localSymbol(futuresContract.getLocalSymbolName());
-				contract.secType(futuresContract.getSecType());
-				contract.currency(futuresContract.getCurrency());
-				contract.exchange(futuresContract.getExchange());
 				// 获取行情快照
-				client.reqMktData(
-						Integer.parseInt(TwsConstant.MarketSnapshot_TickerId_Prefix + futuresContract.getId()),
-						contract, "", true, null);
+				this.reqMktData(client, futuresContract, false);
 				// 获取行情推送
-				// TODO 行情数据需要订阅，订阅需要付费
-				// client.reqMktData(Integer.parseInt(TwsConstant.MarketPush_TickerId_Prefix
-				// + futuresContract.getId()),
-				// contract, "", false, null);
+				// this.reqMktData(client, futuresContract, true);
 			}
 		}
 	}
@@ -132,11 +122,37 @@ public class TwsEngine {
 		}
 	}
 
-	private void historicalDataRequests(EClientSocket client, Contract contract, int tickerId, String timeFrame,
+	public void reqMktData(EClientSocket client, FuturesContract futuresContract, boolean snapshot) {
+		Contract contract = new Contract();
+		contract.localSymbol(futuresContract.getLocalSymbolName());
+		contract.secType(futuresContract.getSecType());
+		contract.currency(futuresContract.getCurrency());
+		contract.exchange(futuresContract.getExchange());
+		
+		// TODO 因还未订阅数据，先写死合约
+		contract = new Contract();
+		contract.symbol("EUR");
+		contract.secType("CASH");
+		contract.currency("GBP");
+		contract.exchange("IDEALPRO");
+		
+		String prefix = snapshot ? TwsConstant.MarketSnapshot_TickerId_Prefix : TwsConstant.MarketPush_TickerId_Prefix;
+		client.reqMktData(Integer.parseInt(prefix + futuresContract.getId()), contract, "", snapshot, null);
+	}
+
+	public void historicalDataRequests(EClientSocket client, Contract contract, int tickerId, String timeFrame,
 			String timeInterval) {
 		Calendar cal = Calendar.getInstance();
 		SimpleDateFormat form = new SimpleDateFormat("yyyyMMdd HH:mm:ss");
 		String formatted = form.format(cal.getTime());
+
+		// TODO 因还未订阅数据，先写死合约
+		contract = new Contract();
+		contract.symbol("EUR");
+		contract.secType("CASH");
+		contract.currency("GBP");
+		contract.exchange("IDEALPRO");
+				
 		client.reqHistoricalData(tickerId, contract, formatted, timeFrame, timeInterval, "MIDPOINT", 1, 1, null);
 	}
 
@@ -150,6 +166,42 @@ public class TwsEngine {
 
 	public EClientSocket getClient() {
 		return client;
+	}
+
+	public FuturesContractService getFuturesContractService() {
+		return futuresContractService;
+	}
+
+	public void setFuturesContractService(FuturesContractService futuresContractService) {
+		this.futuresContractService = futuresContractService;
+	}
+
+	public FuturesOrderService getFuturesOrderService() {
+		return futuresOrderService;
+	}
+
+	public void setFuturesOrderService(FuturesOrderService futuresOrderService) {
+		this.futuresOrderService = futuresOrderService;
+	}
+
+	public RedisCache getRedisCache() {
+		return redisCache;
+	}
+
+	public void setRedisCache(RedisCache redisCache) {
+		this.redisCache = redisCache;
+	}
+
+	public void setWrapper(WabenEWrapper wrapper) {
+		this.wrapper = wrapper;
+	}
+
+	public void setClient(EClientSocket client) {
+		this.client = client;
+	}
+
+	public void setAccount(String account) {
+		this.account = account;
 	}
 
 }

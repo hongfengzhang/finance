@@ -15,7 +15,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "futures_contract_term")
+@Table(name = "f_gateway_futures_contract_term")
 public class FuturesContractTerm {
 
 	@Id

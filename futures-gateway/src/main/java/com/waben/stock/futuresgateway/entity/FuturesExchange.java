@@ -13,7 +13,7 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "futures_exchange")
+@Table(name = "f_gateway_futures_exchange")
 public class FuturesExchange {
 
 	@Id

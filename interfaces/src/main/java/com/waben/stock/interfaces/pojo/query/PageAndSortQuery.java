@@ -1,8 +1,5 @@
 package com.waben.stock.interfaces.pojo.query;
 
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-
 /**
  * @author Created by yuyidi on 2017/11/19.
  * @desc

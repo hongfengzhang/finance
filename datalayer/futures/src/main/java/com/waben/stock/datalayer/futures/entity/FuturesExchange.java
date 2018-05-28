@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 期货交易所
+ * 期货交易所（交易市场）
  * 
  * @author luomengan
  *

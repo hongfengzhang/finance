@@ -40,7 +40,7 @@ public class FuturesContract {
 	 */
 	private String currency;
 	/**
-	 * 乘数
+	 * 乘数（1手等于多少股）
 	 */
 	private Integer multiplier;
 	/**

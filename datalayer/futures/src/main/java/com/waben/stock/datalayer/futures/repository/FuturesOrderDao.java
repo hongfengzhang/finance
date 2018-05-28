@@ -1,19 +1,15 @@
 package com.waben.stock.datalayer.futures.repository;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
-
+import com.waben.stock.interfaces.enums.FuturesOrderState;
 
 /**
-
- * @author  pengzhenliang
-
- * @create  2018/3/3 15:29
-
- * @desc
-
- **/
+ * 期货订单 Dao
+ * 
+ * @author sunl
+ *
+ */
 public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 
-	
-	Integer countStockOptionTradeState(Long publisherId);
+	FuturesOrder editOrder(Long id, FuturesOrderState state);
 }
