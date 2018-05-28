@@ -1,5 +1,6 @@
 package com.waben.stock.futuresgateway.controller;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -48,20 +49,22 @@ public class FuturesOrderController {
 	public Response<Page<FuturesOrder>> futuresOrders(int page, int limit) {
 		return new Response<>((Page<FuturesOrder>) futuresOrderService.futuresOrders(page, limit));
 	}
-	
+
 	@GetMapping("/list")
 	@ApiOperation(value = "获取期货订单列表")
 	public Response<List<FuturesOrder>> list() {
 		return new Response<>(futuresOrderService.list());
 	}
-	
-	/******************************** 后台管理 **********************************/
-	
+
 	@PostMapping("/")
-	@ApiOperation(value = "添加期货订单")
-	public Response<FuturesOrder> addition(FuturesOrder futuresOrder) {
-		return new Response<>(futuresOrderService.addFuturesOrder(futuresOrder));
+	@ApiOperation(value = "期货下单")
+	public Response<FuturesOrder> addition(String symbol, Integer outerOrderId, String action, BigDecimal totalQuantity,
+			Integer userOrderType, BigDecimal entrustPrice) {
+		return new Response<>(futuresOrderService.addFuturesOrder(symbol, outerOrderId, action, totalQuantity,
+				userOrderType, entrustPrice));
 	}
+
+	/******************************** 后台管理 **********************************/
 
 	@PutMapping("/")
 	@ApiOperation(value = "修改期货订单", hidden = true)
@@ -75,14 +78,14 @@ public class FuturesOrderController {
 		futuresOrderService.deleteFuturesOrder(id);
 		return new Response<Long>(id);
 	}
-	
+
 	@PostMapping("/deletes")
 	@ApiOperation(value = "批量删除期货订单（多个id以逗号分割）", hidden = true)
 	public Response<Boolean> deletes(String ids) {
 		futuresOrderService.deleteFuturesOrders(ids);
 		return new Response<Boolean>(true);
 	}
-	
+
 	@GetMapping("/adminList")
 	@ApiOperation(value = "获取期货订单列表(后台管理)", hidden = true)
 	public Response<List<FuturesOrder>> adminList() {
