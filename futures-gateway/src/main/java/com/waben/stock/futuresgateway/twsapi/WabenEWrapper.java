@@ -363,9 +363,11 @@ public class WabenEWrapper implements EWrapper {
 	@Override
 	public void historicalData(int reqId, String date, double open, double high, double low, double close, int volume,
 			int count, double WAP, boolean hasGaps) {
-		System.out.println("HistoricalData. " + reqId + " - Date: " + date + ", Open: " + open + ", High: " + high
-				+ ", Low: " + low + ", Close: " + close + ", Volume: " + volume + ", Count: " + count + ", WAP: " + WAP
-				+ ", HasGaps: " + hasGaps);
+		// System.out.println("HistoricalData. " + reqId + " - Date: " + date +
+		// ", Open: " + open + ", High: " + high
+		// + ", Low: " + low + ", Close: " + close + ", Volume: " + volume + ",
+		// Count: " + count + ", WAP: " + WAP
+		// + ", HasGaps: " + hasGaps);
 		// step 1 : 获取期货合约的ID
 		Long contractId = Long.valueOf(reqId);
 		String tickerIdStr = String.valueOf(reqId);
@@ -401,7 +403,7 @@ public class WabenEWrapper implements EWrapper {
 				// 15分钟K线
 				redisKey = TwsConstant.Mins15Line_RedisKey;
 			}
-			if (redisKey != null) {
+			if (redisKey != null && date.indexOf("finished") < 0) {
 				FuturesContractLineData data = new FuturesContractLineData();
 				data.setOpen(new BigDecimal(String.valueOf(open)));
 				data.setClose(new BigDecimal(String.valueOf(close)));

@@ -3,35 +3,52 @@ package com.waben.stock.interfaces.commonapi.retrivefutures.bean;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
+/**
+ * 期货合约历史图数据（分时、日K、分钟K）
+ * 
+ * @author luomengan
+ *
+ */
+@ApiModel(description = "期货合约历史图数据（分时、日K、分钟K）")
 public class FuturesContractLineData {
 
 	/**
 	 * 时间
 	 */
+	@ApiModelProperty(value = "时间")
 	private Date time;
 	/**
 	 * 开盘
 	 */
+	@ApiModelProperty(value = "开盘")
 	private BigDecimal open;
 	/**
 	 * 最高
 	 */
+	@ApiModelProperty(value = "最高")
 	private BigDecimal high;
 	/**
 	 * 最低
 	 */
+	@ApiModelProperty(value = "最低")
 	private BigDecimal low;
 	/**
 	 * 收盘
 	 */
+	@ApiModelProperty(value = "收盘")
 	private BigDecimal close;
 	/**
 	 * 交易量
 	 */
+	@ApiModelProperty(value = "交易量")
 	private Integer volume;
 	/**
-	 * 总数?
+	 * 总交易量?
 	 */
+	@ApiModelProperty(value = "总交易量?")
 	private Integer count;
 
 	public Date getTime() {

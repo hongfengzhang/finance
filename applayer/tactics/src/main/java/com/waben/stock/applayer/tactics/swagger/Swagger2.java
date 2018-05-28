@@ -23,41 +23,27 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class Swagger2 {
 
+	@Bean
+	public Docket futuresApi() {
+		return new Docket(DocumentationType.SWAGGER_2).groupName("futuresApi")
+				.genericModelSubstitutes(DeferredResult.class).useDefaultResponseMessages(false).forCodeGeneration(true)
+				.select()
+				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.applayer.tactics.controller.futures"))
+				.paths(PathSelectors.any()).build().apiInfo(apiInfo());
+	}
 
 	@Bean
 	public Docket activityApi() {
-
-		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("activityApi")
+		return new Docket(DocumentationType.SWAGGER_2).groupName("activityApi")
 				.genericModelSubstitutes(DeferredResult.class)
-//                .genericModelSubstitutes(ResponseEntity.class)
-				.useDefaultResponseMessages(false)
-				.forCodeGeneration(true)
-				.select()
+				// .genericModelSubstitutes(ResponseEntity.class)
+				.useDefaultResponseMessages(false).forCodeGeneration(true).select()
 				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.applayer.tactics.controller.activity"))
-				.paths(PathSelectors.any())
-				.build()
-				.apiInfo(apiInfo());
-	}
-	
-	@Bean
-	public Docket futuresApi() {
-
-		return new Docket(DocumentationType.SWAGGER_2)
-				.groupName("futuresApi")
-				.genericModelSubstitutes(DeferredResult.class)
-				.useDefaultResponseMessages(false)
-				.forCodeGeneration(true)
-				.select()
-				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.applayer.tactics.controller.futures"))
-				.paths(PathSelectors.any())
-				.build()
-				.apiInfo(apiInfo());
+				.paths(PathSelectors.any()).build().apiInfo(apiInfo());
 	}
 
 	@Bean
 	public Docket createRestApi() {
-
 		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQXBwLCIsInVzZXJJZCI6MTAsInNlcmlhbENvZGUiOiJiNzJhM2ZmZi00MjlhLTQzZjUtOWQ4ZC03MDFmMjRmN2M1MTgiLCJzdWIiOiIxMzkyODk1MjI1NCIsImV4cCI6NDMyMDAwMTUxMTg0MDg0MH0.qhG7I4q8E8kfdSxdJQDSKfgpBeVJzDiUCFZc7O3HtTwadj_bQObNm4ubfUjiBc3wA-uamlOnQ9PYbQF7xy7QFg";
 		ParameterBuilder tokenPar = new ParameterBuilder();
 		List<Parameter> pars = new ArrayList<Parameter>();

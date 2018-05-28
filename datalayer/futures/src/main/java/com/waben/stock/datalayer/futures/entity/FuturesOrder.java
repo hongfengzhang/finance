@@ -48,12 +48,6 @@ public class FuturesOrder {
 	@Convert(converter = FuturesOrderTypeConverter.class)
 	private FuturesOrderType orderType;
 	/**
-	 * 对应的合约
-	 */
-	@ManyToOne
-	@JoinColumn(name = "contract_id")
-	private FuturesContract contract;
-	/**
 	 * 数量（手）
 	 */
 	private BigDecimal totalQuantity;
@@ -65,6 +59,24 @@ public class FuturesOrder {
 	 * 服务费（服务费）
 	 */
 	private BigDecimal serviceFee;
+	/**
+	 * 对应的合约
+	 */
+	@ManyToOne
+	@JoinColumn(name = "contract_id")
+	private FuturesContract contract;
+	/**
+	 * 合约代码（取期货合约设置快照）
+	 */
+	private String contractSymbol;
+	/**
+	 * 合约名称（取期货合约设置快照）
+	 */
+	private String contractName;
+	/**
+	 * 货币（取期货合约设置快照）
+	 */
+	private String contractCurrency;
 	/**
 	 * 开仓手续费（取期货合约设置快照）
 	 */
@@ -472,6 +484,30 @@ public class FuturesOrder {
 
 	public void setWindControlType(FuturesWindControlType windControlType) {
 		this.windControlType = windControlType;
+	}
+
+	public String getContractSymbol() {
+		return contractSymbol;
+	}
+
+	public void setContractSymbol(String contractSymbol) {
+		this.contractSymbol = contractSymbol;
+	}
+
+	public String getContractName() {
+		return contractName;
+	}
+
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
+	}
+
+	public String getContractCurrency() {
+		return contractCurrency;
+	}
+
+	public void setContractCurrency(String contractCurrency) {
+		this.contractCurrency = contractCurrency;
 	}
 
 }

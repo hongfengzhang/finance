@@ -12,7 +12,7 @@ public class FuturesContractDto {
 	/**
 	 * 合约代码
 	 */
-	private String code;
+	private String symbol;
 	/**
 	 * 合约名称
 	 */
@@ -102,12 +102,12 @@ public class FuturesContractDto {
 		this.gatewayId = gatewayId;
 	}
 
-	public String getCode() {
-		return code;
+	public String getSymbol() {
+		return symbol;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
 	public String getName() {
