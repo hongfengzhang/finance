@@ -79,26 +79,28 @@ public class FuturesContractController {
 		if (!PasswordCrypt.match(buysellDto.getPaymentPassword(), storePaymentPassword)) {
 			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
 		}
-		// 合计支付
+		// 合计支付 = 保证金金额 + 交易综合费
 		BigDecimal totalFee = new BigDecimal(0);
-		//保证金金额
+		// 保证金金额
 		BigDecimal perUnitReserveAmount = contractDto.getPerUnitReserveFund().multiply(buysellDto.getTotalQuantity());
-		//交易综合费
-		BigDecimal comprehensiveAmount = contractDto.getOpenwindServiceFee().add(contractDto.getUnwindServiceFee());
-//		totalFee = contractDto.getPerUnitReserveFund().add(augend);
+		// 开仓手续费 + 平仓手续费
+		BigDecimal openUnwin = contractDto.getOpenwindServiceFee().add(contractDto.getUnwindServiceFee());
+		// 交易综合费 = 开仓手续费 + 平仓手续费
+		BigDecimal comprehensiveAmount = openUnwin.multiply(buysellDto.getTotalQuantity());
+		totalFee = perUnitReserveAmount.add(comprehensiveAmount);
 
 		// 检查余额
-//		if (buysellDto.getSumAmount().compareTo(capitalAccount.getAvailableBalance()) > 0) {
-//			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
-//		}
+		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
+			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
+		}
 		FuturesOrderDto orderDto = new FuturesOrderDto();
 		orderDto.setPublisherId(SecurityUtil.getUserId());
 		orderDto.setPostTime(new Date(System.currentTimeMillis()));
 		orderDto.setOrderType(buysellDto.getOrderType());
 		orderDto.setContract(contractDto);
 		orderDto.setTotalQuantity(buysellDto.getTotalQuantity());
-//		orderDto.setReserveFund(buysellDto.getReserveFund());
-//		orderDto.setServiceFee(buysellDto.getServiceFee());
+		// orderDto.setReserveFund(buysellDto.getReserveFund());
+		// orderDto.setServiceFee(buysellDto.getServiceFee());
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, contractDto, false));
 	}
 
