@@ -12,8 +12,8 @@ import org.springframework.stereotype.Repository;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesOrderRepository;
-
 import com.waben.stock.interfaces.enums.FuturesOrderState;
+import com.waben.stock.interfaces.enums.FuturesOrderType;
 
 /**
  * 期货订单 Impl
@@ -25,8 +25,6 @@ import com.waben.stock.interfaces.enums.FuturesOrderState;
 public class FuturesOrderDaoImpl implements FuturesOrderDao {
 
 	@Autowired
-	private FuturesOrderRepository futuresOrderRepository;
-	
 	private FuturesOrderRepository repository;
 
 	@Override
@@ -36,9 +34,8 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 
 	@Override
 	public void delete(Long id) {
-		futuresOrderRepository.delete(id);
+		repository.delete(id);
 	}
-
 
 	@Override
 	public FuturesOrder update(FuturesOrder t) {
@@ -47,7 +44,7 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 
 	@Override
 	public FuturesOrder retrieve(Long id) {
-		return futuresOrderRepository.findById(id);
+		return repository.findById(id);
 	}
 
 	@Override
@@ -57,23 +54,23 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 
 	@Override
 	public Page<FuturesOrder> page(Specification<FuturesOrder> specification, Pageable pageable) {
-		return futuresOrderRepository.findAll(specification, pageable);
+		return repository.findAll(specification, pageable);
 	}
 
 	@Override
 	public List<FuturesOrder> list() {
-		return futuresOrderRepository.findAll();
+		return repository.findAll();
 	}
-
-//	@Override
-//	public Integer countStockOptionTradeState(Long publisherId) {
-//		return repository.findAll();
-//	}
 
 	@Override
 	public FuturesOrder editOrder(Long id, FuturesOrderState state) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public Integer countOrderByType(Long contractId, FuturesOrderType orderType) {
+		return repository.countOrderByType(contractId, orderType);
 	}
 
 }

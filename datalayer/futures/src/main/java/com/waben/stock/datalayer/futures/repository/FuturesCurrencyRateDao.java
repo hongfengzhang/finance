@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.repository;
 
+import java.util.List;
+
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 
 /**
@@ -10,4 +12,5 @@ import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
  */
 public interface FuturesCurrencyRateDao extends BaseDao<FuturesCurrencyRate, Long> {
 
+	List<FuturesCurrencyRate> findAll();
 }

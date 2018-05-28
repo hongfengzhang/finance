@@ -1,12 +1,11 @@
-package com.waben.stock.interfaces.dto.futures;
+package com.waben.stock.interfaces.pojo.query.admin.futures;
 
-public class FuturesExchangeDto {
+import java.sql.Date;
 
-	private Long id;
-	/**
-	 * 对应的网关交易所ID
-	 */
-	private Long gatewayId;
+import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
+
+public class FuturesExchangeAdminQuery extends PageAndSortQuery {
+
 	/**
 	 * 交易所代码
 	 */
@@ -23,31 +22,16 @@ public class FuturesExchangeDto {
 	 * </ul>
 	 */
 	private Integer exchangeType;
+	
 	/**
 	 * 是否可用
 	 */
 	private Boolean enable;
-
+	
 	/**
 	 * 北京时间的时差和交易所
 	 */
 	private Integer timeZoneGap;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Long getGatewayId() {
-		return gatewayId;
-	}
-
-	public void setGatewayId(Long gatewayId) {
-		this.gatewayId = gatewayId;
-	}
 
 	public String getCode() {
 		return code;

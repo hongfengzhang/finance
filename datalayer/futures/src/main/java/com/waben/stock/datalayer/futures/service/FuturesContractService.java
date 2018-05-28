@@ -22,6 +22,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
+import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
@@ -43,6 +44,7 @@ public class FuturesContractService {
 
 	@Autowired
 	private FuturesContractDao futuresContractDao;
+	
 
 	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -67,6 +69,8 @@ public class FuturesContractService {
 		}, pageable);
 		return pages;
 	}
+	
+	
 
 	public Page<FuturesContractDto> pagesByQuery(final FuturesContractQuery query) {
 
@@ -104,6 +108,22 @@ public class FuturesContractService {
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
+	}
+
+	public List<FuturesContractTerm> findByListContractId(Long contractId) {
+		return futuresContractDao.findByListContractId(contractId);
+	}
+	
+	public FuturesContract saveExchange(FuturesContract exchange){
+		return futuresContractDao.create(exchange);
+	}
+	
+	public FuturesContract modifyExchange(FuturesContract exchange){
+		return futuresContractDao.update(exchange);
+	}
+	
+	public void deleteExchange(Long id){
+		futuresContractDao.delete(id);
 	}
 
 }

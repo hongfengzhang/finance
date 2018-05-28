@@ -8,13 +8,26 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.admin.business.futures.FuturesContractBusiness;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
+import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
+import com.waben.stock.interfaces.dto.manage.StaffDto;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -29,29 +42,55 @@ public class FurutesContractController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
-	@RequestMapping(value = "/export", method = RequestMethod.GET)
-	@ApiOperation(value = "导出期货订单信息")
-	public void export(FuturesTradeAdminQuery query, HttpServletResponse svrResponse){
-		query.setPage(0);
-		query.setSize(Integer.MAX_VALUE);
-		File file = null;
-		FileInputStream is = null;
-		
-		List<String> columnDescList = null;
-		try {
-			String fileName = "futurestrade_" + String.valueOf(System.currentTimeMillis());
-			file = File.createTempFile(fileName, ".xls");
-//			if(query.getQueryType()==0){
-//				columnDescList = columnDescList();//成交订单
-//			}else if(query.getQueryType()==1){
-//				columnDescList = positionDescList();//持仓中订单
-//			}else if(query.getQueryType()==2){
-//				columnDescList = eveningDescList();//平仓结算订单
-//			}else if(query.getQueryType()==3){
-//				columnDescList = deputeDescList();//委托记录
-//			}
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+	@Autowired
+	private FuturesContractBusiness business;
+	
+	
+	@RequestMapping(value = "/save", method = RequestMethod.POST)
+    @ApiOperation(value = "新增期货市场")
+    public Response<FuturesExchangeDto> save(FuturesExchangeDto query){
+		FuturesExchangeDto result = business.save(query);
+        return new Response<>(result);
+    }
+	
+	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+    @ApiOperation(value = "修改期货市场")
+    public Response<FuturesExchangeDto> modify(FuturesExchangeDto exchangeDto){
+		FuturesExchangeDto result = business.modify(exchangeDto);
+        return new Response<>(result);
+    }
+	
+	@PutMapping(value = "/delete/{id}")
+    @ApiOperation(value = "删除期货市场")
+    public Response<Integer> delete(@PathVariable("id") Long id){
+        business.delete(id);
+        return new Response<>(1);
+    }
+	
+	@GetMapping("/pages")
+	@ApiOperation(value = "查询期货市场")
+	public Response<PageInfo<FuturesExchangeDto>> pagesExchange(FuturesExchangeAdminQuery query){
+		return new Response<>(business.pagesContract(query));
 	}
+	
+	@RequestMapping(value = "/futuresContract/save", method = RequestMethod.POST)
+	@ApiOperation(value = "添加期货合约")
+	public Response<FuturesContractAdminDto> save(FuturesContractAdminDto query){
+		FuturesContractAdminDto result = business.save(query);
+		return new Response<>(result);
+	}
+	
+	@RequestMapping(value = "/futuresContract/modify", method = RequestMethod.POST)
+	@ApiOperation(value = "修改期货合约")
+	public Response<FuturesContractAdminDto> modify(FuturesContractAdminDto query){
+		FuturesContractAdminDto result = business.modify(query);
+		return new Response<>(result);
+	}
+	
+	@PutMapping(value = "/futuresContract/delete/{id}")
+    @ApiOperation(value = "删除期货合约")
+    public Response<Integer> deleteContract(@PathVariable("id") Long id){
+        business.deleteContract(id);;
+        return new Response<>(1);
+    }
 }
