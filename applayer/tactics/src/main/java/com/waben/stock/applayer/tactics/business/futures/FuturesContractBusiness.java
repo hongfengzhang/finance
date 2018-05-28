@@ -18,8 +18,9 @@ public class FuturesContractBusiness {
 	@Qualifier("futurescontractInterface")
 	private FuturesContractInterface futuresContractInterface;
 
-	public PageInfo<FuturesContractDto> pagesContract(FuturesContractQuery futuresContractQuery) {
-		Response<PageInfo<FuturesContractDto>> response = futuresContractInterface.pagesContract(futuresContractQuery);
+	public PageInfo<FuturesContractDto> pagesContract(int page, int size) throws Throwable {
+		FuturesContractQuery query = new FuturesContractQuery(page, size);
+		Response<PageInfo<FuturesContractDto>> response = futuresContractInterface.pagesContract(query);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

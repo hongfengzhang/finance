@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
+import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 
 /**
@@ -63,5 +64,9 @@ public class FuturesOrderService {
 	public FuturesOrder editOrder(Long id, FuturesOrderState state) {
 
 		return futuresOrderDao.editOrder(id, state);
+	}
+
+	public Integer countOrderType(Long contractId, FuturesOrderType orderType) {
+		return futuresOrderDao.countOrderByType(contractId, orderType);
 	}
 }

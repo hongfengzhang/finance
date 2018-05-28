@@ -11,7 +11,6 @@ import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,9 +33,9 @@ public class FuturesContractController {
 
 	@GetMapping("/pagesContract")
 	@ApiOperation(value = "获取期货合约列表")
-	public Response<PageInfo<FuturesContractDto>> pagesContract(int page, int size) {
-		FuturesContractQuery query = new FuturesContractQuery(page, size);
-		return new Response<>(futuresContractBusiness.pagesContract(query));
+	public Response<PageInfo<FuturesContractDto>> pagesContract(int page, int size) throws Throwable {
+
+		return new Response<>(futuresContractBusiness.pagesContract(page, size));
 	}
 
 }

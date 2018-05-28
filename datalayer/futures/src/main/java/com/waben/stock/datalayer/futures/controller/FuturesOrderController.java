@@ -13,6 +13,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
+import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
@@ -51,4 +52,10 @@ public class FuturesOrderController implements FuturesOrderInterface {
 		FuturesOrder order = futuresOrderService.editOrder(id, state);
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, order, false));
 	}
+
+	@Override
+	public Response<Integer> countOrderType(Long contractId, FuturesOrderType orderType) {
+		return new Response<>(futuresOrderService.countOrderType(contractId, orderType));
+	}
+
 }
