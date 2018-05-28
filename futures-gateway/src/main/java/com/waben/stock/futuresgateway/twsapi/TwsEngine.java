@@ -68,9 +68,9 @@ public class TwsEngine {
 		if (contractList != null && contractList.size() > 0) {
 			for (FuturesContract futuresContract : contractList) {
 				// 获取行情快照
-				this.reqMktData(client, futuresContract, false);
+				this.reqMktData(client, futuresContract, true);
 				// 获取行情推送
-				// this.reqMktData(client, futuresContract, true);
+				// this.reqMktData(client, futuresContract, false);
 			}
 		}
 	}

@@ -41,6 +41,18 @@ public class FuturesOrderDto {
 	 */
 	private BigDecimal serviceFee;
 	/**
+	 * 合约代码（取期货合约设置快照）
+	 */
+	private String contractSymbol;
+	/**
+	 * 合约名称（取期货合约设置快照）
+	 */
+	private String contractName;
+	/**
+	 * 货币（取期货合约设置快照）
+	 */
+	private String contractCurrency;
+	/**
 	 * 开仓手续费（取期货合约设置快照）
 	 */
 	private BigDecimal openwindServiceFee;
@@ -156,7 +168,7 @@ public class FuturesOrderDto {
 	 * 更新时间
 	 */
 	private Date updateTime;
-	
+
 	/**
 	 * 期货隔夜记录
 	 */
@@ -457,6 +469,29 @@ public class FuturesOrderDto {
 	public void setFuturesOvernightRecord(List<FuturesOvernightRecordDto> futuresOvernightRecord) {
 		this.futuresOvernightRecord = futuresOvernightRecord;
 	}
-	
-	
+
+	public String getContractSymbol() {
+		return contractSymbol;
+	}
+
+	public void setContractSymbol(String contractSymbol) {
+		this.contractSymbol = contractSymbol;
+	}
+
+	public String getContractName() {
+		return contractName;
+	}
+
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
+	}
+
+	public String getContractCurrency() {
+		return contractCurrency;
+	}
+
+	public void setContractCurrency(String contractCurrency) {
+		this.contractCurrency = contractCurrency;
+	}
+
 }

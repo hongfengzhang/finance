@@ -2,86 +2,109 @@ package com.waben.stock.interfaces.commonapi.retrivefutures.bean;
 
 import java.math.BigDecimal;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 /**
- * 期货合约
+ * 期货合约行情
  * 
  * @author luomengan
  *
  */
+@ApiModel(description = "期货合约行情")
 public class FuturesContractMarket {
 
+	@ApiModelProperty(value = "合约ID")
 	private Long id;
 	/**
 	 * 第三方合约ID
 	 */
+	@ApiModelProperty(value = "第三方合约ID")
 	private String conid;
 	/**
 	 * 合约名称
 	 */
+	@ApiModelProperty(value = "合约名称")
 	private String symbol;
 	/**
 	 * 本地tws合约名称
 	 */
+	@ApiModelProperty(value = "本地tws合约名称")
 	private String localSymbolName;
 	/**
 	 * 安全类型
 	 */
+	@ApiModelProperty(value = "安全类型")
 	private String secType;
 	/**
 	 * 货币
 	 */
+	@ApiModelProperty(value = "货币")
 	private String currency;
 	/**
 	 * 交易所ID
 	 */
+	@ApiModelProperty(value = "交易所ID")
 	private Long exchangeId;
 	/**
 	 * 交易所
 	 */
+	@ApiModelProperty(value = "交易所")
 	private String exchange;
 	/**
 	 * 最高价投标合同（买方开价）
 	 */
+	@ApiModelProperty(value = "最高价投标合同（买方开价）")
 	private BigDecimal bigPrice;
 	/**
 	 * 以投标价格提供的合同或批次数量（买方开价）
 	 */
+	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（买方开价）")
 	private Integer bidSize;
 	/**
 	 * 最低价投标合同（卖方开价）
 	 */
+	@ApiModelProperty(value = "最低价投标合同（卖方开价）")
 	private BigDecimal askPrice;
 	/**
 	 * 以投标价格提供的合同或批次数量（卖方开价）
 	 */
+	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（卖方开价）")
 	private Integer askSize;
 	/**
 	 * 最新价
 	 */
+	@ApiModelProperty(value = "最新价")
 	private BigDecimal lastPrice;
 	/**
 	 * 以最新价交易的合同或批次数量
 	 */
+	@ApiModelProperty(value = "以最新价交易的合同或批次数量")
 	private Integer lastSize;
 	/**
 	 * 当天最高价
 	 */
+	@ApiModelProperty(value = "当天最高价")
 	private BigDecimal highPrice;
 	/**
 	 * 当天最低价
 	 */
+	@ApiModelProperty(value = "当天最低价")
 	private BigDecimal lowPrice;
 	/**
 	 * 昨天的收盘价
 	 */
+	@ApiModelProperty(value = "昨天的收盘价")
 	private BigDecimal closePrice;
 	/**
 	 * 当天成交量
 	 */
+	@ApiModelProperty(value = "当天成交量")
 	private Integer volume;
 	/**
 	 * 是否可用
 	 */
+	@ApiModelProperty(value = "是否可用")
 	private Boolean enable;
 
 	public Long getId() {

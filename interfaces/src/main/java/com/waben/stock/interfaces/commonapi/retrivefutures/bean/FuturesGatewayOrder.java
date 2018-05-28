@@ -1,26 +1,16 @@
-package com.waben.stock.futuresgateway.entity;
+package com.waben.stock.interfaces.commonapi.retrivefutures.bean;
 
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
- * 期货订单
+ * 期货网关订单
  * 
  * @author luomengan
  *
  */
-@Entity
-@Table(name = "f_gateway_futures_order")
-public class FuturesOrder {
+public class FuturesGatewayOrder {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
 	 * 所属域

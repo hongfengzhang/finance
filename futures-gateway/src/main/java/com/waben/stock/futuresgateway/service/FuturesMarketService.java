@@ -4,7 +4,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -21,6 +20,7 @@ import com.waben.stock.futuresgateway.entity.FuturesContract;
 import com.waben.stock.futuresgateway.pojo.FuturesContractLineData;
 import com.waben.stock.futuresgateway.twsapi.TwsConstant;
 import com.waben.stock.futuresgateway.util.JacksonUtil;
+import com.waben.stock.futuresgateway.util.StringUtil;
 
 /**
  * 期货行情 Service
@@ -46,25 +46,20 @@ public class FuturesMarketService {
 
 	public List<FuturesContractLineData> timeLine(String symbol, Integer dayCount) {
 		List<FuturesContractLineData> result = new ArrayList<>();
-
-		List<FuturesContractLineData> cacheDataList = new ArrayList<>();
 		// 从redis中获取
 		FuturesContract contract = contractDao.retrieveContractBySymbol(symbol);
 		Map<String, String> map = redisCache
 				.hgetAll(String.format(TwsConstant.TimeLine_RedisKey, contract.getId() + "_" + contract.getSymbol()));
-		Collection<String> datas = map.values();
-		for (String data : datas) {
-			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
-			cacheDataList.add(lineData);
-		}
+		List<String> datas = new ArrayList<>(map.values());
 		// 按时间倒序排序
-		Collections.sort(cacheDataList, new TimeDownComparator());
+		Collections.sort(datas, new TimeStringDownComparator());
 		// 返回特定天数的分时数据
 		if (dayCount == null || dayCount <= 0) {
 			dayCount = 1;
 		}
 		Map<String, Boolean> dayMap = new HashMap<>();
-		for (FuturesContractLineData lineData : cacheDataList) {
+		for (String data : datas) {
+			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
 			String timeStr = daySdf.format(lineData.getTime());
 			if (dayMap.containsKey(timeStr)) {
 				result.add(lineData);
@@ -78,49 +73,39 @@ public class FuturesMarketService {
 		return result;
 	}
 
-	private class TimeDownComparator implements Comparator<FuturesContractLineData> {
-		@Override
-		public int compare(FuturesContractLineData o1, FuturesContractLineData o2) {
-			Date time1 = o1.getTime();
-			Date time2 = o2.getTime();
-			return time2.compareTo(time1);
-		}
-	}
-
 	public List<FuturesContractLineData> dayLine(String symbol, String startTimeStr, String endTimeStr) {
 		List<FuturesContractLineData> result = new ArrayList<>();
 		// 获取开始和结束时间
 		Date startTime = null;
 		Date endTime = null;
 		try {
-			startTime = fullSdf.parse(startTimeStr);
-			endTime = fullSdf.parse(endTimeStr);
+			if (!StringUtil.isEmpty(startTimeStr)) {
+				startTime = fullSdf.parse(startTimeStr);
+			}
+			if (!StringUtil.isEmpty(endTimeStr)) {
+				endTime = fullSdf.parse(endTimeStr);
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		if (startTime == null) {
-			startTime = new Date();
-		}
 		if (endTime == null) {
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(startTime);
-			cal.add(Calendar.YEAR, -1);
-			endTime = cal.getTime();
+			endTime = new Date();
 		}
-		List<FuturesContractLineData> cacheDataList = new ArrayList<>();
+		if (startTime == null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(endTime);
+			cal.add(Calendar.YEAR, -1);
+			startTime = cal.getTime();
+		}
 		// 从redis中获取
 		FuturesContract contract = contractDao.retrieveContractBySymbol(symbol);
 		Map<String, String> map = redisCache
-				.hgetAll(String.format(TwsConstant.TimeLine_RedisKey, contract.getId() + "_" + contract.getSymbol()));
-		Collection<String> datas = map.values();
+				.hgetAll(String.format(TwsConstant.DayLine_RedisKey, contract.getId() + "_" + contract.getSymbol()));
+		List<String> datas = new ArrayList<>(map.values());
+		// 按时间倒序排序
+		Collections.sort(datas, new TimeStringDownComparator());
 		for (String data : datas) {
 			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
-			cacheDataList.add(lineData);
-		}
-		// 按时间倒序排序
-		Collections.sort(cacheDataList, new TimeDownComparator());
-		// 返回特定天数的分时数据
-		for (FuturesContractLineData lineData : cacheDataList) {
 			Date time = lineData.getTime();
 			if (time.getTime() >= startTime.getTime() && time.getTime() <= endTime.getTime()) {
 				result.add(lineData);
@@ -131,7 +116,6 @@ public class FuturesMarketService {
 
 	public List<FuturesContractLineData> minsLine(String symbol, Integer mins, Integer dayCount) {
 		List<FuturesContractLineData> result = new ArrayList<>();
-		List<FuturesContractLineData> cacheDataList = new ArrayList<>();
 		// 从redis中获取
 		String redisKey = null;
 		if (mins == null || mins < 1) {
@@ -150,19 +134,16 @@ public class FuturesMarketService {
 		FuturesContract contract = contractDao.retrieveContractBySymbol(symbol);
 		Map<String, String> map = redisCache
 				.hgetAll(String.format(redisKey, contract.getId() + "_" + contract.getSymbol()));
-		Collection<String> datas = map.values();
-		for (String data : datas) {
-			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
-			cacheDataList.add(lineData);
-		}
+		List<String> datas = new ArrayList<>(map.values());
 		// 按时间倒序排序
-		Collections.sort(cacheDataList, new TimeDownComparator());
+		Collections.sort(datas, new TimeStringDownComparator());
 		// 返回特定天数的分时数据
 		if (dayCount == null || dayCount <= 0) {
 			dayCount = 1;
 		}
 		Map<String, Boolean> dayMap = new HashMap<>();
-		for (FuturesContractLineData lineData : cacheDataList) {
+		for (String data : datas) {
+			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
 			String timeStr = daySdf.format(lineData.getTime());
 			if (dayMap.containsKey(timeStr)) {
 				result.add(lineData);
@@ -176,4 +157,14 @@ public class FuturesMarketService {
 		return result;
 	}
 
+	private class TimeStringDownComparator implements Comparator<String> {
+		@Override
+		public int compare(String o1, String o2) {
+			int time1Index = o1.indexOf("\"time\"");
+			String time1 = o1.substring(time1Index + 8, time1Index + 25);
+			int time2Index = o2.indexOf("\"time\"");
+			String time2 = o2.substring(time2Index + 8, time2Index + 25);
+			return time2.compareTo(time1);
+		}
+	}
 }
