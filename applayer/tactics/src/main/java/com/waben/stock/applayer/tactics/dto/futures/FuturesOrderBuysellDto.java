@@ -3,7 +3,6 @@ package com.waben.stock.applayer.tactics.dto.futures;
 import java.math.BigDecimal;
 
 import com.waben.stock.interfaces.enums.FuturesOrderType;
-import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -30,7 +29,7 @@ public class FuturesOrderBuysellDto {
 	@ApiModelProperty(value = "订单类型", required = true)
 	private FuturesOrderType orderType;
 
-	@ApiModelProperty(value = "支付密码")
+	@ApiModelProperty(value = "支付密码", required = true)
 	private String paymentPassword;
 
 	public Long getContractId() {

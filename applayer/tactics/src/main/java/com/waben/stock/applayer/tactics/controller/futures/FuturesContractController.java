@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
@@ -26,7 +25,6 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -55,10 +53,9 @@ public class FuturesContractController {
 		return new Response<>(futuresContractBusiness.pagesContract(query));
 	}
 
-	@GetMapping("/buy/fall")
+	@GetMapping("/buy")
 	@ApiOperation(value = "买涨买跌")
-	@ApiImplicitParam(paramType = "query", dataType = "FuturesOrderBuysellDto", name = "buysellDto", value = "参数")
-	public Response<FuturesOrderDto> pagesContractById(@RequestParam("buysellDto") FuturesOrderBuysellDto buysellDto)
+	public Response<FuturesOrderDto> pagesContractById(FuturesOrderBuysellDto buysellDto)
 			throws Throwable {
 		FuturesContractQuery query = new FuturesContractQuery();
 		query.setPage(0);
