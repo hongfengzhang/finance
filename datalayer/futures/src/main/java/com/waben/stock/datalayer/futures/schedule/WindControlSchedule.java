@@ -239,13 +239,16 @@ public class WindControlSchedule {
 	/**
 	 * 判断是否触发隔夜
 	 * 
-	 * @param timeZoneGap 
+	 * @param timeZoneGap
+	 *            和交易所的时差
 	 * @param order
-	 * @return
+	 *            订单
+	 * @return 是否触发隔夜
 	 */
 	private boolean isTriggerOvernight(Integer timeZoneGap, FuturesOrder order) {
 		String overnightTime = order.getContract().getOvernightTime();
 		Date exchangeTime = retriveExchangeTime(timeZoneGap);
+		// Date exchangeTimeAfter 
 		return false;
 	}
 
