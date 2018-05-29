@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.repository.FuturesContractTermDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesContractTermRepository;
@@ -58,6 +59,11 @@ public class FuturesContractTermDaoImpl implements FuturesContractTermDao {
 	@Override
 	public List<FuturesContractTerm> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<FuturesContractTerm> retrieveByContractAndCurrent(FuturesContract contract, boolean current) {
+		return repository.findByContractAndCurrent(contract, current);
 	}
 
 }
