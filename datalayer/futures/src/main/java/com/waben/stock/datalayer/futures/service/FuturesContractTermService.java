@@ -1,12 +1,13 @@
 package com.waben.stock.datalayer.futures.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.repository.FuturesContractTermDao;
-import com.waben.stock.interfaces.dto.futures.FuturesContractTermDto;
-import com.waben.stock.interfaces.pojo.Response;
 
 /**
  * 期货合约期限 service
@@ -31,4 +32,13 @@ public class FuturesContractTermService {
 	public void deleteContractTerm(Long id) {
 		termDao.delete(id);
 	}
+
+	public FuturesContractTerm getContractCurrentTerm(FuturesContract contract) {
+		List<FuturesContractTerm> termList = termDao.retrieveByContractAndCurrent(contract, true);
+		if (termList != null && termList.size() > 0) {
+			return termList.get(0);
+		}
+		return null;
+	}
+
 }

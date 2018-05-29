@@ -26,6 +26,10 @@ public class FuturesContractTerm {
 	 */
 	private Long contractId;
 	/**
+	 * 合约编号
+	 */
+	private Integer contractNo;
+	/**
 	 * 合约名称
 	 */
 	private String symbol;
@@ -283,6 +287,14 @@ public class FuturesContractTerm {
 
 	public void setSunTradeTimeDesc(String sunTradeTimeDesc) {
 		this.sunTradeTimeDesc = sunTradeTimeDesc;
+	}
+
+	public Integer getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(Integer contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

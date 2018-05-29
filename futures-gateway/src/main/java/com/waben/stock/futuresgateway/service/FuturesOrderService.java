@@ -76,8 +76,8 @@ public class FuturesOrderService {
 	}
 
 	@Transactional
-	public FuturesOrder addFuturesOrder(String symbol, Integer outerOrderId, String action, BigDecimal totalQuantity,
-			Integer userOrderType, BigDecimal entrustPrice) {
+	public FuturesOrder addFuturesOrder(String domain, String symbol, Integer outerOrderId, String action,
+			BigDecimal totalQuantity, Integer userOrderType, BigDecimal entrustPrice) {
 		FuturesContract futuresContract = futuresContractDao.retrieveContractBySymbol(symbol);
 		if (futuresContract == null) {
 			throw new RuntimeException("不支持的合约类型!");

@@ -234,4 +234,9 @@ public class ExceptionConstant {
 	// 上传文件
 	// 上传图片失败
 	public static final String FAILED_TO_UPLOAD_PICTURES = "12001";
+	
+	// 期货
+	// 期货订单状态不匹配，不支持该操作
+	public static final String FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "13001";
+	
 }

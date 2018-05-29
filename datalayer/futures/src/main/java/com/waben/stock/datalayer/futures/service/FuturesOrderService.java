@@ -1,7 +1,9 @@
 package com.waben.stock.datalayer.futures.service;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -20,12 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeAdminDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.util.StringUtil;
+
 /**
  * 期货订单 service
  * 
@@ -37,6 +42,10 @@ public class FuturesOrderService {
 
 	@Autowired
 	private FuturesOrderDao futuresOrderDao;
+
+	public FuturesOrder findById(Long id) {
+		return futuresOrderDao.retrieve(id);
+	}
 
 	public Page<FuturesTradeAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
 		String publisherNameCondition = "";
@@ -52,18 +61,29 @@ public class FuturesOrderService {
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
-	
+
 	public Page<FuturesOrder> pagesOrder(final FuturesOrderQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<FuturesOrder> pages = futuresOrderDao.page(new Specification<FuturesOrder>() {
-
 			@Override
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				// Join<FuturesExchange, FuturesContract> parentJoin =
-				// root.join("exchange", JoinType.LEFT);
-
+				// 订单状态
+				if (query.getState() != null) {
+					predicateList.add(criteriaBuilder.equal(root.get("state").as(Integer.class), query.getState()));
+				}
+				// 是否测试单
+				if (query.getIsTest() != null) {
+					Predicate isTestPredicate = criteriaBuilder.equal(root.get("isTest").as(Boolean.class),
+							query.getIsTest());
+					Predicate isTestNullPredicate = criteriaBuilder.isNull(root.get("isTest").as(Boolean.class));
+					if (query.getIsTest()) {
+						predicateList.add(isTestPredicate);
+					} else {
+						predicateList.add(criteriaBuilder.or(isTestPredicate, isTestNullPredicate));
+					}
+				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
@@ -88,4 +108,122 @@ public class FuturesOrderService {
 	public Integer countOrderType(Long contractId, FuturesOrderType orderType) {
 		return futuresOrderDao.countOrderByType(contractId, orderType);
 	}
+
+	/**
+	 * 已取消
+	 * 
+	 * @param id
+	 *            订单ID
+	 * @return 订单
+	 */
+	@Transactional
+	public FuturesOrder cancelOrder(Long id) {
+		FuturesOrder order = futuresOrderDao.retrieve(id);
+		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust)) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		// TODO 撤单退款
+		// 修改订单状态
+		order.setState(FuturesOrderState.Canceled);
+		order.setUpdateTime(new Date());
+		futuresOrderDao.update(order);
+		// TODO 站外消息推送
+		return order;
+	}
+
+	/**
+	 * 部分买入成功
+	 * 
+	 * @param id
+	 *            订单ID
+	 * @return 订单
+	 */
+	@Transactional
+	public FuturesOrder partPositionOrder(Long id) {
+		FuturesOrder order = futuresOrderDao.retrieve(id);
+		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust
+				|| order.getState() == FuturesOrderState.PartPosition)) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		// 修改订单状态
+		order.setState(FuturesOrderState.PartPosition);
+		order.setUpdateTime(new Date());
+		return futuresOrderDao.update(order);
+	}
+
+	/**
+	 * 部分已平仓
+	 * 
+	 * @param id
+	 *            订单ID
+	 * @return 订单
+	 */
+	@Transactional
+	public FuturesOrder partUnwindOrder(Long id) {
+		FuturesOrder order = futuresOrderDao.retrieve(id);
+		if (!(order.getState() == FuturesOrderState.Position || order.getState() == FuturesOrderState.SellingEntrust
+				|| order.getState() == FuturesOrderState.PartUnwind)) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		// 修改订单状态
+		order.setState(FuturesOrderState.PartUnwind);
+		order.setUpdateTime(new Date());
+		return futuresOrderDao.update(order);
+	}
+
+	/**
+	 * 持仓中
+	 * 
+	 * @param id
+	 *            订单ID
+	 * @param buyingPrice
+	 *            买入价格
+	 * @return 订单
+	 */
+	@Transactional
+	public FuturesOrder positionOrder(Long id, BigDecimal buyingPrice) {
+		FuturesOrder order = futuresOrderDao.retrieve(id);
+		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust
+				|| order.getState() == FuturesOrderState.PartPosition)) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		// TODO 计算止盈、止损点位
+		// 修改订单状态
+		Date date = new Date();
+		order.setBuyingPrice(buyingPrice);
+		order.setBuyingTime(date);
+		order.setState(FuturesOrderState.Position);
+		order.setUpdateTime(date);
+		futuresOrderDao.update(order);
+		// TODO 站外消息推送
+		return order;
+	}
+
+	/**
+	 * 已平仓
+	 * 
+	 * @param id
+	 *            订单ID
+	 * @param sellingPrice
+	 *            卖出价格
+	 * @return 订单
+	 */
+	public FuturesOrder unwindOrder(Long id, BigDecimal sellingPrice) {
+		FuturesOrder order = futuresOrderDao.retrieve(id);
+		if (!(order.getState() == FuturesOrderState.Position || order.getState() == FuturesOrderState.SellingEntrust
+				|| order.getState() == FuturesOrderState.PartUnwind)) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		// TODO 给用户结算
+		// 修改订单状态
+		Date date = new Date();
+		order.setSellingPrice(sellingPrice);
+		order.setSellingTime(date);
+		order.setState(FuturesOrderState.Unwind);
+		order.setUpdateTime(date);
+		futuresOrderDao.update(order);
+		// TODO 站外消息推送
+		return order;
+	}
+
 }

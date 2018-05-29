@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.futuresgateway.entity.FuturesOrder;
@@ -58,9 +59,11 @@ public class FuturesOrderController {
 
 	@PostMapping("/")
 	@ApiOperation(value = "期货下单")
-	public Response<FuturesOrder> addition(String symbol, Integer outerOrderId, String action, BigDecimal totalQuantity,
-			Integer userOrderType, BigDecimal entrustPrice) {
-		return new Response<>(futuresOrderService.addFuturesOrder(symbol, outerOrderId, action, totalQuantity,
+	public Response<FuturesOrder> addition(@RequestParam(required = true) String domain,
+			@RequestParam(required = true) String symbol, @RequestParam(required = true) Integer outerOrderId,
+			@RequestParam(required = true) String action, @RequestParam(required = true) BigDecimal totalQuantity,
+			@RequestParam(required = true) Integer userOrderType, BigDecimal entrustPrice) {
+		return new Response<>(futuresOrderService.addFuturesOrder(domain, symbol, outerOrderId, action, totalQuantity,
 				userOrderType, entrustPrice));
 	}
 
