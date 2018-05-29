@@ -41,7 +41,7 @@ public class LossDto implements Comparable<LossDto> {
 	}
 	@Override
 	public int compareTo(LossDto o) {
-		return o.getPoint().compareTo(point);
+		return o.getMultiple().compareTo(multiple);
 	}
 
 	public Integer getMultiple() {

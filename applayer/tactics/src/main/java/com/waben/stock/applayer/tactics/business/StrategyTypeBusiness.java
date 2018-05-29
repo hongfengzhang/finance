@@ -1,7 +1,5 @@
 package com.waben.stock.applayer.tactics.business;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,15 +29,7 @@ public class StrategyTypeBusiness {
 	public List<StrategyTypeDto> lists() {
 		Response<List<StrategyTypeDto>> response = service.lists(true);
 		if ("200".equals(response.getCode())) {
-			List<StrategyTypeDto> result = new ArrayList<>();
-			if (response.getResult() != null && response.getResult().size() > 0) {
-				for (StrategyTypeDto type : response.getResult()) {
-					if (type.getServiceFeePerWan().compareTo(new BigDecimal(0)) > 0) {
-						result.add(type);
-					}
-				}
-			}
-			return result;
+			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}

@@ -31,15 +31,7 @@ public class StrategyTypeBusiness {
 	public List<StrategyTypeDto> lists() {
 		Response<List<StrategyTypeDto>> response = strategyTypeReference.lists(true);
 		if ("200".equals(response.getCode())) {
-			List<StrategyTypeDto> result = new ArrayList<>();
-			if (response.getResult() != null && response.getResult().size() > 0) {
-				for (StrategyTypeDto type : response.getResult()) {
-					if (type.getServiceFeePerWan().compareTo(new BigDecimal(0)) > 0) {
-						result.add(type);
-					}
-				}
-			}
-			return result;
+			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
