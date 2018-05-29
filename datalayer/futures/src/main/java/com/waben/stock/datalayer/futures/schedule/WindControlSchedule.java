@@ -21,6 +21,7 @@ import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHtt
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
+import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.enums.FuturesWindControlType;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.util.StringUtil;
@@ -68,22 +69,26 @@ public class WindControlSchedule {
 						Integer timeZoneGap = retriveTimeZoneGap(order);
 						// step 3 : 是否合约到期
 						if (isTradeTime(timeZoneGap, term) && isReachContractExpiration(timeZoneGap, term)) {
-							unwind(order, FuturesWindControlType.ReachContractExpiration);
+							orderService.sellingEntrust(order, FuturesWindControlType.ReachContractExpiration,
+									FuturesTradePriceType.MKT, null);
 							continue;
 						}
 						// step 4 : 获取合约行情
 						FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getContractSymbol());
 						// step 5 : 是否达到止盈点
 						if (isTradeTime(timeZoneGap, term) && isReachProfitPoint(order, market)) {
-							unwind(order, FuturesWindControlType.ReachProfitPoint);
+							orderService.sellingEntrust(order, FuturesWindControlType.ReachProfitPoint,
+									FuturesTradePriceType.MKT, null);
 							continue;
 						}
-						// step 6 : 是否达到止盈点
+						// step 6 : 是否达到止损点
 						if (isTradeTime(timeZoneGap, term) && isReachLossPoint(order, market)) {
-							unwind(order, FuturesWindControlType.ReachLossPoint);
+							orderService.sellingEntrust(order, FuturesWindControlType.ReachLossPoint,
+									FuturesTradePriceType.MKT, null);
 							continue;
 						}
-						// step 7 :
+						// step 7 : 是否触发隔夜时间
+
 					}
 				}
 			} finally {
@@ -196,11 +201,14 @@ public class WindControlSchedule {
 		BigDecimal lastPrice = market.getLastPrice();
 		FuturesOrderType orderType = order.getOrderType();
 		if (orderType == FuturesOrderType.BuyUp) {
-			if (lastPrice != null && lastPrice.compareTo(order.getBuyingPrice()) >= 0) {
-
+			if (lastPrice != null && lastPrice.compareTo(order.getLimitProfitPrice()) >= 0) {
+				return true;
+			}
+		} else {
+			if (lastPrice != null && lastPrice.compareTo(order.getLimitLossPrice()) <= 0) {
+				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -214,6 +222,30 @@ public class WindControlSchedule {
 	 * @return 是否达到止损点
 	 */
 	private boolean isReachLossPoint(FuturesOrder order, FuturesContractMarket market) {
+		BigDecimal lastPrice = market.getLastPrice();
+		FuturesOrderType orderType = order.getOrderType();
+		if (orderType == FuturesOrderType.BuyUp) {
+			if (lastPrice != null && lastPrice.compareTo(order.getLimitLossPrice()) <= 0) {
+				return true;
+			}
+		} else {
+			if (lastPrice != null && lastPrice.compareTo(order.getLimitLossPrice()) >= 0) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * 判断是否触发隔夜
+	 * 
+	 * @param timeZoneGap 
+	 * @param order
+	 * @return
+	 */
+	private boolean isTriggerOvernight(Integer timeZoneGap, FuturesOrder order) {
+		String overnightTime = order.getContract().getOvernightTime();
+		Date exchangeTime = retriveExchangeTime(timeZoneGap);
 		return false;
 	}
 
@@ -230,15 +262,6 @@ public class WindControlSchedule {
 		query.setIsTest(false);
 		Page<FuturesOrder> pages = orderService.pagesOrder(query);
 		return pages.getContent();
-	}
-
-	/**
-	 * 平仓
-	 * 
-	 * @param order
-	 */
-	private void unwind(FuturesOrder order, FuturesWindControlType windControlType) {
-
 	}
 
 }
