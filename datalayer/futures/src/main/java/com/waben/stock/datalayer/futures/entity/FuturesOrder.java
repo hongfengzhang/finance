@@ -120,13 +120,13 @@ public class FuturesOrder {
 	 */
 	private Integer limitProfitType;
 	/**
-	 * 一手止盈金额（用户设置）
+	 * 止盈金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitProfitAmount;
 	/**
-	 * 一手止盈价格点位
+	 * 止盈价格点位
 	 */
-	private BigDecimal perUnitLimitProfitPositon;
+	private BigDecimal limitProfitPrice;
 	/**
 	 * 触发止损类型（用户设置）
 	 * <ul>
@@ -136,14 +136,13 @@ public class FuturesOrder {
 	 */
 	private Integer limitLossType;
 	/**
-	 * 一手止损金额（用户设置）
+	 * 止损金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitLossAmount;
-
 	/**
-	 * 一手止损价格点位
+	 * 止损价格点位
 	 */
-	private BigDecimal perUnitLimitLossPosition;
+	private BigDecimal limitLossPrice;
 	/**
 	 * 订单状态
 	 */
@@ -297,28 +296,12 @@ public class FuturesOrder {
 		this.perUnitLimitProfitAmount = perUnitLimitProfitAmount;
 	}
 
-	public BigDecimal getPerUnitLimitProfitPositon() {
-		return perUnitLimitProfitPositon;
-	}
-
-	public void setPerUnitLimitProfitPositon(BigDecimal perUnitLimitProfitPositon) {
-		this.perUnitLimitProfitPositon = perUnitLimitProfitPositon;
-	}
-
 	public BigDecimal getPerUnitLimitLossAmount() {
 		return perUnitLimitLossAmount;
 	}
 
 	public void setPerUnitLimitLossAmount(BigDecimal perUnitLimitLossAmount) {
 		this.perUnitLimitLossAmount = perUnitLimitLossAmount;
-	}
-
-	public BigDecimal getPerUnitLimitLossPosition() {
-		return perUnitLimitLossPosition;
-	}
-
-	public void setPerUnitLimitLossPosition(BigDecimal perUnitLimitLossPosition) {
-		this.perUnitLimitLossPosition = perUnitLimitLossPosition;
 	}
 
 	public FuturesOrderState getState() {
@@ -567,6 +550,22 @@ public class FuturesOrder {
 
 	public void setContractTerm(FuturesContractTerm contractTerm) {
 		this.contractTerm = contractTerm;
+	}
+
+	public BigDecimal getLimitProfitPrice() {
+		return limitProfitPrice;
+	}
+
+	public void setLimitProfitPrice(BigDecimal limitProfitPrice) {
+		this.limitProfitPrice = limitProfitPrice;
+	}
+
+	public BigDecimal getLimitLossPrice() {
+		return limitLossPrice;
+	}
+
+	public void setLimitLossPrice(BigDecimal limitLossPrice) {
+		this.limitLossPrice = limitLossPrice;
 	}
 
 }

@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.schedule;
 
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -12,16 +14,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
-import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
+import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesWindControlType;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
+import com.waben.stock.interfaces.util.StringUtil;
 
 /**
  * 风控作业
@@ -43,8 +45,9 @@ public class WindControlSchedule {
 	@Autowired
 	private FuturesOrderService orderService;
 
-	@Autowired
-	private FuturesContractTermService contractTermService;
+	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
+
+	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@PostConstruct
 	public void initTask() {
@@ -126,20 +129,37 @@ public class WindControlSchedule {
 		if (term != null) {
 			Date exchangeTime = retriveExchangeTime(timeZoneGap);
 			Calendar cal = Calendar.getInstance();
+			cal.setTime(exchangeTime);
 			int week = cal.get(Calendar.DAY_OF_WEEK);
 			String tradeTime = null;
 			if (week == 1) {
-				tradeTime = term.getMonTradeTime();
+				tradeTime = term.getSunTradeTime();
 			} else if (week == 2) {
-				// tradeTime = term
+				tradeTime = term.getMonTradeTime();
 			} else if (week == 3) {
-				tradeTime = term.getMonTradeTime();
+				tradeTime = term.getTueTradeTime();
 			} else if (week == 4) {
-				tradeTime = term.getMonTradeTime();
+				tradeTime = term.getWedTradeTime();
 			} else if (week == 5) {
-				tradeTime = term.getMonTradeTime();
+				tradeTime = term.getThuTradeTime();
 			} else if (week == 6) {
-				tradeTime = term.getMonTradeTime();
+				tradeTime = term.getFriTradeTime();
+			} else if (week == 7) {
+				tradeTime = term.getSatTradeTime();
+			}
+			if (!StringUtil.isEmpty(tradeTime)) {
+				String[] tradeTimeArr = tradeTime.split(",");
+				boolean isTradeTime = false;
+				for (String tradeTimeDuration : tradeTimeArr) {
+					String[] tradeTimePointArr = tradeTimeDuration.trim().split("-");
+					String dayStr = daySdf.format(exchangeTime);
+					String fullStr = fullSdf.format(exchangeTime);
+					if (fullStr.compareTo(dayStr + " " + tradeTimePointArr[0].trim()) >= 0
+							&& fullStr.compareTo(dayStr + " " + tradeTimePointArr[1].trim()) < 0) {
+						isTradeTime = true;
+					}
+				}
+				return isTradeTime;
 			}
 		}
 		return true;
@@ -155,8 +175,8 @@ public class WindControlSchedule {
 	private boolean isReachContractExpiration(Integer timeZoneGap, FuturesContractTerm term) {
 		if (term != null) {
 			Date exchangeTime = retriveExchangeTime(timeZoneGap);
-			Date lastTradingDate = term.getLastTradingDate();
-			if (exchangeTime.getTime() >= lastTradingDate.getTime()) {
+			Date forceUnwindDate = term.getForceUnwindDate();
+			if (forceUnwindDate != null && exchangeTime.getTime() >= forceUnwindDate.getTime()) {
 				return true;
 			}
 		}
@@ -173,6 +193,14 @@ public class WindControlSchedule {
 	 * @return 否达到止盈点
 	 */
 	private boolean isReachProfitPoint(FuturesOrder order, FuturesContractMarket market) {
+		BigDecimal lastPrice = market.getLastPrice();
+		FuturesOrderType orderType = order.getOrderType();
+		if (orderType == FuturesOrderType.BuyUp) {
+			if (lastPrice != null && lastPrice.compareTo(order.getBuyingPrice()) >= 0) {
+
+			}
+		}
+
 		return false;
 	}
 
