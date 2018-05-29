@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.futures.repository;
 
+import java.util.List;
+
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 
 /**
@@ -9,5 +12,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
  *
  */
 public interface FuturesContractTermDao extends BaseDao<FuturesContractTerm, Long> {
+
+	List<FuturesContractTerm> retrieveByContractAndCurrent(FuturesContract contract, boolean current);
 
 }

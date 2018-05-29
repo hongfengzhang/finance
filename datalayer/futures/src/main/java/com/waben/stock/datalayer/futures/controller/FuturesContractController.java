@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
-import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
-import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
@@ -32,7 +31,7 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/contract")
-@Api(description = "期货合约接口列表")
+@Api(description = "期货品种接口列表")
 public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
@@ -203,6 +202,12 @@ public class FuturesContractController implements FuturesContractInterface {
 	@Override
 	public void deleteContract(@PathVariable Long id) {
 		futuresContractService.deleteExchange(id);
+	}
+
+	@Override
+	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
-import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 
 
@@ -30,6 +29,9 @@ public interface FuturesContractInterface {
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = "application/json")
 	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery)
 			throws Throwable;
+	
+	@RequestMapping(value = "/pagesContractAdmin", method = RequestMethod.POST, consumes = "application/json")
+	Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query);
 	
 	/**
 	 * 添加期货合约数据

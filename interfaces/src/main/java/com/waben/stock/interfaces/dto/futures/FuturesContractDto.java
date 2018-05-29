@@ -23,6 +23,14 @@ public class FuturesContractDto {
 	 */
 	private String currency;
 	/**
+	 * 货币名称
+	 */
+	private String currencyName;
+	/**
+	 * 汇率
+	 */
+	private BigDecimal rate;
+	/**
 	 * 乘数（1手等于多少股）
 	 */
 	private Integer multiplier;
@@ -160,11 +168,28 @@ public class FuturesContractDto {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
+	
+	public String getCurrencyName() {
+		return currencyName;
+	}
+
+	public void setCurrencyName(String currencyName) {
+		this.currencyName = currencyName;
+	}
+
+	public BigDecimal getRate() {
+		return rate;
+	}
+	
+	public void setRate(BigDecimal rate) {
+		this.rate = rate;
+	}
 
 	public Integer getMultiplier() {
 		return multiplier;
 	}
 
+	
 	public void setMultiplier(Integer multiplier) {
 		this.multiplier = multiplier;
 	}

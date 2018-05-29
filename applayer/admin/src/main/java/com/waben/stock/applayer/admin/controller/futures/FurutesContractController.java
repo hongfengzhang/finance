@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.admin.business.futures.FuturesContractBusiness;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
+import com.waben.stock.interfaces.dto.futures.FuturesContractTermDto;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.pojo.Response;
@@ -53,44 +55,47 @@ public class FurutesContractController {
         return new Response<>(result);
     }
 	
-	@RequestMapping(value = "/modify", method = RequestMethod.POST)
+	@GetMapping("/pagesExchange")
+    @ApiOperation(value = "新增期货市场")
+	public Response<PageInfo<FuturesExchangeDto>> pagesExchange(FuturesExchangeAdminQuery query){
+		PageInfo<FuturesExchangeDto> response = business.pagesExchange(query);
+		return new Response<>(response);
+	}
+	
+	@PutMapping("/modify")
     @ApiOperation(value = "修改期货市场")
     public Response<FuturesExchangeDto> modify(FuturesExchangeDto exchangeDto){
 		FuturesExchangeDto result = business.modify(exchangeDto);
         return new Response<>(result);
     }
 	
-	@PutMapping(value = "/delete/{id}")
+	@DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除期货市场")
     public Response<Integer> delete(@PathVariable("id") Long id){
         business.delete(id);
         return new Response<>(1);
     }
 	
-	@GetMapping("/pages")
-	@ApiOperation(value = "查询期货市场")
-	public Response<PageInfo<FuturesExchangeDto>> pagesExchange(FuturesExchangeAdminQuery query){
-		return new Response<>(business.pagesContract(query));
-	}
-	
 	@RequestMapping(value = "/futuresContract/save", method = RequestMethod.POST)
-	@ApiOperation(value = "添加期货合约")
-	public Response<FuturesContractAdminDto> save(FuturesContractAdminDto query){
+	@ApiOperation(value = "添加期货品种")
+	public Response<FuturesContractAdminDto> savec(FuturesContractAdminDto query){
 		FuturesContractAdminDto result = business.save(query);
 		return new Response<>(result);
 	}
 	
-	@RequestMapping(value = "/futuresContract/modify", method = RequestMethod.POST)
-	@ApiOperation(value = "修改期货合约")
-	public Response<FuturesContractAdminDto> modify(FuturesContractAdminDto query){
+	@PutMapping("/futuresContract/modify")
+	@ApiOperation(value = "修改期货品种")
+	public Response<FuturesContractAdminDto> modifyc(FuturesContractAdminDto query){
 		FuturesContractAdminDto result = business.modify(query);
 		return new Response<>(result);
 	}
 	
-	@PutMapping(value = "/futuresContract/delete/{id}")
-    @ApiOperation(value = "删除期货合约")
+	@DeleteMapping("/futuresContract/delete/{id}")
+    @ApiOperation(value = "删除期货品种")
     public Response<Integer> deleteContract(@PathVariable("id") Long id){
-        business.deleteContract(id);;
+        business.deleteContract(id);
         return new Response<>(1);
     }
+	
+	
 }

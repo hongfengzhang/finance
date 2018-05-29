@@ -44,7 +44,7 @@ public class FuturesExchange {
 	 */
 	private Boolean enable;
 	/**
-	 * 北京时间的时差和交易所
+	 * 北京时间和交易所的时差
 	 */
 	private Integer timeZoneGap;
 

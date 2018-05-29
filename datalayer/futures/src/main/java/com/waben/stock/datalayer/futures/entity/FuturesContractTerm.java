@@ -34,6 +34,10 @@ public class FuturesContractTerm {
 	 */
 	private boolean current;
 	/**
+	 * 合约期限编号
+	 */
+	private Integer contractNo;
+	/**
 	 * The first day on which a notice of intent to deliver a commodity can be
 	 * made by a clearinghouse to a buyer in order to fulfill a given futures
 	 * contract
@@ -52,6 +56,10 @@ public class FuturesContractTerm {
 	 * 到期日期
 	 */
 	private Date expirationDate;
+	/**
+	 * 强平时间
+	 */
+	private Date forceUnwindDate;
 	/**
 	 * 周一交易时间(交易所)
 	 * <p>
@@ -278,6 +286,22 @@ public class FuturesContractTerm {
 
 	public void setSunTradeTimeDesc(String sunTradeTimeDesc) {
 		this.sunTradeTimeDesc = sunTradeTimeDesc;
+	}
+
+	public Integer getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(Integer contractNo) {
+		this.contractNo = contractNo;
+	}
+
+	public Date getForceUnwindDate() {
+		return forceUnwindDate;
+	}
+
+	public void setForceUnwindDate(Date forceUnwindDate) {
+		this.forceUnwindDate = forceUnwindDate;
 	}
 
 }

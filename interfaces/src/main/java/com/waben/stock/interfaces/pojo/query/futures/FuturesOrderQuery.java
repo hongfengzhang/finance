@@ -13,6 +13,9 @@ public class FuturesOrderQuery extends PageAndSortQuery {
 	@ApiModelProperty(value = "期货订单状态")
 	private FuturesOrderState state;
 
+	@ApiModelProperty(value = "是否测试订单")
+	private Boolean isTest;
+
 	public FuturesOrderQuery() {
 		super();
 	}
@@ -37,6 +40,14 @@ public class FuturesOrderQuery extends PageAndSortQuery {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

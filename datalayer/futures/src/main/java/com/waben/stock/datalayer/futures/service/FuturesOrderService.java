@@ -85,14 +85,25 @@ public class FuturesOrderService {
 	public Page<FuturesOrder> pagesOrder(final FuturesOrderQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<FuturesOrder> pages = futuresOrderDao.page(new Specification<FuturesOrder>() {
-
 			@Override
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				// Join<FuturesExchange, FuturesContract> parentJoin =
-				// root.join("exchange", JoinType.LEFT);
-
+				// 订单状态
+				if (query.getState() != null) {
+					predicateList.add(criteriaBuilder.equal(root.get("state").as(Integer.class), query.getState()));
+				}
+				// 是否测试单
+				if (query.getIsTest() != null) {
+					Predicate isTestPredicate = criteriaBuilder.equal(root.get("isTest").as(Boolean.class),
+							query.getIsTest());
+					Predicate isTestNullPredicate = criteriaBuilder.isNull(root.get("isTest").as(Boolean.class));
+					if (query.getIsTest()) {
+						predicateList.add(isTestPredicate);
+					} else {
+						predicateList.add(criteriaBuilder.or(isTestPredicate, isTestNullPredicate));
+					}
+				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}

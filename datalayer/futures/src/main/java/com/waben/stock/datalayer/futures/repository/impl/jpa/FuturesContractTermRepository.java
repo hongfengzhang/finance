@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.futures.repository.impl.jpa;
 
+import java.util.List;
+
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 
 /**
@@ -9,5 +12,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
  *
  */
 public interface FuturesContractTermRepository extends CustomJpaRepository<FuturesContractTerm, Long> {
+
+	List<FuturesContractTerm> findByContractAndCurrent(FuturesContract contract, boolean current);
 
 }

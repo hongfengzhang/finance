@@ -22,10 +22,6 @@ public class FuturesContract {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 第三方合约ID
-	 */
-	private String conid;
-	/**
 	 * 合约名称
 	 */
 	private String symbol;
@@ -212,14 +208,6 @@ public class FuturesContract {
 
 	public void setClosePrice(BigDecimal closePrice) {
 		this.closePrice = closePrice;
-	}
-
-	public String getConid() {
-		return conid;
-	}
-
-	public void setConid(String conid) {
-		this.conid = conid;
 	}
 
 	public Long getExchangeId() {

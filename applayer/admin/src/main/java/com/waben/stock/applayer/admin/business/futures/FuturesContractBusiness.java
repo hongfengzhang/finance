@@ -33,7 +33,7 @@ public class FuturesContractBusiness {
 	@Qualifier("futuresExchangeInterface")
 	private FuturesExchangeInterface exchangeReference;
 
-	public PageInfo<FuturesExchangeDto> pagesContract(FuturesExchangeAdminQuery query){
+	public PageInfo<FuturesExchangeDto> pagesExchange(FuturesExchangeAdminQuery query){
 		Response<PageInfo<FuturesExchangeDto>> response = exchangeReference.pagesExchange(query);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();

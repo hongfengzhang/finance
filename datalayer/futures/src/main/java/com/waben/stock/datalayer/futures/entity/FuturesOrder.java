@@ -70,6 +70,12 @@ public class FuturesOrder {
 	@JoinColumn(name = "contract_id")
 	private FuturesContract contract;
 	/**
+	 * 对应的合约期限
+	 */
+	@ManyToOne
+	@JoinColumn(name = "contract_term_id")
+	private FuturesContractTerm contractTerm;
+	/**
 	 * 合约代码（取期货合约设置快照）
 	 */
 	private String contractSymbol;
@@ -223,6 +229,10 @@ public class FuturesOrder {
 	 * 更新时间
 	 */
 	private Date updateTime;
+	/**
+	 * 是否为测试单
+	 */
+	private Boolean isTest;
 
 	public Long getId() {
 		return id;
@@ -566,6 +576,22 @@ public class FuturesOrder {
 
 	public void setTradeNo(String tradeNo) {
 		this.tradeNo = tradeNo;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
+	}
+
+	public FuturesContractTerm getContractTerm() {
+		return contractTerm;
+	}
+
+	public void setContractTerm(FuturesContractTerm contractTerm) {
+		this.contractTerm = contractTerm;
 	}
 
 }
