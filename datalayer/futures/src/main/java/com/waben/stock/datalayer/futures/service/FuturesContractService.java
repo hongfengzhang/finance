@@ -23,11 +23,13 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
+import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.enums.OrganizationState;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 
 /**
@@ -45,6 +47,7 @@ public class FuturesContractService {
 	@Autowired
 	private FuturesContractDao futuresContractDao;
 	
+	
 
 	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -58,6 +61,35 @@ public class FuturesContractService {
 				// root.join("exchange", JoinType.LEFT);
 				if (query.getContractId() != null && query.getContractId() != 0) {
 					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getContractId()));
+				}
+
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+	}
+	
+	public Page<FuturesContract> pagesContractAdmin(final FuturesContractAdminQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<FuturesContract> pages = futuresContractDao.page(new Specification<FuturesContract>() {
+
+			@Override
+			public Predicate toPredicate(Root<FuturesContract> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<Predicate>();
+				// Join<FuturesExchange, FuturesContract> parentJoin =
+				// root.join("exchange", JoinType.LEFT);
+				
+				if(query.getCode() != null && !"".equals(query.getCode())){
+					predicateList.add(criteriaBuilder.equal(root.get("code").as(String.class), query.getCode()));
+				}
+				
+				if(query.getName()!=null&&!"".equals(query.getName())){
+					predicateList.add(criteriaBuilder.equal(root.get("name").as(String.class), query.getName()));
 				}
 
 				if (predicateList.size() > 0) {
@@ -124,6 +156,39 @@ public class FuturesContractService {
 	
 	public void deleteExchange(Long id){
 		futuresContractDao.delete(id);
+	}
+	
+	public Page<FuturesContract> pagesContractAdmin(final FuturesContract query,int page,int limit) {
+		Pageable pageable = new PageRequest(page, limit);
+		Page<FuturesContract> pages = futuresContractDao.page(new Specification<FuturesContract>() {
+
+			@Override
+			public Predicate toPredicate(Root<FuturesContract> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<Predicate>();
+				// Join<FuturesExchange, FuturesContract> parentJoin =
+				// root.join("exchange", JoinType.LEFT);
+				if(query.getSymbol()!=null && !"".equals(query.getSymbol())){
+					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
+				}
+				if(query.getName()!=null && !"".equals(query.getName())){
+					predicateList.add(criteriaBuilder.equal(root.get("name").as(String.class), query.getName()));
+				}
+				if(query.getOvernightTime()!=null && !"".equals(query.getOvernightTime())){
+					predicateList.add(criteriaBuilder.equal(root.get("overnightTime").as(String.class), query.getOvernightTime()));
+				}
+				if(query.getExchange()!=null && query.getExchange().hashCode()>0){
+						predicateList.add(criteriaBuilder.equal(root.get("exchange").as(FuturesExchange.class), query.getExchange()));					
+				}
+				
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
 	}
 
 }

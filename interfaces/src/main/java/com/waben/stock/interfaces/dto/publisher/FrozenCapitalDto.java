@@ -33,6 +33,11 @@ public class FrozenCapitalDto {
 	 * 点买记录ID
 	 */
 	private Long buyRecordId;
+
+	/**
+	 * 期货订单ID
+	 */
+	private Long futuresOrderId;
 	/**
 	 * 提现单号
 	 */
@@ -112,6 +117,14 @@ public class FrozenCapitalDto {
 
 	public void setWithdrawalsNo(String withdrawalsNo) {
 		this.withdrawalsNo = withdrawalsNo;
+	}
+
+	public Long getFuturesOrderId() {
+		return futuresOrderId;
+	}
+
+	public void setFuturesOrderId(Long futuresOrderId) {
+		this.futuresOrderId = futuresOrderId;
 	}
 
 }

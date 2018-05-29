@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -39,6 +40,13 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
+	
+	/**
+	 * 汇率
+	 */
+	@OneToOne
+	@JoinColumn(name = "rate_id")
+	private FuturesCurrencyRate currencyRate;
 	/**
 	 * 乘数（1手等于多少股）
 	 */
@@ -74,7 +82,7 @@ public class FuturesContract {
 	 * 需将所有未平仓的订单量相加，买涨的为正数，买跌的为负数，相加结果取绝对值再和这个总额度比较
 	 * </p>
 	 */
-	private BigDecimal totalLimit;
+	private BigDecimal userTotalLimit;
 	/**
 	 * 单笔订单额度限制（手）
 	 */
@@ -150,6 +158,14 @@ public class FuturesContract {
 		this.currency = currency;
 	}
 
+	public FuturesCurrencyRate getCurrencyRate() {
+		return currencyRate;
+	}
+
+	public void setCurrencyRate(FuturesCurrencyRate currencyRate) {
+		this.currencyRate = currencyRate;
+	}
+
 	public FuturesExchange getExchange() {
 		return exchange;
 	}
@@ -206,12 +222,12 @@ public class FuturesContract {
 		this.perUnitUnwindPoint = perUnitUnwindPoint;
 	}
 
-	public BigDecimal getTotalLimit() {
-		return totalLimit;
+	public BigDecimal getUserTotalLimit() {
+		return userTotalLimit;
 	}
 
-	public void setTotalLimit(BigDecimal totalLimit) {
-		this.totalLimit = totalLimit;
+	public void setUserTotalLimit(BigDecimal userTotalLimit) {
+		this.userTotalLimit = userTotalLimit;
 	}
 
 	public BigDecimal getPerOrderLimit() {

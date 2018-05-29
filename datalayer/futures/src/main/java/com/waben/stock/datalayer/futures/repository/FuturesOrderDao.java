@@ -15,4 +15,15 @@ public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 	FuturesOrder editOrder(Long id, FuturesOrderState state);
 
 	Integer countOrderByType(Long contractId, FuturesOrderType orderType);
+
+	/**
+	 * 根据合约ID和用户ID获取用户购买该合约总数
+	 * 
+	 * @param contractId
+	 *            合约ID
+	 * @param publisherId
+	 *            用户ID
+	 * @return 合约总数
+	 */
+	Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId);
 }

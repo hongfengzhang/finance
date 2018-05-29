@@ -1,37 +1,60 @@
-package com.waben.stock.interfaces.dto.futures;
+package com.waben.stock.interfaces.dto.admin.futures;
 
 import java.util.Date;
 
-public class FuturesContractTermDto {
+import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
+
+public class FuturesTermAdminDto {
 
 	private Long id;
+	
 	/**
-	 * 对应的期货合约
+	 * 交易所代码
 	 */
-//	private FuturesContractDto contract;
+	private String exchangcode;
+	
+	/**
+	 * 交易所全称
+	 */
+	private String exchangename;
+	
+	/**
+	 * 产品代码
+	 */
+	private String code;
+	
+	/**
+	 * 产品名称
+	 */
+	private String name;
+	
 	/**
 	 * 是否为当前实施的期限
 	 */
 	private boolean current;
+	
 	/**
 	 * The first day on which a notice of intent to deliver a commodity can be
 	 * made by a clearinghouse to a buyer in order to fulfill a given futures
 	 * contract
 	 */
-	private Date firstNoticeDate;
+	private String firstNoticeDate;
+	
 	/**
 	 * The first day when an invesor who is short a commodify futures contract
 	 * may notify the clearinghouse of the intention to deliver the commodity
 	 */
-	private Date firstPositonDate;
+	private String firstPositonDate;
+	
 	/**
 	 * 最后交易日
 	 */
-	private Date lastTradingDate;
+	private String lastTradingDate;
+	
 	/**
 	 * 到期日期
 	 */
-	private Date expirationDate;
+	private String expirationDate;
 	/**
 	 * 周一交易时间(交易所)
 	 * <p>
@@ -97,40 +120,46 @@ public class FuturesContractTermDto {
 	public void setId(Long id) {
 		this.id = id;
 	}
-//	public FuturesContractDto getContract() {
-//		return contract;
-//	}
-//	public void setContract(FuturesContractDto contract) {
-//		this.contract = contract;
-//	}
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public boolean isCurrent() {
 		return current;
 	}
 	public void setCurrent(boolean current) {
 		this.current = current;
 	}
-	public Date getFirstNoticeDate() {
+	public String getFirstNoticeDate() {
 		return firstNoticeDate;
 	}
-	public void setFirstNoticeDate(Date firstNoticeDate) {
+	public void setFirstNoticeDate(String firstNoticeDate) {
 		this.firstNoticeDate = firstNoticeDate;
 	}
-	public Date getFirstPositonDate() {
+	public String getFirstPositonDate() {
 		return firstPositonDate;
 	}
-	public void setFirstPositonDate(Date firstPositonDate) {
+	public void setFirstPositonDate(String firstPositonDate) {
 		this.firstPositonDate = firstPositonDate;
 	}
-	public Date getLastTradingDate() {
+	public String getLastTradingDate() {
 		return lastTradingDate;
 	}
-	public void setLastTradingDate(Date lastTradingDate) {
+	public void setLastTradingDate(String lastTradingDate) {
 		this.lastTradingDate = lastTradingDate;
 	}
-	public Date getExpirationDate() {
+	public String getExpirationDate() {
 		return expirationDate;
 	}
-	public void setExpirationDate(Date expirationDate) {
+	public void setExpirationDate(String expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 	public String getMonTradeTime() {
@@ -217,4 +246,17 @@ public class FuturesContractTermDto {
 	public void setSunTradeTimeDesc(String sunTradeTimeDesc) {
 		this.sunTradeTimeDesc = sunTradeTimeDesc;
 	}
+	public String getExchangcode() {
+		return exchangcode;
+	}
+	public void setExchangcode(String exchangcode) {
+		this.exchangcode = exchangcode;
+	}
+	public String getExchangename() {
+		return exchangename;
+	}
+	public void setExchangename(String exchangename) {
+		this.exchangename = exchangename;
+	}
+
 }

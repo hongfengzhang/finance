@@ -14,14 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
-import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
-import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
@@ -32,18 +31,17 @@ import io.swagger.annotations.Api;
 
 @RestController
 @RequestMapping("/contract")
-@Api(description = "期货合约接口列表")
+@Api(description = "期货品种接口列表")
 public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesContractService futuresContractService;
-	
+
 	@Autowired
 	private FuturesExchangeService exchangeService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-	
-	
+
 	@Override
 	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery)
 			throws Throwable {
@@ -86,33 +84,34 @@ public class FuturesContractController implements FuturesContractInterface {
 			// 交易所合约交易时间
 			String str = "";
 			if (dayForweek == 1) {
-				futuresContractDto.setDescribe(term.getMonTradeTimeDesc());
-				str = term.getMonTradeTime();
-			}
-			if (dayForweek == 2) {
-				futuresContractDto.setDescribe(term.getTueTradeTimeDesc());
-				str = term.getTueTradeTime();
-			}
-			if (dayForweek == 3) {
-				futuresContractDto.setDescribe(term.getWedTradeTimeDesc());
-				str = term.getWedTradeTime();
-			}
-			if (dayForweek == 4) {
-				futuresContractDto.setDescribe(term.getThuTradeTimeDesc());
-				str = term.getThuTradeTime();
-			}
-			if (dayForweek == 5) {
-				futuresContractDto.setDescribe(term.getFriTradeTimeDesc());
-				str = term.getFriTradeTime();
-			}
-			if (dayForweek == 6) {
-				futuresContractDto.setDescribe(term.getSatTradeTimeDesc());
-				str = term.getSatTradeTimeDesc();
-			}
-			if (dayForweek == 7) {
 				futuresContractDto.setDescribe(term.getSunTradeTimeDesc());
 				str = term.getSunTradeTime();
 			}
+			if (dayForweek == 2) {
+				futuresContractDto.setDescribe(term.getMonTradeTimeDesc());
+				str = term.getMonTradeTime();
+			}
+			if (dayForweek == 3) {
+				futuresContractDto.setDescribe(term.getTueTradeTimeDesc());
+				str = term.getTueTradeTime();
+			}
+			if (dayForweek == 4) {
+				futuresContractDto.setDescribe(term.getWedTradeTimeDesc());
+				str = term.getWedTradeTime();
+			}
+			if (dayForweek == 5) {
+				futuresContractDto.setDescribe(term.getThuTradeTimeDesc());
+				str = term.getThuTradeTime();
+			}
+			if (dayForweek == 6) {
+				futuresContractDto.setDescribe(term.getFriTradeTimeDesc());
+				str = term.getFriTradeTime();
+			}
+			if (dayForweek == 7) {
+				futuresContractDto.setDescribe(term.getSatTradeTimeDesc());
+				str = term.getSatTradeTimeDesc();
+			}
+
 			String[] strs = str.split(",");
 			for (int i = 0; i < strs.length; i++) {
 				String st = strs[i].toString();
@@ -170,16 +169,17 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
-		//获取交易所数据
+		// 获取交易所数据
 		FuturesExchangeAdminQuery query = new FuturesExchangeAdminQuery();
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
 		query.setCode(contractDto.getExchangcode());
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
-		
+
 		FuturesContract result = futuresContractService.saveExchange(fcontract);
-		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(), false);
+		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
+				false);
 		return new Response<>(resultDto);
 	}
 
@@ -192,15 +192,22 @@ public class FuturesContractController implements FuturesContractInterface {
 		query.setCode(contractDto.getExchangcode());
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
-		
+
 		FuturesContract result = futuresContractService.modifyExchange(fcontract);
-		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(), false);
+		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
+				false);
 		return new Response<>(resultDto);
 	}
 
 	@Override
 	public void deleteContract(@PathVariable Long id) {
 		futuresContractService.deleteExchange(id);
+	}
+
+	@Override
+	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
