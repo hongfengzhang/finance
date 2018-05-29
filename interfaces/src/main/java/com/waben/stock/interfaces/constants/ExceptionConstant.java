@@ -234,9 +234,21 @@ public class ExceptionConstant {
 	// 上传文件
 	// 上传图片失败
 	public static final String FAILED_TO_UPLOAD_PICTURES = "12001";
-	
+
 	// 期货
 	// 期货订单状态不匹配，不支持该操作
 	public static final String FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "13001";
-	
+	// 单笔交易数量过大
+	public static final String SINGLE_TRANSACTION_QUANTITY_EXCEPTION = "13002";
+	// 该用户持仓量已达上限
+	public static final String UPPER_LIMIT_HOLDING_CAPACITY_EXCEPTION = "13003";
+	// 该合约持仓量不足
+	public static final String CONTRACT_HOLDING_CAPACITY_INSUFFICIENT_EXCEPTION = "13004";
+	// 该合约不存在
+	public static final String CONTRACT_DOESNOT_EXIST_EXCEPTION = "13005";
+	// 该合约异常
+	public static final String CONTRACT_ABNORMALITY_EXCEPTION = "13006";
+	// 该合约不在交易中
+	public static final String CONTRACT_ISNOTIN_TRADE_EXCEPTION = "13007";
+
 }

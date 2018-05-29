@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
@@ -43,6 +44,9 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	@Override
 	public Response<FuturesOrderDto> addOrder(@RequestBody FuturesOrderDto futuresOrderDto) {
 		FuturesOrder order = CopyBeanUtils.copyBeanProperties(FuturesOrder.class, futuresOrderDto, false);
+		FuturesContract contract = CopyBeanUtils.copyBeanProperties(FuturesContract.class,
+				futuresOrderDto.getContract(), false);
+		order.setContract(contract);
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.save(order), false));
 	}
@@ -56,6 +60,12 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	@Override
 	public Response<Integer> countOrderType(Long contractId, FuturesOrderType orderType) {
 		return new Response<>(futuresOrderService.countOrderType(contractId, orderType));
+	}
+
+	@Override
+	public Response<Integer> sumByListOrderContractIdAndPublisherId(@PathVariable Long contractId,
+			@PathVariable Long publisherId) {
+		return new Response<>(futuresOrderService.sumByListOrderContractIdAndPublisherId(contractId, publisherId));
 	}
 
 }

@@ -73,4 +73,9 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 		return repository.countOrderByType(contractId, orderType);
 	}
 
+	@Override
+	public Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId) {
+		return repository.sumByListOrderContractIdAndPublisherId(contractId, publisherId);
+	}
+
 }

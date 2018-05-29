@@ -174,15 +174,16 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> modifyState(@PathVariable Long id,@PathVariable Integer state) {
-		CapitalAccount result = capitalAccountService.revisionState(id,state);
+	public Response<CapitalAccountDto> modifyState(@PathVariable Long id, @PathVariable Integer state) {
+		CapitalAccount result = capitalAccountService.revisionState(id, state);
 		CapitalAccountDto response = CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, result, false);
 		return new Response<>(response);
 	}
 
 	@Override
-	public Response<CapitalAccountDto> modifyAccount(@PathVariable Long staff, @PathVariable Long id, @PathVariable BigDecimal availableBalance) {
-		CapitalAccount result = capitalAccountService.revisionAccount(staff,id,availableBalance);
+	public Response<CapitalAccountDto> modifyAccount(@PathVariable Long staff, @PathVariable Long id,
+			@PathVariable BigDecimal availableBalance) {
+		CapitalAccount result = capitalAccountService.revisionAccount(staff, id, availableBalance);
 		CapitalAccountDto response = CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, result, false);
 		return new Response<>(response);
 	}
@@ -192,6 +193,22 @@ public class CapitalAccountController implements CapitalAccountInterface {
 		Page<CapitalAccountAdminDto> page = capitalAccountService.adminPagesByQuery(query);
 		PageInfo<CapitalAccountAdminDto> result = PageToPageInfo.pageToPageInfo(page, CapitalAccountAdminDto.class);
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<CapitalAccountDto> futuresOrderServiceFeeAndReserveFund(@PathVariable Long publisherId,
+			@PathVariable Long orderId, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund,
+			BigDecimal deferredFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
+				.futuresOrderServiceFeeAndReserveFund(publisherId, orderId, serviceFee, reserveFund, deferredFee),
+				false));
+	}
+
+	@Override
+	public Response<FrozenCapitalDto> futuresOrderFetchFrozenCapital(@PathVariable Long publisherId,
+			@PathVariable Long orderId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FrozenCapitalDto.class,
+				capitalAccountService.findFuturesOrderFrozenCapital(publisherId, orderId), false));
 	}
 
 }

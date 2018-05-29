@@ -17,6 +17,10 @@ public class FuturesOrderDto {
 	 */
 	private Long publisherId;
 	/**
+	 * 订单号
+	 */
+	private String tradeNo;
+	/**
 	 * 发布时间
 	 */
 	private Date postTime;
@@ -76,10 +80,23 @@ public class FuturesOrderDto {
 	 * 一手隔夜保证金（取期货合约设置快照）
 	 */
 	private BigDecimal overnightPerUnitReserveFund;
+
+	/**
+	 * 是否递延
+	 */
+	private Boolean deferred;
 	/**
 	 * 一手隔夜递延费（取期货合约设置快照）
 	 */
 	private BigDecimal overnightPerUnitDeferredFee;
+	/**
+	 * 触发止盈类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitProfitType;
 	/**
 	 * 一手止盈金额
 	 */
@@ -88,6 +105,15 @@ public class FuturesOrderDto {
 	 * 一手止盈价格点位
 	 */
 	private BigDecimal perUnitLimitProfitPositon;
+	/**
+	 * 触发止损类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitLossType;
+
 	/**
 	 * 一手止损金额
 	 */
@@ -492,6 +518,38 @@ public class FuturesOrderDto {
 
 	public void setContractCurrency(String contractCurrency) {
 		this.contractCurrency = contractCurrency;
+	}
+
+	public Boolean getDeferred() {
+		return deferred;
+	}
+
+	public void setDeferred(Boolean deferred) {
+		this.deferred = deferred;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
+
+	public Integer getLimitProfitType() {
+		return limitProfitType;
+	}
+
+	public void setLimitProfitType(Integer limitProfitType) {
+		this.limitProfitType = limitProfitType;
+	}
+
+	public Integer getLimitLossType() {
+		return limitLossType;
+	}
+
+	public void setLimitLossType(Integer limitLossType) {
+		this.limitLossType = limitLossType;
 	}
 
 }

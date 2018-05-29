@@ -61,6 +61,12 @@ public class FrozenCapital {
 	 */
 	@Column(name = "buy_record_id")
 	private Long buyRecordId;
+
+	/**
+	 * 期货订单ID
+	 */
+	@Column(name = "futures_order_Id")
+	private Long futuresOrderId;
 	/**
 	 * 提现单号
 	 */
@@ -142,6 +148,14 @@ public class FrozenCapital {
 
 	public void setWithdrawalsNo(String withdrawalsNo) {
 		this.withdrawalsNo = withdrawalsNo;
+	}
+
+	public Long getFuturesOrderId() {
+		return futuresOrderId;
+	}
+
+	public void setFuturesOrderId(Long futuresOrderId) {
+		this.futuresOrderId = futuresOrderId;
 	}
 
 }

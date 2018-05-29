@@ -111,6 +111,11 @@ public class FuturesOrder {
 	 * 一手隔夜保证金（取期货合约设置快照）
 	 */
 	private BigDecimal overnightPerUnitReserveFund;
+
+	/**
+	 * 是否递延
+	 */
+	private Boolean deferred;
 	/**
 	 * 一手隔夜递延费（取期货合约设置快照）
 	 */
@@ -563,6 +568,14 @@ public class FuturesOrder {
 
 	public void setLimitLossType(Integer limitLossType) {
 		this.limitLossType = limitLossType;
+	}
+
+	public Boolean getDeferred() {
+		return deferred;
+	}
+
+	public void setDeferred(Boolean deferred) {
+		this.deferred = deferred;
 	}
 
 	public Boolean getIsTest() {
