@@ -12,16 +12,20 @@ import java.util.Map;
 public enum FuturesOrderState implements CommonalityEnum {
 
 	Posted("1", "已发布"),
+	
+	Canceled("2", "已取消"),
 
-	BuyingEntrust("2", "买入委托"),
+	BuyingEntrust("3", "买入委托"),
 
-	Position("3", "持仓中"),
+	PartPosition("4", "部分买入成功"),
 
-	SellApply("4", "卖出申请"),
+	Position("5", "持仓中"),
 
-	SellingEntrust("5", "卖出委托"),
+	SellingEntrust("6", "卖出委托"),
 
-	Unwind("6", "已平仓");
+	PartUnwind("7", "部分已平仓"),
+
+	Unwind("8", "已平仓");
 
 	private String index;
 
