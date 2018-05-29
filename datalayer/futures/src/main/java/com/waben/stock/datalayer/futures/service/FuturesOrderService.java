@@ -30,6 +30,7 @@ import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.util.StringUtil;
+
 /**
  * 期货订单 service
  * 
@@ -46,7 +47,6 @@ public class FuturesOrderService {
 		return futuresOrderDao.retrieve(id);
 	}
 
-
 	public Page<FuturesTradeAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
 		String publisherNameCondition = "";
 		if (!StringUtil.isEmpty(query.getPublisherName())) {
@@ -61,18 +61,29 @@ public class FuturesOrderService {
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
-	
+
 	public Page<FuturesOrder> pagesOrder(final FuturesOrderQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<FuturesOrder> pages = futuresOrderDao.page(new Specification<FuturesOrder>() {
-
 			@Override
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				// Join<FuturesExchange, FuturesContract> parentJoin =
-				// root.join("exchange", JoinType.LEFT);
-
+				// 订单状态
+				if (query.getState() != null) {
+					predicateList.add(criteriaBuilder.equal(root.get("state").as(Integer.class), query.getState()));
+				}
+				// 是否测试单
+				if (query.getIsTest() != null) {
+					Predicate isTestPredicate = criteriaBuilder.equal(root.get("isTest").as(Boolean.class),
+							query.getIsTest());
+					Predicate isTestNullPredicate = criteriaBuilder.isNull(root.get("isTest").as(Boolean.class));
+					if (query.getIsTest()) {
+						predicateList.add(isTestPredicate);
+					} else {
+						predicateList.add(criteriaBuilder.or(isTestPredicate, isTestNullPredicate));
+					}
+				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}

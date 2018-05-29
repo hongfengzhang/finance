@@ -31,6 +31,28 @@ public class TradeFuturesOverHttp {
 		}
 	}
 
+	/**
+	 * 下单
+	 * 
+	 * @param domain
+	 *            所属应用域
+	 * @param symbol
+	 *            合约标识
+	 * @param outerOrderId
+	 *            订单ID
+	 * @param action
+	 *            期货交易动作
+	 * @param totalQuantity
+	 *            交易量
+	 * @param userOrderType
+	 *            用户订单类型
+	 *            <ul>
+	 *            <li>1市价订单</li>
+	 *            <li>2委托价订单</li>
+	 * @param entrustPrice
+	 *            委托价格
+	 * @return 期货网关订单
+	 */
 	public static FuturesGatewayOrder placeOrder(String domain, String symbol, Integer outerOrderId,
 			FuturesActionType action, BigDecimal totalQuantity, Integer userOrderType, BigDecimal entrustPrice) {
 		String url = baseUrl + "futuresOrder/";

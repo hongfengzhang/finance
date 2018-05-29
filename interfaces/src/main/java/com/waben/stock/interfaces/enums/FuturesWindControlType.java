@@ -21,7 +21,9 @@ public enum FuturesWindControlType implements CommonalityEnum {
 
 	ReachProfitPoint("5", "达到止盈点"),
 
-	ReachLossPoint("6", "达到止损点");
+	ReachLossPoint("6", "达到止损点"),
+	
+	ReachContractExpiration("7", "合约到期平仓");
 
 	private FuturesWindControlType(String index, String type) {
 		this.index = index;

@@ -214,6 +214,10 @@ public class FuturesOrder {
 	 * 更新时间
 	 */
 	private Date updateTime;
+	/**
+	 * 是否为测试单
+	 */
+	private Boolean isTest;
 
 	public Long getId() {
 		return id;
@@ -541,6 +545,14 @@ public class FuturesOrder {
 
 	public void setLimitLossType(Integer limitLossType) {
 		this.limitLossType = limitLossType;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }
