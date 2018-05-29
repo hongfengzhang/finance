@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.repository.FuturesExchangeDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesExchangeRepository;
@@ -58,6 +59,11 @@ public class FuturesExchangeDaoImpl implements FuturesExchangeDao {
 	@Override
 	public List<FuturesExchange> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<FuturesContract> findByExchangId(Long exchangeId) {
+		return repository.findByExchangId(exchangeId);
 	}
 
 }

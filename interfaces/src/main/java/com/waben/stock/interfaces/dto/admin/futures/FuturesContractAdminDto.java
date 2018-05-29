@@ -8,7 +8,7 @@ import com.waben.stock.interfaces.dto.futures.FuturesContractTermDto;
 public class FuturesContractAdminDto {
 
 	/**
-	 * 交易ID
+	 * 合约期限ID
 	 */
 	private Long id;
 	
@@ -141,7 +141,7 @@ public class FuturesContractAdminDto {
 	 */
 	private Integer timeZoneGap;
 
-	private List<FuturesContractTermDto> futuresContractTermDto;
+	private List<FuturesTermAdminDto> FuturesTermAdminDto;
 
 
 	public Long getId() {
@@ -344,13 +344,15 @@ public class FuturesContractAdminDto {
 		this.timeZoneGap = timeZoneGap;
 	}
 
-	public List<FuturesContractTermDto> getFuturesContractTermDto() {
-		return futuresContractTermDto;
+	public List<FuturesTermAdminDto> getFuturesTermAdminDto() {
+		return FuturesTermAdminDto;
 	}
 
-	public void setFuturesContractTermDto(List<FuturesContractTermDto> futuresContractTermDto) {
-		this.futuresContractTermDto = futuresContractTermDto;
+	public void setFuturesTermAdminDto(List<FuturesTermAdminDto> futuresTermAdminDto) {
+		FuturesTermAdminDto = futuresTermAdminDto;
 	}
+
+	
 
 	
 	
