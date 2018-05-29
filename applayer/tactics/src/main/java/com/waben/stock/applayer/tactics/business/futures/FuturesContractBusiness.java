@@ -53,16 +53,16 @@ public class FuturesContractBusiness {
 			FuturesContractDto contractDto = response.getResult().getContent().get(0);
 			if (contractDto == null) {
 				// 该合约不存在
-				throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+				throw new ServiceException(ExceptionConstant.CONTRACT_DOESNOT_EXIST_EXCEPTION);
 			}
 			if (!contractDto.getEnable() || !contractDto.getChangeEnable()) {
 				// 该合约异常不可用
-				throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+				throw new ServiceException(ExceptionConstant.CONTRACT_ABNORMALITY_EXCEPTION);
 			}
 			// 判断该合约是否处于交易中
 			if (contractDto.getState() != 1) {
 				// 该合约不在交易中
-				throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+				throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
 			}
 			return contractDto;
 		}

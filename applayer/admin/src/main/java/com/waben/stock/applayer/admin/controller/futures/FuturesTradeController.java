@@ -100,7 +100,7 @@ public class FuturesTradeController {
 		result.add("平仓价格");
 		result.add("平仓盈亏");
 		result.add("平仓手续费");
-		result.add("订单状态");
+		result.add("风控状态");
 		return result;
 	}
 	
@@ -126,7 +126,7 @@ public class FuturesTradeController {
 		result.add("隔夜手续费");
 		result.add("持仓截止日期");
 		result.add("持仓天数");
-		result.add("持仓状态");
+		result.add("风控状态");
 		return result;
 	}
 	
@@ -158,7 +158,7 @@ public class FuturesTradeController {
 		return result;
 	}
 	
-	//委托/退款记录
+	//委托记录
 	private List<String> deputeDescList() {
 		List<String> result = new ArrayList<>();
 		result.add("客户姓名");
@@ -166,10 +166,10 @@ public class FuturesTradeController {
 		result.add("合约名称");
 		result.add("委托编号");
 		result.add("成交编号");
-		result.add("委托状态");
 		result.add("委托方向");
-		result.add("开平");
-		result.add("委托价格");
+		result.add("委托状态");
+		result.add("委托指定价格");
+		result.add("当前价");
 		result.add("委托手数");
 		result.add("手续费");
 		result.add("保证金");
@@ -177,7 +177,28 @@ public class FuturesTradeController {
 		result.add("止盈金额");
 		result.add("委托时间");
 		result.add("成交时间");
-		result.add("备注");
 		return result;
 	}
+	
+	//委托/退款记录
+		private List<String> accountantList() {
+			List<String> result = new ArrayList<>();
+			result.add("客户姓名");
+			result.add("交易账户");
+			result.add("合约名称");
+			result.add("委托编号");
+			result.add("成交编号");
+			result.add("委托方向");
+			result.add("委托状态");
+			result.add("委托指定价格");
+			result.add("委托手数");
+			result.add("手续费");
+			result.add("隔夜手续费");
+			result.add("保证金");
+			result.add("止损金额");
+			result.add("止盈金额");
+			result.add("委托时间");
+			result.add("状态");
+			return result;
+		}
 }

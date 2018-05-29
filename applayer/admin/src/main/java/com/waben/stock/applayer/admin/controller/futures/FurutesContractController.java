@@ -56,7 +56,7 @@ public class FurutesContractController {
     }
 	
 	@GetMapping("/pagesExchange")
-    @ApiOperation(value = "新增期货市场")
+    @ApiOperation(value = "查询期货市场")
 	public Response<PageInfo<FuturesExchangeDto>> pagesExchange(FuturesExchangeAdminQuery query){
 		PageInfo<FuturesExchangeDto> response = business.pagesExchange(query);
 		return new Response<>(response);
@@ -77,21 +77,21 @@ public class FurutesContractController {
     }
 	
 	@RequestMapping(value = "/futuresContract/save", method = RequestMethod.POST)
-	@ApiOperation(value = "添加期货品种")
+	@ApiOperation(value = "添加期货合约")
 	public Response<FuturesContractAdminDto> savec(FuturesContractAdminDto query){
 		FuturesContractAdminDto result = business.save(query);
 		return new Response<>(result);
 	}
 	
 	@PutMapping("/futuresContract/modify")
-	@ApiOperation(value = "修改期货品种")
+	@ApiOperation(value = "修改期货合约")
 	public Response<FuturesContractAdminDto> modifyc(FuturesContractAdminDto query){
 		FuturesContractAdminDto result = business.modify(query);
 		return new Response<>(result);
 	}
 	
 	@DeleteMapping("/futuresContract/delete/{id}")
-    @ApiOperation(value = "删除期货品种")
+    @ApiOperation(value = "删除期货合约")
     public Response<Integer> deleteContract(@PathVariable("id") Long id){
         business.deleteContract(id);
         return new Response<>(1);

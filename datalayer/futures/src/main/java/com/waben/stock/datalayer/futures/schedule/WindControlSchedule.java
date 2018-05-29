@@ -12,7 +12,6 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
@@ -32,7 +31,7 @@ import com.waben.stock.interfaces.util.StringUtil;
  * @author luomengan
  *
  */
-@Component
+//@Component
 public class WindControlSchedule {
 
 	/**

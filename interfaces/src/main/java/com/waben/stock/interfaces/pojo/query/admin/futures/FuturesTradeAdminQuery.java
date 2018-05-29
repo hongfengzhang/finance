@@ -24,7 +24,7 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	/**
 	 * 交易方向
 	 */
-	private String orderType;
+	private Integer orderType;
 	
 	/**
 	 * 订单状态
@@ -55,11 +55,11 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 		this.name = name;
 	}
 
-	public String getOrderType() {
+	public Integer getOrderType() {
 		return orderType;
 	}
 
-	public void setOrderType(String orderType) {
+	public void setOrderType(Integer orderType) {
 		this.orderType = orderType;
 	}
 

@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
+import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
+import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
@@ -28,6 +30,7 @@ import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.Authorization;
 
 @RestController
 @RequestMapping("/contract")
@@ -39,6 +42,9 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesExchangeService exchangeService;
+	
+	@Autowired
+	private FuturesCurrencyRateService rateService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
@@ -175,6 +181,13 @@ public class FuturesContractController implements FuturesContractInterface {
 		query.setSize(Integer.MAX_VALUE);
 		query.setCode(contractDto.getExchangcode());
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
+		
+		//获取汇率
+		FuturesCurrencyRate rate = new FuturesCurrencyRate();
+		rate.setCurrencyName(contractDto.getCurrency());
+		rate.setRate(contractDto.getRate());
+		
+		fcontract.setCurrencyRate(rateService.queryRate(rate));
 		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
 
 		FuturesContract result = futuresContractService.saveExchange(fcontract);
@@ -191,6 +204,12 @@ public class FuturesContractController implements FuturesContractInterface {
 		query.setSize(Integer.MAX_VALUE);
 		query.setCode(contractDto.getExchangcode());
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
+		//获取汇率
+		FuturesCurrencyRate rate = new FuturesCurrencyRate();
+		rate.setCurrencyName(contractDto.getCurrency());
+		rate.setRate(contractDto.getRate());
+		
+		fcontract.setCurrencyRate(rateService.queryRate(rate));
 		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
 
 		FuturesContract result = futuresContractService.modifyExchange(fcontract);
