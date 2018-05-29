@@ -60,4 +60,9 @@ public class FuturesCurrencyRateDaoImpl implements FuturesCurrencyRateDao {
 		return repository.findAll();
 	}
 
+	@Override
+	public List<FuturesCurrencyRate> findAll() {
+		return repository.findAll();
+	}
+
 }

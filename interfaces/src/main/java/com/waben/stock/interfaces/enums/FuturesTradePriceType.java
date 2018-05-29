@@ -11,17 +11,20 @@ import java.util.Map;
  */
 public enum FuturesTradePriceType implements CommonalityEnum {
 
-	MKT("1", "市价"),
+	MKT("1", "市价", "MKT"),
 
-	LMT("2", "限价");
+	LMT("2", "限价", "LMT");
 
 	private String index;
 
 	private String type;
 
-	private FuturesTradePriceType(String index, String type) {
+	private String value;
+
+	private FuturesTradePriceType(String index, String type, String value) {
 		this.index = index;
 		this.type = type;
+		this.value = value;
 	}
 
 	private static Map<String, FuturesTradePriceType> valueMap = new HashMap<String, FuturesTradePriceType>();
@@ -54,6 +57,14 @@ public enum FuturesTradePriceType implements CommonalityEnum {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 }

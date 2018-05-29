@@ -13,5 +13,6 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
  */
 public interface FuturesContractDao extends BaseDao<FuturesContract, Long> {
 
+	
 	List<FuturesContractTerm> findByListContractId(Long contractId);
 }
