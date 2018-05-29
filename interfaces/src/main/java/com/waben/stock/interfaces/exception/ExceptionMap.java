@@ -90,7 +90,6 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_BUY_ERROR, "投资人券商账户委托下单失败");
 		exceptionMap.put(ExceptionConstant.INVESTOR_STOCKENTRUST_FETCH_ERROR, "投资人券商账户委托单查询异常");
 
-		
 		exceptionMap.put(ExceptionConstant.USER_ROLE_EXCEPITON, "该角色已被使用,不能删除。");
 		exceptionMap.put(ExceptionConstant.AGENT_DISABLED_EXCEPITON, "当前用户已被冻结");
 		exceptionMap.put(ExceptionConstant.ORGANIZATION_NOTEXIST_EXCEPTION, "代理商不存在");
@@ -129,8 +128,15 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.OVERSTEP_NUMBER_OF_DRAW, "今日抽奖已达上限");
 		exceptionMap.put(ExceptionConstant.PRIZE_IS_EMPTY, "奖品已空");
 		exceptionMap.put(ExceptionConstant.FAILED_TO_UPLOAD_PICTURES, "上传图片失败");
-		
-		exceptionMap.put(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION, "期货订单状态不匹配，不支持该操作");
+
+		exceptionMap.put(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,
+				"期货订单状态不匹配，不支持该操作");
+		exceptionMap.put(ExceptionConstant.SINGLE_TRANSACTION_QUANTITY_EXCEPTION, "单笔交易数量过大");
+		exceptionMap.put(ExceptionConstant.UPPER_LIMIT_HOLDING_CAPACITY_EXCEPTION, "该用户持仓量已达上限");
+		exceptionMap.put(ExceptionConstant.CONTRACT_HOLDING_CAPACITY_INSUFFICIENT_EXCEPTION, "该合约持仓量不足");
+		exceptionMap.put(ExceptionConstant.CONTRACT_DOESNOT_EXIST_EXCEPTION, "该合约不存在");
+		exceptionMap.put(ExceptionConstant.CONTRACT_ABNORMALITY_EXCEPTION, "该合约异常不可用");
+		exceptionMap.put(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION, "该合约不在交易中");
 
 	}
 }

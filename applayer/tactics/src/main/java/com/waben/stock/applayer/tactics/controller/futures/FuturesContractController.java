@@ -72,17 +72,17 @@ public class FuturesContractController {
 		BigDecimal sumTotal = sumUserNum.add(buysellDto.getTotalQuantity());
 
 		if (userNum.compareTo(perNum) > 0) {
-			// 合约持仓量不足
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+			// 单笔交易数量过大
+			throw new ServiceException(ExceptionConstant.SINGLE_TRANSACTION_QUANTITY_EXCEPTION);
 		}
 		if (sumUserNum.abs().compareTo(userMaxNum) > 0 || sumTotal.compareTo(userMaxNum) > 0) {
 			// 该用户持仓量已达上限
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.UPPER_LIMIT_HOLDING_CAPACITY_EXCEPTION);
 		}
 
 		if (perNum.compareTo(userMaxNum) == -1) {
 			// 该合约持仓量不足
-			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.CONTRACT_HOLDING_CAPACITY_INSUFFICIENT_EXCEPTION);
 		}
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(SecurityUtil.getUserId());
