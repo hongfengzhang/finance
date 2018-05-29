@@ -44,14 +44,16 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
-	
+
 	/**
 	 * 汇率
 	 */
 	@OneToOne
 	@JoinColumn(name = "rate_id")
 	private FuturesCurrencyRate currencyRate;
-	
+	/**
+	 * 品种分类
+	 */
 	@Convert(converter = FuturesProductTypeConverter.class)
 	private FuturesProductType productType;
 	/**
