@@ -1,7 +1,5 @@
 package com.waben.stock.datalayer.futures.repository;
 
-import java.math.BigDecimal;
-
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
@@ -27,5 +25,5 @@ public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 	 *            用户ID
 	 * @return 合约总数
 	 */
-	BigDecimal sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId);
+	Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId);
 }

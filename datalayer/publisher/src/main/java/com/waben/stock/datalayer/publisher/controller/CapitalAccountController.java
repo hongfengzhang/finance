@@ -198,7 +198,7 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	@Override
 	public Response<CapitalAccountDto> futuresOrderServiceFeeAndReserveFund(@PathVariable Long publisherId,
 			@PathVariable Long orderId, @PathVariable BigDecimal serviceFee, @PathVariable BigDecimal reserveFund,
-			@PathVariable BigDecimal deferredFee) {
+			BigDecimal deferredFee) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class, capitalAccountService
 				.futuresOrderServiceFeeAndReserveFund(publisherId, orderId, serviceFee, reserveFund, deferredFee),
 				false));

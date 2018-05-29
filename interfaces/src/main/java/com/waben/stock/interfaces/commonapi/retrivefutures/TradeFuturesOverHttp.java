@@ -31,7 +31,7 @@ public class TradeFuturesOverHttp {
 		}
 	}
 
-	public static FuturesGatewayOrder placeOrder(String domain, String symbol, Integer outerOrderId,
+	public static FuturesGatewayOrder placeOrder(String domain, String symbol, Long outerOrderId,
 			FuturesActionType action, BigDecimal totalQuantity, Integer userOrderType, BigDecimal entrustPrice) {
 		String url = baseUrl + "futuresOrder/";
 		Map<String, Object> paramMap = new HashMap<String, Object>();

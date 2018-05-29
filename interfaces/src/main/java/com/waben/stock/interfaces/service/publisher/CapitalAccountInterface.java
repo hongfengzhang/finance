@@ -134,7 +134,7 @@ public interface CapitalAccountInterface {
 	 *            递延费
 	 * @return 资金账号对象
 	 */
-	@RequestMapping(value = "/{publisherId}/{orderId}/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
+	@RequestMapping(value = "/{publisherId}/{orderId}/futures/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> futuresOrderServiceFeeAndReserveFund(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("orderId") Long orderId, @PathVariable("serviceFee") BigDecimal serviceFee,
 			@PathVariable("reserveFund") BigDecimal reserveFund, @RequestParam("deferredFee") BigDecimal deferredFee);

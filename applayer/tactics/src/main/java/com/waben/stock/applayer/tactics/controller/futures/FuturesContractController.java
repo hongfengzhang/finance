@@ -64,16 +64,18 @@ public class FuturesContractController {
 		// 用户最大可持仓量
 		BigDecimal userMaxNum = contractDto.getUserTotalLimit();
 		// 用户持仓总数量
-		BigDecimal sumUserNum = futuresContractBusiness.sumUserNum(buysellDto.getContractId(),
-				SecurityUtil.getUserId());
+		Integer sumUser = futuresContractBusiness.sumUserNum(buysellDto.getContractId(), SecurityUtil.getUserId());
+		BigDecimal sumUserNum = sumUser == null ? new BigDecimal(0) : new BigDecimal(sumUser);
 		// 当前用户单笔持仓数量
 		BigDecimal userNum = buysellDto.getTotalQuantity();
+		// 用户已持仓量 + 当前买入持仓量
+		BigDecimal sumTotal = sumUserNum.add(buysellDto.getTotalQuantity());
 
 		if (userNum.compareTo(perNum) > 0) {
 			// 合约持仓量不足
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
 		}
-		if (sumUserNum.abs().compareTo(userMaxNum) > 0) {
+		if (sumUserNum.abs().compareTo(userMaxNum) > 0 || sumTotal.compareTo(userMaxNum) > 0) {
 			// 该用户持仓量已达上限
 			throw new ServiceException(ExceptionConstant.BUYRECORD_NONTRADINGPERIOD_EXCEPTION);
 		}
@@ -155,5 +157,4 @@ public class FuturesContractController {
 
 		return new Response<>(futuresContractBusiness.buy(orderDto));
 	}
-
 }

@@ -19,7 +19,7 @@ public class FuturesGatewayOrder {
 	/**
 	 * 下游订单ID
 	 */
-	private Integer outerOrderId;
+	private Long outerOrderId;
 	/**
 	 * 本地tws订单ID
 	 */
@@ -275,11 +275,11 @@ public class FuturesGatewayOrder {
 		this.updateTime = updateTime;
 	}
 
-	public Integer getOuterOrderId() {
+	public Long getOuterOrderId() {
 		return outerOrderId;
 	}
 
-	public void setOuterOrderId(Integer outerOrderId) {
+	public void setOuterOrderId(Long outerOrderId) {
 		this.outerOrderId = outerOrderId;
 	}
 

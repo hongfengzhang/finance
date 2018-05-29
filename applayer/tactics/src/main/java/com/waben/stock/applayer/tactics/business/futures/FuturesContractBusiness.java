@@ -1,7 +1,5 @@
 package com.waben.stock.applayer.tactics.business.futures;
 
-import java.math.BigDecimal;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -71,8 +69,8 @@ public class FuturesContractBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public BigDecimal sumUserNum(Long contractId, Long publisherId) {
-		Response<BigDecimal> response = futuresOrderInterface.sumByListOrderContractIdAndPublisherId(contractId,
+	public Integer sumUserNum(Long contractId, Long publisherId) {
+		Response<Integer> response = futuresOrderInterface.sumByListOrderContractIdAndPublisherId(contractId,
 				publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
