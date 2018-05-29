@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.service.futures;
 
+import java.math.BigDecimal;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -63,5 +65,18 @@ public interface FuturesOrderInterface {
 	@RequestMapping(value = "/count/order/type", method = RequestMethod.GET)
 	Response<Integer> countOrderType(@RequestParam(name = "contractId") Long contractId,
 			@RequestParam(name = "orderType") FuturesOrderType orderType);
+
+	/**
+	 * 根据合约ID和用户ID获取用户购买该合约总数
+	 * 
+	 * @param contractId
+	 *            合约ID
+	 * @param publisherId
+	 *            用户ID
+	 * @return 合约总数
+	 */
+	@RequestMapping(value = "/sum/{contractId}/{publisherId}", method = RequestMethod.GET)
+	Response<BigDecimal> sumByListOrderContractIdAndPublisherId(@PathVariable(name = "contractId") Long contractId,
+			@PathVariable(name = "publisherId") Long publisherId);
 
 }

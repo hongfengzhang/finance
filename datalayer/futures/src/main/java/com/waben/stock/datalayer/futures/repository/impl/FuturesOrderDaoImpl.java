@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.futures.repository.impl;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +72,11 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	@Override
 	public Integer countOrderByType(Long contractId, FuturesOrderType orderType) {
 		return repository.countOrderByType(contractId, orderType);
+	}
+
+	@Override
+	public BigDecimal sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId) {
+		return repository.sumByListOrderContractIdAndPublisherId(contractId, publisherId);
 	}
 
 }

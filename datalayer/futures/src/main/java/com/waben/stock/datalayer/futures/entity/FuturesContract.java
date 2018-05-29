@@ -74,7 +74,7 @@ public class FuturesContract {
 	 * 需将所有未平仓的订单量相加，买涨的为正数，买跌的为负数，相加结果取绝对值再和这个总额度比较
 	 * </p>
 	 */
-	private BigDecimal totalLimit;
+	private BigDecimal userTotalLimit;
 	/**
 	 * 单笔订单额度限制（手）
 	 */
@@ -206,12 +206,12 @@ public class FuturesContract {
 		this.perUnitUnwindPoint = perUnitUnwindPoint;
 	}
 
-	public BigDecimal getTotalLimit() {
-		return totalLimit;
+	public BigDecimal getUserTotalLimit() {
+		return userTotalLimit;
 	}
 
-	public void setTotalLimit(BigDecimal totalLimit) {
-		this.totalLimit = totalLimit;
+	public void setUserTotalLimit(BigDecimal userTotalLimit) {
+		this.userTotalLimit = userTotalLimit;
 	}
 
 	public BigDecimal getPerOrderLimit() {

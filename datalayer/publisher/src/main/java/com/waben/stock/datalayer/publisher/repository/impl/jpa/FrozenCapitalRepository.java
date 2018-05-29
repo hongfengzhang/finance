@@ -13,5 +13,7 @@ public interface FrozenCapitalRepository extends CustomJpaRepository<FrozenCapit
 	FrozenCapital findByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
 
 	FrozenCapital findByPublisherIdAndWithdrawalsNo(Long publisherId, String withdrawalsNo);
+	
+	FrozenCapital retriveByPublisherIdAndFuturesOrderId(Long publisherId, Long futuresOrderId);
 
 }

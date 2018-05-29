@@ -51,13 +51,9 @@ public class FuturesContractDto {
 	 */
 	private Integer unwindPointType;
 	/**
-	 * 该合约总计的可使用的额度（手）
-	 * 
-	 * <p>
-	 * 需将所有未平仓的订单量相加，买涨的为正数，买跌的为负数，相加结果取绝对值再和这个总额度比较
-	 * </p>
+	 * 用户最大持仓数
 	 */
-	private BigDecimal totalLimit;
+	private BigDecimal userTotalLimit;
 	/**
 	 * 单笔订单额度限制（手）
 	 */
@@ -78,6 +74,11 @@ public class FuturesContractDto {
 	 * 一手隔夜保证金
 	 */
 	private BigDecimal overnightPerUnitReserveFund;
+
+	/**
+	 * 是否递延
+	 */
+	private Boolean deferred;
 	/**
 	 * 一手隔夜递延费
 	 */
@@ -208,12 +209,12 @@ public class FuturesContractDto {
 		this.unwindPointType = unwindPointType;
 	}
 
-	public BigDecimal getTotalLimit() {
-		return totalLimit;
+	public BigDecimal getUserTotalLimit() {
+		return userTotalLimit;
 	}
 
-	public void setTotalLimit(BigDecimal totalLimit) {
-		this.totalLimit = totalLimit;
+	public void setUserTotalLimit(BigDecimal userTotalLimit) {
+		this.userTotalLimit = userTotalLimit;
 	}
 
 	public BigDecimal getPerOrderLimit() {
@@ -310,6 +311,14 @@ public class FuturesContractDto {
 
 	public void setTimeZoneGap(Integer timeZoneGap) {
 		this.timeZoneGap = timeZoneGap;
+	}
+
+	public Boolean getDeferred() {
+		return deferred;
+	}
+
+	public void setDeferred(Boolean deferred) {
+		this.deferred = deferred;
 	}
 
 }

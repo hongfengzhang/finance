@@ -677,4 +677,49 @@ public class CapitalAccountService {
 		recordDao.create(record);
 		return capitalAccountDao.update(capitalAccount);
 	}
+
+	/**
+	 * 期货信息服务费和冻结保证金
+	 */
+	@Transactional
+	public synchronized CapitalAccount futuresOrderServiceFeeAndReserveFund(Long publisherId, Long orderId,
+			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		Date date = new Date();
+		// 扣减服务费
+		if (serviceFee != null && serviceFee.compareTo(new BigDecimal(0)) > 0) {
+			reduceAmount(account, serviceFee, date);
+			flowDao.create(account.getPublisher(), CapitalFlowType.ServiceFee,
+					serviceFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
+					account.getAvailableBalance());
+		}
+		// 扣减递延费
+		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
+			reduceAmount(account, deferredFee, date);
+			flowDao.create(account.getPublisher(), CapitalFlowType.DeferredCharges,
+					deferredFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
+					account.getAvailableBalance());
+		}
+		// 冻结履约保证金
+		if (reserveFund != null && reserveFund.abs().compareTo(new BigDecimal(0)) > 0) {
+			frozenAmount(account, reserveFund, date);
+			flowDao.create(account.getPublisher(), CapitalFlowType.ReserveFund,
+					reserveFund.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
+					account.getAvailableBalance());
+		}
+		// 保存冻结资金记录
+		FrozenCapital frozen = new FrozenCapital();
+		frozen.setAmount(reserveFund.abs());
+		frozen.setFuturesOrderId(orderId);
+		frozen.setFrozenTime(date);
+		frozen.setPublisherId(publisherId);
+		frozen.setStatus(FrozenCapitalStatus.Frozen);
+		frozen.setType(FrozenCapitalType.FuturesReserveFund);
+		frozenCapitalDao.create(frozen);
+		return findByPublisherId(publisherId);
+	}
+
+	public FrozenCapital findFuturesOrderFrozenCapital(Long publisherId, Long orderId) {
+		return frozenCapitalDao.retriveByPublisherIdAndFuturesOrderId(publisherId, orderId);
+	}
 }

@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +58,11 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	@Override
 	public Response<Integer> countOrderType(Long contractId, FuturesOrderType orderType) {
 		return new Response<>(futuresOrderService.countOrderType(contractId, orderType));
+	}
+
+	@Override
+	public Response<BigDecimal> sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId) {
+		return new Response<>(futuresOrderService.sumByListOrderContractIdAndPublisherId(contractId, publisherId));
 	}
 
 }

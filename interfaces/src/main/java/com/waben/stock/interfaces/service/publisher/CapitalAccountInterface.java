@@ -111,9 +111,44 @@ public interface CapitalAccountInterface {
 			@PathVariable("optionTradeId") Long optionTradeId, @PathVariable("profit") BigDecimal profit);
 
 	@RequestMapping(value = "/state/{id}/{state}", method = RequestMethod.PUT)
-	Response<CapitalAccountDto> modifyState(@PathVariable("id") Long id,@PathVariable("state") Integer state);
+	Response<CapitalAccountDto> modifyState(@PathVariable("id") Long id, @PathVariable("state") Integer state);
 
 	@RequestMapping(value = "/account/{staff}/{id}/{availableBalance}", method = RequestMethod.PUT)
-	Response<CapitalAccountDto> modifyAccount(@PathVariable("staff") Long staff,@PathVariable("id") Long id,@PathVariable("availableBalance") BigDecimal availableBalance);
+	Response<CapitalAccountDto> modifyAccount(@PathVariable("staff") Long staff, @PathVariable("id") Long id,
+			@PathVariable("availableBalance") BigDecimal availableBalance);
 
+	/**************************************** 期货相关 ***************************************/
+
+	/**
+	 * 扣去金额、冻结保证金
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param orderId
+	 *            期货订单ID
+	 * @param serviceFee
+	 *            服务费
+	 * @param reserveFund
+	 *            保证金
+	 * @param deferredFee
+	 *            递延费
+	 * @return 资金账号对象
+	 */
+	@RequestMapping(value = "/{publisherId}/{orderId}/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> futuresOrderServiceFeeAndReserveFund(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("orderId") Long orderId, @PathVariable("serviceFee") BigDecimal serviceFee,
+			@PathVariable("reserveFund") BigDecimal reserveFund, @RequestParam("deferredFee") BigDecimal deferredFee);
+
+	/**
+	 * 确认是否已经扣款
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param orderId
+	 *            期货订单ID
+	 * @return 资金账号对象
+	 */
+	@RequestMapping(value = "/futuresOrderFetchFrozenCapital/{publisherId}/{orderId}/", method = RequestMethod.GET)
+	Response<FrozenCapitalDto> futuresOrderFetchFrozenCapital(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("orderId") Long orderId);
 }
