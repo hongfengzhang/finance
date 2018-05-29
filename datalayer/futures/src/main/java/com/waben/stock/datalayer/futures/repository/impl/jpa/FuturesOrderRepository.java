@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.futures.repository.impl.jpa;
 
+import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+
+
 import org.springframework.data.jpa.repository.Query;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;

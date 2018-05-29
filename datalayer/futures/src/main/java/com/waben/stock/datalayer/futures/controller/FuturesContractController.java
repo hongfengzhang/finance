@@ -7,18 +7,25 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
+import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
+import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
+import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
 
 import io.swagger.annotations.Api;
@@ -30,9 +37,13 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesContractService futuresContractService;
+	
+	@Autowired
+	private FuturesExchangeService exchangeService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-
+	
+	
 	@Override
 	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery)
 			throws Throwable {
@@ -155,6 +166,41 @@ public class FuturesContractController implements FuturesContractInterface {
 		} else {
 			return false;
 		}
+	}
+
+	@Override
+	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
+		//获取交易所数据
+		FuturesExchangeAdminQuery query = new FuturesExchangeAdminQuery();
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
+		query.setCode(contractDto.getExchangcode());
+		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
+		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
+		
+		FuturesContract result = futuresContractService.saveExchange(fcontract);
+		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(), false);
+		return new Response<>(resultDto);
+	}
+
+	@Override
+	public Response<FuturesContractAdminDto> modifyContract(@RequestBody FuturesContractAdminDto contractDto) {
+		// //获取交易所数据
+		FuturesExchangeAdminQuery query = new FuturesExchangeAdminQuery();
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
+		query.setCode(contractDto.getExchangcode());
+		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
+		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
+		
+		FuturesContract result = futuresContractService.modifyExchange(fcontract);
+		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(), false);
+		return new Response<>(resultDto);
+	}
+
+	@Override
+	public void deleteContract(@PathVariable Long id) {
+		futuresContractService.deleteExchange(id);
 	}
 
 }

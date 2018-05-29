@@ -66,4 +66,5 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 		return repository.findByContractId(contractId);
 	}
 
+
 }

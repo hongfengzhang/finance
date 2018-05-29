@@ -44,6 +44,7 @@ public class FuturesContractService {
 
 	@Autowired
 	private FuturesContractDao futuresContractDao;
+	
 
 	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -68,6 +69,8 @@ public class FuturesContractService {
 		}, pageable);
 		return pages;
 	}
+	
+	
 
 	public Page<FuturesContractDto> pagesByQuery(final FuturesContractQuery query) {
 
@@ -109,6 +112,18 @@ public class FuturesContractService {
 
 	public List<FuturesContractTerm> findByListContractId(Long contractId) {
 		return futuresContractDao.findByListContractId(contractId);
+	}
+	
+	public FuturesContract saveExchange(FuturesContract exchange){
+		return futuresContractDao.create(exchange);
+	}
+	
+	public FuturesContract modifyExchange(FuturesContract exchange){
+		return futuresContractDao.update(exchange);
+	}
+	
+	public void deleteExchange(Long id){
+		futuresContractDao.delete(id);
 	}
 
 }
