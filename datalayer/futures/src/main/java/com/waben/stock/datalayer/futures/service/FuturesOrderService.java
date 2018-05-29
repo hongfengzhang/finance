@@ -23,8 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.futures.business.FuturesContractBusiness;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
+import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
+import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
-import com.waben.stock.datalayer.futures.warpper.rabbit.FuturesOrderProducer;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
@@ -36,6 +38,8 @@ import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
 import com.waben.stock.interfaces.enums.FuturesActionType;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
+import com.waben.stock.interfaces.enums.FuturesTradePriceType;
+import com.waben.stock.interfaces.enums.FuturesWindControlType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
@@ -58,9 +62,9 @@ public class FuturesOrderService {
 	private FuturesContractBusiness futuresContractBusiness;
 
 	@Autowired
-	private FuturesOrderProducer producer;
+	private RabbitmqProducer producer;
 
-	@Value("{gateway.order.domain}")
+	@Value("{gateway.order.domain:}")
 	private String domain;
 
 	public FuturesOrder findById(Long id) {
@@ -318,6 +322,44 @@ public class FuturesOrderService {
 		futuresOrderDao.update(order);
 		// TODO 站外消息推送
 		return order;
+	}
+
+	/**
+	 * 卖出委托
+	 * 
+	 * @param order
+	 *            订单
+	 * @param windControlType
+	 *            风控类型
+	 * @param priceType
+	 *            价格类型
+	 * @param entrustPrice
+	 *            委托价格
+	 * @return 订单
+	 */
+	public FuturesOrder sellingEntrust(FuturesOrder order, FuturesWindControlType windControlType,
+			FuturesTradePriceType priceType, BigDecimal entrustPrice) {
+		if (order.getState() != FuturesOrderState.Position) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		// 修改订单状态
+		order.setWindControlType(windControlType);
+		order.setState(FuturesOrderState.SellingEntrust);
+		order.setUpdateTime(new Date());
+		order.setSellingPriceType(priceType);
+		order.setSellingEntrustPrice(entrustPrice);
+		// 委托卖出
+		FuturesActionType action = order.getOrderType() == FuturesOrderType.BuyUp ? FuturesActionType.SELL
+				: FuturesActionType.BUY;
+		Integer userOrderType = priceType == FuturesTradePriceType.MKT ? 1 : 2;
+		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(),
+				order.getId(), action, order.getTotalQuantity(), userOrderType, entrustPrice);
+		order.setCloseGatewayOrderId(gatewayOrder.getId());
+		// 放入委托查询队列（平仓）
+		EntrustQueryMessage msg = new EntrustQueryMessage();
+		msg.setEntrustType(3);
+		producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, msg);
+		return futuresOrderDao.update(order);
 	}
 
 }

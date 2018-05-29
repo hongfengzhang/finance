@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesGatewayOrder;
@@ -63,9 +64,13 @@ public class TradeFuturesOverHttp {
 		paramMap.put("action", action.name());
 		paramMap.put("totalQuantity", totalQuantity);
 		paramMap.put("userOrderType", userOrderType);
-		paramMap.put("entrustPrice", entrustPrice);
+		if (entrustPrice != null) {
+			paramMap.put("entrustPrice", entrustPrice);
+		}
 		String queryString = RequestParamBuilder.build(paramMap);
-		HttpEntity<String> requestEntity = new HttpEntity<String>(queryString);
+		HttpHeaders requestHeaders = new HttpHeaders();
+		requestHeaders.set("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+		HttpEntity<String> requestEntity = new HttpEntity<String>(queryString, requestHeaders);
 		String response = restTemplate.postForObject(url, requestEntity, String.class);
 		Response<FuturesGatewayOrder> responseObj = JacksonUtil.decode(response,
 				JacksonUtil.getGenericType(Response.class, FuturesGatewayOrder.class));
@@ -74,6 +79,10 @@ public class TradeFuturesOverHttp {
 		} else {
 			throw new RuntimeException("根据网关订单ID获取订单异常!" + responseObj.getCode());
 		}
+	}
+
+	public static void testMain(String[] args) {
+		placeOrder("test.com", "GC", 1L, FuturesActionType.BUY, new BigDecimal(4), 1, new BigDecimal(1.0));
 	}
 
 }
