@@ -114,7 +114,7 @@ public class FuturesOrderService {
 		return pages;
 	}
 
-	@Transactional
+	@Transactional/*(propagation = Propagation.REQUIRED, rollbackFor = ServiceException.class)*/
 	public FuturesOrder save(FuturesOrder order) {
 		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(order.getPublisherId());
 		BigDecimal totalFee = order.getServiceFee().add(order.getReserveFund());
@@ -124,9 +124,13 @@ public class FuturesOrderService {
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-
-		// 调取行情接口 获取买入最新价
-		FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getContractSymbol());
+		FuturesContractMarket market = null;
+		try {
+			// 调取行情接口 获取买入最新价
+			market = RetriveFuturesOverHttp.market(order.getContractSymbol());
+		} catch (ServiceException ex) {
+			throw ex;
+		}
 		order.setBuyingPrice(market == null ? new BigDecimal(0) : market.getLastPrice()); // 买入最新价
 		order.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		Date date = new Date();
@@ -158,11 +162,14 @@ public class FuturesOrderService {
 		if ((order.getBuyingPriceType().getIndex()).equals("2")) {
 			entrustPrice = order.getBuyingEntrustPrice();
 		}
-
-		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(),
-				order.getId(), FuturesActionType.BUY, order.getTotalQuantity(),
-				Integer.valueOf(order.getBuyingPriceType().getIndex()), entrustPrice);
-
+		FuturesGatewayOrder gatewayOrder = null;
+		try {
+			gatewayOrder = TradeFuturesOverHttp.placeOrder("1", order.getContractSymbol(), order.getId(),
+					FuturesActionType.BUY, order.getTotalQuantity(),
+					Integer.valueOf(order.getBuyingPriceType().getIndex()), entrustPrice);
+		} catch (ServiceException ex) {
+			throw ex;
+		}
 		if (gatewayOrder != null) {
 			order.setState(FuturesOrderState.BuyingEntrust);
 			futuresOrderDao.update(order);
