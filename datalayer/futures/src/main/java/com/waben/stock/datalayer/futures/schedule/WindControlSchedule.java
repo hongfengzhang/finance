@@ -29,7 +29,7 @@ import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
  * @author luomengan
  *
  */
-@Component
+//@Component
 public class WindControlSchedule {
 
 	/**

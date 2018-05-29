@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.futures.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -10,6 +11,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
+import com.waben.stock.interfaces.enums.FuturesProductType;
 
 /**
  * 期货合约
@@ -47,6 +51,9 @@ public class FuturesContract {
 	@OneToOne
 	@JoinColumn(name = "rate_id")
 	private FuturesCurrencyRate currencyRate;
+	
+	@Convert(converter = FuturesProductTypeConverter.class)
+	private FuturesProductType productType;
 	/**
 	 * 乘数（1手等于多少股）
 	 */
@@ -284,6 +291,14 @@ public class FuturesContract {
 
 	public void setUnwindPointType(Integer unwindPointType) {
 		this.unwindPointType = unwindPointType;
+	}
+
+	public FuturesProductType getProductType() {
+		return productType;
+	}
+
+	public void setProductType(FuturesProductType productType) {
+		this.productType = productType;
 	}
 
 }

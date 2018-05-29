@@ -14,7 +14,6 @@ import com.waben.stock.datalayer.futures.entity.FuturesExchange;
  *
  */
 public interface FuturesExchangeRepository extends CustomJpaRepository<FuturesExchange, Long> {
-	@Query("select f form futuresContract f where f.enable=1 and f.exchange_id=?1")
-	List<FuturesContract> findByExchangId(Long exchangeId);
 
+	
 }

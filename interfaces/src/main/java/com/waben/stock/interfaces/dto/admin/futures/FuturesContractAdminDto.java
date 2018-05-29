@@ -45,6 +45,16 @@ public class FuturesContractAdminDto {
 	 * 货币
 	 */
 	private String currency;
+	
+	/**
+	 * 汇率
+	 */
+	private BigDecimal rate;
+	
+	/**
+	 * 产品类型
+	 */
+	private String productType;
 	/**
 	 * 乘数（1手等于多少股）
 	 */
@@ -124,7 +134,7 @@ public class FuturesContractAdminDto {
 	 * 3 异常
 	 * </p>
 	 */
-	private Integer state;
+//	private Integer state;
 
 	/**
 	 * 每个合约的描述
@@ -134,12 +144,12 @@ public class FuturesContractAdminDto {
 	/**
 	 * 交易所是否可用
 	 */
-	private Boolean changeEnable;
+//	private Boolean changeEnable;
 
 	/**
 	 * 北京时间的时差和交易所
 	 */
-	private Integer timeZoneGap;
+//	private Integer timeZoneGap;
 
 	private List<FuturesTermAdminDto> FuturesTermAdminDto;
 
@@ -198,6 +208,22 @@ public class FuturesContractAdminDto {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	public BigDecimal getRate() {
+		return rate;
+	}
+
+	public void setRate(BigDecimal rate) {
+		this.rate = rate;
+	}
+
+	public String getProductType() {
+		return productType;
+	}
+
+	public void setProductType(String productType) {
+		this.productType = productType;
 	}
 
 	public Integer getMultiplier() {
@@ -312,13 +338,13 @@ public class FuturesContractAdminDto {
 		this.enable = enable;
 	}
 
-	public Integer getState() {
-		return state;
-	}
-
-	public void setState(Integer state) {
-		this.state = state;
-	}
+//	public Integer getState() {
+//		return state;
+//	}
+//
+//	public void setState(Integer state) {
+//		this.state = state;
+//	}
 
 	public String getDescribe() {
 		return describe;
@@ -328,21 +354,21 @@ public class FuturesContractAdminDto {
 		this.describe = describe;
 	}
 
-	public Boolean getChangeEnable() {
-		return changeEnable;
-	}
-
-	public void setChangeEnable(Boolean changeEnable) {
-		this.changeEnable = changeEnable;
-	}
-
-	public Integer getTimeZoneGap() {
-		return timeZoneGap;
-	}
-
-	public void setTimeZoneGap(Integer timeZoneGap) {
-		this.timeZoneGap = timeZoneGap;
-	}
+//	public Boolean getChangeEnable() {
+//		return changeEnable;
+//	}
+//
+//	public void setChangeEnable(Boolean changeEnable) {
+//		this.changeEnable = changeEnable;
+//	}
+//
+//	public Integer getTimeZoneGap() {
+//		return timeZoneGap;
+//	}
+//
+//	public void setTimeZoneGap(Integer timeZoneGap) {
+//		this.timeZoneGap = timeZoneGap;
+//	}
 
 	public List<FuturesTermAdminDto> getFuturesTermAdminDto() {
 		return FuturesTermAdminDto;

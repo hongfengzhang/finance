@@ -43,6 +43,10 @@ public class FuturesOrder {
 	 */
 	private Date postTime;
 	/**
+	 * 订单编号
+	 */
+	private String tradeNo;
+	/**
 	 * 订单类型
 	 */
 	@Convert(converter = FuturesOrderTypeConverter.class)
@@ -247,6 +251,14 @@ public class FuturesOrder {
 
 	public void setPostTime(Date postTime) {
 		this.postTime = postTime;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
 
 	public FuturesOrderType getOrderType() {
