@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +69,42 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	public Response<Integer> sumByListOrderContractIdAndPublisherId(@PathVariable Long contractId,
 			@PathVariable Long publisherId) {
 		return new Response<>(futuresOrderService.sumByListOrderContractIdAndPublisherId(contractId, publisherId));
+	}
+
+	@Override
+	public Response<List<FuturesOrderDto>> getListFuturesOrderPositionByPublisherId(Long publisherId) {
+		List<FuturesOrderDto> orderPositionList = CopyBeanUtils.copyListBeanPropertiesToList(
+				futuresOrderService.getListFuturesOrderPositionByPublisherId(publisherId), FuturesOrderDto.class);
+		return new Response<>(orderPositionList);
+	}
+
+	@Override
+	public Response<BigDecimal> settlementOrderPositionByPublisherId(Long publisherId) {
+		return new Response<>(futuresOrderService.settlementOrderPositionByPublisherId(publisherId));
+	}
+
+	@Override
+	public Response<List<FuturesOrderDto>> getListFuturesOrderEntrustByPublisherId(Long publisherId) {
+		List<FuturesOrderDto> orderEntrustList = CopyBeanUtils.copyListBeanPropertiesToList(
+				futuresOrderService.getListFuturesOrderEntrustByPublisherId(publisherId), FuturesOrderDto.class);
+		return new Response<>(orderEntrustList);
+	}
+
+	@Override
+	public Response<BigDecimal> settlementOrderEntrustByPublisherId(Long publisherId) {
+		return new Response<>(futuresOrderService.settlementOrderEntrustByPublisherId(publisherId));
+	}
+
+	@Override
+	public Response<List<FuturesOrderDto>> getListFuturesOrderUnwindByPublisherId(Long publisherId) {
+		List<FuturesOrderDto> orderUnwindList = CopyBeanUtils.copyListBeanPropertiesToList(
+				futuresOrderService.getListFuturesOrderUnwindByPublisherId(publisherId), FuturesOrderDto.class);
+		return new Response<>(orderUnwindList);
+	}
+
+	@Override
+	public Response<BigDecimal> settlementOrderUnwindByPublisherId(Long publisherId) {
+		return new Response<>(futuresOrderService.settlementOrderUnwindByPublisherId(publisherId));
 	}
 
 }

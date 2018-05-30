@@ -142,7 +142,7 @@ public class FuturesContractController {
 		// 买入价格类型
 		orderDto.setBuyingPriceType(buysellDto.getBuyingPriceType());
 		// 对应的开仓网关ID
-		orderDto.setOpenGatewayOrderId(contractDto.getGatewayId());
+		// orderDto.setOpenGatewayOrderId(contractDto.getGatewayId());
 		// 止损类型及金额点位
 		orderDto.setLimitLossType(buysellDto.getLimitLossType());
 		orderDto.setPerUnitLimitLossPosition(buysellDto.getPerUnitLimitLossAmount());
