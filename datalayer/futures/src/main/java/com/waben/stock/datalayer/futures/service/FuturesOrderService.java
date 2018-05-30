@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waben.stock.datalayer.futures.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.business.FuturesContractBusiness;
+import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
@@ -68,6 +69,9 @@ public class FuturesOrderService {
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
 
+	@Autowired
+	private FuturesContractTermService futuresContractTermService;
+	
 	@Autowired
 	private FuturesOvernightRecordDao recordDao;
 
@@ -156,6 +160,11 @@ public class FuturesOrderService {
 		order.setBuyingTime(date);
 		order.setState(FuturesOrderState.Position);
 		order.setContract(order.getContract());
+		List<FuturesContractTerm> termList = futuresContractTermService
+				.findByListContractId(order.getContract().getId());
+		if (termList != null && termList.size() > 0) {
+			order.setContractTerm(termList.get(0));
+		}
 		order = futuresOrderDao.create(order);
 		// 扣去金额、冻结保证金
 		try {

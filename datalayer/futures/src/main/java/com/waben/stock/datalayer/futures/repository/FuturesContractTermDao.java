@@ -15,4 +15,5 @@ public interface FuturesContractTermDao extends BaseDao<FuturesContractTerm, Lon
 
 	List<FuturesContractTerm> retrieveByContractAndCurrent(FuturesContract contract, boolean current);
 
+	List<FuturesContractTerm> findByListContractId(Long contractId);
 }
