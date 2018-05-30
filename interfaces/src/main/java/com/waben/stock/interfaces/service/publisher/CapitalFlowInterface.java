@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.service.publisher;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
@@ -22,7 +24,7 @@ import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQue
  * @author luomengan
  *
  */
-@FeignClient(name = "publisher",  path = "capitalFlow", qualifier = "capitalFlowInterface")
+@FeignClient(name = "publisher", path = "capitalFlow", qualifier = "capitalFlowInterface")
 public interface CapitalFlowInterface {
 
 	/**
@@ -73,5 +75,18 @@ public interface CapitalFlowInterface {
 	 */
 	@RequestMapping(value = "/{capitalFlowId}/view/", method = RequestMethod.GET)
 	Response<CapitalFlowDto> fetchById(@PathVariable("capitalFlowId") Long capitalFlowId);
+
+	/**
+	 * 根据产生流水的对象信息获取流水
+	 * 
+	 * @param extendTypeIndex
+	 *            产生流水的对象类型
+	 * @param extendId
+	 *            产生流水的对象ID
+	 * @return 流水列表
+	 */
+	@RequestMapping(value = "/fetchByExtend", method = RequestMethod.GET)
+	Response<List<CapitalFlowDto>> fetchByExtendTypeAndExtendId(@RequestParam("extendTypeIndex") String extendTypeIndex,
+			@RequestParam("extendId") Long extendId);
 
 }

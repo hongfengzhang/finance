@@ -96,4 +96,9 @@ public class CapitalFlowDaoImpl implements CapitalFlowDao {
 		return repository.promotionTotalAmount(publisherId, CapitalFlowType.Promotion);
 	}
 
+	@Override
+	public List<CapitalFlow> retriveByExtendTypeAndExtendId(CapitalFlowExtendType extendType, Long extendId) {
+		return repository.findByExtendTypeAndExtendId(extendType, extendId);
+	}
+
 }

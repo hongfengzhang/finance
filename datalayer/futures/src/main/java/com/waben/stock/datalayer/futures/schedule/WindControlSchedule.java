@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.futures.schedule;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -10,12 +11,18 @@ import java.util.TimerTask;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Component;
 
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
+import com.waben.stock.datalayer.futures.service.FuturesOvernightRecordService;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
@@ -31,7 +38,7 @@ import com.waben.stock.interfaces.util.StringUtil;
  * @author luomengan
  *
  */
-//@Component
+@Component
 public class WindControlSchedule {
 
 	/**
@@ -42,8 +49,13 @@ public class WindControlSchedule {
 	 */
 	public static final long Execute_Interval = 5 * 1000;
 
+	Logger logger = LoggerFactory.getLogger(getClass());
+
 	@Autowired
 	private FuturesOrderService orderService;
+
+	@Autowired
+	private FuturesOvernightRecordService overnightService;
 
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -87,7 +99,10 @@ public class WindControlSchedule {
 							continue;
 						}
 						// step 7 : 是否触发隔夜时间
-
+						if (isTradeTime(timeZoneGap, term) && isTriggerOvernight(order)) {
+							// orderService.
+							continue;
+						}
 					}
 				}
 			} finally {
@@ -238,16 +253,29 @@ public class WindControlSchedule {
 	/**
 	 * 判断是否触发隔夜
 	 * 
-	 * @param timeZoneGap
-	 *            和交易所的时差
 	 * @param order
 	 *            订单
 	 * @return 是否触发隔夜
 	 */
-	private boolean isTriggerOvernight(Integer timeZoneGap, FuturesOrder order) {
-		String overnightTime = order.getContract().getOvernightTime();
-		Date exchangeTime = retriveExchangeTime(timeZoneGap);
-		// Date exchangeTimeAfter 
+	private boolean isTriggerOvernight(FuturesOrder order) {
+		FuturesOvernightRecord record = overnightService.findNewestOvernightRecord(order);
+		Date now = new Date();
+		String nowStr = daySdf.format(now);
+		// 判断是否有今天的隔夜记录
+		if (!(record != null && nowStr.equals(daySdf.format(record.getDeferredTime())))) {
+			FuturesContract contract = order.getContract();
+			String overnightTime = contract.getOvernightTime();
+			try {
+				// 判断是否达到隔夜时间，隔夜时间~隔夜时间+5分钟
+				Date beginTime = daySdf.parse(nowStr + " " + overnightTime);
+				Date endTime = new Date(beginTime.getTime() + 5 * 60 * 1000);
+				if (now.getTime() >= beginTime.getTime() && now.getTime() < endTime.getTime()) {
+					return true;
+				}
+			} catch (ParseException e) {
+				logger.error("期货合约" + contract.getSymbol() + "隔夜时间格式错误?" + overnightTime);
+			}
+		}
 		return false;
 	}
 

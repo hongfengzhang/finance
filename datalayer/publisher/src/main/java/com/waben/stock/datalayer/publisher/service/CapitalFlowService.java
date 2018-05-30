@@ -31,6 +31,7 @@ import com.waben.stock.datalayer.publisher.repository.CapitalFlowDao;
 import com.waben.stock.datalayer.publisher.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.publisher.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
+import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.admin.publisher.CapitalFlowAdminQuery;
@@ -248,6 +249,10 @@ public class CapitalFlowService {
 
 	public CapitalFlow findById(Long capitalFlowId) {
 		return capitalFlowDao.retrieve(capitalFlowId);
+	}
+
+	public List<CapitalFlow> findByExtendTypeAndExtendId(CapitalFlowExtendType extendType, Long extendId) {
+		return capitalFlowDao.retriveByExtendTypeAndExtendId(extendType, extendId);
 	}
 
 }

@@ -722,4 +722,34 @@ public class CapitalAccountService {
 	public FrozenCapital findFuturesOrderFrozenCapital(Long publisherId, Long orderId) {
 		return frozenCapitalDao.retriveByPublisherIdAndFuturesOrderId(publisherId, orderId);
 	}
+
+	public CapitalAccount futuresOrderOvernight(Long publisherId, Long overnightId, BigDecimal deferredFee,
+			BigDecimal reserveFund) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		Date date = new Date();
+		// 扣减隔夜递延费
+		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
+			reduceAmount(account, deferredFee, date);
+			flowDao.create(account.getPublisher(), CapitalFlowType.FuturesOvernightDeferredFee,
+					deferredFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESOVERNIGHTRECORD,
+					overnightId, account.getAvailableBalance());
+		}
+		// 冻结隔夜保证金
+		if (reserveFund != null && reserveFund.abs().compareTo(new BigDecimal(0)) > 0) {
+			frozenAmount(account, reserveFund, date);
+			flowDao.create(account.getPublisher(), CapitalFlowType.FuturesOvernightReserveFund,
+					reserveFund.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESOVERNIGHTRECORD,
+					overnightId, account.getAvailableBalance());
+			// 保存冻结资金记录
+			FrozenCapital frozen = new FrozenCapital();
+			frozen.setAmount(reserveFund.abs());
+			frozen.setFuturesOvernightId(overnightId);
+			frozen.setFrozenTime(date);
+			frozen.setPublisherId(publisherId);
+			frozen.setStatus(FrozenCapitalStatus.Frozen);
+			frozen.setType(FrozenCapitalType.FuturesOvernightFund);
+			frozenCapitalDao.create(frozen);
+		}
+		return findByPublisherId(publisherId);
+	}
 }
