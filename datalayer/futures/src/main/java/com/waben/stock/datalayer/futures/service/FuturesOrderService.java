@@ -26,6 +26,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
 import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
+import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
@@ -57,6 +58,9 @@ public class FuturesOrderService {
 
 	@Autowired
 	private FuturesOrderDao futuresOrderDao;
+
+	@Autowired
+	private FuturesContractDao futuresContractDao;
 
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
@@ -118,7 +122,10 @@ public class FuturesOrderService {
 		return pages;
 	}
 
-	@Transactional/*(propagation = Propagation.REQUIRED, rollbackFor = ServiceException.class)*/
+	@Transactional /*
+					 * (propagation = Propagation.REQUIRED, rollbackFor =
+					 * ServiceException.class)
+					 */
 	public FuturesOrder save(FuturesOrder order) {
 		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(order.getPublisherId());
 		BigDecimal totalFee = order.getServiceFee().add(order.getReserveFund());
@@ -141,6 +148,7 @@ public class FuturesOrderService {
 		order.setPostTime(date);
 		order.setBuyingTime(date);
 		order.setState(FuturesOrderState.Position);
+		order.setContract(order.getContract());
 		order = futuresOrderDao.create(order);
 		// 扣去金额、冻结保证金
 		try {
@@ -168,7 +176,7 @@ public class FuturesOrderService {
 		}
 		FuturesGatewayOrder gatewayOrder = null;
 		try {
-			gatewayOrder = TradeFuturesOverHttp.placeOrder("1", order.getContractSymbol(), order.getId(),
+			gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(), order.getId(),
 					FuturesActionType.BUY, order.getTotalQuantity(),
 					Integer.valueOf(order.getBuyingPriceType().getIndex()), entrustPrice);
 		} catch (ServiceException ex) {
@@ -176,6 +184,7 @@ public class FuturesOrderService {
 		}
 		if (gatewayOrder != null) {
 			order.setState(FuturesOrderState.BuyingEntrust);
+			order.setOpenGatewayOrderId(gatewayOrder.getId());
 			futuresOrderDao.update(order);
 		}
 
@@ -360,6 +369,30 @@ public class FuturesOrderService {
 		msg.setEntrustType(3);
 		producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, msg);
 		return futuresOrderDao.update(order);
+	}
+
+	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {
+		return futuresOrderDao.getListFuturesOrderPositionByPublisherId(publisherId);
+	}
+
+	public BigDecimal settlementOrderPositionByPublisherId(Long publisherId) {
+		return futuresOrderDao.settlementOrderPositionByPublisherId(publisherId);
+	}
+
+	public List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(Long publisherId) {
+		return futuresOrderDao.getListFuturesOrderEntrustByPublisherId(publisherId);
+	}
+
+	public BigDecimal settlementOrderEntrustByPublisherId(Long publisherId) {
+		return futuresOrderDao.settlementOrderEntrustByPublisherId(publisherId);
+	}
+
+	public List<FuturesOrder> getListFuturesOrderUnwindByPublisherId(Long publisherId) {
+		return futuresOrderDao.getListFuturesOrderUnwindByPublisherId(publisherId);
+	}
+
+	public BigDecimal settlementOrderUnwindByPublisherId(Long publisherId) {
+		return futuresOrderDao.settlementOrderUnwindByPublisherId(publisherId);
 	}
 
 }
