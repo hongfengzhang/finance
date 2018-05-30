@@ -188,18 +188,6 @@ public class FuturesOrderService {
 			futuresOrderDao.update(order);
 		}
 
-		// FuturesOrderEntrust entrust = new FuturesOrderEntrust();
-		// entrust.setTradeNo(order.getId().toString());
-		// entrust.setOrderId(order.getId());
-		// entrust.setContractName(order.getContractName());
-		// entrust.setContractSymbol(order.getContractSymbol());
-		// entrust.setLossPosition(order.getPerUnitLimitLossPosition());
-		// entrust.setOrderType(order.getOrderType());
-		// entrust.setProfitPosition(order.getPerUnitLimitProfitPositon());
-		// entrust.setState(order.getState());
-		// entrust.setTradeNo(order.getTradeNo());
-		// producer.voluntarilyEntrustApplyBuyIn(entrust);
-
 		return order;
 	}
 
@@ -372,7 +360,15 @@ public class FuturesOrderService {
 	}
 
 	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {
-		return futuresOrderDao.getListFuturesOrderPositionByPublisherId(publisherId);
+		List<FuturesOrder> orderList = futuresOrderDao.getListFuturesOrderPositionByPublisherId(publisherId);
+		if (orderList != null && orderList.size() > 0) {
+			for (FuturesOrder futuresOrder : orderList) {
+				if (futuresOrder.getLimitProfitType() != null && futuresOrder.getPerUnitLimitProfitAmount() != null) {
+					
+				}
+			}
+		}
+		return orderList;
 	}
 
 	public BigDecimal settlementOrderPositionByPublisherId(Long publisherId) {

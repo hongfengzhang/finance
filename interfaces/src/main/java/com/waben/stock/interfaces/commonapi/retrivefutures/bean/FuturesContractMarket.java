@@ -1,6 +1,7 @@
 package com.waben.stock.interfaces.commonapi.retrivefutures.bean;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -106,6 +107,16 @@ public class FuturesContractMarket {
 	 */
 	@ApiModelProperty(value = "是否可用")
 	private Boolean enable;
+	/**
+	 * 跌涨价格
+	 */
+	@ApiModelProperty(value = "跌涨价格")
+	private BigDecimal upDropPrice;
+	/**
+	 * 跌涨幅度
+	 */
+	@ApiModelProperty(value = "跌涨幅度")
+	private BigDecimal upDropSpeed;
 
 	public Long getId() {
 		return id;
@@ -257,6 +268,20 @@ public class FuturesContractMarket {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public BigDecimal getUpDropPrice() {
+		if (closePrice != null && lastPrice != null) {
+			return lastPrice.subtract(closePrice);
+		}
+		return upDropPrice;
+	}
+
+	public BigDecimal getUpDropSpeed() {
+		if (closePrice != null && lastPrice != null) {
+			return lastPrice.subtract(closePrice).divide(closePrice, 4, RoundingMode.DOWN);
+		}
+		return upDropSpeed;
 	}
 
 }

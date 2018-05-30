@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
+import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -47,12 +49,17 @@ public class FuturesContractController {
 
 	@GetMapping("/pagesContract")
 	@ApiOperation(value = "获取期货合约列表")
-	public Response<PageInfo<FuturesContractDto>> pagesContract(int page, int size) throws Throwable {
+	public Response<PageInfo<FuturesContractQuotationDto>> pagesContract(int page, int size) throws Throwable {
 		FuturesContractQuery query = new FuturesContractQuery();
 		query.setPage(page);
 		query.setSize(size);
 		query.setContractId(0L);
-		return new Response<>(futuresContractBusiness.pagesContract(query));
+		PageInfo<FuturesContractDto> contractPage = futuresContractBusiness.pagesContract(query);
+		List<FuturesContractQuotationDto> quotationList = futuresContractBusiness
+				.pagesQuotations(contractPage.getContent());
+		return new Response<>(new PageInfo<>(quotationList, contractPage.getTotalPages(), contractPage.getLast(),
+				contractPage.getTotalElements(), contractPage.getSize(), contractPage.getNumber(),
+				contractPage.getFrist()));
 	}
 
 	@GetMapping("/buy")
@@ -148,11 +155,15 @@ public class FuturesContractController {
 		// 对应的开仓网关ID
 		// orderDto.setOpenGatewayOrderId(contractDto.getGatewayId());
 		// 止损类型及金额点位
-		orderDto.setLimitLossType(buysellDto.getLimitLossType());
-		orderDto.setPerUnitLimitLossPosition(buysellDto.getPerUnitLimitLossAmount());
+		if (buysellDto.getLimitLossType() != null && buysellDto.getLimitLossType() > 0) {
+			orderDto.setLimitLossType(buysellDto.getLimitLossType());
+			orderDto.setPerUnitLimitLossPosition(buysellDto.getPerUnitLimitLossAmount());
+		}
 		// 止盈类型及金额点位
-		orderDto.setLimitProfitType(buysellDto.getLimitProfitType());
-		orderDto.setPerUnitLimitProfitPositon(buysellDto.getPerUnitLimitProfitAmount());
+		if (buysellDto.getLimitProfitType() != null && buysellDto.getLimitProfitType() > 0) {
+			orderDto.setLimitProfitType(buysellDto.getLimitProfitType());
+			orderDto.setPerUnitLimitProfitPositon(buysellDto.getPerUnitLimitProfitAmount());
+		}
 
 		// 委托买入价格
 		if ((buysellDto.getBuyingPriceType().getIndex()).equals("2")) {

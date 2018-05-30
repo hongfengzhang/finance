@@ -10,7 +10,7 @@ import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
  * @author sl
  *
  */
-public class FuturesContractMarketDto extends FuturesContractDto {
+public class FuturesContractQuotationDto extends FuturesContractDto {
 
 	/**
 	 * 最新价
