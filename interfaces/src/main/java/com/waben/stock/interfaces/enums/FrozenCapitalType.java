@@ -14,8 +14,10 @@ public enum FrozenCapitalType implements CommonalityEnum {
 	ReserveFund("1", "冻结履约保证金"),
 
 	Withdrawals("2", "冻结提现金额"),
-	
-	FuturesReserveFund("3", "期货冻结履约保证金");
+
+	FuturesReserveFund("3", "期货冻结履约保证金"),
+
+	FuturesOvernightFund("4", "期货隔夜保证金");
 
 	private String index;
 

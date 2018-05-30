@@ -22,5 +22,7 @@ public interface CapitalFlowDao extends BaseDao<CapitalFlow, Long> {
 
 	List<CapitalFlow> retriveByPublisherIdAndType(Long publisherId, CapitalFlowType flowType);
 
+	List<CapitalFlow> retriveByExtendTypeAndExtendId(CapitalFlowExtendType extendType, Long extendId);
+
 	BigDecimal promotionTotalAmount(Long publisherId);
 }

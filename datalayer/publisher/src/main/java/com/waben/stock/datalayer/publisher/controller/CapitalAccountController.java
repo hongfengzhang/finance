@@ -209,4 +209,12 @@ public class CapitalAccountController implements CapitalAccountInterface {
 				capitalAccountService.findFuturesOrderFrozenCapital(publisherId, orderId), false));
 	}
 
+	@Override
+	public Response<CapitalAccountDto> futuresOrderOvernight(Long publisherId, Long overnightId, BigDecimal deferredFee,
+			BigDecimal reserveFund) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.futuresOrderOvernight(publisherId, overnightId, deferredFee, reserveFund),
+				false));
+	}
+
 }

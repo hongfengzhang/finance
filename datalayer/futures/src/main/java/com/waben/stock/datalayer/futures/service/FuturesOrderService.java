@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.futures.service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -21,13 +22,17 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.waben.stock.datalayer.futures.business.CapitalAccountBusiness;
+import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.business.FuturesContractBusiness;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
 import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
+import com.waben.stock.datalayer.futures.repository.FuturesOvernightRecordDao;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
@@ -35,7 +40,9 @@ import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesGatewayOr
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
+import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.FuturesActionType;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
@@ -64,6 +71,15 @@ public class FuturesOrderService {
 
 	@Autowired
 	private FuturesContractTermService futuresContractTermService;
+	
+	@Autowired
+	private FuturesOvernightRecordDao recordDao;
+
+	@Autowired
+	private CapitalAccountBusiness accountBusiness;
+
+	@Autowired
+	private CapitalFlowBusiness flowBusiness;
 
 	@Autowired
 	private RabbitmqProducer producer;
@@ -99,7 +115,8 @@ public class FuturesOrderService {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 				// 订单状态
 				if (query.getState() != null) {
-					predicateList.add(criteriaBuilder.equal(root.get("state").as(Integer.class), query.getState()));
+					predicateList.add(
+							criteriaBuilder.equal(root.get("state").as(FuturesOrderState.class), query.getState()));
 				}
 				// 是否测试单
 				if (query.getIsTest() != null) {
@@ -122,10 +139,7 @@ public class FuturesOrderService {
 		return pages;
 	}
 
-	@Transactional /*
-					 * (propagation = Propagation.REQUIRED, rollbackFor =
-					 * ServiceException.class)
-					 */
+	@Transactional
 	public FuturesOrder save(FuturesOrder order) {
 		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(order.getPublisherId());
 		BigDecimal totalFee = order.getServiceFee().add(order.getReserveFund());
@@ -190,7 +204,6 @@ public class FuturesOrderService {
 			order.setOpenGatewayOrderId(gatewayOrder.getId());
 			futuresOrderDao.update(order);
 		}
-
 		return order;
 	}
 
@@ -337,6 +350,7 @@ public class FuturesOrderService {
 	 *            委托价格
 	 * @return 订单
 	 */
+	@Transactional
 	public FuturesOrder sellingEntrust(FuturesOrder order, FuturesWindControlType windControlType,
 			FuturesTradePriceType priceType, BigDecimal entrustPrice) {
 		if (order.getState() != FuturesOrderState.Position) {
@@ -359,7 +373,76 @@ public class FuturesOrderService {
 		EntrustQueryMessage msg = new EntrustQueryMessage();
 		msg.setEntrustType(3);
 		producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, msg);
+		// TODO 消息推送
 		return futuresOrderDao.update(order);
+	}
+
+	/**
+	 * 隔夜
+	 * 
+	 * @param order
+	 *            订单
+	 * @return 订单
+	 */
+	@Transactional
+	public FuturesOrder overnight(FuturesOrder order) {
+		if (order.getState() != FuturesOrderState.Position) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+		}
+		// step 1 : 检查余额是否充足
+		CapitalAccountDto account = accountBusiness.fetchByPublisherId(order.getPublisherId());
+		BigDecimal deferredFee = order.getOvernightPerUnitDeferredFee().multiply(order.getTotalQuantity());
+		BigDecimal reserveFund = order.getOvernightPerUnitReserveFund().multiply(order.getTotalQuantity());
+		BigDecimal totalFee = deferredFee.add(reserveFund);
+		if (account.getAvailableBalance().compareTo(totalFee) < 0) {
+			// step 1.1 : 余额不足，强制平仓
+			return sellingEntrust(order, FuturesWindControlType.DayUnwind, FuturesTradePriceType.MKT, null);
+		} else {
+			// step 2 : 保存隔夜记录
+			FuturesOvernightRecord overnightRecord = new FuturesOvernightRecord();
+			overnightRecord.setOrder(order);
+			overnightRecord.setOvernightDeferredFee(deferredFee);
+			overnightRecord.setOvernightReserveFund(reserveFund);
+			overnightRecord.setPublisherId(order.getPublisherId());
+			overnightRecord.setReduceTime(new Date());
+			Calendar cal = Calendar.getInstance();
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			overnightRecord.setDeferredTime(cal.getTime());
+			overnightRecord = recordDao.create(overnightRecord);
+			// step 4 : 修改订单状态
+			order.setWindControlType(FuturesWindControlType.OvernightPosition);
+			order.setUpdateTime(new Date());
+			futuresOrderDao.update(order);
+			// step 5 : 扣除隔夜递延费、冻结隔夜保证金
+			if (deferredFee.compareTo(BigDecimal.ZERO) > 0 || reserveFund.compareTo(BigDecimal.ZERO) > 0) {
+				try {
+					accountBusiness.futuresOrderOvernight(order.getPublisherId(), overnightRecord.getId(), deferredFee,
+							reserveFund);
+				} catch (ServiceException ex) {
+					if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
+
+						// TODO
+						// step 1.1 : 余额不足，强制平仓
+						return sellingEntrust(order, FuturesWindControlType.DayUnwind, FuturesTradePriceType.MKT, null);
+					} else {
+						// 再一次确认是否已经扣款
+						try {
+							List<CapitalFlowDto> list = flowBusiness.fetchByExtendTypeAndExtendId(
+									CapitalFlowExtendType.FUTURESOVERNIGHTRECORD, overnightRecord.getId());
+							if (list == null || list.size() == 0) {
+								throw ex;
+							}
+						} catch (ServiceException frozenEx) {
+							throw ex;
+						}
+					}
+				}
+			}
+		}
+		return order;
 	}
 
 	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {

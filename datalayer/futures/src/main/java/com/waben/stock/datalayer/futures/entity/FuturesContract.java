@@ -105,7 +105,10 @@ public class FuturesContract {
 	 */
 	private BigDecimal unwindServiceFee;
 	/**
-	 * 隔夜时间
+	 * 隔夜时间（本地时间）
+	 * <p>
+	 * 格式为04:50:00
+	 * </p>
 	 */
 	private String overnightTime;
 	/**

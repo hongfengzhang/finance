@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.publisher.controller;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,7 @@ import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.service.CapitalFlowService;
 import com.waben.stock.interfaces.dto.admin.publisher.CapitalFlowAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
+import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.CapitalFlowQuery;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -44,7 +46,7 @@ public class CapitalFlowController implements CapitalFlowInterface {
 		PageInfo<CapitalFlowAdminDto> result = PageToPageInfo.pageToPageInfo(page, CapitalFlowAdminDto.class);
 		return new Response<>(result);
 	}
-	
+
 	@Override
 	public Response<BigDecimal> adminAccumulateAmountByQuery(@RequestBody CapitalFlowAdminQuery query) {
 		return new Response<>(capitalFlowService.adminAccumulateAmountByQuery(query));
@@ -67,6 +69,13 @@ public class CapitalFlowController implements CapitalFlowInterface {
 		CapitalFlow capitalFlow = capitalFlowService.findById(capitalFlowId);
 		CapitalFlowDto capitalFlowDto = CopyBeanUtils.copyBeanProperties(CapitalFlowDto.class, capitalFlow, false);
 		return new Response<>(capitalFlowDto);
+	}
+
+	@Override
+	public Response<List<CapitalFlowDto>> fetchByExtendTypeAndExtendId(String extendTypeIndex, Long extendId) {
+		List<CapitalFlow> flowList = capitalFlowService
+				.findByExtendTypeAndExtendId(CapitalFlowExtendType.getByIndex(extendTypeIndex), extendId);
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(flowList, CapitalFlowDto.class));
 	}
 
 }

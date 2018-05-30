@@ -13,7 +13,6 @@ import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
 import com.ib.client.Order;
 import com.ib.client.OrderType;
-import com.ib.client.Types.Action;
 import com.waben.stock.futuresgateway.dao.FuturesContractDao;
 import com.waben.stock.futuresgateway.dao.FuturesOrderDao;
 import com.waben.stock.futuresgateway.entity.FuturesContract;
@@ -124,21 +123,7 @@ public class FuturesOrderService {
 		contract.secType(futuresContract.getSecType());
 		contract.currency(futuresContract.getCurrency());
 		contract.exchange(futuresContract.getExchange());
-		
-		
-		Order order1 = new Order();
-		order1.action(Action.SELL);
-		order1.totalQuantity(4);
-		order1.account("DU1066508");
-		order1.orderType(OrderType.MKT);
-		
-		Contract contract1 = new Contract();
-        contract1.secType("FUT");
-        contract1.exchange("GLOBEX");
-        contract1.currency("USD");
-        contract1.localSymbol("ESU8");
-		
-		client.placeOrder(twsOrderId, contract1, order1);
+		client.placeOrder(twsOrderId, contract, order);
 		return futuresOrderDao.createFuturesOrder(futuresOrder);
 	}
 
