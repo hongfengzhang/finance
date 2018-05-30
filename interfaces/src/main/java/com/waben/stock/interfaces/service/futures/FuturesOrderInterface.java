@@ -87,7 +87,7 @@ public interface FuturesOrderInterface {
 	 *            用户ID
 	 * @return 持仓中列表
 	 */
-	@RequestMapping(value = "/getListFuturesOrderPosition/{ publisherId}", method = RequestMethod.GET)
+	@RequestMapping(value = "/getListFuturesOrderPosition/{publisherId}", method = RequestMethod.GET)
 	Response<List<FuturesOrderDto>> getListFuturesOrderPositionByPublisherId(
 			@PathVariable("publisherId") Long publisherId);
 

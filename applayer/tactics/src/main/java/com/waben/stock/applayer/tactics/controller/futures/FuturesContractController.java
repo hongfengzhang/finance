@@ -1,6 +1,9 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
+import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -47,12 +51,18 @@ public class FuturesContractController {
 
 	@GetMapping("/pagesContract")
 	@ApiOperation(value = "获取期货合约列表")
-	public Response<PageInfo<FuturesContractDto>> pagesContract(int page, int size) throws Throwable {
+	public Response<PageInfo<FuturesContractQuotationDto>> pagesContract(int page, int size) throws Throwable {
 		FuturesContractQuery query = new FuturesContractQuery();
 		query.setPage(page);
 		query.setSize(size);
 		query.setContractId(0L);
-		return new Response<>(futuresContractBusiness.pagesContract(query));
+		PageInfo<FuturesContractDto> contractPage = futuresContractBusiness.pagesContract(query);
+		List<FuturesContractQuotationDto> quotationList = futuresContractBusiness
+				.pagesQuotations(contractPage.getContent());
+		Collections.sort(quotationList, new ContractComparator());
+		return new Response<>(new PageInfo<>(quotationList, contractPage.getTotalPages(), contractPage.getLast(),
+				contractPage.getTotalElements(), contractPage.getSize(), contractPage.getNumber(),
+				contractPage.getFrist()));
 	}
 
 	@GetMapping("/buy")
@@ -109,15 +119,9 @@ public class FuturesContractController {
 
 		// 交易综合费 = (开仓手续费 + 平仓手续费)* 交易持仓数
 		BigDecimal comprehensiveAmount = openUnwin.multiply(buysellDto.getTotalQuantity());
-		// 是否递延
-		if (buysellDto.getDeferred()) {
-			deferredFee = contractDto.getOvernightPerUnitDeferredFee().multiply(buysellDto.getTotalQuantity());
-			// 总金额 = 保证金金额 + 交易综合费 + 递延费
-			totalFee = perUnitReserveAmount.add(comprehensiveAmount).add(deferredFee);
-		} else {
-			// 总金额 = 保证金金额 + 交易综合费
-			totalFee = perUnitReserveAmount.add(comprehensiveAmount);
-		}
+		
+		// 总金额 = 保证金金额 + 交易综合费
+		totalFee = perUnitReserveAmount.add(comprehensiveAmount);
 
 		// 检查余额
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
@@ -140,19 +144,21 @@ public class FuturesContractController {
 		orderDto.setPerUnitUnwindPoint(contractDto.getPerUnitUnwindPoint());
 		orderDto.setUnwindPointType(contractDto.getUnwindPointType());
 		orderDto.setOvernightPerUnitReserveFund(contractDto.getOvernightPerUnitReserveFund());
-		// 是否递延
-		orderDto.setDeferred(buysellDto.getDeferred());
 		orderDto.setOvernightPerUnitDeferredFee(deferredFee);
 		// 买入价格类型
 		orderDto.setBuyingPriceType(buysellDto.getBuyingPriceType());
 		// 对应的开仓网关ID
 		// orderDto.setOpenGatewayOrderId(contractDto.getGatewayId());
 		// 止损类型及金额点位
-		orderDto.setLimitLossType(buysellDto.getLimitLossType());
-		orderDto.setPerUnitLimitLossPosition(buysellDto.getPerUnitLimitLossAmount());
+		if (buysellDto.getLimitLossType() != null && buysellDto.getLimitLossType() > 0) {
+			orderDto.setLimitLossType(buysellDto.getLimitLossType());
+			orderDto.setPerUnitLimitLossPosition(buysellDto.getPerUnitLimitLossAmount());
+		}
 		// 止盈类型及金额点位
-		orderDto.setLimitProfitType(buysellDto.getLimitProfitType());
-		orderDto.setPerUnitLimitProfitPositon(buysellDto.getPerUnitLimitProfitAmount());
+		if (buysellDto.getLimitProfitType() != null && buysellDto.getLimitProfitType() > 0) {
+			orderDto.setLimitProfitType(buysellDto.getLimitProfitType());
+			orderDto.setPerUnitLimitProfitPositon(buysellDto.getPerUnitLimitProfitAmount());
+		}
 
 		// 委托买入价格
 		if ((buysellDto.getBuyingPriceType().getIndex()).equals("2")) {
@@ -161,4 +167,14 @@ public class FuturesContractController {
 
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
 	}
+
+}
+
+class ContractComparator implements Comparator<FuturesContractQuotationDto> {
+
+	@Override
+	public int compare(FuturesContractQuotationDto quotation1, FuturesContractQuotationDto quotation2) {
+		return quotation1.getProductType().getSort() - quotation2.getProductType().getSort();
+	}
+
 }

@@ -25,8 +25,15 @@ public class Swagger2 {
 
 	@Bean
 	public Docket futuresApi() {
+		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQXBwLCIsInVzZXJJZCI6Nywic2VyaWFsQ29kZSI6ImY5MzBlMGFkLTE2NGYtNDUzNS1hYjBmLWZiYWU4Njg4M2M0MyIsInN1YiI6IjEzOTI4OTUyMjU0IiwiZXhwIjo0MzIwMDAxNTI3NDc1MzM1fQ.4pqQWcpsLTc0xM9didrSP_ePRH3dIszKkjp6bxgX9mv-jjhGjvwaYG8dKAteEJLbMgFICE7S06OEzAYwUD4fmg";
+		ParameterBuilder tokenPar = new ParameterBuilder();
+		List<Parameter> pars = new ArrayList<Parameter>();
+		tokenPar.name("Authorization").description("token令牌").modelRef(new ModelRef("string")).parameterType("header")
+				.defaultValue(token).required(false).build();
+		pars.add(tokenPar.build());
 		return new Docket(DocumentationType.SWAGGER_2).groupName("futuresApi")
 				.genericModelSubstitutes(DeferredResult.class).useDefaultResponseMessages(false).forCodeGeneration(true)
+				.globalOperationParameters(pars)
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.waben.stock.applayer.tactics.controller.futures"))
 				.paths(PathSelectors.any()).build().apiInfo(apiInfo());
