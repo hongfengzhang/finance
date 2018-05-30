@@ -683,7 +683,7 @@ public class CapitalAccountService {
 	 */
 	@Transactional
 	public synchronized CapitalAccount futuresOrderServiceFeeAndReserveFund(Long publisherId, Long orderId,
-			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
+			BigDecimal serviceFee, BigDecimal reserveFund) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		// 扣减服务费
@@ -691,13 +691,6 @@ public class CapitalAccountService {
 			reduceAmount(account, serviceFee, date);
 			flowDao.create(account.getPublisher(), CapitalFlowType.ServiceFee,
 					serviceFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
-					account.getAvailableBalance());
-		}
-		// 扣减递延费
-		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
-			reduceAmount(account, deferredFee, date);
-			flowDao.create(account.getPublisher(), CapitalFlowType.DeferredCharges,
-					deferredFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
 					account.getAvailableBalance());
 		}
 		// 冻结履约保证金

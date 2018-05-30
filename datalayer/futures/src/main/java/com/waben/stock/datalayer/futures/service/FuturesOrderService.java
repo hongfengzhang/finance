@@ -129,9 +129,6 @@ public class FuturesOrderService {
 	public FuturesOrder save(FuturesOrder order) {
 		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(order.getPublisherId());
 		BigDecimal totalFee = order.getServiceFee().add(order.getReserveFund());
-		if (order.getDeferred()) {
-			totalFee = totalFee.add(order.getOvernightPerUnitDeferredFee());
-		}
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
@@ -153,7 +150,7 @@ public class FuturesOrderService {
 		// 扣去金额、冻结保证金
 		try {
 			futuresContractBusiness.futuresOrderServiceFeeAndReserveFund(order.getPublisherId(), order.getId(),
-					order.getServiceFee(), order.getReserveFund(), order.getOvernightPerUnitDeferredFee());
+					order.getServiceFee(), order.getReserveFund());
 		} catch (ServiceException ex) {
 			if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
 				throw ex;
@@ -170,6 +167,7 @@ public class FuturesOrderService {
 				}
 			}
 		}
+		// 买入委托价
 		BigDecimal entrustPrice = new BigDecimal(0);
 		if ((order.getBuyingPriceType().getIndex()).equals("2")) {
 			entrustPrice = order.getBuyingEntrustPrice();
@@ -364,7 +362,7 @@ public class FuturesOrderService {
 		if (orderList != null && orderList.size() > 0) {
 			for (FuturesOrder futuresOrder : orderList) {
 				if (futuresOrder.getLimitProfitType() != null && futuresOrder.getPerUnitLimitProfitAmount() != null) {
-					
+
 				}
 			}
 		}

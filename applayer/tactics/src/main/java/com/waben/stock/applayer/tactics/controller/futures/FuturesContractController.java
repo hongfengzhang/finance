@@ -119,15 +119,9 @@ public class FuturesContractController {
 
 		// 交易综合费 = (开仓手续费 + 平仓手续费)* 交易持仓数
 		BigDecimal comprehensiveAmount = openUnwin.multiply(buysellDto.getTotalQuantity());
-		// 是否递延
-		if (buysellDto.getDeferred()) {
-			deferredFee = contractDto.getOvernightPerUnitDeferredFee().multiply(buysellDto.getTotalQuantity());
-			// 总金额 = 保证金金额 + 交易综合费 + 递延费
-			totalFee = perUnitReserveAmount.add(comprehensiveAmount).add(deferredFee);
-		} else {
-			// 总金额 = 保证金金额 + 交易综合费
-			totalFee = perUnitReserveAmount.add(comprehensiveAmount);
-		}
+		
+		// 总金额 = 保证金金额 + 交易综合费
+		totalFee = perUnitReserveAmount.add(comprehensiveAmount);
 
 		// 检查余额
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
@@ -150,8 +144,6 @@ public class FuturesContractController {
 		orderDto.setPerUnitUnwindPoint(contractDto.getPerUnitUnwindPoint());
 		orderDto.setUnwindPointType(contractDto.getUnwindPointType());
 		orderDto.setOvernightPerUnitReserveFund(contractDto.getOvernightPerUnitReserveFund());
-		// 是否递延
-		orderDto.setDeferred(buysellDto.getDeferred());
 		orderDto.setOvernightPerUnitDeferredFee(deferredFee);
 		// 买入价格类型
 		orderDto.setBuyingPriceType(buysellDto.getBuyingPriceType());
