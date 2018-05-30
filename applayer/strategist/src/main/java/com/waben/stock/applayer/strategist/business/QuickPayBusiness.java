@@ -48,6 +48,7 @@ import com.waben.stock.interfaces.enums.WithdrawalsState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.util.JacksonUtil;
+import com.waben.stock.interfaces.util.StringUtil;
 import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 
 @Service
@@ -191,11 +192,14 @@ public class QuickPayBusiness {
 	}
 
 	public void withdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
-			String bankCard, String bankCode, String branchName) {
-		// 生成提现订单
+			String bankCard, String bankCode, String bankName) {
+		CapitalAccountDto account = accountBusiness.findByPublisherId(publisherId);
+		if (account.getState() != null && account.getState() == 2) {
+			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
+		}
 		logger.info("保存提现订单");
-		WithdrawalsOrderDto order = new WithdrawalsOrderDto();
 		String withdrawalsNo = UniqueCodeGenerator.generateWithdrawalsNo();
+		WithdrawalsOrderDto order = new WithdrawalsOrderDto();
 		order.setWithdrawalsNo(withdrawalsNo);
 		order.setAmount(amount);
 		order.setState(WithdrawalsState.PROCESSING);
@@ -203,51 +207,34 @@ public class QuickPayBusiness {
 		order.setIdCard(idCard);
 		order.setBankCard(bankCard);
 		order.setPublisherId(publisherId);
-		order.setCreateTime(new Date());
-		order.setUpdateTime(new Date());
-		this.saveWithdrawalsOrder(order);
-		// 请求提现
-		SimpleDateFormat time = new SimpleDateFormat("yyyyMMddHHmmss");
-		Map<String, String> map = new TreeMap();
-		map.put("mchNo", SandPayConfig.mchNo);
-		map.put("payChannel", SandPayConfig.payChannel);
-		map.put("orderNo", withdrawalsNo);
-		map.put("amount", amount.toString());
-		map.put("bankType", SandPayConfig.bankType);
-		map.put("accNo", bankCard);
-		map.put("accName", name);
-		map.put("bankName", "中国银行");
-		map.put("timeStamp", time.format(new Date()));
-		// 签名
-		String toSign = "";
-		for (String key : map.keySet()) {
-			toSign += key + "=" + map.get(key) + "&";
-		}
-		toSign += "key=" + SandPayConfig.key;
-		logger.info("代付签名的参数是:{}", toSign);
-		String sign = DigestUtils.md5Hex(toSign);
-		map.put("sign", sign);
-		logger.info("代付的参数是:{}", map.toString());
-		logger.info("代付请求发起");
-		String result = FormRequest.doPost(map, SandPayConfig.csaUrl);
-		JSONObject jsStr = JSONObject.parseObject(result);
-		System.out.println(jsStr.toString());
-		logger.info("代付请求的结果是:{}", jsStr);
-		// CzWithholdResponse resp =
-		// CzWithholdOverSocket.withhold(withdrawalsNo, name, bankCard, phone,
-		// bankCode, amount);
-		// // 提现异常
-		JSONObject jsonData = jsStr.getJSONObject("data");
-		String resultFlag = jsonData.getString("resultFlag");
-		if ("SUCCESS".equals(jsStr.getString("result")) || "0".equals(resultFlag) || "2".equals(resultFlag)) {
-			WithdrawalsOrderDto origin = findWithdrawalsOrder(withdrawalsNo);
-			accountBusiness.csa(origin.getPublisherId(), origin.getAmount(), order.getId());
-			if (origin.getState() != WithdrawalsState.PROCESSED) {
-				// 更新代付订单的状态
-				withdrawalsOrderReference.changeState(withdrawalsNo, WithdrawalsState.PROCESSED.getIndex());
-			}
-		} else {
-			throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION, jsStr.getString("msg"));
+		Date date = new Date();
+		order.setCreateTime(date);
+		order.setUpdateTime(date);
+		order = this.saveWithdrawalsOrders(order);
+
+		logger.info("发起提现申请:{}_{}_{}_{}", name, idCard, phone, bankCard);
+		WithdrawParam param = new WithdrawParam();
+		param.setAppId(wbConfig.getMerchantNo());
+		param.setBankAcctName(name);
+		param.setBankNo(bankCard);
+		param.setBankCode(bankCode);
+		param.setBankName(bankName);
+		param.setCardType("0");
+		param.setOutOrderNo(withdrawalsNo);
+		param.setTimestamp(sdf.format(date));
+		param.setTotalAmt(isProd ? amount : new BigDecimal("0.01"));
+		param.setVersion("1.0");
+		// 发起提现请求前，预使用队列查询
+		WithdrawQueryMessage message = new WithdrawQueryMessage();
+		message.setAppId(wbConfig.getMerchantNo());
+		message.setOutOrderNo(withdrawalsNo);
+		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+		// 发起提现请求
+		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
+		if (withdrawRet != null && !StringUtil.isEmpty(withdrawRet.getOrderNo())) {
+			// 更新支付系统第三方订单状态
+			order.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
+			this.revisionWithdrawalsOrder(order);
 		}
 	}
 
