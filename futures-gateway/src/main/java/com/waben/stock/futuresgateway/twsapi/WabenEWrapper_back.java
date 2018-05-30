@@ -2,11 +2,10 @@ package com.waben.stock.futuresgateway.twsapi;
 
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import com.ib.client.CommissionReport;
 import com.ib.client.Contract;
@@ -22,26 +21,42 @@ import com.ib.client.OrderState;
 import com.ib.client.OrderStatus;
 import com.ib.client.SoftDollarTier;
 import com.ib.client.TickType;
+import com.waben.stock.futuresgateway.cache.CommonDataCache;
+import com.waben.stock.futuresgateway.cache.RedisCache;
+import com.waben.stock.futuresgateway.entity.FuturesContract;
 import com.waben.stock.futuresgateway.entity.FuturesOrder;
-import com.waben.stock.futuresgateway.rabbitmq.RabbitmqConfiguration;
-import com.waben.stock.futuresgateway.rabbitmq.RabbitmqProducer;
-import com.waben.stock.futuresgateway.rabbitmq.message.HistoricalDataMessage;
-import com.waben.stock.futuresgateway.rabbitmq.message.TickPriceMessage;
-import com.waben.stock.futuresgateway.rabbitmq.message.TickSizeMessage;
+import com.waben.stock.futuresgateway.pojo.FuturesContractLineData;
+import com.waben.stock.futuresgateway.service.FuturesContractService;
 import com.waben.stock.futuresgateway.service.FuturesOrderService;
+import com.waben.stock.futuresgateway.util.JacksonUtil;
 
-@Component
-public class WabenEWrapper implements EWrapper {
+public class WabenEWrapper_back implements EWrapper {
 
 	private EJavaSignal readerSignal;
 	private EClientSocket clientSocket;
 	protected int currentOrderId = -1;
 
-	@Autowired
+	private FuturesContractService futuresContractService;
+
 	private FuturesOrderService futuresOrderService;
 
-	@Autowired
-	private RabbitmqProducer rabbitmqProducer;
+	private RedisCache redisCache;
+
+	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyyMMdd");
+	private SimpleDateFormat timeFullSdf = new SimpleDateFormat("yyyyMMdd  HH:mm:ss");
+	private SimpleDateFormat keySdf = new SimpleDateFormat("yyyyMMddHHmmss");
+
+	public void setFuturesContractService(FuturesContractService futuresContractService) {
+		this.futuresContractService = futuresContractService;
+	}
+
+	public void setFuturesOrderService(FuturesOrderService futuresOrderService) {
+		this.futuresOrderService = futuresOrderService;
+	}
+
+	public void setRedisCache(RedisCache redisCache) {
+		this.redisCache = redisCache;
+	}
 
 	public EClientSocket getClient() {
 		return clientSocket;
@@ -61,7 +76,7 @@ public class WabenEWrapper implements EWrapper {
 
 	/******************************************** 分割线 ****************************************/
 
-	public WabenEWrapper() {
+	public WabenEWrapper_back() {
 		readerSignal = new EJavaSignal();
 		clientSocket = new EClientSocket(this, readerSignal);
 	}
@@ -71,9 +86,42 @@ public class WabenEWrapper implements EWrapper {
 	public void tickPrice(int tickerId, int field, double price, int canAutoExecute) {
 		System.out.println("Tick Price. Ticker Id:" + tickerId + ", Field: " + field + ", Price: " + price
 				+ ", CanAutoExecute: " + canAutoExecute);
-		// 生产消息至rabbitmq队列
-		TickPriceMessage message = new TickPriceMessage(tickerId, field, price, canAutoExecute);
-		rabbitmqProducer.sendMessage(RabbitmqConfiguration.tickPriceQueueName, message);
+		// step 1 : 获取期货合约的ID
+		Long contractId = Long.valueOf(tickerId);
+		String tickerIdStr = String.valueOf(tickerId);
+		if (tickerIdStr.length() > 3) {
+			contractId = Long.parseLong(tickerIdStr.substring(3));
+		}
+		// step 2 : 获取期货合约
+		FuturesContract contract = CommonDataCache.contractMap.get(contractId);
+		if (contract == null) {
+			contract = futuresContractService.getContractInfo(contractId);
+		}
+		// step 3 : 更新期货合约的相关价格
+		boolean isNeedUpdate = true;
+		if (field == 1) {
+			contract.setBigPrice(new BigDecimal(price));
+		} else if (field == 2) {
+			contract.setAskPrice(new BigDecimal(price));
+		} else if (field == 4) {
+			contract.setLastPrice(new BigDecimal(price));
+		} else if (field == 6) {
+			contract.setHighPrice(new BigDecimal(price));
+		} else if (field == 7) {
+			contract.setLowPrice(new BigDecimal(price));
+		} else if (field == 9) {
+			contract.setClosePrice(new BigDecimal(price));
+		} else {
+			isNeedUpdate = false;
+		}
+		if (contract != null && isNeedUpdate) {
+			futuresContractService.modifyContract(contract);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	// ! [tickprice]
 
@@ -81,9 +129,38 @@ public class WabenEWrapper implements EWrapper {
 	@Override
 	public void tickSize(int tickerId, int field, int size) {
 		System.out.println("Tick Size. Ticker Id:" + tickerId + ", Field: " + field + ", Size: " + size);
-		// 生产消息至rabbitmq队列
-		TickSizeMessage message = new TickSizeMessage(tickerId, field, size);
-		rabbitmqProducer.sendMessage(RabbitmqConfiguration.tickSizeQueueName, message);
+		// step 1 : 获取期货合约的ID
+		Long contractId = Long.valueOf(tickerId);
+		String tickerIdStr = String.valueOf(tickerId);
+		if (tickerIdStr.length() > 3) {
+			contractId = Long.parseLong(tickerIdStr.substring(3));
+		}
+		// step 2 : 获取期货合约
+		FuturesContract contract = CommonDataCache.contractMap.get(contractId);
+		if (contract == null) {
+			contract = futuresContractService.getContractInfo(contractId);
+		}
+		// step 3 : 更新期货合约的相关size
+		boolean isNeedUpdate = true;
+		if (field == 0) {
+			contract.setBidSize(size);
+		} else if (field == 3) {
+			contract.setAskSize(size);
+		} else if (field == 5) {
+			contract.setLastSize(size);
+		} else if (field == 8) {
+			contract.setVolume(size);
+		} else {
+			isNeedUpdate = false;
+		}
+		if (contract != null && isNeedUpdate) {
+			futuresContractService.modifyContract(contract);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	// ! [ticksize]
 
@@ -289,10 +366,59 @@ public class WabenEWrapper implements EWrapper {
 		System.out.println("HistoricalData. " + reqId + " - Date: " + date + ", Open: " + open + ", High: " + high
 				+ ", Low: " + low + ", Close: " + close + ", Volume: " + volume + ", Count: " + count + ", WAP: " + WAP
 				+ ", HasGaps: " + hasGaps);
-		// 生产消息至rabbitmq队列
-		HistoricalDataMessage message = new HistoricalDataMessage(reqId, date, open, high, low, close, volume, count,
-				WAP, hasGaps);
-		rabbitmqProducer.sendMessage(RabbitmqConfiguration.historicalDataQueueName, message);
+		// step 1 : 获取期货合约的ID
+		Long contractId = Long.valueOf(reqId);
+		String tickerIdStr = String.valueOf(reqId);
+		if (tickerIdStr.length() > 3) {
+			contractId = Long.parseLong(tickerIdStr.substring(3));
+		}
+		// step 2 : 获取期货合约
+		FuturesContract contract = CommonDataCache.contractMap.get(contractId);
+		if (contract == null) {
+			contract = futuresContractService.getContractInfo(contractId);
+		}
+		// step 3 : 保存历史行情数据到redis
+		try {
+			String redisKey = null;
+			SimpleDateFormat sdf = timeFullSdf;
+			if (String.valueOf(reqId).startsWith(TwsConstant.TimeLine_TickerId_Prefix)) {
+				// 分时图
+				redisKey = TwsConstant.TimeLine_RedisKey;
+			} else if (String.valueOf(reqId).startsWith(TwsConstant.DayLine_TickerId_Prefix)) {
+				// 日K线
+				sdf = daySdf;
+				redisKey = TwsConstant.DayLine_RedisKey;
+			} else if (String.valueOf(reqId).startsWith(TwsConstant.Min1Line_TickerId_Prefix)) {
+				// 1分钟K线
+				redisKey = TwsConstant.Min1Line_RedisKey;
+			} else if (String.valueOf(reqId).startsWith(TwsConstant.Mins3Line_TickerId_Prefix)) {
+				// 3分钟K线
+				redisKey = TwsConstant.Mins3Line_RedisKey;
+			} else if (String.valueOf(reqId).startsWith(TwsConstant.Mins5Line_TickerId_Prefix)) {
+				// 5分钟K线
+				redisKey = TwsConstant.Mins5Line_RedisKey;
+			} else if (String.valueOf(reqId).startsWith(TwsConstant.Mins15Line_TickerId_Prefix)) {
+				// 15分钟K线
+				redisKey = TwsConstant.Mins15Line_RedisKey;
+			}
+			if (redisKey != null && date.indexOf("finished") < 0) {
+				FuturesContractLineData data = new FuturesContractLineData();
+				data.setOpen(new BigDecimal(String.valueOf(open)));
+				data.setClose(new BigDecimal(String.valueOf(close)));
+				data.setHigh(new BigDecimal(String.valueOf(high)));
+				data.setLow(new BigDecimal(String.valueOf(low)));
+				data.setVolume(volume);
+				data.setCount(count);
+				data.setTime(sdf.parse(date));
+				redisCache.hset(String.format(redisKey, contract.getId() + "_" + contract.getSymbol()),
+						keySdf.format(data.getTime()), JacksonUtil.encode(data));
+			}
+			Thread.sleep(100);
+		} catch (ParseException ex) {
+			ex.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	// ! [historicaldata]
 
