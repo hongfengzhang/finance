@@ -20,9 +20,6 @@ import com.waben.stock.futuresgateway.service.FuturesOrderService;
 @Service
 public class TwsEngine {
 
-	private WabenEWrapper wrapper;
-	private EClientSocket client;
-
 	private String account = "DU1066508";
 
 	@Autowired
@@ -34,12 +31,13 @@ public class TwsEngine {
 	@Autowired
 	private RedisCache redisCache;
 
+	@Autowired
+	private WabenEWrapper wrapper;
+
+	private EClientSocket client;
+
 	@PostConstruct
 	public void init() {
-		this.wrapper = new WabenEWrapper();
-		this.wrapper.setFuturesContractService(futuresContractService);
-		this.wrapper.setFuturesOrderService(futuresOrderService);
-		this.wrapper.setRedisCache(redisCache);
 		this.client = wrapper.getClient();
 		client.eConnect("10.0.0.99", 7497, 0);
 		final EReader reader = new EReader(client, wrapper.getSignal());
@@ -128,14 +126,14 @@ public class TwsEngine {
 		contract.secType(futuresContract.getSecType());
 		contract.currency(futuresContract.getCurrency());
 		contract.exchange(futuresContract.getExchange());
-		
+
 		// TODO 因还未订阅数据，先写死合约
 		contract = new Contract();
 		contract.symbol("EUR");
 		contract.secType("CASH");
 		contract.currency("GBP");
 		contract.exchange("IDEALPRO");
-		
+
 		String prefix = snapshot ? TwsConstant.MarketSnapshot_TickerId_Prefix : TwsConstant.MarketPush_TickerId_Prefix;
 		client.reqMktData(Integer.parseInt(prefix + futuresContract.getId()), contract, "", snapshot, null);
 	}
@@ -152,7 +150,7 @@ public class TwsEngine {
 		contract.secType("CASH");
 		contract.currency("GBP");
 		contract.exchange("IDEALPRO");
-				
+
 		client.reqHistoricalData(tickerId, contract, formatted, timeFrame, timeInterval, "MIDPOINT", 1, 1, null);
 	}
 

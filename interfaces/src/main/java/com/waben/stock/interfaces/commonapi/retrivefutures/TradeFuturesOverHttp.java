@@ -82,7 +82,7 @@ public class TradeFuturesOverHttp {
 	}
 
 	public static void testMain(String[] args) {
-		placeOrder("test.com", "GC", 1L, FuturesActionType.BUY, new BigDecimal(4), 1, new BigDecimal(1.0));
+		placeOrder("test.com", "GC", 1L, FuturesActionType.BUY, new BigDecimal(1), 1, null);
 	}
 
 }
