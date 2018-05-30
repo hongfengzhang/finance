@@ -1,44 +1,43 @@
 package com.waben.stock.applayer.tactics.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.waben.stock.applayer.tactics.business.*;
-import com.waben.stock.applayer.tactics.payapi.czpay.config.CzBankType;
-import com.waben.stock.applayer.tactics.payapi.paypal.config.PayPalConfig;
-import com.waben.stock.applayer.tactics.payapi.paypal.config.RSAUtil;
-import com.waben.stock.applayer.tactics.payapi.wabenpay.config.WabenPayConfig;
-import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
-import com.waben.stock.applayer.tactics.security.SecurityUtil;
-import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.publisher.BindCardDto;
-import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
-import com.waben.stock.interfaces.dto.publisher.PublisherDto;
-import com.waben.stock.interfaces.enums.BankType;
-import com.waben.stock.interfaces.enums.WithdrawalsState;
-import com.waben.stock.interfaces.exception.ServiceException;
-import com.waben.stock.interfaces.pojo.Response;
-import com.waben.stock.interfaces.util.PasswordCrypt;
-
-import io.swagger.annotations.ApiOperation;
-import org.apache.ibatis.jdbc.Null;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.waben.stock.applayer.tactics.business.BindCardBusiness;
+import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.tactics.business.PaymentBusiness;
+import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.QuickPayBusiness;
+import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
+import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.interfaces.commonapi.wabenpay.common.WabenBankType;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.publisher.BindCardDto;
+import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.BankType;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.util.PasswordCrypt;
+
+import io.swagger.annotations.ApiOperation;
 
 
 @Controller
@@ -259,13 +258,13 @@ public class QuickPayController {
         }
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
-        CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
+        WabenBankType bankType = WabenBankType.getByPlateformBankType(BankType.getByCode(bindCard.getBankCode()));
         if (bankType == null) {
             throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
         }
         logger.info("验证通过,提现开始");
         quickPayBusiness.wbWithdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
-                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bindCard.getBranchName());
+                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bankType.getBank());
         resp.setResult("success");
         return resp;
     }
