@@ -1,6 +1,8 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -57,6 +59,7 @@ public class FuturesContractController {
 		PageInfo<FuturesContractDto> contractPage = futuresContractBusiness.pagesContract(query);
 		List<FuturesContractQuotationDto> quotationList = futuresContractBusiness
 				.pagesQuotations(contractPage.getContent());
+		Collections.sort(quotationList, new ContractComparator());
 		return new Response<>(new PageInfo<>(quotationList, contractPage.getTotalPages(), contractPage.getLast(),
 				contractPage.getTotalElements(), contractPage.getSize(), contractPage.getNumber(),
 				contractPage.getFrist()));
@@ -172,4 +175,14 @@ public class FuturesContractController {
 
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
 	}
+
+}
+
+class ContractComparator implements Comparator<FuturesContractQuotationDto> {
+
+	@Override
+	public int compare(FuturesContractQuotationDto quotation1, FuturesContractQuotationDto quotation2) {
+		return quotation1.getProductType().getSort() - quotation2.getProductType().getSort();
+	}
+
 }
