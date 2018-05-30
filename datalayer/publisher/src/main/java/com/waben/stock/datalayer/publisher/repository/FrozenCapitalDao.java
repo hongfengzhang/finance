@@ -13,7 +13,9 @@ public interface FrozenCapitalDao extends BaseDao<FrozenCapital, Long> {
 	FrozenCapital retriveByPublisherIdAndBuyRecordId(Long publisherId, Long buyRecordId);
 
 	FrozenCapital retriveByPublisherIdAndWithdrawalsNo(Long publisherId, String withdrawalsNo);
-	
+
 	FrozenCapital retriveByPublisherIdAndFuturesOrderId(Long publisherId, Long futuresOrderId);
+
+	FrozenCapital retriveByPublisherIdAndFuturesOvernightId(Long publisherId, Long futuresOvernightId);
 
 }

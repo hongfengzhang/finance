@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
@@ -25,6 +26,9 @@ import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.datalayer.futures.service.FuturesOvernightRecordService;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
+import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
+import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
+import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
@@ -57,6 +61,9 @@ public class WindControlSchedule {
 	@Autowired
 	private FuturesOvernightRecordService overnightService;
 
+	@Autowired
+	private CapitalFlowBusiness flowBusiness;
+
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -78,29 +85,31 @@ public class WindControlSchedule {
 					for (FuturesOrder order : content) {
 						FuturesContractTerm term = order.getContractTerm();
 						Integer timeZoneGap = retriveTimeZoneGap(order);
-						// step 3 : 是否合约到期
+						// step 3 : 是否触发退还隔夜保证金时间
+						checkAndDoReturnOvernightReserveFund(order);
+						// step 4 : 是否合约到期
 						if (isTradeTime(timeZoneGap, term) && isReachContractExpiration(timeZoneGap, term)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachContractExpiration,
 									FuturesTradePriceType.MKT, null);
 							continue;
 						}
-						// step 4 : 获取合约行情
+						// step 5 : 获取合约行情
 						FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getContractSymbol());
-						// step 5 : 是否达到止盈点
+						// step 6 : 是否达到止盈点
 						if (isTradeTime(timeZoneGap, term) && isReachProfitPoint(order, market)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachProfitPoint,
 									FuturesTradePriceType.MKT, null);
 							continue;
 						}
-						// step 6 : 是否达到止损点
+						// step 7 : 是否达到止损点
 						if (isTradeTime(timeZoneGap, term) && isReachLossPoint(order, market)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachLossPoint,
 									FuturesTradePriceType.MKT, null);
 							continue;
 						}
-						// step 7 : 是否触发隔夜时间
+						// step 8 : 是否触发隔夜时间
 						if (isTradeTime(timeZoneGap, term) && isTriggerOvernight(order)) {
-							// orderService.
+							orderService.overnight(order);
 							continue;
 						}
 					}
@@ -266,9 +275,9 @@ public class WindControlSchedule {
 			FuturesContract contract = order.getContract();
 			String overnightTime = contract.getOvernightTime();
 			try {
-				// 判断是否达到隔夜时间，隔夜时间~隔夜时间+5分钟
+				// 判断是否达到隔夜时间，隔夜时间~隔夜时间+1分钟
 				Date beginTime = daySdf.parse(nowStr + " " + overnightTime);
-				Date endTime = new Date(beginTime.getTime() + 5 * 60 * 1000);
+				Date endTime = new Date(beginTime.getTime() + 1 * 60 * 1000);
 				if (now.getTime() >= beginTime.getTime() && now.getTime() < endTime.getTime()) {
 					return true;
 				}
@@ -277,6 +286,51 @@ public class WindControlSchedule {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 判断是否触发退还隔夜保证金
+	 * 
+	 * @param order
+	 *            订单
+	 * @return 是否触发隔夜
+	 */
+	private void checkAndDoReturnOvernightReserveFund(FuturesOrder order) {
+		FuturesContract contract = order.getContract();
+		String returnOvernightReserveFundTime = contract.getReturnOvernightReserveFundTime();
+		Date now = new Date();
+		String nowStr = daySdf.format(now);
+		try {
+			// 判断是否到达退还隔夜保证金时间，退还隔夜保证金时间~退还隔夜保证金时间+1分钟
+			Date beginTime = daySdf.parse(nowStr + " " + returnOvernightReserveFundTime);
+			Date endTime = new Date(beginTime.getTime() + 1 * 60 * 1000);
+			if (now.getTime() >= beginTime.getTime() && now.getTime() < endTime.getTime()) {
+				// 如果到达退还隔夜保证金时间
+				FuturesOvernightRecord record = overnightService.findNewestOvernightRecord(order);
+				if (record != null) {
+					List<CapitalFlowDto> flowList = flowBusiness
+							.fetchByExtendTypeAndExtendId(CapitalFlowExtendType.FUTURESOVERNIGHTRECORD, record.getId());
+					if (flowList != null && flowList.size() > 0) {
+						boolean hasOvernightReserveFund = false;
+						boolean hasReturnOvernightReserveFund = false;
+						for (CapitalFlowDto flow : flowList) {
+							if (flow.getType() == CapitalFlowType.FuturesOvernightReserveFund) {
+								hasOvernightReserveFund = true;
+							}
+							if (flow.getType() == CapitalFlowType.FuturesReturnOvernightReserveFund) {
+								hasReturnOvernightReserveFund = true;
+							}
+						}
+						if (hasOvernightReserveFund && !hasReturnOvernightReserveFund) {
+							// 退还隔夜保证金
+							
+						}
+					}
+				}
+			}
+		} catch (ParseException e) {
+			logger.error("期货合约" + contract.getSymbol() + "隔夜时间格式错误?" + returnOvernightReserveFundTime);
+		}
 	}
 
 	/**

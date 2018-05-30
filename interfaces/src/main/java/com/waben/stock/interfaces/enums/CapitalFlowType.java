@@ -47,7 +47,9 @@ public enum CapitalFlowType implements CommonalityEnum {
 
 	FuturesOvernightDeferredFee("18", "期货隔夜递延费"),
 
-	FuturesOvernightReserveFund("19", "期货隔夜保证金");
+	FuturesOvernightReserveFund("19", "期货隔夜保证金"),
+	
+	FuturesReturnOvernightReserveFund("20", "退回期货隔夜保证金");
 
 	private String index;
 

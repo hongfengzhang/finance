@@ -745,4 +745,27 @@ public class CapitalAccountService {
 		}
 		return findByPublisherId(publisherId);
 	}
+
+	public CapitalAccount futuresReturnOvernightReserveFund(Long publisherId, Long overnightId,
+			BigDecimal reserveFund) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		Date date = new Date();
+		// 获取冻结资金记录
+		FrozenCapital frozen = frozenCapitalDao.retriveByPublisherIdAndFuturesOvernightId(publisherId, overnightId);
+		if (frozen.getStatus() == FrozenCapitalStatus.Thaw) {
+			return account;
+		}
+		BigDecimal frozenAmount = frozen.getAmount();
+		// 退回全部冻结资金
+		thawAmount(account, frozenAmount, frozenAmount, date);
+		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenAmount.abs()));
+		capitalAccountDao.update(account);
+		flowDao.create(account.getPublisher(), CapitalFlowType.FuturesReturnOvernightReserveFund, frozenAmount.abs(),
+				date, CapitalFlowExtendType.FUTURESOVERNIGHTRECORD, overnightId, account.getAvailableBalance());
+		// 修改冻结记录为解冻状态
+		frozen.setStatus(FrozenCapitalStatus.Thaw);
+		frozen.setThawTime(new Date());
+		frozenCapitalDao.update(frozen);
+		return findByPublisherId(publisherId);
+	}
 }

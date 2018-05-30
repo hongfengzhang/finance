@@ -414,10 +414,9 @@ public class FuturesOrderService {
 							reserveFund);
 				} catch (ServiceException ex) {
 					if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
-
-						// TODO
 						// step 1.1 : 余额不足，强制平仓
-						return sellingEntrust(order, FuturesWindControlType.DayUnwind, FuturesTradePriceType.MKT, null);
+						order = sellingEntrust(order, FuturesWindControlType.DayUnwind, FuturesTradePriceType.MKT, null);
+						futuresOrderDao.delete(overnightRecord.getId());
 					} else {
 						// 再一次确认是否已经扣款
 						try {
