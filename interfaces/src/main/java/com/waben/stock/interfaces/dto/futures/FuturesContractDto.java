@@ -1,7 +1,6 @@
 package com.waben.stock.interfaces.dto.futures;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import com.waben.stock.interfaces.enums.FuturesProductType;
 
@@ -88,11 +87,6 @@ public class FuturesContractDto {
 	 * 一手隔夜保证金
 	 */
 	private BigDecimal overnightPerUnitReserveFund;
-
-	/**
-	 * 是否递延
-	 */
-	private Boolean deferred;
 	/**
 	 * 一手隔夜递延费
 	 */
@@ -132,8 +126,6 @@ public class FuturesContractDto {
 	 * 北京时间的时差和交易所
 	 */
 	private Integer timeZoneGap;
-
-	private List<FuturesContractTermDto> futuresContractTermDto;
 
 	public Long getId() {
 		return id;
@@ -303,14 +295,6 @@ public class FuturesContractDto {
 		this.enable = enable;
 	}
 
-	public List<FuturesContractTermDto> getFuturesContractTermDto() {
-		return futuresContractTermDto;
-	}
-
-	public void setFuturesContractTermDto(List<FuturesContractTermDto> futuresContractTermDto) {
-		this.futuresContractTermDto = futuresContractTermDto;
-	}
-
 	public Integer getState() {
 		return state;
 	}
@@ -341,14 +325,6 @@ public class FuturesContractDto {
 
 	public void setTimeZoneGap(Integer timeZoneGap) {
 		this.timeZoneGap = timeZoneGap;
-	}
-
-	public Boolean getDeferred() {
-		return deferred;
-	}
-
-	public void setDeferred(Boolean deferred) {
-		this.deferred = deferred;
 	}
 
 	public FuturesProductType getProductType() {

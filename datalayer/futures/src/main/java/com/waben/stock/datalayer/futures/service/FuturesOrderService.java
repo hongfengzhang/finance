@@ -22,11 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.futures.business.FuturesContractBusiness;
+import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
 import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
-import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
@@ -60,10 +60,10 @@ public class FuturesOrderService {
 	private FuturesOrderDao futuresOrderDao;
 
 	@Autowired
-	private FuturesContractDao futuresContractDao;
+	private FuturesContractBusiness futuresContractBusiness;
 
 	@Autowired
-	private FuturesContractBusiness futuresContractBusiness;
+	private FuturesContractTermService futuresContractTermService;
 
 	@Autowired
 	private RabbitmqProducer producer;
@@ -146,6 +146,11 @@ public class FuturesOrderService {
 		order.setBuyingTime(date);
 		order.setState(FuturesOrderState.Position);
 		order.setContract(order.getContract());
+		List<FuturesContractTerm> termList = futuresContractTermService
+				.findByListContractId(order.getContract().getId());
+		if (termList != null && termList.size() > 0) {
+			order.setContractTerm(termList.get(0));
+		}
 		order = futuresOrderDao.create(order);
 		// 扣去金额、冻结保证金
 		try {

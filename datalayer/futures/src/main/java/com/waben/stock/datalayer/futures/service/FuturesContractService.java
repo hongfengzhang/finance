@@ -22,7 +22,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
-import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
@@ -142,10 +141,6 @@ public class FuturesContractService {
 				totalElements != null ? totalElements.longValue() : 0);
 	}
 
-	public List<FuturesContractTerm> findByListContractId(Long contractId) {
-		return futuresContractDao.findByListContractId(contractId);
-	}
-	
 	public FuturesContract saveExchange(FuturesContract exchange){
 		return futuresContractDao.create(exchange);
 	}

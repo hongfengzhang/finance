@@ -20,7 +20,7 @@ public class FuturesContractTermService {
 
 	@Autowired
 	private FuturesContractTermDao termDao;
-	
+
 	public FuturesContractTerm addContractTerm(FuturesContractTerm dto) {
 		return termDao.create(dto);
 	}
@@ -39,6 +39,10 @@ public class FuturesContractTermService {
 			return termList.get(0);
 		}
 		return null;
+	}
+
+	public List<FuturesContractTerm> findByListContractId(Long contractId) {
+		return termDao.findByListContractId(contractId);
 	}
 
 }

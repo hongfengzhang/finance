@@ -89,15 +89,15 @@ public class FuturesContractController {
 			// 单笔交易数量过大
 			throw new ServiceException(ExceptionConstant.SINGLE_TRANSACTION_QUANTITY_EXCEPTION);
 		}
+		if (perNum.compareTo(userMaxNum) > 0) {
+			// 交易数量大于用户持仓总量
+			throw new ServiceException(ExceptionConstant.CONTRACT_HOLDING_CAPACITY_INSUFFICIENT_EXCEPTION);
+		}
 		if (sumUserNum.abs().compareTo(userMaxNum) > 0 || sumTotal.compareTo(userMaxNum) > 0) {
 			// 该用户持仓量已达上限
 			throw new ServiceException(ExceptionConstant.UPPER_LIMIT_HOLDING_CAPACITY_EXCEPTION);
 		}
 
-		if (perNum.compareTo(userMaxNum) == -1) {
-			// 该合约持仓量不足
-			throw new ServiceException(ExceptionConstant.CONTRACT_HOLDING_CAPACITY_INSUFFICIENT_EXCEPTION);
-		}
 		// 验证支付密码
 		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(SecurityUtil.getUserId());
 		String storePaymentPassword = capitalAccount.getPaymentPassword();
@@ -119,7 +119,7 @@ public class FuturesContractController {
 
 		// 交易综合费 = (开仓手续费 + 平仓手续费)* 交易持仓数
 		BigDecimal comprehensiveAmount = openUnwin.multiply(buysellDto.getTotalQuantity());
-		
+
 		// 总金额 = 保证金金额 + 交易综合费
 		totalFee = perUnitReserveAmount.add(comprehensiveAmount);
 
