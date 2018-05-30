@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
-import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -65,23 +64,6 @@ public class FuturesContractBusiness {
 				throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
 			}
 			return contractDto;
-		}
-		throw new ServiceException(response.getCode());
-	}
-
-	public Integer sumUserNum(Long contractId, Long publisherId) {
-		Response<Integer> response = futuresOrderInterface.sumByListOrderContractIdAndPublisherId(contractId,
-				publisherId);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
-		}
-		throw new ServiceException(response.getCode());
-	}
-
-	public FuturesOrderDto buy(FuturesOrderDto orderDto) {
-		Response<FuturesOrderDto> response = futuresOrderInterface.addOrder(orderDto);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}

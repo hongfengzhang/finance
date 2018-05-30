@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
+import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -41,6 +42,9 @@ public class FuturesContractController {
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
 
+	@Autowired
+	private FuturesOrderBusiness futuresOrderBusiness;
+
 	@GetMapping("/pagesContract")
 	@ApiOperation(value = "获取期货合约列表")
 	public Response<PageInfo<FuturesContractDto>> pagesContract(int page, int size) throws Throwable {
@@ -64,7 +68,7 @@ public class FuturesContractController {
 		// 用户最大可持仓量
 		BigDecimal userMaxNum = contractDto.getUserTotalLimit();
 		// 用户持仓总数量
-		Integer sumUser = futuresContractBusiness.sumUserNum(buysellDto.getContractId(), SecurityUtil.getUserId());
+		Integer sumUser = futuresOrderBusiness.sumUserNum(buysellDto.getContractId(), SecurityUtil.getUserId());
 		BigDecimal sumUserNum = sumUser == null ? new BigDecimal(0) : new BigDecimal(sumUser);
 		// 当前用户单笔持仓数量
 		BigDecimal userNum = buysellDto.getTotalQuantity();
@@ -155,6 +159,6 @@ public class FuturesContractController {
 			orderDto.setBuyingEntrustPrice(buysellDto.getBuyingEntrustPrice());
 		}
 
-		return new Response<>(futuresContractBusiness.buy(orderDto));
+		return new Response<>(futuresOrderBusiness.buy(orderDto));
 	}
 }
