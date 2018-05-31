@@ -128,10 +128,6 @@ public class FuturesOrder {
 	 */
 	private BigDecimal perUnitLimitProfitAmount;
 	/**
-	 * 止盈价格点位
-	 */
-	private BigDecimal limitProfitPrice;
-	/**
 	 * 触发止损类型（用户设置）
 	 * <ul>
 	 * <li>1 价格</li>
@@ -143,10 +139,6 @@ public class FuturesOrder {
 	 * 止损金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitLossAmount;
-	/**
-	 * 止损价格点位
-	 */
-	private BigDecimal limitLossPrice;
 	/**
 	 * 订单状态
 	 */
@@ -215,6 +207,10 @@ public class FuturesOrder {
 	 * 平台盈亏（人民币）
 	 */
 	private BigDecimal platformProfitOrLoss;
+	/**
+	 * 结算时的汇率
+	 */
+	private BigDecimal settlementRate;
 	/**
 	 * 结算时间
 	 */
@@ -564,20 +560,12 @@ public class FuturesOrder {
 		this.contractTerm = contractTerm;
 	}
 
-	public BigDecimal getLimitProfitPrice() {
-		return limitProfitPrice;
+	public BigDecimal getSettlementRate() {
+		return settlementRate;
 	}
 
-	public void setLimitProfitPrice(BigDecimal limitProfitPrice) {
-		this.limitProfitPrice = limitProfitPrice;
-	}
-
-	public BigDecimal getLimitLossPrice() {
-		return limitLossPrice;
-	}
-
-	public void setLimitLossPrice(BigDecimal limitLossPrice) {
-		this.limitLossPrice = limitLossPrice;
+	public void setSettlementRate(BigDecimal settlementRate) {
+		this.settlementRate = settlementRate;
 	}
 
 }

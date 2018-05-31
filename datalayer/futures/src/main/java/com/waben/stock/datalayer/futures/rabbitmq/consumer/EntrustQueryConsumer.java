@@ -51,6 +51,7 @@ public class EntrustQueryConsumer {
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {
 					// 持仓中
 					orderService.positionOrder(orderId, gatewayOrder.getLastFillPrice());
+					isNeedRetry = false;
 				}
 			} else if (entrustType == 2) {
 				if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
@@ -59,6 +60,7 @@ public class EntrustQueryConsumer {
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {
 					// 已平仓
 					orderService.unwindOrder(orderId, gatewayOrder.getLastFillPrice());
+					isNeedRetry = false;
 				}
 			} else if (entrustType == 3) {
 				if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
@@ -68,6 +70,7 @@ public class EntrustQueryConsumer {
 					// 已平仓
 					orderService.unwindOrder(orderId, gatewayOrder.getLastFillPrice());
 					// TODO 反手以市价买入
+					isNeedRetry = false;
 				}
 			} else {
 				logger.error("错误的委托类型!");
@@ -86,7 +89,7 @@ public class EntrustQueryConsumer {
 	private void retry(EntrustQueryMessage messgeObj) {
 		try {
 			int consumeCount = messgeObj.getConsumeCount();
-			if (consumeCount < 60) {
+			if (consumeCount < 600) {
 				messgeObj.setConsumeCount(consumeCount + 1);
 				Thread.sleep(100);
 				producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, messgeObj);

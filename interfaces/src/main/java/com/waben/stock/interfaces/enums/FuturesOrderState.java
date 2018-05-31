@@ -15,17 +15,19 @@ public enum FuturesOrderState implements CommonalityEnum {
 	
 	BuyingEntrust("2", "买入委托"),
 	
-	Canceled("3", "已取消"),
+	BuyingCanceled("3", "取消买入委托"),
+	
+	BuyingFailure("4", "买入委托失败"),
 
-	PartPosition("4", "部分买入成功"),
+	PartPosition("5", "部分买入成功"),
 
-	Position("5", "持仓中"),
+	Position("6", "持仓中"),
 
-	SellingEntrust("6", "卖出委托"),
+	SellingEntrust("7", "卖出委托"),
 
-	PartUnwind("7", "部分已平仓"),
+	PartUnwind("8", "部分已平仓"),
 
-	Unwind("8", "已平仓");
+	Unwind("9", "已平仓");
 
 	private String index;
 

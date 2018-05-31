@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.futures.service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -83,6 +84,9 @@ public class FuturesOrderService {
 
 	@Autowired
 	private FuturesContractDao contractDao;
+
+	@Autowired
+	private FuturesCurrencyRateService rateService;
 
 	@Autowired
 	private FuturesContractTermDao termDao;
@@ -220,7 +224,7 @@ public class FuturesOrderService {
 		if (termList != null && termList.size() > 0) {
 			term = termList.get(0);
 		} else {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.CONTRACTTERM_NOTAVAILABLE_EXCEPTION);
 		}
 		// step 3 : 初始化订单
 		order.setTradeNo(UniqueCodeGenerator.generateTradeNo());
@@ -228,7 +232,7 @@ public class FuturesOrderService {
 		order.setPostTime(date);
 		order.setUpdateTime(date);
 		order.setState(FuturesOrderState.Posted);
-		order.setContract(order.getContract());
+		order.setContract(contract);
 		order.setContractTerm(term);
 		order = orderDao.create(order);
 		// step 4 : 扣去金额、冻结保证金
@@ -264,7 +268,9 @@ public class FuturesOrderService {
 		order = orderDao.update(order);
 		// step 7 : 放入委托查询队列（开仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
-		msg.setEntrustType(3);
+		msg.setOrderId(order.getId());
+		msg.setGatewayOrderId(gatewayOrder.getId());
+		msg.setEntrustType(1);
 		producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, msg);
 		// step 8 : 站外消息推送
 		sendOutsideMessage(order);
@@ -290,8 +296,8 @@ public class FuturesOrderService {
 						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“买入委托”状态", order.getContractName()));
 				extras.put("type", OutsideMessageType.FUTURES_BUYINGENTRUST.getIndex());
 				break;
-			case Canceled:
-				message.setContent(String.format("您所购买的“%s”期货已进入“已取消”状态", order.getContractName()));
+			case BuyingCanceled:
+				message.setContent(String.format("您所购买的“%s”期货已进入“取消买入委托”状态", order.getContractName()));
 				extras.put("content",
 						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已取消”状态", order.getContractName()));
 				extras.put("type", OutsideMessageType.FUTURES_CANCELED.getIndex());
@@ -351,9 +357,10 @@ public class FuturesOrderService {
 		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust)) {
 			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
-		// TODO 撤单退款
+		// 撤单退款
+		accountBusiness.futuresOrderRevoke(order.getPublisherId(), order.getId(), order.getServiceFee());
 		// 修改订单状态
-		order.setState(FuturesOrderState.Canceled);
+		order.setState(FuturesOrderState.BuyingCanceled);
 		order.setUpdateTime(new Date());
 		orderDao.update(order);
 		// 站外消息推送
@@ -417,7 +424,6 @@ public class FuturesOrderService {
 				|| order.getState() == FuturesOrderState.PartPosition)) {
 			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
-		// TODO 计算止盈、止损点位
 		// 修改订单状态
 		Date date = new Date();
 		order.setBuyingPrice(buyingPrice);
@@ -445,9 +451,35 @@ public class FuturesOrderService {
 				|| order.getState() == FuturesOrderState.PartUnwind)) {
 			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
-		// TODO 给用户结算
+		// 盈亏（交易所货币）
+		BigDecimal currencyProfitOrLoss = computeProfitOrLoss(order.getOrderType(), order.getTotalQuantity(),
+				order.getBuyingPrice(), order.getSellingPrice(), order.getContract().getMinWave(),
+				order.getContract().getPerWaveMoney());
+		// 盈亏（人民币）
+		BigDecimal rate = rateService.findByCurrency(order.getContractCurrency()).getRate();
+		BigDecimal profitOrLoss = currencyProfitOrLoss.multiply(rate).setScale(2, RoundingMode.DOWN);
+		// 给用户结算
+		CapitalAccountDto account = accountBusiness.futuresOrderSettlement(order.getPublisherId(), order.getId(),
+				profitOrLoss);
+		// 发布人盈亏（人民币）、平台盈亏（人民币）
+		BigDecimal publisherProfitOrLoss = BigDecimal.ZERO;
+		BigDecimal platformProfitOrLoss = BigDecimal.ZERO;
+		if (profitOrLoss.compareTo(BigDecimal.ZERO) > 0) {
+			publisherProfitOrLoss = profitOrLoss;
+		} else if (profitOrLoss.compareTo(BigDecimal.ZERO) < 0) {
+			publisherProfitOrLoss = account.getRealProfitOrLoss();
+			if (profitOrLoss.abs().compareTo(publisherProfitOrLoss.abs()) > 0) {
+				platformProfitOrLoss = profitOrLoss.abs().subtract(publisherProfitOrLoss.abs())
+						.multiply(new BigDecimal(-1));
+			}
+		}
 		// 修改订单状态
 		Date date = new Date();
+		order.setCurrencyProfitOrLoss(currencyProfitOrLoss);
+		order.setProfitOrLoss(profitOrLoss);
+		order.setPublisherProfitOrLoss(publisherProfitOrLoss);
+		order.setPlatformProfitOrLoss(platformProfitOrLoss);
+		order.setSettlementRate(rate);
 		order.setSellingPrice(sellingPrice);
 		order.setSellingTime(date);
 		order.setState(FuturesOrderState.Unwind);
@@ -456,6 +488,34 @@ public class FuturesOrderService {
 		// 站外消息推送
 		sendOutsideMessage(order);
 		return order;
+	}
+
+	/**
+	 * 计算盈利或者亏损（交易所货币）
+	 * 
+	 * @param orderType
+	 *            订单类型
+	 * @param buyingPrice
+	 *            买入价格
+	 * @param sellingPrice
+	 *            卖出价格
+	 * @param minWave
+	 *            最小波动
+	 * @param perWaveMoney
+	 *            波动一次盈亏金额，单位为该合约的货币单位
+	 * @param rate
+	 *            汇率
+	 * @return 盈利或者亏损值
+	 */
+	private BigDecimal computeProfitOrLoss(FuturesOrderType orderType, BigDecimal totalQuantity, BigDecimal buyingPrice,
+			BigDecimal sellingPrice, BigDecimal minWave, BigDecimal perWaveMoney) {
+		BigDecimal waveMoney = sellingPrice.subtract(buyingPrice).divide(minWave).setScale(4, RoundingMode.DOWN)
+				.multiply(perWaveMoney);
+		if (orderType == FuturesOrderType.BuyUp) {
+			return waveMoney;
+		} else {
+			return waveMoney.multiply(new BigDecimal(-1));
+		}
 	}
 
 	/**

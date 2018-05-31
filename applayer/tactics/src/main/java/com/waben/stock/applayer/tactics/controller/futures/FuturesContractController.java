@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
-import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.enums.FuturesProductType;
@@ -41,26 +40,6 @@ public class FuturesContractController {
 
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
-
-	// @GetMapping("/pagesContract")
-	// @ApiOperation(value = "获取期货合约列表")
-	// public Response<PageInfo<FuturesContractQuotationDto>> pagesContract(int
-	// page, int size) throws Throwable {
-	// FuturesContractQuery query = new FuturesContractQuery();
-	// query.setPage(page);
-	// query.setSize(size);
-	// query.setContractId(0L);
-	// PageInfo<FuturesContractDto> contractPage =
-	// futuresContractBusiness.pagesContract(query);
-	// List<FuturesContractQuotationDto> quotationList = futuresContractBusiness
-	// .pagesQuotations(contractPage.getContent());
-	// Collections.sort(quotationList, new ContractComparator());
-	// return new Response<>(new PageInfo<>(quotationList,
-	// contractPage.getTotalPages(), contractPage.getLast(),
-	// contractPage.getTotalElements(), contractPage.getSize(),
-	// contractPage.getNumber(),
-	// contractPage.getFrist()));
-	// }
 
 	@GetMapping("/pagesContract")
 	@ApiOperation(value = "获取期货合约列表")

@@ -30,6 +30,10 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 	 * 昨收
 	 */
 	private BigDecimal closePrice;
+	/**
+	 * 品种分类名称
+	 */
+	private String productTypeName;
 
 	public BigDecimal getLastPrice() {
 		return lastPrice;
@@ -61,6 +65,13 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 
 	public void setUpDropPrice(BigDecimal upDropPrice) {
 		this.upDropPrice = upDropPrice;
+	}
+
+	public String getProductTypeName() {
+		if (getProductType() != null) {
+			return getProductType().getValue();
+		}
+		return productTypeName;
 	}
 
 }

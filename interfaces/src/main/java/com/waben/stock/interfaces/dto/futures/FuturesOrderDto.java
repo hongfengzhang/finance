@@ -186,6 +186,10 @@ public class FuturesOrderDto {
 	 */
 	private BigDecimal platformProfitOrLoss;
 	/**
+	 * 结算时的汇率
+	 */
+	private BigDecimal settlementRate;
+	/**
 	 * 结算时间
 	 */
 	private Date settlementTime;
@@ -560,6 +564,14 @@ public class FuturesOrderDto {
 
 	public void setIsTest(Boolean isTest) {
 		this.isTest = isTest;
+	}
+
+	public BigDecimal getSettlementRate() {
+		return settlementRate;
+	}
+
+	public void setSettlementRate(BigDecimal settlementRate) {
+		this.settlementRate = settlementRate;
 	}
 
 }
