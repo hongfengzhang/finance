@@ -97,4 +97,14 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public CapitalAccountDto futuresReturnOvernightReserveFund(Long publisherId, Long overnightId,
+			BigDecimal reserveFund) {
+		Response<CapitalAccountDto> response = service.futuresReturnOvernightReserveFund(publisherId, overnightId,
+				reserveFund);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }
