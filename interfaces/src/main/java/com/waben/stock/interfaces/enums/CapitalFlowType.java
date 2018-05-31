@@ -26,18 +26,30 @@ public enum CapitalFlowType implements CommonalityEnum {
 	Loss("7", "亏损"),
 
 	Profit("8", "盈利"),
-	
+
 	Promotion("9", "推广佣金"),
-	
+
 	Revoke("10", "撤单退款"),
-	
+
 	ReturnDeferredCharges("11", "退回递延费"),
-	
+
 	RightMoney("12", "期权权利金"),
-	
+
 	ReturnRightMoney("13", "退回期权权利金"),
+
+	StockOptionProfit("14", "期权盈利"),
+
+	FuturesServiceFee("15", "期货交易手续费"),
+
+	FuturesReserveFund("16", "冻结期货履约保证金"),
+
+	FuturesReturnReserveFund("17", "退回期货履约保证金"),
+
+	FuturesOvernightDeferredFee("18", "期货隔夜递延费"),
+
+	FuturesOvernightReserveFund("19", "期货隔夜保证金"),
 	
-	StockOptionProfit("14", "期权盈利");
+	FuturesReturnOvernightReserveFund("20", "退回期货隔夜保证金");
 
 	private String index;
 

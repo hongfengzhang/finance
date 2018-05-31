@@ -20,8 +20,10 @@ public enum CapitalFlowExtendType implements CommonalityEnum {
 	PAYMENTORDER("4", "支付订单"),
 
 	WITHDRAWALSORDER("5", "提现订单"),
-	
-	FUTURESRECORD("6", "期货订单记录");
+
+	FUTURESRECORD("6", "期货订单记录"),
+
+	FUTURESOVERNIGHTRECORD("7", "期货订单过夜记录");
 
 	private String index;
 	private String type;

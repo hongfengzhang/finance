@@ -52,9 +52,9 @@ public class FuturesContractBusiness {
 	}
 
 	public CapitalAccountDto futuresOrderServiceFeeAndReserveFund(Long publisherId, Long orderId, BigDecimal serviceFee,
-			BigDecimal reserveFund, BigDecimal deferredFee) {
+			BigDecimal reserveFund) {
 		Response<CapitalAccountDto> response = service.futuresOrderServiceFeeAndReserveFund(publisherId, orderId,
-				serviceFee, reserveFund, deferredFee);
+				serviceFee, reserveFund);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

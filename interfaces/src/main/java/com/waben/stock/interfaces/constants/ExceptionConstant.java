@@ -242,7 +242,7 @@ public class ExceptionConstant {
 	public static final String SINGLE_TRANSACTION_QUANTITY_EXCEPTION = "13002";
 	// 该用户持仓量已达上限
 	public static final String UPPER_LIMIT_HOLDING_CAPACITY_EXCEPTION = "13003";
-	// 该合约持仓量不足
+	// 选择交易数量大于用户持仓总量
 	public static final String CONTRACT_HOLDING_CAPACITY_INSUFFICIENT_EXCEPTION = "13004";
 	// 该合约不存在
 	public static final String CONTRACT_DOESNOT_EXIST_EXCEPTION = "13005";

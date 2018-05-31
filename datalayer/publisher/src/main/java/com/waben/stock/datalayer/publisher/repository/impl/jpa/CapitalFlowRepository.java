@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import com.waben.stock.datalayer.publisher.entity.CapitalFlow;
 import com.waben.stock.datalayer.publisher.entity.Publisher;
+import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.CapitalFlowType;
 
 /**
@@ -21,5 +22,7 @@ public interface CapitalFlowRepository extends CustomJpaRepository<CapitalFlow, 
 
 	@Query("select sum(amount) from CapitalFlow where publisherId=?1 and type=?2")
 	BigDecimal promotionTotalAmount(Long publisherId, CapitalFlowType type);
+
+	List<CapitalFlow> findByExtendTypeAndExtendId(CapitalFlowExtendType extendType, Long extendId);
 
 }

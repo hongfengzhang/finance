@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.futures.repository.impl.jpa;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
@@ -15,6 +16,6 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
  */
 public interface FuturesContractRepository extends CustomJpaRepository<FuturesContract, Long> {
 
-	@Query("select f from FuturesContractTerm f where f.current= 1 and f.contract.id = ?1")
-	List<FuturesContractTerm> findByContractId(Long contractId);
+	@Query(value = "select * from f_futures_contract_term f where f.contract_id=?1 ", nativeQuery = true)
+	List<FuturesContractTerm> findByListContractId(@PathVariable("contractId") Long contractId);
 }

@@ -1,7 +1,8 @@
 package com.waben.stock.interfaces.dto.futures;
 
 import java.math.BigDecimal;
-import java.util.List;
+
+import com.waben.stock.interfaces.enums.FuturesProductType;
 
 public class FuturesContractDto {
 
@@ -30,6 +31,10 @@ public class FuturesContractDto {
 	 * 汇率
 	 */
 	private BigDecimal rate;
+	/**
+	 * 品种分类
+	 */
+	private FuturesProductType productType;
 	/**
 	 * 乘数（1手等于多少股）
 	 */
@@ -82,11 +87,6 @@ public class FuturesContractDto {
 	 * 一手隔夜保证金
 	 */
 	private BigDecimal overnightPerUnitReserveFund;
-
-	/**
-	 * 是否递延
-	 */
-	private Boolean deferred;
 	/**
 	 * 一手隔夜递延费
 	 */
@@ -127,8 +127,6 @@ public class FuturesContractDto {
 	 */
 	private Integer timeZoneGap;
 
-	private List<FuturesContractTermDto> futuresContractTermDto;
-
 	public Long getId() {
 		return id;
 	}
@@ -168,7 +166,7 @@ public class FuturesContractDto {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-	
+
 	public String getCurrencyName() {
 		return currencyName;
 	}
@@ -180,7 +178,7 @@ public class FuturesContractDto {
 	public BigDecimal getRate() {
 		return rate;
 	}
-	
+
 	public void setRate(BigDecimal rate) {
 		this.rate = rate;
 	}
@@ -189,7 +187,6 @@ public class FuturesContractDto {
 		return multiplier;
 	}
 
-	
 	public void setMultiplier(Integer multiplier) {
 		this.multiplier = multiplier;
 	}
@@ -298,14 +295,6 @@ public class FuturesContractDto {
 		this.enable = enable;
 	}
 
-	public List<FuturesContractTermDto> getFuturesContractTermDto() {
-		return futuresContractTermDto;
-	}
-
-	public void setFuturesContractTermDto(List<FuturesContractTermDto> futuresContractTermDto) {
-		this.futuresContractTermDto = futuresContractTermDto;
-	}
-
 	public Integer getState() {
 		return state;
 	}
@@ -338,12 +327,12 @@ public class FuturesContractDto {
 		this.timeZoneGap = timeZoneGap;
 	}
 
-	public Boolean getDeferred() {
-		return deferred;
+	public FuturesProductType getProductType() {
+		return productType;
 	}
 
-	public void setDeferred(Boolean deferred) {
-		this.deferred = deferred;
+	public void setProductType(FuturesProductType productType) {
+		this.productType = productType;
 	}
 
 }

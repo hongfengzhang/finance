@@ -44,16 +44,15 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
-	
+
 	/**
 	 * 汇率
 	 */
 	@OneToOne
 	@JoinColumn(name = "rate_id")
 	private FuturesCurrencyRate currencyRate;
-	
 	/**
-	 * 产品分类
+	 * 品种分类
 	 */
 	@Convert(converter = FuturesProductTypeConverter.class)
 	private FuturesProductType productType;
@@ -111,9 +110,16 @@ public class FuturesContract {
 	 */
 	private BigDecimal unwindServiceFee;
 	/**
-	 * 隔夜时间
+	 * 隔夜时间（交易所时间）
+	 * <p>
+	 * 格式如04:50:00，该时间为收取隔夜手续费和递延费的时间
+	 * </p>
 	 */
 	private String overnightTime;
+	/**
+	 * 返还隔夜保证金的时间（交易所时间）
+	 */
+	private String returnOvernightReserveFundTime;
 	/**
 	 * 一手隔夜保证金
 	 */
@@ -315,6 +321,14 @@ public class FuturesContract {
 
 	public void setProductType(FuturesProductType productType) {
 		this.productType = productType;
+	}
+
+	public String getReturnOvernightReserveFundTime() {
+		return returnOvernightReserveFundTime;
+	}
+
+	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
+		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
 	}
 
 }

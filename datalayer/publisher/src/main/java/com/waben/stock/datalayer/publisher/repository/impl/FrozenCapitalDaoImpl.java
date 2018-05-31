@@ -75,4 +75,9 @@ public class FrozenCapitalDaoImpl implements FrozenCapitalDao {
 		return repository.findByPublisherIdAndFuturesOrderId(publisherId, futuresOrderId);
 	}
 
+	@Override
+	public FrozenCapital retriveByPublisherIdAndFuturesOvernightId(Long publisherId, Long futuresOvernightId) {
+		return repository.findByPublisherIdAndFuturesOvernightId(publisherId, futuresOvernightId);
+	}
+
 }

@@ -33,7 +33,6 @@ public class FrozenCapitalDto {
 	 * 点买记录ID
 	 */
 	private Long buyRecordId;
-
 	/**
 	 * 期货订单ID
 	 */

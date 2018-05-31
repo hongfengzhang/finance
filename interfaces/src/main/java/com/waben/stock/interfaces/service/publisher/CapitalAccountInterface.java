@@ -137,18 +137,52 @@ public interface CapitalAccountInterface {
 	@RequestMapping(value = "/{publisherId}/{orderId}/futures/serviceFee/{serviceFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
 	Response<CapitalAccountDto> futuresOrderServiceFeeAndReserveFund(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("orderId") Long orderId, @PathVariable("serviceFee") BigDecimal serviceFee,
-			@PathVariable("reserveFund") BigDecimal reserveFund, @RequestParam("deferredFee") BigDecimal deferredFee);
+			@PathVariable("reserveFund") BigDecimal reserveFund);
 
 	/**
-	 * 确认是否已经扣款
+	 * 获取期货保证金冻结记录
 	 * 
 	 * @param publisherId
 	 *            用户ID
 	 * @param orderId
 	 *            期货订单ID
-	 * @return 资金账号对象
+	 * @return 期货保证金冻结记录
 	 */
 	@RequestMapping(value = "/futuresOrderFetchFrozenCapital/{publisherId}/{orderId}/", method = RequestMethod.GET)
 	Response<FrozenCapitalDto> futuresOrderFetchFrozenCapital(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("orderId") Long orderId);
+
+	/**
+	 * 期货订单隔夜
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param overnightId
+	 *            隔夜记录ID
+	 * @param deferredFee
+	 *            隔夜递延费
+	 * @param reserveFund
+	 *            隔夜保证金
+	 * @return 资金账号对象
+	 */
+	@RequestMapping(value = "/{publisherId}/{overnightId}/futures/overnightDeferredFee/{deferredFee}/reserveFund/{reserveFund}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> futuresOrderOvernight(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("overnightId") Long overnightId, @PathVariable("deferredFee") BigDecimal deferredFee,
+			@PathVariable("reserveFund") BigDecimal reserveFund);
+
+	/**
+	 * 期货退还隔夜保证金
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param overnightId
+	 *            隔夜记录ID
+	 * @param reserveFund
+	 *            隔夜保证金
+	 * @return 资金账号对象
+	 */
+	@RequestMapping(value = "/{publisherId}/{overnightId}/futures/returnOvernightReserveFund/{reserveFund}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> futuresReturnOvernightReserveFund(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("overnightId") Long overnightId, @PathVariable("reserveFund") BigDecimal reserveFund);
+
 }

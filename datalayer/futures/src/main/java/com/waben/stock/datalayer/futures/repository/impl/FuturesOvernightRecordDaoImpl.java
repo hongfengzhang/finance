@@ -6,9 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.repository.FuturesOvernightRecordDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesOvernightRecordRepository;
@@ -58,6 +61,12 @@ public class FuturesOvernightRecordDaoImpl implements FuturesOvernightRecordDao 
 	@Override
 	public List<FuturesOvernightRecord> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<FuturesOvernightRecord> retrieveByOrder(FuturesOrder order) {
+		Sort sort = new Sort(new Sort.Order(Direction.DESC, "deferredTime"));
+		return repository.findByOrder(order, sort);
 	}
 
 }

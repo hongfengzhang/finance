@@ -18,6 +18,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
+import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
@@ -44,8 +45,11 @@ public class FuturesContractController implements FuturesContractInterface {
 	private FuturesContractService futuresContractService;
 
 	@Autowired
+	private FuturesContractTermService futuresContractTermService;
+
+	@Autowired
 	private FuturesExchangeService exchangeService;
-	
+
 	@Autowired
 	private FuturesCurrencyRateService rateService;
 
@@ -62,6 +66,8 @@ public class FuturesContractController implements FuturesContractInterface {
 				if (futuresContractDto.getId() == futuresContract.getId()) {
 					futuresContractDto.setChangeEnable(futuresContract.getExchange().getEnable());
 					futuresContractDto.setTimeZoneGap(futuresContract.getExchange().getTimeZoneGap());
+					futuresContractDto.setRate(futuresContract.getCurrencyRate().getRate());
+					futuresContractDto.setCurrencyName(futuresContract.getCurrencyRate().getCurrencyName());
 				}
 			}
 			// 判断交易所 和 合约是否可用
@@ -71,7 +77,7 @@ public class FuturesContractController implements FuturesContractInterface {
 				break;
 			}
 
-			List<FuturesContractTerm> termList = futuresContractService
+			List<FuturesContractTerm> termList = futuresContractTermService
 					.findByListContractId(futuresContractDto.getId());
 
 			if (termList == null || termList.size() == 0) {
@@ -184,12 +190,12 @@ public class FuturesContractController implements FuturesContractInterface {
 		query.setSize(Integer.MAX_VALUE);
 		query.setCode(contractDto.getExchangcode());
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
-		
-		//获取汇率
+
+		// 获取汇率
 		FuturesCurrencyRate rate = new FuturesCurrencyRate();
 		rate.setCurrencyName(contractDto.getCurrency());
 		rate.setRate(contractDto.getRate());
-		
+
 		fcontract.setCurrencyRate(rateService.queryRate(rate));
 		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
 
@@ -207,11 +213,11 @@ public class FuturesContractController implements FuturesContractInterface {
 		query.setSize(Integer.MAX_VALUE);
 		query.setCode(contractDto.getExchangcode());
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
-		//获取汇率
+		// 获取汇率
 		FuturesCurrencyRate rate = new FuturesCurrencyRate();
 		rate.setCurrencyName(contractDto.getCurrency());
 		rate.setRate(contractDto.getRate());
-		
+
 		fcontract.setCurrencyRate(rateService.queryRate(rate));
 		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
 
@@ -236,7 +242,7 @@ public class FuturesContractController implements FuturesContractInterface {
 			result.getContent().get(i).setExchangeType(page.getContent().get(i).getExchange().getExchangeType());
 			result.getContent().get(i).setProductType(page.getContent().get(i).getProductType().getValue());
 			result.getContent().get(i).setRate(page.getContent().get(i).getCurrencyRate().getRate());
-			List<FuturesContractTerm> list = futuresContractService.findByListContractId(page.getContent().get(i).getExchange().getId());
+			List<FuturesContractTerm> list = futuresContractService.findByListContractId(page.getContent().get(i).getId());
 			List<FuturesTermAdminDto> resultList = new ArrayList<FuturesTermAdminDto>();
 			for (FuturesContractTerm term : list) {
 				FuturesTermAdminDto dto = CopyBeanUtils.copyBeanProperties(term, new FuturesTermAdminDto(), false);
@@ -245,6 +251,6 @@ public class FuturesContractController implements FuturesContractInterface {
 			result.getContent().get(i).setFuturesTermAdminDto(resultList);
  		}
 		return new Response<>(result);
-	}
+	}	
 
 }

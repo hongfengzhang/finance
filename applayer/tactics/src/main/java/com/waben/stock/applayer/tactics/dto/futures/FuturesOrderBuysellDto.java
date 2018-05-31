@@ -33,9 +33,6 @@ public class FuturesOrderBuysellDto {
 	@ApiModelProperty(value = "支付密码")
 	private String paymentPassword;
 
-	@ApiModelProperty(value = "是否递延", required = true)
-	private Boolean deferred;
-
 	@ApiModelProperty(value = "买入价格类型")
 	private FuturesTradePriceType buyingPriceType;
 
@@ -104,14 +101,6 @@ public class FuturesOrderBuysellDto {
 
 	public void setPaymentPassword(String paymentPassword) {
 		this.paymentPassword = paymentPassword;
-	}
-
-	public Boolean getDeferred() {
-		return deferred;
-	}
-
-	public void setDeferred(Boolean deferred) {
-		this.deferred = deferred;
 	}
 
 	public FuturesTradePriceType getBuyingPriceType() {

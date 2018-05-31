@@ -63,8 +63,7 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 
 	@Override
 	public List<FuturesContractTerm> findByListContractId(Long contractId) {
-		return repository.findByContractId(contractId);
+		return repository.findByListContractId(contractId);
 	}
-
 
 }

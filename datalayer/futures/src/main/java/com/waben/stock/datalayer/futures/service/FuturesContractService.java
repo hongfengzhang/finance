@@ -212,10 +212,6 @@ public class FuturesContractService {
 				totalElements != null ? totalElements.longValue() : 0);
 	}
 
-	public List<FuturesContractTerm> findByListContractId(Long contractId) {
-		return futuresContractDao.findByListContractId(contractId);
-	}
-	
 	public FuturesContract saveExchange(FuturesContract exchange){
 		return futuresContractDao.create(exchange);
 	}
@@ -230,6 +226,10 @@ public class FuturesContractService {
 	
 	public void deleteExchange(Long id){
 		futuresContractDao.delete(id);
+	}
+	
+	public List<FuturesContractTerm> findByListContractId(Long contractId) {
+		return futuresContractDao.findByListContractId(contractId);
 	}
 	
 	public Page<FuturesContract> pagesContractAdmin(final FuturesContract query,int page,int limit) {

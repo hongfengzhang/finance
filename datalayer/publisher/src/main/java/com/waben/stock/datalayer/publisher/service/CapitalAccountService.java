@@ -683,7 +683,7 @@ public class CapitalAccountService {
 	 */
 	@Transactional
 	public synchronized CapitalAccount futuresOrderServiceFeeAndReserveFund(Long publisherId, Long orderId,
-			BigDecimal serviceFee, BigDecimal reserveFund, BigDecimal deferredFee) {
+			BigDecimal serviceFee, BigDecimal reserveFund) {
 		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
 		Date date = new Date();
 		// 扣减服务费
@@ -691,13 +691,6 @@ public class CapitalAccountService {
 			reduceAmount(account, serviceFee, date);
 			flowDao.create(account.getPublisher(), CapitalFlowType.ServiceFee,
 					serviceFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
-					account.getAvailableBalance());
-		}
-		// 扣减递延费
-		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
-			reduceAmount(account, deferredFee, date);
-			flowDao.create(account.getPublisher(), CapitalFlowType.DeferredCharges,
-					deferredFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
 					account.getAvailableBalance());
 		}
 		// 冻结履约保证金
@@ -721,5 +714,58 @@ public class CapitalAccountService {
 
 	public FrozenCapital findFuturesOrderFrozenCapital(Long publisherId, Long orderId) {
 		return frozenCapitalDao.retriveByPublisherIdAndFuturesOrderId(publisherId, orderId);
+	}
+
+	public CapitalAccount futuresOrderOvernight(Long publisherId, Long overnightId, BigDecimal deferredFee,
+			BigDecimal reserveFund) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		Date date = new Date();
+		// 扣减隔夜递延费
+		if (deferredFee != null && deferredFee.compareTo(new BigDecimal(0)) > 0) {
+			reduceAmount(account, deferredFee, date);
+			flowDao.create(account.getPublisher(), CapitalFlowType.FuturesOvernightDeferredFee,
+					deferredFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESOVERNIGHTRECORD,
+					overnightId, account.getAvailableBalance());
+		}
+		// 冻结隔夜保证金
+		if (reserveFund != null && reserveFund.abs().compareTo(new BigDecimal(0)) > 0) {
+			frozenAmount(account, reserveFund, date);
+			flowDao.create(account.getPublisher(), CapitalFlowType.FuturesOvernightReserveFund,
+					reserveFund.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESOVERNIGHTRECORD,
+					overnightId, account.getAvailableBalance());
+			// 保存冻结资金记录
+			FrozenCapital frozen = new FrozenCapital();
+			frozen.setAmount(reserveFund.abs());
+			frozen.setFuturesOvernightId(overnightId);
+			frozen.setFrozenTime(date);
+			frozen.setPublisherId(publisherId);
+			frozen.setStatus(FrozenCapitalStatus.Frozen);
+			frozen.setType(FrozenCapitalType.FuturesOvernightFund);
+			frozenCapitalDao.create(frozen);
+		}
+		return findByPublisherId(publisherId);
+	}
+
+	public CapitalAccount futuresReturnOvernightReserveFund(Long publisherId, Long overnightId,
+			BigDecimal reserveFund) {
+		CapitalAccount account = capitalAccountDao.retriveByPublisherId(publisherId);
+		Date date = new Date();
+		// 获取冻结资金记录
+		FrozenCapital frozen = frozenCapitalDao.retriveByPublisherIdAndFuturesOvernightId(publisherId, overnightId);
+		if (frozen.getStatus() == FrozenCapitalStatus.Thaw) {
+			return account;
+		}
+		BigDecimal frozenAmount = frozen.getAmount();
+		// 退回全部冻结资金
+		thawAmount(account, frozenAmount, frozenAmount, date);
+		account.setFrozenCapital(account.getFrozenCapital().subtract(frozenAmount.abs()));
+		capitalAccountDao.update(account);
+		flowDao.create(account.getPublisher(), CapitalFlowType.FuturesReturnOvernightReserveFund, frozenAmount.abs(),
+				date, CapitalFlowExtendType.FUTURESOVERNIGHTRECORD, overnightId, account.getAvailableBalance());
+		// 修改冻结记录为解冻状态
+		frozen.setStatus(FrozenCapitalStatus.Thaw);
+		frozen.setThawTime(new Date());
+		frozenCapitalDao.update(frozen);
+		return findByPublisherId(publisherId);
 	}
 }

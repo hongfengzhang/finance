@@ -119,7 +119,7 @@ public class FuturesOrderService {
 			futuresOrder.setTwsOrderType(OrderType.MKT.toString());
 		}
 		Contract contract = new Contract();
-		contract.symbol(futuresContract.getSymbol());
+		contract.localSymbol(futuresContract.getLocalSymbolName());
 		contract.secType(futuresContract.getSecType());
 		contract.currency(futuresContract.getCurrency());
 		contract.exchange(futuresContract.getExchange());

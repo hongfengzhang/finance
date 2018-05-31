@@ -2,6 +2,8 @@ package com.waben.stock.datalayer.futures.repository;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.PathVariable;
+
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 
@@ -12,7 +14,6 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
  *
  */
 public interface FuturesContractDao extends BaseDao<FuturesContract, Long> {
-
 	
-	List<FuturesContractTerm> findByListContractId(Long contractId);
+	List<FuturesContractTerm> findByListContractId(@PathVariable("contractId") Long contractId);
 }

@@ -1,12 +1,17 @@
 package com.waben.stock.applayer.tactics.business.futures;
 
+import java.math.RoundingMode;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
+import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
-import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -15,6 +20,7 @@ import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.service.futures.FuturesOrderInterface;
 import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 @Service
 public class FuturesContractBusiness {
@@ -47,6 +53,29 @@ public class FuturesContractBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public List<FuturesContractQuotationDto> pagesQuotations(List<FuturesContractDto> list) {
+		List<FuturesContractQuotationDto> quotationList = CopyBeanUtils.copyListBeanPropertiesToList(list,
+				FuturesContractQuotationDto.class);
+		if (quotationList.size() > 0) {
+			for (FuturesContractQuotationDto quotation : quotationList) {
+				FuturesContractMarket market = RetriveFuturesOverHttp.market(quotation.getSymbol());
+				// 最新价
+				quotation.setLastPrice(market.getLastPrice());
+				// 涨跌幅 = （最新价 - 昨天收盘价）/ 昨天收盘价
+				quotation.setRiseAndFall(market.getLastPrice().subtract(market.getClosePrice())
+						.divide(market.getClosePrice(), 4, RoundingMode.DOWN));
+				// 涨跌量 = 最新价 - 昨天收盘价
+				// quotation.setRiseFallNum(market.getLastPrice().subtract(market.getClosePrice()));
+				// 买量
+				// quotation.setBuyNum(market.getBidSize());
+				// 卖量
+				// quotation.setSellNum(market.getAskSize());
+
+			}
+		}
+		return quotationList;
+	}
+
 	public FuturesContractDto getContractByOne(FuturesContractQuery query) throws Throwable {
 		Response<PageInfo<FuturesContractDto>> response = futuresContractInterface.pagesContract(query);
 		if ("200".equals(response.getCode())) {
@@ -65,23 +94,6 @@ public class FuturesContractBusiness {
 				throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
 			}
 			return contractDto;
-		}
-		throw new ServiceException(response.getCode());
-	}
-
-	public Integer sumUserNum(Long contractId, Long publisherId) {
-		Response<Integer> response = futuresOrderInterface.sumByListOrderContractIdAndPublisherId(contractId,
-				publisherId);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
-		}
-		throw new ServiceException(response.getCode());
-	}
-
-	public FuturesOrderDto buy(FuturesOrderDto orderDto) {
-		Response<FuturesOrderDto> response = futuresOrderInterface.addOrder(orderDto);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
