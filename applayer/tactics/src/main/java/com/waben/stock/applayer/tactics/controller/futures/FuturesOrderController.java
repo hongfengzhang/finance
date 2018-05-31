@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,10 +21,13 @@ import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
+import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
@@ -154,29 +158,54 @@ public class FuturesOrderController {
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
 	}
 
-	@GetMapping("/position")
+	@GetMapping("/holding")
 	@ApiOperation(value = "获取持仓中列表")
-	public Response<List<FuturesOrderMarketDto>> getListFuturesOrderPositionByPublisherId() {
-		return new Response<>(futuresOrderBusiness.getListFuturesOrderPositionMarket(SecurityUtil.getUserId()));
+	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderHolding(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Position };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
 
-	@GetMapping("/entrust")
+	@GetMapping("/entrustment")
 	@ApiOperation(value = "获取委托中列表")
-	public Response<List<FuturesOrderMarketDto>> getListFuturesOrderEntrustByPublisherId() {
-		return new Response<>(futuresOrderBusiness.getListFuturesOrderEntrustMarket(SecurityUtil.getUserId()));
+	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderEntrustment(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
+				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
 
-	@GetMapping("/settlement")
+	@GetMapping("/settled")
 	@ApiOperation(value = "获取已结算列表")
-	public Response<List<FuturesOrderMarketDto>> getListFuturesOrderUnwindByPublisherId() {
-		return new Response<>(futuresOrderBusiness.getListFuturesOrderUnwindMarket(SecurityUtil.getUserId()));
+	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderSettled(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Canceled, FuturesOrderState.EntrustFailure,
+				FuturesOrderState.Unwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
 
-	@GetMapping("/position/profit")
+	@GetMapping("/holding/profit")
 	@ApiOperation(value = "获取持仓中总收益")
-	public Response<BigDecimal> settlementOrderPositionByPublisherId() {
-		List<FuturesOrderMarketDto> list = futuresOrderBusiness
-				.getListFuturesOrderEntrustMarket(SecurityUtil.getUserId());
+	public Response<BigDecimal> settlementFuturesOrderHolding(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Position };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
@@ -184,11 +213,17 @@ public class FuturesOrderController {
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
 
-	@GetMapping("/entrust/profit")
+	@GetMapping("/entrustment/profit")
 	@ApiOperation(value = "获取委托中总收益")
-	public Response<BigDecimal> settlementOrderEntrustByPublisherId() {
-		List<FuturesOrderMarketDto> list = futuresOrderBusiness
-				.getListFuturesOrderEntrustMarket(SecurityUtil.getUserId());
+	public Response<BigDecimal> settlementFuturesOrderEntrustment(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
+				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
@@ -196,10 +231,21 @@ public class FuturesOrderController {
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
 
-	@GetMapping("/settlement/profit")
+	@GetMapping("/settled/profit")
 	@ApiOperation(value = "获取已结算总收益")
-	public Response<BigDecimal> settlementOrderUnwindByPublisherId() {
-		return new Response<>(futuresOrderBusiness.settlementOrderUnwindByPublisherId(SecurityUtil.getUserId()));
+	public Response<BigDecimal> settlementFuturesOrderSettled(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Unwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
+		BigDecimal totalIncome = new BigDecimal(0);
+		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+		}
+		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
 
 }

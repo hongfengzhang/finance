@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesOrderStateConverter;
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesOrderTypeConverter;
@@ -227,6 +228,13 @@ public class FuturesOrder {
 	 * 是否为测试单
 	 */
 	private Boolean isTest;
+
+	/***************** 分割线，以下字段为非数据库字段 ********************/
+	/**
+	 * 合约ID
+	 */
+	@Transient
+	private Long contractId;
 
 	public Long getId() {
 		return id;
@@ -578,6 +586,13 @@ public class FuturesOrder {
 
 	public void setLimitLossPrice(BigDecimal limitLossPrice) {
 		this.limitLossPrice = limitLossPrice;
+	}
+
+	public Long getContractId() {
+		if (contract != null) {
+			return contract.getId();
+		}
+		return contractId;
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.waben.stock.datalayer.futures.repository.impl;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,35 +77,4 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	public Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId) {
 		return repository.sumByListOrderContractIdAndPublisherId(contractId, publisherId);
 	}
-
-	@Override
-	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {
-		return repository.getListFuturesOrderPositionByPublisherId(publisherId);
-	}
-
-	@Override
-	public BigDecimal settlementOrderPositionByPublisherId(Long publisherId) {
-		return repository.settlementOrderPositionByPublisherId(publisherId);
-	}
-
-	@Override
-	public List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(Long publisherId) {
-		return repository.getListFuturesOrderEntrustByPublisherId(publisherId);
-	}
-
-	@Override
-	public BigDecimal settlementOrderEntrustByPublisherId(Long publisherId) {
-		return repository.settlementOrderEntrustByPublisherId(publisherId);
-	}
-
-	@Override
-	public List<FuturesOrder> getListFuturesOrderUnwindByPublisherId(Long publisherId) {
-		return repository.getListFuturesOrderUnwindByPublisherId(publisherId);
-	}
-
-	@Override
-	public BigDecimal settlementOrderUnwindByPublisherId(Long publisherId) {
-		return repository.settlementOrderUnwindByPublisherId(publisherId);
-	}
-
 }

@@ -17,12 +17,25 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 	 */
 	private BigDecimal lastPrice;
 
+	/**
+	 * 订单类型描述
+	 */
+	private String buyOrderTypeDesc;
+
 	public BigDecimal getLastPrice() {
 		return lastPrice;
 	}
 
 	public void setLastPrice(BigDecimal lastPrice) {
 		this.lastPrice = lastPrice;
+	}
+
+	public String getBuyOrderTypeDesc() {
+		return buyOrderTypeDesc;
+	}
+
+	public void setBuyOrderTypeDesc(String buyOrderTypeDesc) {
+		this.buyOrderTypeDesc = buyOrderTypeDesc;
 	}
 
 }

@@ -31,7 +31,6 @@ import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
-import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
@@ -43,9 +42,7 @@ import com.waben.stock.datalayer.futures.repository.FuturesContractTermDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOvernightRecordDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
-import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
-import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesGatewayOrder;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
@@ -185,10 +182,14 @@ public class FuturesOrderService {
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
+				// 用户ID
+				if (query.getPublisherId() != null && query.getPublisherId() != 0) {
+					predicateList
+							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
+				}
 				// 订单状态
-				if (query.getState() != null) {
-					predicateList.add(
-							criteriaBuilder.equal(root.get("state").as(FuturesOrderState.class), query.getState()));
+				if (query.getStates() != null && query.getStates().length > 0) {
+					predicateList.add(root.get("state").in(query.getStates()));
 				}
 				// 是否测试单
 				if (query.getIsTest() != null) {
@@ -579,92 +580,4 @@ public class FuturesOrderService {
 		}
 		return order;
 	}
-
-	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {
-		List<FuturesOrder> orderList = orderDao.getListFuturesOrderPositionByPublisherId(publisherId);
-		orderList = getListFuturesOrders(orderList);
-		return orderList;
-	}
-
-	public BigDecimal settlementOrderPositionByPublisherId(Long publisherId) {
-		return orderDao.settlementOrderPositionByPublisherId(publisherId);
-	}
-
-	public List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(Long publisherId) {
-		return getListFuturesOrders(orderDao.getListFuturesOrderEntrustByPublisherId(publisherId));
-	}
-
-	public BigDecimal settlementOrderEntrustByPublisherId(Long publisherId) {
-		return orderDao.settlementOrderEntrustByPublisherId(publisherId);
-	}
-
-	public List<FuturesOrder> getListFuturesOrderUnwindByPublisherId(Long publisherId) {
-		return orderDao.getListFuturesOrderUnwindByPublisherId(publisherId);
-	}
-
-	public BigDecimal settlementOrderUnwindByPublisherId(Long publisherId) {
-		return orderDao.settlementOrderUnwindByPublisherId(publisherId);
-	}
-
-	/**
-	 * 计算订单止损止盈及用户盈亏
-	 * 
-	 * @param orderList
-	 *            订单数据
-	 * @return 订单列表
-	 */
-	private List<FuturesOrder> getListFuturesOrders(List<FuturesOrder> orderList) {
-		if (orderList != null && orderList.size() > 0) {
-			for (FuturesOrder futuresOrder : orderList) {
-				// 获取合约信息
-				FuturesContract contract = futuresOrder.getContract();
-				if (contract == null) {
-					break;
-				}
-				// 获取汇率信息
-				FuturesCurrencyRate rate = futuresCurrencyRateService
-						.findByCurrency(futuresOrder.getContractCurrency());
-				// 买入价
-				BigDecimal buyingPrice = new BigDecimal(0);
-				if (futuresOrder.getBuyingPriceType() == FuturesTradePriceType.MKT) {
-					buyingPrice = futuresOrder.getBuyingPrice();
-				} else {
-					buyingPrice = futuresOrder.getBuyingEntrustPrice();
-				}
-				// 止盈
-				if (futuresOrder.getLimitProfitType() != null && futuresOrder.getPerUnitLimitProfitAmount() != null) {
-					// 按用户设置价格计算止盈金额
-					if (futuresOrder.getLimitProfitType() == 1) {
-						// | 止盈金额 = （设置价格 - 买入价）/ 最小波动点位 * 汇率 |
-						futuresOrder.setLimitProfitPrice(futuresOrder.getPerUnitLimitProfitAmount()
-								.subtract(buyingPrice).divide(contract.getMinWave()).multiply(rate.getRate()).abs());
-					} else {
-						futuresOrder.setLimitProfitPrice(futuresOrder.getPerUnitLimitProfitAmount());
-					}
-				}
-				// 止损
-				if (futuresOrder.getLimitLossType() != null && futuresOrder.getPerUnitLimitLossAmount() != null) {
-					// 按用户设置价格计算止损金额
-					if (futuresOrder.getLimitLossType() == 1) {
-						// 止损金额 = （设置价格 - 买入价）/ 最小波动点位 * 汇率
-						futuresOrder.setLimitLossPrice(futuresOrder.getPerUnitLimitProfitAmount().subtract(buyingPrice)
-								.divide(contract.getMinWave()).multiply(rate.getRate()));
-					} else {
-						futuresOrder.setLimitLossPrice(futuresOrder.getPerUnitLimitLossAmount());
-					}
-				}
-				// 获取行情信息
-				FuturesContractMarket market = RetriveFuturesOverHttp.market(futuresOrder.getContractSymbol());
-				if (market == null) {
-					break;
-				}
-				// 用户盈亏 = （最新价 - 买入价） / 最小波动点 * 汇率
-				futuresOrder.setPublisherProfitOrLoss(market.getLastPrice().subtract(buyingPrice)
-						.divide(contract.getMinWave()).multiply(rate.getRate()));
-
-			}
-		}
-		return orderList;
-	}
-
 }
