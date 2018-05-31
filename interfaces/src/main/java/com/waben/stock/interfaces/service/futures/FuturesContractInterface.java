@@ -27,8 +27,7 @@ public interface FuturesContractInterface {
 	 * @return 期货合约
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = "application/json")
-	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery)
-			throws Throwable;
+	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery);
 	
 	@RequestMapping(value = "/pagesContractAdmin", method = RequestMethod.POST, consumes = "application/json")
 	Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query);

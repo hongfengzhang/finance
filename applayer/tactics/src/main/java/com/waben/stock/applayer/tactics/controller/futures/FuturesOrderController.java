@@ -44,11 +44,12 @@ public class FuturesOrderController {
 
 	@GetMapping("/buy")
 	@ApiOperation(value = "买涨买跌")
-	public Response<FuturesOrderDto> pagesContractById(FuturesOrderBuysellDto buysellDto) throws Throwable {
+	public Response<FuturesOrderDto> pagesContractById(FuturesOrderBuysellDto buysellDto) {
 		FuturesContractQuery query = new FuturesContractQuery();
 		query.setPage(0);
 		query.setSize(1);
 		query.setContractId(buysellDto.getContractId());
+		// 判断该合约是否可用以及是否在交易时间内
 		FuturesContractDto contractDto = futuresContractBusiness.getContractByOne(query);
 		// 用户单笔最大可交易数量
 		BigDecimal perNum = contractDto.getPerOrderLimit();

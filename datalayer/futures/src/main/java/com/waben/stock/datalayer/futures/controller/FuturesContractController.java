@@ -51,11 +51,12 @@ public class FuturesContractController implements FuturesContractInterface {
 	@Autowired
 	private FuturesCurrencyRateService rateService;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
+
+	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
-	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery)
-			throws Throwable {
+	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery) {
 		Page<FuturesContract> page = futuresContractService.pagesContract(contractQuery);
 		PageInfo<FuturesContractDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractDto.class);
 		List<FuturesContractDto> contractDtoList = result.getContent();
@@ -129,18 +130,11 @@ public class FuturesContractController implements FuturesContractInterface {
 			for (int i = 0; i < strs.length; i++) {
 				String st = strs[i].toString();
 				String[] sts = st.trim().split("-");
-				Calendar beginc = Calendar.getInstance();
-				cal.add(Calendar.HOUR_OF_DAY, -futuresContractDto.getTimeZoneGap());
-				Date begin = beginc.getTime();
-				begin.setHours(sdf.parse(sts[0].trim().toString()).getHours());
-				begin.setMinutes(sdf.parse(sts[0].trim().toString()).getMinutes());
-				Calendar endc = Calendar.getInstance();
-				cal.add(Calendar.HOUR_OF_DAY, -futuresContractDto.getTimeZoneGap());
-				Date end = endc.getTime();
-				end.setHours(sdf.parse(sts[1].trim().toString()).getHours());
-				end.setMinutes(sdf.parse(sts[1].trim().toString()).getMinutes());
-				state = FuturesContractController.belongCalendar(exchangeTime, begin, end);
-				if (state) {
+				String dayStr = daySdf.format(exchangeTime);
+				String fullStr = fullSdf.format(exchangeTime);
+				if (fullStr.compareTo(dayStr + " " + sts[0].trim()) >= 0
+						&& fullStr.compareTo(dayStr + " " + sts[1].trim()) < 0) {
+					state = true;
 					break;
 				}
 			}
@@ -231,24 +225,26 @@ public class FuturesContractController implements FuturesContractInterface {
 	}
 
 	@Override
-	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query) {
+	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(
+			@RequestBody FuturesContractAdminQuery query) {
 		Page<FuturesContract> page = futuresContractService.pagesContractAdmin(query);
 		PageInfo<FuturesContractAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractAdminDto.class);
-		for(int i=0;i<result.getContent().size();i++){
+		for (int i = 0; i < result.getContent().size(); i++) {
 			result.getContent().get(i).setExchangcode(page.getContent().get(i).getExchange().getCode());
 			result.getContent().get(i).setExchangename(page.getContent().get(i).getExchange().getName());
 			result.getContent().get(i).setExchangeType(page.getContent().get(i).getExchange().getExchangeType());
 			result.getContent().get(i).setProductType(page.getContent().get(i).getProductType().getValue());
 			result.getContent().get(i).setRate(page.getContent().get(i).getCurrencyRate().getRate());
-			List<FuturesContractTerm> list = futuresContractService.findByListContractId(page.getContent().get(i).getId());
+			List<FuturesContractTerm> list = futuresContractService
+					.findByListContractId(page.getContent().get(i).getId());
 			List<FuturesTermAdminDto> resultList = new ArrayList<FuturesTermAdminDto>();
 			for (FuturesContractTerm term : list) {
 				FuturesTermAdminDto dto = CopyBeanUtils.copyBeanProperties(term, new FuturesTermAdminDto(), false);
 				resultList.add(dto);
 			}
 			result.getContent().get(i).setFuturesTermAdminDto(resultList);
- 		}
+		}
 		return new Response<>(result);
-	}	
+	}
 
 }
