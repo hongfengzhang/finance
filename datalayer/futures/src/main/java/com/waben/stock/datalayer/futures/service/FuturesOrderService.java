@@ -14,6 +14,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -26,7 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.futures.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
-import com.waben.stock.datalayer.futures.business.FuturesContractBusiness;
+import com.waben.stock.datalayer.futures.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
@@ -36,6 +38,8 @@ import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
 import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
+import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
+import com.waben.stock.datalayer.futures.repository.FuturesContractTermDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOvernightRecordDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
@@ -54,7 +58,10 @@ import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.enums.FuturesWindControlType;
+import com.waben.stock.interfaces.enums.OutsideMessageType;
+import com.waben.stock.interfaces.enums.ResourceType;
 import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.util.StringUtil;
@@ -69,20 +76,19 @@ import com.waben.stock.interfaces.util.UniqueCodeGenerator;
 @Service
 public class FuturesOrderService {
 
-	@Autowired
-	private FuturesOrderDao futuresOrderDao;
-
-	@Autowired
-	private FuturesContractBusiness futuresContractBusiness;
-
-	// @Autowired
-	// private FuturesOrderProducer producer;
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private DynamicQuerySqlDao sqlDao;
 
 	@Autowired
-	private FuturesContractTermService futuresContractTermService;
+	private FuturesOrderDao orderDao;
+
+	@Autowired
+	private FuturesContractDao contractDao;
+
+	@Autowired
+	private FuturesContractTermDao termDao;
 
 	@Autowired
 	private FuturesOvernightRecordDao recordDao;
@@ -94,16 +100,19 @@ public class FuturesOrderService {
 	private CapitalFlowBusiness flowBusiness;
 
 	@Autowired
+	private OutsideMessageBusiness outsideMessageBusiness;
+
+	@Autowired
 	private RabbitmqProducer producer;
 
 	@Autowired
 	private FuturesCurrencyRateService futuresCurrencyRateService;
 
-	@Value("{gateway.order.domain:}")
+	@Value("{order.domain:youguwang.com.cn}")
 	private String domain;
 
 	public FuturesOrder findById(Long id) {
-		return futuresOrderDao.retrieve(id);
+		return orderDao.retrieve(id);
 	}
 
 	public Page<FuturesOrderAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
@@ -171,7 +180,7 @@ public class FuturesOrderService {
 
 	public Page<FuturesOrder> pagesOrder(final FuturesOrderQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
-		Page<FuturesOrder> pages = futuresOrderDao.page(new Specification<FuturesOrder>() {
+		Page<FuturesOrder> pages = orderDao.page(new Specification<FuturesOrder>() {
 			@Override
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
@@ -203,35 +212,34 @@ public class FuturesOrderService {
 	}
 
 	@Transactional
-	public FuturesOrder save(FuturesOrder order) {
-		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(order.getPublisherId());
+	public FuturesOrder save(FuturesOrder order, Long contractId) {
+		// step 1 : 再一次确认余额是否充足
+		CapitalAccountDto capitalAccount = accountBusiness.fetchByPublisherId(order.getPublisherId());
 		BigDecimal totalFee = order.getServiceFee().add(order.getReserveFund());
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-		FuturesContractMarket market = null;
-		try {
-			// 调取行情接口 获取买入最新价
-			market = RetriveFuturesOverHttp.market(order.getContractSymbol());
-		} catch (ServiceException ex) {
-			throw ex;
+		// step 2 : 获取期货合约和期货合约期限
+		FuturesContract contract = contractDao.retrieve(contractId);
+		FuturesContractTerm term = null;
+		List<FuturesContractTerm> termList = termDao.retrieveByContractAndCurrent(contract, true);
+		if (termList != null && termList.size() > 0) {
+			term = termList.get(0);
+		} else {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
-		order.setBuyingPrice(market == null ? new BigDecimal(0) : market.getLastPrice()); // 买入最新价
+		// step 3 : 初始化订单
 		order.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		Date date = new Date();
 		order.setPostTime(date);
-		order.setBuyingTime(date);
-		order.setState(FuturesOrderState.Position);
+		order.setUpdateTime(date);
+		order.setState(FuturesOrderState.Posted);
 		order.setContract(order.getContract());
-		List<FuturesContractTerm> termList = futuresContractTermService
-				.findByListContractId(order.getContract().getId());
-		if (termList != null && termList.size() > 0) {
-			order.setContractTerm(termList.get(0));
-		}
-		order = futuresOrderDao.create(order);
-		// 扣去金额、冻结保证金
+		order.setContractTerm(term);
+		order = orderDao.create(order);
+		// step 4 : 扣去金额、冻结保证金
 		try {
-			futuresContractBusiness.futuresOrderServiceFeeAndReserveFund(order.getPublisherId(), order.getId(),
+			accountBusiness.futuresOrderServiceFeeAndReserveFund(order.getPublisherId(), order.getId(),
 					order.getServiceFee(), order.getReserveFund());
 		} catch (ServiceException ex) {
 			if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
@@ -239,8 +247,8 @@ public class FuturesOrderService {
 			} else {
 				// 再一次确认是否已经扣款
 				try {
-					FrozenCapitalDto frozen = futuresContractBusiness
-							.futuresOrderFetchFrozenCapital(order.getPublisherId(), order.getId());
+					FrozenCapitalDto frozen = accountBusiness.futuresOrderFetchFrozenCapital(order.getPublisherId(),
+							order.getId());
 					if (frozen == null) {
 						throw ex;
 					}
@@ -249,59 +257,113 @@ public class FuturesOrderService {
 				}
 			}
 		}
-		// 买入委托价
-		BigDecimal entrustPrice = new BigDecimal(0);
-		if ((order.getBuyingPriceType().getIndex()).equals("2")) {
-			entrustPrice = order.getBuyingEntrustPrice();
-		}
-		FuturesGatewayOrder gatewayOrder = null;
-		try {
-			gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(), order.getId(),
-					FuturesActionType.BUY, order.getTotalQuantity(),
-					Integer.valueOf(order.getBuyingPriceType().getIndex()), entrustPrice);
-		} catch (ServiceException ex) {
-			throw ex;
-		}
-		if (gatewayOrder != null) {
-			order.setState(FuturesOrderState.BuyingEntrust);
-			order.setOpenGatewayOrderId(gatewayOrder.getId());
-			futuresOrderDao.update(order);
-		}
+		// step 5 : 调用期货网关委托下单
+		FuturesActionType action = order.getOrderType() == FuturesOrderType.BuyUp ? FuturesActionType.BUY
+				: FuturesActionType.SELL;
+		Integer userOrderType = order.getBuyingPriceType() == FuturesTradePriceType.MKT ? 1 : 2;
+		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(),
+				order.getId(), action, order.getTotalQuantity(), userOrderType, order.getBuyingEntrustPrice());
+		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
+		// step 6 : 更新订单状态
+		order.setState(FuturesOrderState.BuyingEntrust);
+		order.setOpenGatewayOrderId(gatewayOrder.getId());
+		order = orderDao.update(order);
+		// step 7 : 放入委托查询队列（开仓）
+		EntrustQueryMessage msg = new EntrustQueryMessage();
+		msg.setEntrustType(3);
+		producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, msg);
+		// step 8 : 站外消息推送
+		sendOutsideMessage(order);
 		return order;
+	}
+
+	private void sendOutsideMessage(FuturesOrder order) {
+		try {
+			FuturesOrderState state = order.getState();
+			Map<String, String> extras = new HashMap<>();
+			OutsideMessage message = new OutsideMessage();
+			message.setPublisherId(order.getPublisherId());
+			message.setTitle("期货订单通知");
+			extras.put("title", message.getTitle());
+			extras.put("publisherId", String.valueOf(order.getPublisherId()));
+			extras.put("resourceType", ResourceType.FUTURESORDER.getIndex());
+			extras.put("resourceId", String.valueOf(order.getId()));
+			message.setExtras(extras);
+			switch (state) {
+			case BuyingEntrust:
+				message.setContent(String.format("您所购买的“%s”期货已进入“买入委托”状态", order.getContractName()));
+				extras.put("content",
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“买入委托”状态", order.getContractName()));
+				extras.put("type", OutsideMessageType.FUTURES_BUYINGENTRUST.getIndex());
+				break;
+			case Canceled:
+				message.setContent(String.format("您所购买的“%s”期货已进入“已取消”状态", order.getContractName()));
+				extras.put("content",
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已取消”状态", order.getContractName()));
+				extras.put("type", OutsideMessageType.FUTURES_CANCELED.getIndex());
+				break;
+			case Position:
+				message.setContent(String.format("您所购买的“%s”期货已进入“持仓中”状态", order.getContractName()));
+				extras.put("content",
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“持仓中”状态", order.getContractName()));
+				extras.put("type", OutsideMessageType.FUTURES_POSITION.getIndex());
+				break;
+			case SellingEntrust:
+				message.setContent(String.format("您所购买的“%s”期货已进入“卖出委托”状态", order.getContractName()));
+				extras.put("content",
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“卖出委托”状态", order.getContractName()));
+				extras.put("type", OutsideMessageType.FUTURES_SELLINGENTRUST.getIndex());
+				break;
+			case Unwind:
+				message.setContent(String.format("您所购买的“%s”期货已进入“已平仓”状态", order.getContractName()));
+				extras.put("content",
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已平仓”状态", order.getContractName()));
+				extras.put("type", OutsideMessageType.FUTURES_UNWIND.getIndex());
+				break;
+			default:
+				break;
+			}
+			if (message.getContent() != null) {
+				outsideMessageBusiness.send(message);
+			}
+		} catch (Exception ex) {
+			logger.error("发送期货订单通知失败，{}_{}_{}", order.getId(), order.getState(), ex.getMessage());
+		}
 	}
 
 	public FuturesOrder editOrder(Long id, FuturesOrderState state) {
 
-		return futuresOrderDao.editOrder(id, state);
+		return orderDao.editOrder(id, state);
 	}
 
 	public Integer countOrderType(Long contractId, FuturesOrderType orderType) {
-		return futuresOrderDao.countOrderByType(contractId, orderType);
+		return orderDao.countOrderByType(contractId, orderType);
 	}
 
 	public Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId) {
-		return futuresOrderDao.sumByListOrderContractIdAndPublisherId(contractId, publisherId);
+		return orderDao.sumByListOrderContractIdAndPublisherId(contractId, publisherId);
 	}
 
 	/**
-	 * 已取消
+	 * 订单已取消
 	 * 
 	 * @param id
 	 *            订单ID
 	 * @return 订单
 	 */
 	@Transactional
-	public FuturesOrder cancelOrder(Long id) {
-		FuturesOrder order = futuresOrderDao.retrieve(id);
+	public FuturesOrder canceledOrder(Long id) {
+		FuturesOrder order = orderDao.retrieve(id);
 		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust)) {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
 		// TODO 撤单退款
 		// 修改订单状态
 		order.setState(FuturesOrderState.Canceled);
 		order.setUpdateTime(new Date());
-		futuresOrderDao.update(order);
-		// TODO 站外消息推送
+		orderDao.update(order);
+		// 站外消息推送
+		sendOutsideMessage(order);
 		return order;
 	}
 
@@ -314,15 +376,15 @@ public class FuturesOrderService {
 	 */
 	@Transactional
 	public FuturesOrder partPositionOrder(Long id) {
-		FuturesOrder order = futuresOrderDao.retrieve(id);
+		FuturesOrder order = orderDao.retrieve(id);
 		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust
 				|| order.getState() == FuturesOrderState.PartPosition)) {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
 		// 修改订单状态
 		order.setState(FuturesOrderState.PartPosition);
 		order.setUpdateTime(new Date());
-		return futuresOrderDao.update(order);
+		return orderDao.update(order);
 	}
 
 	/**
@@ -334,15 +396,15 @@ public class FuturesOrderService {
 	 */
 	@Transactional
 	public FuturesOrder partUnwindOrder(Long id) {
-		FuturesOrder order = futuresOrderDao.retrieve(id);
+		FuturesOrder order = orderDao.retrieve(id);
 		if (!(order.getState() == FuturesOrderState.Position || order.getState() == FuturesOrderState.SellingEntrust
 				|| order.getState() == FuturesOrderState.PartUnwind)) {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
 		// 修改订单状态
 		order.setState(FuturesOrderState.PartUnwind);
 		order.setUpdateTime(new Date());
-		return futuresOrderDao.update(order);
+		return orderDao.update(order);
 	}
 
 	/**
@@ -356,10 +418,10 @@ public class FuturesOrderService {
 	 */
 	@Transactional
 	public FuturesOrder positionOrder(Long id, BigDecimal buyingPrice) {
-		FuturesOrder order = futuresOrderDao.retrieve(id);
+		FuturesOrder order = orderDao.retrieve(id);
 		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust
 				|| order.getState() == FuturesOrderState.PartPosition)) {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
 		// TODO 计算止盈、止损点位
 		// 修改订单状态
@@ -368,8 +430,9 @@ public class FuturesOrderService {
 		order.setBuyingTime(date);
 		order.setState(FuturesOrderState.Position);
 		order.setUpdateTime(date);
-		futuresOrderDao.update(order);
-		// TODO 站外消息推送
+		orderDao.update(order);
+		// 站外消息推送
+		sendOutsideMessage(order);
 		return order;
 	}
 
@@ -383,10 +446,10 @@ public class FuturesOrderService {
 	 * @return 订单
 	 */
 	public FuturesOrder unwindOrder(Long id, BigDecimal sellingPrice) {
-		FuturesOrder order = futuresOrderDao.retrieve(id);
+		FuturesOrder order = orderDao.retrieve(id);
 		if (!(order.getState() == FuturesOrderState.Position || order.getState() == FuturesOrderState.SellingEntrust
 				|| order.getState() == FuturesOrderState.PartUnwind)) {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
 		// TODO 给用户结算
 		// 修改订单状态
@@ -395,8 +458,9 @@ public class FuturesOrderService {
 		order.setSellingTime(date);
 		order.setState(FuturesOrderState.Unwind);
 		order.setUpdateTime(date);
-		futuresOrderDao.update(order);
-		// TODO 站外消息推送
+		orderDao.update(order);
+		// 站外消息推送
+		sendOutsideMessage(order);
 		return order;
 	}
 
@@ -417,7 +481,7 @@ public class FuturesOrderService {
 	public FuturesOrder sellingEntrust(FuturesOrder order, FuturesWindControlType windControlType,
 			FuturesTradePriceType priceType, BigDecimal entrustPrice) {
 		if (order.getState() != FuturesOrderState.Position) {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
 		// 修改订单状态
 		order.setWindControlType(windControlType);
@@ -432,12 +496,20 @@ public class FuturesOrderService {
 		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(),
 				order.getId(), action, order.getTotalQuantity(), userOrderType, entrustPrice);
 		order.setCloseGatewayOrderId(gatewayOrder.getId());
+		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
 		// 放入委托查询队列（平仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
-		msg.setEntrustType(3);
+		if (windControlType == FuturesWindControlType.BackhandUnind) {
+			msg.setEntrustType(2);
+		} else {
+			msg.setEntrustType(3);
+		}
+		msg.setOrderId(order.getId());
+		msg.setGatewayOrderId(gatewayOrder.getId());
 		producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, msg);
-		// TODO 消息推送
-		return futuresOrderDao.update(order);
+		// 消息推送
+		sendOutsideMessage(order);
+		return orderDao.update(order);
 	}
 
 	/**
@@ -450,7 +522,7 @@ public class FuturesOrderService {
 	@Transactional
 	public FuturesOrder overnight(FuturesOrder order) {
 		if (order.getState() != FuturesOrderState.Position) {
-			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
 		// step 1 : 检查余额是否充足
 		CapitalAccountDto account = accountBusiness.fetchByPublisherId(order.getPublisherId());
@@ -478,7 +550,7 @@ public class FuturesOrderService {
 			// step 4 : 修改订单状态
 			order.setWindControlType(FuturesWindControlType.OvernightPosition);
 			order.setUpdateTime(new Date());
-			futuresOrderDao.update(order);
+			orderDao.update(order);
 			// step 5 : 扣除隔夜递延费、冻结隔夜保证金
 			if (deferredFee.compareTo(BigDecimal.ZERO) > 0 || reserveFund.compareTo(BigDecimal.ZERO) > 0) {
 				try {
@@ -489,7 +561,7 @@ public class FuturesOrderService {
 						// step 1.1 : 余额不足，强制平仓
 						order = sellingEntrust(order, FuturesWindControlType.DayUnwind, FuturesTradePriceType.MKT,
 								null);
-						futuresOrderDao.delete(overnightRecord.getId());
+						orderDao.delete(overnightRecord.getId());
 					} else {
 						// 再一次确认是否已经扣款
 						try {
@@ -509,29 +581,29 @@ public class FuturesOrderService {
 	}
 
 	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {
-		List<FuturesOrder> orderList = futuresOrderDao.getListFuturesOrderPositionByPublisherId(publisherId);
+		List<FuturesOrder> orderList = orderDao.getListFuturesOrderPositionByPublisherId(publisherId);
 		orderList = getListFuturesOrders(orderList);
 		return orderList;
 	}
 
 	public BigDecimal settlementOrderPositionByPublisherId(Long publisherId) {
-		return futuresOrderDao.settlementOrderPositionByPublisherId(publisherId);
+		return orderDao.settlementOrderPositionByPublisherId(publisherId);
 	}
 
 	public List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(Long publisherId) {
-		return getListFuturesOrders(futuresOrderDao.getListFuturesOrderEntrustByPublisherId(publisherId));
+		return getListFuturesOrders(orderDao.getListFuturesOrderEntrustByPublisherId(publisherId));
 	}
 
 	public BigDecimal settlementOrderEntrustByPublisherId(Long publisherId) {
-		return futuresOrderDao.settlementOrderEntrustByPublisherId(publisherId);
+		return orderDao.settlementOrderEntrustByPublisherId(publisherId);
 	}
 
 	public List<FuturesOrder> getListFuturesOrderUnwindByPublisherId(Long publisherId) {
-		return futuresOrderDao.getListFuturesOrderUnwindByPublisherId(publisherId);
+		return orderDao.getListFuturesOrderUnwindByPublisherId(publisherId);
 	}
 
 	public BigDecimal settlementOrderUnwindByPublisherId(Long publisherId) {
-		return futuresOrderDao.settlementOrderUnwindByPublisherId(publisherId);
+		return orderDao.settlementOrderUnwindByPublisherId(publisherId);
 	}
 
 	/**

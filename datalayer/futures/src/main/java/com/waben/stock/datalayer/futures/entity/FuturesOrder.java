@@ -60,7 +60,7 @@ public class FuturesOrder {
 	 */
 	private BigDecimal reserveFund;
 	/**
-	 * 服务费（服务费）
+	 * 服务费（人民币）
 	 */
 	private BigDecimal serviceFee;
 	/**

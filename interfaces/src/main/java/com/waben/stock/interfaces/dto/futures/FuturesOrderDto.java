@@ -33,6 +33,10 @@ public class FuturesOrderDto {
 	 */
 	private FuturesContractDto contract;
 	/**
+	 * 对应的合约ID
+	 */
+	private Long contractId;
+	/**
 	 * 数量（手）
 	 */
 	private BigDecimal totalQuantity;
@@ -93,7 +97,7 @@ public class FuturesOrderDto {
 	 */
 	private Integer limitProfitType;
 	/**
-	 * 一手止盈金额
+	 * 一手止盈金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitProfitAmount;
 	/**
@@ -110,7 +114,7 @@ public class FuturesOrderDto {
 	private Integer limitLossType;
 
 	/**
-	 * 一手止损金额
+	 * 一手止损金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitLossAmount;
 	/**
@@ -189,7 +193,10 @@ public class FuturesOrderDto {
 	 * 更新时间
 	 */
 	private Date updateTime;
-
+	/**
+	 * 是否为测试单
+	 */
+	private Boolean isTest;
 	/**
 	 * 期货隔夜记录
 	 */
@@ -537,6 +544,22 @@ public class FuturesOrderDto {
 
 	public void setLimitLossType(Integer limitLossType) {
 		this.limitLossType = limitLossType;
+	}
+
+	public Long getContractId() {
+		return contractId;
+	}
+
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
+	}
+
+	public Boolean getIsTest() {
+		return isTest;
+	}
+
+	public void setIsTest(Boolean isTest) {
+		this.isTest = isTest;
 	}
 
 }

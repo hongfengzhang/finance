@@ -237,7 +237,7 @@ public class ExceptionConstant {
 
 	// 期货
 	// 期货订单状态不匹配，不支持该操作
-	public static final String FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "13001";
+	public static final String FUTURESORDER_STATE_NOTMATCH_EXCEPTION = "13001";
 	// 单笔交易数量过大
 	public static final String SINGLE_TRANSACTION_QUANTITY_EXCEPTION = "13002";
 	// 该用户持仓量已达上限
@@ -250,5 +250,7 @@ public class ExceptionConstant {
 	public static final String CONTRACT_ABNORMALITY_EXCEPTION = "13006";
 	// 该合约不在交易中
 	public static final String CONTRACT_ISNOTIN_TRADE_EXCEPTION = "13007";
+	// 没有可用的期货合约期限，暂时不能交易
+	public static final String CONTRACTTERM_NOTAVAILABLE_EXCEPTION = "13008";
 
 }

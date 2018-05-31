@@ -13,9 +13,9 @@ public enum FuturesOrderState implements CommonalityEnum {
 
 	Posted("1", "已发布"),
 	
-	Canceled("2", "已取消"),
-
-	BuyingEntrust("3", "买入委托"),
+	BuyingEntrust("2", "买入委托"),
+	
+	Canceled("3", "已取消"),
 
 	PartPosition("4", "部分买入成功"),
 

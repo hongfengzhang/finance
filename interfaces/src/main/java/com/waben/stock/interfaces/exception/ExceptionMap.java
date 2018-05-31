@@ -129,14 +129,14 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.PRIZE_IS_EMPTY, "奖品已空");
 		exceptionMap.put(ExceptionConstant.FAILED_TO_UPLOAD_PICTURES, "上传图片失败");
 
-		exceptionMap.put(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,
-				"期货订单状态不匹配，不支持该操作");
+		exceptionMap.put(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION, "期货订单状态不匹配，不支持该操作");
 		exceptionMap.put(ExceptionConstant.SINGLE_TRANSACTION_QUANTITY_EXCEPTION, "单笔交易数量过大");
 		exceptionMap.put(ExceptionConstant.UPPER_LIMIT_HOLDING_CAPACITY_EXCEPTION, "该用户持仓量已达上限");
 		exceptionMap.put(ExceptionConstant.CONTRACT_HOLDING_CAPACITY_INSUFFICIENT_EXCEPTION, "选择交易数量大于用户持仓总量");
 		exceptionMap.put(ExceptionConstant.CONTRACT_DOESNOT_EXIST_EXCEPTION, "该合约不存在");
 		exceptionMap.put(ExceptionConstant.CONTRACT_ABNORMALITY_EXCEPTION, "该合约异常不可用");
 		exceptionMap.put(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION, "该合约不在交易中");
+		exceptionMap.put(ExceptionConstant.CONTRACTTERM_NOTAVAILABLE_EXCEPTION, "没有可用的期货合约期限，暂时不能交易");
 
 	}
 }

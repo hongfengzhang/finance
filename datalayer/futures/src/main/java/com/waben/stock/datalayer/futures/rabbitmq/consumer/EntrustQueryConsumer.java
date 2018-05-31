@@ -43,7 +43,7 @@ public class EntrustQueryConsumer {
 			if (entrustType == 1) {
 				if ("Cancelled".equals(status)) {
 					// 已取消
-					orderService.cancelOrder(orderId);
+					orderService.canceledOrder(orderId);
 					isNeedRetry = false;
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
 					// 部分买入成功
