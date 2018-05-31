@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
+import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderMarketDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
@@ -143,32 +145,44 @@ public class FuturesOrderController {
 
 	@GetMapping("/position")
 	@ApiOperation(value = "获取持仓中列表")
-	public Response<List<FuturesOrderDto>> getListFuturesOrderPositionByPublisherId() {
-		return new Response<>(futuresOrderBusiness.getListFuturesOrderPositionByPublisherId(SecurityUtil.getUserId()));
+	public Response<List<FuturesOrderMarketDto>> getListFuturesOrderPositionByPublisherId() {
+		return new Response<>(futuresOrderBusiness.getListFuturesOrderPositionMarket(SecurityUtil.getUserId()));
 	}
 
 	@GetMapping("/entrust")
 	@ApiOperation(value = "获取委托中列表")
-	public Response<List<FuturesOrderDto>> getListFuturesOrderEntrustByPublisherId() {
-		return new Response<>(futuresOrderBusiness.getListFuturesOrderEntrustByPublisherId(SecurityUtil.getUserId()));
+	public Response<List<FuturesOrderMarketDto>> getListFuturesOrderEntrustByPublisherId() {
+		return new Response<>(futuresOrderBusiness.getListFuturesOrderEntrustMarket(SecurityUtil.getUserId()));
 	}
 
 	@GetMapping("/settlement")
 	@ApiOperation(value = "获取已结算列表")
-	public Response<List<FuturesOrderDto>> getListFuturesOrderUnwindByPublisherId() {
-		return new Response<>(futuresOrderBusiness.getListFuturesOrderUnwindByPublisherId(SecurityUtil.getUserId()));
+	public Response<List<FuturesOrderMarketDto>> getListFuturesOrderUnwindByPublisherId() {
+		return new Response<>(futuresOrderBusiness.getListFuturesOrderUnwindMarket(SecurityUtil.getUserId()));
 	}
 
 	@GetMapping("/position/profit")
 	@ApiOperation(value = "获取持仓中总收益")
 	public Response<BigDecimal> settlementOrderPositionByPublisherId() {
-		return new Response<>(futuresOrderBusiness.settlementOrderPositionByPublisherId(SecurityUtil.getUserId()));
+		List<FuturesOrderMarketDto> list = futuresOrderBusiness
+				.getListFuturesOrderEntrustMarket(SecurityUtil.getUserId());
+		BigDecimal totalIncome = new BigDecimal(0);
+		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+		}
+		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
 
 	@GetMapping("/entrust/profit")
 	@ApiOperation(value = "获取委托中总收益")
 	public Response<BigDecimal> settlementOrderEntrustByPublisherId() {
-		return new Response<>(futuresOrderBusiness.settlementOrderEntrustByPublisherId(SecurityUtil.getUserId()));
+		List<FuturesOrderMarketDto> list = futuresOrderBusiness
+				.getListFuturesOrderEntrustMarket(SecurityUtil.getUserId());
+		BigDecimal totalIncome = new BigDecimal(0);
+		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+		}
+		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
 
 	@GetMapping("/settlement/profit")

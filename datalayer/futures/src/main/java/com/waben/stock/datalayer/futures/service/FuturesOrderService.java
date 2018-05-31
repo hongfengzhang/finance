@@ -27,7 +27,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waben.stock.datalayer.futures.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.business.FuturesContractBusiness;
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
+import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
@@ -73,15 +75,15 @@ public class FuturesOrderService {
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
 
-//	@Autowired
-//	private FuturesOrderProducer producer;
-	
+	// @Autowired
+	// private FuturesOrderProducer producer;
+
 	@Autowired
 	private DynamicQuerySqlDao sqlDao;
-	
+
 	@Autowired
 	private FuturesContractTermService futuresContractTermService;
-	
+
 	@Autowired
 	private FuturesOvernightRecordDao recordDao;
 
@@ -93,6 +95,9 @@ public class FuturesOrderService {
 
 	@Autowired
 	private RabbitmqProducer producer;
+
+	@Autowired
+	private FuturesCurrencyRateService futuresCurrencyRateService;
 
 	@Value("{gateway.order.domain:}")
 	private String domain;
@@ -111,26 +116,28 @@ public class FuturesOrderService {
 			publisherPhoneCondition = " and f3.name like '%" + query.getPublisherName() + "%' ";
 		}
 		String contractNameCondition = "";
-		if(!StringUtil.isEmpty(query.getName())){
+		if (!StringUtil.isEmpty(query.getName())) {
 			contractNameCondition = " and f4.name like '%" + query.getName() + "%'";
 		}
 		String orderTypeCondition = "";
-		if(!StringUtil.isEmpty(query.getOrderType())){
+		if (!StringUtil.isEmpty(query.getOrderType())) {
 			orderTypeCondition = " and f1.orderType like '%" + query.getOrderType() + "%'";
 		}
 		String orderStateCondition = "";
-		if(!StringUtil.isEmpty(query.getOrderState())){
+		if (!StringUtil.isEmpty(query.getOrderState())) {
 			orderStateCondition = " and f1.state like '%" + query.getOrderState() + "%'";
 		}
-		String sql = String.format("select f1.id, f3.name,f2.phone,f4.name as cname,f1.trade_no, f1.open_gateway_order_id, f1.close_gateway_order_id, f1.order_type, f1.state, f1.total_quantity, f1.buying_time,"+
-									" f1.buying_price, f1.profit_or_loss, f1.openwind_service_fee, f1.reserve_fund, f1.per_unit_limit_profit_amount, f1.per_unit_limit_loss_amount,"+
-									" f1.selling_time, f1.selling_price, f1.unwind_service_fee, f1.wind_control_type"+
-									" from f_futures_order f1 "+
-									" LEFT JOIN publisher f2 on f1.publisher_id = f2.id"+ 
-									" LEFT JOIN real_name f3 on f1.publisher_id = f3.resource_id"+
-									" LEFT JOIN f_futures_contract f4 ON f1.contract_id = f4.id"+
-									" where 1=1 %s %s %s %s %s ORDER BY f1.post_time LIMIT "+query.getPage()*query.getSize()+","+query.getSize(),
-									publisherNameCondition,publisherPhoneCondition,contractNameCondition,orderStateCondition,orderTypeCondition);
+		String sql = String.format(
+				"select f1.id, f3.name,f2.phone,f4.name as cname,f1.trade_no, f1.open_gateway_order_id, f1.close_gateway_order_id, f1.order_type, f1.state, f1.total_quantity, f1.buying_time,"
+						+ " f1.buying_price, f1.profit_or_loss, f1.openwind_service_fee, f1.reserve_fund, f1.per_unit_limit_profit_amount, f1.per_unit_limit_loss_amount,"
+						+ " f1.selling_time, f1.selling_price, f1.unwind_service_fee, f1.wind_control_type"
+						+ " from f_futures_order f1 " + " LEFT JOIN publisher f2 on f1.publisher_id = f2.id"
+						+ " LEFT JOIN real_name f3 on f1.publisher_id = f3.resource_id"
+						+ " LEFT JOIN f_futures_contract f4 ON f1.contract_id = f4.id"
+						+ " where 1=1 %s %s %s %s %s ORDER BY f1.post_time LIMIT " + query.getPage() * query.getSize()
+						+ "," + query.getSize(),
+				publisherNameCondition, publisherPhoneCondition, contractNameCondition, orderStateCondition,
+				orderTypeCondition);
 		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("LIMIT"));
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
@@ -148,8 +155,10 @@ public class FuturesOrderService {
 		setMethodMap.put(new Integer(12), new MethodDesc("setProfit", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(13), new MethodDesc("setOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(14), new MethodDesc("setReserveFund", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(15), new MethodDesc("setPerUnitLimitProfitAmount", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(16), new MethodDesc("setPerUnitLimitLossAmount", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(15),
+				new MethodDesc("setPerUnitLimitProfitAmount", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(16),
+				new MethodDesc("setPerUnitLimitLossAmount", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(17), new MethodDesc("setSellingTime", new Class<?>[] { Date.class }));
 		setMethodMap.put(new Integer(18), new MethodDesc("setSellingPrice", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(19), new MethodDesc("setUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
@@ -478,7 +487,8 @@ public class FuturesOrderService {
 				} catch (ServiceException ex) {
 					if (ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION.equals(ex.getType())) {
 						// step 1.1 : 余额不足，强制平仓
-						order = sellingEntrust(order, FuturesWindControlType.DayUnwind, FuturesTradePriceType.MKT, null);
+						order = sellingEntrust(order, FuturesWindControlType.DayUnwind, FuturesTradePriceType.MKT,
+								null);
 						futuresOrderDao.delete(overnightRecord.getId());
 					} else {
 						// 再一次确认是否已经扣款
@@ -500,13 +510,7 @@ public class FuturesOrderService {
 
 	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {
 		List<FuturesOrder> orderList = futuresOrderDao.getListFuturesOrderPositionByPublisherId(publisherId);
-		if (orderList != null && orderList.size() > 0) {
-			for (FuturesOrder futuresOrder : orderList) {
-				if (futuresOrder.getLimitProfitType() != null && futuresOrder.getPerUnitLimitProfitAmount() != null) {
-
-				}
-			}
-		}
+		orderList = getListFuturesOrders(orderList);
 		return orderList;
 	}
 
@@ -515,7 +519,7 @@ public class FuturesOrderService {
 	}
 
 	public List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(Long publisherId) {
-		return futuresOrderDao.getListFuturesOrderEntrustByPublisherId(publisherId);
+		return getListFuturesOrders(futuresOrderDao.getListFuturesOrderEntrustByPublisherId(publisherId));
 	}
 
 	public BigDecimal settlementOrderEntrustByPublisherId(Long publisherId) {
@@ -528,6 +532,67 @@ public class FuturesOrderService {
 
 	public BigDecimal settlementOrderUnwindByPublisherId(Long publisherId) {
 		return futuresOrderDao.settlementOrderUnwindByPublisherId(publisherId);
+	}
+
+	/**
+	 * 计算订单止损止盈及用户盈亏
+	 * 
+	 * @param orderList
+	 *            订单数据
+	 * @return 订单列表
+	 */
+	private List<FuturesOrder> getListFuturesOrders(List<FuturesOrder> orderList) {
+		if (orderList != null && orderList.size() > 0) {
+			for (FuturesOrder futuresOrder : orderList) {
+				// 获取合约信息
+				FuturesContract contract = futuresOrder.getContract();
+				if (contract == null) {
+					break;
+				}
+				// 获取汇率信息
+				FuturesCurrencyRate rate = futuresCurrencyRateService
+						.findByCurrency(futuresOrder.getContractCurrency());
+				// 买入价
+				BigDecimal buyingPrice = new BigDecimal(0);
+				if (futuresOrder.getBuyingPriceType() == FuturesTradePriceType.MKT) {
+					buyingPrice = futuresOrder.getBuyingPrice();
+				} else {
+					buyingPrice = futuresOrder.getBuyingEntrustPrice();
+				}
+				// 止盈
+				if (futuresOrder.getLimitProfitType() != null && futuresOrder.getPerUnitLimitProfitAmount() != null) {
+					// 按用户设置价格计算止盈金额
+					if (futuresOrder.getLimitProfitType() == 1) {
+						// | 止盈金额 = （设置价格 - 买入价）/ 最小波动点位 * 汇率 |
+						futuresOrder.setLimitProfitPrice(futuresOrder.getPerUnitLimitProfitAmount()
+								.subtract(buyingPrice).divide(contract.getMinWave()).multiply(rate.getRate()).abs());
+					} else {
+						futuresOrder.setLimitProfitPrice(futuresOrder.getPerUnitLimitProfitAmount());
+					}
+				}
+				// 止损
+				if (futuresOrder.getLimitLossType() != null && futuresOrder.getPerUnitLimitLossAmount() != null) {
+					// 按用户设置价格计算止损金额
+					if (futuresOrder.getLimitLossType() == 1) {
+						// 止损金额 = （设置价格 - 买入价）/ 最小波动点位 * 汇率
+						futuresOrder.setLimitLossPrice(futuresOrder.getPerUnitLimitProfitAmount().subtract(buyingPrice)
+								.divide(contract.getMinWave()).multiply(rate.getRate()));
+					} else {
+						futuresOrder.setLimitLossPrice(futuresOrder.getPerUnitLimitLossAmount());
+					}
+				}
+				// 获取行情信息
+				FuturesContractMarket market = RetriveFuturesOverHttp.market(futuresOrder.getContractSymbol());
+				if (market == null) {
+					break;
+				}
+				// 用户盈亏 = （最新价 - 买入价） / 最小波动点 * 汇率
+				futuresOrder.setPublisherProfitOrLoss(market.getLastPrice().subtract(buyingPrice)
+						.divide(contract.getMinWave()).multiply(rate.getRate()));
+
+			}
+		}
+		return orderList;
 	}
 
 }

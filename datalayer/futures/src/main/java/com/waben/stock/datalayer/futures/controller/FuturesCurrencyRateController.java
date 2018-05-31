@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
-import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesCurrencyRateDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -19,12 +18,11 @@ import com.waben.stock.interfaces.util.PageToPageInfo;
 
 import io.swagger.annotations.Api;
 
-
 @RestController
 @RequestMapping("/currencyRate")
 @Api(description = "期货汇率接口列表")
 public class FuturesCurrencyRateController implements FuturesCurrencyRateInterface {
-	
+
 	@Autowired
 	private FuturesCurrencyRateService currencyRateService;
 
@@ -32,7 +30,8 @@ public class FuturesCurrencyRateController implements FuturesCurrencyRateInterfa
 	public Response<FuturesCurrencyRateDto> addCurrencyRate(@RequestBody FuturesCurrencyRateDto dto) {
 		FuturesCurrencyRate rate = CopyBeanUtils.copyBeanProperties(FuturesCurrencyRate.class, dto, false);
 		FuturesCurrencyRate result = currencyRateService.addCurrencyRate(rate);
-		FuturesCurrencyRateDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesCurrencyRateDto(), false);
+		FuturesCurrencyRateDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesCurrencyRateDto(),
+				false);
 		return new Response<>(resultDto);
 	}
 
@@ -40,7 +39,8 @@ public class FuturesCurrencyRateController implements FuturesCurrencyRateInterfa
 	public Response<FuturesCurrencyRateDto> modifyCurrencyRate(@RequestBody FuturesCurrencyRateDto dto) {
 		FuturesCurrencyRate rate = CopyBeanUtils.copyBeanProperties(FuturesCurrencyRate.class, dto, false);
 		FuturesCurrencyRate result = currencyRateService.modifyCurrencyRate(rate);
-		FuturesCurrencyRateDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesCurrencyRateDto(), false);
+		FuturesCurrencyRateDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesCurrencyRateDto(),
+				false);
 		return new Response<>(resultDto);
 	}
 
@@ -55,6 +55,12 @@ public class FuturesCurrencyRateController implements FuturesCurrencyRateInterfa
 		Page<FuturesCurrencyRate> page = currencyRateService.list();
 		PageInfo<FuturesCurrencyRateDto> result = PageToPageInfo.pageToPageInfo(page, FuturesCurrencyRateDto.class);
 		return new Response<>(result);
+	}
+
+	@Override
+	public Response<FuturesCurrencyRateDto> findByCurrency(String currency) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesCurrencyRateDto.class,
+				currencyRateService.findByCurrency(currency), false));
 	}
 
 }

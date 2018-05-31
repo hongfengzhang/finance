@@ -10,4 +10,5 @@ import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
  */
 public interface FuturesCurrencyRateRepository extends CustomJpaRepository<FuturesCurrencyRate, Long> {
 
+	FuturesCurrencyRate findByCurrency(String currency);
 }
