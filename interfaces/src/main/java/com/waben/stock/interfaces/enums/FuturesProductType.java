@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public enum FuturesProductType implements CommonalityEnum {
+
 	Commodities("1", "大宗商品期货", 1),
 
 	Exponential("2", "指数期货", 2),

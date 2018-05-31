@@ -87,6 +87,11 @@ public class FuturesCurrencyRateService {
 	}
 
 	public FuturesCurrencyRate findByCurrency(String currency) {
-		return currencyRateDao.findByCurrency(currency);
+		List<FuturesCurrencyRate> rateList = currencyRateDao.retrieveByCurrency(currency);
+		if (rateList != null && rateList.size() > 0) {
+			return rateList.get(0);
+		}
+		return null;
 	}
+
 }

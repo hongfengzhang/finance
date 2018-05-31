@@ -65,4 +65,20 @@ public class CapitalAccountBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public CapitalAccountDto futuresOrderSettlement(Long publisherId, Long orderId, BigDecimal profitOrLoss) {
+		Response<CapitalAccountDto> response = service.futuresOrderSettlement(publisherId, orderId, profitOrLoss);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public CapitalAccountDto futuresOrderRevoke(Long publisherId, Long orderId, BigDecimal serviceFee) {
+		Response<CapitalAccountDto> response = service.futuresOrderRevoke(publisherId, orderId, serviceFee);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

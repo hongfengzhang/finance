@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.repository.impl.jpa;
 
+import java.util.List;
+
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 
 /**
@@ -10,5 +12,6 @@ import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
  */
 public interface FuturesCurrencyRateRepository extends CustomJpaRepository<FuturesCurrencyRate, Long> {
 
-	FuturesCurrencyRate findByCurrency(String currency);
+	List<FuturesCurrencyRate> findByCurrency(String currency);
+
 }

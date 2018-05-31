@@ -73,6 +73,14 @@ public class CapitalAccount {
 	@JoinColumn(name = "publisher_id")
 	@OneToOne
 	private Publisher publisher;
+	/**
+	 * 最终的盈亏
+	 * <p>
+	 * 此字段只为期货结算使用，不是数据库字段
+	 * </p>
+	 */
+	@Transient
+	private BigDecimal realProfitOrLoss;
 
 	public Long getId() {
 		return id;
@@ -153,6 +161,14 @@ public class CapitalAccount {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public BigDecimal getRealProfitOrLoss() {
+		return realProfitOrLoss;
+	}
+
+	public void setRealProfitOrLoss(BigDecimal realProfitOrLoss) {
+		this.realProfitOrLoss = realProfitOrLoss;
 	}
 
 }

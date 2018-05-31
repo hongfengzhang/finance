@@ -210,18 +210,31 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> futuresOrderOvernight(Long publisherId, Long overnightId, BigDecimal deferredFee,
-			BigDecimal reserveFund) {
+	public Response<CapitalAccountDto> futuresOrderOvernight(@PathVariable Long publisherId,
+			@PathVariable Long overnightId, @PathVariable BigDecimal deferredFee,
+			@PathVariable BigDecimal reserveFund) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.futuresOrderOvernight(publisherId, overnightId, deferredFee, reserveFund),
 				false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> futuresReturnOvernightReserveFund(Long publisherId, Long overnightId,
-			BigDecimal reserveFund) {
+	public Response<CapitalAccountDto> futuresReturnOvernightReserveFund(@PathVariable Long publisherId,
+			Long overnightId, @PathVariable BigDecimal reserveFund) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.futuresReturnOvernightReserveFund(publisherId, overnightId, reserveFund), false));
+	}
+
+	@Override
+	public Response<CapitalAccountDto> futuresOrderSettlement(Long publisherId, Long orderId, BigDecimal profitOrLoss) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.futuresOrderSettlement(publisherId, orderId, profitOrLoss), false));
+	}
+
+	@Override
+	public Response<CapitalAccountDto> futuresOrderRevoke(Long publisherId, Long orderId, BigDecimal serviceFee) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
+				capitalAccountService.futuresOrderRevoke(publisherId, orderId, serviceFee), false));
 	}
 
 }

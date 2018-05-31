@@ -11,9 +11,13 @@ import java.util.Map;
  */
 public enum CapitalFlowType implements CommonalityEnum {
 
+	/****************** 充值、提现 *******************/
+
 	Recharge("1", "充值"),
 
 	Withdrawals("2", "提现"),
+
+	/****************** 股票 *******************/
 
 	ServiceFee("3", "服务费"),
 
@@ -33,11 +37,15 @@ public enum CapitalFlowType implements CommonalityEnum {
 
 	ReturnDeferredCharges("11", "退回递延费"),
 
+	/****************** 期权 *******************/
+
 	RightMoney("12", "期权权利金"),
 
 	ReturnRightMoney("13", "退回期权权利金"),
 
 	StockOptionProfit("14", "期权盈利"),
+
+	/****************** 期货 *******************/
 
 	FuturesServiceFee("15", "期货交易手续费"),
 
@@ -45,11 +53,17 @@ public enum CapitalFlowType implements CommonalityEnum {
 
 	FuturesReturnReserveFund("17", "退回期货履约保证金"),
 
-	FuturesOvernightDeferredFee("18", "期货隔夜递延费"),
+	FuturesRevoke("18", "撤单退回交易手续费"),
 
-	FuturesOvernightReserveFund("19", "期货隔夜保证金"),
-	
-	FuturesReturnOvernightReserveFund("20", "退回期货隔夜保证金");
+	FuturesOvernightDeferredFee("19", "期货隔夜递延费"),
+
+	FuturesOvernightReserveFund("20", "期货隔夜保证金"),
+
+	FuturesReturnOvernightReserveFund("21", "退回期货隔夜保证金"),
+
+	FuturesLoss("22", "期货亏损"),
+
+	FuturesProfit("23", "期货盈利");
 
 	private String index;
 

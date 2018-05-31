@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -52,7 +53,7 @@ public class FuturesOrderController {
 	@Autowired
 	private PublisherBusiness publisherBusiness;
 
-	@GetMapping("/buy")
+	@PostMapping("/buy")
 	@ApiOperation(value = "买涨买跌下单")
 	public Response<FuturesOrderDto> placeOrder(FuturesOrderBuysellDto buysellDto) {
 		FuturesContractQuery query = new FuturesContractQuery();
@@ -186,7 +187,7 @@ public class FuturesOrderController {
 	@ApiOperation(value = "获取已结算列表")
 	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderSettled(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
-		FuturesOrderState[] states = { FuturesOrderState.Canceled, FuturesOrderState.EntrustFailure,
+		FuturesOrderState[] states = { FuturesOrderState.BuyingCanceled, FuturesOrderState.BuyingFailure,
 				FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
 		orderQuery.setPage(page);

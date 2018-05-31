@@ -144,8 +144,8 @@ public class FuturesOrderBusiness {
 					}
 				}
 				// 订单结算状态为 已取消或委托失败时 不计算用户盈亏
-				if (orderMarket.getState() != FuturesOrderState.Canceled
-						&& orderMarket.getState() != FuturesOrderState.EntrustFailure) {
+				if (orderMarket.getState() != FuturesOrderState.BuyingCanceled
+						&& orderMarket.getState() != FuturesOrderState.BuyingFailure) {
 					// 获取行情信息
 					FuturesContractMarket market = RetriveFuturesOverHttp.market(orderMarket.getContractSymbol());
 					if (market == null) {
