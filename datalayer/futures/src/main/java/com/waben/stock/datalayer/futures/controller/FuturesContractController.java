@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,10 +52,13 @@ public class FuturesContractController implements FuturesContractInterface {
 	@Autowired
 	private FuturesCurrencyRateService rateService;
 
+	@Autowired
+	private FuturesCurrencyRateService futuresCurrencyRateService;
+
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	
+
 	@Override
 	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery) {
 		Page<FuturesContract> page = futuresContractService.pagesContract(contractQuery);
@@ -63,9 +67,11 @@ public class FuturesContractController implements FuturesContractInterface {
 		for (FuturesContractDto futuresContractDto : contractDtoList) {
 			for (FuturesContract futuresContract : page.getContent()) {
 				if (futuresContractDto.getId() == futuresContract.getId()) {
+					// 获取汇率信息
+					FuturesCurrencyRate rate = futuresCurrencyRateService.findByCurrency(futuresContract.getCurrency());
 					futuresContractDto.setExchangeEnable(futuresContract.getExchange().getEnable());
 					futuresContractDto.setTimeZoneGap(futuresContract.getExchange().getTimeZoneGap());
-					futuresContractDto.setRate(futuresContract.getCurrencyRate().getRate());
+					futuresContractDto.setRate(rate.getRate() == null ? new BigDecimal(0) : rate.getRate());
 					futuresContractDto.setCurrencyName(futuresContract.getCurrencyRate().getCurrencyName());
 				}
 			}
