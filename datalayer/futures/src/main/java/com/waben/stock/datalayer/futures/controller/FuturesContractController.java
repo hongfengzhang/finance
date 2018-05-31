@@ -60,16 +60,16 @@ public class FuturesContractController implements FuturesContractInterface {
 		for (FuturesContractDto futuresContractDto : contractDtoList) {
 			for (FuturesContract futuresContract : page.getContent()) {
 				if (futuresContractDto.getId() == futuresContract.getId()) {
-					futuresContractDto.setChangeEnable(futuresContract.getExchange().getEnable());
+					futuresContractDto.setExchangeEnable(futuresContract.getExchange().getEnable());
 					futuresContractDto.setTimeZoneGap(futuresContract.getExchange().getTimeZoneGap());
 					futuresContractDto.setRate(futuresContract.getCurrencyRate().getRate());
 					futuresContractDto.setCurrencyName(futuresContract.getCurrencyRate().getCurrencyName());
 				}
 			}
 			// 判断交易所 和 合约是否可用
-			if (!futuresContractDto.getChangeEnable() || !futuresContractDto.getEnable()) {
+			if (!futuresContractDto.getExchangeEnable() || !futuresContractDto.getEnable()) {
 				futuresContractDto.setState(3);
-				futuresContractDto.setDescribe("交易异常");
+				futuresContractDto.setCurrentTradeTimeDesc("交易异常");
 				break;
 			}
 
@@ -78,7 +78,7 @@ public class FuturesContractController implements FuturesContractInterface {
 
 			if (termList == null || termList.size() == 0) {
 				futuresContractDto.setState(1);
-				futuresContractDto.setDescribe("全天交易");
+				futuresContractDto.setCurrentTradeTimeDesc("全天交易");
 				break;
 			}
 			// 获取交易所对应的交易期限数据
@@ -95,31 +95,31 @@ public class FuturesContractController implements FuturesContractInterface {
 			// 交易所合约交易时间
 			String str = "";
 			if (dayForweek == 1) {
-				futuresContractDto.setDescribe(term.getSunTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getSunTradeTimeDesc());
 				str = term.getSunTradeTime();
 			}
 			if (dayForweek == 2) {
-				futuresContractDto.setDescribe(term.getMonTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getMonTradeTimeDesc());
 				str = term.getMonTradeTime();
 			}
 			if (dayForweek == 3) {
-				futuresContractDto.setDescribe(term.getTueTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getTueTradeTimeDesc());
 				str = term.getTueTradeTime();
 			}
 			if (dayForweek == 4) {
-				futuresContractDto.setDescribe(term.getWedTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getWedTradeTimeDesc());
 				str = term.getWedTradeTime();
 			}
 			if (dayForweek == 5) {
-				futuresContractDto.setDescribe(term.getThuTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getThuTradeTimeDesc());
 				str = term.getThuTradeTime();
 			}
 			if (dayForweek == 6) {
-				futuresContractDto.setDescribe(term.getFriTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getFriTradeTimeDesc());
 				str = term.getFriTradeTime();
 			}
 			if (dayForweek == 7) {
-				futuresContractDto.setDescribe(term.getSatTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getSatTradeTimeDesc());
 				str = term.getSatTradeTimeDesc();
 			}
 

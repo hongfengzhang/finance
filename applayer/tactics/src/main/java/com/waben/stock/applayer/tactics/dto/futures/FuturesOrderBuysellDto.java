@@ -30,14 +30,14 @@ public class FuturesOrderBuysellDto {
 	@ApiModelProperty(value = "订单类型", required = true)
 	private FuturesOrderType orderType;
 
-	@ApiModelProperty(value = "支付密码")
-	private String paymentPassword;
-
-	@ApiModelProperty(value = "买入价格类型")
+	@ApiModelProperty(value = "买入价格类型", required = true)
 	private FuturesTradePriceType buyingPriceType;
 
 	@ApiModelProperty(value = "买入委托价格")
 	private BigDecimal buyingEntrustPrice;
+
+	@ApiModelProperty(value = "支付密码", required = true)
+	private String paymentPassword;
 
 	public Long getContractId() {
 		return contractId;

@@ -24,7 +24,7 @@ import io.swagger.annotations.ApiOperation;
  *
  */
 @RestController
-@RequestMapping("/market")
+@RequestMapping("/futuresMarket")
 @Api(description = "期货合约行情接口列表")
 public class FuturesMarketController {
 

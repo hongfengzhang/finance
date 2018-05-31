@@ -146,18 +146,10 @@ public class FuturesOrderService {
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-		FuturesContractMarket market = null;
-		try {
-			// 调取行情接口 获取买入最新价
-			market = RetriveFuturesOverHttp.market(order.getContractSymbol());
-		} catch (ServiceException ex) {
-			throw ex;
-		}
-		order.setBuyingPrice(market == null ? new BigDecimal(0) : market.getLastPrice()); // 买入最新价
+		// 初始化订单信息
 		order.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		Date date = new Date();
 		order.setPostTime(date);
-		order.setBuyingTime(date);
 		order.setState(FuturesOrderState.Position);
 		order.setContract(order.getContract());
 		List<FuturesContractTerm> termList = futuresContractTermService

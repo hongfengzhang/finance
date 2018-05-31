@@ -20,6 +20,10 @@ public class FuturesContractDto {
 	 */
 	private String name;
 	/**
+	 * 简述
+	 */
+	private String sketch;
+	/**
 	 * 货币
 	 */
 	private String currency;
@@ -91,12 +95,10 @@ public class FuturesContractDto {
 	 * 一手隔夜递延费
 	 */
 	private BigDecimal overnightPerUnitDeferredFee;
-
 	/**
 	 * 是否可用
 	 */
 	private Boolean enable;
-
 	/**
 	 * 期货合约状态
 	 * 
@@ -111,17 +113,14 @@ public class FuturesContractDto {
 	 * </p>
 	 */
 	private Integer state;
-
 	/**
-	 * 每个合约的描述
+	 * 当天交易时间描述
 	 */
-	private String describe;
-
+	private String currentTradeTimeDesc;
 	/**
 	 * 交易所是否可用
 	 */
-	private Boolean changeEnable;
-
+	private Boolean exchangeEnable;
 	/**
 	 * 北京时间的时差和交易所
 	 */
@@ -303,20 +302,20 @@ public class FuturesContractDto {
 		this.state = state;
 	}
 
-	public String getDescribe() {
-		return describe;
+	public String getCurrentTradeTimeDesc() {
+		return currentTradeTimeDesc;
 	}
 
-	public void setDescribe(String describe) {
-		this.describe = describe;
+	public void setCurrentTradeTimeDesc(String currentTradeTimeDesc) {
+		this.currentTradeTimeDesc = currentTradeTimeDesc;
 	}
 
-	public Boolean getChangeEnable() {
-		return changeEnable;
+	public Boolean getExchangeEnable() {
+		return exchangeEnable;
 	}
 
-	public void setChangeEnable(Boolean changeEnable) {
-		this.changeEnable = changeEnable;
+	public void setExchangeEnable(Boolean exchangeEnable) {
+		this.exchangeEnable = exchangeEnable;
 	}
 
 	public Integer getTimeZoneGap() {
@@ -333,6 +332,14 @@ public class FuturesContractDto {
 
 	public void setProductType(FuturesProductType productType) {
 		this.productType = productType;
+	}
+
+	public String getSketch() {
+		return sketch;
+	}
+
+	public void setSketch(String sketch) {
+		this.sketch = sketch;
 	}
 
 }

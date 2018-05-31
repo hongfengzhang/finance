@@ -41,10 +41,13 @@ public class FuturesContract {
 	 */
 	private String name;
 	/**
+	 * 简述
+	 */
+	private String sketch;
+	/**
 	 * 货币
 	 */
 	private String currency;
-
 	/**
 	 * 汇率
 	 */
@@ -316,6 +319,14 @@ public class FuturesContract {
 
 	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
 		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
+	}
+
+	public String getSketch() {
+		return sketch;
+	}
+
+	public void setSketch(String sketch) {
+		this.sketch = sketch;
 	}
 
 }
