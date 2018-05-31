@@ -16,6 +16,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
@@ -132,7 +133,7 @@ public class FuturesOrderController {
 		}
 
 		// 委托买入价格
-		if ((buysellDto.getBuyingPriceType().getIndex()).equals("2")) {
+		if (buysellDto.getBuyingPriceType() == FuturesTradePriceType.LMT) {
 			orderDto.setBuyingEntrustPrice(buysellDto.getBuyingEntrustPrice());
 		}
 
