@@ -58,7 +58,7 @@ public class FuturesCurrencyRateController implements FuturesCurrencyRateInterfa
 	}
 
 	@Override
-	public Response<FuturesCurrencyRateDto> findByCurrency(String currency) {
+	public Response<FuturesCurrencyRateDto> findByCurrency(@PathVariable String currency) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesCurrencyRateDto.class,
 				currencyRateService.findByCurrency(currency), false));
 	}
