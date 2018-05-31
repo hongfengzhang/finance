@@ -34,7 +34,7 @@ public class FuturesContractAdminDto {
 	/**
 	 * 产品代码
 	 */
-	private String code;
+	private String symbol;
 	
 	/**
 	 * 产品名称
@@ -67,6 +67,11 @@ public class FuturesContractAdminDto {
 	 * 波动一次盈亏金额，单位为该合约的货币单位
 	 */
 	private BigDecimal perWaveMoney;
+	
+	/**
+	 * 1手合约价值
+	 */
+	private BigDecimal perContractValue;
 	/**
 	 * 一手保证金
 	 */
@@ -90,7 +95,7 @@ public class FuturesContractAdminDto {
 	 * 需将所有未平仓的订单量相加，买涨的为正数，买跌的为负数，相加结果取绝对值再和这个总额度比较
 	 * </p>
 	 */
-	private BigDecimal totalLimit;
+	private BigDecimal userTotalLimit;
 	/**
 	 * 单笔订单额度限制（手）
 	 */
@@ -139,7 +144,7 @@ public class FuturesContractAdminDto {
 	/**
 	 * 每个合约的描述
 	 */
-	private String describe;
+//	private String describe;
 
 	/**
 	 * 交易所是否可用
@@ -162,12 +167,12 @@ public class FuturesContractAdminDto {
 		this.id = id;
 	}
 
-	public String getCode() {
-		return code;
+	public String getSymbol() {
+		return symbol;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
 	public String getName() {
@@ -250,6 +255,14 @@ public class FuturesContractAdminDto {
 		this.perWaveMoney = perWaveMoney;
 	}
 
+	public BigDecimal getPerContractValue() {
+		return perContractValue;
+	}
+
+	public void setPerContractValue(BigDecimal perContractValue) {
+		this.perContractValue = perContractValue;
+	}
+
 	public BigDecimal getPerUnitReserveFund() {
 		return perUnitReserveFund;
 	}
@@ -274,12 +287,12 @@ public class FuturesContractAdminDto {
 		this.unwindPointType = unwindPointType;
 	}
 
-	public BigDecimal getTotalLimit() {
-		return totalLimit;
+	public BigDecimal getUserTotalLimit() {
+		return userTotalLimit;
 	}
 
-	public void setTotalLimit(BigDecimal totalLimit) {
-		this.totalLimit = totalLimit;
+	public void setUserTotalLimit(BigDecimal userTotalLimit) {
+		this.userTotalLimit = userTotalLimit;
 	}
 
 	public BigDecimal getPerOrderLimit() {
@@ -346,13 +359,13 @@ public class FuturesContractAdminDto {
 //		this.state = state;
 //	}
 
-	public String getDescribe() {
-		return describe;
-	}
-
-	public void setDescribe(String describe) {
-		this.describe = describe;
-	}
+//	public String getDescribe() {
+//		return describe;
+//	}
+//
+//	public void setDescribe(String describe) {
+//		this.describe = describe;
+//	}
 
 //	public Boolean getChangeEnable() {
 //		return changeEnable;

@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.applayer.admin.business.futures.FuturesTradeBusiness;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeAdminDto;
+import com.waben.stock.applayer.admin.business.futures.FuturesOrderBusiness;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
@@ -33,18 +33,18 @@ import io.swagger.annotations.ApiOperation;
 @RestController
 @RequestMapping("/futures")
 @Api(description="期货订单")
-public class FuturesTradeController {
+public class FuturesOrderController {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 	
 	@Autowired
-	private FuturesTradeBusiness business;
+	private FuturesOrderBusiness business;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	@GetMapping("/pages")
 	@ApiOperation(value = "查询期货成交订单")
-	public Response<PageInfo<FuturesTradeAdminDto>> pages(FuturesTradeAdminQuery query) {
+	public Response<PageInfo<FuturesOrderAdminDto>> pages(FuturesTradeAdminQuery query) {
 		return new Response<>(business.adminPagesByQuery(query));
 	}
 	

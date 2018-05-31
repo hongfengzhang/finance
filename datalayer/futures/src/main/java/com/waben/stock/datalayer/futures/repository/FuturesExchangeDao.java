@@ -13,4 +13,5 @@ import com.waben.stock.datalayer.futures.entity.FuturesExchange;
  */
 public interface FuturesExchangeDao extends BaseDao<FuturesExchange, Long> {
 
+	List<FuturesContract> findByExchangId(Long exchangeId);
 }

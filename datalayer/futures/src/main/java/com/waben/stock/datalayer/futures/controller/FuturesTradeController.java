@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
 import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -27,9 +27,9 @@ public class FuturesTradeController implements FuturesTradeInterface {
 	private FuturesOrderService futuresOrderService;
 	
 	@Override
-	public Response<PageInfo<FuturesTradeAdminDto>> adminPagesByQuery(@RequestBody FuturesTradeAdminQuery query) {
-		Page<FuturesTradeAdminDto> page = futuresOrderService.adminPagesByQuery(query);
-		PageInfo<FuturesTradeAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesTradeAdminDto.class);
+	public Response<PageInfo<FuturesOrderAdminDto>> adminPagesByQuery(@RequestBody FuturesTradeAdminQuery query) {
+		Page<FuturesOrderAdminDto> page = futuresOrderService.adminPagesByQuery(query);
+		PageInfo<FuturesOrderAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesOrderAdminDto.class);
 		return new Response<>(result);
 	}
 

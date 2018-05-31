@@ -18,9 +18,12 @@ import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTermAdminQuery;
 import com.waben.stock.interfaces.service.futures.FutureContractTermInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.PageToPageInfo;
 
 import io.swagger.annotations.Api;
 
@@ -42,23 +45,11 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 
 	@Override
 	public Response<FuturesTermAdminDto> addContractTerm(@RequestBody FuturesTermAdminDto dto) {
-		//获取市场
-		FuturesExchangeAdminQuery exchange = new FuturesExchangeAdminQuery();
-		exchange.setCode(dto.getExchangcode());
-		exchange.setName(dto.getExchangename());
-		exchange.setPage(0);
-		exchange.setSize(Integer.MAX_VALUE);
-		Page<FuturesExchange> exchangePage = exchangeService.pagesExchange(exchange);
 		//获取品种
-		FuturesContract contract = new FuturesContract();
-		contract.setSymbol(dto.getCode());
-		contract.setName(dto.getName());
-		contract.setExchange(exchangePage.getContent().get(0));
-//		Page<FuturesContract> contractPage = contractService.pagesContractAdmin(contract, 0, Integer.MAX_VALUE);
-		
+		FuturesContract contract = contractService.findByContractId(dto.getContractId());
 		//dto转entity
 		FuturesContractTerm term = CopyBeanUtils.copyBeanProperties(FuturesContractTerm.class, dto, false);
-//		term.setContract(contractPage.getContent().get(0));
+		term.setContract(contract);
 		try {
 			if(dto.getExpirationDate()!=null && !"".equals(dto.getExpirationDate())){
 				term.setExpirationDate(sdf.parse(dto.getExpirationDate()));
@@ -72,37 +63,30 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 			if(dto.getLastTradingDate()!=null && !"".equals(dto.getLastTradingDate())){
 				term.setLastTradingDate(sdf.parse(dto.getLastTradingDate()));
 			}
+			if(dto.getForceUnwindDate()!=null && !"".equals(dto.getForceUnwindDate())){
+				term.setForceUnwindDate(sdf.parse(dto.getForceUnwindDate()));
+			}
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
+	
 		FuturesContractTerm termResult = termService.addContractTerm(term);
 		FuturesTermAdminDto result = CopyBeanUtils.copyBeanProperties(termResult, new FuturesTermAdminDto(), false);
 		result.setExpirationDate(sdf.format(termResult.getExpirationDate()));
 		result.setFirstNoticeDate(sdf.format(termResult.getFirstNoticeDate()));
 		result.setFirstPositonDate(sdf.format(termResult.getFirstPositonDate()));
 		result.setLastTradingDate(sdf.format(termResult.getLastTradingDate()));
+		result.setForceUnwindDate(sdf.format(termResult.getForceUnwindDate()));
 		return new Response<>(result);
 	}
 
 	@Override
 	public Response<FuturesTermAdminDto> modifyContractTerm(@RequestBody FuturesTermAdminDto dto) {
-		//获取市场
-		FuturesExchangeAdminQuery exchange = new FuturesExchangeAdminQuery();
-		exchange.setCode(dto.getExchangcode());
-		exchange.setName(dto.getExchangename());
-		exchange.setPage(0);
-		exchange.setSize(Integer.MAX_VALUE);
-		Page<FuturesExchange> exchangePage = exchangeService.pagesExchange(exchange);
 		//获取品种
-		FuturesContract contract = new FuturesContract();
-		contract.setSymbol(dto.getCode());
-		contract.setName(dto.getName());
-		contract.setExchange(exchangePage.getContent().get(0));
-//		Page<FuturesContract> contractPage = contractService.pagesContractAdmin(contract, 0, Integer.MAX_VALUE);
-		
+		FuturesContract contract = contractService.findByContractId(dto.getContractId());
 		//dto转entity
 		FuturesContractTerm term = CopyBeanUtils.copyBeanProperties(FuturesContractTerm.class, dto, false);
-//		term.setContract(contractPage.getContent().get(0));
+		term.setContract(contract);
 		try {
 			if(dto.getExpirationDate()!=null && !"".equals(dto.getExpirationDate())){
 				term.setExpirationDate(sdf.parse(dto.getExpirationDate()));
@@ -115,6 +99,9 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 			}
 			if(dto.getLastTradingDate()!=null && !"".equals(dto.getLastTradingDate())){
 				term.setLastTradingDate(sdf.parse(dto.getLastTradingDate()));
+			}
+			if(dto.getForceUnwindDate()!=null && !"".equals(dto.getForceUnwindDate())){
+				term.setForceUnwindDate(sdf.parse(dto.getForceUnwindDate()));
 			}
 		} catch (ParseException e) {
 			e.printStackTrace();
@@ -125,12 +112,31 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 		result.setFirstNoticeDate(sdf.format(termResult.getFirstNoticeDate()));
 		result.setFirstPositonDate(sdf.format(termResult.getFirstPositonDate()));
 		result.setLastTradingDate(sdf.format(termResult.getLastTradingDate()));
+		result.setForceUnwindDate(sdf.format(termResult.getForceUnwindDate()));
 		return new Response<>(result);
 	}
 
 	@Override
 	public void deleteContractTerm(@PathVariable Long id) {
 		termService.deleteContractTerm(id);
+	}
+
+	@Override
+	public Response<PageInfo<FuturesTermAdminDto>> pagesTremAdmin(FuturesTermAdminQuery query) {
+		Page<FuturesContractTerm> page = termService.pagesTermAdmin(query);
+		PageInfo<FuturesTermAdminDto> pages = PageToPageInfo.pageToPageInfo(page, FuturesTermAdminDto.class);
+		for(int i=0;i<pages.getContent().size();i++){
+			pages.getContent().get(i).setExchangcode(page.getContent().get(i).getContract().getExchange().getCode());
+			pages.getContent().get(i).setExchangename(page.getContent().get(i).getContract().getExchange().getName());
+			pages.getContent().get(i).setSymbol(page.getContent().get(i).getContract().getSymbol());
+			pages.getContent().get(i).setName(page.getContent().get(i).getContract().getName());
+			pages.getContent().get(i).setExpirationDate(sdf.format(page.getContent().get(i).getExpirationDate()));
+			pages.getContent().get(i).setFirstNoticeDate(sdf.format(page.getContent().get(i).getFirstNoticeDate()));
+			pages.getContent().get(i).setFirstPositonDate(sdf.format(page.getContent().get(i).getFirstPositonDate()));
+			pages.getContent().get(i).setLastTradingDate(sdf.format(page.getContent().get(i).getLastTradingDate()));
+			pages.getContent().get(i).setForceUnwindDate(sdf.format(page.getContent().get(i).getForceUnwindDate()));
+		}
+		return new Response<>(pages);
 	}
 
 }

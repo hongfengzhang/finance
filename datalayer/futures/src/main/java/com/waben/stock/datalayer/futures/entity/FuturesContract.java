@@ -52,6 +52,9 @@ public class FuturesContract {
 	@JoinColumn(name = "rate_id")
 	private FuturesCurrencyRate currencyRate;
 	
+	/**
+	 * 产品分类
+	 */
 	@Convert(converter = FuturesProductTypeConverter.class)
 	private FuturesProductType productType;
 	/**
@@ -62,6 +65,11 @@ public class FuturesContract {
 	 * 最小波动
 	 */
 	private BigDecimal minWave;
+	
+	/**
+	 * 1手合约价值
+	 */
+	private BigDecimal perContractValue;
 	/**
 	 * 波动一次盈亏金额，单位为该合约的货币单位
 	 */
@@ -211,6 +219,14 @@ public class FuturesContract {
 
 	public void setPerWaveMoney(BigDecimal perWaveMoney) {
 		this.perWaveMoney = perWaveMoney;
+	}
+
+	public BigDecimal getPerContractValue() {
+		return perContractValue;
+	}
+
+	public void setPerContractValue(BigDecimal perContractValue) {
+		this.perContractValue = perContractValue;
 	}
 
 	public BigDecimal getPerUnitReserveFund() {

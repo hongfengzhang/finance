@@ -31,7 +31,7 @@ public class FuturesContractAdminQuery extends PageAndSortQuery {
 	/**
 	 * 产品代码
 	 */
-	private String code;
+	private String symbol;
 	
 	/**
 	 * 产品名称
@@ -39,9 +39,14 @@ public class FuturesContractAdminQuery extends PageAndSortQuery {
 	private String name;
 	
 	/**
-	 * 隔夜时间
+	 * 产品分类
 	 */
-	private String overnightTime;
+	private String productType;
+	
+	/**
+	 * 查询类型
+	 */
+	private Integer queryType;
 
 	public Long getId() {
 		return id;
@@ -75,12 +80,12 @@ public class FuturesContractAdminQuery extends PageAndSortQuery {
 		this.exchangeType = exchangeType;
 	}
 
-	public String getCode() {
-		return code;
+	public String getSymbol() {
+		return symbol;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
 	public String getName() {
@@ -91,11 +96,22 @@ public class FuturesContractAdminQuery extends PageAndSortQuery {
 		this.name = name;
 	}
 
-	public String getOvernightTime() {
-		return overnightTime;
+	public String getProductType() {
+		return productType;
 	}
 
-	public void setOvernightTime(String overnightTime) {
-		this.overnightTime = overnightTime;
+	public void setProductType(String productType) {
+		this.productType = productType;
 	}
+
+	public Integer getQueryType() {
+		return queryType;
+	}
+
+	public void setQueryType(Integer queryType) {
+		this.queryType = queryType;
+	}
+
+	
+
 }

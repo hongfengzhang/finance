@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.admin.business.stockoption.HolidayBusiness;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -19,7 +19,7 @@ import com.waben.stock.interfaces.service.futures.FuturesTradeInterface;
  * @author pengzhenliang
  */
 @Service
-public class FuturesTradeBusiness {
+public class FuturesOrderBusiness {
 	
 	@Autowired
 	@Qualifier("futuresTradeInterface")
@@ -31,8 +31,8 @@ public class FuturesTradeBusiness {
 	@Autowired
 	private RestTemplate restTemplate;
 	
-	public PageInfo<FuturesTradeAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
-		Response<PageInfo<FuturesTradeAdminDto>> response = reference.adminPagesByQuery(query);
+	public PageInfo<FuturesOrderAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
+		Response<PageInfo<FuturesOrderAdminDto>> response = reference.adminPagesByQuery(query);
 		if("200".equals(response.getCode())){
 			
 			return response.getResult();

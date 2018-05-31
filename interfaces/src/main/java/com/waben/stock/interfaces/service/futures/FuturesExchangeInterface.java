@@ -50,4 +50,6 @@ public interface FuturesExchangeInterface {
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	void deleteExchange(@PathVariable("id") Long id);
+	
+	
 }
