@@ -516,10 +516,11 @@ public class WindControlSchedule {
 	 * @return 持仓中的正式订单
 	 */
 	private List<FuturesOrder> retrivePositionOrders() {
+		FuturesOrderState[] states = { FuturesOrderState.Position };
 		FuturesOrderQuery query = new FuturesOrderQuery();
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		query.setState(FuturesOrderState.Position);
+		query.setStates(states);
 		query.setIsTest(false);
 		Page<FuturesOrder> pages = orderService.pagesOrder(query);
 		return pages.getContent();

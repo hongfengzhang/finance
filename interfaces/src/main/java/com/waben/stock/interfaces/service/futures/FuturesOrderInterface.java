@@ -1,8 +1,5 @@
 package com.waben.stock.interfaces.service.futures;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -79,68 +76,5 @@ public interface FuturesOrderInterface {
 	@RequestMapping(value = "/sum/{contractId}/{publisherId}", method = RequestMethod.GET)
 	Response<Integer> sumByListOrderContractIdAndPublisherId(@PathVariable(name = "contractId") Long contractId,
 			@PathVariable(name = "publisherId") Long publisherId);
-
-	/**
-	 * 获取持仓中列表
-	 * 
-	 * @param publisherId
-	 *            用户ID
-	 * @return 持仓中列表
-	 */
-	@RequestMapping(value = "/getListFuturesOrderPosition/{publisherId}", method = RequestMethod.GET)
-	Response<List<FuturesOrderDto>> getListFuturesOrderPositionByPublisherId(
-			@PathVariable("publisherId") Long publisherId);
-
-	/**
-	 * 获取持仓中总收益
-	 * 
-	 * @param publisherId
-	 *            用户ID
-	 * @return 持仓中总收益
-	 */
-	@RequestMapping(value = "/settlementOrderPosition/{publisherId}", method = RequestMethod.GET)
-	Response<BigDecimal> settlementOrderPositionByPublisherId(@PathVariable("publisherId") Long publisherId);
-
-	/**
-	 * 获取委托中列表
-	 * 
-	 * @param publisherId
-	 *            用户ID
-	 * @return 委托中列表
-	 */
-	@RequestMapping(value = "/getListFuturesOrderEntrust/{publisherId}", method = RequestMethod.GET)
-	Response<List<FuturesOrderDto>> getListFuturesOrderEntrustByPublisherId(
-			@PathVariable("publisherId") Long publisherId);
-
-	/**
-	 * 获取委托中总收益
-	 * 
-	 * @param publisherId
-	 *            用户ID
-	 * @return 委托中总收益
-	 */
-	@RequestMapping(value = "/settlementOrderEntrust/{publisherId}", method = RequestMethod.GET)
-	Response<BigDecimal> settlementOrderEntrustByPublisherId(@PathVariable("publisherId") Long publisherId);
-
-	/**
-	 * 获取已结算列表
-	 * 
-	 * @param publisherId
-	 *            用户ID
-	 * @return 已结算列表
-	 */
-	@RequestMapping(value = "/getListFuturesOrderUnwind/{publisherId}", method = RequestMethod.GET)
-	Response<List<FuturesOrderDto>> getListFuturesOrderUnwindByPublisherId(
-			@PathVariable("publisherId") Long publisherId);
-
-	/**
-	 * 获取已结算总收益
-	 * 
-	 * @param publisherId
-	 *            用户ID
-	 * @return 已结算总收益
-	 */
-	@RequestMapping(value = "/settlementOrderUnwind/{publisherId}", method = RequestMethod.GET)
-	Response<BigDecimal> settlementOrderUnwindByPublisherId(@PathVariable("publisherId") Long publisherId);
 
 }

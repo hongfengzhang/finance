@@ -106,6 +106,9 @@ public class FuturesOrderService {
 	@Autowired
 	private RabbitmqProducer producer;
 
+	@Autowired
+	private FuturesCurrencyRateService futuresCurrencyRateService;
+
 	@Value("{order.domain:youguwang.com.cn}")
 	private String domain;
 
@@ -183,10 +186,14 @@ public class FuturesOrderService {
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
+				// 用户ID
+				if (query.getPublisherId() != null && query.getPublisherId() != 0) {
+					predicateList
+							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
+				}
 				// 订单状态
-				if (query.getState() != null) {
-					predicateList.add(
-							criteriaBuilder.equal(root.get("state").as(FuturesOrderState.class), query.getState()));
+				if (query.getStates() != null && query.getStates().length > 0) {
+					predicateList.add(root.get("state").in(query.getStates()));
 				}
 				// 是否测试单
 				if (query.getIsTest() != null) {
@@ -633,37 +640,4 @@ public class FuturesOrderService {
 		}
 		return order;
 	}
-
-	public List<FuturesOrder> getListFuturesOrderPositionByPublisherId(Long publisherId) {
-		List<FuturesOrder> orderList = orderDao.getListFuturesOrderPositionByPublisherId(publisherId);
-		if (orderList != null && orderList.size() > 0) {
-			for (FuturesOrder futuresOrder : orderList) {
-				if (futuresOrder.getLimitProfitType() != null && futuresOrder.getPerUnitLimitProfitAmount() != null) {
-
-				}
-			}
-		}
-		return orderList;
-	}
-
-	public BigDecimal settlementOrderPositionByPublisherId(Long publisherId) {
-		return orderDao.settlementOrderPositionByPublisherId(publisherId);
-	}
-
-	public List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(Long publisherId) {
-		return orderDao.getListFuturesOrderEntrustByPublisherId(publisherId);
-	}
-
-	public BigDecimal settlementOrderEntrustByPublisherId(Long publisherId) {
-		return orderDao.settlementOrderEntrustByPublisherId(publisherId);
-	}
-
-	public List<FuturesOrder> getListFuturesOrderUnwindByPublisherId(Long publisherId) {
-		return orderDao.getListFuturesOrderUnwindByPublisherId(publisherId);
-	}
-
-	public BigDecimal settlementOrderUnwindByPublisherId(Long publisherId) {
-		return orderDao.settlementOrderUnwindByPublisherId(publisherId);
-	}
-
 }

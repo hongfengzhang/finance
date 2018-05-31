@@ -689,14 +689,14 @@ public class CapitalAccountService {
 		// 扣减服务费
 		if (serviceFee != null && serviceFee.compareTo(new BigDecimal(0)) > 0) {
 			reduceAmount(account, serviceFee, date);
-			flowDao.create(account.getPublisher(), CapitalFlowType.ServiceFee,
+			flowDao.create(account.getPublisher(), CapitalFlowType.FuturesServiceFee,
 					serviceFee.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
 					account.getAvailableBalance());
 		}
 		// 冻结履约保证金
 		if (reserveFund != null && reserveFund.abs().compareTo(new BigDecimal(0)) > 0) {
 			frozenAmount(account, reserveFund, date);
-			flowDao.create(account.getPublisher(), CapitalFlowType.ReserveFund,
+			flowDao.create(account.getPublisher(), CapitalFlowType.FuturesReserveFund,
 					reserveFund.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD, orderId,
 					account.getAvailableBalance());
 		}

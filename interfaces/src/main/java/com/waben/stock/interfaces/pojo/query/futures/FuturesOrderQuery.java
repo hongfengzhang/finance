@@ -10,8 +10,8 @@ public class FuturesOrderQuery extends PageAndSortQuery {
 	@ApiModelProperty(value = "用户ID")
 	private Long publisherId;
 
-	@ApiModelProperty(value = "期货订单状态")
-	private FuturesOrderState state;
+	@ApiModelProperty(value = "期货订单状态  持仓中： Position 委托中： BuyingEntrust,PartPosition,SellingEntrust,PartUnwind 已结算： Canceled,EntrustFailure,Unwind")
+	private FuturesOrderState[] states;
 
 	@ApiModelProperty(value = "是否测试订单")
 	private Boolean isTest;
@@ -26,12 +26,12 @@ public class FuturesOrderQuery extends PageAndSortQuery {
 		super.setSize(size);
 	}
 
-	public FuturesOrderState getState() {
-		return state;
+	public FuturesOrderState[] getStates() {
+		return states;
 	}
 
-	public void setState(FuturesOrderState state) {
-		this.state = state;
+	public void setStates(FuturesOrderState[] states) {
+		this.states = states;
 	}
 
 	public Long getPublisherId() {

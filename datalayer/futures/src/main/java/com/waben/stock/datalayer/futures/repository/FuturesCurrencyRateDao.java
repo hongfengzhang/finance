@@ -15,4 +15,5 @@ public interface FuturesCurrencyRateDao extends BaseDao<FuturesCurrencyRate, Lon
 	List<FuturesCurrencyRate> findAll();
 
 	List<FuturesCurrencyRate> retrieveByCurrency(String currency);
+
 }
