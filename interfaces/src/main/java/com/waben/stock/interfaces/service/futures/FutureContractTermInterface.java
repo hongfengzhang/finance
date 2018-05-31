@@ -7,8 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTermAdminQuery;
 
 @FeignClient(name = "futures", path = "contractTerm", qualifier = "futureContractTermInterface")
 public interface FutureContractTermInterface {
@@ -36,4 +40,7 @@ public interface FutureContractTermInterface {
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	void deleteContractTerm(@PathVariable("id") Long id);
+	
+	@RequestMapping(value = "/pagesTremAdmin", method = RequestMethod.POST, consumes = "application/json")
+	Response<PageInfo<FuturesTermAdminDto>> pagesTremAdmin(@RequestBody FuturesTermAdminQuery query);
 }

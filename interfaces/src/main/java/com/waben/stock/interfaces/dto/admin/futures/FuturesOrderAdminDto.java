@@ -6,7 +6,7 @@ import java.util.Date;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesWindControlType;
 
-public class FuturesTradeAdminDto {
+public class FuturesOrderAdminDto {
 
 	/**
 	 * 交易ID
@@ -32,9 +32,19 @@ public class FuturesTradeAdminDto {
 	private String name;
 	
 	/**
-	 * 交易编号
+	 * 订单编号
 	 */
 	private String tradeNo;
+	
+	/**
+	 * 开仓对应的交易编号
+	 */
+	private Long openGatewayOrderId; 
+	
+	/**
+	 * 开仓对应的交易编号
+	 */
+	private Long closeGatewayOrderId;
 	
 	/**
 	 * 交易方向
@@ -44,7 +54,7 @@ public class FuturesTradeAdminDto {
 	/**
 	 * 交易状态
 	 */
-	private FuturesOrderState state;
+	private String state;
 	
 	/**
 	 * 数量（手）
@@ -122,9 +132,9 @@ public class FuturesTradeAdminDto {
 	private BigDecimal unwindServiceFee;
 	
 	/**
-	 * 订单状态
+	 * 风控状态
 	 */
-	private FuturesWindControlType windControlType;
+	private String windControlType;
 
 	public Long getId() {
 		return id;
@@ -172,14 +182,6 @@ public class FuturesTradeAdminDto {
 
 	public void setOrderType(String orderType) {
 		this.orderType = orderType;
-	}
-
-	public FuturesOrderState getState() {
-		return state;
-	}
-
-	public void setState(FuturesOrderState state) {
-		this.state = state;
 	}
 
 	public BigDecimal getTotalQuantity() {
@@ -302,11 +304,37 @@ public class FuturesTradeAdminDto {
 		this.unwindServiceFee = unwindServiceFee;
 	}
 
-	public FuturesWindControlType getWindControlType() {
+	public Long getOpenGatewayOrderId() {
+		return openGatewayOrderId;
+	}
+
+	public void setOpenGatewayOrderId(Long openGatewayOrderId) {
+		this.openGatewayOrderId = openGatewayOrderId;
+	}
+
+	public Long getCloseGatewayOrderId() {
+		return closeGatewayOrderId;
+	}
+
+	public void setCloseGatewayOrderId(Long closeGatewayOrderId) {
+		this.closeGatewayOrderId = closeGatewayOrderId;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getWindControlType() {
 		return windControlType;
 	}
 
-	public void setWindControlType(FuturesWindControlType windControlType) {
+	public void setWindControlType(String windControlType) {
 		this.windControlType = windControlType;
 	}
+
+	
 }

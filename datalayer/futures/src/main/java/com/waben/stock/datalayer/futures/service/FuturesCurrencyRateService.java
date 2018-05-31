@@ -82,4 +82,7 @@ public class FuturesCurrencyRateService {
 		return currencyRateDao.page(0, Integer.MAX_VALUE);
 	}
 
+	public FuturesCurrencyRate retrieve(Long id) {
+		return currencyRateDao.retrieve(id);
+	}
 }

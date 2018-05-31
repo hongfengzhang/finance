@@ -2,6 +2,7 @@ package com.waben.stock.applayer.admin.controller.futures;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.applayer.admin.business.futures.FuturesContractTermBusiness;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTermAdminQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -43,4 +46,10 @@ public class FuturesContractTermControllerr {
 		business.deleteContract(id);
         return new Response<>(1);
     }
+	
+	@GetMapping("/pagesTerm")
+	@ApiOperation(value = "查询合约期限")
+	public Response<PageInfo<FuturesTermAdminDto>> pagesTermAdmin(FuturesTermAdminQuery query){
+		return new Response<>(business.pagesTermAdmin(query));
+	}
 }

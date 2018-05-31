@@ -73,9 +73,8 @@ public class FuturesExchangeService {
 		exchangeDao.delete(id);
 	}
 	
-	public Page<FuturesContract> pagesAdmin(final FuturesExchangeAdminQuery query) {
-		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
-		return null;
+	public List<FuturesContract> findByExchangId(Long exchangeId) {
+		return exchangeDao.findByExchangId(exchangeId);
 	}
 
 }

@@ -5,7 +5,9 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -31,14 +33,16 @@ import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
 import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
+import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOvernightRecordDao;
+import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesGatewayOrder;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
@@ -69,6 +73,12 @@ public class FuturesOrderService {
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
 
+//	@Autowired
+//	private FuturesOrderProducer producer;
+	
+	@Autowired
+	private DynamicQuerySqlDao sqlDao;
+	
 	@Autowired
 	private FuturesContractTermService futuresContractTermService;
 	
@@ -91,17 +101,61 @@ public class FuturesOrderService {
 		return futuresOrderDao.retrieve(id);
 	}
 
-	public Page<FuturesTradeAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
+	public Page<FuturesOrderAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
 		String publisherNameCondition = "";
 		if (!StringUtil.isEmpty(query.getPublisherName())) {
-			publisherNameCondition = " and t4.name like '%" + query.getPublisherName() + "%' ";
+			publisherNameCondition = " and f2.phone like '%" + query.getPublisherPhone() + "%' ";
 		}
 		String publisherPhoneCondition = "";
 		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
-			publisherPhoneCondition = " and t3.phone like '%" + query.getPublisherPhone() + "%' ";
+			publisherPhoneCondition = " and f3.name like '%" + query.getPublisherName() + "%' ";
 		}
-		List<FuturesTradeAdminDto> content = new ArrayList<FuturesTradeAdminDto>();
-		BigInteger totalElements = new BigInteger("10");
+		String contractNameCondition = "";
+		if(!StringUtil.isEmpty(query.getName())){
+			contractNameCondition = " and f4.name like '%" + query.getName() + "%'";
+		}
+		String orderTypeCondition = "";
+		if(!StringUtil.isEmpty(query.getOrderType())){
+			orderTypeCondition = " and f1.orderType like '%" + query.getOrderType() + "%'";
+		}
+		String orderStateCondition = "";
+		if(!StringUtil.isEmpty(query.getOrderState())){
+			orderStateCondition = " and f1.state like '%" + query.getOrderState() + "%'";
+		}
+		String sql = String.format("select f1.id, f3.name,f2.phone,f4.name as cname,f1.trade_no, f1.open_gateway_order_id, f1.close_gateway_order_id, f1.order_type, f1.state, f1.total_quantity, f1.buying_time,"+
+									" f1.buying_price, f1.profit_or_loss, f1.openwind_service_fee, f1.reserve_fund, f1.per_unit_limit_profit_amount, f1.per_unit_limit_loss_amount,"+
+									" f1.selling_time, f1.selling_price, f1.unwind_service_fee, f1.wind_control_type"+
+									" from f_futures_order f1 "+
+									" LEFT JOIN publisher f2 on f1.publisher_id = f2.id"+ 
+									" LEFT JOIN real_name f3 on f1.publisher_id = f3.resource_id"+
+									" LEFT JOIN f_futures_contract f4 ON f1.contract_id = f4.id"+
+									" where 1=1 %s %s %s %s %s ORDER BY f1.post_time LIMIT "+query.getPage()*query.getSize()+","+query.getSize(),
+									publisherNameCondition,publisherPhoneCondition,contractNameCondition,orderStateCondition,orderTypeCondition);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("LIMIT"));
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setPublisherName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setPublisherPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setTradeNo", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(5), new MethodDesc("setOpenGatewayOrderId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(6), new MethodDesc("setCloseGatewayOrderId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setOrderType", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setState", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setTotalQuantity", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(10), new MethodDesc("setBuyingTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(11), new MethodDesc("setBuyingPrice", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(12), new MethodDesc("setProfit", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(13), new MethodDesc("setOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(14), new MethodDesc("setReserveFund", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(15), new MethodDesc("setPerUnitLimitProfitAmount", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(16), new MethodDesc("setPerUnitLimitLossAmount", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(17), new MethodDesc("setSellingTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(18), new MethodDesc("setSellingPrice", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(19), new MethodDesc("setUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(20), new MethodDesc("setWindControlType", new Class<?>[] { String.class }));
+		List<FuturesOrderAdminDto> content = sqlDao.execute(FuturesOrderAdminDto.class, sql, setMethodMap);
+		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
@@ -146,10 +200,18 @@ public class FuturesOrderService {
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-		// 初始化订单信息
+		FuturesContractMarket market = null;
+		try {
+			// 调取行情接口 获取买入最新价
+			market = RetriveFuturesOverHttp.market(order.getContractSymbol());
+		} catch (ServiceException ex) {
+			throw ex;
+		}
+		order.setBuyingPrice(market == null ? new BigDecimal(0) : market.getLastPrice()); // 买入最新价
 		order.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		Date date = new Date();
 		order.setPostTime(date);
+		order.setBuyingTime(date);
 		order.setState(FuturesOrderState.Position);
 		order.setContract(order.getContract());
 		List<FuturesContractTerm> termList = futuresContractTermService

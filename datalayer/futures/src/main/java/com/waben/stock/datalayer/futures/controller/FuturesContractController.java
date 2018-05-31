@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.futures.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -20,6 +21,7 @@ import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -229,10 +231,24 @@ public class FuturesContractController implements FuturesContractInterface {
 	}
 
 	@Override
-	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(
-			@RequestBody FuturesContractAdminQuery query) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query) {
+		Page<FuturesContract> page = futuresContractService.pagesContractAdmin(query);
+		PageInfo<FuturesContractAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractAdminDto.class);
+		for(int i=0;i<result.getContent().size();i++){
+			result.getContent().get(i).setExchangcode(page.getContent().get(i).getExchange().getCode());
+			result.getContent().get(i).setExchangename(page.getContent().get(i).getExchange().getName());
+			result.getContent().get(i).setExchangeType(page.getContent().get(i).getExchange().getExchangeType());
+			result.getContent().get(i).setProductType(page.getContent().get(i).getProductType().getValue());
+			result.getContent().get(i).setRate(page.getContent().get(i).getCurrencyRate().getRate());
+			List<FuturesContractTerm> list = futuresContractService.findByListContractId(page.getContent().get(i).getId());
+			List<FuturesTermAdminDto> resultList = new ArrayList<FuturesTermAdminDto>();
+			for (FuturesContractTerm term : list) {
+				FuturesTermAdminDto dto = CopyBeanUtils.copyBeanProperties(term, new FuturesTermAdminDto(), false);
+				resultList.add(dto);
+			}
+			result.getContent().get(i).setFuturesTermAdminDto(resultList);
+ 		}
+		return new Response<>(result);
+	}	
 
 }

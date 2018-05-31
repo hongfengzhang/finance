@@ -1,9 +1,5 @@
 package com.waben.stock.interfaces.dto.admin.futures;
 
-import java.util.Date;
-
-import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
-
 public class FuturesTermAdminDto {
 
 	private Long id;
@@ -21,12 +17,24 @@ public class FuturesTermAdminDto {
 	/**
 	 * 产品代码
 	 */
-	private String code;
+	private String symbol;
 	
 	/**
 	 * 产品名称
 	 */
 	private String name;
+	
+	private Long contractId;
+	
+	/**
+	 * 合约期限编号
+	 */
+	private String contractNo;
+	
+	/**
+	 * 返还隔夜保证金的时间
+	 */
+	private String returnOvernightReserveFundTime;
 	
 	/**
 	 * 是否为当前实施的期限
@@ -55,6 +63,11 @@ public class FuturesTermAdminDto {
 	 * 到期日期
 	 */
 	private String expirationDate;
+	
+	/**
+	 * 强平时间
+	 */
+	private String forceUnwindDate;
 	/**
 	 * 周一交易时间(交易所)
 	 * <p>
@@ -120,17 +133,48 @@ public class FuturesTermAdminDto {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public String getCode() {
-		return code;
+	
+	public String getExchangcode() {
+		return exchangcode;
 	}
-	public void setCode(String code) {
-		this.code = code;
+	public void setExchangcode(String exchangcode) {
+		this.exchangcode = exchangcode;
+	}
+	public String getExchangename() {
+		return exchangename;
+	}
+	public void setExchangename(String exchangename) {
+		this.exchangename = exchangename;
+	}
+	public String getSymbol() {
+		return symbol;
+	}
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 	public String getName() {
 		return name;
 	}
 	public void setName(String name) {
 		this.name = name;
+	}
+	public Long getContractId() {
+		return contractId;
+	}
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
+	}
+	public String getContractNo() {
+		return contractNo;
+	}
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
+	}
+	public String getReturnOvernightReserveFundTime() {
+		return returnOvernightReserveFundTime;
+	}
+	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
+		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
 	}
 	public boolean isCurrent() {
 		return current;
@@ -161,6 +205,12 @@ public class FuturesTermAdminDto {
 	}
 	public void setExpirationDate(String expirationDate) {
 		this.expirationDate = expirationDate;
+	}
+	public String getForceUnwindDate() {
+		return forceUnwindDate;
+	}
+	public void setForceUnwindDate(String forceUnwindDate) {
+		this.forceUnwindDate = forceUnwindDate;
 	}
 	public String getMonTradeTime() {
 		return monTradeTime;
@@ -246,17 +296,6 @@ public class FuturesTermAdminDto {
 	public void setSunTradeTimeDesc(String sunTradeTimeDesc) {
 		this.sunTradeTimeDesc = sunTradeTimeDesc;
 	}
-	public String getExchangcode() {
-		return exchangcode;
-	}
-	public void setExchangcode(String exchangcode) {
-		this.exchangcode = exchangcode;
-	}
-	public String getExchangename() {
-		return exchangename;
-	}
-	public void setExchangename(String exchangename) {
-		this.exchangename = exchangename;
-	}
+	
 
 }

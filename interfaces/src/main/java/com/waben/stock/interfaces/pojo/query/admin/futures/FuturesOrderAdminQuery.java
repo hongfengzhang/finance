@@ -2,8 +2,13 @@ package com.waben.stock.interfaces.pojo.query.admin.futures;
 
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
-public class FuturesTradeAdminQuery extends PageAndSortQuery {
+public class FuturesOrderAdminQuery extends PageAndSortQuery {
 
+	/**
+	 * 交易ID
+	 */
+	private Long id;
+	
 	/**
 	 * 发布人姓名
 	 * <p>
@@ -11,6 +16,7 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 * </p>
 	 */
 	private String publisherName;
+	
 	/**
 	 * 发布人手机号
 	 */
@@ -27,10 +33,18 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	private String orderType;
 	
 	/**
-	 * 订单状态
+	 * 交易状态
 	 */
-	private String orderState;
-	
+	private String state;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
 	public String getPublisherName() {
 		return publisherName;
 	}
@@ -63,43 +77,13 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 		this.orderType = orderType;
 	}
 
-	public String getOrderState() {
-		return orderState;
+	public String getState() {
+		return state;
 	}
 
-	public void setOrderState(String orderState) {
-		this.orderState = orderState;
+	public void setState(String state) {
+		this.state = state;
 	}
-
-	public String getWindControlType() {
-		return windControlType;
-	}
-
-	public void setWindControlType(String windControlType) {
-		this.windControlType = windControlType;
-	}
-
-	public Integer getQueryType() {
-		return queryType;
-	}
-
-	public void setQueryType(Integer queryType) {
-		this.queryType = queryType;
-	}
-
-	/**
-	 * 风控类型
-	 */
-	private String windControlType;
 	
-	/**
-	 * 查询类型
-	 * <ul>
-	 * <li>0订单列表</li>
-	 * <li>1持仓列表</li>
-	 * <li>2平仓列表</li>
-	 * <li>3委托列表</li>
-	 * </ul>
-	 */
-	private Integer queryType;
+	
 }

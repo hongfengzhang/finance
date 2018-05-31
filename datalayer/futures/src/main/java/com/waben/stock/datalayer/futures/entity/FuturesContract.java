@@ -48,6 +48,7 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
+
 	/**
 	 * 汇率
 	 */
@@ -67,6 +68,10 @@ public class FuturesContract {
 	 * 最小波动
 	 */
 	private BigDecimal minWave;
+	/**
+	 * 1手合约价值
+	 */
+	private BigDecimal perContractValue;
 	/**
 	 * 波动一次盈亏金额，单位为该合约的货币单位
 	 */
@@ -223,6 +228,14 @@ public class FuturesContract {
 
 	public void setPerWaveMoney(BigDecimal perWaveMoney) {
 		this.perWaveMoney = perWaveMoney;
+	}
+
+	public BigDecimal getPerContractValue() {
+		return perContractValue;
+	}
+
+	public void setPerContractValue(BigDecimal perContractValue) {
+		this.perContractValue = perContractValue;
 	}
 
 	public BigDecimal getPerUnitReserveFund() {

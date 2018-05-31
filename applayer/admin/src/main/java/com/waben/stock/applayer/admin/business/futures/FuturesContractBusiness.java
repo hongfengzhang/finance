@@ -3,22 +3,16 @@ package com.waben.stock.applayer.admin.business.futures;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import com.waben.stock.applayer.admin.business.stockoption.HolidayBusiness;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeAdminDto;
-import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
-import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
-import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
-import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.service.futures.FuturesExchangeInterface;
 
@@ -36,6 +30,14 @@ public class FuturesContractBusiness {
 	public PageInfo<FuturesExchangeDto> pagesExchange(FuturesExchangeAdminQuery query){
 		Response<PageInfo<FuturesExchangeDto>> response = exchangeReference.pagesExchange(query);
 		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
+	public PageInfo<FuturesContractAdminDto> pagesContractAdmin(FuturesContractAdminQuery query){
+		Response<PageInfo<FuturesContractAdminDto>> response = reference.pagesContractAdmin(query);
+		if("200".equals(response.getCode())){
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
