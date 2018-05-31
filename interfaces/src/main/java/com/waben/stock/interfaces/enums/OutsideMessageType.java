@@ -18,7 +18,7 @@ public enum OutsideMessageType implements CommonalityEnum {
 	BUY_HOLDPOSITION("3", "持仓中"),
 
 	BUY_SELLAPPLY("4", "卖出申请"),
-	
+
 	BUY_SELLLOCK("5", "卖出锁定"),
 
 	BUY_UNWIND("6", "已平仓"),
@@ -26,22 +26,32 @@ public enum OutsideMessageType implements CommonalityEnum {
 	BUY_BUYFAILED("7", "买入失败"),
 
 	BUY_SELLFAILED("8", "卖出失败"),
-	
+
 	ACCOUNT_RECHARGESUCCESS("9", "充值成功"),
-	
+
 	ACCOUNT_WITHDRAWALSSUCCESS("10", "提现成功"),
-	
+
 	ACCOUNT_WITHDRAWALFAILED("11", "提现失败"),
-	
+
 	OPTION_WAITCONFIRMED("12", "待确认"),
 
 	OPTION_FAILURE("13", "申购失败"),
-	
+
 	OPTION_TURNOVER("14", "持仓中"),
 
 	OPTION_INSETTLEMENT("15", "结算中"),
 
-	OPTION_SETTLEMENTED("16", "已结算");
+	OPTION_SETTLEMENTED("16", "已结算"),
+
+	FUTURES_BUYINGENTRUST("17", "买入委托"),
+
+	FUTURES_CANCELED("18", "已取消"),
+
+	FUTURES_POSITION("19", "持仓中"),
+
+	FUTURES_SELLINGENTRUST("20", "卖出委托"),
+
+	FUTURES_UNWIND("21", "已平仓");
 
 	private String index;
 	private String type;

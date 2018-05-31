@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
@@ -16,6 +17,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -42,20 +44,27 @@ public class FuturesOrderController {
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
 
+	@Autowired
+	private PublisherBusiness publisherBusiness;
+
 	@GetMapping("/buy")
-	@ApiOperation(value = "买涨买跌")
-	public Response<FuturesOrderDto> pagesContractById(FuturesOrderBuysellDto buysellDto) {
+	@ApiOperation(value = "买涨买跌下单")
+	public Response<FuturesOrderDto> placeOrder(FuturesOrderBuysellDto buysellDto) {
 		FuturesContractQuery query = new FuturesContractQuery();
 		query.setPage(0);
 		query.setSize(1);
 		query.setContractId(buysellDto.getContractId());
 		// 判断该合约是否可用以及是否在交易时间内
 		FuturesContractDto contractDto = futuresContractBusiness.getContractByOne(query);
+
+		// TODO 检查期货网关是否支持该合约
+
 		// 用户单笔最大可交易数量
 		BigDecimal perNum = contractDto.getPerOrderLimit();
 		// 用户最大可持仓量
 		BigDecimal userMaxNum = contractDto.getUserTotalLimit();
 		// 用户持仓总数量
+		// TODO 查询方法有误
 		Integer sumUser = futuresOrderBusiness.sumUserNum(buysellDto.getContractId(), SecurityUtil.getUserId());
 		BigDecimal sumUserNum = sumUser == null ? new BigDecimal(0) : new BigDecimal(sumUser);
 		// 当前用户单笔持仓数量
@@ -105,7 +114,7 @@ public class FuturesOrderController {
 		FuturesOrderDto orderDto = new FuturesOrderDto();
 		orderDto.setPublisherId(SecurityUtil.getUserId());
 		orderDto.setOrderType(buysellDto.getOrderType());
-		orderDto.setContract(contractDto);
+		orderDto.setContractId(buysellDto.getContractId());
 		orderDto.setTotalQuantity(buysellDto.getTotalQuantity());
 		// 保证金
 		orderDto.setReserveFund(reserveAmount);
@@ -137,7 +146,9 @@ public class FuturesOrderController {
 		if (buysellDto.getBuyingPriceType() == FuturesTradePriceType.LMT) {
 			orderDto.setBuyingEntrustPrice(buysellDto.getBuyingEntrustPrice());
 		}
-
+		// 获取是否为测试单
+		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
+		orderDto.setIsTest(publisher.getIsTest());
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
 	}
 

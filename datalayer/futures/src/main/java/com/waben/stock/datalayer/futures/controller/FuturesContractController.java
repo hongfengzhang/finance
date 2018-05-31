@@ -54,7 +54,7 @@ public class FuturesContractController implements FuturesContractInterface {
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
 	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
+	
 	@Override
 	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery) {
 		Page<FuturesContract> page = futuresContractService.pagesContract(contractQuery);
