@@ -60,15 +60,7 @@ public class FuturesOrderController {
 		try {
 			String fileName = "futurestrade_" + String.valueOf(System.currentTimeMillis());
 			file = File.createTempFile(fileName, ".xls");
-			if(query.getQueryType()==0){
-				columnDescList = columnDescList();//成交订单
-			}else if(query.getQueryType()==1){
-				columnDescList = positionDescList();//持仓中订单
-			}else if(query.getQueryType()==2){
-				columnDescList = eveningDescList();//平仓结算订单
-			}else if(query.getQueryType()==3){
-				columnDescList = deputeDescList();//委托记录
-			}
+			
 		} catch (Exception e) {
 			// TODO: handle exception
 		}

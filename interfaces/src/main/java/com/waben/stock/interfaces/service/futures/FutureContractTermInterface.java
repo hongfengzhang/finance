@@ -39,7 +39,7 @@ public interface FutureContractTermInterface {
 	 * @param id
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	void deleteContractTerm(@PathVariable("id") Long id);
+	String deleteContractTerm(@PathVariable("id") Long id);
 	
 	@RequestMapping(value = "/pagesTremAdmin", method = RequestMethod.POST, consumes = "application/json")
 	Response<PageInfo<FuturesTermAdminDto>> pagesTremAdmin(@RequestBody FuturesTermAdminQuery query);

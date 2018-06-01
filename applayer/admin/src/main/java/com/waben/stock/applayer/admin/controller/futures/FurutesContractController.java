@@ -1,7 +1,5 @@
 package com.waben.stock.applayer.admin.controller.futures;
 
-import static org.mockito.Matchers.booleanThat;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -26,20 +24,14 @@ import com.waben.stock.applayer.admin.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.admin.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
-import com.waben.stock.interfaces.dto.admin.stockoption.StockOptionAdminDto;
-import com.waben.stock.interfaces.dto.futures.FuturesContractTermDto;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
-import com.waben.stock.interfaces.dto.manage.StaffDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
-import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
 
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -85,9 +77,8 @@ public class FurutesContractController {
 	
 	@DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除期货市场")
-    public Response<Integer> delete(@PathVariable("id") Long id){
-        business.delete(id);
-        return new Response<>(1);
+    public Response<String> delete(@PathVariable("id") Long id){
+        return business.delete(id);
     }
 	
 	@RequestMapping(value = "/futuresContract/save", method = RequestMethod.POST)
@@ -106,9 +97,13 @@ public class FurutesContractController {
 	
 	@DeleteMapping("/futuresContract/delete/{id}")
     @ApiOperation(value = "删除品种")
-    public Response<Integer> deleteContract(@PathVariable("id") Long id){
-        business.deleteContract(id);
-        return new Response<>(1);
+    public Response<String> deleteContract(@PathVariable("id") Long id){
+        String message = business.deleteContract(id);
+        Response<String> res = new Response<String>();
+        res.setCode("200");
+        res.setMessage(message);
+        res.setResult(null);
+        return res;
     }
 	
 	@GetMapping("/exportContract")

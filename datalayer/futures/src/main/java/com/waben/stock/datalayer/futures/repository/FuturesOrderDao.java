@@ -9,6 +9,8 @@ import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 
+import feign.Param;
+
 /**
  * 期货订单 Dao
  * 
@@ -31,6 +33,20 @@ public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 	 * @return 合约总数
 	 */
 	Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId);
+	
+	/**
+	 * 判断合约期限是否在订单中使用
+	 * @param contractTermId
+	 * @return
+	 */
+	List<FuturesOrder> findByContractTermId(@Param("contractTermId") List<Long> contractTermId);
+	
+	/**
+	 * 判断合约是否在订单中使用
+	 * @param contractId
+	 * @return
+	 */
+	List<FuturesOrder> findByContractId(@PathVariable("contractId") List<Long> contractId);
 
 	/**
 	 * 获取持仓中列表

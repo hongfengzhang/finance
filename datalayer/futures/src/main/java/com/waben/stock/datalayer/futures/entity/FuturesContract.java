@@ -46,11 +46,10 @@ public class FuturesContract {
 	private String currency;
 
 	/**
-	 * 汇率
+	 * 图标
 	 */
-	@OneToOne
-	@JoinColumn(name = "rate_id")
-	private FuturesCurrencyRate currencyRate;
+	private String icon;
+	
 	/**
 	 * 品种分类
 	 */
@@ -179,12 +178,13 @@ public class FuturesContract {
 		this.currency = currency;
 	}
 
-	public FuturesCurrencyRate getCurrencyRate() {
-		return currencyRate;
+
+	public String getIcon() {
+		return icon;
 	}
 
-	public void setCurrencyRate(FuturesCurrencyRate currencyRate) {
-		this.currencyRate = currencyRate;
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	public FuturesExchange getExchange() {

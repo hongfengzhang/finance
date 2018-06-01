@@ -109,4 +109,14 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 		return repository.settlementOrderUnwindByPublisherId(publisherId);
 	}
 
+	@Override
+	public List<FuturesOrder> findByContractTermId(List<Long> contractTermId) {
+		return repository.findByContractTermId(contractTermId);
+	}
+
+	@Override
+	public List<FuturesOrder> findByContractId(List<Long> contractId) {
+		return repository.findByContractId(contractId);
+	}
+
 }

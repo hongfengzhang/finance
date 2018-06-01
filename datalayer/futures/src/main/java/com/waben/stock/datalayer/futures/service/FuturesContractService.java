@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
+import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
@@ -50,6 +51,9 @@ public class FuturesContractService {
 
 	@Autowired
 	private FuturesContractDao futuresContractDao;
+	
+	@Autowired
+	private FuturesOrderService orderService;
 	
 	
 
@@ -89,11 +93,12 @@ public class FuturesContractService {
 				// root.join("exchange", JoinType.LEFT);
 				Join<FuturesContract, FuturesExchange> join = root.join("exchange", JoinType.LEFT);
 				if(query.getExchangcode() != null && !"".equals(query.getExchangcode())){
-					predicateList.add(criteriaBuilder.equal(join.get("code").as(String.class), query.getExchangcode()));
+//					predicateList.add(criteriaBuilder.equal(join.get("code").as(String.class), query.getExchangcode()));
+					predicateList.add(criteriaBuilder.or(criteriaBuilder.like(join.get("code").as(String.class), query.getExchangcode()+"%"),criteriaBuilder.like(join.get("name").as(String.class), query.getExchangcode()+"%")));
 				}
-				if(query.getExchangename() != null && !"".equals(query.getExchangename())){
-					predicateList.add(criteriaBuilder.equal(join.get("name").as(String.class), query.getExchangename()));
-				}
+//				if(query.getExchangename() != null && !"".equals(query.getExchangename())){
+//					predicateList.add(criteriaBuilder.equal(join.get("name").as(String.class), query.getExchangename()));
+//				}
 				
 				if(query.getSymbol() != null && !"".equals(query.getSymbol())){
 					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
@@ -224,8 +229,15 @@ public class FuturesContractService {
 		return futuresContractDao.retrieve(contractId);
 	}
 	
-	public void deleteExchange(Long id){
+	public String deleteExchange(Long id){
+		List<Long> contractId = new ArrayList<Long>();
+		contractId.add(id);
+		List<FuturesOrder> list = orderService.findByContractId(contractId);
+		if(list.size()>0){
+			return "该合约正在被订单使用，请不要删除";
+		}
 		futuresContractDao.delete(id);
+		return "删除成功";
 	}
 	
 	public List<FuturesContractTerm> findByListContractId(Long contractId) {

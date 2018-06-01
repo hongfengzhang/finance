@@ -71,4 +71,14 @@ public class RealNameDaoImpl implements RealNameDao {
 		return repository.findByNameAndIdCard(name, idCard);
 	}
 
+	@Override
+	public List<RealName> findByName(String name) {
+		return repository.findByName(name);
+	}
+
+	@Override
+	public RealName findByResourceId(Long resourceId) {
+		return repository.findByResourceId(resourceId);
+	}
+
 }

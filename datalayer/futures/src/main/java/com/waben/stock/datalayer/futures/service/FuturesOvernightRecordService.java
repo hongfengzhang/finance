@@ -29,4 +29,7 @@ public class FuturesOvernightRecordService {
 		return null;
 	}
 
+	public List<FuturesOvernightRecord> findAll(FuturesOrder order){
+		return recordDao.retrieveByOrder(order);
+	}
 }

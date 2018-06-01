@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
-import com.waben.stock.datalayer.futures.entity.FuturesExchange;
+import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
+import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
-import com.waben.stock.interfaces.dto.futures.FuturesContractTermDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
-import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
@@ -52,6 +52,9 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesCurrencyRateService rateService;
+	
+	@Autowired
+	private FuturesOrderService orderService;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 
@@ -66,8 +69,8 @@ public class FuturesContractController implements FuturesContractInterface {
 				if (futuresContractDto.getId() == futuresContract.getId()) {
 					futuresContractDto.setChangeEnable(futuresContract.getExchange().getEnable());
 					futuresContractDto.setTimeZoneGap(futuresContract.getExchange().getTimeZoneGap());
-					futuresContractDto.setRate(futuresContract.getCurrencyRate().getRate());
-					futuresContractDto.setCurrencyName(futuresContract.getCurrencyRate().getCurrencyName());
+//					futuresContractDto.setRate(futuresContract.getCurrencyRate().getRate());
+//					futuresContractDto.setCurrencyName(futuresContract.getCurrencyRate().getCurrencyName());
 				}
 			}
 			// 判断交易所 和 合约是否可用
@@ -184,52 +187,91 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
-		// 获取交易所数据
-		FuturesExchangeAdminQuery query = new FuturesExchangeAdminQuery();
-		query.setPage(0);
-		query.setSize(Integer.MAX_VALUE);
-		query.setCode(contractDto.getExchangcode());
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 
-		// 获取汇率
-		FuturesCurrencyRate rate = new FuturesCurrencyRate();
-		rate.setCurrencyName(contractDto.getCurrency());
-		rate.setRate(contractDto.getRate());
-
-		fcontract.setCurrencyRate(rateService.queryRate(rate));
-		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
-
+		fcontract.setExchange(exchangeService.findById(contractDto.getExchangeId()));
+		fcontract.setCurrency(contractDto.getCurrency());
+		if(contractDto.getProductType()!=null && !"".equals(contractDto.getProductType())){
+			FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
+			fcontract.setProductType(converter.convertToEntityAttribute(Integer.valueOf(contractDto.getProductType())));
+		}
 		FuturesContract result = futuresContractService.saveExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
+		
+		if(result.getExchange()!=null){
+			resultDto.setExchangcode(result.getExchange().getCode());
+			resultDto.setExchangename(result.getExchange().getName());
+			resultDto.setExchangeId(result.getExchange().getId());
+			resultDto.setExchangeType(result.getExchange().getExchangeType());
+		}
+		if(result.getProductType()!=null){
+			resultDto.setProductType(result.getProductType().getValue());
+		}
+		if(result.getCurrency()!=null&&!"".equals(result.getCurrency())){
+			FuturesCurrencyRate rate = new FuturesCurrencyRate();
+			rate.setCurrencyName(result.getCurrency());
+			rate = rateService.queryRate(rate);
+			if(rate!=null){
+				resultDto.setRate(rate.getRate());
+			}
+		}
+		
 		return new Response<>(resultDto);
 	}
 
 	@Override
 	public Response<FuturesContractAdminDto> modifyContract(@RequestBody FuturesContractAdminDto contractDto) {
-		// //获取交易所数据
-		FuturesExchangeAdminQuery query = new FuturesExchangeAdminQuery();
-		query.setPage(0);
-		query.setSize(Integer.MAX_VALUE);
-		query.setCode(contractDto.getExchangcode());
+		if(!contractDto.getEnable()){
+			List<Long> contractId = new ArrayList<Long>();
+			contractId.add(contractDto.getId());
+			List<FuturesOrder> list = orderService.findByContractId(contractId);
+			if(list.size()>0){
+				Response<FuturesContractAdminDto> res = new Response<FuturesContractAdminDto>();
+				res.setCode("200");
+				res.setMessage("该合约正在被订单使用");
+				res.setResult(null);
+				return res;
+			}
+		}
+		
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
-		// 获取汇率
-		FuturesCurrencyRate rate = new FuturesCurrencyRate();
-		rate.setCurrencyName(contractDto.getCurrency());
-		rate.setRate(contractDto.getRate());
 
-		fcontract.setCurrencyRate(rateService.queryRate(rate));
-		fcontract.setExchange(exchangeService.pagesExchange(query).getContent().get(0));
-
+		fcontract.setExchange(exchangeService.findById(contractDto.getExchangeId()));
+		fcontract.setCurrency(contractDto.getCurrency());
+		
+		if(contractDto.getProductType()!=null && !"".equals(contractDto.getProductType())){
+			FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
+			fcontract.setProductType(converter.convertToEntityAttribute(Integer.valueOf(contractDto.getProductType())));
+		}
 		FuturesContract result = futuresContractService.modifyExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
+		
+		if(result.getExchange()!=null){
+			resultDto.setExchangcode(result.getExchange().getCode());
+			resultDto.setExchangename(result.getExchange().getName());
+			resultDto.setExchangeId(result.getExchange().getId());
+			resultDto.setExchangeType(result.getExchange().getExchangeType());
+		}
+		if(result.getProductType()!=null){
+			resultDto.setProductType(result.getProductType().getValue());
+		}
+		if(result.getCurrency()!=null&&!"".equals(result.getCurrency())){
+			FuturesCurrencyRate rate = new FuturesCurrencyRate();
+			rate.setCurrencyName(result.getCurrency());
+			rate = rateService.queryRate(rate);
+			if(rate!=null){
+				resultDto.setRate(rate.getRate());
+			}
+		}
 		return new Response<>(resultDto);
 	}
 
 	@Override
-	public void deleteContract(@PathVariable Long id) {
-		futuresContractService.deleteExchange(id);
+	public String deleteContract(@PathVariable Long id) {
+		String message = futuresContractService.deleteExchange(id);
+		return message;
 	}
 
 	@Override
@@ -237,11 +279,24 @@ public class FuturesContractController implements FuturesContractInterface {
 		Page<FuturesContract> page = futuresContractService.pagesContractAdmin(query);
 		PageInfo<FuturesContractAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractAdminDto.class);
 		for(int i=0;i<result.getContent().size();i++){
-			result.getContent().get(i).setExchangcode(page.getContent().get(i).getExchange().getCode());
-			result.getContent().get(i).setExchangename(page.getContent().get(i).getExchange().getName());
-			result.getContent().get(i).setExchangeType(page.getContent().get(i).getExchange().getExchangeType());
-			result.getContent().get(i).setProductType(page.getContent().get(i).getProductType().getValue());
-			result.getContent().get(i).setRate(page.getContent().get(i).getCurrencyRate().getRate());
+			if(page.getContent().get(i).getExchange()!=null){
+				result.getContent().get(i).setExchangcode(page.getContent().get(i).getExchange().getCode());
+				result.getContent().get(i).setExchangename(page.getContent().get(i).getExchange().getName());
+				result.getContent().get(i).setExchangeId(page.getContent().get(i).getExchange().getId());
+				result.getContent().get(i).setExchangeType(page.getContent().get(i).getExchange().getExchangeType());
+			}
+			if(page.getContent().get(i).getProductType()!=null){
+				result.getContent().get(i).setProductType(page.getContent().get(i).getProductType().getValue());
+			}
+			
+			if(page.getContent().get(i).getCurrency()!=null&&!"".equals(page.getContent().get(i).getCurrency())){
+				FuturesCurrencyRate rate = new FuturesCurrencyRate();
+				rate.setCurrencyName(page.getContent().get(i).getCurrency());
+				rate = rateService.queryRate(rate);
+				if(rate!=null){
+					result.getContent().get(i).setRate(rate.getRate());
+				}
+			}
 			List<FuturesContractTerm> list = futuresContractService.findByListContractId(page.getContent().get(i).getId());
 			List<FuturesTermAdminDto> resultList = new ArrayList<FuturesTermAdminDto>();
 			for (FuturesContractTerm term : list) {

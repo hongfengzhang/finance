@@ -93,12 +93,62 @@ public class FuturesOrderService {
 
 	@Autowired
 	private RabbitmqProducer producer;
+	
 
 	@Value("{gateway.order.domain:}")
 	private String domain;
 
 	public FuturesOrder findById(Long id) {
 		return futuresOrderDao.retrieve(id);
+	}
+	
+	public List<FuturesOrder> findByContractTermId(List<Long> contractTermId){
+		return futuresOrderDao.findByContractTermId(contractTermId);
+	}
+	
+	public List<FuturesOrder> findByContractId(List<Long> contractId) {
+		return futuresOrderDao.findByContractId(contractId);
+	}
+	
+	public Page<FuturesOrder> pagesOrderAdmin(final FuturesTradeAdminQuery query){
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<FuturesOrder> pages = futuresOrderDao.page(new Specification<FuturesOrder>() {
+			
+			@Override
+			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				// TODO Auto-generated method stub
+				List<Predicate> predicateList = new ArrayList<Predicate>();
+				if(query.getPublisherIds().size()>0){
+					predicateList.add(criteriaBuilder.in(root.get("publisher")).in(query.getPublisherIds()));
+				}
+				
+				if(query.getOrderType()!=null){
+					if(query.getOrderType().equals("1")||query.getOrderType().equals("2")){
+						predicateList.add(criteriaBuilder.equal(root.get("orderType").as(String.class), query.getOrderType()));
+					}
+				}
+				
+				if(query.getOrderState()!=null){
+					if(query.getOrderState().length()>1){
+						String[] array = query.getOrderState().split(",");
+						ArrayList<String> list = new ArrayList<String>();
+						for(String temp:array){
+						    list.add(temp);
+						}
+						predicateList.add(criteriaBuilder.in(root.get("orderState")).in(list));
+					}else{
+						predicateList.add(criteriaBuilder.equal(root.get("orderState").as(String.class), query.getOrderState()));
+						
+					}
+				}
+				
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
 	}
 
 	public Page<FuturesOrderAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
@@ -140,8 +190,8 @@ public class FuturesOrderService {
 		setMethodMap.put(new Integer(4), new MethodDesc("setTradeNo", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(5), new MethodDesc("setOpenGatewayOrderId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(6), new MethodDesc("setCloseGatewayOrderId", new Class<?>[] { Long.class }));
-		setMethodMap.put(new Integer(7), new MethodDesc("setOrderType", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(8), new MethodDesc("setState", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setOrderType", new Class<?>[] { Integer.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setState", new Class<?>[] { Integer.class }));
 		setMethodMap.put(new Integer(9), new MethodDesc("setTotalQuantity", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(10), new MethodDesc("setBuyingTime", new Class<?>[] { Date.class }));
 		setMethodMap.put(new Integer(11), new MethodDesc("setBuyingPrice", new Class<?>[] { BigDecimal.class }));
@@ -153,7 +203,7 @@ public class FuturesOrderService {
 		setMethodMap.put(new Integer(17), new MethodDesc("setSellingTime", new Class<?>[] { Date.class }));
 		setMethodMap.put(new Integer(18), new MethodDesc("setSellingPrice", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(19), new MethodDesc("setUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(20), new MethodDesc("setWindControlType", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(20), new MethodDesc("setWindControlType", new Class<?>[] { Integer.class }));
 		List<FuturesOrderAdminDto> content = sqlDao.execute(FuturesOrderAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),

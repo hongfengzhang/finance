@@ -12,6 +12,8 @@ public class FuturesContractAdminDto {
 	 */
 	private Long id;
 	
+	private Long exchangeId;
+	
 	/**
 	 * 交易所代码
 	 */
@@ -45,6 +47,11 @@ public class FuturesContractAdminDto {
 	 * 货币
 	 */
 	private String currency;
+	
+	/**
+	 * 图标
+	 */
+	private String icon;
 	
 	/**
 	 * 汇率
@@ -167,6 +174,14 @@ public class FuturesContractAdminDto {
 		this.id = id;
 	}
 
+	public Long getExchangeId() {
+		return exchangeId;
+	}
+
+	public void setExchangeId(Long exchangeId) {
+		this.exchangeId = exchangeId;
+	}
+
 	public String getSymbol() {
 		return symbol;
 	}
@@ -213,6 +228,14 @@ public class FuturesContractAdminDto {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	public BigDecimal getRate() {
