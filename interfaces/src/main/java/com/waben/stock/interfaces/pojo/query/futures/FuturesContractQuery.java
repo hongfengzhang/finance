@@ -12,6 +12,9 @@ public class FuturesContractQuery extends PageAndSortQuery {
 	@ApiModelProperty(value = "用户ID")
 	private Long publisherId;
 
+	@ApiModelProperty(value = "合约代码")
+	private String symbol;
+
 	public FuturesContractQuery() {
 		super();
 	}
@@ -36,6 +39,14 @@ public class FuturesContractQuery extends PageAndSortQuery {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
 }

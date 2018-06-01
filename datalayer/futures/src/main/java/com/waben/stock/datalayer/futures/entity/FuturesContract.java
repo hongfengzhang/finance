@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
 import com.waben.stock.interfaces.enums.FuturesProductType;
@@ -53,7 +54,7 @@ public class FuturesContract {
 	 * 汇率
 	 */
 	@OneToOne
-	@JoinColumn(name = "rate_id")
+	@JoinColumn(name = "id")
 	private FuturesCurrencyRate currencyRate;
 	/**
 	 * 品种分类
@@ -141,6 +142,14 @@ public class FuturesContract {
 	@ManyToOne
 	@JoinColumn(name = "exchange_id")
 	private FuturesExchange exchange;
+
+	/***************** 分割线，以下字段为非数据库字段 ********************/
+
+	/**
+	 * 交易所ID
+	 */
+	@Transient
+	private Long exchangeId;
 
 	public Long getId() {
 		return id;
@@ -340,6 +349,13 @@ public class FuturesContract {
 
 	public void setSketch(String sketch) {
 		this.sketch = sketch;
+	}
+
+	public Long getExchangeId() {
+		if (exchange != null) {
+			return exchange.getId();
+		}
+		return exchangeId;
 	}
 
 }

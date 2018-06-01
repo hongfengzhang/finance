@@ -252,5 +252,9 @@ public class ExceptionConstant {
 	public static final String CONTRACT_ISNOTIN_TRADE_EXCEPTION = "13007";
 	// 没有可用的期货合约期限，暂时不能交易
 	public static final String CONTRACTTERM_NOTAVAILABLE_EXCEPTION = "13008";
+	// 该合约交易所不可用
+	public static final String EXCHANGE_ISNOT_AVAILABLE_EXCEPTION = "13009";
+	// 期货网关不支持该合约
+	public static final String GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION = "13010";
 
 }

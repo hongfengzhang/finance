@@ -106,9 +106,6 @@ public class FuturesOrderService {
 	@Autowired
 	private RabbitmqProducer producer;
 
-	@Autowired
-	private FuturesCurrencyRateService futuresCurrencyRateService;
-
 	@Value("{order.domain:youguwang.com.cn}")
 	private String domain;
 
@@ -190,6 +187,10 @@ public class FuturesOrderService {
 				if (query.getPublisherId() != null && query.getPublisherId() != 0) {
 					predicateList
 							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
+				}
+				// 订单ID
+				if (query.getOrderId() != null && query.getOrderId() != 0) {
+					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getOrderId()));
 				}
 				// 订单状态
 				if (query.getStates() != null && query.getStates().length > 0) {

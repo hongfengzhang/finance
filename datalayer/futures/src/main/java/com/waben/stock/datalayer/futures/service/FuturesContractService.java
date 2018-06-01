@@ -64,6 +64,9 @@ public class FuturesContractService {
 				if (query.getContractId() != null && query.getContractId() != 0) {
 					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getContractId()));
 				}
+				if (!StringUtil.isEmpty(query.getSymbol())) {
+					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
+				}
 
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
