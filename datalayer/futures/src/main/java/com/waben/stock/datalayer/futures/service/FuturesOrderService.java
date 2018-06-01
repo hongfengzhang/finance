@@ -106,9 +106,6 @@ public class FuturesOrderService {
 	@Autowired
 	private RabbitmqProducer producer;
 
-	@Autowired
-	private FuturesCurrencyRateService futuresCurrencyRateService;
-
 	@Value("{order.domain:youguwang.com.cn}")
 	private String domain;
 
@@ -460,7 +457,7 @@ public class FuturesOrderService {
 		}
 		// 盈亏（交易所货币）
 		BigDecimal currencyProfitOrLoss = computeProfitOrLoss(order.getOrderType(), order.getTotalQuantity(),
-				order.getBuyingPrice(), order.getSellingPrice(), order.getContract().getMinWave(),
+				order.getBuyingPrice(), sellingPrice, order.getContract().getMinWave(),
 				order.getContract().getPerWaveMoney());
 		// 盈亏（人民币）
 		BigDecimal rate = rateService.findByCurrency(order.getContractCurrency()).getRate();
@@ -517,7 +514,7 @@ public class FuturesOrderService {
 	private BigDecimal computeProfitOrLoss(FuturesOrderType orderType, BigDecimal totalQuantity, BigDecimal buyingPrice,
 			BigDecimal sellingPrice, BigDecimal minWave, BigDecimal perWaveMoney) {
 		BigDecimal waveMoney = sellingPrice.subtract(buyingPrice).divide(minWave).setScale(4, RoundingMode.DOWN)
-				.multiply(perWaveMoney);
+				.multiply(perWaveMoney).multiply(totalQuantity);
 		if (orderType == FuturesOrderType.BuyUp) {
 			return waveMoney;
 		} else {

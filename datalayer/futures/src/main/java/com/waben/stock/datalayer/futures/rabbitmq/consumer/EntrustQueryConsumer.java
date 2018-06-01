@@ -45,7 +45,7 @@ public class EntrustQueryConsumer {
 					// 已取消
 					orderService.canceledOrder(orderId);
 					isNeedRetry = false;
-				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
+				} else if ("Submitted".equals(status) && gatewayOrder.getFilled().compareTo(BigDecimal.ZERO) > 0) {
 					// 部分买入成功
 					orderService.partPositionOrder(orderId);
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {
@@ -54,7 +54,7 @@ public class EntrustQueryConsumer {
 					isNeedRetry = false;
 				}
 			} else if (entrustType == 2) {
-				if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
+				if ("Submitted".equals(status) && gatewayOrder.getFilled().compareTo(BigDecimal.ZERO) > 0) {
 					// 部分已平仓
 					orderService.partUnwindOrder(orderId);
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {
@@ -63,7 +63,7 @@ public class EntrustQueryConsumer {
 					isNeedRetry = false;
 				}
 			} else if (entrustType == 3) {
-				if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
+				if ("Submitted".equals(status) && gatewayOrder.getFilled().compareTo(BigDecimal.ZERO) > 0) {
 					// 部分已平仓
 					orderService.partUnwindOrder(orderId);
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {

@@ -17,6 +17,8 @@ import com.waben.stock.futuresgateway.dao.FuturesContractDao;
 import com.waben.stock.futuresgateway.dao.FuturesOrderDao;
 import com.waben.stock.futuresgateway.entity.FuturesContract;
 import com.waben.stock.futuresgateway.entity.FuturesOrder;
+import com.waben.stock.futuresgateway.exception.ExceptionEnum;
+import com.waben.stock.futuresgateway.exception.ServiceException;
 import com.waben.stock.futuresgateway.twsapi.TwsEngine;
 
 /**
@@ -75,18 +77,51 @@ public class FuturesOrderService {
 		return futuresOrderDao.retrieveFuturesOrderByTwsOrderId(twsOrderId);
 	}
 
+	/**
+	 * 取消订单
+	 * 
+	 * @param domain
+	 *            应用域
+	 * @param outerOrderId
+	 *            外部订单ID
+	 */
 	@Transactional
-	public FuturesOrder addFuturesOrder(String domain, String symbol, Integer outerOrderId, String action,
+	public void cancelOrder(String domain, Long outerOrderId) {
+		EClientSocket client = twsEngine.getClient();
+		
+	}
+
+	/**
+	 * 下单
+	 * 
+	 * @param domain
+	 *            应用域
+	 * @param symbol
+	 *            合约标识
+	 * @param outerOrderId
+	 *            外部订单ID
+	 * @param action
+	 *            交易方向
+	 * @param totalQuantity
+	 *            交易总量
+	 * @param userOrderType
+	 *            用户订单类型
+	 * @param entrustPrice
+	 *            委托价格
+	 * @return 订单
+	 */
+	@Transactional
+	public synchronized FuturesOrder addFuturesOrder(String domain, String symbol, Integer outerOrderId, String action,
 			BigDecimal totalQuantity, Integer userOrderType, BigDecimal entrustPrice) {
 		FuturesContract futuresContract = futuresContractDao.retrieveContractBySymbol(symbol);
 		if (futuresContract == null) {
-			throw new RuntimeException("不支持的合约类型!");
+			throw new ServiceException(ExceptionEnum.Symbol_NotSuported);
 		}
 		if (!("BUY".equals(action) || "SELL".equals(action))) {
-			throw new RuntimeException("不支持的交易类型!");
+			throw new ServiceException(ExceptionEnum.Action_NotSuported);
 		}
 		if (!((userOrderType != null && userOrderType == 1) || (userOrderType != null && userOrderType == 2))) {
-			throw new RuntimeException("不支持的订单类型!");
+			throw new ServiceException(ExceptionEnum.UserOrderType_NotSuported);
 		}
 		// step 1 : 保存订单
 		FuturesOrder futuresOrder = new FuturesOrder();

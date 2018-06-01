@@ -12,14 +12,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
-import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
-import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
-import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTermAdminQuery;
 import com.waben.stock.interfaces.service.futures.FutureContractTermInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
@@ -37,9 +34,6 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 	
 	@Autowired
 	private FuturesContractService contractService;
-	
-	@Autowired
-	private FuturesExchangeService exchangeService;
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 

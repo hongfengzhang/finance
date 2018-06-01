@@ -22,6 +22,10 @@ public class FuturesContractService {
 	@Autowired
 	private FuturesContractDao futuresContractDao;
 
+	public FuturesContract getContractInfoByEnableAndSymbol(String symbol) {
+		return futuresContractDao.retrieveContractByEnableAndSymbol(true, symbol);
+	}
+
 	public FuturesContract getContractInfo(Long id) {
 		return futuresContractDao.retrieveContractById(id);
 	}
@@ -40,13 +44,13 @@ public class FuturesContractService {
 	public void deleteContract(Long id) {
 		futuresContractDao.deleteContractById(id);
 	}
-	
+
 	@Transactional
 	public void deleteContracts(String ids) {
-		if(ids != null) {
-			String[] idArr= ids.split(",");
-			for(String id : idArr) {
-				if(!"".equals(id.trim())) {
+		if (ids != null) {
+			String[] idArr = ids.split(",");
+			for (String id : idArr) {
+				if (!"".equals(id.trim())) {
 					futuresContractDao.deleteContractById(Long.parseLong(id.trim()));
 				}
 			}
@@ -56,7 +60,7 @@ public class FuturesContractService {
 	public Page<FuturesContract> futuresContracts(int page, int limit) {
 		return futuresContractDao.pageContract(page, limit);
 	}
-	
+
 	public List<FuturesContract> list() {
 		return futuresContractDao.listContract();
 	}
