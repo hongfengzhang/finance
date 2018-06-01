@@ -1,0 +1,260 @@
+package com.waben.stock.interfaces.dto.admin.futures;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+public class FutresOrderEntrustDto {
+
+	/**
+	 * 交易ID
+	 */
+	private Long id;
+	
+	private Long publisherId;
+	
+	/**
+	 * 发布人姓名
+	 * <p>
+	 * 实名认证的姓名
+	 * </p>
+	 */
+	private String publisherName;
+	
+	/**
+	 * 发布人手机号
+	 */
+	private String publisherPhone;
+	
+	/**
+	 * 合约名称
+	 */
+	private String name;
+	
+	/**
+	 * 订单编号
+	 */
+	private String tradeNo;
+	
+	/**
+	 * 交易方向
+	 */
+	private String orderType;
+	
+	/**
+	 * 交易状态
+	 */
+	private String state;
+	
+	/**
+	 * 买入委托价格
+	 */
+	private BigDecimal entrustAppointPrice;
+	
+	/**
+	 * 当前价
+	 */
+	private BigDecimal lastPrice;
+	
+	/**
+	 * 数量（手）
+	 */
+	private BigDecimal totalQuantity;
+	
+	/**
+	 * 服务费（人民币）
+	 */
+	private BigDecimal serviceFee;
+	
+	/**
+	 * 保证金（人民币）
+	 */
+	private BigDecimal reserveFund;
+	
+	/**
+	 * 触发止损类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitLossType;
+	/**
+	 * 止损金额（用户设置）
+	 */
+	private BigDecimal perUnitLimitLossAmount;
+	
+	/**
+	 * 触发止盈类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitProfitType;
+	/**
+	 * 止盈金额（用户设置）
+	 */
+	private BigDecimal perUnitLimitProfitAmount;
+	
+	/**
+	 * 委托时间
+	 */
+	private Date postTime;
+	
+	/**
+	 * 成交时间
+	 */
+	private Date dealTime;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
+	}
+
+	public String getPublisherName() {
+		return publisherName;
+	}
+
+	public void setPublisherName(String publisherName) {
+		this.publisherName = publisherName;
+	}
+
+	public String getPublisherPhone() {
+		return publisherPhone;
+	}
+
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
+
+	public String getOrderType() {
+		return orderType;
+	}
+
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public BigDecimal getEntrustAppointPrice() {
+		return entrustAppointPrice;
+	}
+
+	public void setEntrustAppointPrice(BigDecimal entrustAppointPrice) {
+		this.entrustAppointPrice = entrustAppointPrice;
+	}
+
+	public BigDecimal getLastPrice() {
+		return lastPrice;
+	}
+
+	public void setLastPrice(BigDecimal lastPrice) {
+		this.lastPrice = lastPrice;
+	}
+
+	public BigDecimal getTotalQuantity() {
+		return totalQuantity;
+	}
+
+	public void setTotalQuantity(BigDecimal totalQuantity) {
+		this.totalQuantity = totalQuantity;
+	}
+
+	public BigDecimal getServiceFee() {
+		return serviceFee;
+	}
+
+	public void setServiceFee(BigDecimal serviceFee) {
+		this.serviceFee = serviceFee;
+	}
+
+	public BigDecimal getReserveFund() {
+		return reserveFund;
+	}
+
+	public void setReserveFund(BigDecimal reserveFund) {
+		this.reserveFund = reserveFund;
+	}
+
+	public Integer getLimitLossType() {
+		return limitLossType;
+	}
+
+	public void setLimitLossType(Integer limitLossType) {
+		this.limitLossType = limitLossType;
+	}
+
+	public BigDecimal getPerUnitLimitLossAmount() {
+		return perUnitLimitLossAmount;
+	}
+
+	public void setPerUnitLimitLossAmount(BigDecimal perUnitLimitLossAmount) {
+		this.perUnitLimitLossAmount = perUnitLimitLossAmount;
+	}
+
+	public Integer getLimitProfitType() {
+		return limitProfitType;
+	}
+
+	public void setLimitProfitType(Integer limitProfitType) {
+		this.limitProfitType = limitProfitType;
+	}
+
+	public BigDecimal getPerUnitLimitProfitAmount() {
+		return perUnitLimitProfitAmount;
+	}
+
+	public void setPerUnitLimitProfitAmount(BigDecimal perUnitLimitProfitAmount) {
+		this.perUnitLimitProfitAmount = perUnitLimitProfitAmount;
+	}
+
+	public Date getPostTime() {
+		return postTime;
+	}
+
+	public void setPostTime(Date postTime) {
+		this.postTime = postTime;
+	}
+
+	public Date getDealTime() {
+		return dealTime;
+	}
+
+	public void setDealTime(Date dealTime) {
+		this.dealTime = dealTime;
+	}
+}

@@ -3,6 +3,7 @@ package com.waben.stock.applayer.admin.controller.futures;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.admin.business.futures.FuturesCurrencyRateBusiness;
+import com.waben.stock.interfaces.dto.admin.futures.PutForwardDto;
 import com.waben.stock.interfaces.dto.futures.FuturesCurrencyRateDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -52,5 +54,17 @@ public class FurutesRiskController {
     @ApiOperation(value = "查询所有汇率信息")
 	public Response<PageInfo<FuturesCurrencyRateDto>> list(){
 		return new Response<>(business.list());
+	}
+	
+	@GetMapping(value = "/pagePutForward")
+    @ApiOperation(value = "查询提现设置")
+	public Response<PageInfo<PutForwardDto>> pagePutForward(){
+		return business.pagesPutForward();
+	}
+	
+	@RequestMapping(value = "/saveAndModify", method = RequestMethod.POST)
+    @ApiOperation(value = "设置提现时间")
+	public Response<PutForwardDto> saveAndModify(PutForwardDto dto){
+		return new Response<>(business.saveAndModify(dto));
 	}
 }

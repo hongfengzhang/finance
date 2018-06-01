@@ -34,6 +34,8 @@ import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
+import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesOrderStateConverter;
+import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesWindControlTypeConverter;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
 import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
@@ -142,17 +144,39 @@ public class FuturesOrderService {
 					}
 				}
 				
+				if(query.getTradeNo()!=null && !"".equals(query.getTradeNo())){
+					predicateList.add(criteriaBuilder.equal(root.get("tradeNo").as(String.class), query.getTradeNo()));
+				}
+				
 				if(query.getOrderState()!=null){
+					FuturesOrderStateConverter convert = new FuturesOrderStateConverter();
 					if(query.getOrderState().length()>1){
 						String[] array = query.getOrderState().split(",");
-						ArrayList<String> list = new ArrayList<String>();
+						ArrayList<FuturesOrderState> list = new ArrayList<FuturesOrderState>();
 						for(String temp:array){
-						    list.add(temp);
+						    list.add(convert.convertToEntityAttribute(Integer.valueOf(temp)));
 						}
-						predicateList.add(criteriaBuilder.in(root.get("orderState")).in(list));
+						predicateList.add(criteriaBuilder.in(root.get("state")).value(list));
 					}else{
-						predicateList.add(criteriaBuilder.equal(root.get("orderState").as(String.class), query.getOrderState()));
-						
+						predicateList.add(criteriaBuilder.equal(root.get("state").as(String.class), query.getOrderState()));
+						if(query.getOrderState().equals("5")){
+							
+						}
+					}
+				}
+				
+				if(query.getWindControlType()!=null && !"".equals(query.getWindControlType())){
+					FuturesWindControlTypeConverter converter = new FuturesWindControlTypeConverter();
+					if(query.getWindControlType().length()>0){
+						String[] array = query.getWindControlType().split(",");
+						ArrayList<FuturesWindControlType> list = new ArrayList<FuturesWindControlType>();
+						for(String temp:array){
+						    list.add(converter.convertToEntityAttribute(Integer.valueOf(temp)));
+						}
+						predicateList.add(criteriaBuilder.in(root.get("windControlType")).value(list));
+					}else{                                             
+						FuturesWindControlType windType = converter.convertToEntityAttribute(Integer.valueOf(query.getWindControlType()));
+						predicateList.add(criteriaBuilder.equal(root.get("windControlType").as(String.class),  windType));
 					}
 				}
 				
@@ -563,7 +587,7 @@ public class FuturesOrderService {
 	 *            汇率
 	 * @return 盈利或者亏损值
 	 */
-	private BigDecimal computeProfitOrLoss(FuturesOrderType orderType, BigDecimal totalQuantity, BigDecimal buyingPrice,
+	public BigDecimal computeProfitOrLoss(FuturesOrderType orderType, BigDecimal totalQuantity, BigDecimal buyingPrice,
 			BigDecimal sellingPrice, BigDecimal minWave, BigDecimal perWaveMoney) {
 		BigDecimal waveMoney = sellingPrice.subtract(buyingPrice).divide(minWave).setScale(4, RoundingMode.DOWN)
 				.multiply(perWaveMoney);

@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.admin.futures.PutForwardDto;
 import com.waben.stock.interfaces.dto.futures.FuturesCurrencyRateDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.futures.FuturesCurrencyRateInterface;
+import com.waben.stock.interfaces.service.manage.PutForwardInterface;
 
 @Service
 public class FuturesCurrencyRateBusiness {
@@ -18,6 +20,18 @@ public class FuturesCurrencyRateBusiness {
 	@Autowired
 	@Qualifier("futuresCurrencyRateInterface")
 	private FuturesCurrencyRateInterface reference;
+	
+	@Autowired
+	@Qualifier("putForwardInterface")
+	private PutForwardInterface putReference;
+	
+	public Response<PageInfo<PutForwardDto>> pagesPutForward(){
+		return putReference.pages();
+	}
+	
+	public PutForwardDto saveAndModify(PutForwardDto dto){
+		return putReference.saveAndModify(dto);
+	}
 	
 	
 	public FuturesCurrencyRateDto save(FuturesCurrencyRateDto query){

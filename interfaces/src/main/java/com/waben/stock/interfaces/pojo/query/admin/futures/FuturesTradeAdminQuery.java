@@ -25,6 +25,11 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	private String name;
 	
 	/**
+	 * 订单/委托编号
+	 */
+	private String tradeNo;
+	
+	/**
 	 * 交易方向
 	 */
 	private String orderType;
@@ -33,6 +38,7 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 * 订单状态
 	 */
 	private String orderState;
+	
 	
 	private List<String> publisherIds;
 	
@@ -61,6 +67,14 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 		this.name = name;
 	}
 
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
+	}
+
 	public String getOrderType() {
 		return orderType;
 	}
@@ -85,11 +99,11 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 		this.windControlType = windControlType;
 	}
 
-	public String getQueryType() {
+	public Integer getQueryType() {
 		return queryType;
 	}
 
-	public void setQueryType(String queryType) {
+	public void setQueryType(Integer queryType) {
 		this.queryType = queryType;
 	}
 
@@ -107,7 +121,7 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 * <li>3委托列表</li>
 	 * </ul>
 	 */
-	private String queryType;
+	private Integer queryType;
 
 	public List<String> getPublisherIds() {
 		return publisherIds;

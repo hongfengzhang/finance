@@ -158,7 +158,7 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 		List<Long> contractTermId = new ArrayList<Long>();
 		contractTermId.add(id);
 		if(orderService.findByContractTermId(contractTermId).size()>0){
-			return "改合约正在被订单使用，无法删除";
+			return "该合约正在被订单使用，无法删除";
 		}
 		termService.deleteContractTerm(id);
 		return "删除成功";
@@ -173,7 +173,7 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 				pages.getContent().get(i).setContractNo(page.getContent().get(i).getContractNo().toString());
 			}
 			if(page.getContent().get(i).getContract()!=null){
-				pages.getContent().get(i).setContractId(page.getContent().get(i).getId());
+				pages.getContent().get(i).setContractId(page.getContent().get(i).getContract().getId());
 				if(page.getContent().get(i).getContract().getSymbol()!=null){
 					pages.getContent().get(i).setSymbol(page.getContent().get(i).getContract().getSymbol());
 				}

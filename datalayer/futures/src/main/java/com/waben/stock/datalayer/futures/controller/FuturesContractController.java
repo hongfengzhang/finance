@@ -209,9 +209,7 @@ public class FuturesContractController implements FuturesContractInterface {
 			resultDto.setProductType(result.getProductType().getValue());
 		}
 		if(result.getCurrency()!=null&&!"".equals(result.getCurrency())){
-			FuturesCurrencyRate rate = new FuturesCurrencyRate();
-			rate.setCurrencyName(result.getCurrency());
-			rate = rateService.queryRate(rate);
+			FuturesCurrencyRate rate = rateService.queryByName(result.getCurrency());;
 			if(rate!=null){
 				resultDto.setRate(rate.getRate());
 			}
@@ -258,9 +256,7 @@ public class FuturesContractController implements FuturesContractInterface {
 			resultDto.setProductType(result.getProductType().getValue());
 		}
 		if(result.getCurrency()!=null&&!"".equals(result.getCurrency())){
-			FuturesCurrencyRate rate = new FuturesCurrencyRate();
-			rate.setCurrencyName(result.getCurrency());
-			rate = rateService.queryRate(rate);
+			FuturesCurrencyRate rate = rateService.queryByName(result.getCurrency());;
 			if(rate!=null){
 				resultDto.setRate(rate.getRate());
 			}
@@ -291,9 +287,7 @@ public class FuturesContractController implements FuturesContractInterface {
 			}
 			
 			if(page.getContent().get(i).getCurrency()!=null&&!"".equals(page.getContent().get(i).getCurrency())){
-				FuturesCurrencyRate rate = new FuturesCurrencyRate();
-				rate.setCurrencyName(page.getContent().get(i).getCurrency());
-				rate = rateService.queryRate(rate);
+				FuturesCurrencyRate rate = rateService.queryByName(page.getContent().get(i).getCurrency());
 				if(rate!=null){
 					result.getContent().get(i).setRate(rate.getRate());
 				}

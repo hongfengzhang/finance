@@ -69,5 +69,10 @@ public class FuturesCurrencyRateDaoImpl implements FuturesCurrencyRateDao {
 	public List<FuturesCurrencyRate> retrieveByCurrency(String currency) {
 		return repository.findByCurrency(currency);
 	}
+	
+	@Override
+	public List<FuturesCurrencyRate> retrieveByCurrencyName(String currencyName){
+		return repository.findByCurrencyName(currencyName);
+	}
 
 }

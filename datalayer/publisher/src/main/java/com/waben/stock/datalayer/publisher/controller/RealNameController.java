@@ -53,7 +53,7 @@ public class RealNameController implements RealNameInterface {
 	}
 
 	@Override
-	public Response<RealNameDto> fetchByResourceId(Long resourceId) {
+	public Response<RealNameDto> fetchByResourceId(@PathVariable Long resourceId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(RealNameDto.class, service.findByResourceId(resourceId), false));
 	}
 

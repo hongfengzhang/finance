@@ -43,6 +43,14 @@ public class FuturesCurrencyRateService {
 		currencyRateDao.delete(id);
 
 	}
+	
+	public FuturesCurrencyRate queryByName(String currencyName){
+		List<FuturesCurrencyRate> list = currencyRateDao.retrieveByCurrencyName(currencyName);
+		if(list.size()>0){
+			return list.get(0);
+		}
+		return null;
+	}
 
 	public FuturesCurrencyRate queryRate(final FuturesCurrencyRate rate) {
 		Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
