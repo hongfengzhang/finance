@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
+import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
+import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -26,6 +32,9 @@ public class FuturesExchangeController implements FuturesExchangeInterface {
 
 	@Autowired
 	private FuturesExchangeService exchangeService;
+
+	@Autowired
+	private FuturesOrderService orderService;
 
 	@Override
 	public Response<PageInfo<FuturesExchangeDto>> pagesExchange(@RequestBody FuturesExchangeAdminQuery exchangeQuery) {
@@ -53,8 +62,22 @@ public class FuturesExchangeController implements FuturesExchangeInterface {
 	}
 
 	@Override
-	public void deleteExchange(@PathVariable Long id) {
+	public Response<String> deleteExchange(@PathVariable Long id) {
+		Response<String> res = new Response<String>();
+		List<FuturesContract> contractId = exchangeService.findByExchangId(id);
+		List<Long> contractIds = new ArrayList<Long>();
+		for (FuturesContract contract : contractId) {
+			contractIds.add(contract.getId());
+		}
+		List<FuturesOrder> list = orderService.findByContractId(contractIds);
+		res.setCode("200");
+		if (list.size() > 0) {
+			res.setMessage("改市场下还有被订单使用的合约，请不要删除");
+		}
 		exchangeService.deleteExchange(id);
+		res.setMessage("删除成功");
+		res.setResult(null);
+		return res;
 	}
 
 	@Override

@@ -256,5 +256,13 @@ public class ExceptionConstant {
 	public static final String EXCHANGE_ISNOT_AVAILABLE_EXCEPTION = "13009";
 	// 期货网关不支持该合约
 	public static final String GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION = "13010";
+	// 委托已部分成交，不能取消
+	public static final String FUTURESORDER_PARTSUCCESS_CANNOTCANCEL_EXCEPTION = "13011";
+	// API网关异常，请稍后再试
+	public static final String FUTURESAPI_ABNORMAL_EXCEPTION = "13012";
+	// API网关异常，请稍后再试
+	public static final String FUTURESAPI_NOTCONNECTED_EXCEPTION = "13013";
+	// 委托取消失败，请稍后再试或者联系客服
+	public static final String FUTURESAPI_CANCELFAILED_EXCEPTION = "13014";
 
 }

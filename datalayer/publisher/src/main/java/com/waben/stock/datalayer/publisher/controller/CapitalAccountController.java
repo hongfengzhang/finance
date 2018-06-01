@@ -226,13 +226,15 @@ public class CapitalAccountController implements CapitalAccountInterface {
 	}
 
 	@Override
-	public Response<CapitalAccountDto> futuresOrderSettlement(Long publisherId, Long orderId, BigDecimal profitOrLoss) {
+	public Response<CapitalAccountDto> futuresOrderSettlement(@PathVariable Long publisherId,
+			@PathVariable Long orderId, @PathVariable BigDecimal profitOrLoss) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.futuresOrderSettlement(publisherId, orderId, profitOrLoss), false));
 	}
 
 	@Override
-	public Response<CapitalAccountDto> futuresOrderRevoke(Long publisherId, Long orderId, BigDecimal serviceFee) {
+	public Response<CapitalAccountDto> futuresOrderRevoke(@PathVariable Long publisherId, @PathVariable Long orderId,
+			@PathVariable BigDecimal serviceFee) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(CapitalAccountDto.class,
 				capitalAccountService.futuresOrderRevoke(publisherId, orderId, serviceFee), false));
 	}

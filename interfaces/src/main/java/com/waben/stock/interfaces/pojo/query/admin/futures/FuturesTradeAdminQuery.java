@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.pojo.query.admin.futures;
 
+import java.util.List;
+
 import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 
 public class FuturesTradeAdminQuery extends PageAndSortQuery {
@@ -11,6 +13,7 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 * </p>
 	 */
 	private String publisherName;
+	
 	/**
 	 * 发布人手机号
 	 */
@@ -22,6 +25,11 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	private String name;
 	
 	/**
+	 * 订单/委托编号
+	 */
+	private String tradeNo;
+	
+	/**
 	 * 交易方向
 	 */
 	private String orderType;
@@ -31,6 +39,9 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 */
 	private String orderState;
 	
+	
+	private List<String> publisherIds;
+	
 	public String getPublisherName() {
 		return publisherName;
 	}
@@ -38,6 +49,7 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	public void setPublisherName(String publisherName) {
 		this.publisherName = publisherName;
 	}
+
 
 	public String getPublisherPhone() {
 		return publisherPhone;
@@ -53,6 +65,14 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getTradeNo() {
+		return tradeNo;
+	}
+
+	public void setTradeNo(String tradeNo) {
+		this.tradeNo = tradeNo;
 	}
 
 	public String getOrderType() {
@@ -102,4 +122,12 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 * </ul>
 	 */
 	private Integer queryType;
+
+	public List<String> getPublisherIds() {
+		return publisherIds;
+	}
+
+	public void setPublisherIds(List<String> publisherIds) {
+		this.publisherIds = publisherIds;
+	}
 }

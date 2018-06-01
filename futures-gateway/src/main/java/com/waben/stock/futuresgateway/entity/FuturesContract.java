@@ -22,7 +22,7 @@ public class FuturesContract {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 合约名称
+	 * 合约标识
 	 */
 	private String symbol;
 	/**

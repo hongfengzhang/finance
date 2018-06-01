@@ -54,7 +54,8 @@ public interface FuturesContractInterface {
 	 * @param id
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	void deleteContract(@PathVariable("id") Long id);
+	String deleteContract(@PathVariable("id") Long id);
+
 
 	/**
 	 * 根据合约ID获取期货合约信息

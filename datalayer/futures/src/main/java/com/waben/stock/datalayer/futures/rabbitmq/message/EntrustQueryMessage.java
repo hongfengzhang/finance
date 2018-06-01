@@ -19,8 +19,8 @@ public class EntrustQueryMessage {
 	 * 委托类型
 	 * <ul>
 	 * <li>1开仓</li>
-	 * <li>2反手</li>
-	 * <li>3平仓</li>
+	 * <li>2平仓</li>
+	 * <li>3反手</li>
 	 * </ul>
 	 */
 	private Integer entrustType;

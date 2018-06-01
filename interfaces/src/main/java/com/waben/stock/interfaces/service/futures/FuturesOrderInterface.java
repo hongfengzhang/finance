@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
-import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -39,19 +38,6 @@ public interface FuturesOrderInterface {
 	Response<FuturesOrderDto> addOrder(@RequestBody FuturesOrderDto futuresOrderDto);
 
 	/**
-	 * 修改期货订单
-	 * 
-	 * @param id
-	 *            订单id
-	 * @param state
-	 *            订单状态 1 已发布，2 买入委托， 3 持仓中， 4 卖出申请， 5 卖出委托， 6 已平仓
-	 * @return 期货订单
-	 */
-	@RequestMapping(value = "/editOrder/{id}", method = RequestMethod.POST)
-	Response<FuturesOrderDto> editOrder(@PathVariable("id") Long id,
-			@RequestParam(name = "state") FuturesOrderState state);
-
-	/**
 	 * 获取每个合约的买量 卖量数
 	 * 
 	 * @param state
@@ -76,5 +62,15 @@ public interface FuturesOrderInterface {
 	@RequestMapping(value = "/sum/{contractId}/{publisherId}", method = RequestMethod.GET)
 	Response<Integer> sumByListOrderContractIdAndPublisherId(@PathVariable(name = "contractId") Long contractId,
 			@PathVariable(name = "publisherId") Long publisherId);
+
+	/**
+	 * 取消订单
+	 * 
+	 * @param id
+	 *            订单ID
+	 * @return 订单
+	 */
+	@RequestMapping(value = "/cancelOrder/{id}", method = RequestMethod.GET)
+	Response<FuturesOrderDto> cancelOrder(@PathVariable(name = "id") Long id);
 
 }

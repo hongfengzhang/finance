@@ -16,6 +16,6 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
  */
 public interface FuturesContractRepository extends CustomJpaRepository<FuturesContract, Long> {
 
-	@Query(value = "select * from f_futures_contract_term f where f.contract_id=?1 ", nativeQuery = true)
+	@Query(value = "select f from FuturesContractTerm f where f.contract.id=?1 ")
 	List<FuturesContractTerm> findByListContractId(@PathVariable("contractId") Long contractId);
 }

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.ib.client.CommissionReport;
@@ -19,7 +20,6 @@ import com.ib.client.EWrapper;
 import com.ib.client.Execution;
 import com.ib.client.Order;
 import com.ib.client.OrderState;
-import com.ib.client.OrderStatus;
 import com.ib.client.SoftDollarTier;
 import com.ib.client.TickType;
 import com.waben.stock.futuresgateway.entity.FuturesOrder;
@@ -36,6 +36,12 @@ public class WabenEWrapper implements EWrapper {
 	private EJavaSignal readerSignal;
 	private EClientSocket clientSocket;
 	protected int currentOrderId = -1;
+
+	@Value("${tws.host}")
+	private String host;
+
+	@Value("${tws.port}")
+	private int port;
 
 	@Autowired
 	private FuturesOrderService futuresOrderService;
@@ -57,6 +63,10 @@ public class WabenEWrapper implements EWrapper {
 
 	public void setCurrentOrderId(int currentOrderId) {
 		this.currentOrderId = currentOrderId;
+	}
+
+	public void connect() {
+		clientSocket.eConnect(host, port, 0);
 	}
 
 	/******************************************** 分割线 ****************************************/
@@ -132,22 +142,14 @@ public class WabenEWrapper implements EWrapper {
 				+ ", LastFillPrice: " + lastFillPrice + ", ClientId: " + clientId + ", WhyHeld: " + whyHeld);
 		FuturesOrder futuresOrder = futuresOrderService.getFuturesOrderInfoByTwsOrderId(orderId);
 		if (futuresOrder != null) {
-			String oldStatus = futuresOrder.getStatus();
-			int oldStatusIndex = 0;
-			if (!"Init".equals(oldStatus)) {
-				oldStatusIndex = OrderStatus.valueOf(oldStatus).ordinal() + 1;
-			}
-			int newStatusIndex = OrderStatus.valueOf(status).ordinal() + 1;
-			if (newStatusIndex > oldStatusIndex) {
-				futuresOrder.setStatus(status);
-				futuresOrder.setFilled(new BigDecimal(filled));
-				futuresOrder.setRemaining(new BigDecimal(remaining));
-				futuresOrder.setAvgFillPrice(new BigDecimal(avgFillPrice));
-				futuresOrder.setPermId(permId);
-				futuresOrder.setLastFillPrice(new BigDecimal(lastFillPrice));
-				futuresOrder.setUpdateTime(new Date());
-				futuresOrderService.modifyFuturesOrder(futuresOrder);
-			}
+			futuresOrder.setStatus(status);
+			futuresOrder.setFilled(new BigDecimal(filled));
+			futuresOrder.setRemaining(new BigDecimal(remaining));
+			futuresOrder.setAvgFillPrice(new BigDecimal(avgFillPrice));
+			futuresOrder.setPermId(permId);
+			futuresOrder.setLastFillPrice(new BigDecimal(lastFillPrice));
+			futuresOrder.setUpdateTime(new Date());
+			futuresOrderService.modifyFuturesOrder(futuresOrder);
 		}
 	}
 	// ! [orderstatus]
@@ -454,6 +456,9 @@ public class WabenEWrapper implements EWrapper {
 			e.printStackTrace();
 		}
 		System.out.println("Error. Id: " + id + ", Code: " + errorCode + ", Msg: " + errorMsg + "\n");
+		if (errorCode == 504 && "Not connected".equals(errorMsg)) {
+			this.connect();
+		}
 	}
 
 	// ! [error]

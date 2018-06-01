@@ -803,7 +803,7 @@ public class CapitalAccountService {
 			flowDao.create(account.getPublisher(), CapitalFlowType.FuturesLoss,
 					lossAmountAbs.abs().multiply(new BigDecimal(-1)), date, CapitalFlowExtendType.FUTURESRECORD,
 					orderId, account.getAvailableBalance());
-			realProfitOrLoss = lossAmountAbs.subtract(new BigDecimal(-1));
+			realProfitOrLoss = lossAmountAbs.multiply(new BigDecimal(-1));
 		}
 		// 修改冻结记录为解冻状态
 		frozen.setStatus(FrozenCapitalStatus.Thaw);

@@ -13,6 +13,8 @@ public class FuturesOrderAdminDto {
 	 */
 	private Long id;
 	
+	private Long publisherId;
+	
 	/**
 	 * 发布人姓名
 	 * <p>
@@ -92,9 +94,27 @@ public class FuturesOrderAdminDto {
 	private BigDecimal overnightServiceFee;
 	
 	/**
+	 * 触发止盈类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitProfitType;
+	
+	/**
 	 * 止盈金额
 	 */
 	private BigDecimal perUnitLimitProfitAmount;
+	
+	/**
+	 * 触发止损类型（用户设置）
+	 * <ul>
+	 * <li>1 价格</li>
+	 * <li>2 金额</li>
+	 * </ul>
+	 */
+	private Integer limitLossType;
 	
 	/**
 	 * 止损金额
@@ -142,6 +162,14 @@ public class FuturesOrderAdminDto {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 	public String getPublisherName() {
@@ -334,6 +362,22 @@ public class FuturesOrderAdminDto {
 
 	public void setWindControlType(String windControlType) {
 		this.windControlType = windControlType;
+	}
+
+	public Integer getLimitProfitType() {
+		return limitProfitType;
+	}
+
+	public void setLimitProfitType(Integer limitProfitType) {
+		this.limitProfitType = limitProfitType;
+	}
+
+	public Integer getLimitLossType() {
+		return limitLossType;
+	}
+
+	public void setLimitLossType(Integer limitLossType) {
+		this.limitLossType = limitLossType;
 	}
 
 	

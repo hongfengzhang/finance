@@ -40,6 +40,12 @@ public class FuturesContractMarketDto extends FuturesContractMarket {
 	@ApiModelProperty(value = "本时段持仓时间节点")
 	private String currentHoldingTime;
 
+	/**
+	 * 下一个交易时间
+	 */
+	@ApiModelProperty(value = "下一个交易时间")
+	private String nextTradingTime;
+
 	public Integer getContractState() {
 		return contractState;
 	}
@@ -62,6 +68,14 @@ public class FuturesContractMarketDto extends FuturesContractMarket {
 
 	public void setCurrentHoldingTime(String currentHoldingTime) {
 		this.currentHoldingTime = currentHoldingTime;
+	}
+
+	public String getNextTradingTime() {
+		return nextTradingTime;
+	}
+
+	public void setNextTradingTime(String nextTradingTime) {
+		this.nextTradingTime = nextTradingTime;
 	}
 
 }

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
-import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.repository.FuturesContractTermDao;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTermAdminQuery;
 

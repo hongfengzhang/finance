@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import javax.ws.rs.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
+import com.waben.stock.datalayer.futures.service.FuturesOvernightRecordService;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
@@ -32,7 +35,7 @@ public class FuturesOrderController implements FuturesOrderInterface {
 
 	@Autowired
 	private FuturesOrderService futuresOrderService;
-
+	
 	@Override
 	public Response<PageInfo<FuturesOrderDto>> pagesOrder(@RequestBody FuturesOrderQuery orderQuery) {
 		Page<FuturesOrder> page = futuresOrderService.pagesOrder(orderQuery);
@@ -49,12 +52,6 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	}
 
 	@Override
-	public Response<FuturesOrderDto> editOrder(@PathVariable Long id, FuturesOrderState state) {
-		FuturesOrder order = futuresOrderService.editOrder(id, state);
-		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, order, false));
-	}
-
-	@Override
 	public Response<Integer> countOrderType(Long contractId, FuturesOrderType orderType) {
 		return new Response<>(futuresOrderService.countOrderType(contractId, orderType));
 	}
@@ -63,6 +60,12 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	public Response<Integer> sumByListOrderContractIdAndPublisherId(@PathVariable Long contractId,
 			@PathVariable Long publisherId) {
 		return new Response<>(futuresOrderService.sumByListOrderContractIdAndPublisherId(contractId, publisherId));
+	}
+
+	@Override
+	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long id) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.cancelOrder(id), false));
 	}
 
 }

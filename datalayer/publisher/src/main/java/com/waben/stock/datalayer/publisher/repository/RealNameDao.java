@@ -16,5 +16,9 @@ public interface RealNameDao extends BaseDao<RealName, Long> {
 	RealName retriveByResourceTypeAndResourceId(ResourceType resourceType, Long resourceId);
 
 	List<RealName> retrieveByNameAndIdCard(String name, String idCard);
+	
+	List<RealName> findByName(String name);
+	
+	RealName findByResourceId(Long resourceId);
 
 }

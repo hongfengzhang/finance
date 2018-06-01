@@ -139,6 +139,10 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.CONTRACTTERM_NOTAVAILABLE_EXCEPTION, "没有可用的期货合约期限，暂时不能交易");
 		exceptionMap.put(ExceptionConstant.EXCHANGE_ISNOT_AVAILABLE_EXCEPTION, "该合约交易所不可用");
 		exceptionMap.put(ExceptionConstant.GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION, "期货网关不支持该合约");
+		exceptionMap.put(ExceptionConstant.FUTURESORDER_PARTSUCCESS_CANNOTCANCEL_EXCEPTION, "委托已部分成交，不能取消");
+		exceptionMap.put(ExceptionConstant.FUTURESAPI_ABNORMAL_EXCEPTION, "API网关异常，请稍后再试");
+		exceptionMap.put(ExceptionConstant.FUTURESAPI_NOTCONNECTED_EXCEPTION, "API网关异常，请稍后再试");
+		exceptionMap.put(ExceptionConstant.FUTURESAPI_CANCELFAILED_EXCEPTION, "委托取消失败，请稍后再试或者联系客服");
 
 	}
 }

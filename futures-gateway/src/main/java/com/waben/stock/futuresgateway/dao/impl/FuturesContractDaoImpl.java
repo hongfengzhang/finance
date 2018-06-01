@@ -58,4 +58,9 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 		return futuresContractRepository.findBySymbolIgnoreCase(symbol);
 	}
 
+	@Override
+	public FuturesContract retrieveContractByEnableAndSymbol(boolean enable, String symbol) {
+		return futuresContractRepository.findByEnableAndSymbolIgnoreCase(enable, symbol);
+	}
+
 }

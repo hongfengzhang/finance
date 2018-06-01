@@ -43,20 +43,26 @@ public class FuturesContractController {
 		return new Response<>(futuresContractService.getContractInfo(id));
 	}
 
+	@GetMapping("/checksymbol/{symbol}")
+	@ApiOperation(value = "根据合约标识获取合约是否可用")
+	public Response<FuturesContract> fetchBySymbol(@PathVariable String symbol) {
+		return new Response<>(futuresContractService.getContractInfoByEnableAndSymbol(symbol));
+	}
+
 	@GetMapping("/page")
 	@ApiOperation(value = "获取期货合约分页数据")
 	public Response<Page<FuturesContract>> futuresContracts(int page, int limit) {
 		return new Response<>((Page<FuturesContract>) futuresContractService.futuresContracts(page, limit));
 	}
-	
+
 	@GetMapping("/list")
 	@ApiOperation(value = "获取期货合约列表")
 	public Response<List<FuturesContract>> list() {
 		return new Response<>(futuresContractService.list());
 	}
-	
+
 	/******************************** 后台管理 **********************************/
-	
+
 	@PostMapping("/")
 	@ApiOperation(value = "添加期货合约", hidden = true)
 	public Response<FuturesContract> addition(FuturesContract futuresContract) {
@@ -75,14 +81,14 @@ public class FuturesContractController {
 		futuresContractService.deleteContract(id);
 		return new Response<Long>(id);
 	}
-	
+
 	@PostMapping("/deletes")
 	@ApiOperation(value = "批量删除期货合约（多个id以逗号分割）", hidden = true)
 	public Response<Boolean> deletes(String ids) {
 		futuresContractService.deleteContracts(ids);
 		return new Response<Boolean>(true);
 	}
-	
+
 	@GetMapping("/adminList")
 	@ApiOperation(value = "获取期货合约列表(后台管理)", hidden = true)
 	public Response<List<FuturesContract>> adminList() {

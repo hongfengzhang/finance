@@ -1,5 +1,8 @@
 package com.waben.stock.datalayer.publisher.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +41,20 @@ public class RealNameController implements RealNameInterface {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(RealNameDto.class,
 				service.findByResourceTypeAndResourceId(ResourceType.getByIndex(resourceTypeIndex), resourceId),
 				false));
+	}
+	
+	public List<RealNameDto> findByName(@PathVariable String name){
+		List<RealName> list = service.findByName(name);
+		List<RealNameDto> result = new ArrayList<RealNameDto>();
+		for (RealName realName : list) {
+			result.add(CopyBeanUtils.copyBeanProperties(RealNameDto.class, realName, false));
+		}
+		return result;
+	}
+
+	@Override
+	public Response<RealNameDto> fetchByResourceId(@PathVariable Long resourceId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(RealNameDto.class, service.findByResourceId(resourceId), false));
 	}
 
 }

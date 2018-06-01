@@ -27,5 +27,7 @@ public interface FuturesContractRepository extends Repository<FuturesContract, L
 	FuturesContract findById(Long id);
 
 	FuturesContract findBySymbolIgnoreCase(String symbol);
+
+	FuturesContract findByEnableAndSymbolIgnoreCase(boolean enable, String symbol);
 	
 }

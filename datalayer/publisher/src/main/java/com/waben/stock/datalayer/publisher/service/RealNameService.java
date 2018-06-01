@@ -47,5 +47,13 @@ public class RealNameService {
 	public RealName findByResourceTypeAndResourceId(ResourceType resourceType, Long resourceId) {
 		return realNameDao.retriveByResourceTypeAndResourceId(resourceType, resourceId);
 	}
+	
+	public List<RealName> findByName(String name){
+		return realNameDao.findByName(name);
+	}
+	
+	public RealName findByResourceId(Long resourceId){
+		return realNameDao.findByResourceId(resourceId);
+	}
 
 }

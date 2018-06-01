@@ -51,6 +51,7 @@ public class FuturesMarketController {
 		marketDto.setContractName(contractPage.getName());
 		marketDto.setContractState(contractPage.getState());
 		marketDto.setCurrentHoldingTime(contractPage.getCurrentHoldingTime());
+		marketDto.setNextTradingTime(contractPage.getNextTradingTime());
 		return new Response<>(marketDto);
 	}
 
