@@ -13,6 +13,8 @@ public class FuturesOrderAdminDto {
 	 */
 	private Long id;
 	
+	private Long publisherId;
+	
 	/**
 	 * 发布人姓名
 	 * <p>
@@ -142,6 +144,14 @@ public class FuturesOrderAdminDto {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
 	}
 
 	public String getPublisherName() {

@@ -117,9 +117,11 @@ public class FuturesOrderBusiness {
 				// 买入价
 				BigDecimal buyingPrice = new BigDecimal(0);
 				if (orderMarket.getBuyingPriceType() == FuturesTradePriceType.MKT) {
-					buyingPrice = orderMarket.getBuyingPrice();
+					buyingPrice = orderMarket.getBuyingPrice() == null ? new BigDecimal(0)
+							: orderMarket.getBuyingPrice();
 				} else {
-					buyingPrice = orderMarket.getBuyingEntrustPrice();
+					buyingPrice = orderMarket.getBuyingEntrustPrice() == null ? new BigDecimal(0)
+							: orderMarket.getBuyingEntrustPrice();
 				}
 				// 止盈
 				if (orderMarket.getLimitProfitType() != null && orderMarket.getPerUnitLimitProfitAmount() != null) {

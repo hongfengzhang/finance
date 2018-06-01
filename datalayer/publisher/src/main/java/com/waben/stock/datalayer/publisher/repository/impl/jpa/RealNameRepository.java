@@ -16,5 +16,8 @@ public interface RealNameRepository extends CustomJpaRepository<RealName, Long> 
 	RealName findByResourceTypeAndResourceId(ResourceType resourceType, Long resourceId);
 
 	List<RealName> findByNameAndIdCard(String name, String idCard);
+	
+	List<RealName> findByName(String name);
 
+	RealName findByResourceId(Long resourceId);
 }

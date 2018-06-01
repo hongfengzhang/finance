@@ -31,10 +31,6 @@ public class FuturesTermAdminDto {
 	 */
 	private String contractNo;
 	
-	/**
-	 * 返还隔夜保证金的时间
-	 */
-	private String returnOvernightReserveFundTime;
 	
 	/**
 	 * 是否为当前实施的期限
@@ -170,12 +166,7 @@ public class FuturesTermAdminDto {
 	public void setContractNo(String contractNo) {
 		this.contractNo = contractNo;
 	}
-	public String getReturnOvernightReserveFundTime() {
-		return returnOvernightReserveFundTime;
-	}
-	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
-		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
-	}
+	
 	public boolean isCurrent() {
 		return current;
 	}

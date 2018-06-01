@@ -43,8 +43,8 @@ public class FuturesContractBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
-	public void delete(Long id){
-		exchangeReference.deleteExchange(id);;
+	public Response<String> delete(Long id){
+		return exchangeReference.deleteExchange(id);
 	}
 	
 	public FuturesExchangeDto save(FuturesExchangeDto query){
@@ -69,8 +69,8 @@ public class FuturesContractBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
-	public void deleteContract(Long id){
-		reference.deleteContract(id);
+	public String deleteContract(Long id){
+		return reference.deleteContract(id);
 	}
 	
 	public FuturesContractAdminDto save(FuturesContractAdminDto contractDto){

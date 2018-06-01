@@ -112,6 +112,55 @@ public class FuturesOrderService {
 	public FuturesOrder findById(Long id) {
 		return orderDao.retrieve(id);
 	}
+	
+	public List<FuturesOrder> findByContractId(List<Long> contractId){
+		return orderDao.findByContractId(contractId);
+	}
+	
+	public List<FuturesOrder> findByContractTermId(List<Long> contractTermId){
+		return orderDao.findByContractTermId(contractTermId);
+	}
+	
+	public Page<FuturesOrder> pagesOrderAdmin(final FuturesTradeAdminQuery query){
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
+		Page<FuturesOrder> pages = orderDao.page(new Specification<FuturesOrder>() {
+			
+			@Override
+			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				// TODO Auto-generated method stub
+				List<Predicate> predicateList = new ArrayList<Predicate>();
+				if(query.getPublisherIds().size()>0){
+					predicateList.add(criteriaBuilder.in(root.get("publisher")).in(query.getPublisherIds()));
+				}
+				
+				if(query.getOrderType()!=null){
+					if(query.getOrderType().equals("1")||query.getOrderType().equals("2")){
+						predicateList.add(criteriaBuilder.equal(root.get("orderType").as(String.class), query.getOrderType()));
+					}
+				}
+				
+				if(query.getOrderState()!=null){
+					if(query.getOrderState().length()>1){
+						String[] array = query.getOrderState().split(",");
+						ArrayList<String> list = new ArrayList<String>();
+						for(String temp:array){
+						    list.add(temp);
+						}
+						predicateList.add(criteriaBuilder.in(root.get("orderState")).in(list));
+					}else{
+						predicateList.add(criteriaBuilder.equal(root.get("orderState").as(String.class), query.getOrderState()));
+						
+					}
+				}
+				
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return pages;
+ 	}
 
 	public Page<FuturesOrderAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
 		String publisherNameCondition = "";

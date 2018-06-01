@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
@@ -49,12 +48,6 @@ public class FuturesContract {
 	 */
 	private String currency;
 
-	/**
-	 * 汇率
-	 */
-	@OneToOne
-	@JoinColumn(name = "rate_id")
-	private FuturesCurrencyRate currencyRate;
 	/**
 	 * 品种分类
 	 */
@@ -180,14 +173,6 @@ public class FuturesContract {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
-	}
-
-	public FuturesCurrencyRate getCurrencyRate() {
-		return currencyRate;
-	}
-
-	public void setCurrencyRate(FuturesCurrencyRate currencyRate) {
-		this.currencyRate = currencyRate;
 	}
 
 	public FuturesExchange getExchange() {

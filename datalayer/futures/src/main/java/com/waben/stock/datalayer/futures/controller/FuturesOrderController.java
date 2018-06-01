@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
+import com.waben.stock.datalayer.futures.service.FuturesOvernightRecordService;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
@@ -34,7 +35,7 @@ public class FuturesOrderController implements FuturesOrderInterface {
 
 	@Autowired
 	private FuturesOrderService futuresOrderService;
-
+	
 	@Override
 	public Response<PageInfo<FuturesOrderDto>> pagesOrder(@RequestBody FuturesOrderQuery orderQuery) {
 		Page<FuturesOrder> page = futuresOrderService.pagesOrder(orderQuery);

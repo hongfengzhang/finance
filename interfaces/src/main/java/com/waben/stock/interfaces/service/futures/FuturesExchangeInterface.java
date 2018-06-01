@@ -49,7 +49,7 @@ public interface FuturesExchangeInterface {
 	 * @throws Throwable
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	void deleteExchange(@PathVariable("id") Long id);
+	Response<String> deleteExchange(@PathVariable("id") Long id);
 	
 	
 }
