@@ -13,4 +13,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 public interface FuturesCurrencyRateDao extends BaseDao<FuturesCurrencyRate, Long> {
 
 	List<FuturesCurrencyRate> findAll();
+
+	List<FuturesCurrencyRate> retrieveByCurrency(String currency);
+
 }

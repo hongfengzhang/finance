@@ -28,6 +28,7 @@ public class TradeFuturesOverHttp {
 		if ("200".equals(responseObj.getCode())) {
 			return responseObj.getResult();
 		} else {
+			// TODO 异常处理
 			throw new RuntimeException("根据网关订单ID获取订单异常!" + responseObj.getCode());
 		}
 	}
@@ -77,6 +78,7 @@ public class TradeFuturesOverHttp {
 		if ("200".equals(responseObj.getCode())) {
 			return responseObj.getResult();
 		} else {
+			// TODO 异常处理
 			throw new RuntimeException("根据网关订单ID获取订单异常!" + responseObj.getCode());
 		}
 	}

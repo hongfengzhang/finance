@@ -80,7 +80,7 @@ public class FuturesContractService {
 		}, pageable);
 		return pages;
 	}
-	
+
 	public Page<FuturesContract> pagesContractAdmin(final FuturesContractAdminQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<FuturesContract> pages = futuresContractDao.page(new Specification<FuturesContract>() {
@@ -89,27 +89,23 @@ public class FuturesContractService {
 			public Predicate toPredicate(Root<FuturesContract> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				// Join<FuturesExchange, FuturesContract> parentJoin =
-				// root.join("exchange", JoinType.LEFT);
 				Join<FuturesContract, FuturesExchange> join = root.join("exchange", JoinType.LEFT);
 				if(query.getExchangcode() != null && !"".equals(query.getExchangcode())){
-//					predicateList.add(criteriaBuilder.equal(join.get("code").as(String.class), query.getExchangcode()));
 					predicateList.add(criteriaBuilder.or(criteriaBuilder.like(join.get("code").as(String.class), query.getExchangcode()+"%"),criteriaBuilder.like(join.get("name").as(String.class), query.getExchangcode()+"%")));
 				}
-//				if(query.getExchangename() != null && !"".equals(query.getExchangename())){
-//					predicateList.add(criteriaBuilder.equal(join.get("name").as(String.class), query.getExchangename()));
-//				}
 				
-				if(query.getSymbol() != null && !"".equals(query.getSymbol())){
+
+				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
 					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
 				}
-				
-				if(query.getName()!=null&&!"".equals(query.getName())){
+
+				if (query.getName() != null && !"".equals(query.getName())) {
 					predicateList.add(criteriaBuilder.equal(root.get("name").as(String.class), query.getName()));
 				}
-				
-				if(query.getProductType()!=null && !"".equals(query.getProductType())){
-					predicateList.add(criteriaBuilder.equal(root.get("productType").as(String.class), query.getProductType()));
+
+				if (query.getProductType() != null && !"".equals(query.getProductType())) {
+					predicateList.add(
+							criteriaBuilder.equal(root.get("productType").as(String.class), query.getProductType()));
 				}
 
 				if (predicateList.size() > 0) {
@@ -121,8 +117,8 @@ public class FuturesContractService {
 		}, pageable);
 		return pages;
 	}
-	
-	public Page<FuturesContractAdminDto> pagesByAdminQuery(final FuturesContractAdminQuery query){
+
+	public Page<FuturesContractAdminDto> pagesByAdminQuery(final FuturesContractAdminQuery query) {
 		String exchangeCodeCondition = "";
 		if (!StringUtil.isEmpty(query.getExchangcode())) {
 			exchangeCodeCondition = " and f2.code like '%" + query.getExchangcode() + "%' ";
@@ -139,16 +135,17 @@ public class FuturesContractService {
 		if (!StringUtil.isEmpty(query.getProductType())) {
 			productTypeCondition = " and f1.product_type like '%" + query.getProductType() + "%' ";
 		}
-		String sql = String.format("select f1.id,f2.code as exchangecode,f2.name as exchangename,f2.exchange_type as exchangeType,f1.code,f1.name,"+
-									"f1.currency,f3.rate,f1.product_type as productType,f1.multiplier,f1.min_wave,f1.per_wave_money,f1.per_unit_reserve_fund,"+
-									"f1.per_unit_unwind_point,f1.unwind_point_type,f1.total_limit,f1.per_order_limit,f1.openwind_service_fee,"+
-									"f1.unwind_service_fee,f1.overnight_time,f1.overnight_per_unit_deferred_fee,f1.overnight_per_unit_reserve_fund,"+
-									"f1.enable "+
-									" from f_futures_contract f1 LEFT JOIN f_futures_exchange f2 on f1.exchange_id = f2.id"+ 
-									" LEFT JOIN futures_currency_rate f3 on f1.rate_id = f3.id "+
-									" where 1=1 %s %s %s %s limit "+
-									query.getPage()*query.getSize()+","+query.getSize(), exchangeCodeCondition,exchangeNameCondition, contractCodeCondition,productTypeCondition);
-		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.length()-3);
+		String sql = String.format(
+				"select f1.id,f2.code as exchangecode,f2.name as exchangename,f2.exchange_type as exchangeType,f1.code,f1.name,"
+						+ "f1.currency,f3.rate,f1.product_type as productType,f1.multiplier,f1.min_wave,f1.per_wave_money,f1.per_unit_reserve_fund,"
+						+ "f1.per_unit_unwind_point,f1.unwind_point_type,f1.total_limit,f1.per_order_limit,f1.openwind_service_fee,"
+						+ "f1.unwind_service_fee,f1.overnight_time,f1.overnight_per_unit_deferred_fee,f1.overnight_per_unit_reserve_fund,"
+						+ "f1.enable "
+						+ " from f_futures_contract f1 LEFT JOIN f_futures_exchange f2 on f1.exchange_id = f2.id"
+						+ " LEFT JOIN futures_currency_rate f3 on f1.rate_id = f3.id " + " where 1=1 %s %s %s %s limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				exchangeCodeCondition, exchangeNameCondition, contractCodeCondition, productTypeCondition);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.length() - 3);
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setExchangecode", new Class<?>[] { String.class }));
@@ -170,14 +167,16 @@ public class FuturesContractService {
 		setMethodMap.put(new Integer(17), new MethodDesc("setOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(18), new MethodDesc("setUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(19), new MethodDesc("setOvernightTime", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(20), new MethodDesc("setOvernightPerUnitDeferredFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(23), new MethodDesc("setOvernightPerUnitReserveFund", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(20),
+				new MethodDesc("setOvernightPerUnitDeferredFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(23),
+				new MethodDesc("setOvernightPerUnitReserveFund", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(22), new MethodDesc("setEnable", new Class<?>[] { Boolean.class }));
 		List<FuturesContractAdminDto> content = sqlDao.execute(FuturesContractAdminDto.class, sql, setMethodMap);
 		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
-		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),totalElements !=null ? totalElements.longValue() : 0);
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+				totalElements != null ? totalElements.longValue() : 0);
 	}
-	
 
 	public Page<FuturesContractDto> pagesByQuery(final FuturesContractQuery query) {
 
@@ -217,15 +216,15 @@ public class FuturesContractService {
 				totalElements != null ? totalElements.longValue() : 0);
 	}
 
-	public FuturesContract saveExchange(FuturesContract exchange){
+	public FuturesContract saveExchange(FuturesContract exchange) {
 		return futuresContractDao.create(exchange);
 	}
-	
-	public FuturesContract modifyExchange(FuturesContract exchange){
+
+	public FuturesContract modifyExchange(FuturesContract exchange) {
 		return futuresContractDao.update(exchange);
 	}
-	
-	public FuturesContract findByContractId(Long contractId){
+
+	public FuturesContract findByContractId(Long contractId) {
 		return futuresContractDao.retrieve(contractId);
 	}
 	
@@ -236,15 +235,16 @@ public class FuturesContractService {
 		if(list.size()>0){
 			return "该合约正在被订单使用，请不要删除";
 		}
+
 		futuresContractDao.delete(id);
 		return "删除成功";
 	}
-	
+
 	public List<FuturesContractTerm> findByListContractId(Long contractId) {
 		return futuresContractDao.findByListContractId(contractId);
 	}
-	
-	public Page<FuturesContract> pagesContractAdmin(final FuturesContract query,int page,int limit) {
+
+	public Page<FuturesContract> pagesContractAdmin(final FuturesContract query, int page, int limit) {
 		Pageable pageable = new PageRequest(page, limit);
 		Page<FuturesContract> pages = futuresContractDao.page(new Specification<FuturesContract>() {
 
@@ -254,19 +254,21 @@ public class FuturesContractService {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 				// Join<FuturesExchange, FuturesContract> parentJoin =
 				// root.join("exchange", JoinType.LEFT);
-				if(query.getSymbol()!=null && !"".equals(query.getSymbol())){
+				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
 					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
 				}
-				if(query.getName()!=null && !"".equals(query.getName())){
+				if (query.getName() != null && !"".equals(query.getName())) {
 					predicateList.add(criteriaBuilder.equal(root.get("name").as(String.class), query.getName()));
 				}
-				if(query.getOvernightTime()!=null && !"".equals(query.getOvernightTime())){
-					predicateList.add(criteriaBuilder.equal(root.get("overnightTime").as(String.class), query.getOvernightTime()));
+				if (query.getOvernightTime() != null && !"".equals(query.getOvernightTime())) {
+					predicateList.add(criteriaBuilder.equal(root.get("overnightTime").as(String.class),
+							query.getOvernightTime()));
 				}
-				if(query.getExchange()!=null && query.getExchange().hashCode()>0){
-						predicateList.add(criteriaBuilder.equal(root.get("exchange").as(FuturesExchange.class), query.getExchange()));					
+				if (query.getExchange() != null && query.getExchange().hashCode() > 0) {
+					predicateList.add(
+							criteriaBuilder.equal(root.get("exchange").as(FuturesExchange.class), query.getExchange()));
 				}
-				
+
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
@@ -276,5 +278,4 @@ public class FuturesContractService {
 		}, pageable);
 		return pages;
 	}
-
 }

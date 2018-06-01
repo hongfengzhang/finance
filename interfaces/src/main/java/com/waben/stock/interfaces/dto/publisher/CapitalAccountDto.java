@@ -6,7 +6,10 @@ import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@ApiModel(value = "CapitalAccountDto",description = "资金账户对象")
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@ApiModel(value = "CapitalAccountDto", description = "资金账户对象")
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class CapitalAccountDto {
 	@ApiModelProperty(value = "员工id")
 	private Long id;
@@ -56,6 +59,13 @@ public class CapitalAccountDto {
 	private String publisherSerialCode;
 	@ApiModelProperty(value = "会员手机号码")
 	private String publisherPhone;
+	/**
+	 * 最终的盈亏
+	 * <p>
+	 * 此字段只为期货结算使用
+	 * </p>
+	 */
+	private BigDecimal realProfitOrLoss;
 
 	public Long getId() {
 		return id;
@@ -135,6 +145,14 @@ public class CapitalAccountDto {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public BigDecimal getRealProfitOrLoss() {
+		return realProfitOrLoss;
+	}
+
+	public void setRealProfitOrLoss(BigDecimal realProfitOrLoss) {
+		this.realProfitOrLoss = realProfitOrLoss;
 	}
 
 }

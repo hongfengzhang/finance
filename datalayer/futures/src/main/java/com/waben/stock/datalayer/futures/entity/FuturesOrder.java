@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesOrderStateConverter;
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesOrderTypeConverter;
@@ -60,7 +61,7 @@ public class FuturesOrder {
 	 */
 	private BigDecimal reserveFund;
 	/**
-	 * 服务费（服务费）
+	 * 服务费（人民币）
 	 */
 	private BigDecimal serviceFee;
 	/**
@@ -128,10 +129,6 @@ public class FuturesOrder {
 	 */
 	private BigDecimal perUnitLimitProfitAmount;
 	/**
-	 * 止盈价格点位
-	 */
-	private BigDecimal limitProfitPrice;
-	/**
 	 * 触发止损类型（用户设置）
 	 * <ul>
 	 * <li>1 价格</li>
@@ -143,10 +140,6 @@ public class FuturesOrder {
 	 * 止损金额（用户设置）
 	 */
 	private BigDecimal perUnitLimitLossAmount;
-	/**
-	 * 止损价格点位
-	 */
-	private BigDecimal limitLossPrice;
 	/**
 	 * 订单状态
 	 */
@@ -216,6 +209,10 @@ public class FuturesOrder {
 	 */
 	private BigDecimal platformProfitOrLoss;
 	/**
+	 * 结算时的汇率
+	 */
+	private BigDecimal settlementRate;
+	/**
 	 * 结算时间
 	 */
 	private Date settlementTime;
@@ -227,6 +224,13 @@ public class FuturesOrder {
 	 * 是否为测试单
 	 */
 	private Boolean isTest;
+
+	/***************** 分割线，以下字段为非数据库字段 ********************/
+	/**
+	 * 合约ID
+	 */
+	@Transient
+	private Long contractId;
 
 	public Long getId() {
 		return id;
@@ -564,20 +568,19 @@ public class FuturesOrder {
 		this.contractTerm = contractTerm;
 	}
 
-	public BigDecimal getLimitProfitPrice() {
-		return limitProfitPrice;
+	public BigDecimal getSettlementRate() {
+		return settlementRate;
 	}
 
-	public void setLimitProfitPrice(BigDecimal limitProfitPrice) {
-		this.limitProfitPrice = limitProfitPrice;
+	public void setSettlementRate(BigDecimal settlementRate) {
+		this.settlementRate = settlementRate;
 	}
 
-	public BigDecimal getLimitLossPrice() {
-		return limitLossPrice;
-	}
-
-	public void setLimitLossPrice(BigDecimal limitLossPrice) {
-		this.limitLossPrice = limitLossPrice;
+	public Long getContractId() {
+		if (contract != null) {
+			return contract.getId();
+		}
+		return contractId;
 	}
 
 }

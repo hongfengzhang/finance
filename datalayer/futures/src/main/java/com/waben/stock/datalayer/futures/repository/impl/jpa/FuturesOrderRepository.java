@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 
-import feign.Param;
-
 /**
  * 期货订单 Repository
  * 

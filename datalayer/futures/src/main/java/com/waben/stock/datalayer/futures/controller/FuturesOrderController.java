@@ -1,8 +1,5 @@
 package com.waben.stock.datalayer.futures.controller;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.datalayer.futures.service.FuturesOvernightRecordService;
@@ -47,12 +43,10 @@ public class FuturesOrderController implements FuturesOrderInterface {
 
 	@Override
 	public Response<FuturesOrderDto> addOrder(@RequestBody FuturesOrderDto futuresOrderDto) {
-		FuturesOrder order = CopyBeanUtils.copyBeanProperties(FuturesOrder.class, futuresOrderDto, false);
-		FuturesContract contract = CopyBeanUtils.copyBeanProperties(FuturesContract.class,
-				futuresOrderDto.getContract(), false);
-		order.setContract(contract);
-		return new Response<>(
-				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.save(order), false));
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class,
+				futuresOrderService.save(CopyBeanUtils.copyBeanProperties(FuturesOrder.class, futuresOrderDto, false),
+						futuresOrderDto.getContractId()),
+				false));
 	}
 
 	@Override
@@ -70,42 +64,6 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	public Response<Integer> sumByListOrderContractIdAndPublisherId(@PathVariable Long contractId,
 			@PathVariable Long publisherId) {
 		return new Response<>(futuresOrderService.sumByListOrderContractIdAndPublisherId(contractId, publisherId));
-	}
-
-	@Override
-	public Response<List<FuturesOrderDto>> getListFuturesOrderPositionByPublisherId(@PathVariable Long publisherId) {
-		List<FuturesOrderDto> orderPositionList = CopyBeanUtils.copyListBeanPropertiesToList(
-				futuresOrderService.getListFuturesOrderPositionByPublisherId(publisherId), FuturesOrderDto.class);
-		return new Response<>(orderPositionList);
-	}
-
-	@Override
-	public Response<BigDecimal> settlementOrderPositionByPublisherId(@PathVariable Long publisherId) {
-		return new Response<>(futuresOrderService.settlementOrderPositionByPublisherId(publisherId));
-	}
-
-	@Override
-	public Response<List<FuturesOrderDto>> getListFuturesOrderEntrustByPublisherId(@PathVariable Long publisherId) {
-		List<FuturesOrderDto> orderEntrustList = CopyBeanUtils.copyListBeanPropertiesToList(
-				futuresOrderService.getListFuturesOrderEntrustByPublisherId(publisherId), FuturesOrderDto.class);
-		return new Response<>(orderEntrustList);
-	}
-
-	@Override
-	public Response<BigDecimal> settlementOrderEntrustByPublisherId(@PathVariable Long publisherId) {
-		return new Response<>(futuresOrderService.settlementOrderEntrustByPublisherId(publisherId));
-	}
-
-	@Override
-	public Response<List<FuturesOrderDto>> getListFuturesOrderUnwindByPublisherId(@PathVariable Long publisherId) {
-		List<FuturesOrderDto> orderUnwindList = CopyBeanUtils.copyListBeanPropertiesToList(
-				futuresOrderService.getListFuturesOrderUnwindByPublisherId(publisherId), FuturesOrderDto.class);
-		return new Response<>(orderUnwindList);
-	}
-
-	@Override
-	public Response<BigDecimal> settlementOrderUnwindByPublisherId(@PathVariable Long publisherId) {
-		return new Response<>(futuresOrderService.settlementOrderUnwindByPublisherId(publisherId));
 	}
 
 }

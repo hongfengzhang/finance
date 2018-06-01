@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -56,27 +57,33 @@ public class FuturesContractController implements FuturesContractInterface {
 	@Autowired
 	private FuturesOrderService orderService;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+	@Autowired
+	private FuturesCurrencyRateService futuresCurrencyRateService;
+
+	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
+
+	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
-	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery)
-			throws Throwable {
+	public Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery contractQuery) {
 		Page<FuturesContract> page = futuresContractService.pagesContract(contractQuery);
 		PageInfo<FuturesContractDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractDto.class);
 		List<FuturesContractDto> contractDtoList = result.getContent();
 		for (FuturesContractDto futuresContractDto : contractDtoList) {
 			for (FuturesContract futuresContract : page.getContent()) {
 				if (futuresContractDto.getId() == futuresContract.getId()) {
-					futuresContractDto.setChangeEnable(futuresContract.getExchange().getEnable());
+					// 获取汇率信息
+					FuturesCurrencyRate rate = futuresCurrencyRateService.findByCurrency(futuresContract.getCurrency());
+					futuresContractDto.setExchangeEnable(futuresContract.getExchange().getEnable());
 					futuresContractDto.setTimeZoneGap(futuresContract.getExchange().getTimeZoneGap());
-//					futuresContractDto.setRate(futuresContract.getCurrencyRate().getRate());
+//					futuresContractDto.setRate(rate.getRate() == null ? new BigDecimal(0) : rate.getRate());
 //					futuresContractDto.setCurrencyName(futuresContract.getCurrencyRate().getCurrencyName());
 				}
 			}
 			// 判断交易所 和 合约是否可用
-			if (!futuresContractDto.getChangeEnable() || !futuresContractDto.getEnable()) {
+			if (!futuresContractDto.getExchangeEnable() || !futuresContractDto.getEnable()) {
 				futuresContractDto.setState(3);
-				futuresContractDto.setDescribe("交易异常");
+				futuresContractDto.setCurrentTradeTimeDesc("交易异常");
 				break;
 			}
 
@@ -85,7 +92,7 @@ public class FuturesContractController implements FuturesContractInterface {
 
 			if (termList == null || termList.size() == 0) {
 				futuresContractDto.setState(1);
-				futuresContractDto.setDescribe("全天交易");
+				futuresContractDto.setCurrentTradeTimeDesc("全天交易");
 				break;
 			}
 			// 获取交易所对应的交易期限数据
@@ -102,31 +109,31 @@ public class FuturesContractController implements FuturesContractInterface {
 			// 交易所合约交易时间
 			String str = "";
 			if (dayForweek == 1) {
-				futuresContractDto.setDescribe(term.getSunTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getSunTradeTimeDesc());
 				str = term.getSunTradeTime();
 			}
 			if (dayForweek == 2) {
-				futuresContractDto.setDescribe(term.getMonTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getMonTradeTimeDesc());
 				str = term.getMonTradeTime();
 			}
 			if (dayForweek == 3) {
-				futuresContractDto.setDescribe(term.getTueTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getTueTradeTimeDesc());
 				str = term.getTueTradeTime();
 			}
 			if (dayForweek == 4) {
-				futuresContractDto.setDescribe(term.getWedTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getWedTradeTimeDesc());
 				str = term.getWedTradeTime();
 			}
 			if (dayForweek == 5) {
-				futuresContractDto.setDescribe(term.getThuTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getThuTradeTimeDesc());
 				str = term.getThuTradeTime();
 			}
 			if (dayForweek == 6) {
-				futuresContractDto.setDescribe(term.getFriTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getFriTradeTimeDesc());
 				str = term.getFriTradeTime();
 			}
 			if (dayForweek == 7) {
-				futuresContractDto.setDescribe(term.getSatTradeTimeDesc());
+				futuresContractDto.setCurrentTradeTimeDesc(term.getSatTradeTimeDesc());
 				str = term.getSatTradeTimeDesc();
 			}
 
@@ -134,18 +141,11 @@ public class FuturesContractController implements FuturesContractInterface {
 			for (int i = 0; i < strs.length; i++) {
 				String st = strs[i].toString();
 				String[] sts = st.trim().split("-");
-				Calendar beginc = Calendar.getInstance();
-				cal.add(Calendar.HOUR_OF_DAY, -futuresContractDto.getTimeZoneGap());
-				Date begin = beginc.getTime();
-				begin.setHours(sdf.parse(sts[0].trim().toString()).getHours());
-				begin.setMinutes(sdf.parse(sts[0].trim().toString()).getMinutes());
-				Calendar endc = Calendar.getInstance();
-				cal.add(Calendar.HOUR_OF_DAY, -futuresContractDto.getTimeZoneGap());
-				Date end = endc.getTime();
-				end.setHours(sdf.parse(sts[1].trim().toString()).getHours());
-				end.setMinutes(sdf.parse(sts[1].trim().toString()).getMinutes());
-				state = FuturesContractController.belongCalendar(exchangeTime, begin, end);
-				if (state) {
+				String dayStr = daySdf.format(exchangeTime);
+				String fullStr = fullSdf.format(exchangeTime);
+				if (fullStr.compareTo(dayStr + " " + sts[0].trim()) >= 0
+						&& fullStr.compareTo(dayStr + " " + sts[1].trim()) < 0) {
+					state = true;
 					break;
 				}
 			}
@@ -275,7 +275,8 @@ public class FuturesContractController implements FuturesContractInterface {
 	}
 
 	@Override
-	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query) {
+	public Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(
+			@RequestBody FuturesContractAdminQuery query) {
 		Page<FuturesContract> page = futuresContractService.pagesContractAdmin(query);
 		PageInfo<FuturesContractAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractAdminDto.class);
 		for(int i=0;i<result.getContent().size();i++){
@@ -304,8 +305,14 @@ public class FuturesContractController implements FuturesContractInterface {
 				resultList.add(dto);
 			}
 			result.getContent().get(i).setFuturesTermAdminDto(resultList);
- 		}
+		}
 		return new Response<>(result);
-	}	
+	}
+
+	@Override
+	public Response<FuturesContractDto> findByContractId(@PathVariable Long contractId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesContractDto.class,
+				futuresContractService.findByContractId(contractId), false));
+	}
 
 }

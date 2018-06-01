@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.futures.schedule;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -17,11 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
+import com.waben.stock.datalayer.futures.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
+import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
+import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.datalayer.futures.service.FuturesOvernightRecordService;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
@@ -62,6 +66,12 @@ public class WindControlSchedule {
 	private FuturesOvernightRecordService overnightService;
 
 	@Autowired
+	private CapitalAccountBusiness accountBusiness;
+
+	@Autowired
+	private FuturesCurrencyRateService rateService;
+
+	@Autowired
 	private CapitalFlowBusiness flowBusiness;
 
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -80,13 +90,14 @@ public class WindControlSchedule {
 			try {
 				// step 1 : 获取所有持仓中的正式单
 				List<FuturesOrder> content = retrivePositionOrders();
+				logger.info("监控持仓中的正式单数量：" + content.size());
 				// step 2 : 遍历所有订单，判断是否达到风控平仓条件
 				if (content != null && content.size() > 0) {
 					for (FuturesOrder order : content) {
 						FuturesContractTerm term = order.getContractTerm();
 						Integer timeZoneGap = retriveTimeZoneGap(order);
 						// step 3 : 是否触发退还隔夜保证金时间
-						checkAndDoReturnOvernightReserveFund(order);
+						checkAndDoReturnOvernightReserveFund(order, timeZoneGap, term);
 						// step 4 : 是否合约到期
 						if (isTradeTime(timeZoneGap, term) && isReachContractExpiration(timeZoneGap, term)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachContractExpiration,
@@ -108,12 +119,14 @@ public class WindControlSchedule {
 							continue;
 						}
 						// step 8 : 是否触发隔夜时间
-						if (isTradeTime(timeZoneGap, term) && isTriggerOvernight(order)) {
+						if (isTradeTime(timeZoneGap, term) && isTriggerOvernight(order, timeZoneGap)) {
 							orderService.overnight(order);
 							continue;
 						}
 					}
 				}
+			} catch (Exception ex) {
+				logger.error("监控持仓订单发生异常!", ex);
 			} finally {
 				initTask();
 			}
@@ -139,7 +152,19 @@ public class WindControlSchedule {
 	 * @return 交易所的对应时间
 	 */
 	private Date retriveExchangeTime(Integer timeZoneGap) {
-		Date localTime = new Date();
+		return retriveExchangeTime(new Date(), timeZoneGap);
+	}
+
+	/**
+	 * 获取交易所的对应时间
+	 * 
+	 * @param localTime
+	 *            日期
+	 * @param timeZoneGap
+	 *            和交易所的时差
+	 * @return 交易所的对应时间
+	 */
+	private Date retriveExchangeTime(Date localTime, Integer timeZoneGap) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(localTime);
 		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap);
@@ -149,13 +174,30 @@ public class WindControlSchedule {
 	/**
 	 * 是否在交易时间
 	 * 
-	 * @param contract
-	 *            期货合约
+	 * @param timeZoneGap
+	 *            时区
+	 * @param term
+	 *            合约期限
 	 * @return 是否在交易时间
 	 */
 	private boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term) {
+		return isTradeTime(timeZoneGap, term, new Date());
+	}
+
+	/**
+	 * 是否在交易时间
+	 * 
+	 * @param timeZoneGap
+	 *            时区
+	 * @param term
+	 *            合约期限
+	 * @param date
+	 *            日期
+	 * @return 是否在交易时间
+	 */
+	private boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term, Date date) {
 		if (term != null) {
-			Date exchangeTime = retriveExchangeTime(timeZoneGap);
+			Date exchangeTime = retriveExchangeTime(date, timeZoneGap);
 			Calendar cal = Calendar.getInstance();
 			cal.setTime(exchangeTime);
 			int week = cal.get(Calendar.DAY_OF_WEEK);
@@ -212,6 +254,48 @@ public class WindControlSchedule {
 	}
 
 	/**
+	 * 计算订单止盈价格
+	 * 
+	 * @param order
+	 *            订单
+	 * @return 止盈价格
+	 */
+	private BigDecimal computeLimitProfitPrice(FuturesOrder order) {
+		FuturesOrderType orderType = order.getOrderType();
+		BigDecimal buyingPrice = order.getBuyingPrice();
+		// 用户设置
+		Integer limitProfitType = order.getLimitProfitType();
+		BigDecimal perUnitLimitProfitAmount = order.getPerUnitLimitProfitAmount();
+		// 波动设置
+		BigDecimal minWave = order.getContract().getMinWave();
+		BigDecimal perWaveMoney = order.getContract().getPerWaveMoney();
+		// 货币汇率
+		FuturesCurrencyRate rate = rateService.findByCurrency(order.getContractCurrency());
+		if (buyingPrice != null && perUnitLimitProfitAmount != null) {
+			if (limitProfitType != null && limitProfitType == 1) {
+				// type为行情价格
+				if (orderType == FuturesOrderType.BuyUp && perUnitLimitProfitAmount.compareTo(buyingPrice) > 0) {
+					return perUnitLimitProfitAmount;
+				} else if (orderType == FuturesOrderType.BuyFall
+						&& perUnitLimitProfitAmount.compareTo(buyingPrice) < 0) {
+					return perUnitLimitProfitAmount;
+				}
+			} else if (limitProfitType != null && limitProfitType == 2 && rate != null && rate.getRate() != null) {
+				// type为每手盈利金额
+				BigDecimal needWavePrice = (perUnitLimitProfitAmount.divide(rate.getRate(), 2, RoundingMode.DOWN)
+						.divide(perWaveMoney, 2, RoundingMode.DOWN).multiply(minWave)
+						.setScale(minWave.scale(), RoundingMode.DOWN));
+				if (orderType == FuturesOrderType.BuyUp) {
+					return buyingPrice.add(needWavePrice);
+				} else if (orderType == FuturesOrderType.BuyFall) {
+					return buyingPrice.subtract(needWavePrice);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * 判断是否达到止盈点
 	 * 
 	 * @param order
@@ -223,16 +307,95 @@ public class WindControlSchedule {
 	private boolean isReachProfitPoint(FuturesOrder order, FuturesContractMarket market) {
 		BigDecimal lastPrice = market.getLastPrice();
 		FuturesOrderType orderType = order.getOrderType();
+		BigDecimal limitProfitPrice = computeLimitProfitPrice(order);
 		if (orderType == FuturesOrderType.BuyUp) {
-			if (lastPrice != null && lastPrice.compareTo(order.getLimitProfitPrice()) >= 0) {
+			if (lastPrice != null && limitProfitPrice != null && lastPrice.compareTo(limitProfitPrice) >= 0) {
 				return true;
 			}
 		} else {
-			if (lastPrice != null && lastPrice.compareTo(order.getLimitLossPrice()) <= 0) {
+			if (lastPrice != null && limitProfitPrice != null && lastPrice.compareTo(limitProfitPrice) <= 0) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * 计算订单止损价格
+	 * 
+	 * @param order
+	 *            订单
+	 * @return 止损价格
+	 */
+	private BigDecimal computeLimitLossPrice(FuturesOrder order) {
+		FuturesOrderType orderType = order.getOrderType();
+		BigDecimal buyingPrice = order.getBuyingPrice();
+		// 合约设置
+		Integer unwindPointType = order.getUnwindPointType();
+		BigDecimal perUnitUnwindPoint = order.getPerUnitUnwindPoint();
+		// 用户设置
+		Integer limitLossType = order.getLimitLossType();
+		BigDecimal perUnitLimitLossAmount = order.getPerUnitLimitLossAmount();
+		// 波动设置
+		BigDecimal minWave = order.getContract().getMinWave();
+		BigDecimal perWaveMoney = order.getContract().getPerWaveMoney();
+		// 货币汇率
+		FuturesCurrencyRate rate = rateService.findByCurrency(order.getContractCurrency());
+		if (buyingPrice != null) {
+			// 获取合约设置的止损价格
+			BigDecimal contractSetNeedWavePrice = null;
+			if (unwindPointType != null && perUnitUnwindPoint != null && unwindPointType == 1) {
+				if (perUnitUnwindPoint != null && perUnitUnwindPoint.compareTo(new BigDecimal(1)) < 0
+						&& perUnitUnwindPoint.compareTo(new BigDecimal(0)) > 0) {
+					contractSetNeedWavePrice = (order.getReserveFund().divide(order.getTotalQuantity())
+							.multiply(new BigDecimal(1).subtract(perUnitUnwindPoint))
+							.divide(rate.getRate(), 2, RoundingMode.DOWN).divide(perWaveMoney, 2, RoundingMode.DOWN)
+							.multiply(minWave).setScale(minWave.scale(), RoundingMode.DOWN));
+				}
+			} else if (unwindPointType != null && perUnitUnwindPoint != null && unwindPointType == 2) {
+				if (perUnitUnwindPoint != null && perUnitUnwindPoint.compareTo(BigDecimal.ZERO) >= 0
+						&& perUnitUnwindPoint.compareTo(new BigDecimal(0)) > 0) {
+					contractSetNeedWavePrice = (order.getReserveFund().divide(order.getTotalQuantity())
+							.subtract(perUnitUnwindPoint).divide(rate.getRate(), 2, RoundingMode.DOWN)
+							.divide(perWaveMoney, 2, RoundingMode.DOWN).multiply(minWave)
+							.setScale(minWave.scale(), RoundingMode.DOWN));
+				}
+			}
+			// 获取用户设置的止损价格
+			BigDecimal userSetNeedWavePrice = null;
+			if (limitLossType != null && limitLossType == 1) {
+				// type为行情价格
+				if (orderType == FuturesOrderType.BuyUp && perUnitLimitLossAmount.compareTo(buyingPrice) < 0) {
+					userSetNeedWavePrice = buyingPrice.subtract(perUnitLimitLossAmount);
+				} else if (orderType == FuturesOrderType.BuyFall && perUnitLimitLossAmount.compareTo(buyingPrice) > 0) {
+					userSetNeedWavePrice = perUnitLimitLossAmount.subtract(buyingPrice);
+				}
+			} else if (limitLossType != null && limitLossType == 2 && rate != null && rate.getRate() != null) {
+				// type为每手亏损剩余到金额
+				userSetNeedWavePrice = (order.getReserveFund().divide(order.getTotalQuantity())
+						.subtract(perUnitLimitLossAmount).divide(rate.getRate(), 2, RoundingMode.DOWN)
+						.divide(perWaveMoney, 2, RoundingMode.DOWN).multiply(minWave)
+						.setScale(minWave.scale(), RoundingMode.DOWN));
+			}
+			// 获取最终需要波动的价格
+			BigDecimal lastNeedWavePrice = null;
+			if (contractSetNeedWavePrice != null && userSetNeedWavePrice == null) {
+				lastNeedWavePrice = contractSetNeedWavePrice;
+			} else if (contractSetNeedWavePrice == null && userSetNeedWavePrice != null) {
+				lastNeedWavePrice = userSetNeedWavePrice;
+			} else {
+				lastNeedWavePrice = contractSetNeedWavePrice.abs().compareTo(userSetNeedWavePrice.abs()) > 0
+						? contractSetNeedWavePrice : userSetNeedWavePrice;
+			}
+			if (lastNeedWavePrice != null) {
+				if (orderType == FuturesOrderType.BuyUp) {
+					return buyingPrice.subtract(lastNeedWavePrice.abs());
+				} else if (orderType == FuturesOrderType.BuyFall) {
+					return buyingPrice.add(lastNeedWavePrice.abs());
+				}
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -247,12 +410,13 @@ public class WindControlSchedule {
 	private boolean isReachLossPoint(FuturesOrder order, FuturesContractMarket market) {
 		BigDecimal lastPrice = market.getLastPrice();
 		FuturesOrderType orderType = order.getOrderType();
+		BigDecimal limitLossPrice = computeLimitLossPrice(order);
 		if (orderType == FuturesOrderType.BuyUp) {
-			if (lastPrice != null && lastPrice.compareTo(order.getLimitLossPrice()) <= 0) {
+			if (lastPrice != null && limitLossPrice != null && lastPrice.compareTo(limitLossPrice) <= 0) {
 				return true;
 			}
 		} else {
-			if (lastPrice != null && lastPrice.compareTo(order.getLimitLossPrice()) >= 0) {
+			if (lastPrice != null && limitLossPrice != null && lastPrice.compareTo(limitLossPrice) >= 0) {
 				return true;
 			}
 		}
@@ -266,10 +430,11 @@ public class WindControlSchedule {
 	 *            订单
 	 * @return 是否触发隔夜
 	 */
-	private boolean isTriggerOvernight(FuturesOrder order) {
+	private boolean isTriggerOvernight(FuturesOrder order, Integer timeZoneGap) {
 		FuturesOvernightRecord record = overnightService.findNewestOvernightRecord(order);
 		Date now = new Date();
-		String nowStr = daySdf.format(now);
+		Date nowExchangeTime = retriveExchangeTime(now, timeZoneGap);
+		String nowStr = daySdf.format(nowExchangeTime);
 		// 判断是否有今天的隔夜记录
 		if (!(record != null && nowStr.equals(daySdf.format(record.getDeferredTime())))) {
 			FuturesContract contract = order.getContract();
@@ -278,7 +443,7 @@ public class WindControlSchedule {
 				// 判断是否达到隔夜时间，隔夜时间~隔夜时间+1分钟
 				Date beginTime = daySdf.parse(nowStr + " " + overnightTime);
 				Date endTime = new Date(beginTime.getTime() + 1 * 60 * 1000);
-				if (now.getTime() >= beginTime.getTime() && now.getTime() < endTime.getTime()) {
+				if (nowExchangeTime.getTime() >= beginTime.getTime() && nowExchangeTime.getTime() < endTime.getTime()) {
 					return true;
 				}
 			} catch (ParseException e) {
@@ -295,16 +460,25 @@ public class WindControlSchedule {
 	 *            订单
 	 * @return 是否触发隔夜
 	 */
-	private void checkAndDoReturnOvernightReserveFund(FuturesOrder order) {
+	private void checkAndDoReturnOvernightReserveFund(FuturesOrder order, Integer timeZoneGap,
+			FuturesContractTerm term) {
+		// 判断当前时候+30分钟是否为交易时间段
+		Date now = new Date();
+		Date nowAfter30mins = new Date(now.getTime() + 30 * 60 * 1000);
+		boolean isTradeTime = isTradeTime(timeZoneGap, term, nowAfter30mins);
+		if (!isTradeTime) {
+			return;
+		}
+		// 获取退还隔夜保证金的时间
 		FuturesContract contract = order.getContract();
 		String returnOvernightReserveFundTime = contract.getReturnOvernightReserveFundTime();
-		Date now = new Date();
-		String nowStr = daySdf.format(now);
+		Date nowExchangeTime = retriveExchangeTime(now, timeZoneGap);
+		String nowStr = daySdf.format(nowExchangeTime);
 		try {
 			// 判断是否到达退还隔夜保证金时间，退还隔夜保证金时间~退还隔夜保证金时间+1分钟
 			Date beginTime = daySdf.parse(nowStr + " " + returnOvernightReserveFundTime);
 			Date endTime = new Date(beginTime.getTime() + 1 * 60 * 1000);
-			if (now.getTime() >= beginTime.getTime() && now.getTime() < endTime.getTime()) {
+			if (nowExchangeTime.getTime() >= beginTime.getTime() && nowExchangeTime.getTime() < endTime.getTime()) {
 				// 如果到达退还隔夜保证金时间
 				FuturesOvernightRecord record = overnightService.findNewestOvernightRecord(order);
 				if (record != null) {
@@ -313,9 +487,11 @@ public class WindControlSchedule {
 					if (flowList != null && flowList.size() > 0) {
 						boolean hasOvernightReserveFund = false;
 						boolean hasReturnOvernightReserveFund = false;
+						BigDecimal reserveFund = BigDecimal.ZERO;
 						for (CapitalFlowDto flow : flowList) {
 							if (flow.getType() == CapitalFlowType.FuturesOvernightReserveFund) {
 								hasOvernightReserveFund = true;
+								reserveFund = flow.getAmount();
 							}
 							if (flow.getType() == CapitalFlowType.FuturesReturnOvernightReserveFund) {
 								hasReturnOvernightReserveFund = true;
@@ -323,7 +499,8 @@ public class WindControlSchedule {
 						}
 						if (hasOvernightReserveFund && !hasReturnOvernightReserveFund) {
 							// 退还隔夜保证金
-							
+							accountBusiness.futuresReturnOvernightReserveFund(order.getId(), record.getId(),
+									reserveFund);
 						}
 					}
 				}
@@ -339,10 +516,11 @@ public class WindControlSchedule {
 	 * @return 持仓中的正式订单
 	 */
 	private List<FuturesOrder> retrivePositionOrders() {
+		FuturesOrderState[] states = { FuturesOrderState.Position };
 		FuturesOrderQuery query = new FuturesOrderQuery();
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
-		query.setState(FuturesOrderState.Position);
+		query.setStates(states);
 		query.setIsTest(false);
 		Page<FuturesOrder> pages = orderService.pagesOrder(query);
 		return pages.getContent();

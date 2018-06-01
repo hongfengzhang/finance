@@ -14,8 +14,6 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 
-
-
 @FeignClient(name = "futures", path = "contract", qualifier = "futurescontractInterface")
 public interface FuturesContractInterface {
 
@@ -27,33 +25,46 @@ public interface FuturesContractInterface {
 	 * @return 期货合约
 	 */
 	@RequestMapping(value = "/pages", method = RequestMethod.POST, consumes = "application/json")
-	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery)
-			throws Throwable;
-	
+	Response<PageInfo<FuturesContractDto>> pagesContract(@RequestBody FuturesContractQuery futuresContractQuery);
+
 	@RequestMapping(value = "/pagesContractAdmin", method = RequestMethod.POST, consumes = "application/json")
 	Response<PageInfo<FuturesContractAdminDto>> pagesContractAdmin(@RequestBody FuturesContractAdminQuery query);
-	
+
 	/**
 	 * 添加期货合约数据
+	 * 
 	 * @param contractDto
 	 * @return
 	 */
-	@RequestMapping(value = "/saveContract", method = RequestMethod.POST,consumes = "application/json")
+	@RequestMapping(value = "/saveContract", method = RequestMethod.POST, consumes = "application/json")
 	Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto);
-	
+
 	/**
 	 * 修改期货合约数据
+	 * 
 	 * @param contractDto
 	 * @return
 	 */
 	@RequestMapping(value = "/modifyContract", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<FuturesContractAdminDto> modifyContract(@RequestBody FuturesContractAdminDto contractDto);
-	
+
 	/**
 	 * 删除期货合约数据
+	 * 
 	 * @param id
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	String deleteContract(@PathVariable("id") Long id);
+
+
+	/**
+	 * 根据合约ID获取期货合约信息
+	 * 
+	 * @param contractId
+	 *            合约ID
+	 * @return 合约信息
+	 */
+	@RequestMapping(value = "/contract/{contractId}", method = RequestMethod.GET)
+	Response<FuturesContractDto> findByContractId(@PathVariable("contractId") Long contractId);
 
 }

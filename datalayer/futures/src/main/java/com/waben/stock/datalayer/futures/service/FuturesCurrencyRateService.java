@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.repository.FuturesCurrencyRateDao;
 
@@ -28,10 +27,10 @@ import com.waben.stock.datalayer.futures.repository.FuturesCurrencyRateDao;
  */
 @Service
 public class FuturesCurrencyRateService {
-	
+
 	@Autowired
 	private FuturesCurrencyRateDao currencyRateDao;
-	
+
 	public FuturesCurrencyRate addCurrencyRate(FuturesCurrencyRate rate) {
 		return currencyRateDao.create(rate);
 	}
@@ -44,8 +43,8 @@ public class FuturesCurrencyRateService {
 		currencyRateDao.delete(id);
 
 	}
-	
-	public FuturesCurrencyRate queryRate(final FuturesCurrencyRate rate){
+
+	public FuturesCurrencyRate queryRate(final FuturesCurrencyRate rate) {
 		Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
 		Page<FuturesCurrencyRate> pages = currencyRateDao.page(new Specification<FuturesCurrencyRate>() {
 
@@ -55,13 +54,14 @@ public class FuturesCurrencyRateService {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 				// Join<FuturesExchange, FuturesContract> parentJoin =
 				// root.join("exchange", JoinType.LEFT);
-				if(rate.getCurrencyName()!=null&&!"".equals(rate.getCurrencyName())){
-					predicateList.add(criteriaBuilder.equal(root.get("currencyName").as(String.class), rate.getCurrencyName()));
+				if (rate.getCurrencyName() != null && !"".equals(rate.getCurrencyName())) {
+					predicateList.add(
+							criteriaBuilder.equal(root.get("currencyName").as(String.class), rate.getCurrencyName()));
 				}
-				if(rate.getCurrency()!=null&&!"".equals(rate.getCurrency())){
+				if (rate.getCurrency() != null && !"".equals(rate.getCurrency())) {
 					predicateList.add(criteriaBuilder.equal(root.get("currency").as(String.class), rate.getCurrency()));
 				}
-				if(rate.getRate()!=null&&!"".equals(rate.getRate())){
+				if (rate.getRate() != null && !"".equals(rate.getRate())) {
 					predicateList.add(criteriaBuilder.equal(root.get("rate").as(BigDecimal.class), rate.getRate()));
 				}
 
@@ -72,17 +72,26 @@ public class FuturesCurrencyRateService {
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
-		if(pages.getContent().size()>0){
+		if (pages.getContent().size() > 0) {
 			return pages.getContent().get(0);
 		}
 		return null;
 	}
-	
-	public Page<FuturesCurrencyRate> list(){
+
+	public Page<FuturesCurrencyRate> list() {
 		return currencyRateDao.page(0, Integer.MAX_VALUE);
 	}
 
 	public FuturesCurrencyRate retrieve(Long id) {
 		return currencyRateDao.retrieve(id);
 	}
+
+	public FuturesCurrencyRate findByCurrency(String currency) {
+		List<FuturesCurrencyRate> rateList = currencyRateDao.retrieveByCurrency(currency);
+		if (rateList != null && rateList.size() > 0) {
+			return rateList.get(0);
+		}
+		return null;
+	}
+
 }

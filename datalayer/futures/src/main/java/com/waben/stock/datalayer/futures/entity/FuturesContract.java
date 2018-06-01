@@ -9,7 +9,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
@@ -41,15 +40,14 @@ public class FuturesContract {
 	 */
 	private String name;
 	/**
+	 * 简述
+	 */
+	private String sketch;
+	/**
 	 * 货币
 	 */
 	private String currency;
 
-	/**
-	 * 图标
-	 */
-	private String icon;
-	
 	/**
 	 * 品种分类
 	 */
@@ -63,7 +61,6 @@ public class FuturesContract {
 	 * 最小波动
 	 */
 	private BigDecimal minWave;
-	
 	/**
 	 * 1手合约价值
 	 */
@@ -176,15 +173,6 @@ public class FuturesContract {
 
 	public void setCurrency(String currency) {
 		this.currency = currency;
-	}
-
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
 	}
 
 	public FuturesExchange getExchange() {
@@ -329,6 +317,14 @@ public class FuturesContract {
 
 	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
 		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
+	}
+
+	public String getSketch() {
+		return sketch;
+	}
+
+	public void setSketch(String sketch) {
+		this.sketch = sketch;
 	}
 
 }

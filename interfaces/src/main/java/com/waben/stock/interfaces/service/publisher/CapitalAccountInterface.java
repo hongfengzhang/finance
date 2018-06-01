@@ -185,4 +185,34 @@ public interface CapitalAccountInterface {
 	Response<CapitalAccountDto> futuresReturnOvernightReserveFund(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("overnightId") Long overnightId, @PathVariable("reserveFund") BigDecimal reserveFund);
 
+	/**
+	 * 期权订单结算
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param orderId
+	 *            订单ID
+	 * @param profitOrLoss
+	 *            订单盈亏
+	 * @return 资金账号对象
+	 */
+	@RequestMapping(value = "/{publisherId}/{orderId}/futures/settlement/{profitOrLoss}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> futuresOrderSettlement(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("orderId") Long orderId, @PathVariable("profitOrLoss") BigDecimal profitOrLoss);
+
+	/**
+	 * 期货订单撤单
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param orderId
+	 *            订单ID
+	 * @param serviceFee
+	 *            服务费
+	 * @return 资金账号对象
+	 */
+	@RequestMapping(value = "/{publisherId}/{orderId}/futures/revoke/serviceFee/{serviceFee}", method = RequestMethod.POST)
+	Response<CapitalAccountDto> futuresOrderRevoke(@PathVariable("publisherId") Long publisherId,
+			@PathVariable("orderId") Long orderId, @PathVariable("serviceFee") BigDecimal serviceFee);
+
 }
