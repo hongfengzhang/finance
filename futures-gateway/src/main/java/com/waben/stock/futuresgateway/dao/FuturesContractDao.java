@@ -23,9 +23,11 @@ public interface FuturesContractDao {
 	public FuturesContract retrieveContractById(Long id);
 
 	public Page<FuturesContract> pageContract(int page, int limit);
-	
+
 	public List<FuturesContract> listContract();
 
 	public FuturesContract retrieveContractBySymbol(String symbol);
+
+	public FuturesContract retrieveContractByEnableAndSymbol(boolean enable, String symbol);
 
 }

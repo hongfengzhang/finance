@@ -38,10 +38,9 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 	
 	@Autowired
 	private FuturesContractService contractService;
-	
+
 	@Autowired
 	private FuturesOrderService orderService;
-	
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 

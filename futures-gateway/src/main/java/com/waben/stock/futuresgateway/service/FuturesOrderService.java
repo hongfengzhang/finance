@@ -17,6 +17,8 @@ import com.waben.stock.futuresgateway.dao.FuturesContractDao;
 import com.waben.stock.futuresgateway.dao.FuturesOrderDao;
 import com.waben.stock.futuresgateway.entity.FuturesContract;
 import com.waben.stock.futuresgateway.entity.FuturesOrder;
+import com.waben.stock.futuresgateway.exception.ExceptionEnum;
+import com.waben.stock.futuresgateway.exception.ServiceException;
 import com.waben.stock.futuresgateway.twsapi.TwsEngine;
 
 /**
@@ -75,18 +77,79 @@ public class FuturesOrderService {
 		return futuresOrderDao.retrieveFuturesOrderByTwsOrderId(twsOrderId);
 	}
 
+	/**
+	 * 检查API连接是否已连接
+	 * 
+	 * @return 是否已连接
+	 */
+	public boolean isConnected() {
+		return twsEngine.getClient().isConnected();
+	}
+
+	/**
+	 * 取消订单
+	 * 
+	 * @param domain
+	 *            应用域
+	 * @param outerOrderId
+	 *            外部订单ID
+	 */
 	@Transactional
-	public FuturesOrder addFuturesOrder(String domain, String symbol, Integer outerOrderId, String action,
+	public FuturesOrder cancelOrder(String domain, Long id) {
+		if (!isConnected()) {
+			throw new ServiceException(ExceptionEnum.Client_NotConnected);
+		}
+		EClientSocket client = twsEngine.getClient();
+		FuturesOrder order = futuresOrderDao.retrieveFuturesOrderById(id);
+		if (order == null) {
+			throw new ServiceException(ExceptionEnum.Order_NotExist);
+		}
+		if ("Submitted".equals(order.getStatus()) && order.getFilled() != null
+				&& order.getFilled().compareTo(BigDecimal.ZERO) == 0) {
+			client.cancelOrder(order.getTwsOrderId());
+		} else if ("Submitted".equals(order.getStatus()) && order.getRemaining() != null
+				&& order.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
+			throw new ServiceException(ExceptionEnum.PartFilled_CannotCancel);
+		} else {
+			throw new ServiceException(ExceptionEnum.CurrentStatus_CannotCancel);
+		}
+		return order;
+	}
+
+	/**
+	 * 下单
+	 * 
+	 * @param domain
+	 *            应用域
+	 * @param symbol
+	 *            合约标识
+	 * @param outerOrderId
+	 *            外部订单ID
+	 * @param action
+	 *            交易方向
+	 * @param totalQuantity
+	 *            交易总量
+	 * @param userOrderType
+	 *            用户订单类型
+	 * @param entrustPrice
+	 *            委托价格
+	 * @return 订单
+	 */
+	@Transactional
+	public synchronized FuturesOrder addFuturesOrder(String domain, String symbol, Long outerOrderId, String action,
 			BigDecimal totalQuantity, Integer userOrderType, BigDecimal entrustPrice) {
+		if (!isConnected()) {
+			throw new ServiceException(ExceptionEnum.Client_NotConnected);
+		}
 		FuturesContract futuresContract = futuresContractDao.retrieveContractBySymbol(symbol);
 		if (futuresContract == null) {
-			throw new RuntimeException("不支持的合约类型!");
+			throw new ServiceException(ExceptionEnum.Symbol_NotSuported);
 		}
 		if (!("BUY".equals(action) || "SELL".equals(action))) {
-			throw new RuntimeException("不支持的交易类型!");
+			throw new ServiceException(ExceptionEnum.Action_NotSuported);
 		}
 		if (!((userOrderType != null && userOrderType == 1) || (userOrderType != null && userOrderType == 2))) {
-			throw new RuntimeException("不支持的订单类型!");
+			throw new ServiceException(ExceptionEnum.UserOrderType_NotSuported);
 		}
 		// step 1 : 保存订单
 		FuturesOrder futuresOrder = new FuturesOrder();

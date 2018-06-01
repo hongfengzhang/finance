@@ -108,9 +108,6 @@ public class FuturesOrderService {
 	@Autowired
 	private RabbitmqProducer producer;
 
-	@Autowired
-	private FuturesCurrencyRateService futuresCurrencyRateService;
-
 	@Value("{order.domain:youguwang.com.cn}")
 	private String domain;
 
@@ -291,13 +288,18 @@ public class FuturesOrderService {
 
 	@Transactional
 	public FuturesOrder save(FuturesOrder order, Long contractId) {
-		// step 1 : 再一次确认余额是否充足
+		// step 1 : 检查网关是否正常
+		boolean isConnected = TradeFuturesOverHttp.checkConnection();
+		if (!isConnected) {
+			throw new ServiceException(ExceptionConstant.FUTURESAPI_NOTCONNECTED_EXCEPTION);
+		}
+		// step 2 : 再一次确认余额是否充足
 		CapitalAccountDto capitalAccount = accountBusiness.fetchByPublisherId(order.getPublisherId());
 		BigDecimal totalFee = order.getServiceFee().add(order.getReserveFund());
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-		// step 2 : 获取期货合约和期货合约期限
+		// step 3 : 获取期货合约和期货合约期限
 		FuturesContract contract = contractDao.retrieve(contractId);
 		FuturesContractTerm term = null;
 		List<FuturesContractTerm> termList = termDao.retrieveByContractAndCurrent(contract, true);
@@ -306,7 +308,7 @@ public class FuturesOrderService {
 		} else {
 			throw new ServiceException(ExceptionConstant.CONTRACTTERM_NOTAVAILABLE_EXCEPTION);
 		}
-		// step 3 : 初始化订单
+		// step 4 : 初始化订单
 		order.setTradeNo(UniqueCodeGenerator.generateTradeNo());
 		Date date = new Date();
 		order.setPostTime(date);
@@ -315,7 +317,7 @@ public class FuturesOrderService {
 		order.setContract(contract);
 		order.setContractTerm(term);
 		order = orderDao.create(order);
-		// step 4 : 扣去金额、冻结保证金
+		// step 5 : 扣去金额、冻结保证金
 		try {
 			accountBusiness.futuresOrderServiceFeeAndReserveFund(order.getPublisherId(), order.getId(),
 					order.getServiceFee(), order.getReserveFund());
@@ -335,24 +337,24 @@ public class FuturesOrderService {
 				}
 			}
 		}
-		// step 5 : 调用期货网关委托下单
+		// step 6 : 调用期货网关委托下单
 		FuturesActionType action = order.getOrderType() == FuturesOrderType.BuyUp ? FuturesActionType.BUY
 				: FuturesActionType.SELL;
 		Integer userOrderType = order.getBuyingPriceType() == FuturesTradePriceType.MKT ? 1 : 2;
 		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(),
 				order.getId(), action, order.getTotalQuantity(), userOrderType, order.getBuyingEntrustPrice());
 		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
-		// step 6 : 更新订单状态
+		// step 7 : 更新订单状态
 		order.setState(FuturesOrderState.BuyingEntrust);
 		order.setOpenGatewayOrderId(gatewayOrder.getId());
 		order = orderDao.update(order);
-		// step 7 : 放入委托查询队列（开仓）
+		// step 8 : 放入委托查询队列（开仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
 		msg.setOrderId(order.getId());
 		msg.setGatewayOrderId(gatewayOrder.getId());
 		msg.setEntrustType(1);
 		producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, msg);
-		// step 8 : 站外消息推送
+		// step 9 : 站外消息推送
 		sendOutsideMessage(order);
 		return order;
 	}
@@ -434,17 +436,24 @@ public class FuturesOrderService {
 	@Transactional
 	public FuturesOrder canceledOrder(Long id) {
 		FuturesOrder order = orderDao.retrieve(id);
-		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust)) {
+		if (!(order.getState() == FuturesOrderState.Posted || order.getState() == FuturesOrderState.BuyingEntrust
+				|| order.getState() == FuturesOrderState.SellingEntrust)) {
 			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
-		// 撤单退款
-		accountBusiness.futuresOrderRevoke(order.getPublisherId(), order.getId(), order.getServiceFee());
-		// 修改订单状态
-		order.setState(FuturesOrderState.BuyingCanceled);
-		order.setUpdateTime(new Date());
-		orderDao.update(order);
-		// 站外消息推送
-		sendOutsideMessage(order);
+		if (order.getState() == FuturesOrderState.SellingEntrust) {
+			order.setState(FuturesOrderState.Position);
+			order.setUpdateTime(new Date());
+			orderDao.update(order);
+		} else {
+			// 撤单退款
+			accountBusiness.futuresOrderRevoke(order.getPublisherId(), order.getId(), order.getServiceFee());
+			// 修改订单状态
+			order.setState(FuturesOrderState.BuyingCanceled);
+			order.setUpdateTime(new Date());
+			orderDao.update(order);
+			// 站外消息推送
+			sendOutsideMessage(order);
+		}
 		return order;
 	}
 
@@ -533,7 +542,7 @@ public class FuturesOrderService {
 		}
 		// 盈亏（交易所货币）
 		BigDecimal currencyProfitOrLoss = computeProfitOrLoss(order.getOrderType(), order.getTotalQuantity(),
-				order.getBuyingPrice(), order.getSellingPrice(), order.getContract().getMinWave(),
+				order.getBuyingPrice(), sellingPrice, order.getContract().getMinWave(),
 				order.getContract().getPerWaveMoney());
 		// 盈亏（人民币）
 		BigDecimal rate = rateService.findByCurrency(order.getContractCurrency()).getRate();
@@ -590,7 +599,7 @@ public class FuturesOrderService {
 	public BigDecimal computeProfitOrLoss(FuturesOrderType orderType, BigDecimal totalQuantity, BigDecimal buyingPrice,
 			BigDecimal sellingPrice, BigDecimal minWave, BigDecimal perWaveMoney) {
 		BigDecimal waveMoney = sellingPrice.subtract(buyingPrice).divide(minWave).setScale(4, RoundingMode.DOWN)
-				.multiply(perWaveMoney);
+				.multiply(perWaveMoney).multiply(totalQuantity);
 		if (orderType == FuturesOrderType.BuyUp) {
 			return waveMoney;
 		} else {
@@ -634,9 +643,9 @@ public class FuturesOrderService {
 		// 放入委托查询队列（平仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
 		if (windControlType == FuturesWindControlType.BackhandUnind) {
-			msg.setEntrustType(2);
-		} else {
 			msg.setEntrustType(3);
+		} else {
+			msg.setEntrustType(2);
 		}
 		msg.setOrderId(order.getId());
 		msg.setGatewayOrderId(gatewayOrder.getId());
@@ -713,4 +722,30 @@ public class FuturesOrderService {
 		}
 		return order;
 	}
+
+	public FuturesOrder cancelOrder(Long id) {
+		// step 1 : 检查网关是否正常
+		boolean isConnected = TradeFuturesOverHttp.checkConnection();
+		if (!isConnected) {
+			throw new ServiceException(ExceptionConstant.FUTURESAPI_NOTCONNECTED_EXCEPTION);
+		}
+		// step 2 : 检查订单状态
+		FuturesOrder order = orderDao.retrieve(id);
+		if (order.getState() == FuturesOrderState.PartPosition || order.getState() == FuturesOrderState.PartUnwind) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_PARTSUCCESS_CANNOTCANCEL_EXCEPTION);
+		}
+		if (!(order.getState() == FuturesOrderState.BuyingEntrust
+				|| order.getState() == FuturesOrderState.SellingEntrust)) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
+		}
+		// step 3 : 请求网关取消订单
+		if (order.getState() == FuturesOrderState.BuyingEntrust) {
+			TradeFuturesOverHttp.cancelOrder(domain, order.getOpenGatewayOrderId());
+		}
+		if (order.getState() == FuturesOrderState.SellingEntrust) {
+			TradeFuturesOverHttp.cancelOrder(domain, order.getCloseGatewayOrderId());
+		}
+		return order;
+	}
+
 }

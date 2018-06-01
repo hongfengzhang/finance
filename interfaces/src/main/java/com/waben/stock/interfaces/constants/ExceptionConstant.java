@@ -252,5 +252,13 @@ public class ExceptionConstant {
 	public static final String CONTRACT_ISNOTIN_TRADE_EXCEPTION = "13007";
 	// 没有可用的期货合约期限，暂时不能交易
 	public static final String CONTRACTTERM_NOTAVAILABLE_EXCEPTION = "13008";
+	// 委托已部分成交，不能取消
+	public static final String FUTURESORDER_PARTSUCCESS_CANNOTCANCEL_EXCEPTION = "13009";
+	// API网关异常，请稍后再试
+	public static final String FUTURESAPI_ABNORMAL_EXCEPTION = "13010";
+	// API网关异常，请稍后再试
+	public static final String FUTURESAPI_NOTCONNECTED_EXCEPTION = "13011";
+	// 委托取消失败，请稍后再试或者联系客服
+	public static final String FUTURESAPI_CANCELFAILED_EXCEPTION = "13012";
 
 }

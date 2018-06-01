@@ -20,7 +20,7 @@ import com.waben.stock.futuresgateway.service.FuturesOrderService;
 @Service
 public class TwsEngine {
 
-	private String account = "DU1066508";
+	private String account = "DU1079041";
 
 	@Autowired
 	private FuturesContractService futuresContractService;
@@ -39,7 +39,7 @@ public class TwsEngine {
 	@PostConstruct
 	public void init() {
 		this.client = wrapper.getClient();
-		client.eConnect("10.0.0.99", 7497, 0);
+		this.wrapper.connect();
 		final EReader reader = new EReader(client, wrapper.getSignal());
 		reader.start();
 		new Thread() {

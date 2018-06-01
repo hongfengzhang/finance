@@ -28,4 +28,6 @@ public interface FuturesOrderDao {
 
 	public FuturesOrder retrieveFuturesOrderByTwsOrderId(int twsOrderId);
 
+	public FuturesOrder retrieveFuturesOrderByDomainAndOuterOrderId(String domain, Long outerOrderId);
+
 }

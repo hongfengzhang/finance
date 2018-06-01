@@ -167,7 +167,7 @@ public class WindControlSchedule {
 	private Date retriveExchangeTime(Date localTime, Integer timeZoneGap) {
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(localTime);
-		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap);
+		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap * -1);
 		return cal.getTime();
 	}
 
@@ -383,7 +383,7 @@ public class WindControlSchedule {
 				lastNeedWavePrice = contractSetNeedWavePrice;
 			} else if (contractSetNeedWavePrice == null && userSetNeedWavePrice != null) {
 				lastNeedWavePrice = userSetNeedWavePrice;
-			} else {
+			} else if (contractSetNeedWavePrice != null && userSetNeedWavePrice != null) {
 				lastNeedWavePrice = contractSetNeedWavePrice.abs().compareTo(userSetNeedWavePrice.abs()) > 0
 						? contractSetNeedWavePrice : userSetNeedWavePrice;
 			}
