@@ -54,7 +54,11 @@ public class EntrustQueryConsumer {
 					isNeedRetry = false;
 				}
 			} else if (entrustType == 2) {
-				if ("Submitted".equals(status) && gatewayOrder.getFilled().compareTo(BigDecimal.ZERO) > 0) {
+				if ("Cancelled".equals(status)) {
+					// 已取消
+					orderService.canceledOrder(orderId);
+					isNeedRetry = false;
+				} else if ("Submitted".equals(status) && gatewayOrder.getFilled().compareTo(BigDecimal.ZERO) > 0) {
 					// 部分已平仓
 					orderService.partUnwindOrder(orderId);
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {
@@ -63,7 +67,11 @@ public class EntrustQueryConsumer {
 					isNeedRetry = false;
 				}
 			} else if (entrustType == 3) {
-				if ("Submitted".equals(status) && gatewayOrder.getFilled().compareTo(BigDecimal.ZERO) > 0) {
+				if ("Cancelled".equals(status)) {
+					// 已取消
+					orderService.canceledOrder(orderId);
+					isNeedRetry = false;
+				} else if ("Submitted".equals(status) && gatewayOrder.getFilled().compareTo(BigDecimal.ZERO) > 0) {
 					// 部分已平仓
 					orderService.partUnwindOrder(orderId);
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {
@@ -89,11 +97,9 @@ public class EntrustQueryConsumer {
 	private void retry(EntrustQueryMessage messgeObj) {
 		try {
 			int consumeCount = messgeObj.getConsumeCount();
-			if (consumeCount < 600) {
-				messgeObj.setConsumeCount(consumeCount + 1);
-				Thread.sleep(100);
-				producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, messgeObj);
-			}
+			messgeObj.setConsumeCount(consumeCount + 1);
+			Thread.sleep(100);
+			producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, messgeObj);
 		} catch (Exception ex) {
 			throw new RuntimeException(RabbitmqConfiguration.entrustQueryQueueName + " message retry exception!", ex);
 		}

@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import javax.ws.rs.Path;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,12 +51,6 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	}
 
 	@Override
-	public Response<FuturesOrderDto> editOrder(@PathVariable Long id, FuturesOrderState state) {
-		FuturesOrder order = futuresOrderService.editOrder(id, state);
-		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, order, false));
-	}
-
-	@Override
 	public Response<Integer> countOrderType(Long contractId, FuturesOrderType orderType) {
 		return new Response<>(futuresOrderService.countOrderType(contractId, orderType));
 	}
@@ -63,6 +59,12 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	public Response<Integer> sumByListOrderContractIdAndPublisherId(@PathVariable Long contractId,
 			@PathVariable Long publisherId) {
 		return new Response<>(futuresOrderService.sumByListOrderContractIdAndPublisherId(contractId, publisherId));
+	}
+
+	@Override
+	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long id) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.cancelOrder(id), false));
 	}
 
 }

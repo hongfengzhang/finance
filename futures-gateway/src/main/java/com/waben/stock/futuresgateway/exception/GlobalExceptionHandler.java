@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
 			HttpServletResponse response) {
 		Response<? extends Object> result = new Response<>(null);
 		result.setCode(ex.getCode());
-		result.setMessage(ex.getMessage());
+		result.setMessage(ex.getErrorMsg());
 		return result;
 	}
 

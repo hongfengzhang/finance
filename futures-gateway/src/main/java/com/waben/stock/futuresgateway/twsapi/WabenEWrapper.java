@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.ib.client.CommissionReport;
@@ -36,6 +37,12 @@ public class WabenEWrapper implements EWrapper {
 	private EClientSocket clientSocket;
 	protected int currentOrderId = -1;
 
+	@Value("${tws.host}")
+	private String host;
+
+	@Value("${tws.port}")
+	private int port;
+
 	@Autowired
 	private FuturesOrderService futuresOrderService;
 
@@ -56,6 +63,10 @@ public class WabenEWrapper implements EWrapper {
 
 	public void setCurrentOrderId(int currentOrderId) {
 		this.currentOrderId = currentOrderId;
+	}
+
+	public void connect() {
+		clientSocket.eConnect(host, port, 0);
 	}
 
 	/******************************************** 分割线 ****************************************/
@@ -446,7 +457,7 @@ public class WabenEWrapper implements EWrapper {
 		}
 		System.out.println("Error. Id: " + id + ", Code: " + errorCode + ", Msg: " + errorMsg + "\n");
 		if (errorCode == 504 && "Not connected".equals(errorMsg)) {
-			this.clientSocket.eConnect("10.0.0.99", 7497, 0);
+			this.connect();
 		}
 	}
 

@@ -27,5 +27,7 @@ public interface FuturesOrderRepository extends Repository<FuturesOrder, Long> {
 	FuturesOrder findById(Long id);
 
 	FuturesOrder findByTwsOrderId(int twsOrderId);
+
+	FuturesOrder findByDomainAndOuterOrderId(String domain, Long outerOrderId);
 	
 }

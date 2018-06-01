@@ -26,7 +26,8 @@ public class RetriveFuturesOverHttp {
 		if ("200".equals(responseObj.getCode())) {
 			FuturesContractMarket market = responseObj.getResult();
 			// TODO 因盈透测试账户没有返回最新价，此处先写死一个最新价返回给前端调试，后续删除
-			market.setLastPrice(new BigDecimal(2702).add(new BigDecimal(Math.random() * 5)).setScale(4, RoundingMode.DOWN));
+			market.setLastPrice(
+					new BigDecimal(1300).add(new BigDecimal(Math.random() * 2)).setScale(4, RoundingMode.DOWN));
 			return responseObj.getResult();
 		} else {
 			throw new RuntimeException("http获取期货行情异常!" + responseObj.getCode());

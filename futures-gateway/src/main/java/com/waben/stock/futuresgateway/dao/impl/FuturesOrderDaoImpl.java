@@ -58,4 +58,9 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 		return futuresOrderRepository.findByTwsOrderId(twsOrderId);
 	}
 
+	@Override
+	public FuturesOrder retrieveFuturesOrderByDomainAndOuterOrderId(String domain, Long outerOrderId) {
+		return futuresOrderRepository.findByDomainAndOuterOrderId(domain, outerOrderId);
+	}
+
 }

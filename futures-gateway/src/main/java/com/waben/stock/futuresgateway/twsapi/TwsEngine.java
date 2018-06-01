@@ -39,7 +39,7 @@ public class TwsEngine {
 	@PostConstruct
 	public void init() {
 		this.client = wrapper.getClient();
-		client.eConnect("10.0.0.99", 7497, 0);
+		this.wrapper.connect();
 		final EReader reader = new EReader(client, wrapper.getSignal());
 		reader.start();
 		new Thread() {
