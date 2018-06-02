@@ -33,11 +33,11 @@ public enum CapitalFlowType implements CommonalityEnum {
 	
 	ReturnDeferredCharges("11", "退回递延费"),
 	
-	RightMoney("12", "期权权利金"),
+	RightMoney("12", "策略风控服务费"),
 	
-	ReturnRightMoney("13", "退回期权权利金"),
+	ReturnRightMoney("13", "退回策略风控服务费"),
 	
-	StockOptionProfit("14", "期权盈利");
+	StockOptionProfit("14", "策略盈利");
 
 	private String index;
 
