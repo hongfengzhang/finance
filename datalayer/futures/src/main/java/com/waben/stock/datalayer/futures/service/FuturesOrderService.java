@@ -132,10 +132,10 @@ public class FuturesOrderService {
 				// TODO Auto-generated method stub
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 				if(query.getPublisherIds().size()>0){
-					predicateList.add(criteriaBuilder.in(root.get("publisher")).in(query.getPublisherIds()));
+					predicateList.add(criteriaBuilder.in(root.get("publisherId")).value(query.getPublisherIds()));
 				}
 				
-				if(query.getOrderType()!=null){
+				if(query.getOrderType()!=null && !"".equals(query.getOrderType())){
 					if(query.getOrderType().equals("1")||query.getOrderType().equals("2")){
 						predicateList.add(criteriaBuilder.equal(root.get("orderType").as(String.class), query.getOrderType()));
 					}
@@ -145,7 +145,7 @@ public class FuturesOrderService {
 					predicateList.add(criteriaBuilder.equal(root.get("tradeNo").as(String.class), query.getTradeNo()));
 				}
 				
-				if(query.getOrderState()!=null){
+				if(query.getOrderState()!=null && !"".equals(query.getOrderState())){
 					FuturesOrderStateConverter convert = new FuturesOrderStateConverter();
 					if(query.getOrderState().length()>1){
 						String[] array = query.getOrderState().split(",");

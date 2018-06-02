@@ -37,24 +37,24 @@ public class FuturesOrderBusiness {
 	@Autowired
 	private RealNameInterface realnameInterface;
 	
-	private List<String> queryPublishIds(FuturesTradeAdminQuery query){
-		List<String> publisherIds = new ArrayList<String>();
+	private List<Long> queryPublishIds(FuturesTradeAdminQuery query){
+		List<Long> publisherIds = new ArrayList<Long>();
 		if(query.getPublisherPhone()!=null){
 			if(publisherInterface.fetchByPhone(query.getPublisherPhone()).getResult()!=null){
 				String publisherId = publisherInterface.fetchByPhone(query.getPublisherPhone()).getResult().getId().toString();
-				publisherIds.add(publisherId);
+				publisherIds.add(Long.valueOf(publisherId));
 			};
 		}
 		
 		if(query.getPublisherName()!=null){
 			if(publisherIds.size()==0 ){
-				List<RealNameDto> real = realnameInterface.findByName(query.getPublisherName());
+				List<RealNameDto> real = realnameInterface.findByName(query.getPublisherName()).getResult();
 				for (RealNameDto realNameDto : real) {
-					publisherIds.add(realNameDto.getResourceId().toString());
+					publisherIds.add(Long.valueOf(realNameDto.getResourceId().toString()));
 				}
 			}else{
 				publisherIds.clear();
-				publisherIds.add("-1");
+				publisherIds.add(Long.valueOf("-1"));
 			}
 		}
 		return publisherIds;
@@ -84,23 +84,23 @@ public class FuturesOrderBusiness {
 	}
 	
 	public PageInfo<FuturesOrderAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
-		List<String> publisherIds = new ArrayList<String>();
-		if(query.getPublisherPhone()!=null){
+		List<Long> publisherIds = new ArrayList<Long>();
+		if(query.getPublisherPhone()!=null && !"".equals(query.getPublisherPhone())){
 			if(publisherInterface.fetchByPhone(query.getPublisherPhone()).getResult()!=null){
 				String publisherId = publisherInterface.fetchByPhone(query.getPublisherPhone()).getResult().getId().toString();
-				publisherIds.add(publisherId);
+				publisherIds.add(Long.valueOf(publisherId));
 			};
 		}
 		
-		if(query.getPublisherName()!=null){
+		if(query.getPublisherName()!=null && !"".equals(query.getPublisherName())){
 			if(publisherIds.size()==0 ){
-				List<RealNameDto> real = realnameInterface.findByName(query.getPublisherName());
+				List<RealNameDto> real = realnameInterface.findByName(query.getPublisherName()).getResult();
 				for (RealNameDto realNameDto : real) {
-					publisherIds.add(realNameDto.getResourceId().toString());
+					publisherIds.add(Long.valueOf(realNameDto.getResourceId().toString()));
 				}
 			}else{
 				publisherIds.clear();
-				publisherIds.add("-1");
+				publisherIds.add(Long.valueOf("-1"));
 			}
 		}
 		query.setPublisherIds(publisherIds);

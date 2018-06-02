@@ -47,6 +47,11 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
+	
+	/**
+	 * 图标
+	 */
+	private String icon;
 
 	/**
 	 * 品种分类
@@ -134,6 +139,11 @@ public class FuturesContract {
 	@ManyToOne
 	@JoinColumn(name = "exchange_id")
 	private FuturesExchange exchange;
+	
+	/**
+	 * 描述
+	 */
+	private String contractDesc;
 
 	public Long getId() {
 		return id;
@@ -326,5 +336,22 @@ public class FuturesContract {
 	public void setSketch(String sketch) {
 		this.sketch = sketch;
 	}
+
+	public String getContractDesc() {
+		return contractDesc;
+	}
+
+	public void setContractDesc(String contractDesc) {
+		this.contractDesc = contractDesc;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
 
 }

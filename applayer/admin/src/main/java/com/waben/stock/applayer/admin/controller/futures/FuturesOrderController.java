@@ -2,12 +2,14 @@ package com.waben.stock.applayer.admin.controller.futures;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +19,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.admin.business.futures.FuturesOrderBusiness;
+import com.waben.stock.applayer.admin.util.PoiUtil;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FutresOrderEntrustDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
@@ -64,26 +69,167 @@ public class FuturesOrderController {
 		File file = null;
 		FileInputStream is = null;
 		
-		if(query.getQueryType().equals("0")||query.getQueryType().equals("1")||query.getQueryType().equals("2")){
-			
-		}else{
-			
-		}
 		
 		List<String> columnDescList = null;
 		try {
 			String fileName = "futurestrade_" + String.valueOf(System.currentTimeMillis());
 			file = File.createTempFile(fileName, ".xls");
+			List<List<String>> result = new ArrayList<>();
+			if(query.getQueryType() == 0){//成交订单
+				columnDescList = columnDescList();
+				PageInfo<FuturesOrderAdminDto> response = business.adminPagesByQuery(query);
+				result = dataList(response.getContent(), query.getQueryType());
+				PoiUtil.writeDataToExcel("成交数据", file, columnDescList, result);
+			}else if(query.getQueryType() == 1){//持仓中订单
+				columnDescList = positionDescList();
+				PageInfo<FuturesOrderAdminDto> response = business.adminPagesByQuery(query);
+				result = dataList(response.getContent(), query.getQueryType());
+				PoiUtil.writeDataToExcel("持仓中订单数据", file, columnDescList, result);
+			}else if(query.getQueryType() == 2){//平仓订单
+				columnDescList = eveningDescList();
+				PageInfo<FuturesOrderAdminDto> response = business.adminPagesByQuery(query);
+				result = dataList(response.getContent(), query.getQueryType());
+				PoiUtil.writeDataToExcel("平仓订单数据", file, columnDescList, result);
+			}else if(query.getQueryType() == 3){//委托订单
+				columnDescList = deputeDescList();
+				PageInfo<FutresOrderEntrustDto> response = business.pagesOrderEntrust(query);
+				result = dataListEntrust(response.getContent(), query.getQueryType());
+				PoiUtil.writeDataToExcel("委托订单数据", file, columnDescList, result);
+			}else if(query.getQueryType() == 4){//退款订单
+				columnDescList = accountantList();
+				PageInfo<FutresOrderEntrustDto> response = business.pagesOrderEntrust(query);
+				result = dataListEntrust(response.getContent(), query.getQueryType());
+				PoiUtil.writeDataToExcel("退款订单数据", file, columnDescList, result);
+			}
+			
+			is = new FileInputStream(file);
+			svrResponse.setContentType("application/vnd.ms-excel");
+			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			IOUtils.copy(is, svrResponse.getOutputStream());
+			svrResponse.getOutputStream().flush();
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "导出数据到excel异常：" + e.getMessage());
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+			if (file != null) {
+				file.delete();
+			}
 		}
 	}
 	
-	private List<List<String>> dataList(List<FutresOrderEntrustDto> content, Integer type) {
+	private List<List<String>> dataList(List<FuturesOrderAdminDto> content, Integer type){
+		List<List<String>> result = new ArrayList<List<String>>();
+		for (FuturesOrderAdminDto dto : content) {
+			List<String> data = new ArrayList<String>();
+			if(type == 0){
+				data.add(dto.getPublisherName() == null ? "" : dto.getPublisherName());
+				data.add(dto.getPublisherPhone() == null ? "" : dto.getPublisherPhone());
+				data.add(dto.getName() == null ? "" : dto.getName());
+				data.add(dto.getTradeNo() == null ? "" : dto.getTradeNo());
+				data.add(dto.getOrderType() == null ? "" : dto.getOrderType());
+				data.add(dto.getState() == null ? "" : dto.getState());
+				data.add(dto.getTotalQuantity() == null ? "" : dto.getTotalQuantity().toString());
+				data.add(dto.getBuyingTime() == null ? "" : sdf.format(dto.getBuyingTime()));
+				data.add(dto.getBuyingPrice() == null ? "" : dto.getBuyingPrice().toString());
+				data.add(dto.getProfit() == null ? "" : dto.getProfit().toString());
+				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
+				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
+				data.add(dto.getOvernightServiceFee() == null ? "" : dto.getOvernightServiceFee().toString());
+				if(dto.getLimitLossType() == 1){
+					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
+				}else{
+					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+				}
+				if(dto.getLimitProfitType() == 1){
+					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
+				}else{
+					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
+				}
+				data.add(dto.getPositionDays() == null ? "" : dto.getPositionDays().toString());
+				data.add(dto.getPositionEndTime() == null ? "" : sdf.format(dto.getPositionEndTime()));
+				data.add(dto.getSellingTime() == null ? "" : sdf.format(dto.getSellingTime()));
+				data.add(dto.getSellingPrice() == null ? "" : dto.getSellingPrice().toString());
+				data.add(dto.getSellingProfit() == null ? "" : dto.getSellingProfit().toString());
+				data.add(dto.getUnwindServiceFee() == null ? "" : dto.getUnwindServiceFee().toString());
+				data.add(dto.getWindControlType() == null ? "" : dto.getWindControlType());
+				
+			}else if(type == 1){
+				data.add(dto.getPublisherName() == null ? "" : dto.getPublisherName());
+				data.add(dto.getPublisherPhone() == null ? "" : dto.getPublisherPhone());
+				data.add(dto.getName() == null ? "" : dto.getName());
+				data.add(dto.getTradeNo() == null ? "" : dto.getTradeNo());
+				data.add(dto.getOrderType() == null ? "" : dto.getOrderType());
+				data.add(dto.getState() == null ? "" : dto.getState());
+				data.add(dto.getTotalQuantity() == null ? "" : dto.getTotalQuantity().toString());
+				data.add(dto.getBuyingTime() == null ? "" : sdf.format(dto.getBuyingTime()));
+				data.add(dto.getBuyingPrice() == null ? "" : dto.getBuyingPrice().toString());
+				data.add(dto.getProfit() == null ? "" : dto.getProfit().toString());
+				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
+				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
+				if(dto.getLimitLossType() == 1){
+					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
+				}else{
+					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+				}
+				if(dto.getLimitProfitType() == 1){
+					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
+				}else{
+					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
+				}
+				data.add(dto.getOvernightServiceFee() == null ? "" : dto.getOvernightServiceFee().toString());
+				data.add("");
+				data.add(dto.getPositionEndTime() == null ? "" : sdf.format(dto.getPositionEndTime()));
+				data.add(dto.getPositionDays() == null ? "" : dto.getPositionDays().toString());
+				data.add(dto.getWindControlType() == null ? "" : dto.getWindControlType());
+			}else if(type == 2){
+				data.add(dto.getPublisherName() == null ? "" : dto.getPublisherName());
+				data.add(dto.getPublisherPhone() == null ? "" : dto.getPublisherPhone());
+				data.add(dto.getName() == null ? "" : dto.getName());
+				data.add(dto.getTradeNo() == null ? "" : dto.getTradeNo());
+				data.add(dto.getOrderType() == null ? "" : dto.getOrderType());
+				data.add(dto.getState() == null ? "" : dto.getState());
+				data.add(dto.getTotalQuantity() == null ? "" : dto.getTotalQuantity().toString());
+				data.add(dto.getBuyingTime() == null ? "" : sdf.format(dto.getBuyingTime()));
+				data.add(dto.getBuyingPrice() == null ? "" : dto.getBuyingPrice().toString());
+				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
+				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
+				if(dto.getLimitLossType() == 1){
+					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
+				}else{
+					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+				}
+				if(dto.getLimitProfitType() == 1){
+					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
+				}else{
+					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
+				}
+				data.add(dto.getPositionDays() == null ? "" : dto.getPositionDays().toString());
+				data.add(dto.getPositionEndTime() == null ? "" : sdf.format(dto.getPositionEndTime()));
+				data.add(dto.getSellingTime() == null ? "" : sdf.format(dto.getSellingTime()));
+				data.add(dto.getSellingPrice() == null ? "" : dto.getSellingPrice().toString());
+				data.add(dto.getSellingProfit() == null ? "" : dto.getSellingProfit().toString());
+				data.add(dto.getUnwindServiceFee() == null ? "" : dto.getUnwindServiceFee().toString());
+				data.add(dto.getWindControlType() == null ? "" : dto.getWindControlType());
+				data.add("");
+				
+			}
+			result.add(data);
+		}
+		
+		return result;
+	}
+	
+	private List<List<String>> dataListEntrust(List<FutresOrderEntrustDto> content, Integer type) {
 		List<List<String>> result = new ArrayList<List<String>>();
 		for (FutresOrderEntrustDto dto : content) {
-			List<String> data = new ArrayList<>();
+			List<String> data = new ArrayList<String>();
 			if(type == 3){
 				data.add(dto.getPublisherName() == null ? "" : dto.getPublisherName());
 				data.add(dto.getPublisherPhone() == null ? "" : dto.getPublisherPhone());
@@ -130,7 +276,7 @@ public class FuturesOrderController {
 					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
 				}
 				data.add(dto.getPostTime() == null ? "" : sdf.format(dto.getPostTime()));
-				data.add(dto.getDealTime() == null ? "" : sdf.format(dto.getDealTime()));
+				data.add("");
 			}
 			result.add(data);
 		}

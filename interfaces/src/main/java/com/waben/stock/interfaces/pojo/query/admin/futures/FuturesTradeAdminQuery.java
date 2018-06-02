@@ -40,7 +40,7 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	private String orderState;
 	
 	
-	private List<String> publisherIds;
+	private List<Long> publisherIds;
 	
 	public String getPublisherName() {
 		return publisherName;
@@ -123,11 +123,11 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 */
 	private Integer queryType;
 
-	public List<String> getPublisherIds() {
+	public List<Long> getPublisherIds() {
 		return publisherIds;
 	}
 
-	public void setPublisherIds(List<String> publisherIds) {
+	public void setPublisherIds(List<Long> publisherIds) {
 		this.publisherIds = publisherIds;
 	}
 }
