@@ -646,7 +646,7 @@ public class FuturesOrderService {
 		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
 		// 放入委托查询队列（平仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
-		if (windControlType == FuturesWindControlType.BackhandUnind) {
+		if (windControlType == FuturesWindControlType.BackhandUnwind) {
 			msg.setEntrustType(3);
 		} else {
 			msg.setEntrustType(2);

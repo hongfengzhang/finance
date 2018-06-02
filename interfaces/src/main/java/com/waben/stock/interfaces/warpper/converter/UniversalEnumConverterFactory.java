@@ -44,7 +44,6 @@ public class UniversalEnumConverterFactory implements ConverterFactory<String, C
 
         @Override
         public T convert(String source) {
-            logger.info("枚举参数：{}",source);
             T result = enumMap.get(source);
             if (result == null) {
                 throw new IllegalArgumentException("No element matches " + source);

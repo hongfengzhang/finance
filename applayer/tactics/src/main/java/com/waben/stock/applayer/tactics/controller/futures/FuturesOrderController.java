@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
@@ -158,6 +159,14 @@ public class FuturesOrderController {
 		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
 		orderDto.setIsTest(publisher.getIsTest());
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
+	}
+
+	@PostMapping("/applyUnwind/{orderId}")
+	@ApiOperation(value = "用户申请平仓")
+	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId,
+			@RequestParam(required = true) FuturesTradePriceType sellingPriceType, BigDecimal sellingEntrustPrice) {
+
+		return null;
 	}
 
 	@GetMapping("/holding")

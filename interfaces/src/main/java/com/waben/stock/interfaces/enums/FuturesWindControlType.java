@@ -17,9 +17,9 @@ public enum FuturesWindControlType implements CommonalityEnum {
 
 	DayUnwind("3", "日内平仓"),
 
-	UserApplyUnind("4", "用户申请平仓"),
+	UserApplyUnwind("4", "用户申请平仓"),
 
-	BackhandUnind("5", "市价反手平仓"),
+	BackhandUnwind("5", "市价反手平仓"),
 
 	ReachProfitPoint("6", "达到止盈点"),
 
