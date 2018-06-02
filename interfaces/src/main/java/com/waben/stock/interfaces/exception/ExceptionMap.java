@@ -114,12 +114,12 @@ public class ExceptionMap {
 
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,
-				"期权交易状态不匹配，不支持该操作");
-		exceptionMap.put(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION, "自主行权发布人不匹配，不支持该操作");
-		exceptionMap.put(ExceptionConstant.USERRIGHT_NOTMATCH_EXCEPTION, "T+3才能申请行权");
+				"交易状态不匹配，不支持该操作");
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION, "自主卖出发布人不匹配，不支持该操作");
+		exceptionMap.put(ExceptionConstant.USERRIGHT_NOTMATCH_EXCEPTION, "T+3才能申请卖出");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_QUOTENOTFOUND_EXCEPTION, "该股票暂时无法申购，请购买其它股票");
-		exceptionMap.put(ExceptionConstant.INQUIRY_RESULT_NOT_FOUND, "期权询价结果不存在");
-		exceptionMap.put(ExceptionConstant.NONTRADINGDAY_EXCEPTION, "非交易日不能申请行权");
+		exceptionMap.put(ExceptionConstant.INQUIRY_RESULT_NOT_FOUND, "询价结果不存在");
+		exceptionMap.put(ExceptionConstant.NONTRADINGDAY_EXCEPTION, "非交易日不能申请卖出");
 		exceptionMap.put(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION, "该股票暂时无法申购，请购买其它股票");
 		exceptionMap.put(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION, "今日额度已用完，明日09：00开售");
 

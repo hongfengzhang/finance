@@ -202,7 +202,7 @@ public class ExceptionConstant {
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
 	public static final String STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION = "9001";
-	// 期权交易状态不匹配，不支持该操作
+	// 交易状态不匹配，不支持该操作
 	public static final String STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "9002";
 	// 自主行权发布人不匹配，不支持该操作
 	public static final String STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION = "9003";
@@ -210,9 +210,9 @@ public class ExceptionConstant {
 	public static final String USERRIGHT_NOTMATCH_EXCEPTION = "9004";
 	// 该股票暂时无法申购，请购买其它股票
 	public static final String STOCKOPTION_QUOTENOTFOUND_EXCEPTION = "9005";
-	// 期权询价结果不存在
+	// 询价结果不存在
 	public static final String INQUIRY_RESULT_NOT_FOUND = "9006";
-	// 非交易日不能申请行权
+	// 非交易日不能申请卖出
 	public static final String NONTRADINGDAY_EXCEPTION = "9007";
 	// 该股票暂时无法申购，请购买其它股票
 	public static final String STOCK_ABNORMAL_EXCEPTION = "9008";
