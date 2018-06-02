@@ -112,7 +112,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.PROCESSFEE_NOT_ENOUGH_EXCEPTION, "提现金额不足以支付提现手续费");
 		exceptionMap.put(ExceptionConstant.MODIFY_DISABLED_EXCEPITON, "修改不成功，该用户有未完成订单");
 
-		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "名义本金20万起，且必须为10万的整数倍");
+		exceptionMap.put(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION, "策略金额5万起，且必须为5万的整数倍");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION,
 				"交易状态不匹配，不支持该操作");
 		exceptionMap.put(ExceptionConstant.STOCKOPTION_PUBLISHERID_NOTMATCH_EXCEPTION, "自主卖出发布人不匹配，不支持该操作");

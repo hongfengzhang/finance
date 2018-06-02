@@ -14,15 +14,15 @@ public enum StockOptionTradeState implements CommonalityEnum {
 	WAITCONFIRMED("1", "待确认"),
 
 	FAILURE("2", "申购失败"),
-	
+
 	TURNOVER("3", "持仓中"),
 
-	APPLYRIGHT("4", "申请行权"),
+	APPLYRIGHT("4", "申请卖出"),
 
 	INSETTLEMENT("5", "结算中"),
 
 	SETTLEMENTED("6", "已结算"),
-	
+
 	AUTOEXPIRE("7", "自动到期");
 
 	private String index;
@@ -61,6 +61,5 @@ public enum StockOptionTradeState implements CommonalityEnum {
 	public void setState(String state) {
 		this.state = state;
 	}
-
 
 }

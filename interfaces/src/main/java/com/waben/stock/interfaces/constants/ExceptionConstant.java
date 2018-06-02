@@ -200,7 +200,7 @@ public class ExceptionConstant {
 	public static final String PROCESSFEE_NOT_ENOUGH_EXCEPTION = "8019";
 
 	// 期权服务异常
-	// 名义本金20万起，且必须为10万的整数倍
+	// 策略金额5万起，且必须为5万的整数倍
 	public static final String STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION = "9001";
 	// 交易状态不匹配，不支持该操作
 	public static final String STOCKOPTION_STATE_NOTMATCH_OPERATION_NOTSUPPORT_EXCEPTION = "9002";

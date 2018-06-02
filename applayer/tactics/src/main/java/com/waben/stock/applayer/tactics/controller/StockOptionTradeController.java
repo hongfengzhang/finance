@@ -135,11 +135,11 @@ public class StockOptionTradeController {
 		stockBusiness.checkStockOpton(stockCode, cycleId, nominalAmount);
 		// 判断是否连续两个涨停
 		stockBusiness.check2LimitUp(stockCode);
-		// 判断名义本金是否大于20万，且是否是10万的整数倍
-		if (nominalAmount.compareTo(new BigDecimal("200000")) < 0) {
+		// 判断名义本金是否大于5万，且是否是5万的整数倍
+		if (nominalAmount.compareTo(new BigDecimal("50000")) < 0) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION);
 		}
-		BigDecimal[] checkNominal = nominalAmount.divideAndRemainder(new BigDecimal("100000"));
+		BigDecimal[] checkNominal = nominalAmount.divideAndRemainder(new BigDecimal("50000"));
 		if (checkNominal[1].compareTo(new BigDecimal("0")) != 0) {
 			throw new ServiceException(ExceptionConstant.STOCKOPTION_AMOUNTMUSTGT20WAN_EXCEPTION);
 		}
