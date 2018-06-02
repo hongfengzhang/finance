@@ -248,17 +248,21 @@ public class ExceptionConstant {
 	public static final String CONTRACT_DOESNOT_EXIST_EXCEPTION = "13005";
 	// 该合约异常
 	public static final String CONTRACT_ABNORMALITY_EXCEPTION = "13006";
-	// 该合约不在交易中
+	// 该合约不在交易时间段
 	public static final String CONTRACT_ISNOTIN_TRADE_EXCEPTION = "13007";
 	// 没有可用的期货合约期限，暂时不能交易
 	public static final String CONTRACTTERM_NOTAVAILABLE_EXCEPTION = "13008";
+	// 该合约交易所不可用
+	public static final String EXCHANGE_ISNOT_AVAILABLE_EXCEPTION = "13009";
+	// 期货网关不支持该合约
+	public static final String GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION = "13010";
 	// 委托已部分成交，不能取消
-	public static final String FUTURESORDER_PARTSUCCESS_CANNOTCANCEL_EXCEPTION = "13009";
+	public static final String FUTURESORDER_PARTSUCCESS_CANNOTCANCEL_EXCEPTION = "13011";
 	// API网关异常，请稍后再试
-	public static final String FUTURESAPI_ABNORMAL_EXCEPTION = "13010";
+	public static final String FUTURESAPI_ABNORMAL_EXCEPTION = "13012";
 	// API网关异常，请稍后再试
-	public static final String FUTURESAPI_NOTCONNECTED_EXCEPTION = "13011";
+	public static final String FUTURESAPI_NOTCONNECTED_EXCEPTION = "13013";
 	// 委托取消失败，请稍后再试或者联系客服
-	public static final String FUTURESAPI_CANCELFAILED_EXCEPTION = "13012";
+	public static final String FUTURESAPI_CANCELFAILED_EXCEPTION = "13014";
 
 }

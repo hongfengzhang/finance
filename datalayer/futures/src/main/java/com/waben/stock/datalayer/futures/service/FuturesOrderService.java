@@ -261,6 +261,10 @@ public class FuturesOrderService {
 					predicateList
 							.add(criteriaBuilder.equal(root.get("publisherId").as(Long.class), query.getPublisherId()));
 				}
+				// 订单ID
+				if (query.getOrderId() != null && query.getOrderId() != 0) {
+					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getOrderId()));
+				}
 				// 订单状态
 				if (query.getStates() != null && query.getStates().length > 0) {
 					predicateList.add(root.get("state").in(query.getStates()));
@@ -642,7 +646,7 @@ public class FuturesOrderService {
 		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
 		// 放入委托查询队列（平仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
-		if (windControlType == FuturesWindControlType.BackhandUnind) {
+		if (windControlType == FuturesWindControlType.BackhandUnwind) {
 			msg.setEntrustType(3);
 		} else {
 			msg.setEntrustType(2);

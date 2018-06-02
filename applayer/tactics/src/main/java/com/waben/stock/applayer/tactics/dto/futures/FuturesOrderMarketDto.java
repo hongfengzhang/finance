@@ -22,6 +22,11 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 	 */
 	private String buyOrderTypeDesc;
 
+	/**
+	 * 汇率，如“7.0”，表示1美元=7.0*1人民币
+	 */
+	private BigDecimal rate;
+
 	public BigDecimal getLastPrice() {
 		return lastPrice;
 	}
@@ -36,6 +41,14 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 
 	public void setBuyOrderTypeDesc(String buyOrderTypeDesc) {
 		this.buyOrderTypeDesc = buyOrderTypeDesc;
+	}
+
+	public BigDecimal getRate() {
+		return rate;
+	}
+
+	public void setRate(BigDecimal rate) {
+		this.rate = rate;
 	}
 
 }

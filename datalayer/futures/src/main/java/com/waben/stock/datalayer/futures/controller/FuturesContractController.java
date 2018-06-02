@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
+import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
@@ -34,6 +35,7 @@ import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.PageToPageInfo;
+import com.waben.stock.interfaces.util.StringUtil;
 
 import io.swagger.annotations.Api;
 
@@ -70,23 +72,24 @@ public class FuturesContractController implements FuturesContractInterface {
 		PageInfo<FuturesContractDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractDto.class);
 		List<FuturesContractDto> contractDtoList = result.getContent();
 		for (FuturesContractDto futuresContractDto : contractDtoList) {
-			for (FuturesContract futuresContract : page.getContent()) {
-				if (futuresContractDto.getId() == futuresContract.getId()) {
-					// 获取汇率信息
-					FuturesCurrencyRate rate = futuresCurrencyRateService.findByCurrency(futuresContract.getCurrency());
-					futuresContractDto.setExchangeEnable(futuresContract.getExchange().getEnable());
-					futuresContractDto.setTimeZoneGap(futuresContract.getExchange().getTimeZoneGap());
-//					futuresContractDto.setRate(rate.getRate() == null ? new BigDecimal(0) : rate.getRate());
-//					futuresContractDto.setCurrencyName(futuresContract.getCurrencyRate().getCurrencyName());
-				}
+			FuturesExchange exchange = exchangeService.findById(futuresContractDto.getExchangeId());
+			if (exchange == null) {
+				futuresContractDto.setState(3);
+				futuresContractDto.setCurrentTradeTimeDesc("交易异常");
+				break;
 			}
+			// 获取汇率信息
+			FuturesCurrencyRate rate = futuresCurrencyRateService.findByCurrency(futuresContractDto.getCurrency());
+			futuresContractDto.setExchangeEnable(exchange.getEnable());
+			futuresContractDto.setTimeZoneGap(exchange.getTimeZoneGap());
+			futuresContractDto.setRate(rate == null ? new BigDecimal(0) : rate.getRate());
+			futuresContractDto.setCurrencyName(rate == null ? "" : rate.getCurrencyName());
 			// 判断交易所 和 合约是否可用
 			if (!futuresContractDto.getExchangeEnable() || !futuresContractDto.getEnable()) {
 				futuresContractDto.setState(3);
 				futuresContractDto.setCurrentTradeTimeDesc("交易异常");
 				break;
 			}
-
 			List<FuturesContractTerm> termList = futuresContractTermService
 					.findByListContractId(futuresContractDto.getId());
 
@@ -97,92 +100,146 @@ public class FuturesContractController implements FuturesContractInterface {
 			}
 			// 获取交易所对应的交易期限数据
 			FuturesContractTerm term = termList.get(0);
-
-			Calendar cal = Calendar.getInstance();
-			// 计算时差后的时间
-			cal.add(Calendar.HOUR_OF_DAY, -futuresContractDto.getTimeZoneGap());
-			// 获取该时间是星期几
-			int dayForweek = cal.get(Calendar.DAY_OF_WEEK);
-			// 时差后的时间
-			Date exchangeTime = cal.getTime();
-			Boolean state = false;
-			// 交易所合约交易时间
-			String str = "";
-			if (dayForweek == 1) {
-				futuresContractDto.setCurrentTradeTimeDesc(term.getSunTradeTimeDesc());
-				str = term.getSunTradeTime();
-			}
-			if (dayForweek == 2) {
-				futuresContractDto.setCurrentTradeTimeDesc(term.getMonTradeTimeDesc());
-				str = term.getMonTradeTime();
-			}
-			if (dayForweek == 3) {
-				futuresContractDto.setCurrentTradeTimeDesc(term.getTueTradeTimeDesc());
-				str = term.getTueTradeTime();
-			}
-			if (dayForweek == 4) {
-				futuresContractDto.setCurrentTradeTimeDesc(term.getWedTradeTimeDesc());
-				str = term.getWedTradeTime();
-			}
-			if (dayForweek == 5) {
-				futuresContractDto.setCurrentTradeTimeDesc(term.getThuTradeTimeDesc());
-				str = term.getThuTradeTime();
-			}
-			if (dayForweek == 6) {
-				futuresContractDto.setCurrentTradeTimeDesc(term.getFriTradeTimeDesc());
-				str = term.getFriTradeTime();
-			}
-			if (dayForweek == 7) {
-				futuresContractDto.setCurrentTradeTimeDesc(term.getSatTradeTimeDesc());
-				str = term.getSatTradeTimeDesc();
-			}
-
-			String[] strs = str.split(",");
-			for (int i = 0; i < strs.length; i++) {
-				String st = strs[i].toString();
-				String[] sts = st.trim().split("-");
+			// 判断是否在交易时间段
+			Date now = new Date();
+			Integer timeZoneGap = futuresContractDto.getTimeZoneGap();
+			// 当天交易时间描述
+			futuresContractDto.setCurrentTradeTimeDesc(retriveTradeTimeStrDesc(timeZoneGap, term, now));
+			// 转换后的当前时间
+			Date exchangeTime = retriveExchangeTime(now, timeZoneGap);
+			// 转换后当前时间的明天
+			Date nextTime = nextTime(exchangeTime);
+			// 获取交易所提供时间
+			String tradeTime = retriveExchangeTradeTimeStr(timeZoneGap, term, now);
+			boolean isTradeTime = false;
+			if (!StringUtil.isEmpty(tradeTime)) {
+				String[] tradeTimeArr = tradeTime.split(",");
 				String dayStr = daySdf.format(exchangeTime);
 				String fullStr = fullSdf.format(exchangeTime);
-				if (fullStr.compareTo(dayStr + " " + sts[0].trim()) >= 0
-						&& fullStr.compareTo(dayStr + " " + sts[1].trim()) < 0) {
-					state = true;
-					break;
+				for (String tradeTimeDuration : tradeTimeArr) {
+					String[] tradeTimePointArr = tradeTimeDuration.trim().split("-");
+					if (fullStr.compareTo(dayStr + " " + tradeTimePointArr[0].trim()) >= 0
+							&& fullStr.compareTo(dayStr + " " + tradeTimePointArr[1].trim()) < 0) {
+						futuresContractDto.setCurrentHoldingTime(dayStr + " " + tradeTimePointArr[1].trim());
+						futuresContractDto.setNextTradingTime("");
+						isTradeTime = true;
+						break;
+					} else {
+						if (fullStr.compareTo(dayStr + " " + tradeTimePointArr[0].trim()) < 0) {
+							futuresContractDto.setNextTradingTime(dayStr + " " + tradeTimePointArr[0].trim());
+							break;
+						} else {
+							String tomorrow = daySdf.format(nextTime);
+							String tomorrowHour = getNextTradingTime(exchangeTime, term) == null ? ""
+									: getNextTradingTime(exchangeTime, term);
+							// 获取转换后的明天时间交易开始时间
+							String tomorrowTime = tomorrow + " " + tomorrowHour;
+							futuresContractDto.setNextTradingTime(tomorrowTime);
+						}
+					}
 				}
-			}
-			if (state) {
-				futuresContractDto.setState(1);
-			} else {
-				futuresContractDto.setState(2);
+				if (isTradeTime) {
+					futuresContractDto.setState(1);
+				} else {
+					futuresContractDto.setState(2);
+				}
 			}
 		}
 
 		return new Response<>(result);
 	}
-
+	
 	/**
-	 * 判断时间是否在时间段内
+	 * 获取交易所的对应时间
 	 * 
-	 * @param nowTime
-	 *            当前时间
-	 * @param beginTime
-	 *            开始时间
-	 * @param endTime
-	 *            结束时间
-	 * @return
+	 * @param localTime
+	 *            日期
+	 * @param timeZoneGap
+	 *            和交易所的时差
+	 * @return 交易所的对应时间
 	 */
-	public static boolean belongCalendar(Date nowTime, Date beginTime, Date endTime) {
-		Calendar date = Calendar.getInstance();
-		date.setTime(nowTime);
-		Calendar begin = Calendar.getInstance();
-		begin.setTime(beginTime);
-		Calendar end = Calendar.getInstance();
-		end.setTime(endTime);
+	private Date retriveExchangeTime(Date localTime, Integer timeZoneGap) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(localTime);
+		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap * -1);
+		return cal.getTime();
+	}
 
-		if (date.after(begin) && date.before(end)) {
-			return true;
-		} else {
-			return false;
+	private Date nextTime(Date localTime) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(localTime);
+		cal.add(Calendar.DAY_OF_MONTH, 1);
+		return cal.getTime();
+	}
+
+	private String retriveExchangeTradeTimeStr(Integer timeZoneGap, FuturesContractTerm term, Date date) {
+		Date exchangeTime = retriveExchangeTime(date, timeZoneGap);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(exchangeTime);
+		int week = cal.get(Calendar.DAY_OF_WEEK);
+		String tradeTime = null;
+		if (week == 1) {
+			tradeTime = term.getSunTradeTime();
+		} else if (week == 2) {
+			tradeTime = term.getMonTradeTime();
+		} else if (week == 3) {
+			tradeTime = term.getTueTradeTime();
+		} else if (week == 4) {
+			tradeTime = term.getWedTradeTime();
+		} else if (week == 5) {
+			tradeTime = term.getThuTradeTime();
+		} else if (week == 6) {
+			tradeTime = term.getFriTradeTime();
+		} else if (week == 7) {
+			tradeTime = term.getSatTradeTime();
 		}
+		return tradeTime;
+	}
+
+	private String retriveTradeTimeStrDesc(Integer timeZoneGap, FuturesContractTerm term, Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int week = cal.get(Calendar.DAY_OF_WEEK);
+		String tradeTimeDesc = null;
+		if (week == 1) {
+			tradeTimeDesc = term.getSunTradeTimeDesc();
+		} else if (week == 2) {
+			tradeTimeDesc = term.getMonTradeTimeDesc();
+		} else if (week == 3) {
+			tradeTimeDesc = term.getTueTradeTimeDesc();
+		} else if (week == 4) {
+			tradeTimeDesc = term.getWedTradeTimeDesc();
+		} else if (week == 5) {
+			tradeTimeDesc = term.getThuTradeTimeDesc();
+		} else if (week == 6) {
+			tradeTimeDesc = term.getFriTradeTimeDesc();
+		} else if (week == 7) {
+			tradeTimeDesc = term.getSatTradeTimeDesc();
+		}
+		return tradeTimeDesc;
+	}
+
+	private String getNextTradingTime(Date localTime, FuturesContractTerm term) {
+		String nextTime = null;
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(localTime);
+		int dayForweek = cal.get(Calendar.DAY_OF_WEEK);
+		if (dayForweek == 1) {
+			nextTime = term.getMonTradeTime().trim().substring(0, 5);
+		} else if (dayForweek == 2) {
+			nextTime = term.getTueTradeTime().trim().substring(0, 5);
+		} else if (dayForweek == 3) {
+			nextTime = term.getWedTradeTime().trim().substring(0, 5);
+		} else if (dayForweek == 4) {
+			nextTime = term.getThuTradeTime().trim().substring(0, 5);
+		} else if (dayForweek == 5) {
+			nextTime = term.getFriTradeTime().trim().substring(0, 5);
+		} else if (dayForweek == 6) {
+			nextTime = term.getSatTradeTime().trim().substring(0, 5);
+		} else if (dayForweek == 7) {
+			nextTime = term.getSunTradeTime().trim().substring(0, 5);
+		}
+		return nextTime;
 	}
 
 	@Override

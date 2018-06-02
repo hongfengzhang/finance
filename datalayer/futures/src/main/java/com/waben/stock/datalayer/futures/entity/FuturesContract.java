@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
 import com.waben.stock.interfaces.enums.FuturesProductType;
@@ -144,6 +145,14 @@ public class FuturesContract {
 	 * 描述
 	 */
 	private String contractDesc;
+
+	/***************** 分割线，以下字段为非数据库字段 ********************/
+
+	/**
+	 * 交易所ID
+	 */
+	@Transient
+	private Long exchangeId;
 
 	public Long getId() {
 		return id;
@@ -353,5 +362,12 @@ public class FuturesContract {
 		this.icon = icon;
 	}
 
+
+	public Long getExchangeId() {
+		if (exchange != null) {
+			return exchange.getId();
+		}
+		return exchangeId;
+	}
 
 }

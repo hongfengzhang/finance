@@ -43,7 +43,7 @@ public class FuturesContractController {
 
 	@GetMapping("/pagesContract")
 	@ApiOperation(value = "获取期货合约列表")
-	public Response<List<List<FuturesContractQuotationDto>>> pagesContract() throws Throwable {
+	public Response<List<List<FuturesContractQuotationDto>>> pagesContract() {
 		FuturesContractQuery query = new FuturesContractQuery();
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);

@@ -6,8 +6,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
@@ -31,6 +33,7 @@ import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -60,7 +63,7 @@ public class FuturesOrderController {
 		query.setPage(0);
 		query.setSize(1);
 		query.setContractId(buysellDto.getContractId());
-		// 判断该合约是否可用以及是否在交易时间内
+		// 判断该合约是否可用是否在交易中、网关是否支持该合约、合约交易所是否可用、以及是否在交易时间内
 		FuturesContractDto contractDto = futuresContractBusiness.getContractByOne(query);
 
 		// TODO 检查期货网关是否支持该合约
@@ -72,7 +75,7 @@ public class FuturesOrderController {
 		// 用户持仓总数量
 		// TODO 查询方法有误
 		Integer sumUser = futuresOrderBusiness.sumUserNum(buysellDto.getContractId(), SecurityUtil.getUserId());
-		BigDecimal sumUserNum = sumUser == null ? new BigDecimal(0) : new BigDecimal(sumUser);
+		BigDecimal sumUserNum = sumUser == null ? new BigDecimal(0) : new BigDecimal(sumUser).abs();
 		// 当前用户单笔持仓数量
 		BigDecimal userNum = buysellDto.getTotalQuantity();
 		// 用户已持仓量 + 当前买入持仓量
@@ -156,6 +159,14 @@ public class FuturesOrderController {
 		PublisherDto publisher = publisherBusiness.findById(SecurityUtil.getUserId());
 		orderDto.setIsTest(publisher.getIsTest());
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
+	}
+
+	@PostMapping("/applyUnwind/{orderId}")
+	@ApiOperation(value = "用户申请平仓")
+	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId,
+			@RequestParam(required = true) FuturesTradePriceType sellingPriceType, BigDecimal sellingEntrustPrice) {
+
+		return null;
 	}
 
 	@GetMapping("/holding")
@@ -246,6 +257,18 @@ public class FuturesOrderController {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+	}
+
+	@GetMapping("/detail/{orderId}")
+	@ApiOperation(value = "获取期货订单已结算详细信息")
+	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "orderId", value = "期货订单ID", required = true)
+	public Response<PageInfo<FuturesOrderMarketDto>> getOrderSettldDetails(@PathVariable("orderId") Long orderId) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		orderQuery.setPage(0);
+		orderQuery.setSize(1);
+		orderQuery.setOrderId(orderId);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
 
 }

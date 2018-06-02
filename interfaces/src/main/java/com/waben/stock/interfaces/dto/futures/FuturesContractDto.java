@@ -126,6 +126,21 @@ public class FuturesContractDto {
 	 */
 	private Integer timeZoneGap;
 
+	/**
+	 * 本时段持仓最后时间
+	 */
+	private String currentHoldingTime;
+
+	/**
+	 * 下一个交易时间
+	 */
+	private String nextTradingTime;
+
+	/**
+	 * 交易所ID
+	 */
+	private Long exchangeId;
+
 	public Long getId() {
 		return id;
 	}
@@ -340,6 +355,30 @@ public class FuturesContractDto {
 
 	public void setSketch(String sketch) {
 		this.sketch = sketch;
+	}
+
+	public String getCurrentHoldingTime() {
+		return currentHoldingTime;
+	}
+
+	public void setCurrentHoldingTime(String currentHoldingTime) {
+		this.currentHoldingTime = currentHoldingTime;
+	}
+
+	public String getNextTradingTime() {
+		return nextTradingTime;
+	}
+
+	public void setNextTradingTime(String nextTradingTime) {
+		this.nextTradingTime = nextTradingTime;
+	}
+
+	public Long getExchangeId() {
+		return exchangeId;
+	}
+
+	public void setExchangeId(Long exchangeId) {
+		this.exchangeId = exchangeId;
 	}
 
 }

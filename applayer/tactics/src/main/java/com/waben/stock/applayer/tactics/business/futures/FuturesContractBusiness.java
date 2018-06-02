@@ -10,12 +10,14 @@ import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.futures.FuturesBrokerDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
+import com.waben.stock.interfaces.service.futures.FuturesBrokerInterface;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.service.futures.FuturesOrderInterface;
 import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
@@ -36,6 +38,10 @@ public class FuturesContractBusiness {
 	@Qualifier("futuresOrderInterface")
 	private FuturesOrderInterface futuresOrderInterface;
 
+	@Autowired
+	@Qualifier("futuresBrokerInterface")
+	private FuturesBrokerInterface futuresBrokerInterface;
+
 	public CapitalAccountDto findByPublisherId(Long publisherId) {
 		Response<CapitalAccountDto> response = service.fetchByPublisherId(publisherId);
 		if ("200".equals(response.getCode())) {
@@ -44,7 +50,7 @@ public class FuturesContractBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public PageInfo<FuturesContractDto> pagesContract(FuturesContractQuery query) throws Throwable {
+	public PageInfo<FuturesContractDto> pagesContract(FuturesContractQuery query) {
 		Response<PageInfo<FuturesContractDto>> response = futuresContractInterface.pagesContract(query);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
@@ -68,6 +74,14 @@ public class FuturesContractBusiness {
 		return quotationList;
 	}
 
+	/*public FuturesBrokerDto findBybrokerId(Long brokerId) {
+		Response<FuturesBrokerDto> response = futuresBrokerInterface.findByrokerId(brokerId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}*/
+
 	public FuturesContractDto getContractByOne(FuturesContractQuery query) {
 		Response<PageInfo<FuturesContractDto>> response = futuresContractInterface.pagesContract(query);
 		if ("200".equals(response.getCode())) {
@@ -79,7 +93,16 @@ public class FuturesContractBusiness {
 					// 该合约不存在
 					throw new ServiceException(ExceptionConstant.CONTRACT_DOESNOT_EXIST_EXCEPTION);
 				}
-				if (!contractDto.getEnable() || !contractDto.getExchangeEnable()) {
+				/*FuturesBrokerDto brokerDto = findBybrokerId(contractDto.getGatewayId());
+				if (brokerDto == null || !brokerDto.getEnable()) {
+					// 期货网关不支持该合约
+					throw new ServiceException(ExceptionConstant.GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION);
+				}*/
+				if (!contractDto.getExchangeEnable()) {
+					// 该合约交易所不可用
+					throw new ServiceException(ExceptionConstant.EXCHANGE_ISNOT_AVAILABLE_EXCEPTION);
+				}
+				if (!contractDto.getEnable()) {
 					// 该合约异常不可用
 					throw new ServiceException(ExceptionConstant.CONTRACT_ABNORMALITY_EXCEPTION);
 				}

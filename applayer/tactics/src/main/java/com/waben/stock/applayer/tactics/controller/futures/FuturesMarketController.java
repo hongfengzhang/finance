@@ -2,15 +2,20 @@ package com.waben.stock.applayer.tactics.controller.futures;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
+import com.waben.stock.applayer.tactics.dto.futures.FuturesContractMarketDto;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractLineData;
-import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
+import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
+import com.waben.stock.interfaces.util.CopyBeanUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -28,12 +33,26 @@ import io.swagger.annotations.ApiOperation;
 @Api(description = "期货合约行情接口列表")
 public class FuturesMarketController {
 
+	@Autowired
+	private FuturesContractBusiness futuresContractBusiness;
+
 	@GetMapping("/{symbol}")
 	@ApiOperation(value = "期货合约行情")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "symbol", value = "期货合约标识", dataType = "string", paramType = "path", required = true) })
-	public Response<FuturesContractMarket> market(@PathVariable("symbol") String symbol) {
-		return new Response<>(RetriveFuturesOverHttp.market(symbol));
+	public Response<FuturesContractMarketDto> market(@PathVariable("symbol") String symbol) {
+		FuturesContractQuery query = new FuturesContractQuery();
+		query.setPage(0);
+		query.setSize(1);
+		query.setSymbol(symbol);
+		FuturesContractDto contractPage = futuresContractBusiness.pagesContract(query).getContent().get(0);
+		FuturesContractMarketDto marketDto = CopyBeanUtils.copyBeanProperties(FuturesContractMarketDto.class,
+				RetriveFuturesOverHttp.market(symbol), false);
+		marketDto.setContractName(contractPage.getName());
+		marketDto.setContractState(contractPage.getState());
+		marketDto.setCurrentHoldingTime(contractPage.getCurrentHoldingTime());
+		marketDto.setNextTradingTime(contractPage.getNextTradingTime());
+		return new Response<>(marketDto);
 	}
 
 	@GetMapping("/{symbol}/timeline")

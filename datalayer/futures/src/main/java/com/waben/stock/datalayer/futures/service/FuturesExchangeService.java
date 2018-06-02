@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
-import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesExchangeDao;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
 
@@ -29,30 +28,29 @@ import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQ
  */
 @Service
 public class FuturesExchangeService {
-	
-	@Autowired
-	private DynamicQuerySqlDao sqlDao;
 
 	@Autowired
 	private FuturesExchangeDao exchangeDao;
-	
-	public Page<FuturesExchange> pagesExchange(final FuturesExchangeAdminQuery query){
-		Pageable pageable = new PageRequest(query.getPage(),query.getSize());
+
+	public Page<FuturesExchange> pagesExchange(final FuturesExchangeAdminQuery query) {
+		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<FuturesExchange> pages = exchangeDao.page(new Specification<FuturesExchange>() {
 			@Override
-			public Predicate toPredicate(Root<FuturesExchange> root,CriteriaQuery<?> criteriaQuery,CriteriaBuilder criteriaBuilder){
+			public Predicate toPredicate(Root<FuturesExchange> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				if(query.getCode()!=null && !"".equals(query.getCode())){
+				if (query.getCode() != null && !"".equals(query.getCode())) {
 					predicateList.add(criteriaBuilder.equal(root.get("code").as(String.class), query.getCode()));
 				}
-				if(query.getName()!=null && !"".equals(query.getName())){
+				if (query.getName() != null && !"".equals(query.getName())) {
 					predicateList.add(criteriaBuilder.equal(root.get("name").as(String.class), query.getName()));
 				}
-				if(query.getExchangeType()!=null && query.getExchangeType()>0){
-					predicateList.add(criteriaBuilder.equal(root.get("exchangeType").as(String.class), query.getExchangeType()));
+				if (query.getExchangeType() != null && query.getExchangeType() > 0) {
+					predicateList.add(
+							criteriaBuilder.equal(root.get("exchangeType").as(String.class), query.getExchangeType()));
 				}
-				
-				if(predicateList.size()>0){
+
+				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
 				return criteriaQuery.getRestriction();
@@ -60,19 +58,19 @@ public class FuturesExchangeService {
 		}, pageable);
 		return pages;
 	}
-	
-	public FuturesExchange saveExchange(FuturesExchange exchange){
+
+	public FuturesExchange saveExchange(FuturesExchange exchange) {
 		return exchangeDao.create(exchange);
 	}
-	
-	public FuturesExchange modifyExchange(FuturesExchange exchange){
+
+	public FuturesExchange modifyExchange(FuturesExchange exchange) {
 		return exchangeDao.update(exchange);
 	}
-	
-	public void deleteExchange(Long id){
+
+	public void deleteExchange(Long id) {
 		exchangeDao.delete(id);
 	}
-	
+
 	public List<FuturesContract> findByExchangId(Long exchangeId) {
 		return exchangeDao.findByExchangId(exchangeId);
 	}
@@ -80,5 +78,4 @@ public class FuturesExchangeService {
 	public FuturesExchange findById(Long id){
 		return exchangeDao.retrieve(id);
 	}
-
 }

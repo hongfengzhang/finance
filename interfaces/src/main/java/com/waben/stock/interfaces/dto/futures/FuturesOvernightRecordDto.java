@@ -30,4 +30,61 @@ public class FuturesOvernightRecordDto {
 	 * 扣费日期
 	 */
 	private Date reduceTime;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getPublisherId() {
+		return publisherId;
+	}
+
+	public void setPublisherId(Long publisherId) {
+		this.publisherId = publisherId;
+	}
+
+	public FuturesOrderDto getOrder() {
+		return order;
+	}
+
+	public void setOrder(FuturesOrderDto order) {
+		this.order = order;
+	}
+
+	public BigDecimal getOvernightReserveFund() {
+		return overnightReserveFund;
+	}
+
+	public void setOvernightReserveFund(BigDecimal overnightReserveFund) {
+		this.overnightReserveFund = overnightReserveFund;
+	}
+
+	public BigDecimal getOvernightDeferredFee() {
+		return overnightDeferredFee;
+	}
+
+	public void setOvernightDeferredFee(BigDecimal overnightDeferredFee) {
+		this.overnightDeferredFee = overnightDeferredFee;
+	}
+
+	public Date getDeferredTime() {
+		return deferredTime;
+	}
+
+	public void setDeferredTime(Date deferredTime) {
+		this.deferredTime = deferredTime;
+	}
+
+	public Date getReduceTime() {
+		return reduceTime;
+	}
+
+	public void setReduceTime(Date reduceTime) {
+		this.reduceTime = reduceTime;
+	}
+
 }
