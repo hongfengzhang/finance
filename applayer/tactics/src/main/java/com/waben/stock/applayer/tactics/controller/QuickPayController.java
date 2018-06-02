@@ -187,6 +187,7 @@ public class QuickPayController {
     @ResponseBody
     public Response<Map<String, String>> quickBank(@RequestParam(required = true) BigDecimal amount, HttpServletRequest request) {
     	String endType = request.getHeader("endType");
+    	System.out.println("------------------------" + endType + "-------------------------");
         Response<Map<String, String>> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId(), endType);
         return result;
     }

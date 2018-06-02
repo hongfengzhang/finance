@@ -378,7 +378,7 @@ public class StockOptionTradeService {
 			case FAILURE:
 				message.setContent(String.format("您申购的“%s %s”申购失败，权利金已退回至您的账户，请留意账户余额", trade.getStockName(),
 						trade.getStockCode()));
-				extras.put("content", String.format("您申购的“<span id=\"stock\">%s %s</span>”申购失败，权利金已退回至您的账户，请留意账户余额",
+				extras.put("content", String.format("您申购的“<span id=\"stock\">%s %s</span>”申购失败，策略风控服务费已退回至您的账户，请留意账户余额",
 						trade.getStockName(), trade.getStockCode()));
 				extras.put("type", OutsideMessageType.OPTION_FAILURE.getIndex());
 				break;
