@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ public class FuturesOrderController implements FuturesOrderInterface {
 
 	@Autowired
 	private FuturesOrderService futuresOrderService;
-	
+
 	@Override
 	public Response<PageInfo<FuturesOrderDto>> pagesOrder(@RequestBody FuturesOrderQuery orderQuery) {
 		Page<FuturesOrder> page = futuresOrderService.pagesOrder(orderQuery);
@@ -62,6 +64,13 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long id) {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.cancelOrder(id), false));
+	}
+
+	@Override
+	public Response<FuturesOrderDto> editOrder(@PathVariable Long orderId, Integer limitProfitType,
+			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.editOrder(
+				orderId, limitProfitType, perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount), false));
 	}
 
 }

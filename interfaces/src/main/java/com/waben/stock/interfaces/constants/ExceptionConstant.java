@@ -264,5 +264,7 @@ public class ExceptionConstant {
 	public static final String FUTURESAPI_NOTCONNECTED_EXCEPTION = "13013";
 	// 委托取消失败，请稍后再试或者联系客服
 	public static final String FUTURESAPI_CANCELFAILED_EXCEPTION = "13014";
+	// 订单不存在
+	public static final String ORDER_DOESNOT_EXIST_EXCEPTION = "13015";
 
 }

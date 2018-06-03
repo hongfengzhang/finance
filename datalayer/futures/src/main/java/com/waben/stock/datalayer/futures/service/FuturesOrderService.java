@@ -114,69 +114,74 @@ public class FuturesOrderService {
 	public FuturesOrder findById(Long id) {
 		return orderDao.retrieve(id);
 	}
-	
-	public List<FuturesOrder> findByContractId(List<Long> contractId){
+
+	public List<FuturesOrder> findByContractId(List<Long> contractId) {
 		return orderDao.findByContractId(contractId);
 	}
-	
-	public List<FuturesOrder> findByContractTermId(List<Long> contractTermId){
+
+	public List<FuturesOrder> findByContractTermId(List<Long> contractTermId) {
 		return orderDao.findByContractTermId(contractTermId);
 	}
-	
-	public Page<FuturesOrder> pagesOrderAdmin(final FuturesTradeAdminQuery query){
+
+	public Page<FuturesOrder> pagesOrderAdmin(final FuturesTradeAdminQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
 		Page<FuturesOrder> pages = orderDao.page(new Specification<FuturesOrder>() {
-			
+
 			@Override
-			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
+					CriteriaBuilder criteriaBuilder) {
 				// TODO Auto-generated method stub
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				if(query.getPublisherIds().size()>0){
+				if (query.getPublisherIds().size() > 0) {
 					predicateList.add(criteriaBuilder.in(root.get("publisher")).in(query.getPublisherIds()));
 				}
-				
-				if(query.getOrderType()!=null){
-					if(query.getOrderType().equals("1")||query.getOrderType().equals("2")){
-						predicateList.add(criteriaBuilder.equal(root.get("orderType").as(String.class), query.getOrderType()));
+
+				if (query.getOrderType() != null) {
+					if (query.getOrderType().equals("1") || query.getOrderType().equals("2")) {
+						predicateList.add(
+								criteriaBuilder.equal(root.get("orderType").as(String.class), query.getOrderType()));
 					}
 				}
-				
-				if(query.getTradeNo()!=null && !"".equals(query.getTradeNo())){
+
+				if (query.getTradeNo() != null && !"".equals(query.getTradeNo())) {
 					predicateList.add(criteriaBuilder.equal(root.get("tradeNo").as(String.class), query.getTradeNo()));
 				}
-				
-				if(query.getOrderState()!=null){
+
+				if (query.getOrderState() != null) {
 					FuturesOrderStateConverter convert = new FuturesOrderStateConverter();
-					if(query.getOrderState().length()>1){
+					if (query.getOrderState().length() > 1) {
 						String[] array = query.getOrderState().split(",");
 						ArrayList<FuturesOrderState> list = new ArrayList<FuturesOrderState>();
-						for(String temp:array){
-						    list.add(convert.convertToEntityAttribute(Integer.valueOf(temp)));
+						for (String temp : array) {
+							list.add(convert.convertToEntityAttribute(Integer.valueOf(temp)));
 						}
 						predicateList.add(criteriaBuilder.in(root.get("state")).value(list));
-					}else{
-						predicateList.add(criteriaBuilder.equal(root.get("state").as(String.class), query.getOrderState()));
-						if(query.getOrderState().equals("5")){
-							
+					} else {
+						predicateList
+								.add(criteriaBuilder.equal(root.get("state").as(String.class), query.getOrderState()));
+						if (query.getOrderState().equals("5")) {
+
 						}
 					}
 				}
-				
-				if(query.getWindControlType()!=null && !"".equals(query.getWindControlType())){
+
+				if (query.getWindControlType() != null && !"".equals(query.getWindControlType())) {
 					FuturesWindControlTypeConverter converter = new FuturesWindControlTypeConverter();
-					if(query.getWindControlType().length()>0){
+					if (query.getWindControlType().length() > 0) {
 						String[] array = query.getWindControlType().split(",");
 						ArrayList<FuturesWindControlType> list = new ArrayList<FuturesWindControlType>();
-						for(String temp:array){
-						    list.add(converter.convertToEntityAttribute(Integer.valueOf(temp)));
+						for (String temp : array) {
+							list.add(converter.convertToEntityAttribute(Integer.valueOf(temp)));
 						}
 						predicateList.add(criteriaBuilder.in(root.get("windControlType")).value(list));
-					}else{                                             
-						FuturesWindControlType windType = converter.convertToEntityAttribute(Integer.valueOf(query.getWindControlType()));
-						predicateList.add(criteriaBuilder.equal(root.get("windControlType").as(String.class),  windType));
+					} else {
+						FuturesWindControlType windType = converter
+								.convertToEntityAttribute(Integer.valueOf(query.getWindControlType()));
+						predicateList
+								.add(criteriaBuilder.equal(root.get("windControlType").as(String.class), windType));
 					}
 				}
-				
+
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
@@ -184,7 +189,7 @@ public class FuturesOrderService {
 			}
 		}, pageable);
 		return pages;
- 	}
+	}
 
 	public Page<FuturesOrderAdminDto> adminPagesByQuery(FuturesTradeAdminQuery query) {
 		String publisherNameCondition = "";
@@ -415,11 +420,6 @@ public class FuturesOrderService {
 		} catch (Exception ex) {
 			logger.error("发送期货订单通知失败，{}_{}_{}", order.getId(), order.getState(), ex.getMessage());
 		}
-	}
-
-	public FuturesOrder editOrder(Long id, FuturesOrderState state) {
-
-		return orderDao.editOrder(id, state);
 	}
 
 	public Integer countOrderType(Long contractId, FuturesOrderType orderType) {
@@ -749,6 +749,24 @@ public class FuturesOrderService {
 		if (order.getState() == FuturesOrderState.SellingEntrust) {
 			TradeFuturesOverHttp.cancelOrder(domain, order.getCloseGatewayOrderId());
 		}
+		return order;
+	}
+
+	public FuturesOrder editOrder(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
+			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+		FuturesOrder order = orderDao.retrieve(orderId);
+		if (order == null) {
+			throw new ServiceException(ExceptionConstant.ORDER_DOESNOT_EXIST_EXCEPTION);
+		}
+		if (limitProfitType != null && perUnitLimitProfitAmount != null) {
+			order.setLimitProfitType(limitProfitType);
+			order.setPerUnitLimitProfitAmount(perUnitLimitProfitAmount);
+		}
+		if (limitLossType != null && perUnitLimitLossAmount != null) {
+			order.setLimitLossType(limitLossType);
+			order.setPerUnitLimitLossAmount(perUnitLimitLossAmount);
+		}
+		orderDao.update(order);
 		return order;
 	}
 

@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.service.futures;
 
+import java.math.BigDecimal;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,5 +74,27 @@ public interface FuturesOrderInterface {
 	 */
 	@RequestMapping(value = "/cancelOrder/{id}", method = RequestMethod.GET)
 	Response<FuturesOrderDto> cancelOrder(@PathVariable(name = "id") Long id);
+
+	/**
+	 * 设置止盈止损
+	 * 
+	 * @param orderId
+	 *            订单ID
+	 * @param limitProfitType
+	 *            触发止盈类型
+	 * @param perUnitLimitProfitAmount
+	 *            止盈金额
+	 * @param limitLossType
+	 *            触发止损类型
+	 * @param perUnitLimitLossAmount
+	 *            止损金额
+	 * @return 订单
+	 */
+	@RequestMapping(value = "/edit/order/{orderId}", method = RequestMethod.POST)
+	Response<FuturesOrderDto> editOrder(@PathVariable("orderId") Long orderId,
+			@RequestParam("limitProfitType") Integer limitProfitType,
+			@RequestParam("perUnitLimitProfitAmount") BigDecimal perUnitLimitProfitAmount,
+			@RequestParam("limitLossType") Integer limitLossType,
+			@RequestParam("perUnitLimitLossAmount") BigDecimal perUnitLimitLossAmount);
 
 }
