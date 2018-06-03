@@ -752,7 +752,7 @@ public class FuturesOrderService {
 		return order;
 	}
 
-	public FuturesOrder editOrder(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
+	public FuturesOrder settingStopLoss(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
 			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
 		FuturesOrder order = orderDao.retrieve(orderId);
 		if (order == null) {
