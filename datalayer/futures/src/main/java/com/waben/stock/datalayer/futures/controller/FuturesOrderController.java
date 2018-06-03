@@ -1,5 +1,7 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
+import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
@@ -31,7 +34,7 @@ public class FuturesOrderController implements FuturesOrderInterface {
 
 	@Autowired
 	private FuturesOrderService futuresOrderService;
-	
+
 	@Override
 	public Response<PageInfo<FuturesOrderDto>> pagesOrder(@RequestBody FuturesOrderQuery orderQuery) {
 		Page<FuturesOrder> page = futuresOrderService.pagesOrder(orderQuery);
@@ -62,6 +65,37 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long id) {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.cancelOrder(id), false));
+	}
+
+	@Override
+	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId, String sellingPriceTypeIndex,
+			BigDecimal sellingEntrustPrice) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.applyUnwind(
+				orderId, FuturesTradePriceType.getByIndex(sellingPriceTypeIndex), sellingEntrustPrice), false));
+	}
+
+	@Override
+	public Response<Void> applyUnwindAll(@PathVariable Long publisherId) {
+		futuresOrderService.applyUnwindAll(publisherId);
+		return new Response<>();
+	}
+
+	@Override
+	public Response<FuturesOrderDto> backhandUnwind(@PathVariable Long orderId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class,
+				futuresOrderService.backhandUnwind(orderId), false));
+	}
+
+	@Override
+	public Response<FuturesOrderDto> fetchById(@PathVariable Long id) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.findById(id), false));
+	}
+
+	public Response<FuturesOrderDto> editOrder(@PathVariable Long orderId, Integer limitProfitType,
+			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.editOrder(
+				orderId, limitProfitType, perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount), false));
 	}
 
 }

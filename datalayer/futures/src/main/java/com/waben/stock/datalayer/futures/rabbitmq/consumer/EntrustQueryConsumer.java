@@ -77,7 +77,8 @@ public class EntrustQueryConsumer {
 				} else if ("Filled".equals(status) && gatewayOrder.getRemaining().compareTo(BigDecimal.ZERO) == 0) {
 					// 已平仓
 					orderService.unwindOrder(orderId, gatewayOrder.getLastFillPrice());
-					// TODO 反手以市价买入
+					// 反手以市价买入
+					orderService.backhandPlaceOrder(orderId);
 					isNeedRetry = false;
 				}
 			} else {
@@ -99,7 +100,11 @@ public class EntrustQueryConsumer {
 			int consumeCount = messgeObj.getConsumeCount();
 			messgeObj.setConsumeCount(consumeCount + 1);
 			Thread.sleep(100);
-			producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, messgeObj);
+			if (messgeObj.getMaxConsumeCount() > 0 && consumeCount < messgeObj.getMaxConsumeCount()) {
+				producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, messgeObj);
+			} else if (messgeObj.getMaxConsumeCount() <= 0) {
+				producer.sendMessage(RabbitmqConfiguration.entrustQueryQueueName, messgeObj);
+			}
 		} catch (Exception ex) {
 			throw new RuntimeException(RabbitmqConfiguration.entrustQueryQueueName + " message retry exception!", ex);
 		}

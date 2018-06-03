@@ -49,6 +49,32 @@ public class FuturesOrderBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public FuturesOrderDto applyUnwind(Long orderId, FuturesTradePriceType sellingPriceType,
+			BigDecimal sellingEntrustPrice) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.applyUnwind(orderId, sellingPriceType.getIndex(),
+				sellingEntrustPrice);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public FuturesOrderDto backhandUnwind(Long orderId) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.backhandUnwind(orderId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public void applyUnwindAll(Long publisherId) {
+		Response<Void> response = futuresOrderInterface.applyUnwindAll(publisherId);
+		if ("200".equals(response.getCode())) {
+			return;
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 	public FuturesOrderDto buy(FuturesOrderDto orderDto) {
 		Response<FuturesOrderDto> response = futuresOrderInterface.addOrder(orderDto);
 		if ("200".equals(response.getCode())) {
@@ -164,4 +190,15 @@ public class FuturesOrderBusiness {
 		}
 		return orderList;
 	}
+
+	public Integer editOrder(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
+			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.editOrder(orderId, limitProfitType,
+				perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount);
+		if ("200".equals(response.getCode())) {
+			return 1;
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
 }

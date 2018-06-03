@@ -217,6 +217,13 @@ public class FuturesOrder {
 	 */
 	private Date settlementTime;
 	/**
+	 * 反手订单对应的源订单ID
+	 * <p>
+	 * 如果该值不为空，则表示当前订单为反手下的订单
+	 * </p>
+	 */
+	private Long backhandSourceOrderId;
+	/**
 	 * 更新时间
 	 */
 	private Date updateTime;
@@ -574,6 +581,14 @@ public class FuturesOrder {
 
 	public void setSettlementRate(BigDecimal settlementRate) {
 		this.settlementRate = settlementRate;
+	}
+
+	public Long getBackhandSourceOrderId() {
+		return backhandSourceOrderId;
+	}
+
+	public void setBackhandSourceOrderId(Long backhandSourceOrderId) {
+		this.backhandSourceOrderId = backhandSourceOrderId;
 	}
 
 	public Long getContractId() {

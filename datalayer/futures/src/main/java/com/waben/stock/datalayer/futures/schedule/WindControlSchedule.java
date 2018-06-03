@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -38,7 +37,6 @@ import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.enums.FuturesWindControlType;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
-import com.waben.stock.interfaces.util.StringUtil;
 
 /**
  * 风控作业
@@ -74,10 +72,6 @@ public class WindControlSchedule {
 	@Autowired
 	private CapitalFlowBusiness flowBusiness;
 
-	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
-
-	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
 	@PostConstruct
 	public void initTask() {
 		Timer timer = new Timer();
@@ -95,11 +89,12 @@ public class WindControlSchedule {
 				if (content != null && content.size() > 0) {
 					for (FuturesOrder order : content) {
 						FuturesContractTerm term = order.getContractTerm();
-						Integer timeZoneGap = retriveTimeZoneGap(order);
+						Integer timeZoneGap = orderService.retriveTimeZoneGap(order);
 						// step 3 : 是否触发退还隔夜保证金时间
 						checkAndDoReturnOvernightReserveFund(order, timeZoneGap, term);
 						// step 4 : 是否合约到期
-						if (isTradeTime(timeZoneGap, term) && isReachContractExpiration(timeZoneGap, term)) {
+						if (orderService.isTradeTime(timeZoneGap, term)
+								&& isReachContractExpiration(timeZoneGap, term)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachContractExpiration,
 									FuturesTradePriceType.MKT, null);
 							continue;
@@ -107,19 +102,19 @@ public class WindControlSchedule {
 						// step 5 : 获取合约行情
 						FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getContractSymbol());
 						// step 6 : 是否达到止盈点
-						if (isTradeTime(timeZoneGap, term) && isReachProfitPoint(order, market)) {
+						if (orderService.isTradeTime(timeZoneGap, term) && isReachProfitPoint(order, market)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachProfitPoint,
 									FuturesTradePriceType.MKT, null);
 							continue;
 						}
 						// step 7 : 是否达到止损点
-						if (isTradeTime(timeZoneGap, term) && isReachLossPoint(order, market)) {
+						if (orderService.isTradeTime(timeZoneGap, term) && isReachLossPoint(order, market)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachLossPoint,
 									FuturesTradePriceType.MKT, null);
 							continue;
 						}
 						// step 8 : 是否触发隔夜时间
-						if (isTradeTime(timeZoneGap, term) && isTriggerOvernight(order, timeZoneGap)) {
+						if (orderService.isTradeTime(timeZoneGap, term) && isTriggerOvernight(order, timeZoneGap)) {
 							orderService.overnight(order);
 							continue;
 						}
@@ -134,108 +129,6 @@ public class WindControlSchedule {
 	}
 
 	/**
-	 * 获取北京时间和交易所的时差
-	 * 
-	 * @param order
-	 *            订单
-	 * @return 北京时间和交易所的时差
-	 */
-	private Integer retriveTimeZoneGap(FuturesOrder order) {
-		return order.getContract().getExchange().getTimeZoneGap();
-	}
-
-	/**
-	 * 获取交易所的对应时间
-	 * 
-	 * @param timeZoneGap
-	 *            和交易所的时差
-	 * @return 交易所的对应时间
-	 */
-	private Date retriveExchangeTime(Integer timeZoneGap) {
-		return retriveExchangeTime(new Date(), timeZoneGap);
-	}
-
-	/**
-	 * 获取交易所的对应时间
-	 * 
-	 * @param localTime
-	 *            日期
-	 * @param timeZoneGap
-	 *            和交易所的时差
-	 * @return 交易所的对应时间
-	 */
-	private Date retriveExchangeTime(Date localTime, Integer timeZoneGap) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(localTime);
-		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap * -1);
-		return cal.getTime();
-	}
-
-	/**
-	 * 是否在交易时间
-	 * 
-	 * @param timeZoneGap
-	 *            时区
-	 * @param term
-	 *            合约期限
-	 * @return 是否在交易时间
-	 */
-	private boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term) {
-		return isTradeTime(timeZoneGap, term, new Date());
-	}
-
-	/**
-	 * 是否在交易时间
-	 * 
-	 * @param timeZoneGap
-	 *            时区
-	 * @param term
-	 *            合约期限
-	 * @param date
-	 *            日期
-	 * @return 是否在交易时间
-	 */
-	private boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term, Date date) {
-		if (term != null) {
-			Date exchangeTime = retriveExchangeTime(date, timeZoneGap);
-			Calendar cal = Calendar.getInstance();
-			cal.setTime(exchangeTime);
-			int week = cal.get(Calendar.DAY_OF_WEEK);
-			String tradeTime = null;
-			if (week == 1) {
-				tradeTime = term.getSunTradeTime();
-			} else if (week == 2) {
-				tradeTime = term.getMonTradeTime();
-			} else if (week == 3) {
-				tradeTime = term.getTueTradeTime();
-			} else if (week == 4) {
-				tradeTime = term.getWedTradeTime();
-			} else if (week == 5) {
-				tradeTime = term.getThuTradeTime();
-			} else if (week == 6) {
-				tradeTime = term.getFriTradeTime();
-			} else if (week == 7) {
-				tradeTime = term.getSatTradeTime();
-			}
-			if (!StringUtil.isEmpty(tradeTime)) {
-				String[] tradeTimeArr = tradeTime.split(",");
-				boolean isTradeTime = false;
-				for (String tradeTimeDuration : tradeTimeArr) {
-					String[] tradeTimePointArr = tradeTimeDuration.trim().split("-");
-					String dayStr = daySdf.format(exchangeTime);
-					String fullStr = fullSdf.format(exchangeTime);
-					if (fullStr.compareTo(dayStr + " " + tradeTimePointArr[0].trim()) >= 0
-							&& fullStr.compareTo(dayStr + " " + tradeTimePointArr[1].trim()) < 0) {
-						isTradeTime = true;
-					}
-				}
-				return isTradeTime;
-			}
-		}
-		return true;
-	}
-
-	/**
 	 * 判断是否合约到期
 	 * 
 	 * @param order
@@ -244,7 +137,7 @@ public class WindControlSchedule {
 	 */
 	private boolean isReachContractExpiration(Integer timeZoneGap, FuturesContractTerm term) {
 		if (term != null) {
-			Date exchangeTime = retriveExchangeTime(timeZoneGap);
+			Date exchangeTime = orderService.retriveExchangeTime(timeZoneGap);
 			Date forceUnwindDate = term.getForceUnwindDate();
 			if (forceUnwindDate != null && exchangeTime.getTime() >= forceUnwindDate.getTime()) {
 				return true;
@@ -431,9 +324,10 @@ public class WindControlSchedule {
 	 * @return 是否触发隔夜
 	 */
 	private boolean isTriggerOvernight(FuturesOrder order, Integer timeZoneGap) {
+		SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 		FuturesOvernightRecord record = overnightService.findNewestOvernightRecord(order);
 		Date now = new Date();
-		Date nowExchangeTime = retriveExchangeTime(now, timeZoneGap);
+		Date nowExchangeTime = orderService.retriveExchangeTime(now, timeZoneGap);
 		String nowStr = daySdf.format(nowExchangeTime);
 		// 判断是否有今天的隔夜记录
 		if (!(record != null && nowStr.equals(daySdf.format(record.getDeferredTime())))) {
@@ -462,17 +356,18 @@ public class WindControlSchedule {
 	 */
 	private void checkAndDoReturnOvernightReserveFund(FuturesOrder order, Integer timeZoneGap,
 			FuturesContractTerm term) {
+		SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 		// 判断当前时候+30分钟是否为交易时间段
 		Date now = new Date();
 		Date nowAfter30mins = new Date(now.getTime() + 30 * 60 * 1000);
-		boolean isTradeTime = isTradeTime(timeZoneGap, term, nowAfter30mins);
+		boolean isTradeTime = orderService.isTradeTime(timeZoneGap, term, nowAfter30mins);
 		if (!isTradeTime) {
 			return;
 		}
 		// 获取退还隔夜保证金的时间
 		FuturesContract contract = order.getContract();
 		String returnOvernightReserveFundTime = contract.getReturnOvernightReserveFundTime();
-		Date nowExchangeTime = retriveExchangeTime(now, timeZoneGap);
+		Date nowExchangeTime = orderService.retriveExchangeTime(now, timeZoneGap);
 		String nowStr = daySdf.format(nowExchangeTime);
 		try {
 			// 判断是否到达退还隔夜保证金时间，退还隔夜保证金时间~退还隔夜保证金时间+1分钟

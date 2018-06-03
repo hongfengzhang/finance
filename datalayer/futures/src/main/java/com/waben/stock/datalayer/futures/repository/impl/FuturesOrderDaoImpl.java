@@ -64,12 +64,6 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	}
 
 	@Override
-	public FuturesOrder editOrder(Long id, FuturesOrderState state) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Integer countOrderByType(Long contractId, FuturesOrderType orderType) {
 		return repository.countOrderByType(contractId, orderType);
 	}
@@ -117,6 +111,16 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	@Override
 	public List<FuturesOrder> findByContractId(List<Long> contractId) {
 		return repository.findByContractId(contractId);
+	}
+
+	@Override
+	public List<FuturesOrder> retrieveByPublisherIdAndState(Long publisherId, FuturesOrderState state) {
+		return repository.findByPublisherIdAndState(publisherId, state);
+	}
+
+	@Override
+	public List<FuturesOrder> retrieveByBackhandSourceOrderId(Long backhandSourceOrderId) {
+		return repository.findByBackhandSourceOrderId(backhandSourceOrderId);
 	}
 
 }
