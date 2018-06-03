@@ -4,36 +4,36 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 期货订单类型 类型
+ * 期货交易限制 类型
  * 
  * @author luomengan
  *
  */
-public enum FuturesOrderType implements CommonalityEnum {
+public enum FuturesTradeLimitType implements CommonalityEnum {
 
-	BuyUp("1", "买涨"),
+	LimitOpenwind("1", "限制开仓"),
 
-	BuyFall("2", "买跌");
+	LimitUnwind("2", "限制平仓");
 
 	private String index;
 
 	private String type;
 
-	private FuturesOrderType(String index, String type) {
+	private FuturesTradeLimitType(String index, String type) {
 		this.index = index;
 		this.type = type;
 	}
 
-	private static Map<String, FuturesOrderType> valueMap = new HashMap<String, FuturesOrderType>();
+	private static Map<String, FuturesTradeLimitType> valueMap = new HashMap<String, FuturesTradeLimitType>();
 
 	static {
-		for (FuturesOrderType _enum : FuturesOrderType.values()) {
+		for (FuturesTradeLimitType _enum : FuturesTradeLimitType.values()) {
 			valueMap.put(_enum.getIndex(), _enum);
 		}
 	}
 
-	public static FuturesOrderType getByIndex(String index) {
-		FuturesOrderType result = valueMap.get(index);
+	public static FuturesTradeLimitType getByIndex(String index) {
+		FuturesTradeLimitType result = valueMap.get(index);
 		if (result == null) {
 			throw new IllegalArgumentException("No element matches " + index);
 		}

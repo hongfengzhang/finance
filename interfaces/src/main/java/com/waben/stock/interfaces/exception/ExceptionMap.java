@@ -143,6 +143,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.FUTURESAPI_ABNORMAL_EXCEPTION, "API网关异常，请稍后再试");
 		exceptionMap.put(ExceptionConstant.FUTURESAPI_NOTCONNECTED_EXCEPTION, "API网关异常，请稍后再试");
 		exceptionMap.put(ExceptionConstant.FUTURESAPI_CANCELFAILED_EXCEPTION, "委托取消失败，请稍后再试或者联系客服");
+		exceptionMap.put(ExceptionConstant.FUTURESORDER_BACKHAND_BALANCENOTENOUGH_EXCEPTION, "市价反手账户余额不足");
+		exceptionMap.put(ExceptionConstant.PARTCONTRACT_NOTINTRADETIME_EXCEPTION, "一键平仓部分订单在非交易时间段");
+		exceptionMap.put(ExceptionConstant.FUTURESORDER_ALREADYBACKHAND_EXCEPTION, "订单已反手，不能重复反手");
 
 	}
 }

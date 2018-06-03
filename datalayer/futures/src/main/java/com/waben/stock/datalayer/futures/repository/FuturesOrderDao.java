@@ -19,8 +19,6 @@ import feign.Param;
  */
 public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 
-	FuturesOrder editOrder(Long id, FuturesOrderState state);
-
 	Integer countOrderByType(Long contractId, FuturesOrderType orderType);
 
 	/**
@@ -33,16 +31,18 @@ public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 	 * @return 合约总数
 	 */
 	Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId);
-	
+
 	/**
 	 * 判断合约期限是否在订单中使用
+	 * 
 	 * @param contractTermId
 	 * @return
 	 */
 	List<FuturesOrder> findByContractTermId(@Param("contractTermId") List<Long> contractTermId);
-	
+
 	/**
 	 * 判断合约是否在订单中使用
+	 * 
 	 * @param contractId
 	 * @return
 	 */
@@ -55,8 +55,7 @@ public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 	 *            用户ID
 	 * @return 持仓中列表
 	 */
-	List<FuturesOrder> getListFuturesOrderPositionByPublisherId(
-			@PathVariable("publisherId") Long publisherId);
+	List<FuturesOrder> getListFuturesOrderPositionByPublisherId(@PathVariable("publisherId") Long publisherId);
 
 	/**
 	 * 获取持仓中总收益
@@ -74,8 +73,7 @@ public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 	 *            用户ID
 	 * @return 委托中列表
 	 */
-	List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(
-			@PathVariable("publisherId") Long publisherId);
+	List<FuturesOrder> getListFuturesOrderEntrustByPublisherId(@PathVariable("publisherId") Long publisherId);
 
 	/**
 	 * 获取委托中总收益
@@ -103,5 +101,25 @@ public interface FuturesOrderDao extends BaseDao<FuturesOrder, Long> {
 	 * @return 已结算总收益
 	 */
 	BigDecimal settlementOrderUnwindByPublisherId(@PathVariable("publisherId") Long publisherId);
+
+	/**
+	 * 根据状态获取用户订单列表
+	 * 
+	 * @param publisherId
+	 *            用户ID
+	 * @param state
+	 *            订单状态
+	 * @return 订单列表
+	 */
+	List<FuturesOrder> retrieveByPublisherIdAndState(Long publisherId, FuturesOrderState state);
+
+	/**
+	 * 根据反手源订单ID获取订单
+	 * 
+	 * @param backhandSourceOrderId
+	 *            反手源订单ID
+	 * @return 订单
+	 */
+	List<FuturesOrder> retrieveByBackhandSourceOrderId(Long backhandSourceOrderId);
 
 }

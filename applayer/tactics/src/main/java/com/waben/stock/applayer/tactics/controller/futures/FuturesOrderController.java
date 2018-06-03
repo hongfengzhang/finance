@@ -165,8 +165,22 @@ public class FuturesOrderController {
 	@ApiOperation(value = "用户申请平仓")
 	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId,
 			@RequestParam(required = true) FuturesTradePriceType sellingPriceType, BigDecimal sellingEntrustPrice) {
+		return new Response<>(futuresOrderBusiness.applyUnwind(orderId, sellingPriceType, sellingEntrustPrice));
+	}
 
-		return null;
+	@PostMapping("/applyUnwindAll")
+	@ApiOperation(value = "用户申请一键平仓所有订单")
+	public Response<String> applyUnwindAll() {
+		futuresOrderBusiness.applyUnwindAll(SecurityUtil.getUserId());
+		Response<String> result = new Response<>();
+		result.setResult("success");
+		return result;
+	}
+
+	@PostMapping("/backhandUnwind/{orderId}")
+	@ApiOperation(value = "用户市价反手")
+	public Response<FuturesOrderDto> backhandUnwind(@PathVariable Long orderId) {
+		return new Response<>(futuresOrderBusiness.backhandUnwind(orderId));
 	}
 
 	@GetMapping("/holding")
