@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 
 /**
@@ -23,12 +24,13 @@ public interface FuturesOrderRepository extends CustomJpaRepository<FuturesOrder
 	@Query(value = "SELECT IF(SUM(s.num) IS NULL,0,SUM(s.num)) AS  user_num FROM ("
 			+ "SELECT IF(f.order_type = 1,f.total_quantity,-f.total_quantity) as num FROM f_futures_order f where f.state in(2,4,5,6,7,8) AND f.publisher_id= ?2 AND f.contract_id = ?1) s", nativeQuery = true)
 	Integer sumByListOrderContractIdAndPublisherId(Long contractId, Long publisherId);
-	
+
 	@Query(value = "select * from f_futures_order where contract_term_id in ?1 and state != '8'", nativeQuery = true)
 	List<FuturesOrder> findByContractTermId(@PathVariable("contractTermId") List<Long> contractTermId);
 
 	@Query(value = "select * from f_futures_order where contract_id in ?1 and state != '8'", nativeQuery = true)
 	List<FuturesOrder> findByContractId(@PathVariable("contractId") List<Long> contractId);
+
 	/**
 	 * 获取持仓中列表
 	 * 
@@ -89,5 +91,22 @@ public interface FuturesOrderRepository extends CustomJpaRepository<FuturesOrder
 	@Query(value = "select IF(sum(f.publisher_profit_or_loss) IS NULL,0,sum(f.publisher_profit_or_loss)) AS num from f_futures_order f where f.publisher_id = ?1 and f.state = 8", nativeQuery = true)
 	BigDecimal settlementOrderUnwindByPublisherId(@PathVariable("publisherId") Long publisherId);
 
-	
+	/**
+	 * 根据状态获取用户订单列表
+	 * 
+	 * @param state
+	 *            订单状态
+	 * @return 订单列表
+	 */
+	List<FuturesOrder> findByPublisherIdAndState(Long publisherId, FuturesOrderState state);
+
+	/**
+	 * 根据反手源订单ID获取订单
+	 * 
+	 * @param backhandSourceOrderId
+	 *            反手源订单ID
+	 * @return 订单
+	 */
+	List<FuturesOrder> findByBackhandSourceOrderId(Long backhandSourceOrderId);
+
 }

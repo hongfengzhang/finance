@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 期权交易价格 类型
+ * 期货交易价格 类型
  * 
  * @author luomengan
  *

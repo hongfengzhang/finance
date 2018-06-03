@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.futures.service;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -30,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.waben.stock.datalayer.futures.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.business.OutsideMessageBusiness;
+import com.waben.stock.datalayer.futures.business.PublisherBusiness;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
@@ -52,6 +54,7 @@ import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.CapitalFlowExtendType;
 import com.waben.stock.interfaces.enums.FuturesActionType;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
@@ -103,6 +106,9 @@ public class FuturesOrderService {
 	private CapitalFlowBusiness flowBusiness;
 
 	@Autowired
+	private PublisherBusiness publisherBusiness;
+
+	@Autowired
 	private OutsideMessageBusiness outsideMessageBusiness;
 
 	@Autowired
@@ -130,7 +136,6 @@ public class FuturesOrderService {
 			@Override
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				// TODO Auto-generated method stub
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 				if (query.getPublisherIds().size() > 0) {
 					predicateList.add(criteriaBuilder.in(root.get("publisher")).in(query.getPublisherIds()));
@@ -627,6 +632,12 @@ public class FuturesOrderService {
 	@Transactional
 	public FuturesOrder sellingEntrust(FuturesOrder order, FuturesWindControlType windControlType,
 			FuturesTradePriceType priceType, BigDecimal entrustPrice) {
+		// step 1 : 检查网关是否正常
+		boolean isConnected = TradeFuturesOverHttp.checkConnection();
+		if (!isConnected) {
+			throw new ServiceException(ExceptionConstant.FUTURESAPI_NOTCONNECTED_EXCEPTION);
+		}
+		// step 2 : 检查订单状态是否正确
 		if (order.getState() != FuturesOrderState.Position) {
 			throw new ServiceException(ExceptionConstant.FUTURESORDER_STATE_NOTMATCH_EXCEPTION);
 		}
@@ -751,6 +762,205 @@ public class FuturesOrderService {
 		}
 		return order;
 	}
+
+	public FuturesOrder applyUnwind(Long orderId, FuturesTradePriceType priceType, BigDecimal sellingEntrustPrice) {
+		// 检查是否在交易时间段
+		FuturesOrder order = orderDao.retrieve(orderId);
+		FuturesContractTerm term = order.getContractTerm();
+		Integer timeZoneGap = this.retriveTimeZoneGap(order);
+		boolean isTradeTime = isTradeTime(timeZoneGap, term, new Date());
+		if (!isTradeTime) {
+			throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
+		}
+		// 委托卖出
+		return sellingEntrust(order, FuturesWindControlType.UserApplyUnwind, priceType, sellingEntrustPrice);
+	}
+
+	public void applyUnwindAll(Long publisherId) {
+		// 获取持仓中的订单
+		List<FuturesOrder> orderList = orderDao.retrieveByPublisherIdAndState(publisherId, FuturesOrderState.Position);
+		// 检查是否在交易时间段
+		for (FuturesOrder order : orderList) {
+			FuturesContractTerm term = order.getContractTerm();
+			Integer timeZoneGap = this.retriveTimeZoneGap(order);
+			boolean isTradeTime = isTradeTime(timeZoneGap, term, new Date());
+			if (!isTradeTime) {
+				throw new ServiceException(ExceptionConstant.PARTCONTRACT_NOTINTRADETIME_EXCEPTION);
+			}
+		}
+		// 委托卖出
+		for (FuturesOrder order : orderList) {
+			sellingEntrust(order, FuturesWindControlType.UserApplyUnwind, FuturesTradePriceType.MKT, null);
+		}
+	}
+
+	public FuturesOrder backhandPlaceOrder(Long orderId) {
+		FuturesOrder order = orderDao.retrieve(orderId);
+		if (order.getState() != FuturesOrderState.Unwind) {
+			throw new ServiceException(ExceptionConstant.BACKHANDSOURCEORDER_NOTUNWIND_EXCEPTION);
+		}
+		List<FuturesOrder> checkOrder = orderDao.retrieveByBackhandSourceOrderId(orderId);
+		if (checkOrder != null && checkOrder.size() > 0) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_ALREADYBACKHAND_EXCEPTION);
+		}
+		// 反手下单
+		FuturesOrder backhandOrder = new FuturesOrder();
+		FuturesContract contract = order.getContract();
+		// 计算服务费和保证金
+		BigDecimal serviceFee = order.getTotalQuantity()
+				.multiply(contract.getOpenwindServiceFee().add(contract.getUnwindServiceFee()));
+		BigDecimal reserveFund = order.getTotalQuantity().multiply(contract.getPerUnitReserveFund());
+		// 初始化部分订单信息
+		backhandOrder.setPublisherId(order.getPublisherId());
+		backhandOrder.setOrderType(
+				order.getOrderType() == FuturesOrderType.BuyUp ? FuturesOrderType.BuyFall : FuturesOrderType.BuyUp);
+		backhandOrder.setTotalQuantity(order.getTotalQuantity());
+		backhandOrder.setReserveFund(reserveFund);
+		backhandOrder.setServiceFee(serviceFee);
+		backhandOrder.setContractSymbol(contract.getSymbol());
+		backhandOrder.setContractName(contract.getName());
+		backhandOrder.setContractCurrency(contract.getCurrency());
+		backhandOrder.setOpenwindServiceFee(contract.getOpenwindServiceFee());
+		backhandOrder.setUnwindServiceFee(contract.getUnwindServiceFee());
+		backhandOrder.setPerUnitUnwindPoint(contract.getPerUnitUnwindPoint());
+		backhandOrder.setUnwindPointType(contract.getUnwindPointType());
+		backhandOrder.setOvernightPerUnitReserveFund(contract.getOvernightPerUnitReserveFund());
+		backhandOrder.setOvernightPerUnitDeferredFee(contract.getOvernightPerUnitDeferredFee());
+		backhandOrder.setBuyingPriceType(FuturesTradePriceType.MKT);
+		// 获取是否为测试单
+		PublisherDto publisher = publisherBusiness.findById(order.getPublisherId());
+		backhandOrder.setIsTest(publisher.getIsTest());
+		// 请求下单
+		return save(backhandOrder, contract.getId());
+	}
+
+	public FuturesOrder backhandUnwind(Long orderId) {
+		// 检查是否在交易时间段
+		FuturesOrder order = orderDao.retrieve(orderId);
+		FuturesContractTerm term = order.getContractTerm();
+		Integer timeZoneGap = this.retriveTimeZoneGap(order);
+		boolean isTradeTime = isTradeTime(timeZoneGap, term, new Date());
+		if (!isTradeTime) {
+			throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
+		}
+		// 判断账户余额是否足够支付反手买入的保证金和服务费
+		FuturesContract contract = order.getContract();
+		BigDecimal totalFee = order.getTotalQuantity().multiply(contract.getPerUnitReserveFund()
+				.add(contract.getOpenwindServiceFee()).add(contract.getUnwindServiceFee()));
+		CapitalAccountDto account = accountBusiness.fetchByPublisherId(order.getPublisherId());
+		if (account.getAvailableBalance().compareTo(totalFee) < 0) {
+			throw new ServiceException(ExceptionConstant.FUTURESORDER_BACKHAND_BALANCENOTENOUGH_EXCEPTION);
+		}
+		return sellingEntrust(order, FuturesWindControlType.BackhandUnwind, FuturesTradePriceType.MKT, null);
+	}
+
+	/************************************* START获取交易所时间、判断是否在交易时间段 ******************************************/
+
+	/**
+	 * 获取北京时间和交易所的时差
+	 * 
+	 * @param order
+	 *            订单
+	 * @return 北京时间和交易所的时差
+	 */
+	public Integer retriveTimeZoneGap(FuturesOrder order) {
+		return order.getContract().getExchange().getTimeZoneGap();
+	}
+
+	/**
+	 * 获取交易所的对应时间
+	 * 
+	 * @param timeZoneGap
+	 *            和交易所的时差
+	 * @return 交易所的对应时间
+	 */
+	public Date retriveExchangeTime(Integer timeZoneGap) {
+		return retriveExchangeTime(new Date(), timeZoneGap);
+	}
+
+	/**
+	 * 获取交易所的对应时间
+	 * 
+	 * @param localTime
+	 *            日期
+	 * @param timeZoneGap
+	 *            和交易所的时差
+	 * @return 交易所的对应时间
+	 */
+	public Date retriveExchangeTime(Date localTime, Integer timeZoneGap) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(localTime);
+		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap * -1);
+		return cal.getTime();
+	}
+
+	/**
+	 * 是否在交易时间
+	 * 
+	 * @param timeZoneGap
+	 *            时区
+	 * @param term
+	 *            合约期限
+	 * @return 是否在交易时间
+	 */
+	public boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term) {
+		return isTradeTime(timeZoneGap, term, new Date());
+	}
+
+	/**
+	 * 是否在交易时间
+	 * 
+	 * @param timeZoneGap
+	 *            时区
+	 * @param term
+	 *            合约期限
+	 * @param date
+	 *            日期
+	 * @return 是否在交易时间
+	 */
+	public boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term, Date date) {
+		if (term != null) {
+			SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
+			SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date exchangeTime = retriveExchangeTime(date, timeZoneGap);
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(exchangeTime);
+			int week = cal.get(Calendar.DAY_OF_WEEK);
+			String tradeTime = null;
+			if (week == 1) {
+				tradeTime = term.getSunTradeTime();
+			} else if (week == 2) {
+				tradeTime = term.getMonTradeTime();
+			} else if (week == 3) {
+				tradeTime = term.getTueTradeTime();
+			} else if (week == 4) {
+				tradeTime = term.getWedTradeTime();
+			} else if (week == 5) {
+				tradeTime = term.getThuTradeTime();
+			} else if (week == 6) {
+				tradeTime = term.getFriTradeTime();
+			} else if (week == 7) {
+				tradeTime = term.getSatTradeTime();
+			}
+			if (!StringUtil.isEmpty(tradeTime)) {
+				String[] tradeTimeArr = tradeTime.split(",");
+				boolean isTradeTime = false;
+				for (String tradeTimeDuration : tradeTimeArr) {
+					String[] tradeTimePointArr = tradeTimeDuration.trim().split("-");
+					String dayStr = daySdf.format(exchangeTime);
+					String fullStr = fullSdf.format(exchangeTime);
+					if (fullStr.compareTo(dayStr + " " + tradeTimePointArr[0].trim()) >= 0
+							&& fullStr.compareTo(dayStr + " " + tradeTimePointArr[1].trim()) < 0) {
+						isTradeTime = true;
+					}
+				}
+				return isTradeTime;
+			}
+		}
+		return true;
+	}
+
+	/************************************* END获取交易所时间、判断是否在交易时间段 ******************************************/
 
 	public FuturesOrder settingStopLoss(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
 			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
