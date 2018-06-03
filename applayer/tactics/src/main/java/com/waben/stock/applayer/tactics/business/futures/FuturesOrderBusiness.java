@@ -191,4 +191,14 @@ public class FuturesOrderBusiness {
 		return orderList;
 	}
 
+	public Integer editOrder(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
+			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.editOrder(orderId, limitProfitType,
+				perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount);
+		if ("200".equals(response.getCode())) {
+			return 1;
+		}
+		throw new ServiceException(response.getCode());
+	}
+	
 }

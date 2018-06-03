@@ -136,7 +136,6 @@ public class FuturesOrderService {
 			@Override
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
-				// TODO Auto-generated method stub
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 				if (query.getPublisherIds().size() > 0) {
 					predicateList.add(criteriaBuilder.in(root.get("publisher")).in(query.getPublisherIds()));
@@ -962,5 +961,23 @@ public class FuturesOrderService {
 	}
 
 	/************************************* END获取交易所时间、判断是否在交易时间段 ******************************************/
+
+	public FuturesOrder editOrder(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
+			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+		FuturesOrder order = orderDao.retrieve(orderId);
+		if (order == null) {
+			throw new ServiceException(ExceptionConstant.ORDER_DOESNOT_EXIST_EXCEPTION);
+		}
+		if (limitProfitType != null && perUnitLimitProfitAmount != null) {
+			order.setLimitProfitType(limitProfitType);
+			order.setPerUnitLimitProfitAmount(perUnitLimitProfitAmount);
+		}
+		if (limitLossType != null && perUnitLimitLossAmount != null) {
+			order.setLimitLossType(limitLossType);
+			order.setPerUnitLimitLossAmount(perUnitLimitLossAmount);
+		}
+		orderDao.update(order);
+		return order;
+	}
 
 }

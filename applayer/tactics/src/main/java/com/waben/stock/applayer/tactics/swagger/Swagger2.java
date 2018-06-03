@@ -25,7 +25,7 @@ public class Swagger2 {
 
 	@Bean
 	public Docket futuresApi() {
-		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQXBwLCIsInVzZXJJZCI6Nywic2VyaWFsQ29kZSI6ImQwYTNkNWY2LWQyMzYtNDcwNy05MGVjLWMxYjRjNTE1M2UxZSIsInN1YiI6IjEzMTQ1OTQyMjAwIiwiZXhwIjo0MzIwMDAxNTI3ODM4ODExfQ.fiqBv4uj2OKDb7dK5tcTjVt3wEPbQ_nOGc-kr1XF_HV7BU5XI8OQ6PJWUw4O0whp-d0DCV7_oYMAnBEAPGY9AQ";
+		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQXBwLCIsInVzZXJJZCI6Nywic2VyaWFsQ29kZSI6ImQwYTNkNWY2LWQyMzYtNDcwNy05MGVjLWMxYjRjNTE1M2UxZSIsInN1YiI6IjEzMTQ1OTQyMjAwIiwiZXhwIjo0MzIwMDAxNTI4MDA1MDYyfQ.9gT9dI5mkNTjYUgdNXgRR-AihPJdo_dTOkKQU2zZzzuRoLriKy8uBzr5p9hOrHe1E_nL5gEgZDwTTu9jSZlgsA";
 		ParameterBuilder tokenPar = new ParameterBuilder();
 		List<Parameter> pars = new ArrayList<Parameter>();
 		tokenPar.name("Authorization").description("token令牌").modelRef(new ModelRef("string")).parameterType("header")
@@ -50,7 +50,7 @@ public class Swagger2 {
 
 	@Bean
 	public Docket createRestApi() {
-		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQXBwLCIsInVzZXJJZCI6Nywic2VyaWFsQ29kZSI6ImQwYTNkNWY2LWQyMzYtNDcwNy05MGVjLWMxYjRjNTE1M2UxZSIsInN1YiI6IjEzMTQ1OTQyMjAwIiwiZXhwIjo0MzIwMDAxNTI3ODM4ODExfQ.fiqBv4uj2OKDb7dK5tcTjVt3wEPbQ_nOGc-kr1XF_HV7BU5XI8OQ6PJWUw4O0whp-d0DCV7_oYMAnBEAPGY9AQ";
+		String token = "eyJhbGciOiJIUzUxMiJ9.eyJhdXRob3JpdGllcyI6IlJvbGVfQXBwLCIsInVzZXJJZCI6Nywic2VyaWFsQ29kZSI6ImQwYTNkNWY2LWQyMzYtNDcwNy05MGVjLWMxYjRjNTE1M2UxZSIsInN1YiI6IjEzMTQ1OTQyMjAwIiwiZXhwIjo0MzIwMDAxNTI4MDA1MDYyfQ.9gT9dI5mkNTjYUgdNXgRR-AihPJdo_dTOkKQU2zZzzuRoLriKy8uBzr5p9hOrHe1E_nL5gEgZDwTTu9jSZlgsA";
 		ParameterBuilder tokenPar = new ParameterBuilder();
 		List<Parameter> pars = new ArrayList<Parameter>();
 		tokenPar.name("Authorization").description("token令牌").modelRef(new ModelRef("string")).parameterType("header")

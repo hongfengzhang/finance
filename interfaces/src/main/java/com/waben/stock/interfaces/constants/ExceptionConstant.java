@@ -264,13 +264,15 @@ public class ExceptionConstant {
 	public static final String FUTURESAPI_NOTCONNECTED_EXCEPTION = "13013";
 	// 委托取消失败，请稍后再试或者联系客服
 	public static final String FUTURESAPI_CANCELFAILED_EXCEPTION = "13014";
+	// 订单不存在
+	public static final String ORDER_DOESNOT_EXIST_EXCEPTION = "13015";
 	// 市价反手账户余额不足
-	public static final String FUTURESORDER_BACKHAND_BALANCENOTENOUGH_EXCEPTION = "13015";
+	public static final String FUTURESORDER_BACKHAND_BALANCENOTENOUGH_EXCEPTION = "13016";
 	// 一键平仓部分订单在非交易时间段
-	public static final String PARTCONTRACT_NOTINTRADETIME_EXCEPTION = "13016";
+	public static final String PARTCONTRACT_NOTINTRADETIME_EXCEPTION = "13017";
 	// 反手源订单暂未平仓
-	public static final String BACKHANDSOURCEORDER_NOTUNWIND_EXCEPTION = "13017";
+	public static final String BACKHANDSOURCEORDER_NOTUNWIND_EXCEPTION = "13018";
 	// 订单已反手，不能重复反手
-	public static final String FUTURESORDER_ALREADYBACKHAND_EXCEPTION = "13018";
+	public static final String FUTURESORDER_ALREADYBACKHAND_EXCEPTION = "13019";
 
 }

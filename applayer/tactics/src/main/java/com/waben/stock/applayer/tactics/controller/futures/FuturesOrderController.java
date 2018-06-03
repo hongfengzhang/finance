@@ -34,6 +34,7 @@ import com.waben.stock.interfaces.util.PasswordCrypt;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 
 /**
@@ -283,6 +284,20 @@ public class FuturesOrderController {
 		orderQuery.setOrderId(orderId);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
+	}
+
+	@PostMapping("/edit/order/{orderId}")
+	@ApiOperation(value = "设置止损止盈")
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "orderId", value = "订单ID", dataType = "Long", paramType = "path", required = true),
+			@ApiImplicitParam(name = "limitProfitType", value = "止盈类型", dataType = "int", paramType = "query", required = false),
+			@ApiImplicitParam(name = "perUnitLimitProfitAmount", value = "止盈金额", dataType = "BigDecimal", paramType = "query", required = false),
+			@ApiImplicitParam(name = "limitLossType", value = "止损类型", dataType = "int", paramType = "query", required = false),
+			@ApiImplicitParam(name = "perUnitLimitLossAmount", value = "止损金额", dataType = "BigDecimal", paramType = "query", required = false) })
+	public Response<Integer> editOrder(@PathVariable Long orderId, Integer limitProfitType,
+			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+		return new Response<>(futuresOrderBusiness.editOrder(orderId, limitProfitType, perUnitLimitProfitAmount,
+				limitLossType, perUnitLimitLossAmount));
 	}
 
 }
