@@ -151,7 +151,12 @@ public class FuturesContractAdminDto {
 	/**
 	 * 每个合约的描述
 	 */
-//	private String describe;
+	private String contractDesc;
+	
+	/**
+	 * 返还隔夜保证金的时间（交易所时间）
+	 */
+	private String returnOvernightReserveFundTime;
 
 	/**
 	 * 交易所是否可用
@@ -412,6 +417,22 @@ public class FuturesContractAdminDto {
 
 	public void setFuturesTermAdminDto(List<FuturesTermAdminDto> futuresTermAdminDto) {
 		FuturesTermAdminDto = futuresTermAdminDto;
+	}
+
+	public String getContractDesc() {
+		return contractDesc;
+	}
+
+	public void setContractDesc(String contractDesc) {
+		this.contractDesc = contractDesc;
+	}
+
+	public String getReturnOvernightReserveFundTime() {
+		return returnOvernightReserveFundTime;
+	}
+
+	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
+		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
 	}
 
 	

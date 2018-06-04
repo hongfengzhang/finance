@@ -1,5 +1,9 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +20,7 @@ import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.StringUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -36,6 +41,8 @@ public class FuturesMarketController {
 	@Autowired
 	private FuturesContractBusiness futuresContractBusiness;
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+
 	@GetMapping("/{symbol}")
 	@ApiOperation(value = "期货合约行情")
 	@ApiImplicitParams({
@@ -50,8 +57,11 @@ public class FuturesMarketController {
 				RetriveFuturesOverHttp.market(symbol), false);
 		marketDto.setContractName(contractPage.getName());
 		marketDto.setContractState(contractPage.getState());
-		marketDto.setCurrentHoldingTime(contractPage.getCurrentHoldingTime());
-		marketDto.setNextTradingTime(contractPage.getNextTradingTime());
+		marketDto.setCurrentHoldingTime(
+				timeZoneConversion(contractPage.getTimeZoneGap(), contractPage.getCurrentHoldingTime()));
+		marketDto.setNextTradingTime(
+				timeZoneConversion(contractPage.getTimeZoneGap(), contractPage.getNextTradingTime()));
+
 		return new Response<>(marketDto);
 	}
 
@@ -84,6 +94,36 @@ public class FuturesMarketController {
 	public Response<List<FuturesContractLineData>> minsLine(@PathVariable("symbol") String symbol, Integer mins,
 			Integer dayCount) {
 		return new Response<>(RetriveFuturesOverHttp.minsLine(symbol, mins, dayCount));
+	}
+
+	/**
+	 * 将时间转成国内时间
+	 * 
+	 * @param timeZoneGap
+	 *            时差
+	 * @param time
+	 *            国外时间
+	 * @return 国内时间
+	 */
+	private String timeZoneConversion(Integer timeZoneGap, String time) {
+		String timeStr = "";
+		try {
+			if (StringUtil.isEmpty(time)) {
+				return "";
+			}
+			timeStr = sdf.format(retriveExchangeTime(sdf.parse(time), timeZoneGap));
+		} catch (ParseException e) {
+			return "";
+		}
+
+		return timeStr;
+	}
+
+	private Date retriveExchangeTime(Date localTime, Integer timeZoneGap) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(localTime);
+		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap);
+		return cal.getTime();
 	}
 
 }

@@ -43,13 +43,14 @@ public class RealNameController implements RealNameInterface {
 				false));
 	}
 	
-	public List<RealNameDto> findByName(@PathVariable String name){
+	@Override
+	public Response<List<RealNameDto>> findByName(@PathVariable String name){
 		List<RealName> list = service.findByName(name);
 		List<RealNameDto> result = new ArrayList<RealNameDto>();
 		for (RealName realName : list) {
 			result.add(CopyBeanUtils.copyBeanProperties(RealNameDto.class, realName, false));
 		}
-		return result;
+		return new Response<>(result);
 	}
 
 	@Override

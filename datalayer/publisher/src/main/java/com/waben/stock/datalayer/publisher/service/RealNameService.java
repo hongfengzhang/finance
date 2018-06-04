@@ -1,9 +1,19 @@
 package com.waben.stock.datalayer.publisher.service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.publisher.entity.RealName;
@@ -48,8 +58,23 @@ public class RealNameService {
 		return realNameDao.retriveByResourceTypeAndResourceId(resourceType, resourceId);
 	}
 	
-	public List<RealName> findByName(String name){
-		return realNameDao.findByName(name);
+	public List<RealName> findByName(final String name){
+		Pageable pageable = new PageRequest(0, Integer.MAX_VALUE);
+		Page<RealName> page = realNameDao.page(new Specification<RealName>() {
+			
+			@Override
+			public Predicate toPredicate(Root<RealName> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+				List<Predicate> predicateList = new ArrayList<Predicate>();
+				if(name != null && !"".equals(name)){
+					predicateList.add(criteriaBuilder.like(root.get("name").as(String.class), "%"+name+"%"));
+				}
+				if (predicateList.size() > 0) {
+					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
+				}
+				return criteriaQuery.getRestriction();
+			}
+		}, pageable);
+		return page.getContent();
 	}
 	
 	public RealName findByResourceId(Long resourceId){

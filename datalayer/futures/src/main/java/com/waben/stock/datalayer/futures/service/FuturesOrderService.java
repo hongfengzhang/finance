@@ -137,20 +137,24 @@ public class FuturesOrderService {
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				if (query.getPublisherIds().size() > 0) {
-					predicateList.add(criteriaBuilder.in(root.get("publisher")).in(query.getPublisherIds()));
+
+				if(query.getPublisherIds().size()>0){
+					predicateList.add(criteriaBuilder.in(root.get("publisherId")).value(query.getPublisherIds()));
 				}
 
 				if (query.getOrderType() != null) {
 					if (query.getOrderType().equals("1") || query.getOrderType().equals("2")) {
 						predicateList.add(
 								criteriaBuilder.equal(root.get("orderType").as(String.class), query.getOrderType()));
+
 					}
 				}
 
 				if (query.getTradeNo() != null && !"".equals(query.getTradeNo())) {
 					predicateList.add(criteriaBuilder.equal(root.get("tradeNo").as(String.class), query.getTradeNo()));
 				}
+
+				
 
 				if (query.getOrderState() != null) {
 					FuturesOrderStateConverter convert = new FuturesOrderStateConverter();
@@ -962,7 +966,7 @@ public class FuturesOrderService {
 
 	/************************************* END获取交易所时间、判断是否在交易时间段 ******************************************/
 
-	public FuturesOrder editOrder(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
+	public FuturesOrder settingStopLoss(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
 			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
 		FuturesOrder order = orderDao.retrieve(orderId);
 		if (order == null) {

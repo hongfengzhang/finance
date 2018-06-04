@@ -113,8 +113,8 @@ public class FuturesTradeController implements FuturesTradeInterface {
 				Long hours = (date - current)/(60*60*1000);
 				result.getContent().get(i).setPositionDays(hours.intValue());
 			}
-			FuturesCurrencyRate rate = rateService.queryByName(order.getContractCurrency());
-			if(order.getProfitOrLoss()!=null && !"".equals(order.getProfitOrLoss())){
+			FuturesCurrencyRate rate = rateService.queryByName(order.getContract().getCurrency());
+			if(order.getState().getIndex().equals("9")){
 				if(rate!=null && rate.getRate()!=null){
 					result.getContent().get(i).setSellingProfit(order.getProfitOrLoss().multiply(rate.getRate()));
 					result.getContent().get(i).setProfit(order.getProfitOrLoss().multiply(rate.getRate()));

@@ -48,6 +48,11 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
+	
+	/**
+	 * 图标
+	 */
+	private String icon;
 
 	/**
 	 * 品种分类
@@ -135,6 +140,11 @@ public class FuturesContract {
 	@ManyToOne
 	@JoinColumn(name = "exchange_id")
 	private FuturesExchange exchange;
+	
+	/**
+	 * 描述
+	 */
+	private String contractDesc;
 
 	/***************** 分割线，以下字段为非数据库字段 ********************/
 
@@ -335,6 +345,23 @@ public class FuturesContract {
 	public void setSketch(String sketch) {
 		this.sketch = sketch;
 	}
+
+	public String getContractDesc() {
+		return contractDesc;
+	}
+
+	public void setContractDesc(String contractDesc) {
+		this.contractDesc = contractDesc;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
 
 	public Long getExchangeId() {
 		if (exchange != null) {

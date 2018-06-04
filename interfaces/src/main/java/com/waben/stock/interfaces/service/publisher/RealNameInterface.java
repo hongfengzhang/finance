@@ -40,8 +40,8 @@ public interface RealNameInterface {
 	Response<RealNameDto> fetch(@PathVariable("resourceTypeIndex") String resourceTypeIndex,
 			@PathVariable("resourceId") Long resourceId);
 	
-	@RequestMapping(value = "/findByName", method = RequestMethod.GET)
-	List<RealNameDto> findByName(@PathVariable("Name") String name);
+	@RequestMapping(value = "/find/{name}", method = RequestMethod.GET)
+	Response<List<RealNameDto>> findByName(@PathVariable("name") String name);
 	
 	@RequestMapping(value = "/{resourceId}", method = RequestMethod.GET)
 	Response<RealNameDto> fetchByResourceId(@PathVariable("resourceId") Long resourceId);
