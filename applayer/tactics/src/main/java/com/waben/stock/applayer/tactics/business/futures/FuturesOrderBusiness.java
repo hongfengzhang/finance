@@ -75,6 +75,14 @@ public class FuturesOrderBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public FuturesOrderDto cancelOrder(Long orderId) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.cancelOrder(orderId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 	public FuturesOrderDto buy(FuturesOrderDto orderDto) {
 		Response<FuturesOrderDto> response = futuresOrderInterface.addOrder(orderDto);
 		if ("200".equals(response.getCode())) {
@@ -200,5 +208,5 @@ public class FuturesOrderBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
+
 }

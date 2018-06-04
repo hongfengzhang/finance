@@ -162,6 +162,12 @@ public class FuturesOrderController {
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
 	}
 
+	@PostMapping("/cancelOrder/{orderId}")
+	@ApiOperation(value = "用户取消订单委托")
+	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long orderId) {
+		return new Response<>(futuresOrderBusiness.cancelOrder(orderId));
+	}
+
 	@PostMapping("/applyUnwind/{orderId}")
 	@ApiOperation(value = "用户申请平仓")
 	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId,
@@ -202,6 +208,18 @@ public class FuturesOrderController {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
 				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
+	}
+
+	@GetMapping("/turnover")
+	@ApiOperation(value = "获取成交记录列表（包括持仓中、已结算订单）")
+	public Response<PageInfo<FuturesOrderMarketDto>> turnoverList(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Position, FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
 		orderQuery.setPage(page);
 		orderQuery.setSize(size);
