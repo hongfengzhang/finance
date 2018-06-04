@@ -286,7 +286,7 @@ public class FuturesOrderController {
 		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
 
-	@PostMapping("/edit/order/{orderId}")
+	@PostMapping("/settingStopLoss/{orderId}")
 	@ApiOperation(value = "设置止损止盈")
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "orderId", value = "订单ID", dataType = "Long", paramType = "path", required = true),
@@ -296,7 +296,7 @@ public class FuturesOrderController {
 			@ApiImplicitParam(name = "perUnitLimitLossAmount", value = "止损金额", dataType = "BigDecimal", paramType = "query", required = false) })
 	public Response<Integer> editOrder(@PathVariable Long orderId, Integer limitProfitType,
 			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
-		return new Response<>(futuresOrderBusiness.editOrder(orderId, limitProfitType, perUnitLimitProfitAmount,
+		return new Response<>(futuresOrderBusiness.settingStopLoss(orderId, limitProfitType, perUnitLimitProfitAmount,
 				limitLossType, perUnitLimitLossAmount));
 	}
 

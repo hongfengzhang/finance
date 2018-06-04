@@ -966,7 +966,7 @@ public class FuturesOrderService {
 
 	/************************************* END获取交易所时间、判断是否在交易时间段 ******************************************/
 
-	public FuturesOrder editOrder(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
+	public FuturesOrder settingStopLoss(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
 			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
 		FuturesOrder order = orderDao.retrieve(orderId);
 		if (order == null) {

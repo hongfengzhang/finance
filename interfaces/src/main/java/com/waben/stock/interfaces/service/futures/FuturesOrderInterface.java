@@ -135,8 +135,8 @@ public interface FuturesOrderInterface {
 	 *            止损金额
 	 * @return 订单
 	 */
-	@RequestMapping(value = "/edit/order/{orderId}", method = RequestMethod.POST)
-	Response<FuturesOrderDto> editOrder(@PathVariable("orderId") Long orderId,
+	@RequestMapping(value = "/settingStopLoss/{orderId}", method = RequestMethod.POST)
+	Response<FuturesOrderDto> settingStopLoss(@PathVariable("orderId") Long orderId,
 			@RequestParam("limitProfitType") Integer limitProfitType,
 			@RequestParam("perUnitLimitProfitAmount") BigDecimal perUnitLimitProfitAmount,
 			@RequestParam("limitLossType") Integer limitLossType,
