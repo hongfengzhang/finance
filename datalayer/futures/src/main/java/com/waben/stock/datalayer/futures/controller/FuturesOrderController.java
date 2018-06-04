@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
+import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.pojo.Response;
@@ -97,6 +98,11 @@ public class FuturesOrderController implements FuturesOrderInterface {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.settingStopLoss(orderId,
 						limitProfitType, perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount), false));
+	}
+
+	@Override
+	public Response<TurnoverStatistyRecordDto> getTurnoverStatisty() {
+		return new Response<>(futuresOrderService.getTurnoverStatisty());
 	}
 
 }
