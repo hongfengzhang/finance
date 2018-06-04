@@ -38,6 +38,12 @@ public class FuturesTradeLimit {
 	 */
 	@Convert(converter = FuturesTradeLimitTypeConverter.class)
 	private FuturesTradeLimitType limitType;
+	
+	/**
+	 * 星期
+	 */
+	private Integer weekDay;
+	
 	/**
 	 * 开始时间
 	 */
@@ -77,6 +83,14 @@ public class FuturesTradeLimit {
 
 	public void setLimitType(FuturesTradeLimitType limitType) {
 		this.limitType = limitType;
+	}
+
+	public Integer getWeekDay() {
+		return weekDay;
+	}
+
+	public void setWeekDay(Integer weekDay) {
+		this.weekDay = weekDay;
 	}
 
 	public String getStartLimitTime() {
