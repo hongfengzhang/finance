@@ -1,14 +1,18 @@
 package com.waben.stock.datalayer.futures.entity;
 
 import java.math.BigDecimal;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -41,19 +45,17 @@ public class FuturesContract {
 	 */
 	private String name;
 	/**
-	 * 简述
-	 */
-	private String sketch;
-	/**
 	 * 货币
 	 */
 	private String currency;
-	
 	/**
 	 * 图标
 	 */
 	private String icon;
-
+	/**
+	 * 描述
+	 */
+	private String contractDesc;
 	/**
 	 * 品种分类
 	 */
@@ -140,11 +142,11 @@ public class FuturesContract {
 	@ManyToOne
 	@JoinColumn(name = "exchange_id")
 	private FuturesExchange exchange;
-	
 	/**
-	 * 描述
+	 * 预设置的手数列表
 	 */
-	private String contractDesc;
+	@OneToMany(cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER, mappedBy = "contract")
+	private Set<FuturesPreQuantity> preQuantitySet;
 
 	/***************** 分割线，以下字段为非数据库字段 ********************/
 
@@ -338,14 +340,6 @@ public class FuturesContract {
 		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
 	}
 
-	public String getSketch() {
-		return sketch;
-	}
-
-	public void setSketch(String sketch) {
-		this.sketch = sketch;
-	}
-
 	public String getContractDesc() {
 		return contractDesc;
 	}
@@ -362,6 +356,13 @@ public class FuturesContract {
 		this.icon = icon;
 	}
 
+	public Set<FuturesPreQuantity> getPreQuantitySet() {
+		return preQuantitySet;
+	}
+
+	public void setPreQuantitySet(Set<FuturesPreQuantity> preQuantitySet) {
+		this.preQuantitySet = preQuantitySet;
+	}
 
 	public Long getExchangeId() {
 		if (exchange != null) {
