@@ -143,13 +143,13 @@ public class FuturesOrderService {
 		}
 		FuturesContract futuresContract = futuresContractDao.retrieveContractBySymbol(symbol);
 		if (futuresContract == null) {
-			throw new ServiceException(ExceptionEnum.Symbol_NotSuported);
+			throw new ServiceException(ExceptionEnum.Symbol_NotSupported);
 		}
 		if (!("BUY".equals(action) || "SELL".equals(action))) {
-			throw new ServiceException(ExceptionEnum.Action_NotSuported);
+			throw new ServiceException(ExceptionEnum.Action_NotSupported);
 		}
 		if (!((userOrderType != null && userOrderType == 1) || (userOrderType != null && userOrderType == 2))) {
-			throw new ServiceException(ExceptionEnum.UserOrderType_NotSuported);
+			throw new ServiceException(ExceptionEnum.UserOrderType_NotSupported);
 		}
 		// step 1 : 保存订单
 		FuturesOrder futuresOrder = new FuturesOrder();

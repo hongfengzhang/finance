@@ -192,7 +192,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/holding")
 	@ApiOperation(value = "获取持仓中列表")
-	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderHolding(int page, int size) {
+	public Response<PageInfo<FuturesOrderMarketDto>> holdingList(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position };
 		orderQuery.setStates(states);
@@ -204,7 +204,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/entrustment")
 	@ApiOperation(value = "获取委托中列表")
-	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderEntrustment(int page, int size) {
+	public Response<PageInfo<FuturesOrderMarketDto>> entrustmentList(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
 				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
@@ -229,7 +229,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/settled")
 	@ApiOperation(value = "获取已结算列表")
-	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderSettled(int page, int size) {
+	public Response<PageInfo<FuturesOrderMarketDto>> settledList(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingCanceled, FuturesOrderState.BuyingFailure,
 				FuturesOrderState.Unwind };
@@ -242,7 +242,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/holding/profit")
 	@ApiOperation(value = "获取持仓中总收益")
-	public Response<BigDecimal> settlementFuturesOrderHolding(int page, int size) {
+	public Response<BigDecimal> holdingProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position };
 		orderQuery.setStates(states);
@@ -259,7 +259,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/entrustment/profit")
 	@ApiOperation(value = "获取委托中总收益")
-	public Response<BigDecimal> settlementFuturesOrderEntrustment(int page, int size) {
+	public Response<BigDecimal> entrustmentProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
 				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
@@ -277,7 +277,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/settled/profit")
 	@ApiOperation(value = "获取已结算总收益")
-	public Response<BigDecimal> settlementFuturesOrderSettled(int page, int size) {
+	public Response<BigDecimal> settledProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
