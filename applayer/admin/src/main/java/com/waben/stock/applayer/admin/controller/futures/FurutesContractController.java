@@ -99,12 +99,7 @@ public class FurutesContractController {
 	@DeleteMapping("/futuresContract/delete/{id}")
     @ApiOperation(value = "删除品种")
     public Response<String> deleteContract(@PathVariable("id") Long id){
-        String message = business.deleteContract(id);
-        Response<String> res = new Response<String>();
-        res.setCode("200");
-        res.setMessage(message);
-        res.setResult(null);
-        return res;
+        return business.deleteContract(id);
     }
 	
 	@GetMapping("/exportContract")

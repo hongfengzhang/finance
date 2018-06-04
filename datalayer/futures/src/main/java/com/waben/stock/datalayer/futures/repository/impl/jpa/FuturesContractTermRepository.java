@@ -19,4 +19,7 @@ public interface FuturesContractTermRepository extends CustomJpaRepository<Futur
 
 	@Query("select f from FuturesContractTerm f where f.current= 1 and f.contract.id = ?1")
 	List<FuturesContractTerm> findByContractId(Long contractId);
+	
+	@Query(value = "DELETE from f_futures_contract_term where contract_id = ?1", nativeQuery=true)
+	int deleteBycontractId(Long contractId);
 }

@@ -95,6 +95,8 @@ public class FuturesContractAdminDto {
 	 * </ul>
 	 */
 	private Integer unwindPointType;
+	
+	private BigDecimal cordon;
 	/**
 	 * 该合约总计的可使用的额度（手）
 	 * 
@@ -433,6 +435,14 @@ public class FuturesContractAdminDto {
 
 	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
 		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
+	}
+
+	public BigDecimal getCordon() {
+		return cordon;
+	}
+
+	public void setCordon(BigDecimal cordon) {
+		this.cordon = cordon;
 	}
 
 	

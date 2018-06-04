@@ -54,7 +54,7 @@ public interface FuturesContractInterface {
 	 * @param id
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	String deleteContract(@PathVariable("id") Long id);
+	Response<String> deleteContract(@PathVariable("id") Long id);
 
 
 	/**

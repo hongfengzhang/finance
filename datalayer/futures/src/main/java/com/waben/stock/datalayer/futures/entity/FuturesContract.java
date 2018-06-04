@@ -91,6 +91,11 @@ public class FuturesContract {
 	 * </ul>
 	 */
 	private Integer unwindPointType;
+	
+	/**
+	 * 警戒线
+	 */
+	private BigDecimal cordon;
 	/**
 	 * 该合约总计的可使用的额度（手）
 	 * 
@@ -99,6 +104,7 @@ public class FuturesContract {
 	 * </p>
 	 */
 	private BigDecimal userTotalLimit;
+	
 	/**
 	 * 单笔订单额度限制（手）
 	 */
@@ -368,6 +374,18 @@ public class FuturesContract {
 			return exchange.getId();
 		}
 		return exchangeId;
+	}
+
+	public BigDecimal getCordon() {
+		return cordon;
+	}
+
+	public void setCordon(BigDecimal cordon) {
+		this.cordon = cordon;
+	}
+
+	public void setExchangeId(Long exchangeId) {
+		this.exchangeId = exchangeId;
 	}
 
 }

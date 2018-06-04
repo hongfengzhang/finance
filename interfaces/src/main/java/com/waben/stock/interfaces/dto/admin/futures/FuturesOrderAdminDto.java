@@ -151,6 +151,8 @@ public class FuturesOrderAdminDto {
 	 */
 	private BigDecimal unwindServiceFee;
 	
+	private String windControlState;
+	
 	/**
 	 * 风控状态
 	 */
@@ -362,6 +364,14 @@ public class FuturesOrderAdminDto {
 
 	public void setWindControlType(String windControlType) {
 		this.windControlType = windControlType;
+	}
+
+	public String getWindControlState() {
+		return windControlState;
+	}
+
+	public void setWindControlState(String windControlState) {
+		this.windControlState = windControlState;
 	}
 
 	public Integer getLimitProfitType() {

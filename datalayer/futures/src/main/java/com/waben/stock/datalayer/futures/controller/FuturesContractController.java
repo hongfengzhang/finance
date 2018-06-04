@@ -25,9 +25,11 @@ import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
@@ -246,6 +248,10 @@ public class FuturesContractController implements FuturesContractInterface {
 	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 
+		//判断警戒线是否低于强平点
+		if(fcontract.getCordon().compareTo(fcontract.getPerUnitUnwindPoint())<0){
+			throw new ServiceException(ExceptionConstant.CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION);
+		}
 		fcontract.setExchange(exchangeService.findById(contractDto.getExchangeId()));
 		fcontract.setCurrency(contractDto.getCurrency());
 		if(contractDto.getProductType()!=null && !"".equals(contractDto.getProductType())){
@@ -290,8 +296,14 @@ public class FuturesContractController implements FuturesContractInterface {
 			}
 		}
 		
+		
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 
+		//判断警戒线是否低于强平点
+		if(fcontract.getCordon().compareTo(fcontract.getPerUnitUnwindPoint())<0){
+			throw new ServiceException(ExceptionConstant.CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION);
+		}
+		
 		fcontract.setExchange(exchangeService.findById(contractDto.getExchangeId()));
 		fcontract.setCurrency(contractDto.getCurrency());
 		
@@ -322,9 +334,8 @@ public class FuturesContractController implements FuturesContractInterface {
 	}
 
 	@Override
-	public String deleteContract(@PathVariable Long id) {
-		String message = futuresContractService.deleteExchange(id);
-		return message;
+	public Response<String> deleteContract(@PathVariable Long id) {
+		return futuresContractService.deleteContract(id);
 	}
 
 	@Override

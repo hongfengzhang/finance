@@ -69,7 +69,7 @@ public class FuturesContractBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
-	public String deleteContract(Long id){
+	public Response<String> deleteContract(Long id){
 		return reference.deleteContract(id);
 	}
 	

@@ -56,7 +56,7 @@ public class FuturesTradeLimitDaoImpl implements FuturesTradeLimitDao {
 	}
 
 	@Override
-	public List<FuturesTradeLimit> findByContractId(String contractId) {
+	public List<FuturesTradeLimit> findByContractId(Long contractId) {
 		return repository.findByContractId(contractId);
 	}
 
