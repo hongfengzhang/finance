@@ -13,6 +13,7 @@ import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractM
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesCurrencyRateDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
+import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
@@ -205,6 +206,14 @@ public class FuturesOrderBusiness {
 				perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount);
 		if ("200".equals(response.getCode())) {
 			return 1;
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public TurnoverStatistyRecordDto getTurnoverStatistyRecord() {
+		Response<TurnoverStatistyRecordDto> response = futuresOrderInterface.getTurnoverStatisty();
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}

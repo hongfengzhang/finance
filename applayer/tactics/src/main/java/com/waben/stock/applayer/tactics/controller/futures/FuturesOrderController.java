@@ -2,6 +2,7 @@ package com.waben.stock.applayer.tactics.controller.futures;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
+import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
@@ -217,12 +219,16 @@ public class FuturesOrderController {
 
 	@GetMapping("/turnover")
 	@ApiOperation(value = "获取成交记录列表（包括持仓中、已结算订单）")
-	public Response<PageInfo<FuturesOrderMarketDto>> turnoverList(int page, int size) {
+	public Response<PageInfo<FuturesOrderMarketDto>> turnoverList(int page, int size, String contractName,
+			Date stateTime, Date endTime) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position, FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
 		orderQuery.setPage(page);
 		orderQuery.setSize(size);
+		orderQuery.setContractName(contractName);
+		orderQuery.setStateTime(stateTime);
+		orderQuery.setEndTime(endTime);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
@@ -316,6 +322,12 @@ public class FuturesOrderController {
 			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
 		return new Response<>(futuresOrderBusiness.settingStopLoss(orderId, limitProfitType, perUnitLimitProfitAmount,
 				limitLossType, perUnitLimitLossAmount));
+	}
+
+	@GetMapping("/turnover/statisty/record")
+	@ApiOperation(value = "获取成交统计记录")
+	public Response<TurnoverStatistyRecordDto> getTurnoverStatistyRecord() {
+		return new Response<>(futuresOrderBusiness.getTurnoverStatistyRecord());
 	}
 
 }

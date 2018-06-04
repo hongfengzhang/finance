@@ -180,7 +180,7 @@ public class FuturesOrder {
 	 */
 	private BigDecimal sellingEntrustPrice;
 	/**
-	 * 卖出价格
+	 * 卖出时间
 	 */
 	private Date sellingTime;
 	/**

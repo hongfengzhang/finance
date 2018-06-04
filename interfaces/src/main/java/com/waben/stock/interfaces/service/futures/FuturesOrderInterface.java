@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
+import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -141,5 +142,13 @@ public interface FuturesOrderInterface {
 			@RequestParam("perUnitLimitProfitAmount") BigDecimal perUnitLimitProfitAmount,
 			@RequestParam("limitLossType") Integer limitLossType,
 			@RequestParam("perUnitLimitLossAmount") BigDecimal perUnitLimitLossAmount);
+
+	/**
+	 * 获取成交统计记录
+	 * 
+	 * @return 成交统计
+	 */
+	@RequestMapping(value = "/turnover/statisty/record", method = RequestMethod.GET)
+	Response<TurnoverStatistyRecordDto> getTurnoverStatisty();
 
 }
