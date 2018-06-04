@@ -1,14 +1,15 @@
 package com.waben.stock.interfaces.dto.futures;
 
-import java.math.BigDecimal;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class FuturesPreQuantityDto implements Comparable<FuturesPreQuantityDto> {
 
 	private Long id;
 	/**
 	 * 手数
 	 */
-	private BigDecimal quantity;
+	private Integer quantity;
 
 	public Long getId() {
 		return id;
@@ -18,11 +19,11 @@ public class FuturesPreQuantityDto implements Comparable<FuturesPreQuantityDto> 
 		this.id = id;
 	}
 
-	public BigDecimal getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(BigDecimal quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
 

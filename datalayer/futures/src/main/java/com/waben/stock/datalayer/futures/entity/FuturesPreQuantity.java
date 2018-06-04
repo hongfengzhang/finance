@@ -1,7 +1,5 @@
 package com.waben.stock.datalayer.futures.entity;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * 预购买手数
@@ -28,11 +28,12 @@ public class FuturesPreQuantity {
 	 */
 	@ManyToOne
 	@JoinColumn(name = "contract_id")
+	@JsonIgnore
 	private FuturesContract contract;
 	/**
 	 * 手数
 	 */
-	private BigDecimal quantity;
+	private Integer quantity;
 
 	public Long getId() {
 		return id;
@@ -50,11 +51,11 @@ public class FuturesPreQuantity {
 		this.contract = contract;
 	}
 
-	public BigDecimal getQuantity() {
+	public Integer getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(BigDecimal quantity) {
+	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
 
