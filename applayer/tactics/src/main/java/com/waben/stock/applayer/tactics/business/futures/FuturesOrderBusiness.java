@@ -13,6 +13,7 @@ import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractM
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesCurrencyRateDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
+import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
@@ -71,6 +72,14 @@ public class FuturesOrderBusiness {
 		Response<Void> response = futuresOrderInterface.applyUnwindAll(publisherId);
 		if ("200".equals(response.getCode())) {
 			return;
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public FuturesOrderDto cancelOrder(Long orderId) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.cancelOrder(orderId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
@@ -200,5 +209,13 @@ public class FuturesOrderBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
+
+	public TurnoverStatistyRecordDto getTurnoverStatistyRecord() {
+		Response<TurnoverStatistyRecordDto> response = futuresOrderInterface.getTurnoverStatisty();
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

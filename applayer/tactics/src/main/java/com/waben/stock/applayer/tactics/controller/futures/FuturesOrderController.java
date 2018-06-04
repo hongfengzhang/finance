@@ -2,6 +2,7 @@ package com.waben.stock.applayer.tactics.controller.futures;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
+import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
@@ -162,6 +164,12 @@ public class FuturesOrderController {
 		return new Response<>(futuresOrderBusiness.buy(orderDto));
 	}
 
+	@PostMapping("/cancelOrder/{orderId}")
+	@ApiOperation(value = "用户取消订单委托")
+	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long orderId) {
+		return new Response<>(futuresOrderBusiness.cancelOrder(orderId));
+	}
+
 	@PostMapping("/applyUnwind/{orderId}")
 	@ApiOperation(value = "用户申请平仓")
 	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId,
@@ -186,7 +194,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/holding")
 	@ApiOperation(value = "获取持仓中列表")
-	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderHolding(int page, int size) {
+	public Response<PageInfo<FuturesOrderMarketDto>> holdingList(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position };
 		orderQuery.setStates(states);
@@ -198,7 +206,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/entrustment")
 	@ApiOperation(value = "获取委托中列表")
-	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderEntrustment(int page, int size) {
+	public Response<PageInfo<FuturesOrderMarketDto>> entrustmentList(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
 				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
@@ -209,9 +217,25 @@ public class FuturesOrderController {
 		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
 
+	@GetMapping("/turnover")
+	@ApiOperation(value = "获取成交记录列表（包括持仓中、已结算订单）")
+	public Response<PageInfo<FuturesOrderMarketDto>> turnoverList(int page, int size, String contractName,
+			Date stateTime, Date endTime) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Position, FuturesOrderState.Unwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setContractName(contractName);
+		orderQuery.setStateTime(stateTime);
+		orderQuery.setEndTime(endTime);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
+	}
+
 	@GetMapping("/settled")
 	@ApiOperation(value = "获取已结算列表")
-	public Response<PageInfo<FuturesOrderMarketDto>> getListFuturesOrderSettled(int page, int size) {
+	public Response<PageInfo<FuturesOrderMarketDto>> settledList(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingCanceled, FuturesOrderState.BuyingFailure,
 				FuturesOrderState.Unwind };
@@ -224,7 +248,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/holding/profit")
 	@ApiOperation(value = "获取持仓中总收益")
-	public Response<BigDecimal> settlementFuturesOrderHolding(int page, int size) {
+	public Response<BigDecimal> holdingProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position };
 		orderQuery.setStates(states);
@@ -241,7 +265,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/entrustment/profit")
 	@ApiOperation(value = "获取委托中总收益")
-	public Response<BigDecimal> settlementFuturesOrderEntrustment(int page, int size) {
+	public Response<BigDecimal> entrustmentProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
 				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
@@ -259,7 +283,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/settled/profit")
 	@ApiOperation(value = "获取已结算总收益")
-	public Response<BigDecimal> settlementFuturesOrderSettled(int page, int size) {
+	public Response<BigDecimal> settledProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
@@ -298,6 +322,12 @@ public class FuturesOrderController {
 			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
 		return new Response<>(futuresOrderBusiness.settingStopLoss(orderId, limitProfitType, perUnitLimitProfitAmount,
 				limitLossType, perUnitLimitLossAmount));
+	}
+
+	@GetMapping("/turnover/statisty/record")
+	@ApiOperation(value = "获取成交统计记录")
+	public Response<TurnoverStatistyRecordDto> getTurnoverStatistyRecord() {
+		return new Response<>(futuresOrderBusiness.getTurnoverStatistyRecord());
 	}
 
 }

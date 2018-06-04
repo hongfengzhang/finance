@@ -96,7 +96,7 @@ public class TradeFuturesOverHttp {
 			return responseObj.getResult();
 		} else {
 			// TODO 异常处理
-			throw new RuntimeException("根据网关订单ID获取订单异常!" + responseObj.getCode());
+			throw new RuntimeException("请求期货网关下单异常!" + responseObj.getCode());
 		}
 	}
 

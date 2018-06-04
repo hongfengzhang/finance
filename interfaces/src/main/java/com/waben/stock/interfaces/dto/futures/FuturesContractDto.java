@@ -1,6 +1,9 @@
 package com.waben.stock.interfaces.dto.futures;
 
 import java.math.BigDecimal;
+import java.util.Collections;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.waben.stock.interfaces.enums.FuturesProductType;
 
@@ -19,10 +22,6 @@ public class FuturesContractDto {
 	 * 合约名称
 	 */
 	private String name;
-	/**
-	 * 简述
-	 */
-	private String sketch;
 	/**
 	 * 货币
 	 */
@@ -125,21 +124,22 @@ public class FuturesContractDto {
 	 * 北京时间的时差和交易所
 	 */
 	private Integer timeZoneGap;
-
 	/**
 	 * 本时段持仓最后时间
 	 */
 	private String currentHoldingTime;
-
 	/**
 	 * 下一个交易时间
 	 */
 	private String nextTradingTime;
-
 	/**
 	 * 交易所ID
 	 */
 	private Long exchangeId;
+	/**
+	 * 预设置的手数列表
+	 */
+	private Set<FuturesPreQuantityDto> preQuantitySet;
 
 	public Long getId() {
 		return id;
@@ -349,14 +349,6 @@ public class FuturesContractDto {
 		this.productType = productType;
 	}
 
-	public String getSketch() {
-		return sketch;
-	}
-
-	public void setSketch(String sketch) {
-		this.sketch = sketch;
-	}
-
 	public String getCurrentHoldingTime() {
 		return currentHoldingTime;
 	}
@@ -379,6 +371,23 @@ public class FuturesContractDto {
 
 	public void setExchangeId(Long exchangeId) {
 		this.exchangeId = exchangeId;
+	}
+
+	public Set<FuturesPreQuantityDto> getPreQuantitySet() {
+		if (preQuantitySet != null && preQuantitySet.size() > 0) {
+			Object obj = preQuantitySet.iterator().next();
+			if (obj instanceof FuturesPreQuantityDto) {
+				TreeSet<FuturesPreQuantityDto> result = new TreeSet<>();
+				result.addAll(preQuantitySet);
+				Collections.checkedSortedSet(result, FuturesPreQuantityDto.class);
+				return result;
+			}
+		}
+		return preQuantitySet;
+	}
+
+	public void setPreQuantitySet(Set<FuturesPreQuantityDto> preQuantitySet) {
+		this.preQuantitySet = preQuantitySet;
 	}
 
 }

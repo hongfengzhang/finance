@@ -13,6 +13,8 @@ import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -51,6 +53,7 @@ import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesGatewayOrder;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
+import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
 import com.waben.stock.interfaces.dto.publisher.FrozenCapitalDto;
@@ -138,7 +141,7 @@ public class FuturesOrderService {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 
-				if(query.getPublisherIds().size()>0){
+				if (query.getPublisherIds().size() > 0) {
 					predicateList.add(criteriaBuilder.in(root.get("publisherId")).value(query.getPublisherIds()));
 				}
 
@@ -153,8 +156,6 @@ public class FuturesOrderService {
 				if (query.getTradeNo() != null && !"".equals(query.getTradeNo())) {
 					predicateList.add(criteriaBuilder.equal(root.get("tradeNo").as(String.class), query.getTradeNo()));
 				}
-
-				
 
 				if (query.getOrderState() != null) {
 					FuturesOrderStateConverter convert = new FuturesOrderStateConverter();
@@ -270,6 +271,7 @@ public class FuturesOrderService {
 			public Predicate toPredicate(Root<FuturesOrder> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
+				Join<FuturesOrder, FuturesContract> join = root.join("contract", JoinType.LEFT);
 				// 用户ID
 				if (query.getPublisherId() != null && query.getPublisherId() != 0) {
 					predicateList
@@ -283,6 +285,25 @@ public class FuturesOrderService {
 				if (query.getStates() != null && query.getStates().length > 0) {
 					predicateList.add(root.get("state").in(query.getStates()));
 				}
+				// 合约名称
+				if (!StringUtil.isEmpty(query.getContractName())) {
+					Predicate contractName = criteriaBuilder.like(join.get("name").as(String.class),
+							"%" + query.getContractName() + "%");
+					predicateList.add(criteriaBuilder.and(contractName));
+				}
+				// 起始日期
+				if (query.getStateTime() != null) {
+					Predicate stateTime = criteriaBuilder.greaterThanOrEqualTo(root.get("buyingTime").as(Date.class),
+							query.getStateTime());
+					predicateList.add(criteriaBuilder.and(stateTime));
+				}
+				// 结束日期
+				if (query.getEndTime() != null) {
+					Predicate endTime = criteriaBuilder.lessThanOrEqualTo(root.get("sellingTime").as(Date.class),
+							query.getEndTime());
+					predicateList.add(criteriaBuilder.and(endTime));
+				}
+
 				// 是否测试单
 				if (query.getIsTest() != null) {
 					Predicate isTestPredicate = criteriaBuilder.equal(root.get("isTest").as(Boolean.class),
@@ -982,6 +1003,21 @@ public class FuturesOrderService {
 		}
 		orderDao.update(order);
 		return order;
+	}
+
+	public TurnoverStatistyRecordDto getTurnoverStatisty() {
+		String sql = String.format(
+				"SELECT COUNT(o.id) AS number, SUM(o.total_quantity) AS total_quantity, SUM(o.openwind_service_fee + o.unwind_service_fee) AS service_fee,(SELECT SUM(f.publisher_profit_or_loss) AS user_profit_or_loss FROM f_futures_order f where f.state = 9) AS user_profit_or_loss FROM f_futures_order o where o.state in(6,9)");
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setTurnoverNum", new Class<?>[] { Integer.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setTurnoverHandsNum", new Class<?>[] { Integer.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setProfitAndLoss", new Class<?>[] { BigDecimal.class }));
+		List<TurnoverStatistyRecordDto> content = sqlDao.execute(TurnoverStatistyRecordDto.class, sql, setMethodMap);
+		if (content != null && content.size() > 0) {
+			return content.get(0);
+		}
+		return null;
 	}
 
 }

@@ -15,6 +15,7 @@ import com.ib.client.ContractDetails;
 import com.ib.client.DeltaNeutralContract;
 import com.ib.client.EClientSocket;
 import com.ib.client.EJavaSignal;
+import com.ib.client.EReader;
 import com.ib.client.EReaderSignal;
 import com.ib.client.EWrapper;
 import com.ib.client.Execution;
@@ -49,6 +50,10 @@ public class WabenEWrapper implements EWrapper {
 	@Autowired
 	private RabbitmqProducer rabbitmqProducer;
 
+	private Thread monitorThread;
+
+	private EReader reader;
+
 	public EClientSocket getClient() {
 		return clientSocket;
 	}
@@ -65,8 +70,35 @@ public class WabenEWrapper implements EWrapper {
 		this.currentOrderId = currentOrderId;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void connect() {
 		clientSocket.eConnect(host, port, 0);
+		// 销毁历史监听线程
+		try {
+			if (this.reader != null) {
+				this.reader.stop();
+			}
+		} catch (Exception ex) {
+			System.out.println("销毁历史监听线程发生异常!" + ex.getMessage());
+		}
+		// 开启新监听线程
+		this.reader = new EReader(clientSocket, readerSignal);
+		reader.start();
+		this.monitorThread = new Thread() {
+			public void run() {
+				while (clientSocket.isConnected()) {
+					System.out.println("进入这个线程了");
+					readerSignal.waitForSignal();
+					try {
+						reader.processMsgs();
+					} catch (Exception e) {
+						System.out.println("Exception: " + e.getMessage());
+					}
+				}
+			}
+		};
+		monitorThread.start();
+		System.out.println("当前线程数量:" + Thread.activeCount());
 	}
 
 	/******************************************** 分割线 ****************************************/

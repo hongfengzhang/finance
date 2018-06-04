@@ -180,7 +180,7 @@ public class FuturesOrder {
 	 */
 	private BigDecimal sellingEntrustPrice;
 	/**
-	 * 卖出价格
+	 * 卖出时间
 	 */
 	private Date sellingTime;
 	/**
@@ -238,6 +238,10 @@ public class FuturesOrder {
 	 */
 	@Transient
 	private Long contractId;
+	/**
+	 * 交易所名称
+	 */
+	private String exchangeName;
 
 	public Long getId() {
 		return id;
@@ -596,6 +600,13 @@ public class FuturesOrder {
 			return contract.getId();
 		}
 		return contractId;
+	}
+
+	public String getExchangeName() {
+		if (contract != null && contract.getExchange() != null) {
+			return contract.getExchange().getName();
+		}
+		return exchangeName;
 	}
 
 }

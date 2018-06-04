@@ -7,11 +7,11 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.ib.client.Contract;
 import com.ib.client.EClientSocket;
-import com.ib.client.EReader;
 import com.waben.stock.futuresgateway.cache.RedisCache;
 import com.waben.stock.futuresgateway.entity.FuturesContract;
 import com.waben.stock.futuresgateway.service.FuturesContractService;
@@ -20,7 +20,8 @@ import com.waben.stock.futuresgateway.service.FuturesOrderService;
 @Service
 public class TwsEngine {
 
-	private String account = "DU1079041";
+	@Value("${tws.account}")
+	private String account;
 
 	@Autowired
 	private FuturesContractService futuresContractService;
@@ -40,20 +41,6 @@ public class TwsEngine {
 	public void init() {
 		this.client = wrapper.getClient();
 		this.wrapper.connect();
-		final EReader reader = new EReader(client, wrapper.getSignal());
-		reader.start();
-		new Thread() {
-			public void run() {
-				while (client.isConnected()) {
-					wrapper.getSignal().waitForSignal();
-					try {
-						reader.processMsgs();
-					} catch (Exception e) {
-						System.out.println("Exception: " + e.getMessage());
-					}
-				}
-			}
-		}.start();
 
 		List<FuturesContract> contractList = futuresContractService.list();
 		// step 1 : 获取行情

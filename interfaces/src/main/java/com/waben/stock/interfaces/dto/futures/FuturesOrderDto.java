@@ -126,6 +126,10 @@ public class FuturesOrderDto {
 	 */
 	private FuturesOrderState state;
 	/**
+	 * 订单状态名称
+	 */
+	private String stateName;
+	/**
 	 * 开仓对应的网关交易订单ID
 	 */
 	private Long openGatewayOrderId;
@@ -201,6 +205,10 @@ public class FuturesOrderDto {
 	 * 是否为测试单
 	 */
 	private Boolean isTest;
+	/**
+	 * 交易所名称
+	 */
+	private String exchangeName;
 	/**
 	 * 期货隔夜记录
 	 */
@@ -572,6 +580,21 @@ public class FuturesOrderDto {
 
 	public void setSettlementRate(BigDecimal settlementRate) {
 		this.settlementRate = settlementRate;
+	}
+
+	public String getExchangeName() {
+		return exchangeName;
+	}
+
+	public void setExchangeName(String exchangeName) {
+		this.exchangeName = exchangeName;
+	}
+
+	public String getStateName() {
+		if (state != null) {
+			return state.getType();
+		}
+		return stateName;
 	}
 
 }
