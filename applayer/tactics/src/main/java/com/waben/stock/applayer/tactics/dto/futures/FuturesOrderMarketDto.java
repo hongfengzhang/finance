@@ -23,6 +23,11 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 	private String buyOrderTypeDesc;
 
 	/**
+	 * 浮动盈亏
+	 */
+	private BigDecimal floatingProfitOrLoss;
+
+	/**
 	 * 汇率，如“7.0”，表示1美元=7.0*1人民币
 	 */
 	private BigDecimal rate;
@@ -49,6 +54,14 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 
 	public void setRate(BigDecimal rate) {
 		this.rate = rate;
+	}
+
+	public BigDecimal getFloatingProfitOrLoss() {
+		return floatingProfitOrLoss;
+	}
+
+	public void setFloatingProfitOrLoss(BigDecimal floatingProfitOrLoss) {
+		this.floatingProfitOrLoss = floatingProfitOrLoss;
 	}
 
 }

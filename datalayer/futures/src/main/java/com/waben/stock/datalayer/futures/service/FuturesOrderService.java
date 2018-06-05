@@ -114,6 +114,8 @@ public class FuturesOrderService {
 	@Autowired
 	private OutsideMessageBusiness outsideMessageBusiness;
 
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 	@Autowired
 	private RabbitmqProducer producer;
 
@@ -292,18 +294,17 @@ public class FuturesOrderService {
 					predicateList.add(criteriaBuilder.and(contractName));
 				}
 				// 起始日期
-				if (query.getStateTime() != null) {
+				if (query.getStartBuyingTime() != null) {
 					Predicate stateTime = criteriaBuilder.greaterThanOrEqualTo(root.get("buyingTime").as(Date.class),
-							query.getStateTime());
+							query.getStartBuyingTime());
 					predicateList.add(criteriaBuilder.and(stateTime));
 				}
 				// 结束日期
-				if (query.getEndTime() != null) {
-					Predicate endTime = criteriaBuilder.lessThanOrEqualTo(root.get("sellingTime").as(Date.class),
-							query.getEndTime());
+				if (query.getEndBuyingTime() != null) {
+					Predicate endTime = criteriaBuilder.lessThanOrEqualTo(root.get("buyingTime").as(Date.class),
+							query.getEndBuyingTime());
 					predicateList.add(criteriaBuilder.and(endTime));
 				}
-
 				// 是否测试单
 				if (query.getIsTest() != null) {
 					Predicate isTestPredicate = criteriaBuilder.equal(root.get("isTest").as(Boolean.class),
