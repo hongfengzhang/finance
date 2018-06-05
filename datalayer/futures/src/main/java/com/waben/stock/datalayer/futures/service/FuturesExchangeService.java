@@ -60,10 +60,12 @@ public class FuturesExchangeService {
 	}
 
 	public FuturesExchange saveExchange(FuturesExchange exchange) {
+		exchange.setEnable(true);
 		return exchangeDao.create(exchange);
 	}
 
 	public FuturesExchange modifyExchange(FuturesExchange exchange) {
+		exchange.setEnable(true);
 		return exchangeDao.update(exchange);
 	}
 

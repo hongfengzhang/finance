@@ -171,6 +171,8 @@ public class FuturesContractAdminDto {
 //	private Integer timeZoneGap;
 
 	private List<FuturesTermAdminDto> FuturesTermAdminDto;
+	
+	private List<FuturesPreQuantityDto> futuresPreQuantityDto;
 
 
 	public Long getId() {
@@ -443,6 +445,14 @@ public class FuturesContractAdminDto {
 
 	public void setCordon(BigDecimal cordon) {
 		this.cordon = cordon;
+	}
+
+	public List<FuturesPreQuantityDto> getFuturesPreQuantityDto() {
+		return futuresPreQuantityDto;
+	}
+
+	public void setFuturesPreQuantityDto(List<FuturesPreQuantityDto> futuresPreQuantityDto) {
+		this.futuresPreQuantityDto = futuresPreQuantityDto;
 	}
 
 	

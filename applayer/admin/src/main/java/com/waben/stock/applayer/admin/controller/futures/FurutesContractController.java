@@ -171,8 +171,10 @@ public class FurutesContractController {
 			}
 			
 			String currencyRate = "";
-			if(!dto.getRate().equals(0)){
-				currencyRate = "1人民币="+dto.getRate()+dto.getCurrency();
+			if(dto.getRate()!=null){
+				if(!dto.getRate().equals(0)){
+					currencyRate = "1人民币="+dto.getRate()+dto.getCurrency();
+				}
 			}
 			String exchangeType = "";
 			if(dto.getExchangeType() == 1){
@@ -198,6 +200,7 @@ public class FurutesContractController {
 				data.add(exchangCode+"/"+exchangName);
 				data.add(dto.getExchangeType() == null ? "" : exchangeType);
 				data.add(dto.getSymbol() == null ? "" : dto.getSymbol());
+				data.add(dto.getName() == null ? "" : dto.getName());
 				data.add(dto.getProductType() == null ? "" : dto.getProductType());
 				data.add(dto.getCurrency() == null ? "" : dto.getCurrency());
 				data.add(dto.getRate() == null ? "" : currencyRate);
@@ -214,7 +217,7 @@ public class FurutesContractController {
 				data.add(dto.getUserTotalLimit() == null ? "" : dto.getUserTotalLimit().toString());
 				data.add(dto.getPerOrderLimit() == null ? "" : dto.getPerOrderLimit().toString());
 				data.add(dto.getOvernightTime() == null ? "" : dto.getOvernightTime());
-				data.add("");
+				data.add(enables);
 			}
 			result.add(data);
 		}
