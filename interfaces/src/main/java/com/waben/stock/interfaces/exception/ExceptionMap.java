@@ -150,6 +150,8 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.FUTURESORDER_ALREADYBACKHAND_EXCEPTION, "订单已反手，不能重复反手");
 		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION, "合约在被订单使用，不能删除");
 		exceptionMap.put(ExceptionConstant.CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION, "警戒线低于强平点");
+		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION, "合约没有可用的合约期限");
+		exceptionMap.put(ExceptionConstant.CONTRACT_PREQUANTITY_EXCEPTION, "合约没有预设置手数");
 
 	}
 }

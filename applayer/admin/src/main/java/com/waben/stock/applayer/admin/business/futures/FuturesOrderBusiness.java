@@ -91,13 +91,13 @@ public class FuturesOrderBusiness {
 				if(publisherId !=null && !"".equals(publisherId)){
 					publisherIds.add(Long.valueOf(publisherId));
 				}else{
-					return null;
+					return new PageInfo<FuturesOrderAdminDto>();
 				}
 			};
 		}else if(query.getPublisherName()!=null && !"".equals(query.getPublisherName())){
 			List<RealNameDto> real = realnameInterface.findByName(query.getPublisherName()).getResult();
 			if(real==null||real.size()==0){
-				return null;
+				return new PageInfo<FuturesOrderAdminDto>();
 			}else{
 				for (RealNameDto realNameDto : real) {
 					publisherIds.add(Long.valueOf(realNameDto.getResourceId().toString()));

@@ -66,4 +66,9 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 		return repository.findByListContractId(contractId);
 	}
 
+	@Override
+	public int isCurrent(Integer current, Long id) {
+		return repository.enable(current, id);
+	}
+
 }

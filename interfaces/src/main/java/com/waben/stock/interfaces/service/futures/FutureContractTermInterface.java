@@ -41,4 +41,5 @@ public interface FutureContractTermInterface {
 	
 	@RequestMapping(value = "/pagesTremAdmin", method = RequestMethod.POST, consumes = "application/json")
 	Response<PageInfo<FuturesTermAdminDto>> pagesTremAdmin(@RequestBody FuturesTermAdminQuery query);
+	
 }

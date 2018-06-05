@@ -44,7 +44,7 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 	@Autowired
 	private FuturesOrderService orderService;
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public Response<FuturesTermAdminDto> addContractTerm(@RequestBody FuturesTermAdminDto dto) {

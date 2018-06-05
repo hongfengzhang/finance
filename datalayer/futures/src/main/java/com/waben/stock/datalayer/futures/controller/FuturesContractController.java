@@ -19,12 +19,14 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
+import com.waben.stock.datalayer.futures.service.FuturesPreQuantityService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
@@ -63,6 +65,9 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesCurrencyRateService futuresCurrencyRateService;
+	
+	@Autowired
+	private FuturesPreQuantityService quantityService;
 
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -375,6 +380,44 @@ public class FuturesContractController implements FuturesContractInterface {
 	public Response<FuturesContractDto> findByContractId(@PathVariable Long contractId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesContractDto.class,
 				futuresContractService.findByContractId(contractId), false));
+	}
+
+	@Override
+	public Response<String> isCurrent(@PathVariable Long id) {
+		FuturesContract contract = futuresContractService.findByContractId(id);
+		Integer current = null;
+		if(contract.getEnable()!=null){
+			if(contract.getEnable()){
+				current = 0;
+			}else{
+				current = 1;
+			}
+		}else{
+			current=0;
+		}
+		if(current == 1){
+			List<FuturesContractTerm> termList = futuresContractService.findByListContractId(id);
+			if(termList.size()>0){
+				Boolean isCurrent = false;
+				for(FuturesContractTerm term:termList){
+					if(term.isCurrent()){
+						isCurrent = true;
+					}
+				}
+				if(!isCurrent){
+					throw new ServiceException(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION);
+				}
+			}
+			
+			List<FuturesPreQuantity> pre = quantityService.findByContractId(id);
+			if(pre.size()==0||pre==null){
+				throw new ServiceException(ExceptionConstant.CONTRACT_PREQUANTITY_EXCEPTION);
+			}
+		}
+		
+		
+		Integer i = futuresContractService.isCurrent(current, id);
+		return new Response<>("1");
 	}
 
 }

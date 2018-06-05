@@ -66,5 +66,8 @@ public interface FuturesContractInterface {
 	 */
 	@RequestMapping(value = "/contract/{contractId}", method = RequestMethod.GET)
 	Response<FuturesContractDto> findByContractId(@PathVariable("contractId") Long contractId);
+	
+	@RequestMapping(value ="/contract/isEnable", method = RequestMethod.GET)
+	Response<String> isCurrent(@PathVariable("id") Long id);
 
 }
