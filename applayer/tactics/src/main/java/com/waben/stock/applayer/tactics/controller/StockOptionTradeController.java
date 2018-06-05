@@ -93,7 +93,7 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private OrganizationPublisherBusiness orgPublisherBusiness;
-	
+
 	@Autowired
 	private RestTemplate restTemplate;
 
@@ -186,13 +186,12 @@ public class StockOptionTradeController {
 		dto.setRightMoneyRatio(quote.getRightMoneyRatio());
 		dto.setStockCode(stockCode);
 		dto.setStockName(stock.getName());
-		// 根据市场价格计算持股数
+		// 根据市场价格计算持股数（手数）
 		List<String> codes = new ArrayList<>();
 		codes.add(stockCode);
 		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
-		BigDecimal temp = nominalAmount.divide(market.getLastPrice(), 2, RoundingMode.HALF_DOWN);
-		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].multiply(BigDecimal.valueOf(100))
-				.intValue();
+		BigDecimal temp = nominalAmount.divide(market.getLastPrice(), 2, RoundingMode.DOWN);
+		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].intValue();
 		dto.setNumberOfStrand(numberOfStrand);
 		// 获取当前用户所属的推广代理商
 		OrganizationPublisherDto orgPublisher = orgPublisherBusiness.fetchOrgPublisher(SecurityUtil.getUserId());
