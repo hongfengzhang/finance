@@ -58,7 +58,9 @@ public class TickPriceConsumer {
 				contract.setLowPrice(new BigDecimal(price));
 			} else if (field == 9) {
 				contract.setClosePrice(new BigDecimal(price));
-			} else {
+			} else if (field == 14) {
+				contract.setOpenPrice(new BigDecimal(price));
+			}else {
 				isNeedUpdate = false;
 			}
 			if (contract != null && isNeedUpdate) {
