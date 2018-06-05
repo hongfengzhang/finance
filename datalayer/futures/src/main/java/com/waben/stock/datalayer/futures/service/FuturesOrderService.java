@@ -319,6 +319,8 @@ public class FuturesOrderService {
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("buyingTime").as(Date.class)),
+						criteriaBuilder.desc(root.get("sellingTime").as(Date.class)));
 
 				return criteriaQuery.getRestriction();
 			}

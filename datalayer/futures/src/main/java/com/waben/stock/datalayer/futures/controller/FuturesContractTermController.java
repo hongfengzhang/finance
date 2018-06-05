@@ -163,7 +163,11 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 		}
 		termService.deleteContractTerm(id);
-		return new Response<>("删除成功");
+		Response<String> res = new Response<String>();
+		res.setCode("200");
+		res.setMessage("删除成功");
+		res.setResult("1");
+		return res;
 	}
 
 	@Override

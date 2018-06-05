@@ -30,6 +30,7 @@ import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.datalayer.futures.service.FuturesPreQuantityService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesPreQuantityDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -373,6 +374,16 @@ public class FuturesContractController implements FuturesContractInterface {
 				resultList.add(dto);
 			}
 			result.getContent().get(i).setFuturesTermAdminDto(resultList);
+			
+			//获取预设置手数
+			List<FuturesPreQuantity> preList = quantityService.findByContractId(result.getContent().get(i).getId());
+			List<FuturesPreQuantityDto> preResult = new ArrayList<FuturesPreQuantityDto>();
+			for(FuturesPreQuantity tity : preList){
+				FuturesPreQuantityDto dto = CopyBeanUtils.copyBeanProperties(tity, new FuturesPreQuantityDto(), false);
+				dto.setContractId(tity.getContract().getId());
+				preResult.add(dto);
+			}
+			result.getContent().get(i).setFuturesPreQuantityDto(preResult);
 		}
 		return new Response<>(result);
 	}
@@ -418,7 +429,11 @@ public class FuturesContractController implements FuturesContractInterface {
 		
 		
 		Integer i = futuresContractService.isCurrent(current, id);
-		return new Response<>("1");
+		Response<String> res = new Response<String>();
+		res.setCode("200");
+		res.setMessage("启用/停用成功");
+		res.setResult(i.toString());
+		return res;
 	}
 
 }

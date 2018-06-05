@@ -35,7 +35,8 @@ public class FuturesContractBusiness {
 	private FuturesPreQuantityInterface preQuantityReference;
 	
 	public Response<String> isEnable(Long contractId){
-		return reference.isCurrent(contractId);
+		Response<String> response = reference.isCurrent(contractId);
+		return response;
 	}
 	
 	public PageInfo<FuturesPreQuantityDto> queryPre(FuturesPreQuantityQuery query){
