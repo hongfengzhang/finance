@@ -25,12 +25,14 @@ import com.waben.stock.applayer.admin.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.admin.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesPreQuantityDto;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesPreQuantityQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -49,6 +51,19 @@ public class FurutesContractController {
 	
 	@Autowired
 	private FuturesContractBusiness business;
+	
+	@GetMapping("/queryPreQuantity")
+	@ApiOperation(value = "设置预置手数")
+	public Response<PageInfo<FuturesPreQuantityDto>> pagePre(FuturesPreQuantityQuery query){
+		return new Response<>(business.queryPre(query));
+	}
+	
+	@PutMapping("/isContractEnable")
+	@ApiOperation(value = "启用/停用合约")
+	public Response<String> isEnable( Long id){
+		return business.isEnable(id);
+	}
+	
 	@GetMapping("/pagesContractAdmin")
 	@ApiOperation(value = "查询品种")
 	public Response<PageInfo<FuturesContractAdminDto>> pageContracntAdmin(FuturesContractAdminQuery query){
@@ -99,12 +114,7 @@ public class FurutesContractController {
 	@DeleteMapping("/futuresContract/delete/{id}")
     @ApiOperation(value = "删除品种")
     public Response<String> deleteContract(@PathVariable("id") Long id){
-        String message = business.deleteContract(id);
-        Response<String> res = new Response<String>();
-        res.setCode("200");
-        res.setMessage(message);
-        res.setResult(null);
-        return res;
+        return business.deleteContract(id);
     }
 	
 	@GetMapping("/exportContract")
@@ -172,10 +182,13 @@ public class FurutesContractController {
 			}
 			
 			String unwindPoint = "";
-			if(dto.getUnwindPointType()==1&&dto.getUnwindServiceFee()!=null){
-				unwindPoint = dto.getUnwindServiceFee()+"%";
-			}else{
-				unwindPoint = dto.getUnwindServiceFee().toString();
+			if(dto.getUnwindServiceFee()!=null && dto.getUnwindPointType()!=null){
+				if(dto.getUnwindPointType()==1&&dto.getUnwindServiceFee()!=null){
+					unwindPoint = dto.getUnwindServiceFee()+"%";
+				}else{
+					unwindPoint = dto.getUnwindServiceFee().toString();
+				}
+				
 			}
 			
 			List<String> data = new ArrayList<>();

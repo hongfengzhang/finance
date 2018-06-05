@@ -30,9 +30,12 @@ import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.enums.OrganizationState;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.util.StringUtil;
@@ -55,6 +58,12 @@ public class FuturesContractService {
 	@Autowired
 	private FuturesOrderService orderService;
 	
+	@Autowired
+	private FuturesContractTermService termService;
+	
+	public int isCurrent(Boolean current,Long id){
+		return futuresContractDao.isCurrent(current, id);
+	}
 	
 
 	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
@@ -231,16 +240,30 @@ public class FuturesContractService {
 		return futuresContractDao.retrieve(contractId);
 	}
 	
-	public String deleteExchange(Long id){
+	public Response<String> deleteContract(Long id){
 		List<Long> contractId = new ArrayList<Long>();
 		contractId.add(id);
 		List<FuturesOrder> list = orderService.findByContractId(contractId);
 		if(list.size()>0){
-			return "该合约正在被订单使用，请不要删除";
+			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
+		}
+		
+		List<FuturesContractTerm> termList = termService.findByListContractId(id);
+		if(termList.size()>0){
+			for (FuturesContractTerm term : termList) {
+				contractId.clear();
+				contractId.add(term.getId());
+			}
+			list = orderService.findByContractTermId(contractId);
+			if(list.size()>0){
+				throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
+			}else{
+				int count = termService.deleteBycontractId(id);
+			}
 		}
 
 		futuresContractDao.delete(id);
-		return "删除成功";
+		return new Response<>("删除成功");
 	}
 
 	public List<FuturesContractTerm> findByListContractId(Long contractId) {

@@ -191,7 +191,7 @@ public class FuturesOrderBusiness {
 					}
 					orderMarket.setLastPrice(market.getLastPrice());
 					// 用户盈亏 = （最新价 - 买入价） / 最小波动点 * 汇率
-					orderMarket.setPublisherProfitOrLoss(market.getLastPrice().subtract(buyingPrice)
+					orderMarket.setFloatingProfitOrLoss(market.getLastPrice().subtract(buyingPrice)
 							.divide(contract.getMinWave()).multiply(rate.getRate()));
 				}
 

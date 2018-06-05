@@ -1,15 +1,26 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +30,7 @@ import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderMarketDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.applayer.tactics.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
@@ -26,6 +38,7 @@ import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
+import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -33,6 +46,7 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.util.PasswordCrypt;
+import com.waben.stock.interfaces.util.StringUtil;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -58,6 +72,9 @@ public class FuturesOrderController {
 
 	@Autowired
 	private PublisherBusiness publisherBusiness;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat exprotSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@PostMapping("/buy")
 	@ApiOperation(value = "买涨买跌下单")
@@ -220,15 +237,27 @@ public class FuturesOrderController {
 	@GetMapping("/turnover")
 	@ApiOperation(value = "获取成交记录列表（包括持仓中、已结算订单）")
 	public Response<PageInfo<FuturesOrderMarketDto>> turnoverList(int page, int size, String contractName,
-			Date stateTime, Date endTime) {
+			String startTime, String endTime) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position, FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
 		orderQuery.setPage(page);
 		orderQuery.setSize(size);
 		orderQuery.setContractName(contractName);
-		orderQuery.setStateTime(stateTime);
-		orderQuery.setEndTime(endTime);
+		if (!StringUtil.isEmpty(startTime)) {
+			try {
+				orderQuery.setStartBuyingTime(sdf.parse(startTime));
+			} catch (ParseException e) {
+				throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+			}
+		}
+		if (!StringUtil.isEmpty(endTime)) {
+			try {
+				orderQuery.setEndBuyingTime(sdf.parse(endTime));
+			} catch (ParseException e) {
+				throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+			}
+		}
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
 	}
@@ -258,7 +287,8 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
-			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
+					: futuresOrderMarketDto.getFloatingProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
@@ -276,7 +306,8 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
-			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
+					: futuresOrderMarketDto.getFloatingProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
@@ -293,7 +324,8 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
-			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss() == null ? new BigDecimal(0)
+					: futuresOrderMarketDto.getPublisherProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
@@ -328,6 +360,170 @@ public class FuturesOrderController {
 	@ApiOperation(value = "获取成交统计记录")
 	public Response<TurnoverStatistyRecordDto> getTurnoverStatistyRecord() {
 		return new Response<>(futuresOrderBusiness.getTurnoverStatistyRecord());
+	}
+
+	@GetMapping("/day/holding/profit")
+	@ApiOperation(value = "获取当天持仓浮动盈亏")
+	public Response<BigDecimal> dayHoldingProfit() {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Position };
+		orderQuery.setStates(states);
+		orderQuery.setPage(0);
+		orderQuery.setSize(Integer.MAX_VALUE);
+		orderQuery.setStartBuyingTime(getCurrentDay());
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
+		BigDecimal totalIncome = new BigDecimal(0);
+		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss());
+		}
+		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+	}
+
+	@GetMapping("/day/settled/profit")
+	@ApiOperation(value = "获取当天平仓盈亏")
+	public Response<BigDecimal> daySettledProfit() {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Unwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(0);
+		orderQuery.setSize(Integer.MAX_VALUE);
+		orderQuery.setStartBuyingTime(getCurrentDay());
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
+		BigDecimal totalIncome = new BigDecimal(0);
+		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+		}
+		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+	}
+
+	@GetMapping(value = "/export")
+	@ApiOperation(value = "导出期货订单成交记录")
+	public void export(String contractName, String startTime, String endTime, HttpServletResponse svrResponse) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.Position, FuturesOrderState.Unwind };
+		orderQuery.setStates(states);
+		orderQuery.setPage(0);
+		orderQuery.setSize(Integer.MAX_VALUE);
+		orderQuery.setContractName(contractName);
+		if (!StringUtil.isEmpty(startTime)) {
+			try {
+				orderQuery.setStartBuyingTime(sdf.parse(startTime));
+			} catch (ParseException e) {
+				throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+			}
+		}
+		if (!StringUtil.isEmpty(endTime)) {
+			try {
+				orderQuery.setEndBuyingTime(sdf.parse(endTime));
+			} catch (ParseException e) {
+				throw new ServiceException(ExceptionConstant.ARGUMENT_EXCEPTION);
+			}
+		}
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		PageInfo<FuturesOrderMarketDto> result = futuresOrderBusiness.pageOrderMarket(orderQuery);
+		File file = null;
+		FileInputStream is = null;
+		try {
+			String fileName = "turnover_" + String.valueOf(System.currentTimeMillis());
+			file = File.createTempFile(fileName, ".xls");
+			List<String> columnDescList = columnDescList();
+			List<List<String>> dataList = dataList(result.getContent());
+			PoiUtil.writeDataToExcel("成交记录", file, columnDescList, dataList);
+
+			is = new FileInputStream(file);
+			svrResponse.setContentType("application/vnd.ms-excel");
+			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			IOUtils.copy(is, svrResponse.getOutputStream());
+			svrResponse.getOutputStream().flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "导出期货订单成交记录到excel异常：" + e.getMessage());
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+			if (file != null) {
+				file.delete();
+			}
+		}
+	}
+
+	private List<List<String>> dataList(List<FuturesOrderMarketDto> content) {
+		List<List<String>> result = new ArrayList<>();
+		for (FuturesOrderMarketDto trade : content) {
+			List<String> data = new ArrayList<>();
+			String business = "";
+			if (trade.getOrderType() == FuturesOrderType.BuyUp) {
+				business = "买";
+			} else {
+				business = "卖";
+			}
+			String buyPrice = "";
+			if (trade.getBuyingPriceType() == FuturesTradePriceType.MKT) {
+				buyPrice = String.valueOf(trade.getBuyingPrice());
+			} else {
+				buyPrice = String.valueOf(trade.getBuyingEntrustPrice());
+			}
+			String sellPrice = "";
+			if (trade.getBuyingPriceType() == FuturesTradePriceType.MKT) {
+				sellPrice = String.valueOf(trade.getSellingPrice());
+			} else {
+				sellPrice = String.valueOf(trade.getSellingEntrustPrice());
+			}
+			data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
+			data.add(trade.getContractName() == null ? "" : trade.getContractName());
+			data.add(trade.getExchangeName() == null ? "" : trade.getExchangeName());
+			data.add(business);
+			data.add(trade.getState() == null ? "" : trade.getState().getType());
+			data.add(String.valueOf(trade.getTotalQuantity() == null ? "" : trade.getTotalQuantity().intValue() + "手"));
+			data.add(trade.getBuyingTime() == null ? "" : exprotSdf.format(trade.getBuyingTime()));
+			data.add(buyPrice);
+			data.add(String.valueOf(trade.getFloatingProfitOrLoss() == null ? "" : trade.getFloatingProfitOrLoss()));
+			data.add(String.valueOf(trade.getOpenwindServiceFee() == null ? "" : trade.getOpenwindServiceFee()));
+			data.add(String.valueOf(trade.getReserveFund() == null ? "" : trade.getReserveFund()));
+			data.add(trade.getSellingTime() == null ? "" : exprotSdf.format(trade.getSellingTime()));
+			data.add(sellPrice);
+			data.add(String.valueOf(trade.getPublisherProfitOrLoss() == null ? "" : trade.getPublisherProfitOrLoss()));
+			data.add(String.valueOf(trade.getUnwindServiceFee() == null ? "" : trade.getUnwindServiceFee()));
+			data.add(trade.getWindControlType() == null ? "" : trade.getWindControlType().getType());
+			result.add(data);
+		}
+		return result;
+	}
+
+	private List<String> columnDescList() {
+		List<String> result = new ArrayList<>();
+		result.add("成交编号");
+		result.add("合约名称");
+		result.add("市场");
+		result.add("买卖");
+		result.add("状态");
+		result.add("手数");
+		result.add("开仓时间");
+		result.add("开仓价格");
+		result.add("浮动盈亏");
+		result.add("开仓手续费");
+		result.add("保证金");
+		result.add("平仓时间");
+		result.add("平仓价格");
+		result.add("平仓盈亏");
+		result.add("平仓手续费");
+		result.add("平仓类型");
+		return result;
+	}
+
+	private Date getCurrentDay() {
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+		return cal.getTime();
 	}
 
 }

@@ -43,8 +43,7 @@ public class FuturesContractTermControllerr {
 	@DeleteMapping("/delete/{id}")
     @ApiOperation(value = "删除合约期限")
     public Response<String> delete(@PathVariable("id") Long id){
-		String mesage = business.deleteContract(id);
-        return new Response<>(mesage);
+        return business.deleteContract(id);
     }
 	
 	@GetMapping("/pagesTerm")

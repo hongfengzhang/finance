@@ -1,6 +1,9 @@
 package com.waben.stock.datalayer.futures.controller;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,9 +18,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
+import com.waben.stock.datalayer.futures.entity.FuturesTradeLimit;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.datalayer.futures.service.FuturesOvernightRecordService;
+import com.waben.stock.datalayer.futures.service.FuturesTradeLimitService;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.dto.admin.futures.FutresOrderEntrustDto;
@@ -42,6 +47,14 @@ public class FuturesTradeController implements FuturesTradeInterface {
 	
 	@Autowired
 	private FuturesCurrencyRateService rateService;
+	
+	@Autowired
+	private FuturesTradeLimitService limitService;
+	
+	SimpleDateFormat dateFm = new SimpleDateFormat("HH:mm:ss"); 
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
+	SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
 	
 	@Override
 	public Response<PageInfo<FutresOrderEntrustDto>> pagesOrderEntrust(@RequestBody FuturesTradeAdminQuery query){
@@ -130,9 +143,54 @@ public class FuturesTradeController implements FuturesTradeInterface {
 						}
 					}
 				}
+				List<FuturesTradeLimit> limit = limitService.findByContractId(order.getContract().getId());
+				if(limit!=null){
+					Date da = new Date();
+					String curreyDay = sdf.format(da);
+					int weekDays = getWeekOfDate(da);
+					for(int j=0;j<limit.size();j++){
+						if(limit.get(j).getWeekDay()==weekDays){
+							try {
+								Date start = null;
+								Date end =null;
+								if(limit.get(j).getStartLimitTime()!=null && !"".equals(limit.get(j).getStartLimitTime())){
+									String startStr = curreyDay+" "+limit.get(j).getStartLimitTime();
+									start = sdf1.parse(startStr);
+								}
+								if(limit.get(j).getEndLimitTime()!=null && !"".equals(limit.get(j).getEndLimitTime())){
+									String endStr = curreyDay+" "+limit.get(j).getEndLimitTime();
+									end = sdf1.parse(endStr);
+								}
+								if(start!=null&&end!=null){
+									if(da.getTime()>start.getTime()&&da.getTime()<end.getTime()){
+										result.getContent().get(i).setWindControlState(limit.get(j).getLimitType().getType());
+									}else{
+										result.getContent().get(i).setWindControlState("正常");
+									}
+								}
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
+						if(result.getContent().get(i).getWindControlState()==null&&"".equals(result.getContent().get(i).getWindControlState())){
+							result.getContent().get(i).setWindControlState("正常");
+						}
+					}
+				}
+				
 			}
 		}
 		return new Response<>(result);
 	}
+	
+	private int getWeekOfDate(Date date) {  
+//        String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };  
+        Calendar cal = Calendar.getInstance();  
+        cal.setTime(date);  
+        int w = cal.get(Calendar.DAY_OF_WEEK);  
+        if (w < 0)  
+            w = 0;  
+        return w;  
+    } 
 
 }
