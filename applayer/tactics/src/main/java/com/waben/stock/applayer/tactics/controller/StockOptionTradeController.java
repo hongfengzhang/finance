@@ -190,9 +190,8 @@ public class StockOptionTradeController {
 		List<String> codes = new ArrayList<>();
 		codes.add(stockCode);
 		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
-		BigDecimal temp = nominalAmount.divide(market.getLastPrice(), 2, RoundingMode.DOWN);
-		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].intValue();
-		dto.setNumberOfStrand(numberOfStrand);
+		BigDecimal numberOfStrand = nominalAmount.divide(market.getLastPrice().multiply(new BigDecimal("100.5")), 0, RoundingMode.DOWN);
+		dto.setNumberOfStrand(numberOfStrand.intValue());
 		// 获取当前用户所属的推广代理商
 		OrganizationPublisherDto orgPublisher = orgPublisherBusiness.fetchOrgPublisher(SecurityUtil.getUserId());
 		if (orgPublisher != null) {
