@@ -75,13 +75,13 @@ public class StockOptionTradeController {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	@ApiOperation(value = "获取期权权利金加价比例")
+	@ApiOperation(value = "获取期权策略风控服务费加价比例")
 	@GetMapping(value = "/pricemarkup")
 	public Response<List<PriceMarkupConfigDto>> fetchPriceMarkup() {
 		return new Response<>(markupBusiness.priceMarkupConfigList(1L, 2));
 	}
 
-	@ApiOperation(value = "设置期权权利金加价比例")
+	@ApiOperation(value = "设置期权策略风控服务费加价比例")
 	@PostMapping(value = "/pricemarkup")
 	public Response<String> settingPriceMarkup(String data) {
 		Response<String> response = new Response<>();
@@ -194,7 +194,7 @@ public class StockOptionTradeController {
 			@RequestParam("sellingPrice") BigDecimal sellingPrice) {
 		return new Response<>(business.insettlement(id, sellingPrice));
 	}
-	
+
 	@PutMapping(value = "/dosettlement/{id}")
 	@ApiOperation(value = "结算")
 	public Response<StockOptionTradeDto> dosettlement(@PathVariable("id") Long id) {
@@ -209,20 +209,20 @@ public class StockOptionTradeController {
 		PageInfo<StockOptionAdminDto> result = business.adminPagesByQuery(query);
 		File file = null;
 		FileInputStream is = null;
-		
+
 		List<String> columnDescList = null;
 		try {
 			String fileName = "optiontrade_" + String.valueOf(System.currentTimeMillis());
 			file = File.createTempFile(fileName, ".xls");
-			if (query.getQueryType() == 0 || query.getQueryType() == 3) {//订单列表和结算
+			if (query.getQueryType() == 0 || query.getQueryType() == 3) {// 订单列表和结算
 				columnDescList = columnDescList();
-			}else if(query.getQueryType() == 1){//询价列表
+			} else if (query.getQueryType() == 1) {// 询价列表
 				columnDescList = inquiryDescList();
-			}else if(query.getQueryType() == 2){ //持仓列表
+			} else if (query.getQueryType() == 2) { // 持仓列表
 				columnDescList = positionDescList();
-			}else if(query.getQueryType() == 4){ //撤单列表
+			} else if (query.getQueryType() == 4) { // 撤单列表
 				columnDescList = cancelDescList();
-			}else{
+			} else {
 				columnDescList = columnDescList();
 			}
 			List<List<String>> dataList = dataList(result.getContent(), query.getQueryType());
@@ -281,6 +281,7 @@ public class StockOptionTradeController {
 				data.add(trade.getCycleName() == null ? "" : trade.getCycleName());
 				data.add(String.valueOf(trade.getRightMoney() == null ? "" : trade.getRightMoney()));
 				data.add(String.valueOf(trade.getRightMoneyRatio() == null ? "" : trade.getRightMoneyRatio()));
+				data.add(trade.getNumberOfStrand() == null ? "" : String.valueOf(trade.getNumberOfStrand()));
 				data.add(String.valueOf(trade.getOrgRightMoneyRatio() == null ? "0" : trade.getOrgRightMoneyRatio()));
 				data.add(trade.getApplyTime() == null ? "" : sdf.format(trade.getApplyTime()));
 				data.add(trade.getBuyingTime() == null ? "" : sdf.format(trade.getBuyingTime()));
@@ -293,7 +294,7 @@ public class StockOptionTradeController {
 				data.add(trade.getRightTime() == null ? "" : sdf.format(trade.getRightTime()));
 				data.add(state);
 				data.add(mark);
-			}else if(type == 1){
+			} else if (type == 1) {
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
 				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
@@ -307,7 +308,7 @@ public class StockOptionTradeController {
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(test);
 				data.add(state);
-			}else if(type == 2){
+			} else if (type == 2) {
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
 				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
@@ -326,7 +327,7 @@ public class StockOptionTradeController {
 				data.add(trade.getRightTime() == null ? "" : sdf.format(trade.getRightTime()));
 				data.add(state);
 				data.add(mark);
-			}else if(type == 4){
+			} else if (type == 4) {
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
 				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
@@ -340,7 +341,7 @@ public class StockOptionTradeController {
 				data.add(String.valueOf(trade.getLastPrice() != null ? trade.getLastPrice() : ""));
 				data.add(test);
 				data.add(state);
-			}else{
+			} else {
 				data.add(trade.getPublisherName() == null ? "" : trade.getPublisherName());
 				data.add(trade.getPublisherPhone() == null ? "" : trade.getPublisherPhone());
 				data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
@@ -361,7 +362,6 @@ public class StockOptionTradeController {
 				data.add(state);
 				data.add(mark);
 			}
-			
 
 			result.add(data);
 		}
@@ -374,10 +374,11 @@ public class StockOptionTradeController {
 		result.add("交易账户");
 		result.add("订单编号");
 		result.add("股票代码/名称");
-		result.add("名义本金");
-		result.add("行权周期");
-		result.add("权利金");
+		result.add("策略金额");
+		result.add("策略周期");
+		result.add("策略风控服务费");
 		result.add("平台报价");
+		result.add("实际买入手数");
 		result.add("机构报价");
 		result.add("申购时间");
 		result.add("买入时间");
@@ -387,12 +388,12 @@ public class StockOptionTradeController {
 		result.add("当前价格");
 		result.add("浮动盈亏");
 		result.add("是否测试");
-		result.add("申请行权时间");
+		result.add("申请卖出时间");
 		result.add("订单状态");
 		result.add("是否标记");
 		return result;
 	}
-	
+
 	// 询价
 	private List<String> inquiryDescList() {
 		List<String> result = new ArrayList<>();
@@ -400,9 +401,9 @@ public class StockOptionTradeController {
 		result.add("交易账户");
 		result.add("订单编号");
 		result.add("股票代码/名称");
-		result.add("名义本金");
-		result.add("行权周期");
-		result.add("权利金");
+		result.add("策略金额");
+		result.add("策略周期");
+		result.add("策略风控服务费");
 		result.add("平台报价");
 		result.add("机构报价");
 		result.add("申购时间");
@@ -411,7 +412,7 @@ public class StockOptionTradeController {
 		result.add("订单状态");
 		return result;
 	}
-	
+
 	// 持仓
 	private List<String> positionDescList() {
 		List<String> result = new ArrayList<>();
@@ -419,9 +420,9 @@ public class StockOptionTradeController {
 		result.add("交易账户");
 		result.add("订单编号");
 		result.add("股票代码/名称");
-		result.add("名义本金");
-		result.add("行权周期");
-		result.add("权利金");
+		result.add("策略金额");
+		result.add("策略周期");
+		result.add("策略风控服务费");
 		result.add("平台报价");
 		result.add("机构报价");
 		result.add("申购时间");
@@ -430,22 +431,22 @@ public class StockOptionTradeController {
 		result.add("当前价格");
 		result.add("浮动盈亏");
 		result.add("是否测试");
-		result.add("申请行权时间");
+		result.add("申请卖出时间");
 		result.add("订单状态");
 		result.add("是否标记");
 		return result;
 	}
-	
-	//撤单
+
+	// 撤单
 	private List<String> cancelDescList() {
 		List<String> result = new ArrayList<>();
 		result.add("客户姓名");
 		result.add("交易账户");
 		result.add("订单编号");
 		result.add("股票代码/名称");
-		result.add("名义本金");
-		result.add("行权周期");
-		result.add("权利金");
+		result.add("策略金额");
+		result.add("策略周期");
+		result.add("策略风控服务费");
 		result.add("平台报价");
 		result.add("机构报价");
 		result.add("申购时间");
