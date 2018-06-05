@@ -69,10 +69,10 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	}
 
 	@Override
-	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId, String sellingPriceTypeIndex,
+	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long id, String sellingPriceTypeIndex,
 			BigDecimal sellingEntrustPrice) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.applyUnwind(
-				orderId, FuturesTradePriceType.getByIndex(sellingPriceTypeIndex), sellingEntrustPrice), false));
+				id, FuturesTradePriceType.getByIndex(sellingPriceTypeIndex), sellingEntrustPrice), false));
 	}
 
 	@Override
@@ -82,9 +82,9 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	}
 
 	@Override
-	public Response<FuturesOrderDto> backhandUnwind(@PathVariable Long orderId) {
+	public Response<FuturesOrderDto> backhandUnwind(@PathVariable Long id) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class,
-				futuresOrderService.backhandUnwind(orderId), false));
+				futuresOrderService.backhandUnwind(id), false));
 	}
 
 	@Override
