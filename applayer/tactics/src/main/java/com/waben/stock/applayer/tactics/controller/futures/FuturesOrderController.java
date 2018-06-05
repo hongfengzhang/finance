@@ -287,7 +287,8 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
-			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss());
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
+					: futuresOrderMarketDto.getFloatingProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
@@ -305,7 +306,8 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
-			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss());
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
+					: futuresOrderMarketDto.getFloatingProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
@@ -322,7 +324,8 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		BigDecimal totalIncome = new BigDecimal(0);
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
-			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
+			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss() == null ? new BigDecimal(0)
+					: futuresOrderMarketDto.getPublisherProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
 	}
@@ -361,12 +364,12 @@ public class FuturesOrderController {
 
 	@GetMapping("/day/holding/profit")
 	@ApiOperation(value = "获取当天持仓浮动盈亏")
-	public Response<BigDecimal> dayHoldingProfit(int page, int size) {
+	public Response<BigDecimal> dayHoldingProfit() {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position };
 		orderQuery.setStates(states);
-		orderQuery.setPage(page);
-		orderQuery.setSize(size);
+		orderQuery.setPage(0);
+		orderQuery.setSize(Integer.MAX_VALUE);
 		orderQuery.setStartBuyingTime(getCurrentDay());
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
@@ -379,12 +382,12 @@ public class FuturesOrderController {
 
 	@GetMapping("/day/settled/profit")
 	@ApiOperation(value = "获取当天平仓盈亏")
-	public Response<BigDecimal> daySettledProfit(int page, int size) {
+	public Response<BigDecimal> daySettledProfit() {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
-		orderQuery.setPage(page);
-		orderQuery.setSize(size);
+		orderQuery.setPage(0);
+		orderQuery.setSize(Integer.MAX_VALUE);
 		orderQuery.setStartBuyingTime(getCurrentDay());
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
