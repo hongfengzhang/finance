@@ -480,15 +480,12 @@ public class FuturesOrderController {
 			data.add(String.valueOf(trade.getTotalQuantity() == null ? "" : trade.getTotalQuantity().intValue() + "手"));
 			data.add(trade.getBuyingTime() == null ? "" : exprotSdf.format(trade.getBuyingTime()));
 			data.add(buyPrice);
-			data.add(String.valueOf(
-					trade.getFloatingProfitOrLoss() == null ? "" : trade.getFloatingProfitOrLoss()));
-			data.add(String
-					.valueOf(trade.getOpenwindServiceFee() == null ? "" : trade.getOpenwindServiceFee()));
+			data.add(String.valueOf(trade.getFloatingProfitOrLoss() == null ? "" : trade.getFloatingProfitOrLoss()));
+			data.add(String.valueOf(trade.getOpenwindServiceFee() == null ? "" : trade.getOpenwindServiceFee()));
 			data.add(String.valueOf(trade.getReserveFund() == null ? "" : trade.getReserveFund()));
 			data.add(trade.getSellingTime() == null ? "" : exprotSdf.format(trade.getSellingTime()));
 			data.add(sellPrice);
-			data.add(String.valueOf(
-					trade.getPublisherProfitOrLoss() == null ? "" : trade.getPublisherProfitOrLoss()));
+			data.add(String.valueOf(trade.getPublisherProfitOrLoss() == null ? "" : trade.getPublisherProfitOrLoss()));
 			data.add(String.valueOf(trade.getUnwindServiceFee() == null ? "" : trade.getUnwindServiceFee()));
 			data.add(trade.getWindControlType() == null ? "" : trade.getWindControlType().getType());
 			result.add(data);
