@@ -462,15 +462,15 @@ public class FuturesOrderController {
 			}
 			String buyPrice = "";
 			if (trade.getBuyingPriceType() == FuturesTradePriceType.MKT) {
-				buyPrice = String.valueOf(trade.getBuyingPrice().intValue());
+				buyPrice = String.valueOf(trade.getBuyingPrice());
 			} else {
-				buyPrice = String.valueOf(trade.getBuyingEntrustPrice().intValue());
+				buyPrice = String.valueOf(trade.getBuyingEntrustPrice());
 			}
 			String sellPrice = "";
 			if (trade.getBuyingPriceType() == FuturesTradePriceType.MKT) {
-				sellPrice = String.valueOf(trade.getSellingPrice().intValue());
+				sellPrice = String.valueOf(trade.getSellingPrice());
 			} else {
-				sellPrice = String.valueOf(trade.getSellingEntrustPrice().intValue());
+				sellPrice = String.valueOf(trade.getSellingEntrustPrice());
 			}
 			data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
 			data.add(trade.getContractName() == null ? "" : trade.getContractName());
@@ -481,15 +481,15 @@ public class FuturesOrderController {
 			data.add(trade.getBuyingTime() == null ? "" : exprotSdf.format(trade.getBuyingTime()));
 			data.add(buyPrice);
 			data.add(String.valueOf(
-					trade.getFloatingProfitOrLoss() == null ? "" : trade.getFloatingProfitOrLoss().intValue()));
+					trade.getFloatingProfitOrLoss() == null ? "" : trade.getFloatingProfitOrLoss()));
 			data.add(String
-					.valueOf(trade.getOpenwindServiceFee() == null ? "" : trade.getOpenwindServiceFee().intValue()));
-			data.add(String.valueOf(trade.getReserveFund() == null ? "" : trade.getReserveFund().intValue()));
+					.valueOf(trade.getOpenwindServiceFee() == null ? "" : trade.getOpenwindServiceFee()));
+			data.add(String.valueOf(trade.getReserveFund() == null ? "" : trade.getReserveFund()));
 			data.add(trade.getSellingTime() == null ? "" : exprotSdf.format(trade.getSellingTime()));
 			data.add(sellPrice);
 			data.add(String.valueOf(
-					trade.getPublisherProfitOrLoss() == null ? "" : trade.getPublisherProfitOrLoss().intValue()));
-			data.add(String.valueOf(trade.getUnwindServiceFee() == null ? "" : trade.getUnwindServiceFee().intValue()));
+					trade.getPublisherProfitOrLoss() == null ? "" : trade.getPublisherProfitOrLoss()));
+			data.add(String.valueOf(trade.getUnwindServiceFee() == null ? "" : trade.getUnwindServiceFee()));
 			data.add(trade.getWindControlType() == null ? "" : trade.getWindControlType().getType());
 			result.add(data);
 		}
