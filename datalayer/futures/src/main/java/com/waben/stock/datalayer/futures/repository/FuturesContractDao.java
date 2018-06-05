@@ -17,5 +17,5 @@ public interface FuturesContractDao extends BaseDao<FuturesContract, Long> {
 	
 	List<FuturesContractTerm> findByListContractId(@PathVariable("contractId") Long contractId);
 	
-	int isCurrent(Integer current,Long id);
+	int isCurrent(Boolean current,Long id);
 }

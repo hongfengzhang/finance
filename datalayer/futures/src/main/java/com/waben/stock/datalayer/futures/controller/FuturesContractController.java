@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
@@ -383,19 +384,19 @@ public class FuturesContractController implements FuturesContractInterface {
 	}
 
 	@Override
-	public Response<String> isCurrent(@PathVariable Long id) {
+	public Response<String> isCurrent(@RequestParam(value="id") Long id) {
 		FuturesContract contract = futuresContractService.findByContractId(id);
-		Integer current = null;
+		Boolean current = false;
 		if(contract.getEnable()!=null){
 			if(contract.getEnable()){
-				current = 0;
+				current = false;
 			}else{
-				current = 1;
+				current = true;
 			}
 		}else{
-			current=0;
+			current=false;
 		}
-		if(current == 1){
+		if(current){
 			List<FuturesContractTerm> termList = futuresContractService.findByListContractId(id);
 			if(termList.size()>0){
 				Boolean isCurrent = false;

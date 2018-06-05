@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
@@ -67,7 +68,7 @@ public interface FuturesContractInterface {
 	@RequestMapping(value = "/contract/{contractId}", method = RequestMethod.GET)
 	Response<FuturesContractDto> findByContractId(@PathVariable("contractId") Long contractId);
 	
-	@RequestMapping(value ="/contract/isEnable", method = RequestMethod.GET)
-	Response<String> isCurrent(@PathVariable("id") Long id);
+	@RequestMapping(value ="/contract/isEnable", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<String> isCurrent(@RequestParam(value = "id") Long id);
 
 }

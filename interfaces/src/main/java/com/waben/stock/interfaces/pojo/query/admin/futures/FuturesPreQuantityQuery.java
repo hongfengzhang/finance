@@ -10,7 +10,7 @@ public class FuturesPreQuantityQuery extends PageAndSortQuery {
 	
 	private Long contractId;
 	
-	private List<Integer> quantity;
+	private String quantity;
 
 	public Long getId() {
 		return id;
@@ -28,11 +28,11 @@ public class FuturesPreQuantityQuery extends PageAndSortQuery {
 		this.contractId = contractId;
 	}
 
-	public List<Integer> getQuantity() {
+	public String getQuantity() {
 		return quantity;
 	}
 
-	public void setQuantity(List<Integer> quantity) {
+	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
 	
