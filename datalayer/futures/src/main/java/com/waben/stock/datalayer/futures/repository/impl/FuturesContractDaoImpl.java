@@ -67,7 +67,7 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 	}
 
 	@Override
-	public int isCurrent(Integer current, Long id) {
+	public int isCurrent(Boolean current, Long id) {
 		return repository.enable(current, id);
 	}
 

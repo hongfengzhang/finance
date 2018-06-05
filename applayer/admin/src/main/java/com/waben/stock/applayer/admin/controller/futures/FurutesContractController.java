@@ -182,10 +182,13 @@ public class FurutesContractController {
 			}
 			
 			String unwindPoint = "";
-			if(dto.getUnwindPointType()==1&&dto.getUnwindServiceFee()!=null){
-				unwindPoint = dto.getUnwindServiceFee()+"%";
-			}else{
-				unwindPoint = dto.getUnwindServiceFee().toString();
+			if(dto.getUnwindServiceFee()!=null && dto.getUnwindPointType()!=null){
+				if(dto.getUnwindPointType()==1&&dto.getUnwindServiceFee()!=null){
+					unwindPoint = dto.getUnwindServiceFee()+"%";
+				}else{
+					unwindPoint = dto.getUnwindServiceFee().toString();
+				}
+				
 			}
 			
 			List<String> data = new ArrayList<>();

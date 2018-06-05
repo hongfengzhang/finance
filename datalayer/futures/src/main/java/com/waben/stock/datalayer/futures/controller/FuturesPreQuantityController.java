@@ -1,5 +1,6 @@
 package com.waben.stock.datalayer.futures.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesPreQuantityService;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesPreQuantityDto;
+import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesPreQuantityQuery;
@@ -34,7 +36,13 @@ public class FuturesPreQuantityController implements FuturesPreQuantityInterface
 	@Override
 	public Response<PageInfo<FuturesPreQuantityDto>> findAll(@RequestBody FuturesPreQuantityQuery query) {
 		List<FuturesPreQuantity> list = service.findByContractId(query.getContractId());
-		List<Integer> quantity = query.getQuantity();
+		
+		String[] array = query.getQuantity().split(",");
+		ArrayList<Integer> quantity = new ArrayList<Integer>();
+		for (String temp : array) {
+			quantity.add(Integer.valueOf(temp));
+		}
+		
 		if(list.size()==0){
 			for(Integer iq:quantity){
 				FuturesPreQuantity qu = new FuturesPreQuantity();
@@ -44,17 +52,6 @@ public class FuturesPreQuantityController implements FuturesPreQuantityInterface
 			}
 		}else{
 			if(list.size()>quantity.size()){
-				for(int i=0;i<list.size();i++){
-					FuturesPreQuantity tity = list.get(i);
-					if(list.get(i).getContract().getId() == query.getContractId()){
-						tity.setQuantity(quantity.get(i));
-						service.modify(tity);
-					}
-				}
-				for(int j=quantity.size()-1;j<list.size();j++){
-					service.delete(list.get(j).getId());
-				}
-			}else{
 				for(int i=0;i<quantity.size();i++){
 					FuturesPreQuantity tity = list.get(i);
 					if(list.get(i).getContract().getId() == query.getContractId()){
@@ -62,7 +59,18 @@ public class FuturesPreQuantityController implements FuturesPreQuantityInterface
 						service.modify(tity);
 					}
 				}
-				for(int j=list.size()-1;j<quantity.size();j++){
+				for(int j=quantity.size();j<list.size();j++){
+					service.delete(list.get(j).getId());
+				}
+			}else{
+				for(int i=0;i<list.size();i++){
+					FuturesPreQuantity tity = list.get(i);
+					if(list.get(i).getContract().getId() == query.getContractId()){
+						tity.setQuantity(quantity.get(i));
+						service.modify(tity);
+					}
+				}
+				for(int j=list.size();j<quantity.size();j++){
 					FuturesPreQuantity qu = new FuturesPreQuantity();
 					qu.setContract(contractService.findByContractId(query.getContractId()));
 					qu.setQuantity(quantity.get(j));
@@ -73,9 +81,11 @@ public class FuturesPreQuantityController implements FuturesPreQuantityInterface
 		Page<FuturesPreQuantity> page = service.pagePre(query);
 		PageInfo<FuturesPreQuantityDto> pages = PageToPageInfo.pageToPageInfo(page, FuturesPreQuantityDto.class);
 		for(int i=0;i<pages.getContent().size();i++){
-			pages.getContent().get(i).setContractId(page.getContent().get(i).getContract().getId());
+			if(page.getContent().get(i).getContract()!=null){
+				pages.getContent().get(i).setContractId(page.getContent().get(i).getContract().getId());
+			}
 		}
-		return new Response<>(PageToPageInfo.pageToPageInfo(service.pagePre(query), FuturesPreQuantityDto.class));
+		return new Response<>(pages);
 	}
 
 }

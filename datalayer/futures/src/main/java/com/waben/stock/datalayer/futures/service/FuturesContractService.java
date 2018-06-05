@@ -61,7 +61,7 @@ public class FuturesContractService {
 	@Autowired
 	private FuturesContractTermService termService;
 	
-	public int isCurrent(Integer current,Long id){
+	public int isCurrent(Boolean current,Long id){
 		return futuresContractDao.isCurrent(current, id);
 	}
 	
