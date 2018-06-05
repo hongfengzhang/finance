@@ -51,9 +51,8 @@ public class FuturesContractTermBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
-	public String deleteContract(Long id){
-		String mesage = reference.deleteContractTerm(id);
-		return mesage;
+	public Response<String> deleteContract(Long id){
+		return reference.deleteContractTerm(id);
 	}
 	
 	public PageInfo<FuturesTermAdminDto> pagesTermAdmin(FuturesTermAdminQuery query){

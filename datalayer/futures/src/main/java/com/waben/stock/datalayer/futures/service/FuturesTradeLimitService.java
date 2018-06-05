@@ -1,6 +1,7 @@
 package com.waben.stock.datalayer.futures.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -29,15 +30,21 @@ public class FuturesTradeLimitService {
 	private FuturesTradeLimitDao limitDao;
 	
 	public FuturesTradeLimit save(FuturesTradeLimit limit){
+		limit.setUpdateTime(new Date());
 		return limitDao.create(limit);
 	}
 	
 	public FuturesTradeLimit modify(FuturesTradeLimit limit){
+		limit.setUpdateTime(new Date());
 		return limitDao.update(limit);
 	}
 	
 	public void delete(Long id){
 		limitDao.delete(id);;
+	}
+	
+	public List<FuturesTradeLimit> findByContractId(Long contractId){
+		return limitDao.findByContractId(contractId);
 	}
 
 	public Page<FuturesTradeLimit> pagesTradeLimit(final FuturesTradeLimitQuery query){

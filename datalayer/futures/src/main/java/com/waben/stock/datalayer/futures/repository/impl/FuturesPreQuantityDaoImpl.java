@@ -6,22 +6,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
-import com.waben.stock.datalayer.futures.entity.FuturesTradeLimit;
-import com.waben.stock.datalayer.futures.repository.FuturesTradeLimitDao;
-import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesTradeLimitRepository;
+import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
+import com.waben.stock.datalayer.futures.repository.FuturesPreQuantityDao;
+import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesPreQuantityRepository;
 
 @Repository
-public class FuturesTradeLimitDaoImpl implements FuturesTradeLimitDao {
+public class FuturesPreQuantityDaoImpl implements FuturesPreQuantityDao {
 
 	@Autowired
-	private FuturesTradeLimitRepository repository;
+	private FuturesPreQuantityRepository repository;
 	
 	@Override
-	public FuturesTradeLimit create(FuturesTradeLimit t) {
+	public FuturesPreQuantity create(FuturesPreQuantity t) {
 		return repository.save(t);
 	}
 
@@ -31,32 +30,32 @@ public class FuturesTradeLimitDaoImpl implements FuturesTradeLimitDao {
 	}
 
 	@Override
-	public FuturesTradeLimit update(FuturesTradeLimit t) {
+	public FuturesPreQuantity update(FuturesPreQuantity t) {
 		return repository.save(t);
 	}
 
 	@Override
-	public FuturesTradeLimit retrieve(Long id) {
+	public FuturesPreQuantity retrieve(Long id) {
 		return repository.findById(id);
 	}
 
 	@Override
-	public Page<FuturesTradeLimit> page(int page, int limit) {
+	public Page<FuturesPreQuantity> page(int page, int limit) {
 		return repository.findAll(new PageRequest(page, limit));
 	}
 
 	@Override
-	public Page<FuturesTradeLimit> page(Specification<FuturesTradeLimit> specification, Pageable pageable) {
+	public Page<FuturesPreQuantity> page(Specification<FuturesPreQuantity> specification, Pageable pageable) {
 		return repository.findAll(specification, pageable);
 	}
 
 	@Override
-	public List<FuturesTradeLimit> list() {
+	public List<FuturesPreQuantity> list() {
 		return repository.findAll();
 	}
 
 	@Override
-	public List<FuturesTradeLimit> findByContractId(Long contractId) {
+	public List<FuturesPreQuantity> findByContractId(Long contractId) {
 		return repository.findByContractId(contractId);
 	}
 

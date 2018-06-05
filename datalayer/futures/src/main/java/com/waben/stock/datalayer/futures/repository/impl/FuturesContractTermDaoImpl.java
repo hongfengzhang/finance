@@ -71,4 +71,9 @@ public class FuturesContractTermDaoImpl implements FuturesContractTermDao {
 		return repository.findByContractId(contractId);
 	}
 
+	@Override
+	public int deleteBycontractId(Long contractId) {
+		return repository.deleteBycontractId(contractId);
+	}
+
 }

@@ -126,6 +126,9 @@ public class FuturesOrderController {
 	
 	private List<List<String>> dataList(List<FuturesOrderAdminDto> content, Integer type){
 		List<List<String>> result = new ArrayList<List<String>>();
+		if(content==null){
+			return result;
+		}
 		for (FuturesOrderAdminDto dto : content) {
 			List<String> data = new ArrayList<String>();
 			if(type == 0){

@@ -18,7 +18,9 @@ import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesOrderService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTermAdminQuery;
@@ -42,7 +44,7 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 	@Autowired
 	private FuturesOrderService orderService;
 	
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	@Override
 	public Response<FuturesTermAdminDto> addContractTerm(@RequestBody FuturesTermAdminDto dto) {
@@ -98,11 +100,12 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 			contractTermId.add(dto.getId());
 			List<FuturesOrder> list = orderService.findByContractTermId(contractTermId);
 			if(list.size()>0){
-				Response<FuturesTermAdminDto> res = new Response<FuturesTermAdminDto>();
-				res.setMessage("该合约正在被订单使用");
-				res.setCode("200");
-				res.setResult(null);
-				return res;
+//				Response<FuturesTermAdminDto> res = new Response<FuturesTermAdminDto>();
+//				res.setMessage("该合约正在被订单使用");
+//				res.setCode("200");
+//				res.setResult(null);
+//				return res;
+				throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 			}
 		}
 		
@@ -153,14 +156,14 @@ public class FuturesContractTermController implements FutureContractTermInterfac
 	}
 
 	@Override
-	public String deleteContractTerm(@PathVariable Long id) {
+	public Response<String> deleteContractTerm(@PathVariable Long id) {
 		List<Long> contractTermId = new ArrayList<Long>();
 		contractTermId.add(id);
 		if(orderService.findByContractTermId(contractTermId).size()>0){
-			return "该合约正在被订单使用，无法删除";
+			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 		}
 		termService.deleteContractTerm(id);
-		return "删除成功";
+		return new Response<>("删除成功");
 	}
 
 	@Override

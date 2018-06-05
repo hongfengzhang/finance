@@ -274,5 +274,12 @@ public class ExceptionConstant {
 	public static final String BACKHANDSOURCEORDER_NOTUNWIND_EXCEPTION = "13018";
 	// 订单已反手，不能重复反手
 	public static final String FUTURESORDER_ALREADYBACKHAND_EXCEPTION = "13019";
-
+	//合约被订单使用，不能删除
+	public static final String CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION = "13020";
+	//警戒线低于强平点
+	public static final String CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION = "13021";
+	//合约启动是没有可用的合约期限
+	public static final String CONTRACTTERM_ISCURRENT_EXCEPTION = "13022";
+	//合约启动时没有预设置手数
+	public static final String CONTRACT_PREQUANTITY_EXCEPTION = "13023";
 }

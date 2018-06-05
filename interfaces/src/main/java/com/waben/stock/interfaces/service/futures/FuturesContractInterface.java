@@ -54,7 +54,7 @@ public interface FuturesContractInterface {
 	 * @param id
 	 */
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
-	String deleteContract(@PathVariable("id") Long id);
+	Response<String> deleteContract(@PathVariable("id") Long id);
 
 
 	/**
@@ -66,5 +66,8 @@ public interface FuturesContractInterface {
 	 */
 	@RequestMapping(value = "/contract/{contractId}", method = RequestMethod.GET)
 	Response<FuturesContractDto> findByContractId(@PathVariable("contractId") Long contractId);
+	
+	@RequestMapping(value ="/contract/isEnable", method = RequestMethod.GET)
+	Response<String> isCurrent(@PathVariable("id") Long id);
 
 }

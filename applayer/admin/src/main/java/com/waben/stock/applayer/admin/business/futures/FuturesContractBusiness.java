@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesPreQuantityDto;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.exception.NetflixCircuitException;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -13,8 +14,10 @@ import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesPreQuantityQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.service.futures.FuturesExchangeInterface;
+import com.waben.stock.interfaces.service.futures.FuturesPreQuantityInterface;
 
 @Service
 public class FuturesContractBusiness {
@@ -26,6 +29,22 @@ public class FuturesContractBusiness {
 	@Autowired
 	@Qualifier("futuresExchangeInterface")
 	private FuturesExchangeInterface exchangeReference;
+	
+	@Autowired
+	@Qualifier("futuresPreQuantityInterface")
+	private FuturesPreQuantityInterface preQuantityReference;
+	
+	public Response<String> isEnable(Long contractId){
+		return reference.isCurrent(contractId);
+	}
+	
+	public PageInfo<FuturesPreQuantityDto> queryPre(FuturesPreQuantityQuery query){
+		Response<PageInfo<FuturesPreQuantityDto>> response = preQuantityReference.findAll(query);
+		if("200".equals(response.getCode())){
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 	public PageInfo<FuturesExchangeDto> pagesExchange(FuturesExchangeAdminQuery query){
 		Response<PageInfo<FuturesExchangeDto>> response = exchangeReference.pagesExchange(query);
@@ -69,7 +88,7 @@ public class FuturesContractBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
-	public String deleteContract(Long id){
+	public Response<String> deleteContract(Long id){
 		return reference.deleteContract(id);
 	}
 	

@@ -45,6 +45,10 @@ public class FuturesContractTermService {
 	public void deleteContractTerm(Long id) {
 		termDao.delete(id);
 	}
+	
+	public int deleteBycontractId(Long contractId){
+		return termDao.deleteBycontractId(contractId);
+	}
 
 	public FuturesContractTerm getContractCurrentTerm(FuturesContract contract) {
 		List<FuturesContractTerm> termList = termDao.retrieveByContractAndCurrent(contract, true);

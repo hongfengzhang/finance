@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -70,6 +71,24 @@ public class FuturesContractController {
 				return o1.get(0).getProductType().getSort() - o2.get(0).getProductType().getSort();
 			}
 		});
+		return new Response<>(result);
+	}
+
+	@GetMapping("/{contractId}")
+	@ApiOperation(value = "根据ID获取期货合约")
+	public Response<FuturesContractQuotationDto> fetchById(@PathVariable Long contractId) {
+		FuturesContractQuery query = new FuturesContractQuery();
+		query.setPage(0);
+		query.setContractId(contractId);
+		query.setSize(1);
+		PageInfo<FuturesContractDto> contractPage = futuresContractBusiness.pagesContract(query);
+		List<FuturesContractQuotationDto> quotationList = futuresContractBusiness
+				.pagesQuotations(contractPage.getContent());
+
+		FuturesContractQuotationDto result = null;
+		if (quotationList != null && quotationList.size() > 0) {
+			result = quotationList.get(0);
+		}
 		return new Response<>(result);
 	}
 
