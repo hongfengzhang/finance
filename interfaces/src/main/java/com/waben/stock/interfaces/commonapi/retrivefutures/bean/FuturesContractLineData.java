@@ -92,6 +92,9 @@ public class FuturesContractLineData {
 	}
 
 	public Integer getVolume() {
+		if (volume == null || volume < 0) {
+			return 0;
+		}
 		return volume;
 	}
 
@@ -100,6 +103,9 @@ public class FuturesContractLineData {
 	}
 
 	public Integer getCount() {
+		if (count == null || count < 0) {
+			return 0;
+		}
 		return count;
 	}
 
