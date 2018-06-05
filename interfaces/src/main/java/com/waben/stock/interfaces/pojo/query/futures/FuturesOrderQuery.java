@@ -25,10 +25,10 @@ public class FuturesOrderQuery extends PageAndSortQuery {
 	private String contractName;
 
 	@ApiModelProperty(value = "起始日期")
-	private Date stateTime;
+	private Date startBuyingTime;
 
 	@ApiModelProperty(value = "结束时间")
-	private Date endTime;
+	private Date endBuyingTime;
 
 	public FuturesOrderQuery() {
 		super();
@@ -80,20 +80,20 @@ public class FuturesOrderQuery extends PageAndSortQuery {
 		this.contractName = contractName;
 	}
 
-	public Date getStateTime() {
-		return stateTime;
+	public Date getStartBuyingTime() {
+		return startBuyingTime;
 	}
 
-	public void setStateTime(Date stateTime) {
-		this.stateTime = stateTime;
+	public void setStartBuyingTime(Date startBuyingTime) {
+		this.startBuyingTime = startBuyingTime;
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public Date getEndBuyingTime() {
+		return endBuyingTime;
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
+	public void setEndBuyingTime(Date endBuyingTime) {
+		this.endBuyingTime = endBuyingTime;
 	}
 
 }
