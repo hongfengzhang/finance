@@ -75,6 +75,13 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 	 */
 	private StockOptionBuyingType buyingType;
 	/**
+	 * 可购股数
+	 * <p>
+	 * 仅在用户购买时计算，保存留作参考
+	 * </p>
+	 */
+	private Integer numberOfStrand;
+	/**
 	 * 成交时间
 	 */
 	private Date buyingTime;
@@ -378,6 +385,14 @@ public class StockOptionTradeDto implements Comparable<StockOptionTradeDto> {
 
 	public void setPromotionOrgId(Long promotionOrgId) {
 		this.promotionOrgId = promotionOrgId;
+	}
+
+	public Integer getNumberOfStrand() {
+		return numberOfStrand;
+	}
+
+	public void setNumberOfStrand(Integer numberOfStrand) {
+		this.numberOfStrand = numberOfStrand;
 	}
 
 }

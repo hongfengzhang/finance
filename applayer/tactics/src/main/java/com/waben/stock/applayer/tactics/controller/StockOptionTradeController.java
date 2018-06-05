@@ -3,6 +3,7 @@ package com.waben.stock.applayer.tactics.controller;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
 import com.waben.stock.applayer.tactics.business.OrganizationPublisherBusiness;
@@ -28,6 +30,8 @@ import com.waben.stock.applayer.tactics.dto.stockoption.StockOptionQuoteWithBala
 import com.waben.stock.applayer.tactics.dto.stockoption.StockOptionTradeDynamicDto;
 import com.waben.stock.applayer.tactics.dto.stockoption.StockOptionTradeWithMarketDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
+import com.waben.stock.interfaces.commonapi.retrivestock.RetriveStockOverHttp;
+import com.waben.stock.interfaces.commonapi.retrivestock.bean.StockMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
@@ -89,6 +93,9 @@ public class StockOptionTradeController {
 
 	@Autowired
 	private OrganizationPublisherBusiness orgPublisherBusiness;
+	
+	@Autowired
+	private RestTemplate restTemplate;
 
 	@GetMapping("/cyclelists")
 	@ApiOperation(value = "期权周期列表")
@@ -179,6 +186,14 @@ public class StockOptionTradeController {
 		dto.setRightMoneyRatio(quote.getRightMoneyRatio());
 		dto.setStockCode(stockCode);
 		dto.setStockName(stock.getName());
+		// 根据市场价格计算持股数
+		List<String> codes = new ArrayList<>();
+		codes.add(stockCode);
+		StockMarket market = RetriveStockOverHttp.listStockMarket(restTemplate, codes).get(0);
+		BigDecimal temp = nominalAmount.divide(market.getLastPrice(), 2, RoundingMode.HALF_DOWN);
+		Integer numberOfStrand = temp.divideAndRemainder(BigDecimal.valueOf(100))[0].multiply(BigDecimal.valueOf(100))
+				.intValue();
+		dto.setNumberOfStrand(numberOfStrand);
 		// 获取当前用户所属的推广代理商
 		OrganizationPublisherDto orgPublisher = orgPublisherBusiness.fetchOrgPublisher(SecurityUtil.getUserId());
 		if (orgPublisher != null) {

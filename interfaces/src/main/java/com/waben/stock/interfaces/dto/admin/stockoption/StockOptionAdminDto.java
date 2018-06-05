@@ -63,6 +63,13 @@ public class StockOptionAdminDto {
 	 */
 	private Date applyTime;
 	/**
+	 * 可购股数
+	 * <p>
+	 * 仅在用户购买时计算，保存留作参考
+	 * </p>
+	 */
+	private Integer numberOfStrand;
+	/**
 	 * 成交时间
 	 */
 	private Date buyingTime;
@@ -285,6 +292,14 @@ public class StockOptionAdminDto {
 
 	public void setRightTime(Date rightTime) {
 		this.rightTime = rightTime;
+	}
+
+	public Integer getNumberOfStrand() {
+		return numberOfStrand;
+	}
+
+	public void setNumberOfStrand(Integer numberOfStrand) {
+		this.numberOfStrand = numberOfStrand;
 	}
 
 }
