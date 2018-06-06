@@ -17,18 +17,22 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 	/**
 	 * 最新价
 	 */
+	@ApiModelProperty(value = "最新价")
 	private BigDecimal lastPrice;
 	/**
 	 * 跌涨价格
 	 */
+	@ApiModelProperty(value = "跌涨价格")
 	private BigDecimal upDropPrice;
 	/**
 	 * 跌涨幅度
 	 */
+	@ApiModelProperty(value = "跌涨幅度")
 	private BigDecimal upDropSpeed;
 	/**
 	 * 昨收
 	 */
+	@ApiModelProperty(value = "昨日收盘价")
 	private BigDecimal closePrice;
 	/**
 	 * 品种分类名称

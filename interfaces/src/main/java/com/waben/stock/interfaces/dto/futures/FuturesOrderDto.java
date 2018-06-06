@@ -17,18 +17,22 @@ public class FuturesOrderDto {
 	/**
 	 * 对应的发布人Id
 	 */
+	@ApiModelProperty(value = "对应的发布人Id")
 	private Long publisherId;
 	/**
 	 * 订单号
 	 */
+	@ApiModelProperty(value = "订单号")
 	private String tradeNo;
 	/**
 	 * 发布时间
 	 */
+	@ApiModelProperty(value = "发布时间")
 	private Date postTime;
 	/**
 	 * 订单类型
 	 */
+	@ApiModelProperty(value = "订单类型")
 	private FuturesOrderType orderType;
 	/**
 	 * 对应的合约
@@ -37,46 +41,57 @@ public class FuturesOrderDto {
 	/**
 	 * 对应的合约ID
 	 */
+	@ApiModelProperty(value = "对应的合约ID")
 	private Long contractId;
 	/**
 	 * 数量（手）
 	 */
+	@ApiModelProperty(value = "数量（手）")
 	private BigDecimal totalQuantity;
 	/**
 	 * 保证金（人民币）
 	 */
+	@ApiModelProperty(value = "保证金（人民币）")
 	private BigDecimal reserveFund;
 	/**
 	 * 服务费（服务费）
 	 */
+	@ApiModelProperty(value = "服务费（服务费）")
 	private BigDecimal serviceFee;
 	/**
 	 * 合约代码（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "合约代码（取期货合约设置快照）")
 	private String contractSymbol;
 	/**
 	 * 合约名称（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "合约名称（取期货合约设置快照）")
 	private String contractName;
 	/**
 	 * 货币（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "货币（取期货合约设置快照）")
 	private String contractCurrency;
 	/**
 	 * 货币符号，如“$”,表示美元
 	 */
+	@ApiModelProperty(value = "货币符号，如“$”,表示美元")
 	private String currencySign;
 	/**
 	 * 开仓手续费（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "开仓手续费（取期货合约设置快照）")
 	private BigDecimal openwindServiceFee;
 	/**
 	 * 平仓手续费（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "平仓手续费（取期货合约设置快照）")
 	private BigDecimal unwindServiceFee;
 	/**
 	 * 一手强平点（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "一手强平点（取期货合约设置快照）")
 	private BigDecimal perUnitUnwindPoint;
 	/**
 	 * 强平点类型（取期货合约设置快照）
@@ -85,14 +100,17 @@ public class FuturesOrderDto {
 	 * <li>2金额</li>
 	 * </ul>
 	 */
+	@ApiModelProperty(value = "强平点类型（取期货合约设置快照） 1 比例 2金额")
 	private Integer unwindPointType;
 	/**
 	 * 一手隔夜保证金（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "一手隔夜保证金（取期货合约设置快照）")
 	private BigDecimal overnightPerUnitReserveFund;
 	/**
 	 * 一手隔夜递延费（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "一手隔夜递延费（取期货合约设置快照）")
 	private BigDecimal overnightPerUnitDeferredFee;
 	/**
 	 * 触发止盈类型（用户设置）
@@ -101,14 +119,17 @@ public class FuturesOrderDto {
 	 * <li>2 金额</li>
 	 * </ul>
 	 */
+	@ApiModelProperty(value = "触发止盈类型（用户设置）1 价格  2 金额")
 	private Integer limitProfitType;
 	/**
 	 * 一手止盈金额（用户设置）
 	 */
+	@ApiModelProperty(value = "一手止盈金额（用户设置）")
 	private BigDecimal perUnitLimitProfitAmount;
 	/**
 	 * 一手止盈价格点位
 	 */
+	@ApiModelProperty(value = "一手止盈价格点位")
 	private BigDecimal perUnitLimitProfitPositon;
 	/**
 	 * 触发止损类型（用户设置）
@@ -117,103 +138,127 @@ public class FuturesOrderDto {
 	 * <li>2 金额</li>
 	 * </ul>
 	 */
+	@ApiModelProperty(value = "触发止损类型（用户设置） 1 价格 2 金额")
 	private Integer limitLossType;
-
 	/**
 	 * 一手止损金额（用户设置）
 	 */
+	@ApiModelProperty(value = "一手止损金额（用户设置）")
 	private BigDecimal perUnitLimitLossAmount;
 	/**
 	 * 一手止损价格点位
 	 */
+	@ApiModelProperty(value = "一手止损价格点位")
 	private BigDecimal perUnitLimitLossPosition;
 	/**
 	 * 订单状态
 	 */
+	@ApiModelProperty(value = "订单状态")
 	private FuturesOrderState state;
 	/**
 	 * 订单状态名称
 	 */
+	@ApiModelProperty(value = "订单状态名称")
 	private String stateName;
 	/**
 	 * 开仓对应的网关交易订单ID
 	 */
+	@ApiModelProperty(value = "开仓对应的网关交易订单ID")
 	private Long openGatewayOrderId;
 	/**
 	 * 买入价格类型
 	 */
+	@ApiModelProperty(value = "买入价格类型")
 	private FuturesTradePriceType buyingPriceType;
 	/**
 	 * 买入委托价格
 	 */
+	@ApiModelProperty(value = "买入委托价格")
 	private BigDecimal buyingEntrustPrice;
 	/**
 	 * 买入时间
 	 */
+	@ApiModelProperty(value = "买入时间")
 	private Date buyingTime;
 	/**
 	 * 买入价格
 	 */
+	@ApiModelProperty(value = "买入价格")
 	private BigDecimal buyingPrice;
 	/**
 	 * 平仓对应的网关交易订单ID
 	 */
+	@ApiModelProperty(value = "平仓对应的网关交易订单ID")
 	private Long closeGatewayOrderId;
 	/**
 	 * 卖出价格类型
 	 */
+	@ApiModelProperty(value = "卖出价格类型")
 	private FuturesTradePriceType sellingPriceType;
 	/**
 	 * 卖出委托价格
 	 */
+	@ApiModelProperty(value = "卖出委托价格")
 	private BigDecimal sellingEntrustPrice;
 	/**
-	 * 卖出价格
+	 * 卖出时间
 	 */
+	@ApiModelProperty(value = "卖出时间")
 	private Date sellingTime;
 	/**
 	 * 卖出价格
 	 */
+	@ApiModelProperty(value = "卖出价格")
 	private BigDecimal sellingPrice;
 	/**
 	 * 风控类型
 	 */
+	@ApiModelProperty(value = "风控类型")
 	private FuturesWindControlType windControlType;
 	/**
 	 * 盈亏（交易所货币）
 	 */
+	@ApiModelProperty(value = "盈亏（交易所货币）")
 	private BigDecimal currencyProfitOrLoss;
 	/**
 	 * 盈亏（人民币）
 	 */
+	@ApiModelProperty(value = "盈亏（人民币）")
 	private BigDecimal profitOrLoss;
 	/**
 	 * 发布人盈亏（人民币）
 	 */
+	@ApiModelProperty(value = "发布人盈亏（人民币）")
 	private BigDecimal publisherProfitOrLoss;
 	/**
 	 * 平台盈亏（人民币）
 	 */
+	@ApiModelProperty(value = "平台盈亏（人民币）")
 	private BigDecimal platformProfitOrLoss;
 	/**
 	 * 结算时的汇率
 	 */
+	@ApiModelProperty(value = "结算时的汇率")
 	private BigDecimal settlementRate;
 	/**
 	 * 结算时间
 	 */
+	@ApiModelProperty(value = "结算时间")
 	private Date settlementTime;
 	/**
 	 * 更新时间
 	 */
+	@ApiModelProperty(value = "更新时间")
 	private Date updateTime;
 	/**
 	 * 是否为测试单
 	 */
+	@ApiModelProperty(value = "是否为测试单")
 	private Boolean isTest;
 	/**
 	 * 交易所名称
 	 */
+	@ApiModelProperty(value = "交易所名称")
 	private String exchangeName;
 	/**
 	 * 期货隔夜记录
@@ -610,7 +655,5 @@ public class FuturesOrderDto {
 	public void setCurrencySign(String currencySign) {
 		this.currencySign = currencySign;
 	}
-	
-	
 
 }

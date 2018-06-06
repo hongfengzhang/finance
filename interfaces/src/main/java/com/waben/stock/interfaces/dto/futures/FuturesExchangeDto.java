@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.dto.futures;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class FuturesExchangeDto {
 
 	private Long id;
@@ -10,10 +12,12 @@ public class FuturesExchangeDto {
 	/**
 	 * 交易所代码
 	 */
+	@ApiModelProperty(value = "交易所代码")
 	private String code;
 	/**
 	 * 交易所全称
 	 */
+	@ApiModelProperty(value = "交易所全称")
 	private String name;
 	/**
 	 * 交易所类型
@@ -22,15 +26,18 @@ public class FuturesExchangeDto {
 	 * <li>2内盘</li>
 	 * </ul>
 	 */
+	@ApiModelProperty(value = "交易所类型 1外盘 2内盘")
 	private Integer exchangeType;
 	/**
 	 * 是否可用
 	 */
+	@ApiModelProperty(value = "是否可用")
 	private Boolean enable;
 
 	/**
 	 * 北京时间的时差和交易所
 	 */
+	@ApiModelProperty(value = "北京时间的时差和交易所")
 	private Integer timeZoneGap;
 
 	public Long getId() {
