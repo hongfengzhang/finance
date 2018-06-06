@@ -26,6 +26,11 @@ public class FutresOrderEntrustDto {
 	private String publisherPhone;
 	
 	/**
+	 * 合约代码
+	 */
+	private String symbol;
+	
+	/**
 	 * 合约名称
 	 */
 	private String name;
@@ -141,6 +146,14 @@ public class FutresOrderEntrustDto {
 
 	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
+	}
+
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
 	public String getName() {

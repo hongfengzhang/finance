@@ -419,4 +419,12 @@ public class FuturesContract {
 		this.exchangeName = exchangeName;
 	}
 
+	public String getTradeUnit() {
+		return tradeUnit;
+	}
+
+	public void setTradeUnit(String tradeUnit) {
+		this.tradeUnit = tradeUnit;
+	}
+
 }

@@ -29,6 +29,11 @@ public class FuturesOrderAdminDto {
 	private String publisherPhone;
 	
 	/**
+	 * 合约代码
+	 */
+	private String symbol;
+	
+	/**
 	 * 合约名称
 	 */
 	private String name;
@@ -177,6 +182,14 @@ public class FuturesOrderAdminDto {
 
 	public void setPublisherId(Long publisherId) {
 		this.publisherId = publisherId;
+	}
+
+	public String getSymbol() {
+		return symbol;
+	}
+
+	public void setSymbol(String symbol) {
+		this.symbol = symbol;
 	}
 
 	public String getPublisherName() {
