@@ -148,6 +148,7 @@ public class FuturesOrderService {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 
+				Join<FuturesOrder,FuturesContract> join = root.join("contract",JoinType.LEFT);
 				if (query.getPublisherIds().size() > 0) {
 					predicateList.add(criteriaBuilder.in(root.get("publisherId")).value(query.getPublisherIds()));
 				}
@@ -162,6 +163,10 @@ public class FuturesOrderService {
 
 				if (query.getTradeNo() != null && !"".equals(query.getTradeNo())) {
 					predicateList.add(criteriaBuilder.equal(root.get("tradeNo").as(String.class), query.getTradeNo()));
+				}
+				
+				if(query.getSymbol()!=null && !"".equals(query.getSymbol())){
+					predicateList.add(criteriaBuilder.like(join.get("symbol").as(String.class), query.getSymbol()));
 				}
 
 				if (query.getOrderState() != null) {

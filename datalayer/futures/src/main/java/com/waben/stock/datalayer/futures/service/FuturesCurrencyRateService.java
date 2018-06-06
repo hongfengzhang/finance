@@ -44,8 +44,9 @@ public class FuturesCurrencyRateService {
 
 	}
 	
-	public FuturesCurrencyRate queryByName(String currencyName){
-		List<FuturesCurrencyRate> list = currencyRateDao.retrieveByCurrencyName(currencyName);
+	public FuturesCurrencyRate queryByName(String currency){
+		List<FuturesCurrencyRate> list = currencyRateDao.retrieveByCurrency(currency);
+		//retrieveByCurrencyName(currencyName);
 		if(list.size()>0){
 			return list.get(0);
 		}

@@ -74,6 +74,7 @@ public class FuturesTradeController implements FuturesTradeInterface {
 			}
 			if(order.getContract()!=null){
 				result.getContent().get(i).setName(order.getContract().getName());
+				result.getContent().get(i).setSymbol(order.getContract().getSymbol());
 			}
 			if(order.getContractSymbol()!=null && !"".equals(order.getContractSymbol())){
 				String symbol = order.getContractSymbol();
@@ -120,6 +121,7 @@ public class FuturesTradeController implements FuturesTradeInterface {
 			}
 			if(order.getContract()!=null){
 				result.getContent().get(i).setName(order.getContract().getName());
+				result.getContent().get(i).setSymbol(order.getContract().getSymbol());
 			}
 			if(order.getBuyingTime()!=null){
 				Long date = order.getBuyingTime().getTime();

@@ -1,13 +1,11 @@
 package com.waben.stock.datalayer.futures.repository;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 

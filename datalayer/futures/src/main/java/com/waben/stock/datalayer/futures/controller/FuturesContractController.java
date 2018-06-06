@@ -268,6 +268,7 @@ public class FuturesContractController implements FuturesContractInterface {
 			FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
 			fcontract.setProductType(converter.convertToEntityAttribute(Integer.valueOf(contractDto.getProductType())));
 		}
+		fcontract.setEnable(false);
 		FuturesContract result = futuresContractService.saveExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
@@ -294,18 +295,7 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractAdminDto> modifyContract(@RequestBody FuturesContractAdminDto contractDto) {
-		if (!contractDto.getEnable()) {
-			List<Long> contractId = new ArrayList<Long>();
-			contractId.add(contractDto.getId());
-			List<FuturesOrder> list = orderService.findByContractId(contractId);
-			if (list.size() > 0) {
-				Response<FuturesContractAdminDto> res = new Response<FuturesContractAdminDto>();
-				res.setCode("200");
-				res.setMessage("该合约正在被订单使用");
-				res.setResult(null);
-				return res;
-			}
-		}
+		
 
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 

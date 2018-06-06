@@ -2,8 +2,6 @@ package com.waben.stock.datalayer.futures.repository.impl.jpa;
 
 import java.util.List;
 
-import org.springframework.data.jpa.repository.Query;
-
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 
 /**
@@ -16,6 +14,5 @@ public interface FuturesCurrencyRateRepository extends CustomJpaRepository<Futur
 
 	List<FuturesCurrencyRate> findByCurrency(String currency);
 
-	@Query(value = "select * from futures_currency_rate where currency_name=?1", nativeQuery=true)
 	List<FuturesCurrencyRate> findByCurrencyName(String currencyName);
 }
