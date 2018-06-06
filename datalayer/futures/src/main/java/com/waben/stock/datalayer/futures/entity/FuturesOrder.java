@@ -89,10 +89,6 @@ public class FuturesOrder {
 	 */
 	private String contractCurrency;
 	/**
-	 * 货币符号，如“$”,表示美元(取期货合约设置快照)
-	 */
-	private String currencySign;
-	/**
 	 * 开仓手续费（取期货合约设置快照）
 	 */
 	private BigDecimal openwindServiceFee;
@@ -620,14 +616,6 @@ public class FuturesOrder {
 			return contract.getExchange().getName();
 		}
 		return exchangeName;
-	}
-
-	public String getCurrencySign() {
-		return currencySign;
-	}
-
-	public void setCurrencySign(String currencySign) {
-		this.currencySign = currencySign;
 	}
 
 	public Date getBuyingEntrustTime() {

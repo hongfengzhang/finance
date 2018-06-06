@@ -70,11 +70,6 @@ public class FuturesOrderDto {
 	@ApiModelProperty(value = "货币（取期货合约设置快照）")
 	private String contractCurrency;
 	/**
-	 * 货币符号，如“$”,表示美元
-	 */
-	@ApiModelProperty(value = "货币符号，如“$”,表示美元")
-	private String currencySign;
-	/**
 	 * 开仓手续费（取期货合约设置快照）
 	 */
 	@ApiModelProperty(value = "开仓手续费（取期货合约设置快照）")
@@ -167,11 +162,6 @@ public class FuturesOrderDto {
 	@ApiModelProperty(value = "买入价格类型")
 	private FuturesTradePriceType buyingPriceType;
 	/**
-	 * 买入委托时间
-	 */
-	@ApiModelProperty(value = "买入委托时间")
-	private Date buyingEntrustTime;
-	/**
 	 * 买入委托价格
 	 */
 	@ApiModelProperty(value = "买入委托价格")
@@ -196,11 +186,6 @@ public class FuturesOrderDto {
 	 */
 	@ApiModelProperty(value = "卖出价格类型")
 	private FuturesTradePriceType sellingPriceType;
-	/**
-	 * 卖出委托时间
-	 */
-	@ApiModelProperty(value = "卖出委托时间")
-	private Date sellingEntrustTime;
 	/**
 	 * 卖出委托价格
 	 */
@@ -644,30 +629,6 @@ public class FuturesOrderDto {
 			return state.getType();
 		}
 		return stateName;
-	}
-
-	public String getCurrencySign() {
-		return currencySign;
-	}
-
-	public void setCurrencySign(String currencySign) {
-		this.currencySign = currencySign;
-	}
-
-	public Date getBuyingEntrustTime() {
-		return buyingEntrustTime;
-	}
-
-	public void setBuyingEntrustTime(Date buyingEntrustTime) {
-		this.buyingEntrustTime = buyingEntrustTime;
-	}
-
-	public Date getSellingEntrustTime() {
-		return sellingEntrustTime;
-	}
-
-	public void setSellingEntrustTime(Date sellingEntrustTime) {
-		this.sellingEntrustTime = sellingEntrustTime;
 	}
 
 }

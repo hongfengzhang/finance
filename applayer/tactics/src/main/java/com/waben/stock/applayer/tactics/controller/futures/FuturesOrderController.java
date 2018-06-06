@@ -152,7 +152,6 @@ public class FuturesOrderController {
 		orderDto.setContractSymbol(contractDto.getSymbol());
 		orderDto.setContractName(contractDto.getName());
 		orderDto.setContractCurrency(contractDto.getCurrency());
-		orderDto.setCurrencySign(contractDto.getCurrencySign());
 		orderDto.setOpenwindServiceFee(contractDto.getOpenwindServiceFee());
 		orderDto.setUnwindServiceFee(contractDto.getUnwindServiceFee());
 		orderDto.setPerUnitUnwindPoint(contractDto.getPerUnitUnwindPoint());
