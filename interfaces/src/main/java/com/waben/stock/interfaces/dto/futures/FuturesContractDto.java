@@ -31,6 +31,10 @@ public class FuturesContractDto {
 	 */
 	private String currencyName;
 	/**
+	 * 货币符号，如“$”,表示美元
+	 */
+	private String currencySign;
+	/**
 	 * 汇率
 	 */
 	private BigDecimal rate;
@@ -388,6 +392,14 @@ public class FuturesContractDto {
 
 	public void setPreQuantitySet(Set<FuturesPreQuantityDto> preQuantitySet) {
 		this.preQuantitySet = preQuantitySet;
+	}
+
+	public String getCurrencySign() {
+		return currencySign;
+	}
+
+	public void setCurrencySign(String currencySign) {
+		this.currencySign = currencySign;
 	}
 
 }

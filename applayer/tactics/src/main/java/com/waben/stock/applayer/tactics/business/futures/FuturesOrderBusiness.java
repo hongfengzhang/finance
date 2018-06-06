@@ -150,6 +150,7 @@ public class FuturesOrderBusiness {
 				// 获取汇率信息
 				FuturesCurrencyRateDto rate = findByCurrency(orderMarket.getContractCurrency());
 				orderMarket.setRate(rate.getRate());
+				orderMarket.setCurrencySign(rate.getCurrencySign());
 				// 买入价
 				BigDecimal buyingPrice = new BigDecimal(0);
 				if (orderMarket.getBuyingPriceType() == FuturesTradePriceType.MKT) {

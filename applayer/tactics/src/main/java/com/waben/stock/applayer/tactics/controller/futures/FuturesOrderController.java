@@ -10,7 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -151,6 +153,7 @@ public class FuturesOrderController {
 		orderDto.setContractSymbol(contractDto.getSymbol());
 		orderDto.setContractName(contractDto.getName());
 		orderDto.setContractCurrency(contractDto.getCurrency());
+		orderDto.setCurrencySign(contractDto.getCurrencySign());
 		orderDto.setOpenwindServiceFee(contractDto.getOpenwindServiceFee());
 		orderDto.setUnwindServiceFee(contractDto.getUnwindServiceFee());
 		orderDto.setPerUnitUnwindPoint(contractDto.getPerUnitUnwindPoint());
@@ -276,7 +279,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/holding/profit")
 	@ApiOperation(value = "获取持仓中总收益")
-	public Response<BigDecimal> holdingProfit(int page, int size) {
+	public Response<Map<String, String>> holdingProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position };
 		orderQuery.setStates(states);
@@ -284,17 +287,25 @@ public class FuturesOrderController {
 		orderQuery.setSize(size);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
+		Map<String, String> strMap = new HashMap<>();
 		BigDecimal totalIncome = new BigDecimal(0);
+		String sign = "";
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
 					: futuresOrderMarketDto.getFloatingProfitOrLoss());
 		}
-		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+		if (list != null && list.size() > 0) {
+			sign = list.get(0).getCurrencySign();
+		}
+
+		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
+		strMap.put("currencySign", sign);
+		return new Response<>(strMap);
 	}
 
 	@GetMapping("/entrustment/profit")
 	@ApiOperation(value = "获取委托中总收益")
-	public Response<BigDecimal> entrustmentProfit(int page, int size) {
+	public Response<Map<String, String>> entrustmentProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
 				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
@@ -303,17 +314,25 @@ public class FuturesOrderController {
 		orderQuery.setSize(size);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
+		Map<String, String> strMap = new HashMap<String, String>();
 		BigDecimal totalIncome = new BigDecimal(0);
+		String sign = "";
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
 					: futuresOrderMarketDto.getFloatingProfitOrLoss());
 		}
-		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+		if (list != null && list.size() > 0) {
+			sign = list.get(0).getCurrencySign();
+		}
+
+		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
+		strMap.put("currencySign", sign);
+		return new Response<>(strMap);
 	}
 
 	@GetMapping("/settled/profit")
 	@ApiOperation(value = "获取已结算总收益")
-	public Response<BigDecimal> settledProfit(int page, int size) {
+	public Response<Map<String, String>> settledProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
@@ -321,12 +340,20 @@ public class FuturesOrderController {
 		orderQuery.setSize(size);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
+		Map<String, String> strMap = new HashMap<String, String>();
 		BigDecimal totalIncome = new BigDecimal(0);
+		String sign = "";
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss() == null ? new BigDecimal(0)
 					: futuresOrderMarketDto.getPublisherProfitOrLoss());
 		}
-		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+		if (list != null && list.size() > 0) {
+			sign = list.get(0).getCurrencySign();
+		}
+
+		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
+		strMap.put("currencySign", sign);
+		return new Response<>(strMap);
 	}
 
 	@GetMapping("/detail/{orderId}")

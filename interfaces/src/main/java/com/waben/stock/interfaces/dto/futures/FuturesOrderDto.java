@@ -9,6 +9,8 @@ import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
 import com.waben.stock.interfaces.enums.FuturesWindControlType;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class FuturesOrderDto {
 
 	private Long id;
@@ -60,6 +62,10 @@ public class FuturesOrderDto {
 	 * 货币（取期货合约设置快照）
 	 */
 	private String contractCurrency;
+	/**
+	 * 货币符号，如“$”,表示美元
+	 */
+	private String currencySign;
 	/**
 	 * 开仓手续费（取期货合约设置快照）
 	 */
@@ -596,5 +602,15 @@ public class FuturesOrderDto {
 		}
 		return stateName;
 	}
+
+	public String getCurrencySign() {
+		return currencySign;
+	}
+
+	public void setCurrencySign(String currencySign) {
+		this.currencySign = currencySign;
+	}
+	
+	
 
 }

@@ -63,5 +63,4 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 	public void setFloatingProfitOrLoss(BigDecimal floatingProfitOrLoss) {
 		this.floatingProfitOrLoss = floatingProfitOrLoss;
 	}
-
 }

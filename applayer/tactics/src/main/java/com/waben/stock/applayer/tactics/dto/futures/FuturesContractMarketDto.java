@@ -46,6 +46,12 @@ public class FuturesContractMarketDto extends FuturesContractMarket {
 	@ApiModelProperty(value = "下一个交易时间")
 	private String nextTradingTime;
 
+	/**
+	 * 货币符号，如“$”,表示美元
+	 */
+	@ApiModelProperty(value = "货币符号")
+	private String currencySign;
+
 	public Integer getContractState() {
 		return contractState;
 	}
@@ -76,6 +82,14 @@ public class FuturesContractMarketDto extends FuturesContractMarket {
 
 	public void setNextTradingTime(String nextTradingTime) {
 		this.nextTradingTime = nextTradingTime;
+	}
+
+	public String getCurrencySign() {
+		return currencySign;
+	}
+
+	public void setCurrencySign(String currencySign) {
+		this.currencySign = currencySign;
 	}
 
 }
