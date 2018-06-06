@@ -288,7 +288,6 @@ public class FuturesOrderController {
 		orderQuery.setSize(size);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
-		Map<String, String> strMap = new HashMap<>();
 		BigDecimal totalIncome = new BigDecimal(0);
 		BigDecimal rate = BigDecimal.ZERO;
 		String sign = "";
@@ -319,7 +318,6 @@ public class FuturesOrderController {
 		orderQuery.setSize(size);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
-		Map<String, String> strMap = new HashMap<String, String>();
 		BigDecimal totalIncome = new BigDecimal(0);
 		BigDecimal rate = BigDecimal.ZERO;
 		String sign = "";
@@ -349,7 +347,6 @@ public class FuturesOrderController {
 		orderQuery.setSize(size);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
-		Map<String, String> strMap = new HashMap<String, String>();
 		BigDecimal totalIncome = new BigDecimal(0);
 		String sign = "";
 		BigDecimal rate = BigDecimal.ZERO;
