@@ -159,6 +159,10 @@ public class FuturesOrder {
 	@Convert(converter = FuturesTradePriceTypeConverter.class)
 	private FuturesTradePriceType buyingPriceType;
 	/**
+	 * 买入委托时间
+	 */
+	private Date buyingEntrustTime;
+	/**
 	 * 买入委托价格
 	 */
 	private BigDecimal buyingEntrustPrice;
@@ -179,6 +183,10 @@ public class FuturesOrder {
 	 */
 	@Convert(converter = FuturesTradePriceTypeConverter.class)
 	private FuturesTradePriceType sellingPriceType;
+	/**
+	 * 卖出委托时间
+	 */
+	private Date sellingEntrustTime;
 	/**
 	 * 卖出委托价格
 	 */
@@ -245,6 +253,7 @@ public class FuturesOrder {
 	/**
 	 * 交易所名称
 	 */
+	@Transient
 	private String exchangeName;
 
 	public Long getId() {
@@ -619,6 +628,22 @@ public class FuturesOrder {
 
 	public void setCurrencySign(String currencySign) {
 		this.currencySign = currencySign;
+	}
+
+	public Date getBuyingEntrustTime() {
+		return buyingEntrustTime;
+	}
+
+	public void setBuyingEntrustTime(Date buyingEntrustTime) {
+		this.buyingEntrustTime = buyingEntrustTime;
+	}
+
+	public Date getSellingEntrustTime() {
+		return sellingEntrustTime;
+	}
+
+	public void setSellingEntrustTime(Date sellingEntrustTime) {
+		this.sellingEntrustTime = sellingEntrustTime;
 	}
 
 }

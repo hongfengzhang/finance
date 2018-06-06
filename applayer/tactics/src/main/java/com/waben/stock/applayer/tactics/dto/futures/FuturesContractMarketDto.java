@@ -25,7 +25,7 @@ public class FuturesContractMarketDto extends FuturesContractMarket {
 	 * 3 异常
 	 * </p>
 	 */
-	@ApiModelProperty(value = "期货合约状态")
+	@ApiModelProperty(value = "期货合约状态，1 交易中、2 休市中、3 异常")
 	private Integer contractState;
 
 	/**

@@ -1,15 +1,19 @@
 package com.waben.stock.interfaces.dto.futures;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class FuturesBrokerDto {
 
 	private Long id;
 	/**
 	 * 券商名称
 	 */
+	@ApiModelProperty(value = "券商名称")
 	private String name;
 	/**
 	 * 网关地址
 	 */
+	@ApiModelProperty(value = "网关地址")
 	private String gatewayAddress;
 	/**
 	 * 是否可用

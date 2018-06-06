@@ -2,6 +2,8 @@ package com.waben.stock.interfaces.dto.futures;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import io.swagger.annotations.ApiModelProperty;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class FuturesPreQuantityDto implements Comparable<FuturesPreQuantityDto> {
 
@@ -9,6 +11,7 @@ public class FuturesPreQuantityDto implements Comparable<FuturesPreQuantityDto> 
 	/**
 	 * 手数
 	 */
+	@ApiModelProperty(value = "手数")
 	private Integer quantity;
 
 	public Long getId() {
