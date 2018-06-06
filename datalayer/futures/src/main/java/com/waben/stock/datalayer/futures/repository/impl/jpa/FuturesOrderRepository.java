@@ -1,12 +1,15 @@
 package com.waben.stock.datalayer.futures.repository.impl.jpa;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 
@@ -30,6 +33,11 @@ public interface FuturesOrderRepository extends CustomJpaRepository<FuturesOrder
 
 	@Query(value = "select * from f_futures_order where contract_id in ?1 and state != '8'", nativeQuery = true)
 	List<FuturesOrder> findByContractId(@PathVariable("contractId") List<Long> contractId);
+	
+	@Query(value = "select COUNT(f1.total_quantity) as quantity,count(f1.reserve_fund) as fund,count(f1.service_fee) as fee,(f2.overnight_deferred_fee) as deferred from f_futures_order f1 "+ 
+					" LEFT JOIN f_futures_overnight_record f2 ON f1.id = f2.order_id "+
+					" where f1.state in ?1", nativeQuery=true)
+	List<Object> queryByState(@PathVariable("state") List<Integer> state);
 
 	/**
 	 * 获取持仓中列表

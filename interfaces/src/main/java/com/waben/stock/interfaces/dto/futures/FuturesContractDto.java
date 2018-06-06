@@ -37,6 +37,11 @@ public class FuturesContractDto {
 	@ApiModelProperty(value = "货币名称")
 	private String currencyName;
 	/**
+	 * 交易单位
+	 */
+	@ApiModelProperty(value = "交易单位")
+	private String tradeUnit;
+	/**
 	 * 货币符号，如“$”,表示美元
 	 */
 	@ApiModelProperty(value = "货币符号，如“$”,表示美元")
@@ -405,6 +410,14 @@ public class FuturesContractDto {
 
 	public void setExchangeId(Long exchangeId) {
 		this.exchangeId = exchangeId;
+	}
+	
+	public String getTradeUnit() {
+		return tradeUnit;
+	}
+
+	public void setTradeUnit(String tradeUnit) {
+		this.tradeUnit = tradeUnit;
 	}
 
 	public Set<FuturesPreQuantityDto> getPreQuantitySet() {

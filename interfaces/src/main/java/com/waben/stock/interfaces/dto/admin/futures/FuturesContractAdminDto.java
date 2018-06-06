@@ -44,6 +44,11 @@ public class FuturesContractAdminDto {
 	private String name;
 	
 	/**
+	 * 交易单位
+	 */
+	private String tradeUnit;
+	
+	/**
 	 * 货币
 	 */
 	private String currency;
@@ -453,6 +458,14 @@ public class FuturesContractAdminDto {
 
 	public void setFuturesPreQuantityDto(List<FuturesPreQuantityDto> futuresPreQuantityDto) {
 		this.futuresPreQuantityDto = futuresPreQuantityDto;
+	}
+
+	public String getTradeUnit() {
+		return tradeUnit;
+	}
+
+	public void setTradeUnit(String tradeUnit) {
+		this.tradeUnit = tradeUnit;
 	}
 
 	

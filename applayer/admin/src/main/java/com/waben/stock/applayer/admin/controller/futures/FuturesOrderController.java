@@ -22,8 +22,8 @@ import com.waben.stock.applayer.admin.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.admin.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FutresOrderEntrustDto;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -49,6 +49,12 @@ public class FuturesOrderController {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+	@GetMapping("/countOrderState")
+	@ApiOperation(value = "订单总计")
+	public Response<FuturesOrderCountDto> countOrderState(FuturesTradeAdminQuery query){
+		return business.countOrderState(query);
+	}
+	
 	@GetMapping("/pages")
 	@ApiOperation(value = "查询期货成交订单")
 	public Response<PageInfo<FuturesOrderAdminDto>> pages(FuturesTradeAdminQuery query) {
@@ -72,7 +78,7 @@ public class FuturesOrderController {
 		
 		List<String> columnDescList = null;
 		try {
-			String fileName = "futurestrade_" + String.valueOf(System.currentTimeMillis());
+			String fileName = "futuresTrade_"+String.valueOf(System.currentTimeMillis());
 			file = File.createTempFile(fileName, ".xls");
 			List<List<String>> result = new ArrayList<>();
 			if(query.getQueryType() == 0){//成交订单
@@ -145,16 +151,16 @@ public class FuturesOrderController {
 				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
 				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
 				data.add(dto.getOvernightServiceFee() == null ? "" : dto.getOvernightServiceFee().toString());
-				if(dto.getLimitLossType() == 1){
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
-				}
-				if(dto.getLimitProfitType() == 1){
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
-				}
+//				if(dto.getLimitLossType()!=null&&dto.getLimitLossType() == 1){
+//					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+//				if(dto.getLimitProfitType()!=null&&dto.getLimitProfitType() == 1){
+//					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
 				data.add(dto.getPositionDays() == null ? "" : dto.getPositionDays().toString());
 				data.add(dto.getPositionEndTime() == null ? "" : sdf.format(dto.getPositionEndTime()));
 				data.add(dto.getSellingTime() == null ? "" : sdf.format(dto.getSellingTime()));
@@ -176,16 +182,16 @@ public class FuturesOrderController {
 				data.add(dto.getProfit() == null ? "" : dto.getProfit().toString());
 				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
 				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
-				if(dto.getLimitLossType() == 1){
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
-				}
-				if(dto.getLimitProfitType() == 1){
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
-				}
+//				if(dto.getLimitLossType()!=null&&dto.getLimitLossType() == 1){
+//					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+//				if(dto.getLimitProfitType()!=null&&dto.getLimitProfitType() == 1){
+//					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
 				data.add(dto.getOvernightServiceFee() == null ? "" : dto.getOvernightServiceFee().toString());
 				data.add("");
 				data.add(dto.getPositionEndTime() == null ? "" : sdf.format(dto.getPositionEndTime()));
@@ -203,16 +209,17 @@ public class FuturesOrderController {
 				data.add(dto.getBuyingPrice() == null ? "" : dto.getBuyingPrice().toString());
 				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
 				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
-				if(dto.getLimitLossType() == 1){
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
-				}
-				if(dto.getLimitProfitType() == 1){
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
-				}
+//				if(dto.getLimitLossType()!=null&&dto.getLimitLossType() == 1){
+//					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+//				if(dto.getLimitProfitType()!=null&&dto.getLimitProfitType() == 1){
+//					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
+				data.add(dto.getOvernightServiceFee() == null ? "" : dto.getOvernightServiceFee().toString());
 				data.add(dto.getPositionDays() == null ? "" : dto.getPositionDays().toString());
 				data.add(dto.getPositionEndTime() == null ? "" : sdf.format(dto.getPositionEndTime()));
 				data.add(dto.getSellingTime() == null ? "" : sdf.format(dto.getSellingTime()));
@@ -245,16 +252,16 @@ public class FuturesOrderController {
 				data.add(dto.getTotalQuantity() == null ? "" : dto.getTotalQuantity().toString());
 				data.add(dto.getServiceFee() == null ? "" : dto.getServiceFee().toString());
 				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
-				if(dto.getLimitLossType() == 1){
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
-				}
-				if(dto.getLimitProfitType() == 1){
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
-				}
+//				if(dto.getLimitLossType() == 1){
+//					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+//				if(dto.getLimitProfitType() == 1){
+//					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
+//				}else{
+//				}
+				data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
 				data.add(dto.getPostTime() == null ? "" : sdf.format(dto.getPostTime()));
 				data.add(dto.getDealTime() == null ? "" : sdf.format(dto.getDealTime()));
 			}else if(type == 4){
@@ -268,18 +275,10 @@ public class FuturesOrderController {
 				data.add(dto.getTotalQuantity() == null ? "" : dto.getTotalQuantity().toString());
 				data.add(dto.getServiceFee() == null ? "" : dto.getServiceFee().toString());
 				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
-				if(dto.getLimitLossType() == 1){
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
-				}
-				if(dto.getLimitProfitType() == 1){
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount()+"%");
-				}else{
-					data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
-				}
+				data.add(dto.getPerUnitLimitLossAmount() == null ? "" : dto.getPerUnitLimitLossAmount().toString());
+				data.add(dto.getPerUnitLimitProfitAmount() == null ? "" : dto.getPerUnitLimitProfitAmount().toString());
 				data.add(dto.getPostTime() == null ? "" : sdf.format(dto.getPostTime()));
-				data.add("");
+				data.add("已退款");
 			}
 			result.add(data);
 		}
@@ -400,7 +399,6 @@ public class FuturesOrderController {
 			result.add("委托指定价格");
 			result.add("委托手数");
 			result.add("手续费");
-			result.add("隔夜手续费");
 			result.add("保证金");
 			result.add("止损金额");
 			result.add("止盈金额");

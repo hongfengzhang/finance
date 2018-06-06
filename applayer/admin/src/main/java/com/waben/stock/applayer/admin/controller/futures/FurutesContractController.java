@@ -184,11 +184,11 @@ public class FurutesContractController {
 			}
 			
 			String unwindPoint = "";
-			if(dto.getUnwindServiceFee()!=null && dto.getUnwindPointType()!=null){
-				if(dto.getUnwindPointType()==1&&dto.getUnwindServiceFee()!=null){
-					unwindPoint = dto.getUnwindServiceFee()+"%";
+			if(dto.getPerUnitUnwindPoint()!=null && dto.getUnwindPointType()!=null){
+				if(dto.getUnwindPointType()==1&&dto.getPerUnitUnwindPoint()!=null){
+					unwindPoint = dto.getPerUnitUnwindPoint()+"%";
 				}else{
-					unwindPoint = dto.getUnwindServiceFee().toString();
+					unwindPoint = dto.getPerUnitUnwindPoint().toString();
 				}
 				
 			}
@@ -210,6 +210,7 @@ public class FurutesContractController {
 				data.add(dto.getPerContractValue() == null ? "" : dto.getPerContractValue().toString());
 				data.add(dto.getPerUnitReserveFund() == null ? "" : dto.getPerUnitReserveFund().toString());
 				data.add(dto.getPerUnitUnwindPoint() == null ? "" : unwindPoint);
+				data.add(dto.getCordon() == null ? "" : dto.getCordon().toString());
 				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
 				data.add(dto.getUnwindServiceFee() == null ? "" : dto.getUnwindServiceFee().toString());
 				data.add(dto.getOvernightPerUnitDeferredFee() == null ? "" : dto.getOvernightPerUnitDeferredFee().toString());
@@ -217,6 +218,7 @@ public class FurutesContractController {
 				data.add(dto.getUserTotalLimit() == null ? "" : dto.getUserTotalLimit().toString());
 				data.add(dto.getPerOrderLimit() == null ? "" : dto.getPerOrderLimit().toString());
 				data.add(dto.getOvernightTime() == null ? "" : dto.getOvernightTime());
+				data.add(dto.getReturnOvernightReserveFundTime() == null ? "" : dto.getReturnOvernightReserveFundTime());
 				data.add(enables);
 			}
 			result.add(data);
@@ -240,6 +242,7 @@ public class FurutesContractController {
 		result.add("1手合约价值");
 		result.add("1手保证金");
 		result.add("1手强平点");
+		result.add("警戒线");
 		result.add("1手开仓手续费");
 		result.add("1手平仓手续费");
 		result.add("1手递延费");
@@ -247,6 +250,7 @@ public class FurutesContractController {
 		result.add("单品持仓总额");
 		result.add("单品持仓限额");
 		result.add("隔夜时间");
+		result.add("隔夜返还时间时间");
 		result.add("风控状态");
 		return result;
 	}

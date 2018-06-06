@@ -66,6 +66,11 @@ public class FutresOrderEntrustDto {
 	private BigDecimal serviceFee;
 	
 	/**
+	 * 隔夜手续费
+	 */
+	private BigDecimal overnightServiceFee;
+	
+	/**
 	 * 保证金（人民币）
 	 */
 	private BigDecimal reserveFund;
@@ -256,5 +261,13 @@ public class FutresOrderEntrustDto {
 
 	public void setDealTime(Date dealTime) {
 		this.dealTime = dealTime;
+	}
+
+	public BigDecimal getOvernightServiceFee() {
+		return overnightServiceFee;
+	}
+
+	public void setOvernightServiceFee(BigDecimal overnightServiceFee) {
+		this.overnightServiceFee = overnightServiceFee;
 	}
 }

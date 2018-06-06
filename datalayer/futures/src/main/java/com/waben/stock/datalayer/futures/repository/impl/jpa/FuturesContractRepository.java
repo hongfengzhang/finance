@@ -26,4 +26,7 @@ public interface FuturesContractRepository extends CustomJpaRepository<FuturesCo
 	@Modifying(clearAutomatically = true)  
 	@Query(value = "update FuturesContract sc set sc.enable=?1 where sc.id=?2") 
 	int enable(Boolean current,Long id);
+	
+	@Query("select f from FuturesContract f where f.exchange.id=?1")
+	List<FuturesContract> findByExchangId(Long exchangeId);
 }
