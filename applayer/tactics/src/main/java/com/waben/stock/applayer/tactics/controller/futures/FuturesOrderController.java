@@ -289,6 +289,7 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		Map<String, String> strMap = new HashMap<>();
 		BigDecimal totalIncome = new BigDecimal(0);
+		BigDecimal rate = BigDecimal.ZERO;
 		String sign = "";
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
@@ -296,9 +297,11 @@ public class FuturesOrderController {
 		}
 		if (list != null && list.size() > 0) {
 			sign = list.get(0).getCurrencySign();
+			rate = list.get(0).getRate();
 		}
 
 		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
+		strMap.put("rate", String.valueOf(rate.setScale(2, RoundingMode.DOWN)));
 		strMap.put("currencySign", sign);
 		return new Response<>(strMap);
 	}
@@ -316,6 +319,7 @@ public class FuturesOrderController {
 		List<FuturesOrderMarketDto> list = futuresOrderBusiness.pageOrderMarket(orderQuery).getContent();
 		Map<String, String> strMap = new HashMap<String, String>();
 		BigDecimal totalIncome = new BigDecimal(0);
+		BigDecimal rate = BigDecimal.ZERO;
 		String sign = "";
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getFloatingProfitOrLoss() == null ? new BigDecimal(0)
@@ -323,9 +327,11 @@ public class FuturesOrderController {
 		}
 		if (list != null && list.size() > 0) {
 			sign = list.get(0).getCurrencySign();
+			rate = list.get(0).getRate();
 		}
 
 		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
+		strMap.put("rate", String.valueOf(rate.setScale(2, RoundingMode.DOWN)));
 		strMap.put("currencySign", sign);
 		return new Response<>(strMap);
 	}
@@ -343,15 +349,18 @@ public class FuturesOrderController {
 		Map<String, String> strMap = new HashMap<String, String>();
 		BigDecimal totalIncome = new BigDecimal(0);
 		String sign = "";
+		BigDecimal rate = BigDecimal.ZERO;
 		for (FuturesOrderMarketDto futuresOrderMarketDto : list) {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss() == null ? new BigDecimal(0)
 					: futuresOrderMarketDto.getPublisherProfitOrLoss());
 		}
 		if (list != null && list.size() > 0) {
 			sign = list.get(0).getCurrencySign();
+			rate = list.get(0).getRate();
 		}
 
 		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
+		strMap.put("rate", String.valueOf(rate.setScale(2, RoundingMode.DOWN)));
 		strMap.put("currencySign", sign);
 		return new Response<>(strMap);
 	}
