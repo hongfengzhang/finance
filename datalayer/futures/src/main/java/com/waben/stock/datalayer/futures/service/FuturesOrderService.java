@@ -53,6 +53,7 @@ import com.waben.stock.interfaces.commonapi.retrivefutures.TradeFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesGatewayOrder;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
 import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalFlowDto;
@@ -118,9 +119,13 @@ public class FuturesOrderService {
 
 	@Autowired
 	private RabbitmqProducer producer;
-
+	
 	@Value("{order.domain:youguwang.com.cn}")
 	private String domain;
+	
+	public List<Object> queryByState(List<Integer> state){
+		return orderDao.queryByState(state);
+	}
 
 	public FuturesOrder findById(Long id) {
 		return orderDao.retrieve(id);

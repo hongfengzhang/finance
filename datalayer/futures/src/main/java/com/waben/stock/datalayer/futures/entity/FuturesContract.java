@@ -48,6 +48,12 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
+	
+	/**
+	 * 交易单位
+	 */
+	private String tradeUnit;
+	
 	/**
 	 * 图标
 	 */

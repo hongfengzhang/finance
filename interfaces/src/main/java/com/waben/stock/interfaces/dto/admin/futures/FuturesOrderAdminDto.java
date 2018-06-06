@@ -89,6 +89,11 @@ public class FuturesOrderAdminDto {
 	private BigDecimal reserveFund;
 	
 	/**
+	 * 服务费（人民币）
+	 */
+	private BigDecimal serviceFee;
+	
+	/**
 	 * 隔夜手续费
 	 */
 	private BigDecimal overnightServiceFee;
@@ -388,6 +393,14 @@ public class FuturesOrderAdminDto {
 
 	public void setLimitLossType(Integer limitLossType) {
 		this.limitLossType = limitLossType;
+	}
+
+	public BigDecimal getServiceFee() {
+		return serviceFee;
+	}
+
+	public void setServiceFee(BigDecimal serviceFee) {
+		this.serviceFee = serviceFee;
 	}
 
 	

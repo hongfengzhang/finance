@@ -70,6 +70,8 @@ public class FuturesContractController implements FuturesContractInterface {
 	
 	@Autowired
 	private FuturesPreQuantityService quantityService;
+	
+	
 
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 

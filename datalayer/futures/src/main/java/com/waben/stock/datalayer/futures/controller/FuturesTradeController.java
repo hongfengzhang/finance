@@ -3,6 +3,7 @@ package com.waben.stock.datalayer.futures.controller;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHtt
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.dto.admin.futures.FutresOrderEntrustDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
@@ -80,11 +82,10 @@ public class FuturesTradeController implements FuturesTradeInterface {
 					result.getContent().get(i).setLastPrice(market.getLastPrice());
 				}
 			}
+			result.getContent().get(i).setEntrustAppointPrice(order.getBuyingEntrustPrice());
 			if(order.getState().getIndex().equals("8")){
-				result.getContent().get(i).setEntrustAppointPrice(order.getSellingEntrustPrice());
 				result.getContent().get(i).setDealTime(order.getSellingTime());
 			}else{
-				result.getContent().get(i).setEntrustAppointPrice(order.getBuyingEntrustPrice());
 				result.getContent().get(i).setDealTime(order.getBuyingTime());
 			}
 		}
@@ -123,8 +124,8 @@ public class FuturesTradeController implements FuturesTradeInterface {
 			if(order.getBuyingTime()!=null){
 				Long date = order.getBuyingTime().getTime();
 				Long current = new Date().getTime();
-				Long hours = (date - current)/(60*60*1000);
-				result.getContent().get(i).setPositionDays(hours.intValue());
+				Long hours = (current - date)/(60*60*1000);
+				result.getContent().get(i).setPositionDays(Math.abs(hours.intValue()));
 			}
 			FuturesCurrencyRate rate = rateService.queryByName(order.getContract().getCurrency());
 			if(order.getState().getIndex().equals("9")){
@@ -191,6 +192,38 @@ public class FuturesTradeController implements FuturesTradeInterface {
         if (w < 0)  
             w = 0;  
         return w;  
-    } 
+    }
+
+	@Override
+	public Response<Object[]> countOrderState(String state) {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		if(state.indexOf(",")>0){
+			String[] array = state.split(",");
+			for (String temp : array) {
+				list.add(Integer.valueOf(temp));
+			}
+		}else{
+			list.add(Integer.valueOf(state));
+		}
+		List<Object> map = futuresOrderService.queryByState(list);
+		FuturesOrderCountDto dto = new FuturesOrderCountDto();
+		Object[] bitge = (Object[])map.get(0);
+		for(int i = 0;i<map.size();i++){
+//			Object[] bitge = (Object[])map.get(i);
+//			String quantity =bitge[0] == null ? "" : bitge[0].toString();
+//			String fund = bitge[1] == null ? "" : bitge[1].toString();
+//			String fee = bitge[2] == null ? "" : bitge[2].toString();
+//			String deferred = bitge[3] == null ? "" : bitge[3].toString();
+//			dto.setQuantity(quantity.toString());
+//			dto.setFund(fund.toString());
+//			dto.setFee(fee.toString());
+//			dto.setDeferred(deferred.toString());
+		}
+		Response<Object[]> res = new Response<Object[]>();
+		res.setCode("200");
+		res.setResult(bitge);
+		res.setMessage("响应成功");
+		return res;
+	} 
 
 }

@@ -1,14 +1,20 @@
 package com.waben.stock.applayer.admin.business.futures;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.interfaces.dto.admin.futures.FutresOrderEntrustDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
 import com.waben.stock.interfaces.dto.publisher.RealNameDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -37,6 +43,46 @@ public class FuturesOrderBusiness {
 	@Autowired
 	private RealNameInterface realnameInterface;
 	
+	Logger logger = LoggerFactory.getLogger(getClass());
+	
+	public Response<FuturesOrderCountDto> countOrderState(FuturesTradeAdminQuery query){
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
+		FuturesOrderCountDto dto = new FuturesOrderCountDto();
+		if(query.getQueryType()==0){
+			PageInfo<FuturesOrderAdminDto> result = adminPagesByQuery(query);
+			if(result.getContent().size()>0){
+				double totalQuantity = 0.00;
+				double reserveFund =0.00;
+				double serviceFee = 0.00;
+				double overnightServiceFee = 0.00;
+				for(FuturesOrderAdminDto adminDto : result.getContent()){
+					if(adminDto.getTotalQuantity()!=null){
+						totalQuantity+=adminDto.getTotalQuantity().doubleValue();
+					}
+					if(adminDto.getReserveFund()!=null){
+						reserveFund+=adminDto.getReserveFund().doubleValue();
+					}
+					if(adminDto.getServiceFee()!=null){
+						serviceFee+=adminDto.getServiceFee().doubleValue();
+					}
+					if(adminDto.getOvernightServiceFee()!=null){
+						overnightServiceFee+=adminDto.getOvernightServiceFee().doubleValue();
+					}
+				}
+				dto.setDeferred(new BigDecimal(overnightServiceFee));
+				dto.setQuantity(new BigDecimal(totalQuantity));
+				dto.setFee(new BigDecimal(serviceFee));
+				dto.setFund(new BigDecimal(reserveFund));
+			}
+		}
+		Response<FuturesOrderCountDto> res = new Response<FuturesOrderCountDto>();
+		res.setCode("200");
+		res.setResult(dto);
+		res.setMessage("响应成功");
+		return res;
+	}
+	
 	private List<Long> queryPublishIds(FuturesTradeAdminQuery query){
 		List<Long> publisherIds = new ArrayList<Long>();
 		if(query.getPublisherPhone()!=null){
@@ -46,7 +92,7 @@ public class FuturesOrderBusiness {
 			};
 		}
 		
-		if(query.getPublisherName()!=null){
+		if(query.getPublisherName()!=null && !"".equals(query.getPublisherName())){
 			if(publisherIds.size()==0 ){
 				List<RealNameDto> real = realnameInterface.findByName(query.getPublisherName()).getResult();
 				for (RealNameDto realNameDto : real) {
@@ -63,19 +109,22 @@ public class FuturesOrderBusiness {
 	public PageInfo<FutresOrderEntrustDto> pagesOrderEntrust(FuturesTradeAdminQuery query){
 		query.setPublisherIds(queryPublishIds(query));
 		Response<PageInfo<FutresOrderEntrustDto>> response = reference.pagesOrderEntrust(query);
-		if(response.getResult().getContent().size()>0){
-			for (FutresOrderEntrustDto dto : response.getResult().getContent()) {
-				if(dto.getPublisherId()!=null){
-					PublisherDto pu = publisherInterface.fetchById(dto.getPublisherId()).getResult();
-					if(pu!=null){
-						dto.setPublisherPhone(pu.getPhone());
-					}
-					RealNameDto re = realnameInterface.fetchByResourceId(dto.getPublisherId()).getResult();
-					if(re!=null){
-						dto.setPublisherName(re.getName());
+		if(response.getResult()!=null && response.getResult().getContent()!=null){
+			if(response.getResult().getContent().size()>0){
+				for (FutresOrderEntrustDto dto : response.getResult().getContent()) {
+					if(dto.getPublisherId()!=null){
+						PublisherDto pu = publisherInterface.fetchById(dto.getPublisherId()).getResult();
+						if(pu!=null){
+							dto.setPublisherPhone(pu.getPhone());
+						}
+						RealNameDto re = realnameInterface.fetchByResourceId(dto.getPublisherId()).getResult();
+						if(re!=null){
+							dto.setPublisherName(re.getName());
+						}
 					}
 				}
 			}
+			
 		}
 		if("200".equals(response.getCode())){
 			return response.getResult();
@@ -105,25 +154,20 @@ public class FuturesOrderBusiness {
 			}
 			
 		}
-		
-//		if(query.getPublisherName()!=null && !"".equals(query.getPublisherName())){
-//			if(publisherIds.size()==0 ){
-//			}else{
-//				publisherIds.clear();
-//				publisherIds.add(Long.valueOf("-1"));
-//			}
-//		}
+
 		query.setPublisherIds(publisherIds);
 		Response<PageInfo<FuturesOrderAdminDto>> response = reference.adminPagesByQuery(query);
-		for (FuturesOrderAdminDto dto : response.getResult().getContent()) {
-			if(dto.getPublisherId()!=null){
-				PublisherDto pu = publisherInterface.fetchById(dto.getPublisherId()).getResult();
-				if(pu!=null){
-					dto.setPublisherPhone(pu.getPhone());
-				}
-				RealNameDto re = realnameInterface.fetchByResourceId(dto.getPublisherId()).getResult();
-				if(re!=null){
-					dto.setPublisherName(re.getName());
+		if(response.getResult()!=null){
+			for (FuturesOrderAdminDto dto : response.getResult().getContent()) {
+				if(dto.getPublisherId()!=null){
+					PublisherDto pu = publisherInterface.fetchById(dto.getPublisherId()).getResult();
+					if(pu!=null){
+						dto.setPublisherPhone(pu.getPhone());
+					}
+					RealNameDto re = realnameInterface.fetchByResourceId(dto.getPublisherId()).getResult();
+					if(re!=null){
+						dto.setPublisherName(re.getName());
+					}
 				}
 			}
 		}

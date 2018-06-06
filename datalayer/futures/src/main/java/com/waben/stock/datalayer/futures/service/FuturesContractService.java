@@ -64,7 +64,6 @@ public class FuturesContractService {
 	public int isCurrent(Boolean current,Long id){
 		return futuresContractDao.isCurrent(current, id);
 	}
-	
 
 	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -240,6 +239,10 @@ public class FuturesContractService {
 		return futuresContractDao.retrieve(contractId);
 	}
 	
+	public List<FuturesContract> findByExchangId(Long exchangeId){
+		return futuresContractDao.findByExchangId(exchangeId);
+	}
+	
 	public Response<String> deleteContract(Long id){
 		List<Long> contractId = new ArrayList<Long>();
 		contractId.add(id);
@@ -263,7 +266,11 @@ public class FuturesContractService {
 		}
 
 		futuresContractDao.delete(id);
-		return new Response<>("删除成功");
+		Response<String> response = new Response<>();
+		response.setCode("200");
+		response.setMessage("响应成功");
+		response.setResult("1");
+		return response;
 	}
 
 	public List<FuturesContractTerm> findByListContractId(Long contractId) {

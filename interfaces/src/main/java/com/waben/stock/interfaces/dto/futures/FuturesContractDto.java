@@ -30,6 +30,11 @@ public class FuturesContractDto {
 	 * 货币名称
 	 */
 	private String currencyName;
+	
+	/**
+	 * 交易单位
+	 */
+	private String tradeUnit;
 	/**
 	 * 汇率
 	 */
@@ -388,6 +393,14 @@ public class FuturesContractDto {
 
 	public void setPreQuantitySet(Set<FuturesPreQuantityDto> preQuantitySet) {
 		this.preQuantitySet = preQuantitySet;
+	}
+
+	public String getTradeUnit() {
+		return tradeUnit;
+	}
+
+	public void setTradeUnit(String tradeUnit) {
+		this.tradeUnit = tradeUnit;
 	}
 
 }
