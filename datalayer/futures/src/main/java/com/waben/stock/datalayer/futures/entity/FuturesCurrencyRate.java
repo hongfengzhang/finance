@@ -34,6 +34,11 @@ public class FuturesCurrencyRate {
 	 */
 	private BigDecimal rate;
 
+	/**
+	 * 货币符号，如“$”,表示美元
+	 */
+	private String currencySign;
+
 	public Long getId() {
 		return id;
 	}
@@ -64,6 +69,14 @@ public class FuturesCurrencyRate {
 
 	public void setRate(BigDecimal rate) {
 		this.rate = rate;
+	}
+
+	public String getCurrencySign() {
+		return currencySign;
+	}
+
+	public void setCurrencySign(String currencySign) {
+		this.currencySign = currencySign;
 	}
 
 }

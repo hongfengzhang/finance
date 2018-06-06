@@ -150,6 +150,7 @@ public class FuturesOrderBusiness {
 				// 获取汇率信息
 				FuturesCurrencyRateDto rate = findByCurrency(orderMarket.getContractCurrency());
 				orderMarket.setRate(rate.getRate());
+				orderMarket.setCurrencySign(rate.getCurrencySign());
 				// 买入价
 				BigDecimal buyingPrice = new BigDecimal(0);
 				if (orderMarket.getBuyingPriceType() == FuturesTradePriceType.MKT) {
@@ -163,9 +164,10 @@ public class FuturesOrderBusiness {
 				if (orderMarket.getLimitProfitType() != null && orderMarket.getPerUnitLimitProfitAmount() != null) {
 					// 按用户设置价格计算止盈金额
 					if (orderMarket.getLimitProfitType() == 1) {
-						// | 止盈金额 = （设置价格 - 买入价）/ 最小波动点位 * 汇率 |
+						// | 止盈金额 = （设置价格 - 买入价）/ 最小波动点位 * 波动一次盈亏金额 * 汇率 |
 						orderMarket.setPerUnitLimitProfitPositon(orderMarket.getPerUnitLimitProfitAmount()
-								.subtract(buyingPrice).divide(contract.getMinWave()).multiply(rate.getRate()).abs());
+								.subtract(buyingPrice).divide(contract.getMinWave())
+								.multiply(contract.getPerWaveMoney()).multiply(rate.getRate()).abs());
 					} else {
 						orderMarket.setPerUnitLimitProfitPositon(orderMarket.getPerUnitLimitProfitAmount());
 					}
@@ -174,9 +176,10 @@ public class FuturesOrderBusiness {
 				if (orderMarket.getLimitLossType() != null && orderMarket.getPerUnitLimitLossAmount() != null) {
 					// 按用户设置价格计算止损金额
 					if (orderMarket.getLimitLossType() == 1) {
-						// 止损金额 = （设置价格 - 买入价）/ 最小波动点位 * 汇率
+						// 止损金额 = （设置价格 - 买入价）/ 最小波动点位 * 波动一次盈亏金额 * 汇率
 						orderMarket.setPerUnitLimitLossPosition(orderMarket.getPerUnitLimitProfitAmount()
-								.subtract(buyingPrice).divide(contract.getMinWave()).multiply(rate.getRate()));
+								.subtract(buyingPrice).divide(contract.getMinWave())
+								.multiply(contract.getPerWaveMoney()).multiply(rate.getRate()));
 					} else {
 						orderMarket.setPerUnitLimitLossPosition(orderMarket.getPerUnitLimitLossAmount());
 					}
@@ -189,10 +192,13 @@ public class FuturesOrderBusiness {
 					if (market == null) {
 						break;
 					}
+					orderMarket.setPerWaveMoney(contract.getPerWaveMoney());
+					orderMarket.setMinWave(contract.getMinWave());
 					orderMarket.setLastPrice(market.getLastPrice());
-					// 用户盈亏 = （最新价 - 买入价） / 最小波动点 * 汇率
-					orderMarket.setFloatingProfitOrLoss(market.getLastPrice().subtract(buyingPrice)
-							.divide(contract.getMinWave()).multiply(rate.getRate()));
+					// 用户盈亏 = （最新价 - 买入价） / 最小波动点 * 波动一次盈亏金额 * 汇率
+					orderMarket.setFloatingProfitOrLoss(
+							market.getLastPrice().subtract(buyingPrice).divide(contract.getMinWave())
+									.multiply(contract.getPerWaveMoney()).multiply(rate.getRate()));
 				}
 
 			}

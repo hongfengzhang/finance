@@ -61,13 +61,13 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesCurrencyRateService rateService;
-	
+
 	@Autowired
 	private FuturesOrderService orderService;
 
 	@Autowired
 	private FuturesCurrencyRateService futuresCurrencyRateService;
-	
+
 	@Autowired
 	private FuturesPreQuantityService quantityService;
 	
@@ -95,6 +95,7 @@ public class FuturesContractController implements FuturesContractInterface {
 			futuresContractDto.setTimeZoneGap(exchange.getTimeZoneGap());
 			futuresContractDto.setRate(rate == null ? new BigDecimal(0) : rate.getRate());
 			futuresContractDto.setCurrencyName(rate == null ? "" : rate.getCurrencyName());
+			futuresContractDto.setCurrencySign(rate == null ? "" : rate.getCurrencySign());
 			// 判断交易所 和 合约是否可用
 			if (!futuresContractDto.getExchangeEnable() || !futuresContractDto.getEnable()) {
 				futuresContractDto.setState(3);
@@ -159,7 +160,7 @@ public class FuturesContractController implements FuturesContractInterface {
 
 		return new Response<>(result);
 	}
-	
+
 	/**
 	 * 获取交易所的对应时间
 	 * 
@@ -257,46 +258,47 @@ public class FuturesContractController implements FuturesContractInterface {
 	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 
-		//判断警戒线是否低于强平点
-		if(fcontract.getCordon().compareTo(fcontract.getPerUnitUnwindPoint())<0){
+		// 判断警戒线是否低于强平点
+		if (fcontract.getCordon().compareTo(fcontract.getPerUnitUnwindPoint()) < 0) {
 			throw new ServiceException(ExceptionConstant.CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION);
 		}
 		fcontract.setExchange(exchangeService.findById(contractDto.getExchangeId()));
 		fcontract.setCurrency(contractDto.getCurrency());
-		if(contractDto.getProductType()!=null && !"".equals(contractDto.getProductType())){
+		if (contractDto.getProductType() != null && !"".equals(contractDto.getProductType())) {
 			FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
 			fcontract.setProductType(converter.convertToEntityAttribute(Integer.valueOf(contractDto.getProductType())));
 		}
 		FuturesContract result = futuresContractService.saveExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
-		
-		if(result.getExchange()!=null){
+
+		if (result.getExchange() != null) {
 			resultDto.setExchangcode(result.getExchange().getCode());
 			resultDto.setExchangename(result.getExchange().getName());
 			resultDto.setExchangeId(result.getExchange().getId());
 			resultDto.setExchangeType(result.getExchange().getExchangeType());
 		}
-		if(result.getProductType()!=null){
+		if (result.getProductType() != null) {
 			resultDto.setProductType(result.getProductType().getValue());
 		}
-		if(result.getCurrency()!=null&&!"".equals(result.getCurrency())){
-			FuturesCurrencyRate rate = rateService.queryByName(result.getCurrency());;
-			if(rate!=null){
+		if (result.getCurrency() != null && !"".equals(result.getCurrency())) {
+			FuturesCurrencyRate rate = rateService.queryByName(result.getCurrency());
+			;
+			if (rate != null) {
 				resultDto.setRate(rate.getRate());
 			}
 		}
-		
+
 		return new Response<>(resultDto);
 	}
 
 	@Override
 	public Response<FuturesContractAdminDto> modifyContract(@RequestBody FuturesContractAdminDto contractDto) {
-		if(!contractDto.getEnable()){
+		if (!contractDto.getEnable()) {
 			List<Long> contractId = new ArrayList<Long>();
 			contractId.add(contractDto.getId());
 			List<FuturesOrder> list = orderService.findByContractId(contractId);
-			if(list.size()>0){
+			if (list.size() > 0) {
 				Response<FuturesContractAdminDto> res = new Response<FuturesContractAdminDto>();
 				res.setCode("200");
 				res.setMessage("该合约正在被订单使用");
@@ -304,38 +306,38 @@ public class FuturesContractController implements FuturesContractInterface {
 				return res;
 			}
 		}
-		
-		
+
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 
-		//判断警戒线是否低于强平点
-		if(fcontract.getCordon().compareTo(fcontract.getPerUnitUnwindPoint())<0){
+		// 判断警戒线是否低于强平点
+		if (fcontract.getCordon().compareTo(fcontract.getPerUnitUnwindPoint()) < 0) {
 			throw new ServiceException(ExceptionConstant.CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION);
 		}
-		
+
 		fcontract.setExchange(exchangeService.findById(contractDto.getExchangeId()));
 		fcontract.setCurrency(contractDto.getCurrency());
-		
-		if(contractDto.getProductType()!=null && !"".equals(contractDto.getProductType())){
+
+		if (contractDto.getProductType() != null && !"".equals(contractDto.getProductType())) {
 			FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
 			fcontract.setProductType(converter.convertToEntityAttribute(Integer.valueOf(contractDto.getProductType())));
 		}
 		FuturesContract result = futuresContractService.modifyExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
-		
-		if(result.getExchange()!=null){
+
+		if (result.getExchange() != null) {
 			resultDto.setExchangcode(result.getExchange().getCode());
 			resultDto.setExchangename(result.getExchange().getName());
 			resultDto.setExchangeId(result.getExchange().getId());
 			resultDto.setExchangeType(result.getExchange().getExchangeType());
 		}
-		if(result.getProductType()!=null){
+		if (result.getProductType() != null) {
 			resultDto.setProductType(result.getProductType().getValue());
 		}
-		if(result.getCurrency()!=null&&!"".equals(result.getCurrency())){
-			FuturesCurrencyRate rate = rateService.queryByName(result.getCurrency());;
-			if(rate!=null){
+		if (result.getCurrency() != null && !"".equals(result.getCurrency())) {
+			FuturesCurrencyRate rate = rateService.queryByName(result.getCurrency());
+			;
+			if (rate != null) {
 				resultDto.setRate(rate.getRate());
 			}
 		}
@@ -352,35 +354,36 @@ public class FuturesContractController implements FuturesContractInterface {
 			@RequestBody FuturesContractAdminQuery query) {
 		Page<FuturesContract> page = futuresContractService.pagesContractAdmin(query);
 		PageInfo<FuturesContractAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractAdminDto.class);
-		for(int i=0;i<result.getContent().size();i++){
-			if(page.getContent().get(i).getExchange()!=null){
+		for (int i = 0; i < result.getContent().size(); i++) {
+			if (page.getContent().get(i).getExchange() != null) {
 				result.getContent().get(i).setExchangcode(page.getContent().get(i).getExchange().getCode());
 				result.getContent().get(i).setExchangename(page.getContent().get(i).getExchange().getName());
 				result.getContent().get(i).setExchangeId(page.getContent().get(i).getExchange().getId());
 				result.getContent().get(i).setExchangeType(page.getContent().get(i).getExchange().getExchangeType());
 			}
-			if(page.getContent().get(i).getProductType()!=null){
+			if (page.getContent().get(i).getProductType() != null) {
 				result.getContent().get(i).setProductType(page.getContent().get(i).getProductType().getValue());
 			}
-			
-			if(page.getContent().get(i).getCurrency()!=null&&!"".equals(page.getContent().get(i).getCurrency())){
+
+			if (page.getContent().get(i).getCurrency() != null && !"".equals(page.getContent().get(i).getCurrency())) {
 				FuturesCurrencyRate rate = rateService.queryByName(page.getContent().get(i).getCurrency());
-				if(rate!=null){
+				if (rate != null) {
 					result.getContent().get(i).setRate(rate.getRate());
 				}
 			}
-			List<FuturesContractTerm> list = futuresContractService.findByListContractId(page.getContent().get(i).getId());
+			List<FuturesContractTerm> list = futuresContractService
+					.findByListContractId(page.getContent().get(i).getId());
 			List<FuturesTermAdminDto> resultList = new ArrayList<FuturesTermAdminDto>();
 			for (FuturesContractTerm term : list) {
 				FuturesTermAdminDto dto = CopyBeanUtils.copyBeanProperties(term, new FuturesTermAdminDto(), false);
 				resultList.add(dto);
 			}
 			result.getContent().get(i).setFuturesTermAdminDto(resultList);
-			
-			//获取预设置手数
+
+			// 获取预设置手数
 			List<FuturesPreQuantity> preList = quantityService.findByContractId(result.getContent().get(i).getId());
 			List<FuturesPreQuantityDto> preResult = new ArrayList<FuturesPreQuantityDto>();
-			for(FuturesPreQuantity tity : preList){
+			for (FuturesPreQuantity tity : preList) {
 				FuturesPreQuantityDto dto = CopyBeanUtils.copyBeanProperties(tity, new FuturesPreQuantityDto(), false);
 				dto.setContractId(tity.getContract().getId());
 				preResult.add(dto);
@@ -397,39 +400,38 @@ public class FuturesContractController implements FuturesContractInterface {
 	}
 
 	@Override
-	public Response<String> isCurrent(@RequestParam(value="id") Long id) {
+	public Response<String> isCurrent(@RequestParam(value = "id") Long id) {
 		FuturesContract contract = futuresContractService.findByContractId(id);
 		Boolean current = false;
-		if(contract.getEnable()!=null){
-			if(contract.getEnable()){
+		if (contract.getEnable() != null) {
+			if (contract.getEnable()) {
 				current = false;
-			}else{
+			} else {
 				current = true;
 			}
-		}else{
-			current=false;
+		} else {
+			current = false;
 		}
-		if(current){
+		if (current) {
 			List<FuturesContractTerm> termList = futuresContractService.findByListContractId(id);
-			if(termList.size()>0){
+			if (termList.size() > 0) {
 				Boolean isCurrent = false;
-				for(FuturesContractTerm term:termList){
-					if(term.isCurrent()){
+				for (FuturesContractTerm term : termList) {
+					if (term.isCurrent()) {
 						isCurrent = true;
 					}
 				}
-				if(!isCurrent){
+				if (!isCurrent) {
 					throw new ServiceException(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION);
 				}
 			}
-			
+
 			List<FuturesPreQuantity> pre = quantityService.findByContractId(id);
-			if(pre.size()==0||pre==null){
+			if (pre.size() == 0 || pre == null) {
 				throw new ServiceException(ExceptionConstant.CONTRACT_PREQUANTITY_EXCEPTION);
 			}
 		}
-		
-		
+
 		Integer i = futuresContractService.isCurrent(current, id);
 		Response<String> res = new Response<String>();
 		res.setCode("200");

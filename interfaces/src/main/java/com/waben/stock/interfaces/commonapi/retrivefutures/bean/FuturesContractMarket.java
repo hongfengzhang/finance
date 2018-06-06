@@ -83,6 +83,11 @@ public class FuturesContractMarket {
 	@ApiModelProperty(value = "以最新价交易的合同或批次数量")
 	private Integer lastSize;
 	/**
+	 * 今天的开盘价
+	 */
+	@ApiModelProperty(value = "当天的开盘价")
+	private BigDecimal openPrice;
+	/**
 	 * 当天最高价
 	 */
 	@ApiModelProperty(value = "当天最高价")
@@ -268,6 +273,14 @@ public class FuturesContractMarket {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public BigDecimal getOpenPrice() {
+		return openPrice;
+	}
+
+	public void setOpenPrice(BigDecimal openPrice) {
+		this.openPrice = openPrice;
 	}
 
 	public BigDecimal getUpDropPrice() {

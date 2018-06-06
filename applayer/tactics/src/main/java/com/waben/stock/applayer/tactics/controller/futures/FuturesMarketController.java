@@ -56,6 +56,7 @@ public class FuturesMarketController {
 		FuturesContractMarketDto marketDto = CopyBeanUtils.copyBeanProperties(FuturesContractMarketDto.class,
 				RetriveFuturesOverHttp.market(symbol), false);
 		marketDto.setContractName(contractPage.getName());
+		marketDto.setCurrencySign(contractPage.getCurrencySign());
 		marketDto.setContractState(contractPage.getState());
 		marketDto.setCurrentHoldingTime(
 				timeZoneConversion(contractPage.getTimeZoneGap(), contractPage.getCurrentHoldingTime()));

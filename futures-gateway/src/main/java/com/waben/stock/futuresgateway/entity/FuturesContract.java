@@ -70,6 +70,10 @@ public class FuturesContract {
 	 */
 	private Integer lastSize;
 	/**
+	 * 今天的开盘价
+	 */
+	private BigDecimal openPrice;
+	/**
 	 * 当天最高价
 	 */
 	private BigDecimal highPrice;
@@ -232,6 +236,14 @@ public class FuturesContract {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public BigDecimal getOpenPrice() {
+		return openPrice;
+	}
+
+	public void setOpenPrice(BigDecimal openPrice) {
+		this.openPrice = openPrice;
 	}
 
 }
