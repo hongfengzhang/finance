@@ -175,6 +175,11 @@ public class FuturesContractDto {
 	@ApiModelProperty(value = "交易所ID")
 	private Long exchangeId;
 	/**
+	 * 交易所名称
+	 */
+	@ApiModelProperty(value = "交易所名称")
+	private String exchangeName;
+	/**
 	 * 预设置的手数列表
 	 */
 	@ApiModelProperty(value = "预设置的手数列表")
@@ -411,13 +416,21 @@ public class FuturesContractDto {
 	public void setExchangeId(Long exchangeId) {
 		this.exchangeId = exchangeId;
 	}
-	
+
 	public String getTradeUnit() {
 		return tradeUnit;
 	}
 
 	public void setTradeUnit(String tradeUnit) {
 		this.tradeUnit = tradeUnit;
+	}
+
+	public String getExchangeName() {
+		return exchangeName;
+	}
+
+	public void setExchangeName(String exchangeName) {
+		this.exchangeName = exchangeName;
 	}
 
 	public Set<FuturesPreQuantityDto> getPreQuantitySet() {

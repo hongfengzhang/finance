@@ -1,6 +1,5 @@
 package com.waben.stock.datalayer.futures.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
-import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
-import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -34,9 +31,6 @@ public class FuturesExchangeController implements FuturesExchangeInterface {
 	@Autowired
 	private FuturesExchangeService exchangeService;
 
-	@Autowired
-	private FuturesOrderService orderService;
-	
 	@Autowired
 	private FuturesContractService contractService;
 

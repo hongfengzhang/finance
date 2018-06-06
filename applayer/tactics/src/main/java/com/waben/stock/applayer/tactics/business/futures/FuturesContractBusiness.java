@@ -66,9 +66,13 @@ public class FuturesContractBusiness {
 				FuturesContractMarket market = RetriveFuturesOverHttp.market(quotation.getSymbol());
 				// 设置行情信息
 				quotation.setLastPrice(market.getLastPrice());
-				quotation.setClosePrice(market.getClosePrice());
 				quotation.setUpDropPrice(market.getUpDropPrice());
 				quotation.setUpDropSpeed(market.getUpDropSpeed());
+				quotation.setOpenPrice(market.getOpenPrice());
+				quotation.setHighPrice(market.getHighPrice());
+				quotation.setLowPrice(market.getLowPrice());
+				quotation.setClosePrice(market.getClosePrice());
+				quotation.setVolume(market.getVolume());
 			}
 		}
 		return quotationList;

@@ -48,12 +48,12 @@ public class FuturesContract {
 	 * 货币
 	 */
 	private String currency;
-	
+
 	/**
 	 * 交易单位
 	 */
 	private String tradeUnit;
-	
+
 	/**
 	 * 图标
 	 */
@@ -99,7 +99,7 @@ public class FuturesContract {
 	 * </ul>
 	 */
 	private Integer unwindPointType;
-	
+
 	/**
 	 * 警戒线
 	 */
@@ -112,7 +112,7 @@ public class FuturesContract {
 	 * </p>
 	 */
 	private BigDecimal userTotalLimit;
-	
+
 	/**
 	 * 单笔订单额度限制（手）
 	 */
@@ -167,6 +167,11 @@ public class FuturesContract {
 	 */
 	@Transient
 	private Long exchangeId;
+	/**
+	 * 交易所名称
+	 */
+	@Transient
+	private String exchangeName;
 
 	public Long getId() {
 		return id;
@@ -376,13 +381,6 @@ public class FuturesContract {
 		this.preQuantitySet = preQuantitySet;
 	}
 
-	public Long getExchangeId() {
-		if (exchange != null) {
-			return exchange.getId();
-		}
-		return exchangeId;
-	}
-
 	public BigDecimal getCordon() {
 		return cordon;
 	}
@@ -391,8 +389,34 @@ public class FuturesContract {
 		this.cordon = cordon;
 	}
 
+	public String getTradeUnit() {
+		return tradeUnit;
+	}
+
+	public void setTradeUnit(String tradeUnit) {
+		this.tradeUnit = tradeUnit;
+	}
+	
+	public Long getExchangeId() {
+		if (exchange != null) {
+			return exchange.getId();
+		}
+		return exchangeId;
+	}
+
 	public void setExchangeId(Long exchangeId) {
 		this.exchangeId = exchangeId;
+	}
+
+	public String getExchangeName() {
+		if (exchange != null) {
+			return exchange.getName();
+		}
+		return exchangeName;
+	}
+
+	public void setExchangeName(String exchangeName) {
+		this.exchangeName = exchangeName;
 	}
 
 }
