@@ -35,10 +35,6 @@ public class FuturesOrderDto {
 	@ApiModelProperty(value = "订单类型")
 	private FuturesOrderType orderType;
 	/**
-	 * 对应的合约
-	 */
-	private FuturesContractDto contract;
-	/**
 	 * 对应的合约ID
 	 */
 	@ApiModelProperty(value = "对应的合约ID")
@@ -295,14 +291,6 @@ public class FuturesOrderDto {
 
 	public void setOrderType(FuturesOrderType orderType) {
 		this.orderType = orderType;
-	}
-
-	public FuturesContractDto getContract() {
-		return contract;
-	}
-
-	public void setContract(FuturesContractDto contract) {
-		this.contract = contract;
 	}
 
 	public BigDecimal getTotalQuantity() {

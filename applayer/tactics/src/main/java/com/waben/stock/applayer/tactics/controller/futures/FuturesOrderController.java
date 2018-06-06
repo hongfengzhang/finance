@@ -30,6 +30,7 @@ import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness
 import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderMarketDto;
+import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderProfitDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -279,7 +280,7 @@ public class FuturesOrderController {
 
 	@GetMapping("/holding/profit")
 	@ApiOperation(value = "获取持仓中总收益")
-	public Response<Map<String, String>> holdingProfit(int page, int size) {
+	public Response<FuturesOrderProfitDto> holdingProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Position };
 		orderQuery.setStates(states);
@@ -300,15 +301,16 @@ public class FuturesOrderController {
 			rate = list.get(0).getRate();
 		}
 
-		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
-		strMap.put("rate", String.valueOf(rate.setScale(2, RoundingMode.DOWN)));
-		strMap.put("currencySign", sign);
-		return new Response<>(strMap);
+		FuturesOrderProfitDto result = new FuturesOrderProfitDto();
+		result.setTotalIncome(totalIncome.setScale(2, RoundingMode.DOWN));
+		result.setRate(rate.setScale(2, RoundingMode.DOWN));
+		result.setCurrencySign(sign);
+		return new Response<>(result);
 	}
 
 	@GetMapping("/entrustment/profit")
 	@ApiOperation(value = "获取委托中总收益")
-	public Response<Map<String, String>> entrustmentProfit(int page, int size) {
+	public Response<FuturesOrderProfitDto> entrustmentProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.BuyingEntrust, FuturesOrderState.PartPosition,
 				FuturesOrderState.SellingEntrust, FuturesOrderState.PartUnwind };
@@ -330,15 +332,16 @@ public class FuturesOrderController {
 			rate = list.get(0).getRate();
 		}
 
-		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
-		strMap.put("rate", String.valueOf(rate.setScale(2, RoundingMode.DOWN)));
-		strMap.put("currencySign", sign);
-		return new Response<>(strMap);
+		FuturesOrderProfitDto result = new FuturesOrderProfitDto();
+		result.setTotalIncome(totalIncome.setScale(2, RoundingMode.DOWN));
+		result.setRate(rate.setScale(2, RoundingMode.DOWN));
+		result.setCurrencySign(sign);
+		return new Response<>(result);
 	}
 
 	@GetMapping("/settled/profit")
 	@ApiOperation(value = "获取已结算总收益")
-	public Response<Map<String, String>> settledProfit(int page, int size) {
+	public Response<FuturesOrderProfitDto> settledProfit(int page, int size) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		FuturesOrderState[] states = { FuturesOrderState.Unwind };
 		orderQuery.setStates(states);
@@ -359,10 +362,11 @@ public class FuturesOrderController {
 			rate = list.get(0).getRate();
 		}
 
-		strMap.put("totalIncome", String.valueOf(totalIncome.setScale(2, RoundingMode.DOWN)));
-		strMap.put("rate", String.valueOf(rate.setScale(2, RoundingMode.DOWN)));
-		strMap.put("currencySign", sign);
-		return new Response<>(strMap);
+		FuturesOrderProfitDto result = new FuturesOrderProfitDto();
+		result.setTotalIncome(totalIncome.setScale(2, RoundingMode.DOWN));
+		result.setRate(rate.setScale(2, RoundingMode.DOWN));
+		result.setCurrencySign(sign);
+		return new Response<>(result);
 	}
 
 	@GetMapping("/detail/{orderId}")
