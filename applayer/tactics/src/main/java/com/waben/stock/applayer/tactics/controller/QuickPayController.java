@@ -20,15 +20,19 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.waben.stock.applayer.tactics.business.AreaInfoBusiness;
 import com.waben.stock.applayer.tactics.business.BindCardBusiness;
 import com.waben.stock.applayer.tactics.business.CapitalAccountBusiness;
+import com.waben.stock.applayer.tactics.business.CnapsBusiness;
 import com.waben.stock.applayer.tactics.business.PaymentBusiness;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.QuickPayBusiness;
+import com.waben.stock.applayer.tactics.payapi.fastmoney.common.FastMoneyBankType;
 import com.waben.stock.applayer.tactics.payapi.wbpay.config.WBConfig;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
-import com.waben.stock.interfaces.commonapi.wabenpay.common.WabenBankType;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.manage.AreaInfoDto;
+import com.waben.stock.interfaces.dto.manage.CnapsDto;
 import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.dto.publisher.PublisherDto;
@@ -60,6 +64,12 @@ public class QuickPayController {
 
     @Autowired
     private PaymentBusiness paymentBusiness;
+    
+    @Autowired
+    private CnapsBusiness cnapsBusiness;
+    
+    @Autowired
+    private AreaInfoBusiness areaBusiness;
     
     @Autowired
     private WBConfig wbConfig;
@@ -190,6 +200,25 @@ public class QuickPayController {
         Response<Map<String, String>> result = quickPayBusiness.wabenPay(amount, SecurityUtil.getUserId(), endType);
         return result;
     }
+    
+    @RequestMapping("/fastmoneypay")
+    @ApiOperation(value = "快钱二次请求支付的页面", hidden = true) 
+    public void fastMoneyPay(@RequestParam(required = true) String paymentNo, HttpServletResponse httpResp) {
+    	try {
+			logger.info("快钱二次请求支付订单号:{}", paymentNo);
+			String payHtml = quickPayBusiness.fastMoneyPay(paymentNo);
+			httpResp.setContentType("text/html;charset=UTF-8");
+			httpResp.getWriter().write(payHtml);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+			httpResp.setContentType("text/html;charset=UTF-8");
+			try {
+				PrintWriter writer = httpResp.getWriter();
+				writer.write("请求支付发生异常，请稍后再试，或者联系客服!");
+			} catch (IOException e) {
+			}
+		}
+    }
 
     @RequestMapping("/wbreturn")
     @ApiOperation(value = "网贝收银台同步回调接口")
@@ -250,14 +279,20 @@ public class QuickPayController {
         }
         Response<String> resp = new Response<String>();
         BindCardDto bindCard = bindCardBusiness.findById(bindCardId);
+        CnapsDto cnaps = cnapsBusiness.fetchByCnaps(bindCard.getBranchCode());
+        if(cnaps == null) {
+        	throw new ServiceException(ExceptionConstant.BRANCH_NOTSET_EXCEPTION);
+        }
+        AreaInfoDto area = areaBusiness.fetchByCode(cnaps.getCityCode());
         // CzBankType bankType = CzBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
-        WabenBankType bankType = WabenBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
+        // WabenBankType bankType = WabenBankType.getByPlateformBankType(BankType.getByBank(bindCard.getBankName()));
+        FastMoneyBankType bankType = FastMoneyBankType.getByPlateformBankType(BankType.getByCode(bindCard.getBankCode()));
         if (bankType == null) {
             throw new ServiceException(ExceptionConstant.BANKCARD_NOTSUPPORT_EXCEPTION);
         }
         logger.info("验证通过,提现开始");
         quickPayBusiness.wbWithdrawals(SecurityUtil.getUserId(), amount, bindCard.getName(), bindCard.getPhone(),
-                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bankType.getBank());
+                bindCard.getIdCard(), bindCard.getBankCard(), bankType.getCode(), bankType.getBank(), cnaps.getBnkName(), area.getAreaName().replaceAll("市", "").replaceAll("　", ""));
         resp.setResult("success");
         return resp;
     }

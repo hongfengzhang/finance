@@ -60,5 +60,13 @@ public class CnapsBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
+	
+	public CnapsDto fetchByCnaps(String cnaps) {
+		Response<CnapsDto> response = cnapsReference.fetchByCnaps(cnaps);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
 
 }

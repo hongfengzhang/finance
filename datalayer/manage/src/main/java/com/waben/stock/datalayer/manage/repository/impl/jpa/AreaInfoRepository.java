@@ -14,4 +14,6 @@ public interface AreaInfoRepository extends CustomJpaRepository<AreaInfo, Long> 
 
 	List<AreaInfo> findByParentCode(String parentCode);
 
+	AreaInfo findByAreaCode(String areaCode);
+
 }

@@ -1,6 +1,7 @@
 package com.waben.stock.applayer.tactics.business;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,6 +26,9 @@ import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.waben.stock.applayer.tactics.payapi.caituopay.config.PayConfig;
+import com.waben.stock.applayer.tactics.payapi.fastmoney.FastMoneyConfig;
+import com.waben.stock.applayer.tactics.payapi.fastmoney.FastMoneyOverHttp;
+import com.waben.stock.applayer.tactics.payapi.fastmoney.bean.BankRequestBean;
 import com.waben.stock.applayer.tactics.payapi.paypal.config.PayPalConfig;
 import com.waben.stock.applayer.tactics.payapi.paypal.config.RSAUtil;
 import com.waben.stock.applayer.tactics.payapi.paypal.utils.HttpUtil;
@@ -91,6 +95,9 @@ public class QuickPayBusiness {
     
     @Autowired
     private WBConfig wbConfig;
+    
+    @Autowired
+    private FastMoneyConfig fastConfig;
     
     @Autowired
 	private RabbitmqProducer producer;
@@ -555,7 +562,7 @@ public class QuickPayBusiness {
     }
 
     public void wbWithdrawals(Long publisherId, BigDecimal amount, String name, String phone, String idCard,
-                              String bankCard, String bankCode, String bankName){
+                              String bankCard, String bankCode, String bankName, String branchName, String provinceCity){
     	CapitalAccountDto account = accountBusiness.findByPublisherId(publisherId);
     	if (account.getState() != null && account.getState() == 2) {
 			throw new ServiceException(ExceptionConstant.CAPITALACCOUNT_FROZEN_EXCEPTION);
@@ -575,7 +582,8 @@ public class QuickPayBusiness {
         order.setUpdateTime(date);
         order = this.saveWithdrawalsOrders(order);
 
-        logger.info("发起提现申请:{}_{}_{}_{}", name, idCard, phone, bankCard);
+        /* 以下注释为新网贝支付系统代码
+		logger.info("发起提现申请:{}_{}_{}_{}", name, idCard, phone, bankCard);
         WithdrawParam param = new WithdrawParam();
 		param.setAppId(wbConfig.getMerchantNo());
 		param.setBankAcctName(name);
@@ -587,22 +595,6 @@ public class QuickPayBusiness {
 		param.setTimestamp(sdf.format(date));
 		param.setTotalAmt(isProd ? amount : new BigDecimal("0.01"));
 		param.setVersion("1.0");
-//		WithdrawRet withdrawRet = WabenPayOverHttp.withdraw(param, wbConfig.getKey());
-//        if(1 == withdrawRet.getStatus()) {
-//        	// 提现请求成功，使用队列查询
-//        	WithdrawQueryMessage message = new WithdrawQueryMessage();
-//    		message.setAppId(wbConfig.getMerchantNo());
-//    		message.setOutOrderNo(withdrawalsNo);
-//    		message.setOrderNo(withdrawRet.getOrderNo());
-//    		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
-//    		// 更新订单状态
-//        	order.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
-//        	this.revisionWithdrawalsOrder(order);
-//        } else {
-//        	WithdrawalsOrderDto orders = this.findByWithdrawalsNo(withdrawalsNo);
-//            accountBusiness.withdrawals(publisherId, orders.getId(),WithdrawalsState.FAILURE);
-//            throw new ServiceException(ExceptionConstant.WITHDRAWALS_EXCEPTION);
-//        }
 		// 发起提现请求前，预使用队列查询
     	WithdrawQueryMessage message = new WithdrawQueryMessage();
 		message.setAppId(wbConfig.getMerchantNo());
@@ -615,6 +607,25 @@ public class QuickPayBusiness {
         	order.setThirdWithdrawalsNo(withdrawRet.getOrderNo());
         	this.revisionWithdrawalsOrder(order);
 		}
+		*/
+        
+        // 以下代码为快钱代付代码
+        logger.info("发起提现申请:{}_{}_{}_{}", name, idCard, phone, bankCard);
+        // 发起提现请求前，预使用队列查询
+    	WithdrawQueryMessage message = new WithdrawQueryMessage();
+		message.setAppId(wbConfig.getMerchantNo());
+		message.setOutOrderNo(withdrawalsNo);
+		producer.sendMessage(RabbitmqConfiguration.withdrawQueryQueueName, message);
+		// 发起提现请求
+		BankRequestBean req = new BankRequestBean();
+		req.setAmount(isProd ? amount.multiply(new BigDecimal("100")).setScale(0, RoundingMode.DOWN).doubleValue() : new BigDecimal("1").doubleValue());
+		req.setBankCardNumber(bankCard);
+		req.setBankName(bankName);
+		req.setCreditName(name);
+		req.setKaihuhang(branchName);
+		req.setOrderId(withdrawalsNo);
+		req.setProvince_city(provinceCity);
+        FastMoneyOverHttp.withdraw(req, fastConfig.getMerchantNo(), fastConfig.getKey());
     }
 
     public Response<Map<String, String>> wabenPay(BigDecimal amount, Long userId, String endType) {
@@ -671,7 +682,9 @@ public class QuickPayBusiness {
         }
         return resp;
         */
+        
         // 封装请求参数
+        /* 以下注释的代码为新网贝支付系统
         SwiftPayParam param = new SwiftPayParam();
 		param.setAppId(wbConfig.getMerchantNo());
 		param.setSubject(userId + "充值");
@@ -705,6 +718,18 @@ public class QuickPayBusiness {
         	throw new ServiceException(ExceptionConstant.REQUEST_RECHARGE_EXCEPTION);
         }
         return resp;
+        */
+        
+        // 以下代码为块钱支付
+        Response<Map<String, String>> resp = new Response<Map<String, String>>();
+        Map<String, String> resultUrl = new HashMap<>();
+        resultUrl.put("url", fastConfig.getPayUrl() + "?paymentNo=" + paymentNo);
+        resp.setResult(resultUrl);
+        return resp;
+    }
+    
+    public String fastMoneyPay(String paymentNo) {
+    	return null;
     }
 
 
@@ -820,6 +845,9 @@ public class QuickPayBusiness {
         }
         return "FALSE";
         */
+    	
+    	// 以下注释的代码为新网贝支付系统
+    	/*
     	Map<String, String> result = paramter2Map(request);
         logger.info("网贝支付回调的结果是:{}", result);
         String paymentNo = result.get("out_order_no");
@@ -835,6 +863,25 @@ public class QuickPayBusiness {
         	return "success";
         } else {
         	logger.error("网贝支付回调验证签名失败");
+        	return "failed";
+        }
+        */
+    	
+    	// 以下代码为块钱支付的回调代码
+    	Map<String, String> result = paramter2Map(request);
+        logger.info("块钱支付回调的结果是:{}", result);
+        String paymentNo = result.get("orderId");
+        String orderNo = result.get("dealId");
+        String sign = result.get("signMsg");
+        String code = result.get("payResult");
+        // TODO 验证签名
+        if(sign != null) {
+        	if("10".equals(code)) {
+        		payCallback(paymentNo, PaymentState.Paid);
+        	}
+        	return "success";
+        } else {
+        	logger.error("快钱支付回调验证签名失败");
         	return "failed";
         }
     }

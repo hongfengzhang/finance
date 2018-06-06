@@ -19,5 +19,8 @@ public interface AreaInfoInterface {
 
 	@RequestMapping(value = "/parentcode/{parentCode}", method = RequestMethod.GET)
 	public Response<List<AreaInfoDto>> fetchByParentCode(@PathVariable("parentCode") String parentCode);
+	
+	@RequestMapping(value = "/code/{code}", method = RequestMethod.GET)
+	public Response<AreaInfoDto> fetchByCode(@PathVariable("code") String code);
 
 }

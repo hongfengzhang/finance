@@ -65,4 +65,9 @@ public class AreaInfoDaoImpl implements AreaInfoDao {
 		return repository.findByParentCode(parentCode);
 	}
 
+	@Override
+	public AreaInfo retrieveByCode(String code) {
+		return repository.findByAreaCode(code);
+	}
+
 }

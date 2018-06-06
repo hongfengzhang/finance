@@ -60,4 +60,8 @@ public class CnapsService {
 		return bankInfoDao.retrieveByPcSupport(true);
 	}
 
+	public Cnaps findByCnaps(String cnaps) {
+		return cardBinDao.retriveByCnaps(cnaps);
+	}
+
 }

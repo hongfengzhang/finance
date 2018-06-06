@@ -10,6 +10,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.manage.entity.CardBin;
+import com.waben.stock.datalayer.manage.entity.Cnaps;
 import com.waben.stock.datalayer.manage.repository.CardBinDao;
 import com.waben.stock.datalayer.manage.repository.impl.jpa.CardBinRepository;
 
@@ -63,6 +64,11 @@ public class CardBinDaoImpl implements CardBinDao {
 	@Override
 	public CardBin retrieveByBankCard(String bankCard) {
 		return repository.findByBankCard(bankCard, bankCard);
+	}
+
+	@Override
+	public Cnaps retriveByCnaps(String cnaps) {
+		return repository.findByCnaps(cnaps);
 	}
 
 }

@@ -44,4 +44,9 @@ public class CnapsReferenceFallback implements CnapsReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<CnapsDto> fetchByCnaps(String cnaps) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

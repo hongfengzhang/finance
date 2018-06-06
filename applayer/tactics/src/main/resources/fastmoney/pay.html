@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='UTF-8' />
+<title>Title</title>
+</head>
+<body>
+	<script src='https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js'
+		type='text/javascript' type='text/javascript'></script>
+	<form id='topay' action='{formAction}' method='post' style='display: none'>
+		<div>
+			<label>字符集:</label><input type='text' name='inputCharset'
+				value='{inputCharset}' />
+		</div>
+		<div>
+			<label>前端页面地址:</label> <input type='text' name='pageUrl'
+				value='{pageUrl}'>
+		</div>
+		<div>
+			<label>回台回调地址:</label> <input type='text' name='bgUrl'
+				value='{bgUrl}' />
+		</div>
+		<div>
+			<label>版本:</label> <input type='text' name='version'
+				value='{version}' />
+		</div>
+		<div>
+			<label>支付页面语种:</label> <input type='text' name='language'
+				value='{language}' />
+		</div>
+		<div>
+			<label>签名类型:</label> <input type='text' name='signType'
+				value='{signType}' />
+		</div>
+		<div>
+			<label>人民币账号: </label> <input type='text' name='merchantAcctId'
+				value='{merchantAcctId}' />
+		</div>
+		<div>
+			<label>商户订单号:</label> <input type='text' name='orderId'
+				value='{orderId}' />
+		</div>
+		<div>
+			<label>商户订单金额:</label> <input type='text' name='orderAmount'
+				value='{orderAmount}' />
+		</div>
+		<div>
+			<label>商户订单提交时间:</label> <input type='text' name='orderTime'
+				value='{orderTime}' />
+		</div>
+		<div>
+			<label>支付方式:</label> <input type='text' name='payType'
+				value='{payType}' />
+		</div>
+		<div>
+			<label>签名字符串:</label> <input type='text' name='signMsg'
+				value='{signMsg}' />
+		</div>
+		<input type='submit' value='提交' id='pay' />
+	</form>
+</body>
+<script>
+	$(function() {
+		$('#topay').submit();
+	});
+</script>
+</html>

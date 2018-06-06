@@ -24,4 +24,8 @@ public class AreaInfoService {
 		return areaInfoDao.retrieveByParentCode(parentCode);
 	}
 
+	public AreaInfo findByCode(String code) {
+		return areaInfoDao.retrieveByCode(code);
+	}
+
 }

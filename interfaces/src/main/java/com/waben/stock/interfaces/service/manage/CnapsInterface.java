@@ -18,6 +18,9 @@ import com.waben.stock.interfaces.pojo.Response;
  */
 public interface CnapsInterface {
 
+	@RequestMapping(value = "/cnaps/{cnaps}", method = RequestMethod.GET)
+	public Response<CnapsDto> fetchByCnaps(@PathVariable("cnaps") String cnaps);
+	
 	@RequestMapping(value = "/citycode/{cityCode}/clscode/{clsCode}", method = RequestMethod.GET)
 	public Response<List<CnapsDto>> fetchByCityCodeAndClsCode(@PathVariable("cityCode") String cityCode,
 			@PathVariable("clsCode") String clsCode);

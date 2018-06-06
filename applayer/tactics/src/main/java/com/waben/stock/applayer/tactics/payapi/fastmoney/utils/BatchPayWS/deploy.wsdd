@@ -1,0 +1,139 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from BatchPayService WSDL service -->
+
+  <service name="BatchPayWS" provider="java:RPC" style="rpc" use="encoded">
+      <parameter name="wsdlTargetNamespace" value="http://www.99bill.com/apipay/services/BatchPayWS"/>
+      <parameter name="wsdlServiceElement" value="BatchPayService"/>
+      <parameter name="schemaUnqualified" value="http://www.99bill.com/apipay/services/BatchPayWS,http://complatible.dto.domain.seashell.bill99.com"/>
+      <parameter name="wsdlServicePort" value="BatchPayWS"/>
+      <parameter name="className" value="com.caituo.online.pay.channel.fastmoney.utils.BatchPayWS.BatchPayWSSoapBindingSkeleton"/>
+      <parameter name="wsdlPortType" value="BatchPay"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <parameter name="allowedMethods" value="*"/>
+
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:QueryRequestBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.QueryRequestBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="http://www.99bill.com/apipay/services/BatchPayWS"
+        qname="ns:ArrayOf_tns1_BankResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.BankResponseBean[]"
+        innerType="cmp-ns:BankResponseBean" xmlns:cmp-ns="http://complatible.dto.domain.seashell.bill99.com"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="http://www.99bill.com/apipay/services/BatchPayWS"
+        qname="ns:ArrayOf_tns1_QueryResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.QueryResponseBean[]"
+        innerType="cmp-ns:QueryResponseBean" xmlns:cmp-ns="http://complatible.dto.domain.seashell.bill99.com"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:PostResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.PostResponseBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:SimpleResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.SimpleResponseBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="http://www.99bill.com/apipay/services/BatchPayWS"
+        qname="ns:ArrayOf_tns1_PostResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.PostResponseBean[]"
+        innerType="cmp-ns:PostResponseBean" xmlns:cmp-ns="http://complatible.dto.domain.seashell.bill99.com"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="http://www.99bill.com/apipay/services/BatchPayWS"
+        qname="ns:ArrayOf_tns1_SimpleResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.SimpleResponseBean[]"
+        innerType="cmp-ns:SimpleResponseBean" xmlns:cmp-ns="http://complatible.dto.domain.seashell.bill99.com"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:BankResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.BankResponseBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="http://www.99bill.com/apipay/services/BatchPayWS"
+        qname="ns:ArrayOf_tns1_SimpleRequestBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.SimpleRequestBean[]"
+        innerType="cmp-ns:SimpleRequestBean" xmlns:cmp-ns="http://complatible.dto.domain.seashell.bill99.com"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="http://www.99bill.com/apipay/services/BatchPayWS"
+        qname="ns:ArrayOf_tns1_BankRequestBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.BankRequestBean[]"
+        innerType="cmp-ns:BankRequestBean" xmlns:cmp-ns="http://complatible.dto.domain.seashell.bill99.com"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <arrayMapping
+        xmlns:ns="http://www.99bill.com/apipay/services/BatchPayWS"
+        qname="ns:ArrayOf_tns1_PostRequestBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.PostRequestBean[]"
+        innerType="cmp-ns:PostRequestBean" xmlns:cmp-ns="http://complatible.dto.domain.seashell.bill99.com"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:BankRequestBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.BankRequestBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:SimpleRequestBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.SimpleRequestBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:PostRequestBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.PostRequestBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+      <typeMapping
+        xmlns:ns="http://complatible.dto.domain.seashell.bill99.com"
+        qname="ns:QueryResponseBean"
+        type="java:com.caituo.online.pay.channel.fastmoney.bean.QueryResponseBean"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"
+      />
+  </service>
+</deployment>

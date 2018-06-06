@@ -37,5 +37,11 @@ public class AreaInfoController implements AreaInfoInterface {
 		List<AreaInfoDto> areaInfoDtos = CopyBeanUtils.copyListBeanPropertiesToList(areaInfos, AreaInfoDto.class);
 		return new Response<>(areaInfoDtos);
 	}
-	
+
+	@Override
+	public Response<AreaInfoDto> fetchByCode(@PathVariable String code) {
+		return new Response<>(
+				CopyBeanUtils.copyBeanProperties(AreaInfoDto.class, areaInfoService.findByCode(code), false));
+	}
+
 }

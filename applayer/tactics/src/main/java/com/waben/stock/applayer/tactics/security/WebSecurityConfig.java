@@ -63,6 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		"/quickpay/h5wbreturn",
 		"/quickpay/wbcallback",
 		"/quickpay/protocolcallback",
+		"/quickpay/fastmoneypay",
 		"/activity/**",
 		"/ticket/**",
 		"/drawactivity/**"

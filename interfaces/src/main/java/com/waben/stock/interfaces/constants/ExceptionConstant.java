@@ -73,6 +73,8 @@ public class ExceptionConstant {
 	public static final String IDCARD_FORMAT_WRONG_EXCEPTION = "2025";
 	// 年龄必须介于18~65周岁
 	public static final String AGENOTBETTEN18AND65_EXCEPTION = "2026";
+	// 未设置支行信息
+	public static final String BRANCH_NOTSET_EXCEPTION = "2027";
 
 	/* 业务异常 */
 	// 系统管理业务异常

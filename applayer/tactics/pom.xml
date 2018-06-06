@@ -120,6 +120,17 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
+		<!-- 块钱支付相关 -->
+		<dependency>
+		    <groupId>org.apache.axis</groupId>
+		    <artifactId>axis</artifactId>
+		    <version>1.4</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.apache.axis</groupId>
+		    <artifactId>axis-jaxrpc</artifactId>
+		    <version>1.4</version>
+		</dependency>
 	</dependencies>
 
 	<build>

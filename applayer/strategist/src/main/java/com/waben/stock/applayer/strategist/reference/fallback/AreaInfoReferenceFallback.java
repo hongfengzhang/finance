@@ -23,4 +23,9 @@ public class AreaInfoReferenceFallback implements AreaInfoReference {
 		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
 	}
 
+	@Override
+	public Response<AreaInfoDto> fetchByCode(String code) {
+		throw new NetflixCircuitException(ExceptionConstant.NETFLIX_CIRCUIT_EXCEPTION);
+	}
+
 }

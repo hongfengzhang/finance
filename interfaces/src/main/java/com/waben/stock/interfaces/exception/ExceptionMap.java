@@ -49,6 +49,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.NOTREALNAME_EXEPTION, "您的账户尚未实名认证");
 		exceptionMap.put(ExceptionConstant.IDCARD_FORMAT_WRONG_EXCEPTION, "身份证号码格式有误");
 		exceptionMap.put(ExceptionConstant.AGENOTBETTEN18AND65_EXCEPTION, "年龄必须介于18~65周岁");
+		exceptionMap.put(ExceptionConstant.BRANCH_NOTSET_EXCEPTION, "未设置支行信息");
 
 		exceptionMap.put(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION, "账户可用余额不足");
 		exceptionMap.put(ExceptionConstant.BUYRECORD_ISNOTLOCK_EXCEPTION, "买入或者卖出前需进行锁定操作");

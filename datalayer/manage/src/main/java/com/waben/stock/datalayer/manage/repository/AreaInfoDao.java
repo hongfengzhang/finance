@@ -14,4 +14,6 @@ public interface AreaInfoDao extends BaseDao<AreaInfo, Long> {
 
 	List<AreaInfo> retrieveByParentCode(String parentCode);
 
+	AreaInfo retrieveByCode(String code);
+
 }
