@@ -32,6 +32,15 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 	 */
 	private BigDecimal rate;
 
+	/**
+	 * 波动一次盈亏金额，单位为该合约的货币单位
+	 */
+	private BigDecimal perWaveMoney;
+	/**
+	 * 最小波动
+	 */
+	private BigDecimal minWave;
+
 	public BigDecimal getLastPrice() {
 		return lastPrice;
 	}
@@ -63,4 +72,21 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 	public void setFloatingProfitOrLoss(BigDecimal floatingProfitOrLoss) {
 		this.floatingProfitOrLoss = floatingProfitOrLoss;
 	}
+
+	public BigDecimal getPerWaveMoney() {
+		return perWaveMoney;
+	}
+
+	public void setPerWaveMoney(BigDecimal perWaveMoney) {
+		this.perWaveMoney = perWaveMoney;
+	}
+
+	public BigDecimal getMinWave() {
+		return minWave;
+	}
+
+	public void setMinWave(BigDecimal minWave) {
+		this.minWave = minWave;
+	}
+
 }
