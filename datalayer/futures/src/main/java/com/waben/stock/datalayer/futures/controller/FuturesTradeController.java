@@ -112,12 +112,12 @@ public class FuturesTradeController implements FuturesTradeInterface {
 				}
 			}
 			List<FuturesOvernightRecord> recordList = overnightService.findAll(order);
-			BigDecimal count = new BigDecimal(0);
+			double count = 0.00;
 			for (FuturesOvernightRecord futuresOvernightRecord : recordList) {
-				count.add(futuresOvernightRecord.getOvernightDeferredFee());
+				count+=futuresOvernightRecord.getOvernightDeferredFee().doubleValue();
 			}
 			result.getContent().get(i).setPublisherId(order.getPublisherId());
-			result.getContent().get(i).setOvernightServiceFee(count);
+			result.getContent().get(i).setOvernightServiceFee(new BigDecimal(count));
 			if(order.getWindControlType()!=null){
 				result.getContent().get(i).setWindControlType(order.getWindControlType().getType());
 			}

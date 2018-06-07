@@ -209,8 +209,13 @@ public class FuturesOrderService {
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
-			    Order o = criteriaBuilder.desc(root.get("buyingTime").as(Date.class));
-				criteriaQuery.orderBy(o);
+				if(query.getOrderState().equals("6,9")||query.getOrderState().equals("6")||query.getOrderState().equals("9")){
+					Order o = criteriaBuilder.desc(root.get("buyingTime").as(Date.class));
+					criteriaQuery.orderBy(o);
+				}else{
+					Order o = criteriaBuilder.desc(root.get("postTime").as(Date.class));
+					criteriaQuery.orderBy(o);
+				}
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
