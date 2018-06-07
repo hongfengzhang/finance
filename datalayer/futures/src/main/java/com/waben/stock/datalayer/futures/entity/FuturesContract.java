@@ -389,13 +389,6 @@ public class FuturesContract {
 		this.cordon = cordon;
 	}
 
-	public String getTradeUnit() {
-		return tradeUnit;
-	}
-
-	public void setTradeUnit(String tradeUnit) {
-		this.tradeUnit = tradeUnit;
-	}
 	
 	public Long getExchangeId() {
 		if (exchange != null) {

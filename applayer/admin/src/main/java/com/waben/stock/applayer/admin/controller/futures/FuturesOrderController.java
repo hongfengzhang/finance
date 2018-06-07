@@ -207,6 +207,7 @@ public class FuturesOrderController {
 				data.add(dto.getTotalQuantity() == null ? "" : dto.getTotalQuantity().toString());
 				data.add(dto.getBuyingTime() == null ? "" : sdf.format(dto.getBuyingTime()));
 				data.add(dto.getBuyingPrice() == null ? "" : dto.getBuyingPrice().toString());
+				data.add(dto.getProfit() == null ? "" : dto.getProfit().toString());
 				data.add(dto.getOpenwindServiceFee() == null ? "" : dto.getOpenwindServiceFee().toString());
 				data.add(dto.getReserveFund() == null ? "" : dto.getReserveFund().toString());
 //				if(dto.getLimitLossType()!=null&&dto.getLimitLossType() == 1){
@@ -303,7 +304,7 @@ public class FuturesOrderController {
 		result.add("隔夜手续费");
 		result.add("止损金额");
 		result.add("止盈金额");
-		result.add("持仓天数");
+		result.add("持仓小时");
 		result.add("持仓截止日期");
 		result.add("平仓时间");
 		result.add("平仓价格");
@@ -333,7 +334,7 @@ public class FuturesOrderController {
 		result.add("隔夜手续费");
 		result.add("隔夜保证金");
 		result.add("持仓截止日期");
-		result.add("持仓天数");
+		result.add("持仓小时");
 		result.add("风控状态");
 		return result;
 	}
@@ -350,12 +351,13 @@ public class FuturesOrderController {
 		result.add("成交手数");
 		result.add("买入时间");
 		result.add("买入价格");
+		result.add("浮动盈亏");
 		result.add("开仓手续费");
 		result.add("保证金");
 		result.add("止损金额");
 		result.add("止盈金额");
 		result.add("隔夜手续费");
-		result.add("持仓天数");
+		result.add("持仓小时");
 		result.add("持仓截止日期");
 		result.add("平仓时间");
 		result.add("平仓价格");
