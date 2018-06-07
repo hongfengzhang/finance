@@ -63,16 +63,18 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	}
 
 	@Override
-	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long id) {
-		return new Response<>(
-				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.cancelOrder(id), false));
+	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long id, Long publisherId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class,
+				futuresOrderService.cancelOrder(id, publisherId), false));
 	}
 
 	@Override
 	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long id, String sellingPriceTypeIndex,
-			BigDecimal sellingEntrustPrice) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.applyUnwind(
-				id, FuturesTradePriceType.getByIndex(sellingPriceTypeIndex), sellingEntrustPrice), false));
+			BigDecimal sellingEntrustPrice, Long publisherId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(
+				FuturesOrderDto.class, futuresOrderService.applyUnwind(id,
+						FuturesTradePriceType.getByIndex(sellingPriceTypeIndex), sellingEntrustPrice, publisherId),
+				false));
 	}
 
 	@Override
@@ -82,9 +84,9 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	}
 
 	@Override
-	public Response<FuturesOrderDto> backhandUnwind(@PathVariable Long id) {
+	public Response<FuturesOrderDto> backhandUnwind(@PathVariable Long id, Long publisherId) {
 		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class,
-				futuresOrderService.backhandUnwind(id), false));
+				futuresOrderService.backhandUnwind(id, publisherId), false));
 	}
 
 	@Override
@@ -94,10 +96,12 @@ public class FuturesOrderController implements FuturesOrderInterface {
 	}
 
 	public Response<FuturesOrderDto> settingStopLoss(@PathVariable Long orderId, Integer limitProfitType,
-			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
-		return new Response<>(
-				CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class, futuresOrderService.settingStopLoss(orderId,
-						limitProfitType, perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount), false));
+			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount,
+			Long publisherId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesOrderDto.class,
+				futuresOrderService.settingStopLoss(orderId, limitProfitType, perUnitLimitProfitAmount, limitLossType,
+						perUnitLimitLossAmount, publisherId),
+				false));
 	}
 
 	@Override

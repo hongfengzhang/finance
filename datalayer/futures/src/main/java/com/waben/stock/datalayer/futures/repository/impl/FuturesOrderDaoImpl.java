@@ -1,7 +1,6 @@
 package com.waben.stock.datalayer.futures.repository.impl;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesOrderRepository;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 
@@ -128,6 +126,11 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	@Override
 	public List<Object> queryByState(List<Integer> state) {
 		return repository.queryByState(state);
+	}
+
+	@Override
+	public FuturesOrder retrieveByOrderIdAndPublisherId(Long orderId, Long publisherId) {
+		return repository.findByIdAndPublisherId(orderId, publisherId);
 	}
 
 }
