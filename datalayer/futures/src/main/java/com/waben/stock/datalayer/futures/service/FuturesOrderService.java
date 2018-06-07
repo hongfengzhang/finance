@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
@@ -121,7 +120,7 @@ public class FuturesOrderService {
 	@Autowired
 	private RabbitmqProducer producer;
 	
-	@Value("{order.domain:youguwang.com.cn}")
+	@Value("${order.domain:youguwang.com.cn}")
 	private String domain;
 	
 	public List<Object> queryByState(List<Integer> state){
