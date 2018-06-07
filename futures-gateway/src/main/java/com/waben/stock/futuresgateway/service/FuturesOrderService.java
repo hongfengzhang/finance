@@ -41,9 +41,6 @@ public class FuturesOrderService {
 
 	public FuturesOrder getFuturesOrderInfo(Long id) {
 		FuturesOrder order = futuresOrderDao.retrieveFuturesOrderById(id);
-		if (!"Filled".equals(order.getStatus())) {
-			twsEngine.getClient().reqAllOpenOrders();
-		}
 		return order;
 	}
 

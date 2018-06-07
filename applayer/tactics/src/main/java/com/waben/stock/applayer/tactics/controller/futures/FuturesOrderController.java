@@ -366,13 +366,18 @@ public class FuturesOrderController {
 	@GetMapping("/detail/{orderId}")
 	@ApiOperation(value = "获取期货订单已结算详细信息")
 	@ApiImplicitParam(paramType = "path", dataType = "Long", name = "orderId", value = "期货订单ID", required = true)
-	public Response<PageInfo<FuturesOrderMarketDto>> getOrderSettldDetails(@PathVariable("orderId") Long orderId) {
+	public Response<FuturesOrderMarketDto> getOrderSettldDetails(@PathVariable("orderId") Long orderId) {
 		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
 		orderQuery.setPage(0);
 		orderQuery.setSize(1);
 		orderQuery.setOrderId(orderId);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
-		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
+		PageInfo<FuturesOrderMarketDto> withMarketPage = futuresOrderBusiness.pageOrderMarket(orderQuery);
+		if(withMarketPage.getContent().size() > 0) {
+			return new Response<>(withMarketPage.getContent().get(0));
+		} else {
+			return new Response<>();
+		}
 	}
 
 	@PostMapping("/settingStopLoss/{orderId}")

@@ -162,6 +162,11 @@ public class FuturesOrderDto {
 	@ApiModelProperty(value = "买入价格类型")
 	private FuturesTradePriceType buyingPriceType;
 	/**
+	 * 买入委托时间
+	 */
+	@ApiModelProperty(value = "买入委托时间")
+	private Date buyingEntrustTime;
+	/**
 	 * 买入委托价格
 	 */
 	@ApiModelProperty(value = "买入委托价格")
@@ -186,6 +191,11 @@ public class FuturesOrderDto {
 	 */
 	@ApiModelProperty(value = "卖出价格类型")
 	private FuturesTradePriceType sellingPriceType;
+	/**
+	 * 卖出委托时间
+	 */
+	@ApiModelProperty(value = "卖出委托时间")
+	private Date sellingEntrustTime;
 	/**
 	 * 卖出委托价格
 	 */
@@ -629,6 +639,22 @@ public class FuturesOrderDto {
 			return state.getType();
 		}
 		return stateName;
+	}
+
+	public Date getBuyingEntrustTime() {
+		return buyingEntrustTime;
+	}
+
+	public void setBuyingEntrustTime(Date buyingEntrustTime) {
+		this.buyingEntrustTime = buyingEntrustTime;
+	}
+
+	public Date getSellingEntrustTime() {
+		return sellingEntrustTime;
+	}
+
+	public void setSellingEntrustTime(Date sellingEntrustTime) {
+		this.sellingEntrustTime = sellingEntrustTime;
 	}
 
 }

@@ -403,6 +403,7 @@ public class FuturesOrderService {
 		// step 7 : 更新订单状态
 		order.setState(FuturesOrderState.BuyingEntrust);
 		order.setOpenGatewayOrderId(gatewayOrder.getId());
+		order.setBuyingEntrustTime(date);
 		order = orderDao.update(order);
 		// step 8 : 放入委托查询队列（开仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
@@ -686,7 +687,9 @@ public class FuturesOrderService {
 		// 修改订单状态
 		order.setWindControlType(windControlType);
 		order.setState(FuturesOrderState.SellingEntrust);
-		order.setUpdateTime(new Date());
+		Date date = new Date();
+		order.setUpdateTime(date);
+		order.setSellingEntrustTime(date);
 		order.setSellingPriceType(priceType);
 		order.setSellingEntrustPrice(entrustPrice);
 		// 委托卖出
