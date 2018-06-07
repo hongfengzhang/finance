@@ -185,6 +185,12 @@ public class FuturesContractDto {
 	@ApiModelProperty(value = "预设置的手数列表")
 	private Set<FuturesPreQuantityDto> preQuantitySet;
 
+	/**
+	 * 图标
+	 */
+	@ApiModelProperty(value = "图标")
+	private String icon;
+
 	public Long getId() {
 		return id;
 	}
@@ -456,6 +462,14 @@ public class FuturesContractDto {
 
 	public void setCurrencySign(String currencySign) {
 		this.currencySign = currencySign;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 }
