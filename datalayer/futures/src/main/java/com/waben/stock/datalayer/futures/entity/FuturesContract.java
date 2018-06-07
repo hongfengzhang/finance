@@ -388,8 +388,6 @@ public class FuturesContract {
 	public void setCordon(BigDecimal cordon) {
 		this.cordon = cordon;
 	}
-
-	
 	public Long getExchangeId() {
 		if (exchange != null) {
 			return exchange.getId();

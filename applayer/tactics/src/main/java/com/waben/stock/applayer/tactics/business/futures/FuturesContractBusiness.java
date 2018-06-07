@@ -10,7 +10,6 @@ import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.futures.FuturesBrokerDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -102,11 +101,11 @@ public class FuturesContractBusiness {
 					// 期货网关不支持该合约
 					throw new ServiceException(ExceptionConstant.GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION);
 				}*/
-				if (!contractDto.getExchangeEnable()) {
+				if (contractDto.getExchangeEnable() != null && !contractDto.getExchangeEnable()) {
 					// 该合约交易所不可用
 					throw new ServiceException(ExceptionConstant.EXCHANGE_ISNOT_AVAILABLE_EXCEPTION);
 				}
-				if (!contractDto.getEnable()) {
+				if (contractDto.getEnable() != null && !contractDto.getEnable()) {
 					// 该合约异常不可用
 					throw new ServiceException(ExceptionConstant.CONTRACT_ABNORMALITY_EXCEPTION);
 				}
