@@ -177,7 +177,7 @@ public class FuturesOrderBusiness {
 					// 按用户设置价格计算止损金额
 					if (orderMarket.getLimitLossType() == 1) {
 						// 止损金额 = （设置价格 - 买入价）/ 最小波动点位 * 波动一次盈亏金额 * 汇率
-						orderMarket.setPerUnitLimitLossPosition(orderMarket.getPerUnitLimitProfitAmount()
+						orderMarket.setPerUnitLimitLossPosition(orderMarket.getPerUnitLimitLossAmount()
 								.subtract(buyingPrice).divide(contract.getMinWave())
 								.multiply(contract.getPerWaveMoney()).multiply(rate.getRate()));
 					} else {
