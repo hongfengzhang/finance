@@ -19,14 +19,12 @@ import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
-import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
-import com.waben.stock.datalayer.futures.service.FuturesOrderService;
 import com.waben.stock.datalayer.futures.service.FuturesPreQuantityService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
@@ -63,15 +61,10 @@ public class FuturesContractController implements FuturesContractInterface {
 	private FuturesCurrencyRateService rateService;
 
 	@Autowired
-	private FuturesOrderService orderService;
-
-	@Autowired
 	private FuturesCurrencyRateService futuresCurrencyRateService;
 
 	@Autowired
 	private FuturesPreQuantityService quantityService;
-	
-	
 
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -96,8 +89,14 @@ public class FuturesContractController implements FuturesContractInterface {
 			futuresContractDto.setRate(rate == null ? new BigDecimal(0) : rate.getRate());
 			futuresContractDto.setCurrencyName(rate == null ? "" : rate.getCurrencyName());
 			futuresContractDto.setCurrencySign(rate == null ? "" : rate.getCurrencySign());
-			// 判断交易所 和 合约是否可用
-			if (!futuresContractDto.getExchangeEnable() || !futuresContractDto.getEnable()) {
+			// 判断交易所是否可用
+			if (futuresContractDto.getExchangeEnable() != null && !futuresContractDto.getExchangeEnable()) {
+				futuresContractDto.setState(3);
+				futuresContractDto.setCurrentTradeTimeDesc("交易异常");
+				break;
+			}
+			// 判断合约是否可用
+			if (futuresContractDto.getEnable() != null && !futuresContractDto.getEnable()) {
 				futuresContractDto.setState(3);
 				futuresContractDto.setCurrentTradeTimeDesc("交易异常");
 				break;
@@ -295,7 +294,6 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractAdminDto> modifyContract(@RequestBody FuturesContractAdminDto contractDto) {
-		
 
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 
