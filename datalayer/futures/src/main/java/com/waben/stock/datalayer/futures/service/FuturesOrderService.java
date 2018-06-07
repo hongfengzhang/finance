@@ -13,8 +13,10 @@ import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Order;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -167,6 +169,7 @@ public class FuturesOrderService {
 				if(query.getSymbol()!=null && !"".equals(query.getSymbol())){
 					predicateList.add(criteriaBuilder.like(join.get("symbol").as(String.class), query.getSymbol()));
 				}
+				
 
 				if (query.getOrderState() != null) {
 					FuturesOrderStateConverter convert = new FuturesOrderStateConverter();
@@ -206,6 +209,8 @@ public class FuturesOrderService {
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
+			    Order o = criteriaBuilder.desc(root.get("buyingTime").as(Date.class));
+				criteriaQuery.orderBy(o);
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);

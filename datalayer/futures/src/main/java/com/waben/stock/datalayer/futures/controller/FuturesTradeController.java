@@ -65,6 +65,7 @@ public class FuturesTradeController implements FuturesTradeInterface {
 		List<FuturesOrder> orderList = page.getContent();
 		for(int i=0;i<orderList.size();i++){
 			FuturesOrder order = orderList.get(i);
+			
 			result.getContent().get(i).setPublisherId(order.getPublisherId());
 			if(order.getOrderType()!=null){
 				result.getContent().get(i).setOrderType(order.getOrderType().getType());
@@ -100,6 +101,16 @@ public class FuturesTradeController implements FuturesTradeInterface {
 		PageInfo<FuturesOrderAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesOrderAdminDto.class);
 		for (int i=0; i<page.getContent().size();i++) {
 			FuturesOrder order = page.getContent().get(i);
+			if(order.getOpenwindServiceFee()!=null){
+				if(order.getTotalQuantity()!=null){
+					result.getContent().get(i).setOpenwindServiceFee(order.getOpenwindServiceFee().multiply(order.getTotalQuantity()));
+				}
+			}
+			if(order.getUnwindServiceFee()!=null){
+				if(order.getTotalQuantity()!=null){
+					result.getContent().get(i).setUnwindServiceFee(order.getUnwindServiceFee().multiply(order.getTotalQuantity()));
+				}
+			}
 			List<FuturesOvernightRecord> recordList = overnightService.findAll(order);
 			BigDecimal count = new BigDecimal(0);
 			for (FuturesOvernightRecord futuresOvernightRecord : recordList) {

@@ -79,6 +79,7 @@ public class FuturesOrderController {
 		List<String> columnDescList = null;
 		try {
 			String fileName = "futuresTrade_"+String.valueOf(System.currentTimeMillis());
+
 			file = File.createTempFile(fileName, ".xls");
 			List<List<String>> result = new ArrayList<>();
 			if(query.getQueryType() == 0){//成交订单
@@ -110,7 +111,8 @@ public class FuturesOrderController {
 			
 			is = new FileInputStream(file);
 			svrResponse.setContentType("application/vnd.ms-excel");
-			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			svrResponse.setCharacterEncoding("utf-8");
+			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("gbk"),"iso8859-1") + ".xls");
 			IOUtils.copy(is, svrResponse.getOutputStream());
 			svrResponse.getOutputStream().flush();
 			
