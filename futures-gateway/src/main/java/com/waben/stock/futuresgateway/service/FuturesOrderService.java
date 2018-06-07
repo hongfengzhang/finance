@@ -40,7 +40,11 @@ public class FuturesOrderService {
 	private TwsEngine twsEngine;
 
 	public FuturesOrder getFuturesOrderInfo(Long id) {
-		return futuresOrderDao.retrieveFuturesOrderById(id);
+		FuturesOrder order = futuresOrderDao.retrieveFuturesOrderById(id);
+		if (!"Filled".equals(order.getStatus())) {
+			twsEngine.getClient().reqAllOpenOrders();
+		}
+		return order;
 	}
 
 	@Transactional
@@ -153,6 +157,7 @@ public class FuturesOrderService {
 		}
 		// step 1 : 保存订单
 		FuturesOrder futuresOrder = new FuturesOrder();
+		futuresOrder.setDomain(domain);
 		futuresOrder.setContractId(futuresContract.getId());
 		futuresOrder.setCurrency(futuresContract.getCurrency());
 		futuresOrder.setAction(action);
