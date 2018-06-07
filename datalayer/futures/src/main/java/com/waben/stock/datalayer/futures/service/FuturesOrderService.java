@@ -13,7 +13,6 @@ import java.util.Map;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Order;
@@ -128,7 +127,7 @@ public class FuturesOrderService {
 	@Autowired
 	private RabbitmqProducer producer;
 
-	@Value("{order.domain:youguwang.com.cn}")
+	@Value("${order.domain:youguwang.com.cn}")
 	private String domain;
 
 	public List<Object> queryByState(List<Integer> state) {
@@ -215,8 +214,14 @@ public class FuturesOrderService {
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
-				Order o = criteriaBuilder.desc(root.get("buyingTime").as(Date.class));
-				criteriaQuery.orderBy(o);
+				if (query.getOrderState().equals("6,9") || query.getOrderState().equals("6")
+						|| query.getOrderState().equals("9")) {
+					Order o = criteriaBuilder.desc(root.get("buyingTime").as(Date.class));
+					criteriaQuery.orderBy(o);
+				} else {
+					Order o = criteriaBuilder.desc(root.get("postTime").as(Date.class));
+					criteriaQuery.orderBy(o);
+				}
 				return criteriaQuery.getRestriction();
 			}
 		}, pageable);
@@ -414,6 +419,7 @@ public class FuturesOrderService {
 		// step 7 : 更新订单状态
 		order.setState(FuturesOrderState.BuyingEntrust);
 		order.setOpenGatewayOrderId(gatewayOrder.getId());
+		order.setBuyingEntrustTime(date);
 		order = orderDao.update(order);
 		// step 8 : 放入委托查询队列（开仓）
 		EntrustQueryMessage msg = new EntrustQueryMessage();
@@ -753,7 +759,9 @@ public class FuturesOrderService {
 		// 修改订单状态
 		order.setWindControlType(windControlType);
 		order.setState(FuturesOrderState.SellingEntrust);
-		order.setUpdateTime(new Date());
+		Date date = new Date();
+		order.setUpdateTime(date);
+		order.setSellingEntrustTime(date);
 		order.setSellingPriceType(priceType);
 		order.setSellingEntrustPrice(entrustPrice);
 		// 委托卖出

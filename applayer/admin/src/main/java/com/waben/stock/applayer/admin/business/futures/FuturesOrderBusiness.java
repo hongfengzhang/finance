@@ -63,8 +63,11 @@ public class FuturesOrderBusiness {
 					if(adminDto.getReserveFund()!=null){
 						reserveFund+=adminDto.getReserveFund().doubleValue();
 					}
-					if(adminDto.getServiceFee()!=null){
-						serviceFee+=adminDto.getServiceFee().doubleValue();
+					if(adminDto.getOpenwindServiceFee()!=null){
+						serviceFee+=adminDto.getOpenwindServiceFee().doubleValue();
+					}
+					if(adminDto.getState().equals("已平仓")){
+						serviceFee+=adminDto.getUnwindServiceFee().doubleValue();
 					}
 					if(adminDto.getOvernightServiceFee()!=null){
 						overnightServiceFee+=adminDto.getOvernightServiceFee().doubleValue();

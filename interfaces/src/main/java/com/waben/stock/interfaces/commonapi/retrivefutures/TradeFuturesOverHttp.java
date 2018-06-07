@@ -117,7 +117,7 @@ public class TradeFuturesOverHttp {
 				throw new ServiceException(ExceptionConstant.FUTURESAPI_CANCELFAILED_EXCEPTION);
 			}
 		} catch (Exception ex) {
-			throw new ServiceException(ExceptionConstant.FUTURESAPI_ABNORMAL_EXCEPTION);
+			throw new ServiceException(ExceptionConstant.FUTURESAPI_ABNORMAL_EXCEPTION, ex);
 		}
 	}
 

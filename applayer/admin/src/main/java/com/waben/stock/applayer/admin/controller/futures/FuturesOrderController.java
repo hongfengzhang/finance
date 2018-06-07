@@ -110,9 +110,9 @@ public class FuturesOrderController {
 			}
 			
 			is = new FileInputStream(file);
+			
+			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
 			svrResponse.setContentType("application/vnd.ms-excel");
-			svrResponse.setCharacterEncoding("utf-8");
-			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + new String(fileName.getBytes("gbk"),"iso8859-1") + ".xls");
 			IOUtils.copy(is, svrResponse.getOutputStream());
 			svrResponse.getOutputStream().flush();
 			

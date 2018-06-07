@@ -165,7 +165,7 @@ public class WindControlSchedule {
 		// 货币汇率
 		FuturesCurrencyRate rate = rateService.findByCurrency(order.getContractCurrency());
 		if (buyingPrice != null && perUnitLimitProfitAmount != null) {
-			if (limitProfitType != null && limitProfitType == 1) {
+			if (limitProfitType != null && limitProfitType == 1 && perUnitLimitProfitAmount != null) {
 				// type为行情价格
 				if (orderType == FuturesOrderType.BuyUp && perUnitLimitProfitAmount.compareTo(buyingPrice) > 0) {
 					return perUnitLimitProfitAmount;
@@ -173,7 +173,8 @@ public class WindControlSchedule {
 						&& perUnitLimitProfitAmount.compareTo(buyingPrice) < 0) {
 					return perUnitLimitProfitAmount;
 				}
-			} else if (limitProfitType != null && limitProfitType == 2 && rate != null && rate.getRate() != null) {
+			} else if (limitProfitType != null && limitProfitType == 2 && rate != null && rate.getRate() != null
+					&& perUnitLimitProfitAmount != null) {
 				// type为每手盈利金额
 				BigDecimal needWavePrice = (perUnitLimitProfitAmount.divide(rate.getRate(), 2, RoundingMode.DOWN)
 						.divide(perWaveMoney, 2, RoundingMode.DOWN).multiply(minWave)
@@ -256,14 +257,15 @@ public class WindControlSchedule {
 			}
 			// 获取用户设置的止损价格
 			BigDecimal userSetNeedWavePrice = null;
-			if (limitLossType != null && limitLossType == 1) {
+			if (limitLossType != null && limitLossType == 1 && perUnitLimitLossAmount != null) {
 				// type为行情价格
 				if (orderType == FuturesOrderType.BuyUp && perUnitLimitLossAmount.compareTo(buyingPrice) < 0) {
 					userSetNeedWavePrice = buyingPrice.subtract(perUnitLimitLossAmount);
 				} else if (orderType == FuturesOrderType.BuyFall && perUnitLimitLossAmount.compareTo(buyingPrice) > 0) {
 					userSetNeedWavePrice = perUnitLimitLossAmount.subtract(buyingPrice);
 				}
-			} else if (limitLossType != null && limitLossType == 2 && rate != null && rate.getRate() != null) {
+			} else if (limitLossType != null && limitLossType == 2 && rate != null && rate.getRate() != null
+					&& perUnitLimitLossAmount != null) {
 				// type为每手亏损剩余到金额
 				userSetNeedWavePrice = (order.getReserveFund().divide(order.getTotalQuantity())
 						.subtract(perUnitLimitLossAmount).divide(rate.getRate(), 2, RoundingMode.DOWN)
