@@ -20,12 +20,14 @@ import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
+import com.waben.stock.datalayer.futures.entity.FuturesTradeLimit;
 import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesContractTermService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.datalayer.futures.service.FuturesPreQuantityService;
+import com.waben.stock.datalayer.futures.service.FuturesTradeLimitService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesPreQuantityDto;
@@ -62,6 +64,9 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesCurrencyRateService futuresCurrencyRateService;
+
+	@Autowired
+	private FuturesTradeLimitService futuresTradeLimitService;
 
 	@Autowired
 	private FuturesPreQuantityService quantityService;
@@ -122,6 +127,13 @@ public class FuturesContractController implements FuturesContractInterface {
 			Date nextTime = nextTime(exchangeTime);
 			// 获取交易所提供时间
 			String tradeTime = retriveExchangeTradeTimeStr(timeZoneGap, term, now);
+			List<FuturesTradeLimit> limitList = futuresTradeLimitService.findByContractId(futuresContractDto.getId());
+			if (limitList != null && limitList.size() > 0) {
+				for (FuturesTradeLimit limit : limitList) {
+					
+				}
+			}
+
 			boolean isTradeTime = false;
 			if (!StringUtil.isEmpty(tradeTime)) {
 				String[] tradeTimeArr = tradeTime.split(",");

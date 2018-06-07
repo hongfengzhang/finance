@@ -15,7 +15,7 @@ public class PasswordCrypt {
 	}
 	
 	public static void testMain(String[] args) {
-		System.out.println(PasswordCrypt.crypt("wangbei"));
+		System.out.println(PasswordCrypt.crypt("123456"));
 	}
 
 }
