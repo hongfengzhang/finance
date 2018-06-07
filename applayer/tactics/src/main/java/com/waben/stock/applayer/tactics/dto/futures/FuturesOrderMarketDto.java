@@ -49,6 +49,12 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 	@ApiModelProperty(value = "最小波动")
 	private BigDecimal minWave;
 
+	/**
+	 * 货币符号，如“$”,表示美元
+	 */
+	@ApiModelProperty(value = "货币符号，如“$”,表示美元")
+	private String currencySign;
+
 	public BigDecimal getLastPrice() {
 		return lastPrice;
 	}
@@ -95,6 +101,14 @@ public class FuturesOrderMarketDto extends FuturesOrderDto {
 
 	public void setMinWave(BigDecimal minWave) {
 		this.minWave = minWave;
+	}
+
+	public String getCurrencySign() {
+		return currencySign;
+	}
+
+	public void setCurrencySign(String currencySign) {
+		this.currencySign = currencySign;
 	}
 
 }
