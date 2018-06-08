@@ -143,8 +143,8 @@ public class FuturesTradeController implements FuturesTradeInterface {
 			FuturesCurrencyRate rate = rateService.queryByName(order.getContract().getCurrency());
 			if(order.getState().getIndex().equals("9")){
 				if(rate!=null && rate.getRate()!=null){
-					result.getContent().get(i).setSellingProfit(order.getProfitOrLoss().multiply(rate.getRate()));
-					result.getContent().get(i).setProfit(order.getProfitOrLoss().multiply(rate.getRate()));
+					result.getContent().get(i).setSellingProfit(order.getProfitOrLoss());
+					result.getContent().get(i).setProfit(order.getProfitOrLoss());
 				}
 			}else{
 				FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getContractSymbol());
