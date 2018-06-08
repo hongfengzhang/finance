@@ -32,5 +32,7 @@ public interface OrganizationPublisherInterface {
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	Response<List<OrganizationPublisherDto>> fetchAll();
+	
+	Response<List<OrganizationPublisherDto>> findByOrgId(@PathVariable("orgId") List<Long> orgId);
 
 }

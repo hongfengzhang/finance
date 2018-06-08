@@ -70,4 +70,9 @@ public class OrganizationPublisherDaoImpl implements OrganizationPublisherDao {
 		return repository.findByPublisherId(publisherId);
 	}
 
+	@Override
+	public List<OrganizationPublisher> findByOrdId(List<Long> orgId) {
+		return repository.findByOrdId(orgId);
+	}
+
 }
