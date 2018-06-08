@@ -17,11 +17,11 @@ public class RabbitmqConfiguration {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
-	public static final String tickPriceQueueName = "futures-gateway-yingtou-tickPrice";
+	public static final String tickPriceQueueName = "futures-gateway-tickPrice";
 
-	public static final String tickSizeQueueName = "futures-gateway-yingtou-tickSize";
+	public static final String tickSizeQueueName = "futures-gateway-tickSize";
 
-	public static final String historicalDataQueueName = "futures-gateway-yingtou-historicalData";
+	public static final String historicalDataQueueName = "futures-gateway-historicalData";
 
 	@Autowired
 	private ConnectionFactory connectionFactory;
