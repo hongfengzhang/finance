@@ -71,6 +71,10 @@ public class FuturesContractBusiness {
 				quotation.setHighPrice(market.getHighPrice());
 				quotation.setLowPrice(market.getLowPrice());
 				quotation.setClosePrice(market.getClosePrice());
+				quotation.setAskPrice(market.getAskPrice());
+				quotation.setAskSize(market.getAskSize());
+				quotation.setBigPrice(market.getBigPrice());
+				quotation.setBidSize(market.getBidSize());
 				quotation.setVolume(market.getVolume());
 			}
 		}

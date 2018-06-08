@@ -184,14 +184,15 @@ public class FuturesOrderController {
 	@PostMapping("/cancelOrder/{orderId}")
 	@ApiOperation(value = "用户取消订单委托")
 	public Response<FuturesOrderDto> cancelOrder(@PathVariable Long orderId) {
-		return new Response<>(futuresOrderBusiness.cancelOrder(orderId));
+		return new Response<>(futuresOrderBusiness.cancelOrder(orderId, SecurityUtil.getUserId()));
 	}
 
 	@PostMapping("/applyUnwind/{orderId}")
 	@ApiOperation(value = "用户申请平仓")
 	public Response<FuturesOrderDto> applyUnwind(@PathVariable Long orderId,
 			@RequestParam(required = true) FuturesTradePriceType sellingPriceType, BigDecimal sellingEntrustPrice) {
-		return new Response<>(futuresOrderBusiness.applyUnwind(orderId, sellingPriceType, sellingEntrustPrice));
+		return new Response<>(futuresOrderBusiness.applyUnwind(orderId, sellingPriceType, sellingEntrustPrice,
+				SecurityUtil.getUserId()));
 	}
 
 	@PostMapping("/applyUnwindAll")
@@ -206,7 +207,7 @@ public class FuturesOrderController {
 	@PostMapping("/backhandUnwind/{orderId}")
 	@ApiOperation(value = "用户市价反手")
 	public Response<FuturesOrderDto> backhandUnwind(@PathVariable Long orderId) {
-		return new Response<>(futuresOrderBusiness.backhandUnwind(orderId));
+		return new Response<>(futuresOrderBusiness.backhandUnwind(orderId, SecurityUtil.getUserId()));
 	}
 
 	@GetMapping("/holding")
@@ -391,7 +392,7 @@ public class FuturesOrderController {
 	public Response<Integer> editOrder(@PathVariable Long orderId, Integer limitProfitType,
 			BigDecimal perUnitLimitProfitAmount, Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
 		return new Response<>(futuresOrderBusiness.settingStopLoss(orderId, limitProfitType, perUnitLimitProfitAmount,
-				limitLossType, perUnitLimitLossAmount));
+				limitLossType, perUnitLimitLossAmount, SecurityUtil.getUserId()));
 	}
 
 	@GetMapping("/turnover/statisty/record")

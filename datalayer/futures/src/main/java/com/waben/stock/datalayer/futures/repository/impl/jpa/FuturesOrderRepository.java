@@ -33,10 +33,10 @@ public interface FuturesOrderRepository extends CustomJpaRepository<FuturesOrder
 
 	@Query(value = "select * from f_futures_order where contract_id in ?1 and state != '8'", nativeQuery = true)
 	List<FuturesOrder> findByContractId(@PathVariable("contractId") List<Long> contractId);
-	
-	@Query(value = "select COUNT(f1.total_quantity) as quantity,count(f1.reserve_fund) as fund,count(f1.service_fee) as fee,(f2.overnight_deferred_fee) as deferred from f_futures_order f1 "+ 
-					" LEFT JOIN f_futures_overnight_record f2 ON f1.id = f2.order_id "+
-					" where f1.state in ?1", nativeQuery=true)
+
+	@Query(value = "select COUNT(f1.total_quantity) as quantity,count(f1.reserve_fund) as fund,count(f1.service_fee) as fee,(f2.overnight_deferred_fee) as deferred from f_futures_order f1 "
+			+ " LEFT JOIN f_futures_overnight_record f2 ON f1.id = f2.order_id "
+			+ " where f1.state in ?1", nativeQuery = true)
 	List<Object> queryByState(@PathVariable("state") List<Integer> state);
 
 	/**
@@ -116,5 +116,7 @@ public interface FuturesOrderRepository extends CustomJpaRepository<FuturesOrder
 	 * @return 订单
 	 */
 	List<FuturesOrder> findByBackhandSourceOrderId(Long backhandSourceOrderId);
+
+	FuturesOrder findByIdAndPublisherId(Long orderId, Long publisherId);
 
 }
