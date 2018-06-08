@@ -3,6 +3,7 @@ package com.waben.stock.interfaces.dto.stockoption;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -14,8 +15,9 @@ import java.util.TreeSet;
  * @author luomengan
  *
  */
-@ApiModel(value = "StockOptionCycleDto",description = "期权周期对象")
+@ApiModel(value = "StockOptionCycleDto", description = "期权周期对象")
 public class StockOptionCycleDto {
+
 	@ApiModelProperty(value = "周期id")
 	private Long id;
 	/**
@@ -37,6 +39,11 @@ public class StockOptionCycleDto {
 	 */
 	@ApiModelProperty(value = "周期月数")
 	private String cycleMonth;
+	/**
+	 * 最大限额名义本金
+	 */
+	@ApiModelProperty(value = "最大限额名义本金")
+	private BigDecimal limitNominalAmount;
 	/**
 	 * 名义本金集合
 	 */
@@ -98,6 +105,14 @@ public class StockOptionCycleDto {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public BigDecimal getLimitNominalAmount() {
+		return limitNominalAmount;
+	}
+
+	public void setLimitNominalAmount(BigDecimal limitNominalAmount) {
+		this.limitNominalAmount = limitNominalAmount;
 	}
 
 }

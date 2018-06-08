@@ -27,6 +27,10 @@ public class StockOptionQuoteDto {
 	 * 权利金报价比例
 	 */
 	private BigDecimal rightMoneyRatio;
+	/**
+	 * 最大限额名义本金
+	 */
+	private BigDecimal limitNominalAmount;
 
 	public Long getId() {
 		return id;
@@ -66,6 +70,14 @@ public class StockOptionQuoteDto {
 
 	public void setRightMoneyRatio(BigDecimal rightMoneyRatio) {
 		this.rightMoneyRatio = rightMoneyRatio;
+	}
+
+	public BigDecimal getLimitNominalAmount() {
+		return limitNominalAmount;
+	}
+
+	public void setLimitNominalAmount(BigDecimal limitNominalAmount) {
+		this.limitNominalAmount = limitNominalAmount;
 	}
 
 }

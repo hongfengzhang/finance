@@ -1,5 +1,6 @@
 package com.waben.stock.applayer.strategist.business;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.strategist.reference.StockOptionCycleReference;
 import com.waben.stock.interfaces.dto.stockoption.StockOptionCycleDto;
+import com.waben.stock.interfaces.dto.stockoption.StockOptionQuoteDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 
@@ -23,6 +25,9 @@ public class StockOptionCycleBusiness {
 	@Autowired
 	@Qualifier("stockOptionCycleReference")
 	private StockOptionCycleReference stockOptionCycleReference;
+	
+	@Autowired
+	private StockOptionQuoteBusiness quoteBusiness;
 
 	public StockOptionCycleDto fetchByCycle(Integer cycle) {
 		Response<StockOptionCycleDto> response = stockOptionCycleReference.fetchByCycle(cycle);
@@ -32,11 +37,21 @@ public class StockOptionCycleBusiness {
 		throw new ServiceException(response.getCode());
 	}
 	
-	public List<StockOptionCycleDto> lists() {
+	public List<StockOptionCycleDto> lists(String stockCode) {
+		// 获取最大限额名义本金
+		BigDecimal limitNominalAmount = new BigDecimal(-1);
+		if (stockCode != null) {
+			StockOptionQuoteDto quote = quoteBusiness.quote(0L, stockCode, 14, BigDecimal.ZERO);
+			if (quote != null && quote.getLimitNominalAmount() != null) {
+				limitNominalAmount = quote.getLimitNominalAmount();
+			}
+		}
+		// 获取期权周期
 		Response<List<StockOptionCycleDto>> response = stockOptionCycleReference.lists();
 		if (response.getCode().equals("200")) {
 			List<StockOptionCycleDto> list = response.getResult();
 			for (int i = list.size() - 1; i >= 0; i--) {
+				list.get(i).setLimitNominalAmount(limitNominalAmount);
 				if (list.get(i).getEnable() != null && !list.get(i).getEnable()) {
 					list.remove(i);
 				}

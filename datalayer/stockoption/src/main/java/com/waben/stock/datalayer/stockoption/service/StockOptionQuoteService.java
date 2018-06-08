@@ -12,9 +12,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.stockoption.business.PriceMarkupConfigBusiness;
+import com.waben.stock.datalayer.stockoption.entity.StockOptionAmountLimit;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionCycle;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionOrgQuote;
 import com.waben.stock.datalayer.stockoption.entity.StockOptionQuote;
+import com.waben.stock.datalayer.stockoption.repository.StockOptionAmountLimitDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionCycleDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionOrgQuoteDao;
 import com.waben.stock.datalayer.stockoption.repository.StockOptionQuoteDao;
@@ -31,7 +33,7 @@ public class StockOptionQuoteService {
 
 	@Autowired
 	private StockOptionOrgQuoteDao orgQuoteDao;
-	
+
 	@Autowired
 	private StockOptionQuoteDao quoteDao;
 
@@ -40,6 +42,9 @@ public class StockOptionQuoteService {
 
 	@Autowired
 	private PriceMarkupConfigBusiness priceMarkupBusiness;
+
+	@Autowired
+	private StockOptionAmountLimitDao limitDao;
 
 	@Value("${price.markup:0.1}")
 	private String priceMarkup;
@@ -83,14 +88,14 @@ public class StockOptionQuoteService {
 		}
 		return null;
 	}
-	
+
 	private Long getTodayMillseconds() {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.set(Calendar.MILLISECOND, 0);
-		
+
 		return cal.getTime().getTime();
 	}
 
@@ -114,7 +119,7 @@ public class StockOptionQuoteService {
 			StockOptionCycle cycleObj = cycleDao.retrieveByCycle(cycle);
 			StockOptionQuote result = null;
 			StockOptionQuote quote = quoteDao.retrieveByStockCodeAndCycle(stockCode, cycle);
-			if(quote != null && quote.getUpdateTime().getTime() >= getTodayMillseconds()) {
+			if (quote != null && quote.getUpdateTime().getTime() >= getTodayMillseconds()) {
 				// 如果手动设置了接口费率，使用手动设置的接口费率
 				result = CopyBeanUtils.copyBeanProperties(StockOptionQuote.class, quote, false);
 			} else {
@@ -131,7 +136,7 @@ public class StockOptionQuoteService {
 					result.setRightMoneyRatio(result.getRightMoneyRatio().multiply(new BigDecimal("1.2")).setScale(4,
 							RoundingMode.HALF_EVEN));
 				}
-			} else {
+			} else if (publisherId != null && publisherId > 0) {
 				List<BigDecimal> ratioList = priceMarkupBusiness.priceMarkupRatioList(Integer.valueOf(2),
 						cycleObj.getId(), publisherId);
 				if (ratioList != null && ratioList.size() > 0) {
@@ -157,6 +162,18 @@ public class StockOptionQuoteService {
 							RoundingMode.HALF_EVEN));
 				}
 			}
+
+			// 获取最大限额
+			StockOptionAmountLimit globalLimit = limitDao.retrieveGlobal();
+			StockOptionAmountLimit stockLimit = limitDao.retrieveByStockCode(stockCode);
+			BigDecimal limitNominalAmount = null;
+			if (globalLimit != null) {
+				limitNominalAmount = globalLimit.getAmountLimit();
+			}
+			if (stockLimit != null) {
+				limitNominalAmount = stockLimit.getAmountLimit();
+			}
+			result.setLimitNominalAmount(limitNominalAmount);
 			return result;
 		}
 		return null;

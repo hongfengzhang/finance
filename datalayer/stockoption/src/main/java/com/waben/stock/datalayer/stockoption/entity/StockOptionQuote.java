@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * 期权报价
@@ -44,8 +45,15 @@ public class StockOptionQuote {
 	 */
 	@Column(scale = 4)
 	private BigDecimal rightMoneyRatio;
-
+	/**
+	 * 更新时间
+	 */
 	private Date updateTime;
+	/**
+	 * 最大限额名义本金
+	 */
+	@Transient
+	private BigDecimal limitNominalAmount;
 
 	public Long getId() {
 		return id;
@@ -93,6 +101,14 @@ public class StockOptionQuote {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public BigDecimal getLimitNominalAmount() {
+		return limitNominalAmount;
+	}
+
+	public void setLimitNominalAmount(BigDecimal limitNominalAmount) {
+		this.limitNominalAmount = limitNominalAmount;
 	}
 
 }

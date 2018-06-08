@@ -99,8 +99,8 @@ public class StockOptionTradeController {
 
 	@GetMapping("/cyclelists")
 	@ApiOperation(value = "期权周期列表")
-	public Response<List<StockOptionCycleDto>> lists() {
-		return new Response<>(cycleBusiness.lists());
+	public Response<List<StockOptionCycleDto>> lists(@RequestParam(required = false) String stockCode) {
+		return new Response<>(cycleBusiness.lists(stockCode));
 	}
 
 	@GetMapping("/{stockCode}/{cycle}/quote")
