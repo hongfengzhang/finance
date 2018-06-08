@@ -58,7 +58,8 @@ public interface FuturesOrderInterface {
 	 * @return 订单
 	 */
 	@RequestMapping(value = "/cancelOrder/{id}", method = RequestMethod.GET)
-	Response<FuturesOrderDto> cancelOrder(@PathVariable(name = "id") Long id);
+	Response<FuturesOrderDto> cancelOrder(@PathVariable(name = "id") Long id,
+			@RequestParam("publisherId") Long publisherId);
 
 	/**
 	 * 用户申请平仓
@@ -74,7 +75,8 @@ public interface FuturesOrderInterface {
 	@RequestMapping(value = "/applyUnwind/{id}", method = RequestMethod.PUT)
 	Response<FuturesOrderDto> applyUnwind(@PathVariable("id") Long id,
 			@RequestParam("sellingPriceTypeIndex") String sellingPriceTypeIndex,
-			@RequestParam("sellingEntrustPrice") BigDecimal sellingEntrustPrice);
+			@RequestParam("sellingEntrustPrice") BigDecimal sellingEntrustPrice,
+			@RequestParam("publisherId") Long publisherId);
 
 	/**
 	 * 用户申请一键平仓所有订单
@@ -93,7 +95,8 @@ public interface FuturesOrderInterface {
 	 * @return 订单
 	 */
 	@RequestMapping(value = "/backhandUnwind/{id}", method = RequestMethod.PUT)
-	Response<FuturesOrderDto> backhandUnwind(@PathVariable("id") Long id);
+	Response<FuturesOrderDto> backhandUnwind(@PathVariable("id") Long id,
+			@RequestParam("publisherId") Long publisherId);
 
 	/**
 	 * 获取每个合约的买量 卖量数
@@ -141,7 +144,8 @@ public interface FuturesOrderInterface {
 			@RequestParam("limitProfitType") Integer limitProfitType,
 			@RequestParam("perUnitLimitProfitAmount") BigDecimal perUnitLimitProfitAmount,
 			@RequestParam("limitLossType") Integer limitLossType,
-			@RequestParam("perUnitLimitLossAmount") BigDecimal perUnitLimitLossAmount);
+			@RequestParam("perUnitLimitLossAmount") BigDecimal perUnitLimitLossAmount,
+			@RequestParam("publisherId") Long publisherId);
 
 	/**
 	 * 获取成交统计记录

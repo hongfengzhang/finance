@@ -51,17 +51,17 @@ public class FuturesOrderBusiness {
 	}
 
 	public FuturesOrderDto applyUnwind(Long orderId, FuturesTradePriceType sellingPriceType,
-			BigDecimal sellingEntrustPrice) {
+			BigDecimal sellingEntrustPrice, Long publisherId) {
 		Response<FuturesOrderDto> response = futuresOrderInterface.applyUnwind(orderId, sellingPriceType.getIndex(),
-				sellingEntrustPrice);
+				sellingEntrustPrice, publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
 	}
 
-	public FuturesOrderDto backhandUnwind(Long orderId) {
-		Response<FuturesOrderDto> response = futuresOrderInterface.backhandUnwind(orderId);
+	public FuturesOrderDto backhandUnwind(Long orderId, Long publisherId) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.backhandUnwind(orderId, publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -76,8 +76,8 @@ public class FuturesOrderBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-	public FuturesOrderDto cancelOrder(Long orderId) {
-		Response<FuturesOrderDto> response = futuresOrderInterface.cancelOrder(orderId);
+	public FuturesOrderDto cancelOrder(Long orderId, Long publisherId) {
+		Response<FuturesOrderDto> response = futuresOrderInterface.cancelOrder(orderId, publisherId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}
@@ -207,9 +207,9 @@ public class FuturesOrderBusiness {
 	}
 
 	public Integer settingStopLoss(Long orderId, Integer limitProfitType, BigDecimal perUnitLimitProfitAmount,
-			Integer limitLossType, BigDecimal perUnitLimitLossAmount) {
+			Integer limitLossType, BigDecimal perUnitLimitLossAmount, Long publisherId) {
 		Response<FuturesOrderDto> response = futuresOrderInterface.settingStopLoss(orderId, limitProfitType,
-				perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount);
+				perUnitLimitProfitAmount, limitLossType, perUnitLimitLossAmount, publisherId);
 		if ("200".equals(response.getCode())) {
 			return 1;
 		}
