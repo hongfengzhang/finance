@@ -50,6 +50,26 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 	@ApiModelProperty(value = "昨天的收盘价")
 	private BigDecimal closePrice;
 	/**
+	 * 最高价投标合同（买方开价）
+	 */
+	@ApiModelProperty(value = "最高价投标合同（买方开价）")
+	private BigDecimal bigPrice;
+	/**
+	 * 以投标价格提供的合同或批次数量（买方开价）
+	 */
+	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（买方开价）")
+	private Integer bidSize;
+	/**
+	 * 最低价投标合同（卖方开价）
+	 */
+	@ApiModelProperty(value = "最低价投标合同（卖方开价）")
+	private BigDecimal askPrice;
+	/**
+	 * 以投标价格提供的合同或批次数量（卖方开价）
+	 */
+	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（卖方开价）")
+	private Integer askSize;
+	/**
 	 * 当天成交量
 	 */
 	@ApiModelProperty(value = "当天成交量")
@@ -129,6 +149,38 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 
 	public void setVolume(Integer volume) {
 		this.volume = volume;
+	}
+
+	public BigDecimal getBigPrice() {
+		return bigPrice;
+	}
+
+	public void setBigPrice(BigDecimal bigPrice) {
+		this.bigPrice = bigPrice;
+	}
+
+	public Integer getBidSize() {
+		return bidSize;
+	}
+
+	public void setBidSize(Integer bidSize) {
+		this.bidSize = bidSize;
+	}
+
+	public BigDecimal getAskPrice() {
+		return askPrice;
+	}
+
+	public void setAskPrice(BigDecimal askPrice) {
+		this.askPrice = askPrice;
+	}
+
+	public Integer getAskSize() {
+		return askSize;
+	}
+
+	public void setAskSize(Integer askSize) {
+		this.askSize = askSize;
 	}
 
 }

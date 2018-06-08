@@ -73,7 +73,7 @@ public class FuturesOrderController {
 				userOrderType, entrustPrice));
 	}
 	
-	@PostMapping("/cancalOrder/{domain}/{outerOrderId}")
+	@PostMapping("/cancalOrder/{domain}/{gatewayOrderId}")
 	@ApiOperation(value = "期货取消订单")
 	public Response<FuturesOrder> cancalOrder(@PathVariable String domain, @PathVariable Long gatewayOrderId) {
 		return new Response<>(futuresOrderService.cancelOrder(domain, gatewayOrderId));
