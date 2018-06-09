@@ -122,6 +122,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.NONTRADINGDAY_EXCEPTION, "非交易日不能申请卖出");
 		exceptionMap.put(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION, "该股票暂时无法申购，请购买其它股票");
 		exceptionMap.put(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION, "今日额度已用完，明日09：00开售");
+		exceptionMap.put(ExceptionConstant.STOCK_AMOUNTGTLEFT_EXCEPTION, "该股票最大额度为%s万，请重新输入");
 
 		exceptionMap.put(ExceptionConstant.NO_LIVEPLAYER_EXCEPTION, "无直播频道");
 

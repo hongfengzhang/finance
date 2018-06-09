@@ -218,6 +218,8 @@ public class ExceptionConstant {
 	public static final String STOCK_ABNORMAL_EXCEPTION = "9008";
 	// 今日额度已用完，明日09：00开售
 	public static final String STOCK_AMOUNTLIMIT_EXCEPTION = "9009";
+	// 该股票最大额度为%s万，请重新输入
+	public static final String STOCK_AMOUNTGTLEFT_EXCEPTION = "9010";
 
 	// 直播
 	// 无直播频道

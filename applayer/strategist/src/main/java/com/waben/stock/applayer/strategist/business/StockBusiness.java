@@ -63,7 +63,7 @@ public class StockBusiness {
 	@Autowired
 	@Qualifier("favoriteStockReference")
 	private FavoriteStockReference favoriteStockReference;
-	
+
 	@Autowired
 	private StockOptionTradeBusiness optionTradeBusiness;
 
@@ -222,7 +222,7 @@ public class StockBusiness {
 			throw new ServiceException(ExceptionConstant.BLACKLIST_STOCK_EXCEPTION);
 		}
 	}
-	
+
 	/**
 	 * 检查期权股票
 	 * 
@@ -266,7 +266,9 @@ public class StockBusiness {
 		PageInfo<StockOptionRiskAdminDto> normal = optionTradeBusiness.adminNormalRiskPagesByQuery(query);
 		if (normal.getContent() != null && normal.getContent().size() > 0) {
 			if (nominalAmount != null && nominalAmount.compareTo(normal.getContent().get(0).getAmountLimitLeft()) > 0) {
-				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
+				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTGTLEFT_EXCEPTION,
+						new Object[] { normal.getContent().get(0).getAmountLimitLeft().divide(new BigDecimal("10000"))
+								.setScale(0, RoundingMode.DOWN) });
 			}
 		} else {
 			throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);

@@ -74,7 +74,7 @@ public class StockBusiness {
 
 	@Autowired
 	private RedisCache redisCache;
-	
+
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -270,7 +270,9 @@ public class StockBusiness {
 		System.out.println("查询正常股票：" + JacksonUtil.encode(normal));
 		if (normal.getContent() != null && normal.getContent().size() > 0) {
 			if (nominalAmount != null && nominalAmount.compareTo(normal.getContent().get(0).getAmountLimitLeft()) > 0) {
-				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTLIMIT_EXCEPTION);
+				throw new ServiceException(ExceptionConstant.STOCK_AMOUNTGTLEFT_EXCEPTION,
+						new Object[] { normal.getContent().get(0).getAmountLimitLeft().divide(new BigDecimal("10000"))
+								.setScale(0, RoundingMode.DOWN) });
 			}
 		} else {
 			throw new ServiceException(ExceptionConstant.STOCK_ABNORMAL_EXCEPTION);

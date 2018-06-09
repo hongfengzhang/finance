@@ -102,7 +102,10 @@ public class StrategistExecptionHandler implements HandlerExceptionResolver {
 	}
 
 	private String message(String type, Exception ex) {
+		Object[] variables = null;
 		if (ex instanceof ServiceException) {
+			ServiceException se = (ServiceException) ex;
+			variables = se.getVariables();
 			ServiceException serviceException = (ServiceException) ex;
 			if (serviceException.getCustomMessage() != null) {
 				return serviceException.getCustomMessage();
@@ -111,6 +114,9 @@ public class StrategistExecptionHandler implements HandlerExceptionResolver {
 		String message = null;
 		if (exceptionMap.containsKey(type)) {
 			message = exceptionMap.get(type);
+			if (variables != null) {
+				message = String.format(exceptionMap.get(type), variables);
+			}
 		} else {
 			message = type;
 		}
