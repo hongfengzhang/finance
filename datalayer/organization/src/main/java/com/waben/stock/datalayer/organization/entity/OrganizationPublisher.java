@@ -37,6 +37,10 @@ public class OrganizationPublisher {
 	 * 创建时间
 	 */
 	private Date createTime;
+	/**
+	 * 树结构代码
+	 */
+	private String treeCode;
 
 	public Long getId() {
 		return id;
@@ -76,6 +80,14 @@ public class OrganizationPublisher {
 
 	public void setOrgId(Long orgId) {
 		this.orgId = orgId;
+	}
+
+	public String getTreeCode() {
+		return treeCode;
+	}
+
+	public void setTreeCode(String treeCode) {
+		this.treeCode = treeCode;
 	}
 
 }
