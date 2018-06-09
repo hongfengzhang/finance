@@ -56,4 +56,11 @@ public class OrganizationPublisherController implements OrganizationPublisherInt
 		return new Response<>(response);
 	}
 
+	@Override
+	public Response<List<OrganizationPublisherDto>> findByOrgId(List<Long> orgId) {
+		List<OrganizationPublisher> result = service.findByOrgId(orgId);
+		List<OrganizationPublisherDto> response = CopyBeanUtils.copyListBeanPropertiesToList(result, OrganizationPublisherDto.class);
+		return new Response<>(response);
+	}
+
 }

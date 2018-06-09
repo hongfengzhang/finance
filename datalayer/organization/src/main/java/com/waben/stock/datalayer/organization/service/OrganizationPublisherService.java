@@ -75,4 +75,8 @@ public class OrganizationPublisherService {
 	public List<OrganizationPublisher> findAll() {
 		return dao.list();
 	}
+
+	public List<OrganizationPublisher> findByOrgId(List<Long> orgId) {
+		return dao.findByOrdId(orgId);
+	}
 }
