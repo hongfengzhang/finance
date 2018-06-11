@@ -47,19 +47,19 @@ public class TickPriceConsumer {
 			// step 3 : 更新期货合约的相关价格
 			boolean isNeedUpdate = true;
 			if (field == 1) {
-				contract.setBigPrice(new BigDecimal(price));
+				// contract.setBigPrice(new BigDecimal(price));
 			} else if (field == 2) {
-				contract.setAskPrice(new BigDecimal(price));
+				// contract.setAskPrice(new BigDecimal(price));
 			} else if (field == 4) {
-				contract.setLastPrice(new BigDecimal(price));
+				// contract.setLastPrice(new BigDecimal(price));
 			} else if (field == 6) {
-				contract.setHighPrice(new BigDecimal(price));
+				// contract.setHighPrice(new BigDecimal(price));
 			} else if (field == 7) {
-				contract.setLowPrice(new BigDecimal(price));
+				// contract.setLowPrice(new BigDecimal(price));
 			} else if (field == 9) {
-				contract.setClosePrice(new BigDecimal(price));
+				// contract.setClosePrice(new BigDecimal(price));
 			} else if (field == 14) {
-				contract.setOpenPrice(new BigDecimal(price));
+				// contract.setOpenPrice(new BigDecimal(price));
 			}else {
 				isNeedUpdate = false;
 			}
