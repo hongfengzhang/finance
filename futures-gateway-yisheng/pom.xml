@@ -58,16 +58,22 @@
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 		</dependency>
+		<!-- cglib -->
+		<dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>3.2.5</version>
+        </dependency>
+		<!-- amqp -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 		<!-- tws -->
 		<dependency>
 			<groupId>com.waben.twsapi</groupId>
 			<artifactId>tws-api</artifactId>
 			<version>1.0.0</version>
-		</dependency>
-		<!-- amqp -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 		<!-- 易盛API -->
 		<dependency>

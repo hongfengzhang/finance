@@ -505,31 +505,25 @@ public class FuturesOrderService {
 				message.setContent(String.format("您所购买的“%s”期货已进入“买入委托”状态", order.getContractName()));
 				extras.put("content",
 						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“买入委托”状态", order.getContractName()));
-				extras.put("type", OutsideMessageType.FUTURES_BUYINGENTRUST.getIndex());
+				extras.put("type", OutsideMessageType.Futures_BuyingEntrust.getIndex());
 				break;
 			case BuyingCanceled:
 				message.setContent(String.format("您所购买的“%s”期货已进入“取消买入委托”状态", order.getContractName()));
 				extras.put("content",
 						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已取消”状态", order.getContractName()));
-				extras.put("type", OutsideMessageType.FUTURES_CANCELED.getIndex());
+				extras.put("type", OutsideMessageType.Futures_BuyingCanceled.getIndex());
 				break;
 			case Position:
 				message.setContent(String.format("您所购买的“%s”期货已进入“持仓中”状态", order.getContractName()));
 				extras.put("content",
 						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“持仓中”状态", order.getContractName()));
-				extras.put("type", OutsideMessageType.FUTURES_POSITION.getIndex());
-				break;
-			case SellingEntrust:
-				message.setContent(String.format("您所购买的“%s”期货已进入“卖出委托”状态", order.getContractName()));
-				extras.put("content",
-						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“卖出委托”状态", order.getContractName()));
-				extras.put("type", OutsideMessageType.FUTURES_SELLINGENTRUST.getIndex());
+				extras.put("type", OutsideMessageType.Futures_Position.getIndex());
 				break;
 			case Unwind:
 				message.setContent(String.format("您所购买的“%s”期货已进入“已平仓”状态", order.getContractName()));
 				extras.put("content",
 						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已平仓”状态", order.getContractName()));
-				extras.put("type", OutsideMessageType.FUTURES_UNWIND.getIndex());
+				extras.put("type", OutsideMessageType.Futures_DayUnwind.getIndex());
 				break;
 			default:
 				break;
