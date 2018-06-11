@@ -23,6 +23,7 @@ import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.service.OrganizationService;
 import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
+import com.waben.stock.interfaces.dto.organization.FuturesFowDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -33,6 +34,7 @@ import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.FuturesFowQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
@@ -234,6 +236,19 @@ public class OrganizationController implements OrganizationInterface {
 				organizationService.getListByFuturesAgentPrice(orgId), FuturesAgentPriceDto.class));
 	}
 
+	@Override
+	public Response<String> queryChildOrgId(Long orgId) {
+		String message = organizationService.queryChildOrgId(orgId);
+		return new Response<>(message);
+	}
+
+	@Override
+	public Response<PageInfo<FuturesFowDto>> futuresFowPageByQuery(FuturesFowQuery query) {
+		Page<FuturesFowDto> page =  organizationService.futuresFowPageByQuery(query);
+		PageInfo<FuturesFowDto> result = PageToPageInfo.pageToPageInfo(page, FuturesFowDto.class);
+		return new Response<>(result);
+	}
+	
 	@Override
 	public Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto) {
 		return new Response<>(organizationService.saveFuturesAgentPrice(futuresAgentPricedto));

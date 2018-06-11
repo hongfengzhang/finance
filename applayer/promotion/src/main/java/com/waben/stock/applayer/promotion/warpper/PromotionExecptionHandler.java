@@ -50,7 +50,8 @@ public class PromotionExecptionHandler implements HandlerExceptionResolver {
 				HttpServletResponse.SC_SERVICE_UNAVAILABLE, "503"));
 		this.exceptions.add(new ExceptionInformation(ServiceException.class, HttpServletResponse.SC_OK, "500"));
 		this.exceptions.add(new ExceptionInformation(HystrixRuntimeException.class, HttpServletResponse.SC_OK, "500"));
-		this.exceptions.add(new ExceptionInformation(AccessDeniedException.class, HttpServletResponse.SC_FORBIDDEN, "403"));
+		this.exceptions
+				.add(new ExceptionInformation(AccessDeniedException.class, HttpServletResponse.SC_FORBIDDEN, "403"));
 	}
 
 	@Override
@@ -93,15 +94,21 @@ public class PromotionExecptionHandler implements HandlerExceptionResolver {
 	}
 
 	private String message(String type, Exception ex) {
+		Object[] variables = null;
 		if (ex instanceof ServiceException) {
+			ServiceException se = (ServiceException) ex;
+			variables = se.getVariables();
 			ServiceException serviceException = (ServiceException) ex;
 			if (serviceException.getCustomMessage() != null) {
 				return serviceException.getCustomMessage();
 			}
 		}
-		String message;
+		String message = null;
 		if (exceptionMap.containsKey(type)) {
 			message = exceptionMap.get(type);
+			if (variables != null) {
+				message = String.format(exceptionMap.get(type), variables);
+			}
 		} else {
 			message = type;
 		}

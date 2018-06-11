@@ -188,6 +188,12 @@ public class OrganizationController {
 		return new Response<>(business.getListByFuturesAgentPrice(orgId));
 	}
 
+	@RequestMapping(value = "/save/agent/price", method = RequestMethod.POST)
+	@ApiOperation(value = "添加期货代理价格")
+	public Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> agentPriceDto) {
+		return new Response<>(business.saveFuturesAgentPrice(agentPriceDto));
+	}
+
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
 	@ApiOperation(value = "导出代理商数据")
 	public void export(OrganizationStaQuery query, HttpServletResponse svrResponse) {

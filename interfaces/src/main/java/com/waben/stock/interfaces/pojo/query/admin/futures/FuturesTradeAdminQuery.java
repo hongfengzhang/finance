@@ -44,6 +44,10 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 	 */
 	private String orderState;
 	
+	private String treeCode;
+	
+	private Long orgId;
+	
 	
 	private List<Long> publisherIds;
 	
@@ -142,5 +146,21 @@ public class FuturesTradeAdminQuery extends PageAndSortQuery {
 
 	public void setPublisherIds(List<Long> publisherIds) {
 		this.publisherIds = publisherIds;
+	}
+
+	public String getTreeCode() {
+		return treeCode;
+	}
+
+	public void setTreeCode(String treeCode) {
+		this.treeCode = treeCode;
+	}
+
+	public Long getOrgId() {
+		return orgId;
+	}
+
+	public void setOrgId(Long orgId) {
+		this.orgId = orgId;
 	}
 }

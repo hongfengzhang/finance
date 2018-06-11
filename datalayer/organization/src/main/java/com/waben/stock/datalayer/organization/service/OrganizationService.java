@@ -40,7 +40,9 @@ import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
+import com.waben.stock.interfaces.dto.organization.FuturesFowDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
@@ -50,6 +52,7 @@ import com.waben.stock.interfaces.enums.CapitalFlowType;
 import com.waben.stock.interfaces.enums.OrganizationState;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
+import com.waben.stock.interfaces.pojo.query.organization.FuturesFowQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
@@ -210,6 +213,10 @@ public class OrganizationService {
 	public List<Organization> list() {
 		return organizationDao.list();
 	}
+	
+	public String queryChildOrgId(Long orgId){
+		return organizationDao.queryChlidOrgId(orgId);
+	}
 
 	public Page<Organization> pagesByQuery(final OrganizationQuery query) {
 		Pageable pageable = new PageRequest(query.getPage(), query.getSize());
@@ -234,6 +241,9 @@ public class OrganizationService {
 						Join<Organization, Organization> parentJoin = root.join("parent", JoinType.LEFT);
 						predicateList
 								.add(criteriaBuilder.equal(parentJoin.get("id").as(Long.class), query.getParentId()));
+					}
+					if(query.getTreeCode()!=null && !"".equals(query.getTreeCode().trim())){
+						predicateList.add(criteriaBuilder.like(root.get("treeCode").as(String.class), "%"+query.getTreeCode()+"%"));
 					}
 				}
 				if (predicateList.size() > 0) {
@@ -555,6 +565,83 @@ public class OrganizationService {
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
+	
+	public Page<FuturesFowDto> futuresFowPageByQuery(FuturesFowQuery query){
+		String customerNameQuery = "";
+		if (!StringUtil.isEmpty(query.getPublisherName())) {
+			customerNameQuery = " and t4.name like '%" + query.getPublisherName() + "%'";
+		}
+
+		String tradingNumberQuery = "";
+		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
+			tradingNumberQuery = " and t5.phone like '%" + query.getPublisherPhone() + "%'";
+		}
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.occurrence_time>='" + sdf.format(query.getStartTime()) + "' ";
+		}
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.occurrence_time<'" + sdf.format(query.getEndTime()) + "' ";
+		}
+		String orderTypeQuery = "";
+		if (!StringUtil.isEmpty(query.getOrderType())) {
+			orderTypeQuery = " and t1.type in(" + query.getOrderType() + ") ";
+		}
+		String contractCodeQuery = "";
+		if (!StringUtil.isEmpty(query.getContractCodeOrName())) {
+			contractCodeQuery = " and (t3.symbol like '%" + query.getContractCodeOrName() + "%' or t3.name like '%"
+					+ query.getContractCodeOrName() + "%')";
+		}
+
+		String agentCodeNameQuery = "";
+		if (!StringUtil.isEmpty(query.getOrgCodeOrName())) {
+			agentCodeNameQuery = " and (t10.code like '%" + query.getOrgCodeOrName() + "%' or t10.name like '%"
+					+ query.getOrgCodeOrName() + "%')";
+		}
+		
+		String treeCodeQuery = "";
+		if(!StringUtil.isEmpty(query.getTreeCode())){
+			treeCodeQuery = " and t10.tree_code like '%"+query.getTreeCode()+"%'";
+		}
+		
+		String sql = String.format(
+				"select t1.id, t4.name as publisher_name, t5.phone, t1.flow_no, t1.occurrence_time, t1.type, t1.amount, t1.available_balance, "
+						+ " IF(t12.symbol IS NULL,t2.stock_code,t12.symbol) AS symbol,  IF(t12.name IS NULL,t2.stock_name,t12.name) AS contract_name,"
+						+ " t10.code AS agentCode,t10.name AS agentName " + " from capital_flow t1 "
+						+ " LEFT JOIN buy_record t2 on t1.extend_type=1 and t1.extend_id=t2.id "
+						+ " LEFT JOIN f_futures_order t3 on t1.extend_type=3 and t1.extend_id=t3.id "
+						+ " LEFT JOIN real_name t4 on t4.resource_type=2 and t1.publisher_id=t4.resource_id "
+						+ " LEFT JOIN publisher t5 on t5.id=t1.publisher_id "
+						+ " LEFT JOIN payment_order t6 on t1.extend_type=4 and t1.extend_id=t6.id"
+						+ " LEFT JOIN withdrawals_order t7 on t1.extend_type=5 and t1.extend_id=t7.id "
+						+ " LEFT JOIN bind_card t8 on t7.bank_card=t8.bank_card"
+						+ " LEFT JOIN p_organization_publisher t9 ON t9.publisher_id = t5.id"
+						+ " LEFT JOIN p_organization t10 ON t10.code = t9.org_code"
+						+ " LEFT JOIN f_futures_contract t12 ON t3.contract_id = t12.id "
+						+ " WHERE 1=1 and t10.id is not null  %s %s %s %s %s %s %s %s order by t1.occurrence_time desc limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				customerNameQuery, tradingNumberQuery, startTimeCondition, endTimeCondition, orderTypeQuery, contractCodeQuery,
+				agentCodeNameQuery,treeCodeQuery);
+		String countSql = "select count(*) from (" + sql.substring(0, sql.indexOf("limit")) + ") c";
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class })); // ID
+		setMethodMap.put(new Integer(1), new MethodDesc("setCustomerName", new Class<?>[] { String.class })); // 客户名称
+		setMethodMap.put(new Integer(2), new MethodDesc("setTradingNumber", new Class<?>[] { String.class })); // 银行卡号
+		setMethodMap.put(new Integer(3), new MethodDesc("setFlowNo", new Class<?>[] { String.class })); // 流水号
+		setMethodMap.put(new Integer(4), new MethodDesc("setOccurrenceTime", new Class<?>[] { Date.class })); // 交易时间
+		setMethodMap.put(new Integer(5), new MethodDesc("setType", new Class<?>[] { CapitalFlowType.class })); // 交易类型
+		setMethodMap.put(new Integer(6), new MethodDesc("setAmount", new Class<?>[] { BigDecimal.class }));// 金额
+		setMethodMap.put(new Integer(7), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class })); // 当前可用余额
+		setMethodMap.put(new Integer(8), new MethodDesc("setSymbol", new Class<?>[] { String.class })); // 股票代码
+		setMethodMap.put(new Integer(9), new MethodDesc("setContractName", new Class<?>[] { String.class }));// 股票名称
+		setMethodMap.put(new Integer(10), new MethodDesc("setAgentCode", new Class<?>[] { String.class })); // 代理商代码
+		setMethodMap.put(new Integer(11), new MethodDesc("setAgentCodeName", new Class<?>[] { String.class }));// 代理商名称
+		List<FuturesFowDto> content = sqlDao.execute(FuturesFowDto.class, sql, setMethodMap);
+		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+				totalElements != null ? totalElements.longValue() : 0);
+	}
 
 	public Page<TradingFowDto> tradingFowPageByQuery(TradingFowQuery query) {
 
@@ -635,12 +722,13 @@ public class OrganizationService {
 
 	public List<FuturesAgentPriceDto> getListByFuturesAgentPrice(Long orgId) {
 		String sql = String
-				.format("SELECT c1.id, c1.symbol, c1.name, c2.cost_reserve_fund, c2.cost_openwind_service_fee,c2.cost_unwind_service_fee,c2.cost_deferred_fee,c2.sale_openwind_service_fee,c2.sale_unwind_service_fee,c2.sale_deferred_fee FROM f_futures_contract c1 LEFT JOIN p_futures_agent_price c2 on c1.id = c2.contract_id AND c2.org_id="
+				.format("SELECT c1.id, c1.symbol, c1.name, c2.id, c2.cost_reserve_fund, c2.cost_openwind_service_fee,c2.cost_unwind_service_fee,c2.cost_deferred_fee,c2.sale_openwind_service_fee,c2.sale_unwind_service_fee,c2.sale_deferred_fee FROM f_futures_contract c1 LEFT JOIN p_futures_agent_price c2 on c1.id = c2.contract_id AND c2.org_id="
 						+ orgId);
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setContractId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setSymbol", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(2), new MethodDesc("setContractName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(3), new MethodDesc("setCostReserveFund", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(4),
 				new MethodDesc("setCostOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
@@ -660,8 +748,86 @@ public class OrganizationService {
 		List<FuturesAgentPrice> futuresAgentPrice = CopyBeanUtils.copyListBeanPropertiesToList(futuresAgentPricedto,
 				FuturesAgentPrice.class);
 		if (futuresAgentPrice != null && futuresAgentPrice.size() > 0) {
+			Long orgId = futuresAgentPrice.get(0).getOrgId();
+			OrganizationDto organization = agentPriceBusiness.fetchByOrgId(orgId);
+			for (int i = 0; i < futuresAgentPrice.size(); i++) {
+				// 获取合约信息
+				FuturesContractDto contractDto = agentPriceBusiness
+						.getFuturesContractDto(futuresAgentPrice.get(i).getContractId());
+				if (organization.getLevel() == 2) {
+					if (futuresAgentPrice.get(i).getCostReserveFund()
+							.compareTo(contractDto.getPerUnitReserveFund()) < 0) {
+						// 成本保证金不能比全局设置的低
+						throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+					if (futuresAgentPrice.get(i).getCostOpenwindServiceFee()
+							.compareTo(contractDto.getOpenwindServiceFee()) < 0) {
+						// 成本开仓手续费不能比全局设置的低
+						throw new ServiceException(
+								ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+					if (futuresAgentPrice.get(i).getCostUnwindServiceFee()
+							.compareTo(contractDto.getUnwindServiceFee()) < 0) {
+						// 成本平仓手续费不能比全局设置的低
+						throw new ServiceException(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+					if (futuresAgentPrice.get(i).getCostDeferredFee()
+							.compareTo(contractDto.getOvernightPerUnitDeferredFee()) < 0) {
+						// 成本递延费不能比全局设置的低
+						throw new ServiceException(
+								ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+				} else {
+					agentPriceDao.findByContractIdAndOrgId(contractDto.getId(), orgId);
+				}
+			}
+
 			for (FuturesAgentPrice agentPrice : futuresAgentPrice) {
 				FuturesContractDto contractDto = agentPriceBusiness.getFuturesContractDto(agentPrice.getContractId());
+				if (agentPrice.getCostReserveFund().compareTo(contractDto.getPerUnitReserveFund()) < 0) {
+					// 成本保证金不能比全局设置的低
+					throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostOpenwindServiceFee().compareTo(contractDto.getOpenwindServiceFee()) < 0) {
+					// 成本开仓手续费不能比全局设置的低
+					throw new ServiceException(
+							ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostOpenwindServiceFee().compareTo(agentPrice.getSaleOpenwindServiceFee()) > 0) {
+					// 销售开仓手续费不能比成本开仓手续费的低
+					throw new ServiceException(
+							ExceptionConstant.SALES_OPENINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostUnwindServiceFee().compareTo(contractDto.getUnwindServiceFee()) < 0) {
+					// 成本平仓手续费不能比全局设置的低
+					throw new ServiceException(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostUnwindServiceFee().compareTo(agentPrice.getSaleUnwindServiceFee()) > 0) {
+					// 销售平仓手续费不能比成本开仓手续费的低
+					throw new ServiceException(
+							ExceptionConstant.SALES_CLOSINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostDeferredFee().compareTo(contractDto.getOvernightPerUnitDeferredFee()) < 0) {
+					// 成本递延费不能比全局设置的低
+					throw new ServiceException(
+							ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostDeferredFee().compareTo(agentPrice.getSaleDeferredFee()) > 0) {
+					// 销售递延费不能比成本递延费的低
+					throw new ServiceException(
+							ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
+							contractDto.getName());
+				}
 				agentPriceDao.create(agentPrice);
 			}
 			return 1;

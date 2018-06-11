@@ -1106,14 +1106,17 @@ public class FuturesOrderService {
 		if (order == null) {
 			throw new ServiceException(ExceptionConstant.USER_ORDER_DOESNOT_EXIST_EXCEPTION);
 		}
-		if (limitProfitType != null && perUnitLimitProfitAmount != null) {
+		if (order.getState() == FuturesOrderState.Unwind) {
+			throw new ServiceException(ExceptionConstant.ORDER_HAS_BEEN_CLOSED_EXCEPTION);
+		}
+//		if (limitProfitType != null && perUnitLimitProfitAmount != null) {
 			order.setLimitProfitType(limitProfitType);
 			order.setPerUnitLimitProfitAmount(perUnitLimitProfitAmount);
-		}
-		if (limitLossType != null && perUnitLimitLossAmount != null) {
+//		}
+//		if (limitLossType != null && perUnitLimitLossAmount != null) {
 			order.setLimitLossType(limitLossType);
 			order.setPerUnitLimitLossAmount(perUnitLimitLossAmount);
-		}
+//		}
 		orderDao.update(order);
 		return order;
 	}
