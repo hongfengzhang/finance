@@ -115,6 +115,8 @@ public class FutresOrderEntrustDto {
 	 * 成交时间
 	 */
 	private Date dealTime;
+	
+	private String orgName;
 
 	public Long getId() {
 		return id;
@@ -282,5 +284,13 @@ public class FutresOrderEntrustDto {
 
 	public void setOvernightServiceFee(BigDecimal overnightServiceFee) {
 		this.overnightServiceFee = overnightServiceFee;
+	}
+
+	public String getOrgName() {
+		return orgName;
+	}
+
+	public void setOrgName(String orgName) {
+		this.orgName = orgName;
 	}
 }
