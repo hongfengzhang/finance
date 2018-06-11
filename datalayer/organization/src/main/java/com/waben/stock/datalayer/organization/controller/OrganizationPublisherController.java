@@ -16,6 +16,7 @@ import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationInterface;
 import com.waben.stock.interfaces.service.organization.OrganizationPublisherInterface;
@@ -67,10 +68,11 @@ public class OrganizationPublisherController implements OrganizationPublisherInt
 		return new Response<>(response);
 	}
 
-	@Override
-	public Response<List<OrganizationPublisherDto>> findByOrgId(Long orgId) {
+	public Response<List<OrganizationPublisherDto>> findByTreeCode(String code) {
 		OrganizationQuery query = new OrganizationQuery();
-		query.setParentId(orgId);
+		query.setTreeCode(code);
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
 		//查询改机构下的所有子机构
 		Response<PageInfo<OrganizationDto>> response = orgReference.adminPage(query);
 		List<OrganizationDto> list = response.getResult().getContent();
@@ -78,7 +80,25 @@ public class OrganizationPublisherController implements OrganizationPublisherInt
 		for(OrganizationDto dto:list){
 			orgIds.add(dto.getId());
 		}
-		orgIds.add(orgId);
+		
+		List<OrganizationPublisher> result = service.findByOrgId(orgIds);
+		List<OrganizationPublisherDto> resultDto = CopyBeanUtils.copyListBeanPropertiesToList(result, OrganizationPublisherDto.class);
+		return new Response<>(resultDto);
+	}
+
+	@Override
+	public Response<List<OrganizationPublisherDto>> queryByTreeCode(String treecode) {
+		OrganizationQuery query = new OrganizationQuery();
+		query.setTreeCode(treecode);
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
+		//查询改机构下的所有子机构
+		Response<PageInfo<OrganizationDto>> response = orgReference.adminPage(query);
+		List<OrganizationDto> list = response.getResult().getContent();
+		List<Long> orgIds = new ArrayList<Long>();
+		for(OrganizationDto dto:list){
+			orgIds.add(dto.getId());
+		}
 		
 		List<OrganizationPublisher> result = service.findByOrgId(orgIds);
 		List<OrganizationPublisherDto> resultDto = CopyBeanUtils.copyListBeanPropertiesToList(result, OrganizationPublisherDto.class);

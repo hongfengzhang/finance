@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
+import com.waben.stock.interfaces.dto.organization.FuturesFowDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
@@ -21,6 +22,7 @@ import com.waben.stock.interfaces.dto.publisher.BindCardDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.form.organization.OrganizationForm;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.FuturesFowQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
@@ -100,6 +102,9 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/listByParentId", method = RequestMethod.GET)
 	Response<List<OrganizationDto>> listByParentId(@RequestParam("parentId") Long parentId);
+	
+	@RequestMapping(value = "/queryChildOrgId", method = RequestMethod.GET)
+	Response<String> queryChildOrgId(@RequestParam("orgId") Long orgId);
 
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	Response<List<OrganizationDto>> fetchAll();
@@ -169,6 +174,9 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/tradingFowPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<TradingFowDto>> tradingFowPageByQuery(@RequestBody TradingFowQuery query);
+	
+	@RequestMapping(value = "/futuresFowPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	Response<PageInfo<FuturesFowDto>> futuresFowPageByQuery(@RequestBody FuturesFowQuery query);
 
 	/**
 	 * 根据机id获取代理商

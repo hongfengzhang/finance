@@ -33,5 +33,8 @@ public interface OrganizationRepository extends CustomJpaRepository<Organization
 	Organization findByOrgId(Long orgId);
 
 	Page<Organization> findOrderById(Pageable page);
+	
+	@Query(value = "select getChildList(?1)", nativeQuery=true)
+	String queryChildOrgId(Long orgId);
 
 }
