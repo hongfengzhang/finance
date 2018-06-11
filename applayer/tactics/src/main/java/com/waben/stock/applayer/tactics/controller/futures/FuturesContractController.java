@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
@@ -44,8 +45,14 @@ public class FuturesContractController {
 
 	@GetMapping("/pagesContract")
 	@ApiOperation(value = "获取期货合约列表")
-	public Response<List<List<FuturesContractQuotationDto>>> pagesContract() {
+	public Response<List<List<FuturesContractQuotationDto>>> pagesContract(
+			@RequestParam(required = false) Boolean isApp) {
 		FuturesContractQuery query = new FuturesContractQuery();
+		if (isApp != null && isApp) {
+			query.setAppContract(true);
+		} else {
+			query.setPcContract(true);
+		}
 		query.setPage(0);
 		query.setSize(Integer.MAX_VALUE);
 		PageInfo<FuturesContractDto> contractPage = futuresContractBusiness.pagesContract(query);

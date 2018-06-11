@@ -1,23 +1,15 @@
 package com.waben.stock.datalayer.futures.entity;
 
 import java.math.BigDecimal;
-import java.util.Set;
+import java.util.Date;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
-import com.waben.stock.interfaces.enums.FuturesProductType;
 
 /**
  * 期货合约
@@ -33,77 +25,13 @@ public class FuturesContract {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 对应的网关合约ID
+	 * 合约编号
 	 */
-	private Long gatewayId;
-	/**
-	 * 合约代码
-	 */
-	private String symbol;
+	private String contractNo;
 	/**
 	 * 合约名称
 	 */
-	private String name;
-	/**
-	 * 货币
-	 */
-	private String currency;
-
-	/**
-	 * 交易单位
-	 */
-	private String tradeUnit;
-
-	/**
-	 * 图标
-	 */
-	private String icon;
-	/**
-	 * 描述
-	 */
-	private String contractDesc;
-	/**
-	 * 品种分类
-	 */
-	@Convert(converter = FuturesProductTypeConverter.class)
-	private FuturesProductType productType;
-	/**
-	 * 乘数（1手等于多少股）
-	 */
-	private Integer multiplier;
-	/**
-	 * 最小波动
-	 */
-	private BigDecimal minWave;
-	/**
-	 * 1手合约价值
-	 */
-	private BigDecimal perContractValue;
-	/**
-	 * 波动一次盈亏金额，单位为该合约的货币单位
-	 */
-	private BigDecimal perWaveMoney;
-	/**
-	 * 一手保证金
-	 */
-	private BigDecimal perUnitReserveFund;
-	/**
-	 * 一手强平点（亏损到剩余）
-	 */
-	private BigDecimal perUnitUnwindPoint;
-	/**
-	 * 强平点类型
-	 * <ul>
-	 * <li>1比例</li>
-	 * <li>2金额</li>
-	 * </ul>
-	 */
-	private Integer unwindPointType;
-
-	/**
-	 * 警戒线
-	 */
-	private BigDecimal cordon;
+	private String contractName;
 	/**
 	 * 该合约总计的可使用的额度（手）
 	 * 
@@ -112,66 +40,59 @@ public class FuturesContract {
 	 * </p>
 	 */
 	private BigDecimal userTotalLimit;
-
 	/**
 	 * 单笔订单额度限制（手）
 	 */
 	private BigDecimal perOrderLimit;
 	/**
-	 * 开仓手续费（人民币）
+	 * The first day on which a notice of intent to deliver a commodity can be
+	 * made by a clearinghouse to a buyer in order to fulfill a given futures
+	 * contract
 	 */
-	private BigDecimal openwindServiceFee;
+	private Date firstNoticeDate;
 	/**
-	 * 平仓手续费（人民币）
+	 * The first day when an invesor who is short a commodify futures contract
+	 * may notify the clearinghouse of the intention to deliver the commodity
 	 */
-	private BigDecimal unwindServiceFee;
+	private Date firstPositonDate;
 	/**
-	 * 隔夜时间（交易所时间）
-	 * <p>
-	 * 格式如04:50:00，该时间为收取隔夜手续费和递延费的时间
-	 * </p>
+	 * 最后交易日
 	 */
-	private String overnightTime;
+	private Date lastTradingDate;
 	/**
-	 * 返还隔夜保证金的时间（交易所时间）
+	 * 到期日期
 	 */
-	private String returnOvernightReserveFundTime;
+	private Date expirationDate;
 	/**
-	 * 一手隔夜保证金
+	 * 强平时间
 	 */
-	private BigDecimal overnightPerUnitReserveFund;
+	private Date forceUnwindDate;
 	/**
-	 * 一手隔夜递延费
+	 * 是否主力合约
 	 */
-	private BigDecimal overnightPerUnitDeferredFee;
+	private Boolean mainForce;
 	/**
 	 * 是否可用
 	 */
 	private Boolean enable;
 	/**
-	 * 对应的交易所
+	 * 是否app合约
+	 */
+	private Boolean appContract;
+	/**
+	 * 是否pc合约
+	 */
+	private Boolean pcContract;
+	/**
+	 * 更新时间
+	 */
+	private Date updateTime;
+	/**
+	 * 对应的品种
 	 */
 	@ManyToOne
-	@JoinColumn(name = "exchange_id")
-	private FuturesExchange exchange;
-	/**
-	 * 预设置的手数列表
-	 */
-	@OneToMany(cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER, mappedBy = "contract")
-	private Set<FuturesPreQuantity> preQuantitySet;
-
-	/***************** 分割线，以下字段为非数据库字段 ********************/
-
-	/**
-	 * 交易所ID
-	 */
-	@Transient
-	private Long exchangeId;
-	/**
-	 * 交易所名称
-	 */
-	@Transient
-	private String exchangeName;
+	@JoinColumn(name = "commodity_id")
+	private FuturesCommodity commodity;
 
 	public Long getId() {
 		return id;
@@ -181,100 +102,20 @@ public class FuturesContract {
 		this.id = id;
 	}
 
-	public Long getGatewayId() {
-		return gatewayId;
+	public String getContractNo() {
+		return contractNo;
 	}
 
-	public void setGatewayId(Long gatewayId) {
-		this.gatewayId = gatewayId;
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
-	public String getSymbol() {
-		return symbol;
+	public String getContractName() {
+		return contractName;
 	}
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public FuturesExchange getExchange() {
-		return exchange;
-	}
-
-	public void setExchange(FuturesExchange exchange) {
-		this.exchange = exchange;
-	}
-
-	public Boolean getEnable() {
-		return enable;
-	}
-
-	public void setEnable(Boolean enable) {
-		this.enable = enable;
-	}
-
-	public Integer getMultiplier() {
-		return multiplier;
-	}
-
-	public void setMultiplier(Integer multiplier) {
-		this.multiplier = multiplier;
-	}
-
-	public BigDecimal getMinWave() {
-		return minWave;
-	}
-
-	public void setMinWave(BigDecimal minWave) {
-		this.minWave = minWave;
-	}
-
-	public BigDecimal getPerWaveMoney() {
-		return perWaveMoney;
-	}
-
-	public void setPerWaveMoney(BigDecimal perWaveMoney) {
-		this.perWaveMoney = perWaveMoney;
-	}
-
-	public BigDecimal getPerContractValue() {
-		return perContractValue;
-	}
-
-	public void setPerContractValue(BigDecimal perContractValue) {
-		this.perContractValue = perContractValue;
-	}
-
-	public BigDecimal getPerUnitReserveFund() {
-		return perUnitReserveFund;
-	}
-
-	public void setPerUnitReserveFund(BigDecimal perUnitReserveFund) {
-		this.perUnitReserveFund = perUnitReserveFund;
-	}
-
-	public BigDecimal getPerUnitUnwindPoint() {
-		return perUnitUnwindPoint;
-	}
-
-	public void setPerUnitUnwindPoint(BigDecimal perUnitUnwindPoint) {
-		this.perUnitUnwindPoint = perUnitUnwindPoint;
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
 	}
 
 	public BigDecimal getUserTotalLimit() {
@@ -293,129 +134,92 @@ public class FuturesContract {
 		this.perOrderLimit = perOrderLimit;
 	}
 
-	public BigDecimal getOpenwindServiceFee() {
-		return openwindServiceFee;
+	public FuturesCommodity getCommodity() {
+		return commodity;
 	}
 
-	public void setOpenwindServiceFee(BigDecimal openwindServiceFee) {
-		this.openwindServiceFee = openwindServiceFee;
+	public void setCommodity(FuturesCommodity commodity) {
+		this.commodity = commodity;
 	}
 
-	public BigDecimal getUnwindServiceFee() {
-		return unwindServiceFee;
+	public Date getFirstNoticeDate() {
+		return firstNoticeDate;
 	}
 
-	public void setUnwindServiceFee(BigDecimal unwindServiceFee) {
-		this.unwindServiceFee = unwindServiceFee;
+	public void setFirstNoticeDate(Date firstNoticeDate) {
+		this.firstNoticeDate = firstNoticeDate;
 	}
 
-	public String getOvernightTime() {
-		return overnightTime;
+	public Date getFirstPositonDate() {
+		return firstPositonDate;
 	}
 
-	public void setOvernightTime(String overnightTime) {
-		this.overnightTime = overnightTime;
+	public void setFirstPositonDate(Date firstPositonDate) {
+		this.firstPositonDate = firstPositonDate;
 	}
 
-	public BigDecimal getOvernightPerUnitReserveFund() {
-		return overnightPerUnitReserveFund;
+	public Date getLastTradingDate() {
+		return lastTradingDate;
 	}
 
-	public void setOvernightPerUnitReserveFund(BigDecimal overnightPerUnitReserveFund) {
-		this.overnightPerUnitReserveFund = overnightPerUnitReserveFund;
+	public void setLastTradingDate(Date lastTradingDate) {
+		this.lastTradingDate = lastTradingDate;
 	}
 
-	public BigDecimal getOvernightPerUnitDeferredFee() {
-		return overnightPerUnitDeferredFee;
+	public Date getExpirationDate() {
+		return expirationDate;
 	}
 
-	public void setOvernightPerUnitDeferredFee(BigDecimal overnightPerUnitDeferredFee) {
-		this.overnightPerUnitDeferredFee = overnightPerUnitDeferredFee;
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
 	}
 
-	public Integer getUnwindPointType() {
-		return unwindPointType;
+	public Date getForceUnwindDate() {
+		return forceUnwindDate;
 	}
 
-	public void setUnwindPointType(Integer unwindPointType) {
-		this.unwindPointType = unwindPointType;
+	public void setForceUnwindDate(Date forceUnwindDate) {
+		this.forceUnwindDate = forceUnwindDate;
 	}
 
-	public FuturesProductType getProductType() {
-		return productType;
+	public Boolean getMainForce() {
+		return mainForce;
 	}
 
-	public void setProductType(FuturesProductType productType) {
-		this.productType = productType;
+	public void setMainForce(Boolean mainForce) {
+		this.mainForce = mainForce;
 	}
 
-	public String getReturnOvernightReserveFundTime() {
-		return returnOvernightReserveFundTime;
+	public Boolean getEnable() {
+		return enable;
 	}
 
-	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
-		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
+	public void setEnable(Boolean enable) {
+		this.enable = enable;
 	}
 
-	public String getContractDesc() {
-		return contractDesc;
+	public Date getUpdateTime() {
+		return updateTime;
 	}
 
-	public void setContractDesc(String contractDesc) {
-		this.contractDesc = contractDesc;
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
-	public String getIcon() {
-		return icon;
+	public Boolean getAppContract() {
+		return appContract;
 	}
 
-	public void setIcon(String icon) {
-		this.icon = icon;
+	public void setAppContract(Boolean appContract) {
+		this.appContract = appContract;
 	}
 
-	public Set<FuturesPreQuantity> getPreQuantitySet() {
-		return preQuantitySet;
+	public Boolean getPcContract() {
+		return pcContract;
 	}
 
-	public void setPreQuantitySet(Set<FuturesPreQuantity> preQuantitySet) {
-		this.preQuantitySet = preQuantitySet;
-	}
-
-	public BigDecimal getCordon() {
-		return cordon;
-	}
-
-	public void setCordon(BigDecimal cordon) {
-		this.cordon = cordon;
-	}
-	public Long getExchangeId() {
-		if (exchange != null) {
-			return exchange.getId();
-		}
-		return exchangeId;
-	}
-
-	public void setExchangeId(Long exchangeId) {
-		this.exchangeId = exchangeId;
-	}
-
-	public String getExchangeName() {
-		if (exchange != null) {
-			return exchange.getName();
-		}
-		return exchangeName;
-	}
-
-	public void setExchangeName(String exchangeName) {
-		this.exchangeName = exchangeName;
-	}
-
-	public String getTradeUnit() {
-		return tradeUnit;
-	}
-
-	public void setTradeUnit(String tradeUnit) {
-		this.tradeUnit = tradeUnit;
+	public void setPcContract(Boolean pcContract) {
+		this.pcContract = pcContract;
 	}
 
 }

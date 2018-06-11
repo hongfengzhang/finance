@@ -35,8 +35,8 @@ import com.waben.stock.datalayer.futures.business.CapitalAccountBusiness;
 import com.waben.stock.datalayer.futures.business.CapitalFlowBusiness;
 import com.waben.stock.datalayer.futures.business.OutsideMessageBusiness;
 import com.waben.stock.datalayer.futures.business.PublisherBusiness;
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
-import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.entity.FuturesOvernightRecord;
 import com.waben.stock.datalayer.futures.entity.FuturesTradeLimit;
@@ -47,7 +47,6 @@ import com.waben.stock.datalayer.futures.rabbitmq.RabbitmqProducer;
 import com.waben.stock.datalayer.futures.rabbitmq.message.EntrustQueryMessage;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
-import com.waben.stock.datalayer.futures.repository.FuturesContractTermDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOrderDao;
 import com.waben.stock.datalayer.futures.repository.FuturesOvernightRecordDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
@@ -98,9 +97,6 @@ public class FuturesOrderService {
 
 	@Autowired
 	private FuturesCurrencyRateService rateService;
-
-	@Autowired
-	private FuturesContractTermDao termDao;
 
 	@Autowired
 	private FuturesOvernightRecordDao recordDao;
@@ -368,13 +364,6 @@ public class FuturesOrderService {
 		}
 		// step 3 : 获取期货合约和期货合约期限
 		FuturesContract contract = contractDao.retrieve(contractId);
-		FuturesContractTerm term = null;
-		List<FuturesContractTerm> termList = termDao.retrieveByContractAndCurrent(contract, true);
-		if (termList != null && termList.size() > 0) {
-			term = termList.get(0);
-		} else {
-			throw new ServiceException(ExceptionConstant.CONTRACTTERM_NOTAVAILABLE_EXCEPTION);
-		}
 		List<FuturesTradeLimit> limitList = futuresTradeLimitService.findByContractId(order.getContractId());
 		if (limitList != null && limitList.size() > 0) {
 			// 判断该交易在开仓时是否在后台设置的期货交易限制内
@@ -387,7 +376,6 @@ public class FuturesOrderService {
 		order.setUpdateTime(date);
 		order.setState(FuturesOrderState.Posted);
 		order.setContract(contract);
-		order.setContractTerm(term);
 		order = orderDao.create(order);
 		// step 5 : 扣去金额、冻结保证金
 		try {
@@ -660,8 +648,8 @@ public class FuturesOrderService {
 		}
 		// 盈亏（交易所货币）
 		BigDecimal currencyProfitOrLoss = computeProfitOrLoss(order.getOrderType(), order.getTotalQuantity(),
-				order.getBuyingPrice(), sellingPrice, order.getContract().getMinWave(),
-				order.getContract().getPerWaveMoney());
+				order.getBuyingPrice(), sellingPrice, order.getContract().getCommodity().getMinWave(),
+				order.getContract().getCommodity().getPerWaveMoney());
 		// 盈亏（人民币）
 		BigDecimal rate = rateService.findByCurrency(order.getContractCurrency()).getRate();
 		BigDecimal profitOrLoss = currencyProfitOrLoss.multiply(rate).setScale(2, RoundingMode.DOWN);
@@ -884,9 +872,8 @@ public class FuturesOrderService {
 		if (order == null) {
 			throw new ServiceException(ExceptionConstant.USER_ORDER_DOESNOT_EXIST_EXCEPTION);
 		}
-		FuturesContractTerm term = order.getContractTerm();
 		Integer timeZoneGap = this.retriveTimeZoneGap(order);
-		boolean isTradeTime = isTradeTime(timeZoneGap, term, new Date());
+		boolean isTradeTime = isTradeTime(timeZoneGap, order.getContract(), new Date());
 		if (!isTradeTime) {
 			throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
 		}
@@ -905,9 +892,8 @@ public class FuturesOrderService {
 		List<FuturesOrder> orderList = orderDao.retrieveByPublisherIdAndState(publisherId, FuturesOrderState.Position);
 		// 检查是否在交易时间段
 		for (FuturesOrder order : orderList) {
-			FuturesContractTerm term = order.getContractTerm();
 			Integer timeZoneGap = this.retriveTimeZoneGap(order);
-			boolean isTradeTime = isTradeTime(timeZoneGap, term, new Date());
+			boolean isTradeTime = isTradeTime(timeZoneGap, order.getContract(), new Date());
 			if (!isTradeTime) {
 				throw new ServiceException(ExceptionConstant.PARTCONTRACT_NOTINTRADETIME_EXCEPTION);
 			}
@@ -936,9 +922,9 @@ public class FuturesOrderService {
 		FuturesOrder backhandOrder = new FuturesOrder();
 		FuturesContract contract = order.getContract();
 		// 计算服务费和保证金
-		BigDecimal serviceFee = order.getTotalQuantity()
-				.multiply(contract.getOpenwindServiceFee().add(contract.getUnwindServiceFee()));
-		BigDecimal reserveFund = order.getTotalQuantity().multiply(contract.getPerUnitReserveFund());
+		BigDecimal serviceFee = order.getTotalQuantity().multiply(
+				contract.getCommodity().getOpenwindServiceFee().add(contract.getCommodity().getUnwindServiceFee()));
+		BigDecimal reserveFund = order.getTotalQuantity().multiply(contract.getCommodity().getPerUnitReserveFund());
 		// 初始化部分订单信息
 		backhandOrder.setPublisherId(order.getPublisherId());
 		backhandOrder.setOrderType(
@@ -946,15 +932,16 @@ public class FuturesOrderService {
 		backhandOrder.setTotalQuantity(order.getTotalQuantity());
 		backhandOrder.setReserveFund(reserveFund);
 		backhandOrder.setServiceFee(serviceFee);
-		backhandOrder.setContractSymbol(contract.getSymbol());
-		backhandOrder.setContractName(contract.getName());
-		backhandOrder.setContractCurrency(contract.getCurrency());
-		backhandOrder.setOpenwindServiceFee(contract.getOpenwindServiceFee());
-		backhandOrder.setUnwindServiceFee(contract.getUnwindServiceFee());
-		backhandOrder.setPerUnitUnwindPoint(contract.getPerUnitUnwindPoint());
-		backhandOrder.setUnwindPointType(contract.getUnwindPointType());
-		backhandOrder.setOvernightPerUnitReserveFund(contract.getOvernightPerUnitReserveFund());
-		backhandOrder.setOvernightPerUnitDeferredFee(contract.getOvernightPerUnitDeferredFee());
+		FuturesCommodity commodity = contract.getCommodity();
+		backhandOrder.setContractSymbol(commodity.getSymbol());
+		backhandOrder.setContractName(commodity.getName());
+		backhandOrder.setContractCurrency(commodity.getCurrency());
+		backhandOrder.setOpenwindServiceFee(commodity.getOpenwindServiceFee());
+		backhandOrder.setUnwindServiceFee(commodity.getUnwindServiceFee());
+		backhandOrder.setPerUnitUnwindPoint(commodity.getPerUnitUnwindPoint());
+		backhandOrder.setUnwindPointType(commodity.getUnwindPointType());
+		backhandOrder.setOvernightPerUnitReserveFund(commodity.getOvernightPerUnitReserveFund());
+		backhandOrder.setOvernightPerUnitDeferredFee(commodity.getOvernightPerUnitDeferredFee());
 		backhandOrder.setBuyingPriceType(FuturesTradePriceType.MKT);
 		// 获取是否为测试单
 		PublisherDto publisher = publisherBusiness.findById(order.getPublisherId());
@@ -969,9 +956,8 @@ public class FuturesOrderService {
 		if (order == null) {
 			throw new ServiceException(ExceptionConstant.USER_ORDER_DOESNOT_EXIST_EXCEPTION);
 		}
-		FuturesContractTerm term = order.getContractTerm();
 		Integer timeZoneGap = this.retriveTimeZoneGap(order);
-		boolean isTradeTime = isTradeTime(timeZoneGap, term, new Date());
+		boolean isTradeTime = isTradeTime(timeZoneGap, order.getContract(), new Date());
 		if (!isTradeTime) {
 			throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
 		}
@@ -983,8 +969,9 @@ public class FuturesOrderService {
 
 		// 判断账户余额是否足够支付反手买入的保证金和服务费
 		FuturesContract contract = order.getContract();
-		BigDecimal totalFee = order.getTotalQuantity().multiply(contract.getPerUnitReserveFund()
-				.add(contract.getOpenwindServiceFee()).add(contract.getUnwindServiceFee()));
+		FuturesCommodity commodity = contract.getCommodity();
+		BigDecimal totalFee = order.getTotalQuantity().multiply(commodity.getPerUnitReserveFund()
+				.add(commodity.getOpenwindServiceFee()).add(commodity.getUnwindServiceFee()));
 		CapitalAccountDto account = accountBusiness.fetchByPublisherId(order.getPublisherId());
 		if (account.getAvailableBalance().compareTo(totalFee) < 0) {
 			throw new ServiceException(ExceptionConstant.FUTURESORDER_BACKHAND_BALANCENOTENOUGH_EXCEPTION);
@@ -1002,7 +989,7 @@ public class FuturesOrderService {
 	 * @return 北京时间和交易所的时差
 	 */
 	public Integer retriveTimeZoneGap(FuturesOrder order) {
-		return order.getContract().getExchange().getTimeZoneGap();
+		return order.getContract().getCommodity().getExchange().getTimeZoneGap();
 	}
 
 	/**
@@ -1041,8 +1028,8 @@ public class FuturesOrderService {
 	 *            合约期限
 	 * @return 是否在交易时间
 	 */
-	public boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term) {
-		return isTradeTime(timeZoneGap, term, new Date());
+	public boolean isTradeTime(Integer timeZoneGap, FuturesContract contract) {
+		return isTradeTime(timeZoneGap, contract, new Date());
 	}
 
 	/**
@@ -1056,8 +1043,8 @@ public class FuturesOrderService {
 	 *            日期
 	 * @return 是否在交易时间
 	 */
-	public boolean isTradeTime(Integer timeZoneGap, FuturesContractTerm term, Date date) {
-		if (term != null) {
+	public boolean isTradeTime(Integer timeZoneGap, FuturesContract contract, Date date) {
+		if (contract != null) {
 			SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 			SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			Date exchangeTime = retriveExchangeTime(date, timeZoneGap);
@@ -1066,19 +1053,19 @@ public class FuturesOrderService {
 			int week = cal.get(Calendar.DAY_OF_WEEK);
 			String tradeTime = null;
 			if (week == 1) {
-				tradeTime = term.getSunTradeTime();
+				tradeTime = contract.getCommodity().getSunTradeTime();
 			} else if (week == 2) {
-				tradeTime = term.getMonTradeTime();
+				tradeTime = contract.getCommodity().getMonTradeTime();
 			} else if (week == 3) {
-				tradeTime = term.getTueTradeTime();
+				tradeTime = contract.getCommodity().getTueTradeTime();
 			} else if (week == 4) {
-				tradeTime = term.getWedTradeTime();
+				tradeTime = contract.getCommodity().getWedTradeTime();
 			} else if (week == 5) {
-				tradeTime = term.getThuTradeTime();
+				tradeTime = contract.getCommodity().getThuTradeTime();
 			} else if (week == 6) {
-				tradeTime = term.getFriTradeTime();
+				tradeTime = contract.getCommodity().getFriTradeTime();
 			} else if (week == 7) {
-				tradeTime = term.getSatTradeTime();
+				tradeTime = contract.getCommodity().getSatTradeTime();
 			}
 			if (!StringUtil.isEmpty(tradeTime)) {
 				String[] tradeTimeArr = tradeTime.split(",");
@@ -1109,14 +1096,14 @@ public class FuturesOrderService {
 		if (order.getState() == FuturesOrderState.Unwind) {
 			throw new ServiceException(ExceptionConstant.ORDER_HAS_BEEN_CLOSED_EXCEPTION);
 		}
-//		if (limitProfitType != null && perUnitLimitProfitAmount != null) {
-			order.setLimitProfitType(limitProfitType);
-			order.setPerUnitLimitProfitAmount(perUnitLimitProfitAmount);
-//		}
-//		if (limitLossType != null && perUnitLimitLossAmount != null) {
-			order.setLimitLossType(limitLossType);
-			order.setPerUnitLimitLossAmount(perUnitLimitLossAmount);
-//		}
+		// if (limitProfitType != null && perUnitLimitProfitAmount != null) {
+		order.setLimitProfitType(limitProfitType);
+		order.setPerUnitLimitProfitAmount(perUnitLimitProfitAmount);
+		// }
+		// if (limitLossType != null && perUnitLimitLossAmount != null) {
+		order.setLimitLossType(limitLossType);
+		order.setPerUnitLimitLossAmount(perUnitLimitLossAmount);
+		// }
 		orderDao.update(order);
 		return order;
 	}

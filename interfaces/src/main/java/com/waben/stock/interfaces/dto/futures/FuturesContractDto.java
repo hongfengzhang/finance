@@ -1,145 +1,87 @@
 package com.waben.stock.interfaces.dto.futures;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.Set;
-import java.util.TreeSet;
-
-import com.waben.stock.interfaces.enums.FuturesProductType;
+import java.util.Date;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class FuturesContractDto {
+public class FuturesContractDto extends FuturesCommodityDto {
 
 	private Long id;
 	/**
-	 * 对应的网关合约ID
+	 * 合约编号
 	 */
-	private Long gatewayId;
-	/**
-	 * 合约代码
-	 */
-	@ApiModelProperty(value = "合约代码")
-	private String symbol;
+	private String contractNo;
 	/**
 	 * 合约名称
 	 */
-	@ApiModelProperty(value = "合约名称")
-	private String name;
+	private String contractName;
 	/**
-	 * 货币
+	 * 该合约总计的可使用的额度（手）
+	 * 
+	 * <p>
+	 * 需将所有未平仓的订单量相加，买涨的为正数，买跌的为负数，相加结果取绝对值再和这个总额度比较
+	 * </p>
 	 */
-	@ApiModelProperty(value = "货币")
-	private String currency;
-	/**
-	 * 货币名称
-	 */
-	@ApiModelProperty(value = "货币名称")
-	private String currencyName;
-	/**
-	 * 交易单位
-	 */
-	@ApiModelProperty(value = "交易单位")
-	private String tradeUnit;
-	/**
-	 * 货币符号，如“$”,表示美元
-	 */
-	@ApiModelProperty(value = "货币符号，如“$”,表示美元")
-	private String currencySign;
-	/**
-	 * 汇率
-	 */
-	@ApiModelProperty(value = "汇率")
-	private BigDecimal rate;
-	/**
-	 * 品种分类
-	 */
-	@ApiModelProperty(value = "品种分类")
-	private FuturesProductType productType;
-	/**
-	 * 乘数（1手等于多少股）
-	 */
-	@ApiModelProperty(value = "乘数（1手等于多少股）")
-	private Integer multiplier;
-	/**
-	 * 最小波动
-	 */
-	@ApiModelProperty(value = "最小波动")
-	private BigDecimal minWave;
-	/**
-	 * 波动一次盈亏金额，单位为该合约的货币单位
-	 */
-	@ApiModelProperty(value = "波动一次盈亏金额，单位为该合约的货币单位")
-	private BigDecimal perWaveMoney;
-	/**
-	 * 一手保证金
-	 */
-	@ApiModelProperty(value = "一手保证金")
-	private BigDecimal perUnitReserveFund;
-	/**
-	 * 一手强平点（亏损到剩余）
-	 */
-	@ApiModelProperty(value = "强平点（亏损到剩余）")
-	private BigDecimal perUnitUnwindPoint;
-	/**
-	 * 强平点类型
-	 * <ul>
-	 * <li>1比例</li>
-	 * <li>2金额</li>
-	 * </ul>
-	 */
-	@ApiModelProperty(value = "强平点类型")
-	private Integer unwindPointType;
-	/**
-	 * 用户最大持仓数
-	 */
-	@ApiModelProperty(value = "用户最大持仓数")
 	private BigDecimal userTotalLimit;
 	/**
 	 * 单笔订单额度限制（手）
 	 */
-	@ApiModelProperty(value = "单笔订单额度限制（手）")
 	private BigDecimal perOrderLimit;
 	/**
-	 * 开仓手续费（人民币）
+	 * The first day on which a notice of intent to deliver a commodity can be
+	 * made by a clearinghouse to a buyer in order to fulfill a given futures
+	 * contract
 	 */
-	@ApiModelProperty(value = "开仓手续费（人民币）")
-	private BigDecimal openwindServiceFee;
+	private Date firstNoticeDate;
 	/**
-	 * 平仓手续费（人民币）
+	 * The first day when an invesor who is short a commodify futures contract
+	 * may notify the clearinghouse of the intention to deliver the commodity
 	 */
-	@ApiModelProperty(value = "平仓手续费（人民币）")
-	private BigDecimal unwindServiceFee;
+	private Date firstPositonDate;
 	/**
-	 * 隔夜时间
+	 * 最后交易日
 	 */
-	@ApiModelProperty(value = "隔夜时间")
-	private String overnightTime;
+	private Date lastTradingDate;
 	/**
-	 * 一手隔夜保证金
+	 * 到期日期
 	 */
-	@ApiModelProperty(value = "一手隔夜保证金")
-	private BigDecimal overnightPerUnitReserveFund;
+	private Date expirationDate;
 	/**
-	 * 一手隔夜递延费
+	 * 强平时间
 	 */
-	@ApiModelProperty(value = "一手隔夜递延费")
-	private BigDecimal overnightPerUnitDeferredFee;
+	private Date forceUnwindDate;
+	/**
+	 * 是否主力合约
+	 */
+	private Boolean mainForce;
 	/**
 	 * 是否可用
 	 */
 	private Boolean enable;
 	/**
+	 * 是否app合约
+	 */
+	private Boolean appContract;
+	/**
+	 * 是否pc合约
+	 */
+	private Boolean pcContract;
+	/**
+	 * 更新时间
+	 */
+	private Date updateTime;
+
+	/*********************** 一些额外的属性 ***********************/
+
+	/**
 	 * 期货合约状态
 	 * 
-	 * <p>
-	 * 1 交易中
-	 * </p>
-	 * <p>
-	 * 2 休市中
-	 * </p>
-	 * <p>
-	 * 3 异常
+	 * <ul>
+	 * <li>1 交易中</li>
+	 * <li>2 休市中</li>
+	 * <li>3 异常</li>
+	 * </ul>
 	 * </p>
 	 */
 	@ApiModelProperty(value = "期货合约状态,1 交易中;2 休市中;3 异常")
@@ -160,6 +102,21 @@ public class FuturesContractDto {
 	@ApiModelProperty(value = "北京时间的时差和交易所")
 	private Integer timeZoneGap;
 	/**
+	 * 汇率
+	 */
+	@ApiModelProperty(value = "汇率")
+	private BigDecimal rate;
+	/**
+	 * 货币名称
+	 */
+	@ApiModelProperty(value = "货币名称")
+	private String currencyName;
+	/**
+	 * 货币符号，如“$”,表示美元
+	 */
+	@ApiModelProperty(value = "货币符号，如“$”,表示美元")
+	private String currencySign;
+	/**
 	 * 本时段持仓最后时间
 	 */
 	@ApiModelProperty(value = "本时段持仓最后时间")
@@ -169,27 +126,6 @@ public class FuturesContractDto {
 	 */
 	@ApiModelProperty(value = "下一个交易时间")
 	private String nextTradingTime;
-	/**
-	 * 交易所ID
-	 */
-	@ApiModelProperty(value = "交易所ID")
-	private Long exchangeId;
-	/**
-	 * 交易所名称
-	 */
-	@ApiModelProperty(value = "交易所名称")
-	private String exchangeName;
-	/**
-	 * 预设置的手数列表
-	 */
-	@ApiModelProperty(value = "预设置的手数列表")
-	private Set<FuturesPreQuantityDto> preQuantitySet;
-
-	/**
-	 * 图标
-	 */
-	@ApiModelProperty(value = "图标")
-	private String icon;
 
 	public Long getId() {
 		return id;
@@ -199,100 +135,20 @@ public class FuturesContractDto {
 		this.id = id;
 	}
 
-	public Long getGatewayId() {
-		return gatewayId;
+	public String getContractNo() {
+		return contractNo;
 	}
 
-	public void setGatewayId(Long gatewayId) {
-		this.gatewayId = gatewayId;
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
-	public String getSymbol() {
-		return symbol;
+	public String getContractName() {
+		return contractName;
 	}
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getCurrency() {
-		return currency;
-	}
-
-	public void setCurrency(String currency) {
-		this.currency = currency;
-	}
-
-	public String getCurrencyName() {
-		return currencyName;
-	}
-
-	public void setCurrencyName(String currencyName) {
-		this.currencyName = currencyName;
-	}
-
-	public BigDecimal getRate() {
-		return rate;
-	}
-
-	public void setRate(BigDecimal rate) {
-		this.rate = rate;
-	}
-
-	public Integer getMultiplier() {
-		return multiplier;
-	}
-
-	public void setMultiplier(Integer multiplier) {
-		this.multiplier = multiplier;
-	}
-
-	public BigDecimal getMinWave() {
-		return minWave;
-	}
-
-	public void setMinWave(BigDecimal minWave) {
-		this.minWave = minWave;
-	}
-
-	public BigDecimal getPerWaveMoney() {
-		return perWaveMoney;
-	}
-
-	public void setPerWaveMoney(BigDecimal perWaveMoney) {
-		this.perWaveMoney = perWaveMoney;
-	}
-
-	public BigDecimal getPerUnitReserveFund() {
-		return perUnitReserveFund;
-	}
-
-	public void setPerUnitReserveFund(BigDecimal perUnitReserveFund) {
-		this.perUnitReserveFund = perUnitReserveFund;
-	}
-
-	public BigDecimal getPerUnitUnwindPoint() {
-		return perUnitUnwindPoint;
-	}
-
-	public void setPerUnitUnwindPoint(BigDecimal perUnitUnwindPoint) {
-		this.perUnitUnwindPoint = perUnitUnwindPoint;
-	}
-
-	public Integer getUnwindPointType() {
-		return unwindPointType;
-	}
-
-	public void setUnwindPointType(Integer unwindPointType) {
-		this.unwindPointType = unwindPointType;
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
 	}
 
 	public BigDecimal getUserTotalLimit() {
@@ -311,44 +167,52 @@ public class FuturesContractDto {
 		this.perOrderLimit = perOrderLimit;
 	}
 
-	public BigDecimal getOpenwindServiceFee() {
-		return openwindServiceFee;
+	public Date getFirstNoticeDate() {
+		return firstNoticeDate;
 	}
 
-	public void setOpenwindServiceFee(BigDecimal openwindServiceFee) {
-		this.openwindServiceFee = openwindServiceFee;
+	public void setFirstNoticeDate(Date firstNoticeDate) {
+		this.firstNoticeDate = firstNoticeDate;
 	}
 
-	public BigDecimal getUnwindServiceFee() {
-		return unwindServiceFee;
+	public Date getFirstPositonDate() {
+		return firstPositonDate;
 	}
 
-	public void setUnwindServiceFee(BigDecimal unwindServiceFee) {
-		this.unwindServiceFee = unwindServiceFee;
+	public void setFirstPositonDate(Date firstPositonDate) {
+		this.firstPositonDate = firstPositonDate;
 	}
 
-	public String getOvernightTime() {
-		return overnightTime;
+	public Date getLastTradingDate() {
+		return lastTradingDate;
 	}
 
-	public void setOvernightTime(String overnightTime) {
-		this.overnightTime = overnightTime;
+	public void setLastTradingDate(Date lastTradingDate) {
+		this.lastTradingDate = lastTradingDate;
 	}
 
-	public BigDecimal getOvernightPerUnitReserveFund() {
-		return overnightPerUnitReserveFund;
+	public Date getExpirationDate() {
+		return expirationDate;
 	}
 
-	public void setOvernightPerUnitReserveFund(BigDecimal overnightPerUnitReserveFund) {
-		this.overnightPerUnitReserveFund = overnightPerUnitReserveFund;
+	public void setExpirationDate(Date expirationDate) {
+		this.expirationDate = expirationDate;
 	}
 
-	public BigDecimal getOvernightPerUnitDeferredFee() {
-		return overnightPerUnitDeferredFee;
+	public Date getForceUnwindDate() {
+		return forceUnwindDate;
 	}
 
-	public void setOvernightPerUnitDeferredFee(BigDecimal overnightPerUnitDeferredFee) {
-		this.overnightPerUnitDeferredFee = overnightPerUnitDeferredFee;
+	public void setForceUnwindDate(Date forceUnwindDate) {
+		this.forceUnwindDate = forceUnwindDate;
+	}
+
+	public Boolean getMainForce() {
+		return mainForce;
+	}
+
+	public void setMainForce(Boolean mainForce) {
+		this.mainForce = mainForce;
 	}
 
 	public Boolean getEnable() {
@@ -357,6 +221,30 @@ public class FuturesContractDto {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public Boolean getAppContract() {
+		return appContract;
+	}
+
+	public void setAppContract(Boolean appContract) {
+		this.appContract = appContract;
+	}
+
+	public Boolean getPcContract() {
+		return pcContract;
+	}
+
+	public void setPcContract(Boolean pcContract) {
+		this.pcContract = pcContract;
+	}
+
+	public Date getUpdateTime() {
+		return updateTime;
+	}
+
+	public void setUpdateTime(Date updateTime) {
+		this.updateTime = updateTime;
 	}
 
 	public Integer getState() {
@@ -391,12 +279,28 @@ public class FuturesContractDto {
 		this.timeZoneGap = timeZoneGap;
 	}
 
-	public FuturesProductType getProductType() {
-		return productType;
+	public BigDecimal getRate() {
+		return rate;
 	}
 
-	public void setProductType(FuturesProductType productType) {
-		this.productType = productType;
+	public void setRate(BigDecimal rate) {
+		this.rate = rate;
+	}
+
+	public String getCurrencyName() {
+		return currencyName;
+	}
+
+	public void setCurrencyName(String currencyName) {
+		this.currencyName = currencyName;
+	}
+
+	public String getCurrencySign() {
+		return currencySign;
+	}
+
+	public void setCurrencySign(String currencySign) {
+		this.currencySign = currencySign;
 	}
 
 	public String getCurrentHoldingTime() {
@@ -413,63 +317,6 @@ public class FuturesContractDto {
 
 	public void setNextTradingTime(String nextTradingTime) {
 		this.nextTradingTime = nextTradingTime;
-	}
-
-	public Long getExchangeId() {
-		return exchangeId;
-	}
-
-	public void setExchangeId(Long exchangeId) {
-		this.exchangeId = exchangeId;
-	}
-
-	public String getTradeUnit() {
-		return tradeUnit;
-	}
-
-	public void setTradeUnit(String tradeUnit) {
-		this.tradeUnit = tradeUnit;
-	}
-
-	public String getExchangeName() {
-		return exchangeName;
-	}
-
-	public void setExchangeName(String exchangeName) {
-		this.exchangeName = exchangeName;
-	}
-
-	public Set<FuturesPreQuantityDto> getPreQuantitySet() {
-		if (preQuantitySet != null && preQuantitySet.size() > 0) {
-			Object obj = preQuantitySet.iterator().next();
-			if (obj instanceof FuturesPreQuantityDto) {
-				TreeSet<FuturesPreQuantityDto> result = new TreeSet<>();
-				result.addAll(preQuantitySet);
-				Collections.checkedSortedSet(result, FuturesPreQuantityDto.class);
-				return result;
-			}
-		}
-		return preQuantitySet;
-	}
-
-	public void setPreQuantitySet(Set<FuturesPreQuantityDto> preQuantitySet) {
-		this.preQuantitySet = preQuantitySet;
-	}
-
-	public String getCurrencySign() {
-		return currencySign;
-	}
-
-	public void setCurrencySign(String currencySign) {
-		this.currencySign = currencySign;
-	}
-
-	public String getIcon() {
-		return icon;
-	}
-
-	public void setIcon(String icon) {
-		this.icon = icon;
 	}
 
 }

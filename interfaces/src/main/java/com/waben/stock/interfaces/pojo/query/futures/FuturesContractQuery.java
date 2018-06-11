@@ -15,6 +15,12 @@ public class FuturesContractQuery extends PageAndSortQuery {
 	@ApiModelProperty(value = "合约代码")
 	private String symbol;
 
+	@ApiModelProperty(value = "是否app合约")
+	private Boolean appContract;
+
+	@ApiModelProperty(value = "是否pc合约")
+	private Boolean pcContract;
+
 	public FuturesContractQuery() {
 		super();
 	}
@@ -47,6 +53,22 @@ public class FuturesContractQuery extends PageAndSortQuery {
 
 	public void setSymbol(String symbol) {
 		this.symbol = symbol;
+	}
+
+	public Boolean getAppContract() {
+		return appContract;
+	}
+
+	public void setAppContract(Boolean appContract) {
+		this.appContract = appContract;
+	}
+
+	public Boolean getPcContract() {
+		return pcContract;
+	}
+
+	public void setPcContract(Boolean pcContract) {
+		this.pcContract = pcContract;
 	}
 
 }
