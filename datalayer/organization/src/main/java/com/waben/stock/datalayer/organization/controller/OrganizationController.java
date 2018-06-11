@@ -234,4 +234,9 @@ public class OrganizationController implements OrganizationInterface {
 				organizationService.getListByFuturesAgentPrice(orgId), FuturesAgentPriceDto.class));
 	}
 
+	@Override
+	public Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto) {
+		return new Response<>(organizationService.saveFuturesAgentPrice(futuresAgentPricedto));
+	}
+
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.baomidou.mybatisplus.plugins.Page;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
@@ -374,7 +375,7 @@ public class FuturesOrderController {
 		orderQuery.setOrderId(orderId);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		PageInfo<FuturesOrderMarketDto> withMarketPage = futuresOrderBusiness.pageOrderMarket(orderQuery);
-		if(withMarketPage.getContent().size() > 0) {
+		if (withMarketPage.getContent().size() > 0) {
 			return new Response<>(withMarketPage.getContent().get(0));
 		} else {
 			return new Response<>();
@@ -435,6 +436,20 @@ public class FuturesOrderController {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+	}
+
+	@GetMapping("/transaction/dynamics")
+	@ApiOperation(value = "获取交易动态")
+	public Response<PageInfo<FuturesOrderMarketDto>> transactionDynamics(int page, int size) {
+		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
+		FuturesOrderState[] states = { FuturesOrderState.BuyingCanceled, FuturesOrderState.BuyingFailure,
+				FuturesOrderState.Unwind, FuturesOrderState.Position };
+		orderQuery.setStates(states);
+		orderQuery.setPage(page);
+		orderQuery.setSize(size);
+		orderQuery.setPublisherId(SecurityUtil.getUserId());
+		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
+
 	}
 
 	@GetMapping(value = "/export")
