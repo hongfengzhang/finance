@@ -60,6 +60,7 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/publisherOrg/{publisherId}/{orgCode}", method = RequestMethod.POST)
+	@ApiOperation(value = "添加客户信息")
 	public Response<String> setPublisherOrg(@PathVariable("publisherId") Long publisherId,
 			@PathVariable("orgCode") String orgCode) {
 		orgPublisherBusiness.addOrgPublisher(publisherId, orgCode);

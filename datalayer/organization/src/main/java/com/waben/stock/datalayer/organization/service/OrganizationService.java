@@ -35,6 +35,7 @@ import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.repository.SettlementMethodDao;
 import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TradingFowDto;
@@ -77,8 +78,8 @@ public class OrganizationService {
 	@Autowired
 	private SettlementMethodDao settlementMethodDao;
 
-//	@Autowired
-//	private StockOptionTradeBusiness tradeBusiness;
+	// @Autowired
+	// private StockOptionTradeBusiness tradeBusiness;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -105,25 +106,24 @@ public class OrganizationService {
 		if (checkName != null && checkName.size() > 0) {
 			throw new ServiceException(ExceptionConstant.ORGNAME_EXIST_EXCEPTION);
 		}
-		// 生成机构代码
-		// List<Organization> childList =
-		// organizationDao.listByParentOrderByCodeDesc(parent);
-		// String code = parent.getCode();
-		// if (childList != null && childList.size() > 0) {
-		// Organization max = childList.get(0);
-		// String suffix = max.getCode().substring(code.length());
-		// Long seria = Long.parseLong(suffix) + 1;
-		// String seriaStr = seria.toString();
-		// if (seriaStr.length() < suffix.length()) {
-		// int lack = suffix.length() - seriaStr.length();
-		// for (int i = 0; i < lack; i++) {
-		// seriaStr = "0" + seriaStr;
-		// }
-		// }
-		// code += seriaStr;
-		// } else {
-		// code += "001";
-		// }
+		// 生成树结构代码
+		List<Organization> childList = organizationDao.listByParentOrderByCodeDesc(parent);
+		String treeCode = parent.getCode();
+		if (childList != null && childList.size() > 0) {
+			Organization max = childList.get(0);
+			String suffix = max.getCode().substring(treeCode.length());
+			Long seria = Long.parseLong(suffix) + 1;
+			String seriaStr = seria.toString();
+			if (seriaStr.length() < suffix.length()) {
+				int lack = suffix.length() - seriaStr.length();
+				for (int i = 0; i < lack; i++) {
+					seriaStr = "0" + seriaStr;
+				}
+			}
+			treeCode += seriaStr;
+		} else {
+			treeCode += "001";
+		}
 		// 生成机构代码
 		Organization newest = organizationDao.getNewestOrg();
 		Integer currentIndex = 0;
@@ -151,6 +151,7 @@ public class OrganizationService {
 		// 保存机构
 		Organization org = new Organization();
 		org.setCode(code);
+		org.setTreeCode(treeCode);
 		org.setCreateTime(new Date());
 		org.setLevel(level);
 		org.setName(orgForm.getName());
@@ -355,12 +356,13 @@ public class OrganizationService {
 		if (settlementType != null) {
 			SettlementMethod smethod = new SettlementMethod();
 			List<SettlementMethod> menthod = settlementMethodDao.list();
-//			if (menthod.get(0).getSettlementType() != settlementType) {
-//				Integer count = tradeBusiness.countStockOptionTradeState();
-//				if (count > 0) {
-//					throw new ServiceException(ExceptionConstant.SETTLEMENT_METHOD_EXCEPITON);
-//				}
-//			}
+			// if (menthod.get(0).getSettlementType() != settlementType) {
+			// Integer count = tradeBusiness.countStockOptionTradeState();
+			// if (count > 0) {
+			// throw new
+			// ServiceException(ExceptionConstant.SETTLEMENT_METHOD_EXCEPITON);
+			// }
+			// }
 			if (menthod != null && menthod.size() > 0) {
 				smethod = menthod.get(0);
 			}
@@ -511,16 +513,13 @@ public class OrganizationService {
 			orgNameCondition = " and t4.name like '%" + query.getOrgName() + "%' ";
 		}
 		String sql = String.format(
-				"select t4.id, t4.parent_id, t4.code, t4.name, t4.level, t4.state, t4.create_time, t5.promotion_count, IF(t6.pid is null, 0, t6.children_count) as children_count, IFNULL(t7.available_balance, 0) as available_balance, t8.name as bind_name, t8.phone as bing_phone, (SELECT settlement_type FROM settlement_method LIMIT 1) AS ws_type, t4.bill_charge from p_organization t4 "
+				"select t4.id, t4.parent_id, t4.tree_code, t4.name, t4.level, t4.state, t4.create_time, t5.promotion_count,  "
+						+ "IF(t6.pid is null, 0, t6.children_count) as children_count, IFNULL(t7.available_balance, 0) as available_balance, t8.name as bind_name, t8.phone as bing_phone "
+						+ "from p_organization t4 LEFT JOIN "
+						+ "(select t1.id, IF(t2.id is null, 0, count(t1.id)) as promotion_count from p_organization t1 LEFT JOIN p_organization_publisher t2 on t2.tree_code LIKE CONCAT(t1.tree_code, '%%') group by t1.id) as t5 on t4.id=t5.id  "
 						+ "LEFT JOIN "
-						+ "(select t0.id, sum(t3.promotion_count) as promotion_count from p_organization t0, "
-						+ "(select t1.id, t1.parent_id, IF(t2.id is null, 0, count(t1.id)) as promotion_count from p_organization t1 "
-						+ "LEFT JOIN p_organization_publisher t2 on t1.code=t2.org_code group by t1.id) t3 where t0.level=1 or (t0.level>1 and (t0.id=t3.id or t0.id=t3.parent_id)) group by t0.id) as t5 on t4.id=t5.id "
-						+ "LEFT JOIN "
-						+ "((select parent_id as pid, count(parent_id) as children_count from p_organization where parent_id is not null group by parent_id having pid!=1) "
-						+ "union all "
-						+ "(select 1 as pid, (count(*)-1) as children_count from p_organization)) as t6 on t4.id=t6.pid "
-						+ "LEFT JOIN p_organization_account t7 on t4.id=t7.org_id "
+						+ "(select t1.id AS pid, (count(t2.id)-1) as children_count from p_organization t1 LEFT JOIN p_organization t2 on t2.tree_code like CONCAT(t1.tree_code, '%%') GROUP BY t1.id) as t6 on t4.id=t6.pid "
+						+ "LEFT JOIN p_organization_account t7 on t4.id=t7.org_id  "
 						+ "LEFT JOIN bind_card t8 on t8.resource_type=2 and t8.resource_id=t4.id "
 						+ "where 1=1 %s %s %s order by t4.level desc, t4.create_time asc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
@@ -622,6 +621,29 @@ public class OrganizationService {
 
 	public List<Organization> findAll() {
 		return organizationDao.list();
+	}
+
+	public List<FuturesAgentPriceDto> getListByFuturesAgentPrice(Long orgId) {
+		String sql = String
+				.format("SELECT c2.id, c1.symbol, c1.name, c2.cost_reserve_fund, c2.cost_openwind_service_fee,c2.cost_unwind_service_fee,c2.cost_deferred_fee,c2.sale_openwind_service_fee,c2.sale_unwind_service_fee,c2.sale_deferred_fee FROM f_futures_contract c1 LEFT JOIN p_futures_agent_price c2 on c1.id = c2.contract_id AND c2.org_id="
+						+ orgId);
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setSymbol", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setContractName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setCostReserveFund", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(4),
+				new MethodDesc("setCostOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(5),
+				new MethodDesc("setCostUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(6), new MethodDesc("setCostDeferredFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(7),
+				new MethodDesc("setSaleOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(8),
+				new MethodDesc("setSaleUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setSaleDeferredFee", new Class<?>[] { BigDecimal.class }));
+		List<FuturesAgentPriceDto> content = sqlDao.execute(FuturesAgentPriceDto.class, sql, setMethodMap);
+		return content;
 	}
 
 }

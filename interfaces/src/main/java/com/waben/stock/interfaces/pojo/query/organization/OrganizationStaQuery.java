@@ -11,7 +11,7 @@ import com.waben.stock.interfaces.pojo.query.PageAndSortQuery;
 public class OrganizationStaQuery extends PageAndSortQuery {
 
 	/**
-	 * 当前用户ID
+	 * 代理商ID
 	 */
 	private Long currentOrgId;
 	/**
