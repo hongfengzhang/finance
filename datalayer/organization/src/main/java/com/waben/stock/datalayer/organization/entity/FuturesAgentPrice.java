@@ -54,7 +54,7 @@ public class FuturesAgentPrice {
 	 */
 	private BigDecimal saleUnwindServiceFee;
 	/**
-	 * 一手隔夜递延费（销售价格，一手）
+	 * 递延费（销售价格，一手）
 	 */
 	private BigDecimal saleDeferredFee;
 

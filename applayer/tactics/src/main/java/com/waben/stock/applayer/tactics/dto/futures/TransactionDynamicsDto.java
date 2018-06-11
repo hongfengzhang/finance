@@ -1,7 +1,6 @@
 package com.waben.stock.applayer.tactics.dto.futures;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 
@@ -20,6 +19,9 @@ public class TransactionDynamicsDto {
 
 	@ApiModelProperty(value = "手机号")
 	private String phone;
+
+	@ApiModelProperty(value = "合约ID")
+	private Long contractId;
 
 	@ApiModelProperty(value = "合约代码")
 	private String contractSymbol;
@@ -101,6 +103,14 @@ public class TransactionDynamicsDto {
 
 	public void setTotalQuantity(BigDecimal totalQuantity) {
 		this.totalQuantity = totalQuantity;
+	}
+
+	public Long getContractId() {
+		return contractId;
+	}
+
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
 	}
 
 }

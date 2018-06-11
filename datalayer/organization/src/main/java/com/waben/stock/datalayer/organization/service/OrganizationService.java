@@ -662,6 +662,46 @@ public class OrganizationService {
 		if (futuresAgentPrice != null && futuresAgentPrice.size() > 0) {
 			for (FuturesAgentPrice agentPrice : futuresAgentPrice) {
 				FuturesContractDto contractDto = agentPriceBusiness.getFuturesContractDto(agentPrice.getContractId());
+				if (agentPrice.getCostReserveFund().compareTo(contractDto.getPerUnitReserveFund()) < 0) {
+					// 成本保证金不能比全局设置的低
+					throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostOpenwindServiceFee().compareTo(contractDto.getOpenwindServiceFee()) < 0) {
+					// 成本开仓手续费不能比全局设置的低
+					throw new ServiceException(
+							ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostOpenwindServiceFee().compareTo(agentPrice.getSaleOpenwindServiceFee()) > 0) {
+					// 销售开仓手续费不能比成本开仓手续费的低
+					throw new ServiceException(
+							ExceptionConstant.SALES_OPENINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostUnwindServiceFee().compareTo(contractDto.getUnwindServiceFee()) < 0) {
+					// 成本平仓手续费不能比全局设置的低
+					throw new ServiceException(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostUnwindServiceFee().compareTo(agentPrice.getSaleUnwindServiceFee()) > 0) {
+					// 销售平仓手续费不能比成本开仓手续费的低
+					throw new ServiceException(
+							ExceptionConstant.SALES_CLOSINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostDeferredFee().compareTo(contractDto.getOvernightPerUnitDeferredFee()) < 0) {
+					// 成本递延费不能比全局设置的低
+					throw new ServiceException(
+							ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+							contractDto.getName());
+				}
+				if (agentPrice.getCostDeferredFee().compareTo(agentPrice.getSaleDeferredFee()) > 0) {
+					// 销售递延费不能比成本递延费的低
+					throw new ServiceException(
+							ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
+							contractDto.getName());
+				}
 				agentPriceDao.create(agentPrice);
 			}
 			return 1;
