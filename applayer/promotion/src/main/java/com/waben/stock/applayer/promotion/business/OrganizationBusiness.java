@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.interfaces.dto.manage.RoleDto;
+import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
@@ -97,7 +98,6 @@ public class OrganizationBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
-
 	public OrganizationDto findByCode(String code) {
 		Response<OrganizationDto> response = reference.fetchByCode(code);
 		if ("200".equals(response.getCode())) {
@@ -137,7 +137,7 @@ public class OrganizationBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
+
 	public List<OrganizationDto> findAll() {
 		Response<List<OrganizationDto>> response = reference.fetchAll();
 		if ("200".equals(response.getCode())) {
@@ -145,9 +145,17 @@ public class OrganizationBusiness {
 		}
 		throw new ServiceException(response.getCode());
 	}
-	
+
 	public OrganizationDto findByOrgId(Long orgId) {
 		Response<OrganizationDto> response = reference.fetchByOrgId(orgId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public List<FuturesAgentPriceDto> getListByFuturesAgentPrice(Long orgId) {
+		Response<List<FuturesAgentPriceDto>> response = reference.getListByFuturesAgentPrice(orgId);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

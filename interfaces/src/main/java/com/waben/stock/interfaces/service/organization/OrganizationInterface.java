@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
@@ -25,7 +26,7 @@ import com.waben.stock.interfaces.pojo.query.organization.OrganizationStaQuery;
 import com.waben.stock.interfaces.pojo.query.organization.TradingFowQuery;
 
 /**
- * 机构 reference服务接口
+ * 代理商服务接口
  *
  * @author luomengan
  */
@@ -176,4 +177,20 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/organization/orgId", method = RequestMethod.GET)
 	Response<OrganizationDto> fetchByOrgId(@RequestParam("id") Long id);
+
+	/**
+	 * 获取所有期货代理价格数据
+	 * 
+	 * @return 所有期货代理价格数据
+	 */
+	@RequestMapping(value = "/futures/agent/price/{orgId}", method = RequestMethod.GET)
+	Response<List<FuturesAgentPriceDto>> getListByFuturesAgentPrice(@PathVariable("orgId") Long orgId);
+
+	/**
+	 * 
+	 * @param futuresAgentPricedto
+	 * @return
+	 */
+	@RequestMapping(value = "/save/agent/price", method = RequestMethod.POST)
+	Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto);
 }

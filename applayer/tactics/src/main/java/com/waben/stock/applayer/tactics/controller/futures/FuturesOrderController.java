@@ -29,6 +29,7 @@ import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderMarketDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderProfitDto;
+import com.waben.stock.applayer.tactics.dto.futures.TransactionDynamicsDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -374,7 +375,7 @@ public class FuturesOrderController {
 		orderQuery.setOrderId(orderId);
 		orderQuery.setPublisherId(SecurityUtil.getUserId());
 		PageInfo<FuturesOrderMarketDto> withMarketPage = futuresOrderBusiness.pageOrderMarket(orderQuery);
-		if(withMarketPage.getContent().size() > 0) {
+		if (withMarketPage.getContent().size() > 0) {
 			return new Response<>(withMarketPage.getContent().get(0));
 		} else {
 			return new Response<>();
@@ -435,6 +436,13 @@ public class FuturesOrderController {
 			totalIncome = totalIncome.add(futuresOrderMarketDto.getPublisherProfitOrLoss());
 		}
 		return new Response<>(totalIncome.setScale(2, RoundingMode.DOWN));
+	}
+
+	@GetMapping("/transaction/dynamics")
+	@ApiOperation(value = "获取交易动态")
+	public Response<PageInfo<TransactionDynamicsDto>> transactionDynamics(int page, int size) {
+		return new Response<>(futuresOrderBusiness.transactionDynamics(page, size));
+
 	}
 
 	@GetMapping(value = "/export")

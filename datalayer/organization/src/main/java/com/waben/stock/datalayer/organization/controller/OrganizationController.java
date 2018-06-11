@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.service.OrganizationService;
+import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
@@ -51,7 +52,7 @@ import io.swagger.annotations.ApiOperation;
  */
 @RestController
 @RequestMapping("/organization")
-@Api(description = "机构接口列表")
+@Api(description = "代理商接口列表")
 public class OrganizationController implements OrganizationInterface {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
@@ -225,6 +226,17 @@ public class OrganizationController implements OrganizationInterface {
 	public Response<OrganizationDto> fetchByOrgId(Long id) {
 		return new Response<>(
 				CopyBeanUtils.copyBeanProperties(OrganizationDto.class, organizationDao.findByOrgId(id), false));
+	}
+
+	@Override
+	public Response<List<FuturesAgentPriceDto>> getListByFuturesAgentPrice(@PathVariable("orgId") Long orgId) {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(
+				organizationService.getListByFuturesAgentPrice(orgId), FuturesAgentPriceDto.class));
+	}
+
+	@Override
+	public Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto) {
+		return new Response<>(organizationService.saveFuturesAgentPrice(futuresAgentPricedto));
 	}
 
 }

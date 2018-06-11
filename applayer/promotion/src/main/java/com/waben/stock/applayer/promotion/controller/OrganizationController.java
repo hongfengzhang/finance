@@ -29,7 +29,7 @@ import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.applayer.promotion.util.PoiUtil;
 import com.waben.stock.applayer.promotion.util.QRCodeUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
+import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TradingFowDto;
@@ -81,16 +81,8 @@ public class OrganizationController {
 		return new Response<>(business.adminPage(query));
 	}
 
-	@RequestMapping(value = "/pages", method = RequestMethod.POST)
-	public Response<PageInfo<OrganizationDto>> pages(@RequestBody OrganizationQuery query) {
-		// UserDto userDto = (UserDto) SecurityAccount.current().getSecurity();
-		// if(!"admin".equals(userDto.getUsername())){
-		// query.setParentId(userDto.getOrg().getId());
-		// }
-		return new Response<>(business.pages(query));
-	}
-
 	@RequestMapping(value = "/adminTree", method = RequestMethod.GET)
+	@ApiOperation(value = "全部代理商树状图")
 	public Response<List<TreeNode>> adminTree() {
 		return new Response<>(business.adminTree(SecurityUtil.getUserDetails().getOrgId()));
 	}
@@ -98,12 +90,6 @@ public class OrganizationController {
 	@RequestMapping(value = "/listByParentId", method = RequestMethod.GET)
 	public Response<List<OrganizationDto>> listByParentId(Long parentId) {
 		return new Response<>(business.listByParentId(parentId));
-	}
-
-	@RequestMapping(value = "/detail", method = RequestMethod.GET)
-	// @ApiOperation(value = "根据代理商ID获取代理商信息")
-	public Response<OrganizationDetailDto> detail(Long orgId) {
-		return new Response<>(business.detail(orgId));
 	}
 
 	/**
@@ -154,12 +140,6 @@ public class OrganizationController {
 		return new Response<>();
 	}
 
-	@RequestMapping(value = "/adminAgentPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	// @ApiOperation(value = "获取代理商列表")
-	public Response<PageInfo<OrganizationDetailDto>> adminAgentPage(@RequestBody OrganizationQuery query) {
-		return new Response<>(business.adminAgentPageByQuery(query));
-	}
-
 	@RequestMapping(value = "/singleSta/{currentOrgId}", method = RequestMethod.GET)
 	@ApiOperation(value = "单个代理商数据统计")
 	public Response<OrganizationStaDto> singleSta(@PathVariable("currentOrgId") Long currentOrgId) {
@@ -177,10 +157,15 @@ public class OrganizationController {
 	}
 
 	@RequestMapping(value = "/childrenSta", method = RequestMethod.GET)
-	@ApiOperation(value = "下级代理商数据统计")
-	public Response<PageInfo<OrganizationStaDto>> childrenSta(OrganizationStaQuery query) {
+	@ApiOperation(value = "直属代理商数据")
+	public Response<PageInfo<OrganizationStaDto>> childrenSta(int page, int size, String orgCode, String orgName) {
+		OrganizationStaQuery query = new OrganizationStaQuery();
 		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		query.setOrgCode(orgCode);
+		query.setOrgName(orgName);
 		query.setQueryType(2);
+		query.setPage(page);
+		query.setSize(size);
 		return new Response<>(business.adminStaPageByQuery(query));
 	}
 
@@ -195,6 +180,12 @@ public class OrganizationController {
 	@ApiOperation(value = "添加代理商")
 	public Response<OrganizationDto> agent(OrganizationForm orgForm) {
 		return new Response<>(business.agent(orgForm));
+	}
+
+	@RequestMapping(value = "/futures/agent/price", method = RequestMethod.GET)
+	@ApiOperation(value = "获取期货代理价格数据")
+	public Response<List<FuturesAgentPriceDto>> getListByFuturesAgentPrice(Long orgId) {
+		return new Response<>(business.getListByFuturesAgentPrice(orgId));
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
