@@ -23,13 +23,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.plugins.Page;
 import com.waben.stock.applayer.tactics.business.PublisherBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.tactics.business.futures.FuturesOrderBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderBuysellDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderMarketDto;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderProfitDto;
+import com.waben.stock.applayer.tactics.dto.futures.TransactionDynamicsDto;
 import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.applayer.tactics.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -440,15 +440,8 @@ public class FuturesOrderController {
 
 	@GetMapping("/transaction/dynamics")
 	@ApiOperation(value = "获取交易动态")
-	public Response<PageInfo<FuturesOrderMarketDto>> transactionDynamics(int page, int size) {
-		FuturesOrderQuery orderQuery = new FuturesOrderQuery();
-		FuturesOrderState[] states = { FuturesOrderState.BuyingCanceled, FuturesOrderState.BuyingFailure,
-				FuturesOrderState.Unwind, FuturesOrderState.Position };
-		orderQuery.setStates(states);
-		orderQuery.setPage(page);
-		orderQuery.setSize(size);
-		orderQuery.setPublisherId(SecurityUtil.getUserId());
-		return new Response<>(futuresOrderBusiness.pageOrderMarket(orderQuery));
+	public Response<PageInfo<TransactionDynamicsDto>> transactionDynamics(int page, int size) {
+		return new Response<>(futuresOrderBusiness.transactionDynamics(page, size));
 
 	}
 

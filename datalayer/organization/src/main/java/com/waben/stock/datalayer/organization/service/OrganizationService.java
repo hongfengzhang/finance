@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.waben.stock.datalayer.organization.business.BindCardBusiness;
+import com.waben.stock.datalayer.organization.business.FuturesAgentPriceBusiness;
 import com.waben.stock.datalayer.organization.entity.FuturesAgentPrice;
 import com.waben.stock.datalayer.organization.entity.Organization;
 import com.waben.stock.datalayer.organization.entity.OrganizationAccount;
@@ -37,6 +38,7 @@ import com.waben.stock.datalayer.organization.repository.OrganizationDao;
 import com.waben.stock.datalayer.organization.repository.SettlementMethodDao;
 import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
@@ -82,6 +84,9 @@ public class OrganizationService {
 
 	@Autowired
 	private FuturesAgentPriceDao agentPriceDao;
+
+	@Autowired
+	private FuturesAgentPriceBusiness agentPriceBusiness;
 
 	// @Autowired
 	// private StockOptionTradeBusiness tradeBusiness;
@@ -656,6 +661,7 @@ public class OrganizationService {
 				FuturesAgentPrice.class);
 		if (futuresAgentPrice != null && futuresAgentPrice.size() > 0) {
 			for (FuturesAgentPrice agentPrice : futuresAgentPrice) {
+				FuturesContractDto contractDto = agentPriceBusiness.getFuturesContractDto(agentPrice.getContractId());
 				agentPriceDao.create(agentPrice);
 			}
 			return 1;
