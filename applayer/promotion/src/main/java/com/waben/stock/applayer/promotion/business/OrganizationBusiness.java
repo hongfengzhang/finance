@@ -162,4 +162,12 @@ public class OrganizationBusiness {
 		throw new ServiceException(response.getCode());
 	}
 
+	public Integer saveFuturesAgentPrice(List<FuturesAgentPriceDto> futuresAgentPricedto) {
+		Response<Integer> response = reference.saveFuturesAgentPrice(futuresAgentPricedto);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
 }

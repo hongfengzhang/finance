@@ -13,7 +13,9 @@ public enum AnalogDataType implements CommonalityEnum {
 
 	STRATEGYTRADEDYNAMIC("1", "配资交易动态"),
 
-	STOCKOPTIONTRADEDYNAMIC("2", "期权交易动态");
+	STOCKOPTIONTRADEDYNAMIC("2", "期权交易动态"),
+	
+	FUTURESTRADEDYNAMIC("2", "期货交易动态");
 
 	private String index;
 

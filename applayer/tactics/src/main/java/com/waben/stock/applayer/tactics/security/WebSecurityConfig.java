@@ -69,7 +69,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		"/ticket/**",
 		"/drawactivity/**",
 		"/futuresMarket/**",
-		"/futuresContract/pagesContract"
+		"/futuresContract/pagesContract",
+		"/futuresOrder/transaction/dynamics"
 	};
 
 	public JWTAuthenticationFilter jWTAuthenticationFilter() {

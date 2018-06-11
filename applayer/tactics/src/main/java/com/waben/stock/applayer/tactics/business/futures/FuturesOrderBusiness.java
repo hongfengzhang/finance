@@ -1,19 +1,27 @@
 package com.waben.stock.applayer.tactics.business.futures;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.applayer.tactics.business.AnalogDataBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesOrderMarketDto;
+import com.waben.stock.applayer.tactics.dto.futures.TransactionDynamicsDto;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.futures.FuturesCurrencyRateDto;
 import com.waben.stock.interfaces.dto.futures.FuturesOrderDto;
 import com.waben.stock.interfaces.dto.futures.TurnoverStatistyRecordDto;
+import com.waben.stock.interfaces.dto.manage.AnalogDataDto;
+import com.waben.stock.interfaces.dto.publisher.PublisherDto;
+import com.waben.stock.interfaces.enums.AnalogDataType;
 import com.waben.stock.interfaces.enums.FuturesOrderState;
 import com.waben.stock.interfaces.enums.FuturesOrderType;
 import com.waben.stock.interfaces.enums.FuturesTradePriceType;
@@ -24,10 +32,14 @@ import com.waben.stock.interfaces.pojo.query.futures.FuturesOrderQuery;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.service.futures.FuturesCurrencyRateInterface;
 import com.waben.stock.interfaces.service.futures.FuturesOrderInterface;
+import com.waben.stock.interfaces.service.publisher.PublisherInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.JacksonUtil;
 
 @Service
 public class FuturesOrderBusiness {
+
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	@Qualifier("futuresOrderInterface")
@@ -40,6 +52,13 @@ public class FuturesOrderBusiness {
 	@Autowired
 	@Qualifier("futurescontractInterface")
 	private FuturesContractInterface futuresContractInterface;
+
+	@Autowired
+	@Qualifier("publisherInterface")
+	private PublisherInterface publisherInterface;
+
+	@Autowired
+	private AnalogDataBusiness analogDataBusiness;
 
 	public Integer sumUserNum(Long contractId, Long publisherId) {
 		Response<Integer> response = futuresOrderInterface.sumByListOrderContractIdAndPublisherId(contractId,
@@ -218,6 +237,108 @@ public class FuturesOrderBusiness {
 
 	public TurnoverStatistyRecordDto getTurnoverStatistyRecord() {
 		Response<TurnoverStatistyRecordDto> response = futuresOrderInterface.getTurnoverStatisty();
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public PageInfo<TransactionDynamicsDto> transactionDynamics(int page, int size) {
+		// 已平仓订单
+		FuturesOrderQuery unwindQuery = new FuturesOrderQuery();
+		FuturesOrderState[] unwindStates = { FuturesOrderState.Unwind };
+		unwindQuery.setStates(unwindStates);
+		unwindQuery.setPage(page);
+		unwindQuery.setSize(size / 2);
+		PageInfo<FuturesOrderDto> pageUnwindOrder = pageOrder(unwindQuery);
+
+		// 持仓中订单
+		FuturesOrderQuery positionQuery = new FuturesOrderQuery();
+		FuturesOrderState[] positionStates = { FuturesOrderState.Position };
+		positionQuery.setStates(positionStates);
+		positionQuery.setPage(page);
+		positionQuery.setSize(size - pageUnwindOrder.getContent().size());
+		PageInfo<FuturesOrderDto> pagePositionOrder = pageOrder(positionQuery);
+
+		boolean isSettlement = true;
+		List<TransactionDynamicsDto> content = new ArrayList<TransactionDynamicsDto>();
+
+		int total = pageUnwindOrder.getContent().size() + pagePositionOrder.getContent().size();
+		for (int i = 0; i < total; i++) {
+			if (isSettlement && pageUnwindOrder.getContent().size() > 0) {
+				FuturesOrderDto unwindOrder = pageUnwindOrder.getContent().remove(0);
+				PublisherDto publisher = fetchById(unwindOrder.getPublisherId());
+				TransactionDynamicsDto unwind = new TransactionDynamicsDto();
+				unwind.setPublisherProfitOrLoss(unwindOrder.getPublisherProfitOrLoss());
+				unwind.setContractId(unwindOrder.getContractId());
+				unwind.setContractName(unwindOrder.getContractName());
+				unwind.setContractSymbol(unwindOrder.getContractSymbol());
+				unwind.setPublisherId(unwindOrder.getPublisherId());
+				unwind.setTotalQuantity(unwindOrder.getTotalQuantity());
+				unwind.setOrderType(unwindOrder.getOrderType());
+				unwind.setPhone(publisher.getPhone());
+				content.add(unwind);
+				isSettlement = false;
+			} else {
+				if (pagePositionOrder.getContent().size() > 0) {
+					FuturesOrderDto positionOrder = pagePositionOrder.getContent().remove(0);
+					PublisherDto publisher = fetchById(positionOrder.getPublisherId());
+					TransactionDynamicsDto position = new TransactionDynamicsDto();
+					if (position.getOrderType() == FuturesOrderType.BuyUp) {
+						position.setBuyOrderTypeDesc("买涨" + Integer.valueOf(positionOrder.getTotalQuantity() == null ? 0
+								: positionOrder.getTotalQuantity().intValue()) + "手");
+					} else {
+						position.setBuyOrderTypeDesc("买跌" + Integer.valueOf(positionOrder.getTotalQuantity() == null ? 0
+								: positionOrder.getTotalQuantity().intValue()) + "手");
+					}
+					position.setContractId(positionOrder.getContractId());
+					position.setContractName(positionOrder.getContractName());
+					position.setContractSymbol(positionOrder.getContractSymbol());
+					position.setPublisherId(positionOrder.getPublisherId());
+					position.setTotalQuantity(positionOrder.getTotalQuantity());
+					position.setOrderType(positionOrder.getOrderType());
+					position.setPhone(publisher.getPhone());
+					content.add(position);
+					isSettlement = true;
+				} else {
+					isSettlement = true;
+					total++;
+				}
+			}
+		}
+		if (content.size() < size) {
+			PageInfo<AnalogDataDto> analogDataPage = analogDataBusiness.pagesByType(AnalogDataType.FUTURESTRADEDYNAMIC,
+					0, size - content.size());
+			if (analogDataPage.getContent().size() > 0) {
+				for (AnalogDataDto analogData : analogDataPage.getContent()) {
+					try {
+						TransactionDynamicsDto dynamic = JacksonUtil.decode(analogData.getData(),
+								TransactionDynamicsDto.class);
+						if (content.size() > 0
+								&& content.get(content.size() - 1).getOrderType() == FuturesOrderType.BuyUp) {
+							dynamic.setOrderType(FuturesOrderType.BuyUp);
+							dynamic.setBuyOrderTypeDesc("买涨" + Integer.valueOf(
+									dynamic.getTotalQuantity() == null ? 0 : dynamic.getTotalQuantity().intValue())
+									+ "手");
+						} else {
+							dynamic.setOrderType(FuturesOrderType.BuyFall);
+							dynamic.setBuyOrderTypeDesc("买跌" + Integer.valueOf(
+									dynamic.getTotalQuantity() == null ? 0 : dynamic.getTotalQuantity().intValue())
+									+ "手");
+						}
+						content.add(dynamic);
+					} catch (Exception ex) {
+						logger.error("期权交易动态模拟数据格式错误?" + analogData.getData());
+					}
+				}
+			}
+		}
+
+		return new PageInfo<TransactionDynamicsDto>(content, 0, false, 0L, size, page, false);
+	}
+
+	public PublisherDto fetchById(Long id) {
+		Response<PublisherDto> response = publisherInterface.fetchById(id);
 		if ("200".equals(response.getCode())) {
 			return response.getResult();
 		}

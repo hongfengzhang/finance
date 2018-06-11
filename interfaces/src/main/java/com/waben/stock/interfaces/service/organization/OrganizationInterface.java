@@ -193,4 +193,12 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/futures/agent/price/{orgId}", method = RequestMethod.GET)
 	Response<List<FuturesAgentPriceDto>> getListByFuturesAgentPrice(@PathVariable("orgId") Long orgId);
+
+	/**
+	 * 
+	 * @param futuresAgentPricedto
+	 * @return
+	 */
+	@RequestMapping(value = "/save/agent/price", method = RequestMethod.POST)
+	Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto);
 }

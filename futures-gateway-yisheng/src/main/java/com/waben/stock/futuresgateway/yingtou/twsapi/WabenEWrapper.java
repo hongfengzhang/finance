@@ -31,7 +31,7 @@ import com.waben.stock.futuresgateway.yingtou.rabbitmq.message.TickPriceMessage;
 import com.waben.stock.futuresgateway.yingtou.rabbitmq.message.TickSizeMessage;
 import com.waben.stock.futuresgateway.yingtou.service.FuturesOrderService;
 
-@Component
+// @Component
 public class WabenEWrapper implements EWrapper {
 
 	private EJavaSignal readerSignal;

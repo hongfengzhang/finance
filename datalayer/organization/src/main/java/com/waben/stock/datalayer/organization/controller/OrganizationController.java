@@ -248,5 +248,10 @@ public class OrganizationController implements OrganizationInterface {
 		PageInfo<FuturesFowDto> result = PageToPageInfo.pageToPageInfo(page, FuturesFowDto.class);
 		return new Response<>(result);
 	}
+	
+	@Override
+	public Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto) {
+		return new Response<>(organizationService.saveFuturesAgentPrice(futuresAgentPricedto));
+	}
 
 }
