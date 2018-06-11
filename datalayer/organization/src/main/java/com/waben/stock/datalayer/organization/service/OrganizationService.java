@@ -42,6 +42,7 @@ import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.FuturesFowDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDetailDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
 import com.waben.stock.interfaces.dto.organization.TradingFowDto;
 import com.waben.stock.interfaces.dto.organization.TreeNode;
@@ -721,12 +722,13 @@ public class OrganizationService {
 
 	public List<FuturesAgentPriceDto> getListByFuturesAgentPrice(Long orgId) {
 		String sql = String
-				.format("SELECT c1.id, c1.symbol, c1.name, c2.cost_reserve_fund, c2.cost_openwind_service_fee,c2.cost_unwind_service_fee,c2.cost_deferred_fee,c2.sale_openwind_service_fee,c2.sale_unwind_service_fee,c2.sale_deferred_fee FROM f_futures_contract c1 LEFT JOIN p_futures_agent_price c2 on c1.id = c2.contract_id AND c2.org_id="
+				.format("SELECT c1.id, c1.symbol, c1.name, c2.id, c2.cost_reserve_fund, c2.cost_openwind_service_fee,c2.cost_unwind_service_fee,c2.cost_deferred_fee,c2.sale_openwind_service_fee,c2.sale_unwind_service_fee,c2.sale_deferred_fee FROM f_futures_contract c1 LEFT JOIN p_futures_agent_price c2 on c1.id = c2.contract_id AND c2.org_id="
 						+ orgId);
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setContractId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setSymbol", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(2), new MethodDesc("setContractName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(3), new MethodDesc("setCostReserveFund", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(4),
 				new MethodDesc("setCostOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
@@ -746,6 +748,44 @@ public class OrganizationService {
 		List<FuturesAgentPrice> futuresAgentPrice = CopyBeanUtils.copyListBeanPropertiesToList(futuresAgentPricedto,
 				FuturesAgentPrice.class);
 		if (futuresAgentPrice != null && futuresAgentPrice.size() > 0) {
+			Long orgId = futuresAgentPrice.get(0).getOrgId();
+			OrganizationDto organization = agentPriceBusiness.fetchByOrgId(orgId);
+			for (int i = 0; i < futuresAgentPrice.size(); i++) {
+				// 获取合约信息
+				FuturesContractDto contractDto = agentPriceBusiness
+						.getFuturesContractDto(futuresAgentPrice.get(i).getContractId());
+				if (organization.getLevel() == 2) {
+					if (futuresAgentPrice.get(i).getCostReserveFund()
+							.compareTo(contractDto.getPerUnitReserveFund()) < 0) {
+						// 成本保证金不能比全局设置的低
+						throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+					if (futuresAgentPrice.get(i).getCostOpenwindServiceFee()
+							.compareTo(contractDto.getOpenwindServiceFee()) < 0) {
+						// 成本开仓手续费不能比全局设置的低
+						throw new ServiceException(
+								ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+					if (futuresAgentPrice.get(i).getCostUnwindServiceFee()
+							.compareTo(contractDto.getUnwindServiceFee()) < 0) {
+						// 成本平仓手续费不能比全局设置的低
+						throw new ServiceException(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+					if (futuresAgentPrice.get(i).getCostDeferredFee()
+							.compareTo(contractDto.getOvernightPerUnitDeferredFee()) < 0) {
+						// 成本递延费不能比全局设置的低
+						throw new ServiceException(
+								ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+								contractDto.getName());
+					}
+				} else {
+					agentPriceDao.findByContractIdAndOrgId(contractDto.getId(), orgId);
+				}
+			}
+
 			for (FuturesAgentPrice agentPrice : futuresAgentPrice) {
 				FuturesContractDto contractDto = agentPriceBusiness.getFuturesContractDto(agentPrice.getContractId());
 				if (agentPrice.getCostReserveFund().compareTo(contractDto.getPerUnitReserveFund()) < 0) {
