@@ -45,13 +45,13 @@ public class TickSizeConsumer {
 			// step 3 : 更新期货合约的相关size
 			boolean isNeedUpdate = true;
 			if (field == 0) {
-				contract.setBidSize(size);
+				// contract.setBidSize(size);
 			} else if (field == 3) {
-				contract.setAskSize(size);
+				// contract.setAskSize(size);
 			} else if (field == 5) {
-				contract.setLastSize(size);
+				// contract.setLastSize(size);
 			} else if (field == 8) {
-				contract.setVolume(size);
+				// contract.setVolume(size);
 			} else {
 				isNeedUpdate = false;
 			}

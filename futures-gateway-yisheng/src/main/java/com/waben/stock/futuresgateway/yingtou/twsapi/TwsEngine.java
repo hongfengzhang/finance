@@ -17,7 +17,7 @@ import com.waben.stock.futuresgateway.yingtou.entity.FuturesContract;
 import com.waben.stock.futuresgateway.yingtou.service.FuturesContractService;
 import com.waben.stock.futuresgateway.yingtou.service.FuturesOrderService;
 
-@Service
+// @Service
 public class TwsEngine {
 
 	@Value("${tws.account}")
@@ -64,7 +64,7 @@ public class TwsEngine {
 		if (contractList != null && contractList.size() > 0) {
 			for (FuturesContract futuresContract : contractList) {
 				Contract contract = new Contract();
-				contract.localSymbol(futuresContract.getLocalSymbolName());
+				// contract.localSymbol(futuresContract.getLocalSymbolName());
 				contract.secType(futuresContract.getSecType());
 				contract.currency(futuresContract.getCurrency());
 				contract.exchange(futuresContract.getExchange());
@@ -109,7 +109,7 @@ public class TwsEngine {
 
 	public void reqMktData(EClientSocket client, FuturesContract futuresContract, boolean snapshot) {
 		Contract contract = new Contract();
-		contract.localSymbol(futuresContract.getLocalSymbolName());
+		// contract.localSymbol(futuresContract.getLocalSymbolName());
 		contract.secType(futuresContract.getSecType());
 		contract.currency(futuresContract.getCurrency());
 		contract.exchange(futuresContract.getExchange());
