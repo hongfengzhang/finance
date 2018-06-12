@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.data.jpa.repository.Query;
 
-import com.waben.stock.datalayer.futures.entity.FuturesContract;
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 
 /**
@@ -15,7 +15,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesExchange;
  */
 public interface FuturesExchangeRepository extends CustomJpaRepository<FuturesExchange, Long> {
 
-	@Query("select f from FuturesContract f where f.enable=1 and f.exchange.id=?1")
-	List<FuturesContract> findByExchangId(Long exchangeId);
+	@Query("select f from FuturesCommodity f where f.enable=1 and f.exchange.id=?1")
+	List<FuturesCommodity> findByExchangId(Long exchangeId);
 
 }

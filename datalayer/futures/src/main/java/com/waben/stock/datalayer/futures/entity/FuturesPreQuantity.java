@@ -27,9 +27,9 @@ public class FuturesPreQuantity {
 	 * 对应的合约
 	 */
 	@ManyToOne
-	@JoinColumn(name = "contract_id")
+	@JoinColumn(name = "commodity_id")
 	@JsonIgnore
-	private FuturesContract contract;
+	private FuturesCommodity commodity;
 	/**
 	 * 手数
 	 */
@@ -43,20 +43,20 @@ public class FuturesPreQuantity {
 		this.id = id;
 	}
 
-	public FuturesContract getContract() {
-		return contract;
-	}
-
-	public void setContract(FuturesContract contract) {
-		this.contract = contract;
-	}
-
 	public Integer getQuantity() {
 		return quantity;
 	}
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+
+	public FuturesCommodity getCommodity() {
+		return commodity;
+	}
+
+	public void setCommodity(FuturesCommodity commodity) {
+		this.commodity = commodity;
 	}
 
 }

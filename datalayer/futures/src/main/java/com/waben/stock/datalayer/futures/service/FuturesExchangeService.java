@@ -15,7 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.datalayer.futures.entity.FuturesContract;
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.repository.FuturesExchangeDao;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesExchangeAdminQuery;
@@ -73,7 +73,7 @@ public class FuturesExchangeService {
 		exchangeDao.delete(id);
 	}
 
-	public List<FuturesContract> findByExchangId(Long exchangeId) {
+	public List<FuturesCommodity> findByExchangId(Long exchangeId) {
 		return exchangeDao.findByExchangId(exchangeId);
 	}
 	
