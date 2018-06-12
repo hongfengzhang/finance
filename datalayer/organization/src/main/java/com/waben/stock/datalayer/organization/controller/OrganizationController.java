@@ -244,14 +244,28 @@ public class OrganizationController implements OrganizationInterface {
 
 	@Override
 	public Response<PageInfo<FuturesFowDto>> futuresFowPageByQuery(FuturesFowQuery query) {
-		Page<FuturesFowDto> page =  organizationService.futuresFowPageByQuery(query);
+		Page<FuturesFowDto> page = organizationService.futuresFowPageByQuery(query);
 		PageInfo<FuturesFowDto> result = PageToPageInfo.pageToPageInfo(page, FuturesFowDto.class);
 		return new Response<>(result);
 	}
-	
+
 	@Override
 	public Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto) {
 		return new Response<>(organizationService.saveFuturesAgentPrice(futuresAgentPricedto));
+	}
+
+	@Override
+	public Response<FuturesAgentPriceDto> getCurrentAgentPrice(@PathVariable Long orgId,
+			@PathVariable Long contractId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesAgentPriceDto.class,
+				organizationService.currentAgentPrice(orgId, contractId), false));
+	}
+
+	@Override
+	public Response<FuturesAgentPriceDto> getSuperiorAgentPrice(@PathVariable Long orgId,
+			@PathVariable Long contractId) {
+		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesAgentPriceDto.class,
+				organizationService.superiorAgentPrice(orgId, contractId), false));
 	}
 
 }

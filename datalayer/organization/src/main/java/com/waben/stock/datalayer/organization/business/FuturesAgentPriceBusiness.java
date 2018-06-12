@@ -25,10 +25,10 @@ public class FuturesAgentPriceBusiness {
 	private FuturesContractInterface futuresContractInterface;
 
 	@Autowired
-	@Qualifier("futurescontractInterface")
+	@Qualifier("organizationInterface")
 	private OrganizationInterface organizationInterface;
 
-	public FuturesContractDto getFuturesContractDto(Long contractId) {
+	public FuturesContractDto getFuturesContractDtoByContractId(Long contractId) {
 		Response<FuturesContractDto> response = futuresContractInterface.findByContractId(contractId);
 		if (response.getCode().equals("200")) {
 			return response.getResult();

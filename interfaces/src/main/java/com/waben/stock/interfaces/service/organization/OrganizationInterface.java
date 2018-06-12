@@ -102,7 +102,7 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/listByParentId", method = RequestMethod.GET)
 	Response<List<OrganizationDto>> listByParentId(@RequestParam("parentId") Long parentId);
-	
+
 	@RequestMapping(value = "/queryChildOrgId", method = RequestMethod.GET)
 	Response<String> queryChildOrgId(@RequestParam("orgId") Long orgId);
 
@@ -174,7 +174,7 @@ public interface OrganizationInterface {
 	 */
 	@RequestMapping(value = "/tradingFowPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<TradingFowDto>> tradingFowPageByQuery(@RequestBody TradingFowQuery query);
-	
+
 	@RequestMapping(value = "/futuresFowPage", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<PageInfo<FuturesFowDto>> futuresFowPageByQuery(@RequestBody FuturesFowQuery query);
 
@@ -197,8 +197,36 @@ public interface OrganizationInterface {
 	/**
 	 * 
 	 * @param futuresAgentPricedto
+	 *            期货代理价格
 	 * @return
 	 */
-	@RequestMapping(value = "/save/agent/price", method = RequestMethod.POST)
+	@RequestMapping(value = "/save/agent/price", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto);
+
+	/**
+	 * 获取当前期货代理价格数据
+	 * 
+	 * @param orgId
+	 *            代理商ID
+	 * @param contractId
+	 *            合约ID
+	 * @return 期货代理价格
+	 */
+	@RequestMapping(value = "/current/{orgId}/{contractId}", method = RequestMethod.GET)
+	Response<FuturesAgentPriceDto> getCurrentAgentPrice(@PathVariable("orgId") Long orgId,
+			@PathVariable("contractId") Long contractId);
+
+	/**
+	 * 获取上级期货代理价格数据
+	 * 
+	 * @param orgId
+	 *            代理商ID
+	 * @param contractId
+	 *            合约ID
+	 * @return 期货代理价格
+	 */
+	@RequestMapping(value = "/superior/{orgId}/{contractId}", method = RequestMethod.GET)
+	Response<FuturesAgentPriceDto> getSuperiorAgentPrice(@PathVariable("orgId") Long orgId,
+			@PathVariable("contractId") Long contractId);
+
 }

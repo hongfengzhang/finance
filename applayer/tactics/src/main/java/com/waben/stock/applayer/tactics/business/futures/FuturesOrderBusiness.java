@@ -268,6 +268,7 @@ public class FuturesOrderBusiness {
 			if (isSettlement && pageUnwindOrder.getContent().size() > 0) {
 				FuturesOrderDto unwindOrder = pageUnwindOrder.getContent().remove(0);
 				PublisherDto publisher = fetchById(unwindOrder.getPublisherId());
+				FuturesContractDto contract = getFuturesByContractId(unwindOrder.getContractId());
 				TransactionDynamicsDto unwind = new TransactionDynamicsDto();
 				unwind.setPublisherProfitOrLoss(unwindOrder.getPublisherProfitOrLoss());
 				unwind.setContractId(unwindOrder.getContractId());
@@ -277,12 +278,14 @@ public class FuturesOrderBusiness {
 				unwind.setTotalQuantity(unwindOrder.getTotalQuantity());
 				unwind.setOrderType(unwindOrder.getOrderType());
 				unwind.setPhone(publisher.getPhone());
+				unwind.setState(contract.getState());
 				content.add(unwind);
 				isSettlement = false;
 			} else {
 				if (pagePositionOrder.getContent().size() > 0) {
 					FuturesOrderDto positionOrder = pagePositionOrder.getContent().remove(0);
 					PublisherDto publisher = fetchById(positionOrder.getPublisherId());
+					FuturesContractDto contract = getFuturesByContractId(positionOrder.getContractId());
 					TransactionDynamicsDto position = new TransactionDynamicsDto();
 					if (position.getOrderType() == FuturesOrderType.BuyUp) {
 						position.setBuyOrderTypeDesc("买涨" + Integer.valueOf(positionOrder.getTotalQuantity() == null ? 0
@@ -298,6 +301,7 @@ public class FuturesOrderBusiness {
 					position.setTotalQuantity(positionOrder.getTotalQuantity());
 					position.setOrderType(positionOrder.getOrderType());
 					position.setPhone(publisher.getPhone());
+					position.setState(contract.getState());
 					content.add(position);
 					isSettlement = true;
 				} else {
@@ -340,6 +344,14 @@ public class FuturesOrderBusiness {
 	public PublisherDto fetchById(Long id) {
 		Response<PublisherDto> response = publisherInterface.fetchById(id);
 		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	public FuturesContractDto getFuturesByContractId(Long contractId) {
+		Response<FuturesContractDto> response = futuresContractInterface.findByContractId(contractId);
+		if (response.getCode().equals("200")) {
 			return response.getResult();
 		}
 		throw new ServiceException(response.getCode());
