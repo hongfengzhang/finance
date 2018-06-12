@@ -8,7 +8,7 @@ public class FuturesPreQuantityQuery extends PageAndSortQuery {
 
 	private Long id;
 	
-	private Long contractId;
+	private Long commodityId;
 	
 	private String quantity;
 
@@ -20,14 +20,6 @@ public class FuturesPreQuantityQuery extends PageAndSortQuery {
 		this.id = id;
 	}
 
-	public Long getContractId() {
-		return contractId;
-	}
-
-	public void setContractId(Long contractId) {
-		this.contractId = contractId;
-	}
-
 	public String getQuantity() {
 		return quantity;
 	}
@@ -35,6 +27,15 @@ public class FuturesPreQuantityQuery extends PageAndSortQuery {
 	public void setQuantity(String quantity) {
 		this.quantity = quantity;
 	}
-	
+
+	public Long getCommodityId() {
+		return commodityId;
+	}
+
+	public void setCommodityId(Long commodityId) {
+		this.commodityId = commodityId;
+	}
+
+ 	
 	
 }

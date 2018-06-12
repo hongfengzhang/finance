@@ -7,7 +7,7 @@ public class FuturesPreQuantityDto {
 	/**
 	 * 对应的合约id
 	 */
-	private Long contractId;
+	private Long commodityId;
 	
 	/**
 	 * 手数
@@ -22,14 +22,6 @@ public class FuturesPreQuantityDto {
 		this.id = id;
 	}
 
-	public Long getContractId() {
-		return contractId;
-	}
-
-	public void setContractId(Long contractId) {
-		this.contractId = contractId;
-	}
-
 	public Integer getQuantity() {
 		return quantity;
 	}
@@ -37,4 +29,13 @@ public class FuturesPreQuantityDto {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
+
+	public Long getCommodityId() {
+		return commodityId;
+	}
+
+	public void setCommodityId(Long commodityId) {
+		this.commodityId = commodityId;
+	}
+
 }

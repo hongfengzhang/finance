@@ -6,5 +6,5 @@ import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
 
 public interface FuturesPreQuantityRepository extends CustomJpaRepository<FuturesPreQuantity, Long> {
 
-	List<FuturesPreQuantity> findByContractId(Long contractId);
+	List<FuturesPreQuantity> findByCommodityId(Long commodityId);
 }

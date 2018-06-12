@@ -148,9 +148,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.PARTCONTRACT_NOTINTRADETIME_EXCEPTION, "一键平仓部分订单在非交易时间段");
 		exceptionMap.put(ExceptionConstant.BACKHANDSOURCEORDER_NOTUNWIND_EXCEPTION, "反手源订单暂未平仓");
 		exceptionMap.put(ExceptionConstant.FUTURESORDER_ALREADYBACKHAND_EXCEPTION, "订单已反手，不能重复反手");
-		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION, "合约在被订单使用，不能删除");
+		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION, "合约在被订单使用");
 		exceptionMap.put(ExceptionConstant.CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION, "警戒线低于强平点");
-		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION, "合约没有可用的合约期限");
+		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION, "品种没有可用的合约");
 		exceptionMap.put(ExceptionConstant.CONTRACT_PREQUANTITY_EXCEPTION, "合约没有预设置手数");
 		exceptionMap.put(ExceptionConstant.NOT_OPEN_GRANARY_PROVIDE_RELIEF_EXCEPTION, "当前时间该交易品种禁止开仓");
 		exceptionMap.put(ExceptionConstant.CLOSE_POSITION_EXCEPTION, "当前时间该交易品种禁止平仓");

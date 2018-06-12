@@ -55,8 +55,8 @@ public class FuturesPreQuantityDaoImpl implements FuturesPreQuantityDao {
 	}
 
 	@Override
-	public List<FuturesPreQuantity> findByContractId(Long contractId) {
-		return repository.findByContractId(contractId);
+	public List<FuturesPreQuantity> findByCommodityId(Long commodityId) {
+		return repository.findByCommodityId(commodityId);
 	}
 
 }

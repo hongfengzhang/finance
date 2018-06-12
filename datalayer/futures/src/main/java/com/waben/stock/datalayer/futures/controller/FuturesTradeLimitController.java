@@ -48,13 +48,6 @@ public class FuturesTradeLimitController implements FuturesTradeLimitInterface {
 		FuturesTradeLimitDto dtoResult = CopyBeanUtils.copyBeanProperties(result, new FuturesTradeLimitDto(), false);
 		if(result.getContract()!=null){
 			dtoResult.setContractId(result.getContract().getId());
-			dtoResult.setSymbol(result.getContract().getSymbol());
-			dtoResult.setName(result.getContract().getName());
-			if(result.getContract().getExchange()!=null){
-				dtoResult.setExchangcode(result.getContract().getExchange().getCode());
-				dtoResult.setExchangename(result.getContract().getExchange().getName());
-				dtoResult.setExchangeType(result.getContract().getExchange().getExchangeType());
-			}
 		}
 		if(result.getLimitType()!=null){
 			dtoResult.setLimitType(result.getLimitType().getType());
@@ -78,13 +71,6 @@ public class FuturesTradeLimitController implements FuturesTradeLimitInterface {
 		FuturesTradeLimitDto dtoResult = CopyBeanUtils.copyBeanProperties(result, new FuturesTradeLimitDto(), false);
 		if(result.getContract()!=null){
 			dtoResult.setContractId(result.getContract().getId());
-			dtoResult.setSymbol(result.getContract().getSymbol());
-			dtoResult.setName(result.getContract().getName());
-			if(result.getContract().getExchange()!=null){
-				dtoResult.setExchangcode(result.getContract().getExchange().getCode());
-				dtoResult.setExchangename(result.getContract().getExchange().getName());
-				dtoResult.setExchangeType(result.getContract().getExchange().getExchangeType());
-			}
 		}
 		if(result.getLimitType()!=null){
 			dtoResult.setLimitType(result.getLimitType().getType());
@@ -105,13 +91,6 @@ public class FuturesTradeLimitController implements FuturesTradeLimitInterface {
 			FuturesTradeLimit li = page.getContent().get(i);
 			if(li.getContract()!=null){
 				pages.getContent().get(i).setContractId(li.getContract().getId());
-				pages.getContent().get(i).setSymbol(li.getContract().getSymbol());
-				pages.getContent().get(i).setName(li.getContract().getName());
-				if(li.getContract().getExchange()!=null){
-					pages.getContent().get(i).setExchangcode(li.getContract().getExchange().getCode());
-					pages.getContent().get(i).setExchangename(li.getContract().getExchange().getName());
-					pages.getContent().get(i).setExchangeType(li.getContract().getExchange().getExchangeType());
-				}
 			}
 			if(li.getLimitType()!=null){
 				FuturesTradeLimitTypeConverter converter = new FuturesTradeLimitTypeConverter();

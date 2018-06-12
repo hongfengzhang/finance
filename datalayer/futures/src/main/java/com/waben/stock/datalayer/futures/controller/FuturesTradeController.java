@@ -73,10 +73,6 @@ public class FuturesTradeController implements FuturesTradeInterface {
 			if(order.getState()!=null){
 				result.getContent().get(i).setState(order.getState().getType());
 			}
-			if(order.getContract()!=null){
-				result.getContent().get(i).setName(order.getContract().getName());
-				result.getContent().get(i).setSymbol(order.getContract().getSymbol());
-			}
 			if(order.getContractSymbol()!=null && !"".equals(order.getContractSymbol())){
 				String symbol = order.getContractSymbol();
 				FuturesContractMarket market = RetriveFuturesOverHttp.market(symbol);
@@ -130,17 +126,13 @@ public class FuturesTradeController implements FuturesTradeInterface {
 			if(order.getState()!=null){
 				result.getContent().get(i).setState(order.getState().getType());
 			}
-			if(order.getContract()!=null){
-				result.getContent().get(i).setName(order.getContract().getName());
-				result.getContent().get(i).setSymbol(order.getContract().getSymbol());
-			}
 			if(order.getBuyingTime()!=null){
 				Long date = order.getBuyingTime().getTime();
 				Long current = new Date().getTime();
 				Long hours = (current - date)/(60*60*1000);
 				result.getContent().get(i).setPositionDays(Math.abs(hours.intValue()));
 			}
-			FuturesCurrencyRate rate = rateService.queryByName(order.getContract().getCurrency());
+			FuturesCurrencyRate rate = rateService.queryByName(order.getContract().getCommodity().getCurrency());
 			if(order.getState().getIndex().equals("9")){
 				if(rate!=null && rate.getRate()!=null){
 					result.getContent().get(i).setSellingProfit(order.getProfitOrLoss());
@@ -151,7 +143,7 @@ public class FuturesTradeController implements FuturesTradeInterface {
 				if(market!=null){
 					BigDecimal lastPrice = market.getLastPrice();
 					if(lastPrice!=null){
-						BigDecimal profit = futuresOrderService.computeProfitOrLoss(order.getOrderType(), order.getTotalQuantity(), order.getBuyingPrice(), lastPrice, order.getContract().getMinWave(), order.getContract().getPerWaveMoney());
+						BigDecimal profit = futuresOrderService.computeProfitOrLoss(order.getOrderType(), order.getTotalQuantity(), order.getBuyingPrice(), lastPrice, order.getContract().getCommodity().getMinWave(), order.getContract().getCommodity().getPerWaveMoney());
 						if(rate!=null && rate.getRate()!=null){
 							result.getContent().get(i).setProfit(profit.multiply(rate.getRate()));
 						}

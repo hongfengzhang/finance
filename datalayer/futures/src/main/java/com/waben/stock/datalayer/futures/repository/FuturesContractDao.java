@@ -14,5 +14,5 @@ public interface FuturesContractDao extends BaseDao<FuturesContract, Long> {
 	
 	int isCurrent(Boolean current,Long id);
 	
-	List<FuturesContract> findByExchangId(Long exchangeId);
+	List<FuturesContract> findByCommodityId(Long commodityId);
 }

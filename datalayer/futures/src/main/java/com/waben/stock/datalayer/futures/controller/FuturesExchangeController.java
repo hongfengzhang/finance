@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.waben.stock.datalayer.futures.entity.FuturesContract;
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
+import com.waben.stock.datalayer.futures.service.FuturesCommodityService;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
 import com.waben.stock.interfaces.dto.futures.FuturesExchangeDto;
@@ -33,6 +34,9 @@ public class FuturesExchangeController implements FuturesExchangeInterface {
 
 	@Autowired
 	private FuturesContractService contractService;
+	
+	@Autowired
+	private FuturesCommodityService commodityService;
 
 	@Override
 	public Response<PageInfo<FuturesExchangeDto>> pagesExchange(@RequestBody FuturesExchangeAdminQuery exchangeQuery) {
@@ -63,21 +67,11 @@ public class FuturesExchangeController implements FuturesExchangeInterface {
 	public Response<String> deleteExchange(@PathVariable Long id) {
 		Response<String> res = new Response<String>();
 		
-		List<FuturesContract> list = contractService.findByExchangId(id);
-		for (FuturesContract futures : list) {
-			contractService.deleteContract(futures.getId());
+		List<FuturesCommodity> list = exchangeService.findByExchangId(id);
+		for (FuturesCommodity futures : list) {
+			commodityService.delete(futures.getId());
 		}
-//		List<FuturesContract> contractId = exchangeService.findByExchangId(id);
-//		List<Long> contractIds = new ArrayList<Long>();
-//		for (FuturesContract contract : contractId) {
-////			contractIds.add(contract.getId());
-//			contractService.deleteContract(contract.getId());
-//		}
-//		List<FuturesOrder> list = orderService.findByContractId(contractIds);
-//		res.setCode("200");
-//		if (list.size() > 0) {
-//			res.setMessage("改市场下还有被订单使用的合约，请不要删除");
-//		}
+		
 		exchangeService.deleteExchange(id);
 		res.setMessage("删除成功");
 		res.setResult(null);

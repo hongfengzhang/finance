@@ -24,7 +24,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
-import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
@@ -58,11 +57,10 @@ public class FuturesContractService {
 	@Autowired
 	private FuturesOrderService orderService;
 
-	@Autowired
-	private FuturesContractTermService termService;
-
-	public int isCurrent(Boolean current, Long id) {
-		return futuresContractDao.isCurrent(current, id);
+	public int isCurrent(Long id) {
+		FuturesContract contract = futuresContractDao.retrieve(id);
+//		boolean isCurrent = contract
+		return 0;
 	}
 
 	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
@@ -245,8 +243,8 @@ public class FuturesContractService {
 		return futuresContractDao.retrieve(contractId);
 	}
 
-	public List<FuturesContract> findByExchangId(Long exchangeId) {
-		return futuresContractDao.findByExchangId(exchangeId);
+	public List<FuturesContract> findByCommodity(Long commodityId) {
+		return futuresContractDao.findByCommodityId(commodityId);
 	}
 
 	public Response<String> deleteContract(Long id) {
@@ -257,19 +255,6 @@ public class FuturesContractService {
 			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 		}
 
-		List<FuturesContractTerm> termList = termService.findByListContractId(id);
-		if (termList.size() > 0) {
-			for (FuturesContractTerm term : termList) {
-				contractId.clear();
-				contractId.add(term.getId());
-			}
-			list = orderService.findByContractTermId(contractId);
-			if (list.size() > 0) {
-				throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
-			} else {
-				int count = termService.deleteBycontractId(id);
-			}
-		}
 
 		futuresContractDao.delete(id);
 		Response<String> response = new Response<>();
@@ -279,38 +264,4 @@ public class FuturesContractService {
 		return response;
 	}
 
-	public Page<FuturesContract> pagesContractAdmin(final FuturesContract query, int page, int limit) {
-		Pageable pageable = new PageRequest(page, limit);
-		Page<FuturesContract> pages = futuresContractDao.page(new Specification<FuturesContract>() {
-
-			@Override
-			public Predicate toPredicate(Root<FuturesContract> root, CriteriaQuery<?> criteriaQuery,
-					CriteriaBuilder criteriaBuilder) {
-				List<Predicate> predicateList = new ArrayList<Predicate>();
-				// Join<FuturesExchange, FuturesContract> parentJoin =
-				// root.join("exchange", JoinType.LEFT);
-				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
-					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
-				}
-				if (query.getName() != null && !"".equals(query.getName())) {
-					predicateList.add(criteriaBuilder.equal(root.get("name").as(String.class), query.getName()));
-				}
-				if (query.getOvernightTime() != null && !"".equals(query.getOvernightTime())) {
-					predicateList.add(criteriaBuilder.equal(root.get("overnightTime").as(String.class),
-							query.getOvernightTime()));
-				}
-				if (query.getExchange() != null && query.getExchange().hashCode() > 0) {
-					predicateList.add(
-							criteriaBuilder.equal(root.get("exchange").as(FuturesExchange.class), query.getExchange()));
-				}
-
-				if (predicateList.size() > 0) {
-					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
-				}
-
-				return criteriaQuery.getRestriction();
-			}
-		}, pageable);
-		return pages;
-	}
 }

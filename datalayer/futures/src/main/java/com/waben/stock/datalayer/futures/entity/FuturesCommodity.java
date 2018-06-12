@@ -49,6 +49,11 @@ public class FuturesCommodity {
 	 * 交易单位
 	 */
 	private String tradeUnit;
+	
+	/**
+	 * 报价单位
+	 */
+	private String qutoteUnit;
 	/**
 	 * 图标
 	 */
@@ -201,7 +206,7 @@ public class FuturesCommodity {
 	/**
 	 * 预设置的手数列表
 	 */
-	@OneToMany(cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER, mappedBy = "contract")
+	@OneToMany(cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER, mappedBy = "commodity")
 	private Set<FuturesPreQuantity> preQuantitySet;
 
 	/***************** 分割线，以下字段为非数据库字段 ********************/
@@ -255,6 +260,14 @@ public class FuturesCommodity {
 
 	public void setTradeUnit(String tradeUnit) {
 		this.tradeUnit = tradeUnit;
+	}
+
+	public String getQutoteUnit() {
+		return qutoteUnit;
+	}
+
+	public void setQutoteUnit(String qutoteUnit) {
+		this.qutoteUnit = qutoteUnit;
 	}
 
 	public String getIcon() {
