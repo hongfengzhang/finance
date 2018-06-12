@@ -66,8 +66,8 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 	}
 
 	@Override
-	public List<FuturesContract> findByExchangId(Long exchangeId) {
-		return repository.findByExchangId(exchangeId);
+	public List<FuturesContract> findByCommodityId(Long commodityId) {
+		return repository.findByCommodityId(commodityId);
 	}
 
 }

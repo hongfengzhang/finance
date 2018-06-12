@@ -213,8 +213,8 @@ public class OrganizationService {
 	public List<Organization> list() {
 		return organizationDao.list();
 	}
-	
-	public String queryChildOrgId(Long orgId){
+
+	public String queryChildOrgId(Long orgId) {
 		return organizationDao.queryChlidOrgId(orgId);
 	}
 
@@ -242,8 +242,9 @@ public class OrganizationService {
 						predicateList
 								.add(criteriaBuilder.equal(parentJoin.get("id").as(Long.class), query.getParentId()));
 					}
-					if(query.getTreeCode()!=null && !"".equals(query.getTreeCode().trim())){
-						predicateList.add(criteriaBuilder.like(root.get("treeCode").as(String.class), "%"+query.getTreeCode()+"%"));
+					if (query.getTreeCode() != null && !"".equals(query.getTreeCode().trim())) {
+						predicateList.add(criteriaBuilder.like(root.get("treeCode").as(String.class),
+								"%" + query.getTreeCode() + "%"));
 					}
 				}
 				if (predicateList.size() > 0) {
@@ -565,8 +566,8 @@ public class OrganizationService {
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
-	
-	public Page<FuturesFowDto> futuresFowPageByQuery(FuturesFowQuery query){
+
+	public Page<FuturesFowDto> futuresFowPageByQuery(FuturesFowQuery query) {
 		String customerNameQuery = "";
 		if (!StringUtil.isEmpty(query.getPublisherName())) {
 			customerNameQuery = " and t4.name like '%" + query.getPublisherName() + "%'";
@@ -599,12 +600,12 @@ public class OrganizationService {
 			agentCodeNameQuery = " and (t10.code like '%" + query.getOrgCodeOrName() + "%' or t10.name like '%"
 					+ query.getOrgCodeOrName() + "%')";
 		}
-		
+
 		String treeCodeQuery = "";
-		if(!StringUtil.isEmpty(query.getTreeCode())){
-			treeCodeQuery = " and t10.tree_code like '%"+query.getTreeCode()+"%'";
+		if (!StringUtil.isEmpty(query.getTreeCode())) {
+			treeCodeQuery = " and t10.tree_code like '%" + query.getTreeCode() + "%'";
 		}
-		
+
 		String sql = String.format(
 				"select t1.id, t4.name as publisher_name, t5.phone, t1.flow_no, t1.occurrence_time, t1.type, t1.amount, t1.available_balance, "
 						+ " IF(t12.symbol IS NULL,t2.stock_code,t12.symbol) AS symbol,  IF(t12.name IS NULL,t2.stock_name,t12.name) AS contract_name,"
@@ -621,8 +622,8 @@ public class OrganizationService {
 						+ " LEFT JOIN f_futures_contract t12 ON t3.contract_id = t12.id "
 						+ " WHERE 1=1 and t10.id is not null  %s %s %s %s %s %s %s %s order by t1.occurrence_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				customerNameQuery, tradingNumberQuery, startTimeCondition, endTimeCondition, orderTypeQuery, contractCodeQuery,
-				agentCodeNameQuery,treeCodeQuery);
+				customerNameQuery, tradingNumberQuery, startTimeCondition, endTimeCondition, orderTypeQuery,
+				contractCodeQuery, agentCodeNameQuery, treeCodeQuery);
 		String countSql = "select count(*) from (" + sql.substring(0, sql.indexOf("limit")) + ") c";
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class })); // ID
@@ -722,24 +723,24 @@ public class OrganizationService {
 
 	public List<FuturesAgentPriceDto> getListByFuturesAgentPrice(Long orgId) {
 		String sql = String
-				.format("SELECT c1.id, c1.symbol, c1.name, c2.id, c2.cost_reserve_fund, c2.cost_openwind_service_fee,c2.cost_unwind_service_fee,c2.cost_deferred_fee,c2.sale_openwind_service_fee,c2.sale_unwind_service_fee,c2.sale_deferred_fee FROM f_futures_contract c1 LEFT JOIN p_futures_agent_price c2 on c1.id = c2.contract_id AND c2.org_id="
+				.format("SELECT c1.id as contractId, c1.symbol, c1.name, c2.id , c2.cost_reserve_fund, c2.cost_openwind_service_fee,c2.cost_unwind_service_fee,c2.cost_deferred_fee,c2.sale_openwind_service_fee,c2.sale_unwind_service_fee,c2.sale_deferred_fee FROM f_futures_contract c1 LEFT JOIN p_futures_agent_price c2 on c1.id = c2.contract_id AND c2.org_id="
 						+ orgId);
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setContractId", new Class<?>[] { Long.class }));
 		setMethodMap.put(new Integer(1), new MethodDesc("setSymbol", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(2), new MethodDesc("setContractName", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(2), new MethodDesc("setId", new Class<?>[] { Long.class }));
-		setMethodMap.put(new Integer(3), new MethodDesc("setCostReserveFund", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(4),
-				new MethodDesc("setCostOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setCostReserveFund", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(5),
+				new MethodDesc("setCostOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(6),
 				new MethodDesc("setCostUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(6), new MethodDesc("setCostDeferredFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(7),
-				new MethodDesc("setSaleOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setCostDeferredFee", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(8),
+				new MethodDesc("setSaleOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(9),
 				new MethodDesc("setSaleUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(9), new MethodDesc("setSaleDeferredFee", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(10), new MethodDesc("setSaleDeferredFee", new Class<?>[] { BigDecimal.class }));
 		List<FuturesAgentPriceDto> content = sqlDao.execute(FuturesAgentPriceDto.class, sql, setMethodMap);
 		return content;
 	}
@@ -751,88 +752,178 @@ public class OrganizationService {
 			Long orgId = futuresAgentPrice.get(0).getOrgId();
 			OrganizationDto organization = agentPriceBusiness.fetchByOrgId(orgId);
 			for (int i = 0; i < futuresAgentPrice.size(); i++) {
-				// 获取合约信息
+				// 获取当前期货代理价格数据
+				FuturesAgentPrice currentPrice = futuresAgentPrice.get(i);
+				// 获取上级期货代理价格数据
+				FuturesAgentPrice agentPrice = agentPriceDao.findByContractIdAndOrgId(currentPrice.getContractId(),
+						organization.getParentId());
+				// 获取期货合约信息
 				FuturesContractDto contractDto = agentPriceBusiness
-						.getFuturesContractDto(futuresAgentPrice.get(i).getContractId());
-				if (organization.getLevel() == 2) {
-					if (futuresAgentPrice.get(i).getCostReserveFund()
-							.compareTo(contractDto.getPerUnitReserveFund()) < 0) {
-						// 成本保证金不能比全局设置的低
-						throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-								contractDto.getName());
-					}
-					if (futuresAgentPrice.get(i).getCostOpenwindServiceFee()
-							.compareTo(contractDto.getOpenwindServiceFee()) < 0) {
-						// 成本开仓手续费不能比全局设置的低
-						throw new ServiceException(
-								ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-								contractDto.getName());
-					}
-					if (futuresAgentPrice.get(i).getCostUnwindServiceFee()
-							.compareTo(contractDto.getUnwindServiceFee()) < 0) {
-						// 成本平仓手续费不能比全局设置的低
-						throw new ServiceException(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION,
-								contractDto.getName());
-					}
-					if (futuresAgentPrice.get(i).getCostDeferredFee()
-							.compareTo(contractDto.getOvernightPerUnitDeferredFee()) < 0) {
-						// 成本递延费不能比全局设置的低
-						throw new ServiceException(
-								ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-								contractDto.getName());
-					}
-				} else {
-					agentPriceDao.findByContractIdAndOrgId(contractDto.getId(), orgId);
-				}
-			}
-
-			for (FuturesAgentPrice agentPrice : futuresAgentPrice) {
-				FuturesContractDto contractDto = agentPriceBusiness.getFuturesContractDto(agentPrice.getContractId());
-				if (agentPrice.getCostReserveFund().compareTo(contractDto.getPerUnitReserveFund()) < 0) {
-					// 成本保证金不能比全局设置的低
-					throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-							contractDto.getName());
-				}
-				if (agentPrice.getCostOpenwindServiceFee().compareTo(contractDto.getOpenwindServiceFee()) < 0) {
-					// 成本开仓手续费不能比全局设置的低
-					throw new ServiceException(
-							ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-							contractDto.getName());
-				}
-				if (agentPrice.getCostOpenwindServiceFee().compareTo(agentPrice.getSaleOpenwindServiceFee()) > 0) {
-					// 销售开仓手续费不能比成本开仓手续费的低
-					throw new ServiceException(
-							ExceptionConstant.SALES_OPENINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
-							contractDto.getName());
-				}
-				if (agentPrice.getCostUnwindServiceFee().compareTo(contractDto.getUnwindServiceFee()) < 0) {
-					// 成本平仓手续费不能比全局设置的低
-					throw new ServiceException(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION,
-							contractDto.getName());
-				}
-				if (agentPrice.getCostUnwindServiceFee().compareTo(agentPrice.getSaleUnwindServiceFee()) > 0) {
-					// 销售平仓手续费不能比成本开仓手续费的低
-					throw new ServiceException(
-							ExceptionConstant.SALES_CLOSINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
-							contractDto.getName());
-				}
-				if (agentPrice.getCostDeferredFee().compareTo(contractDto.getOvernightPerUnitDeferredFee()) < 0) {
-					// 成本递延费不能比全局设置的低
-					throw new ServiceException(
-							ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-							contractDto.getName());
-				}
-				if (agentPrice.getCostDeferredFee().compareTo(agentPrice.getSaleDeferredFee()) > 0) {
-					// 销售递延费不能比成本递延费的低
-					throw new ServiceException(
-							ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
-							contractDto.getName());
-				}
-				agentPriceDao.create(agentPrice);
+						.getFuturesContractDtoByContractId(currentPrice.getContractId());
+				// 判断是否期货代理价格是否合法
+				currentPrice = saveAgent(currentPrice, agentPrice, contractDto, organization);
+				agentPriceDao.create(currentPrice);
 			}
 			return 1;
 		}
 		return null;
+	}
+
+	/**
+	 * 判断是否期货代理价格是否合法
+	 * 
+	 * @param currentPrice
+	 *            当前期货代理价格数据
+	 * @param agentPrice
+	 *            上级期货代理价格数据
+	 * @param contractDto
+	 *            合约数据
+	 * @param organization
+	 *            代理商数据
+	 */
+	public FuturesAgentPrice saveAgent(FuturesAgentPrice currentPrice, FuturesAgentPrice agentPrice,
+			FuturesContractDto contractDto, OrganizationDto organization) {
+		if (contractDto == null) {
+			// 该合约不存在
+			throw new ServiceException(ExceptionConstant.CONTRACT_DOESNOT_EXIST_EXCEPTION);
+		}
+		if (organization.getLevel() <= 2) {
+			if (contractDto.getPerUnitReserveFund() == null || contractDto.getOpenwindServiceFee() == null
+					|| contractDto.getUnwindServiceFee() == null
+					|| contractDto.getOvernightPerUnitDeferredFee() == null) {
+				// 没有设置全局成本价
+				throw new ServiceException(ExceptionConstant.NOT_GLOBAL_COST_PRICE_ISSET_EXCEPTION);
+			}
+			if (currentPrice.getCostReserveFund() == null) {
+				currentPrice.setCostReserveFund(contractDto.getPerUnitReserveFund());
+			} else if (currentPrice.getCostReserveFund().compareTo(contractDto.getPerUnitReserveFund()) < 0) {
+				// 成本保证金不能比全局设置的低
+				throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_THAN_GLOBAL_SETTING_EXCEPTION,
+						contractDto.getName(), contractDto.getPerUnitReserveFund());
+			}
+			if (currentPrice.getCostOpenwindServiceFee() == null) {
+				currentPrice.setCostOpenwindServiceFee(contractDto.getOpenwindServiceFee());
+			} else if (currentPrice.getCostOpenwindServiceFee().compareTo(contractDto.getOpenwindServiceFee()) < 0) {
+				// 成本开仓手续费不能比全局设置的低
+				throw new ServiceException(
+						ExceptionConstant.COST_OPENING_WAREHOUSE_SHOULDNOT_LOWER_OVERALL_SETTING_EXCEPTION,
+						contractDto.getName(), contractDto.getOpenwindServiceFee());
+			}
+			if (currentPrice.getSaleOpenwindServiceFee() == null) {
+				currentPrice.setSaleOpenwindServiceFee(currentPrice.getCostOpenwindServiceFee());
+			} else if (currentPrice.getCostOpenwindServiceFee()
+					.compareTo(currentPrice.getSaleOpenwindServiceFee()) > 0) {
+				// 销售开仓手续费不能比成本开仓手续费的低
+				throw new ServiceException(ExceptionConstant.SALES_OPENINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+						contractDto.getName());
+			}
+			if (currentPrice.getCostUnwindServiceFee() == null) {
+				currentPrice.setCostUnwindServiceFee(contractDto.getUnwindServiceFee());
+			} else if (currentPrice.getCostUnwindServiceFee().compareTo(contractDto.getUnwindServiceFee()) < 0) {
+				// 成本平仓手续费不能比全局设置的低
+				throw new ServiceException(ExceptionConstant.COST_ISNOT_LOWER_OVERALL_SETTING_EXCEPTION,
+						contractDto.getName(), contractDto.getUnwindServiceFee());
+			}
+			if (currentPrice.getSaleUnwindServiceFee() == null) {
+				currentPrice.setSaleUnwindServiceFee(currentPrice.getCostUnwindServiceFee());
+			} else if (currentPrice.getCostUnwindServiceFee().compareTo(currentPrice.getSaleUnwindServiceFee()) > 0) {
+				// 销售平仓手续费不能比成本开仓手续费的低
+				throw new ServiceException(ExceptionConstant.SALES_CLOSINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+						contractDto.getName());
+			}
+			if (currentPrice.getCostDeferredFee() == null) {
+				currentPrice.setCostDeferredFee(contractDto.getOvernightPerUnitDeferredFee());
+			} else if (currentPrice.getCostDeferredFee().compareTo(contractDto.getOvernightPerUnitDeferredFee()) < 0) {
+				// 成本递延费不能比全局设置的低
+				throw new ServiceException(
+						ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOTBE_LOWER_GLOBAL_SETTING_EXCEPTION,
+						contractDto.getName(), contractDto.getOvernightPerUnitDeferredFee());
+			}
+			if (currentPrice.getSaleDeferredFee() == null) {
+				currentPrice.setSaleDeferredFee(currentPrice.getCostDeferredFee());
+			} else if (currentPrice.getCostDeferredFee().compareTo(currentPrice.getSaleDeferredFee()) > 0) {
+				// 销售递延费不能比成本递延费的低
+				throw new ServiceException(
+						ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
+						contractDto.getName());
+			}
+		} else {
+			if (agentPrice == null || (agentPrice.getCostReserveFund() == null
+					|| agentPrice.getCostOpenwindServiceFee() == null || agentPrice.getCostUnwindServiceFee() == null
+					|| agentPrice.getCostDeferredFee() == null)) {
+				// 上级成本价格不能为空
+				throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+						contractDto.getName());
+			}
+			if (currentPrice.getCostReserveFund() == null) {
+				currentPrice.setCostReserveFund(agentPrice.getCostReserveFund());
+			} else if (currentPrice.getCostReserveFund().compareTo(agentPrice.getCostReserveFund()) < 0) {
+				// 成本保证金不能比上级设置的低
+				throw new ServiceException(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+						contractDto.getName(), agentPrice.getCostReserveFund());
+			}
+
+			if (currentPrice.getCostOpenwindServiceFee() == null) {
+				currentPrice.setCostOpenwindServiceFee(agentPrice.getCostOpenwindServiceFee());
+			} else if (currentPrice.getCostOpenwindServiceFee().compareTo(agentPrice.getCostOpenwindServiceFee()) < 0) {
+				// 成本开仓手续费不能比上级设置的低
+				throw new ServiceException(ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+						contractDto.getName(), agentPrice.getCostOpenwindServiceFee());
+			}
+
+			if (currentPrice.getSaleOpenwindServiceFee() == null) {
+				currentPrice.setSaleOpenwindServiceFee(currentPrice.getCostOpenwindServiceFee());
+			} else if (currentPrice.getSaleOpenwindServiceFee()
+					.compareTo(currentPrice.getCostOpenwindServiceFee()) < 0) {
+				// 销售开仓手续费不能比成本开仓手续费的低
+				throw new ServiceException(ExceptionConstant.SALES_OPENINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+						contractDto.getName());
+			}
+
+			if (currentPrice.getCostUnwindServiceFee() == null) {
+				currentPrice.setCostUnwindServiceFee(agentPrice.getCostUnwindServiceFee());
+			} else if (currentPrice.getCostUnwindServiceFee().compareTo(agentPrice.getCostUnwindServiceFee()) < 0) {
+				// 成本平仓手续费不能比上级设置的低
+				throw new ServiceException(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION,
+						contractDto.getName(), agentPrice.getCostUnwindServiceFee());
+			}
+
+			if (currentPrice.getSaleUnwindServiceFee() == null) {
+				currentPrice.setSaleUnwindServiceFee(currentPrice.getSaleUnwindServiceFee());
+			} else if (currentPrice.getSaleUnwindServiceFee().compareTo(currentPrice.getCostUnwindServiceFee()) < 0) {
+				// 销售平仓手续费不能比成本平仓手续费的低
+				throw new ServiceException(ExceptionConstant.SALES_CLOSINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
+						contractDto.getName());
+			}
+
+			if (currentPrice.getCostDeferredFee() == null) {
+				currentPrice.setCostDeferredFee(agentPrice.getCostDeferredFee());
+			} else if (currentPrice.getCostDeferredFee().compareTo(agentPrice.getCostDeferredFee()) < 0) {
+				// 成本递延费不能比上级设置的低
+				throw new ServiceException(ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
+						contractDto.getName(), agentPrice.getCostDeferredFee());
+			}
+
+			if (currentPrice.getSaleDeferredFee() == null) {
+				currentPrice.setSaleDeferredFee(currentPrice.getCostDeferredFee());
+			} else if (currentPrice.getSaleDeferredFee().compareTo(currentPrice.getCostDeferredFee()) < 0) {
+				// 销售递延费不能比成本递延费的低
+				throw new ServiceException(
+						ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
+						contractDto.getName());
+			}
+		}
+		return currentPrice;
+	}
+
+	public FuturesAgentPrice currentAgentPrice(Long orgId, Long contractId) {
+
+		return agentPriceDao.findByContractIdAndOrgId(contractId, orgId);
+	}
+
+	public FuturesAgentPrice superiorAgentPrice(Long orgId, Long contractId) {
+		OrganizationDto organization = agentPriceBusiness.fetchByOrgId(orgId);
+		return agentPriceDao.findByContractIdAndOrgId(contractId, organization.getParentId());
 	}
 
 }

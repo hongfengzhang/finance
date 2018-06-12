@@ -17,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
 import com.waben.stock.datalayer.futures.repository.FuturesPreQuantityDao;
@@ -40,8 +41,8 @@ public class FuturesPreQuantityService {
 		preQuantityDao.delete(id);
 	}
 	
-	public List<FuturesPreQuantity> findByContractId(Long contractId){
-		return preQuantityDao.findByContractId(contractId);
+	public List<FuturesPreQuantity> findByCommodityId(Long commodityId){
+		return preQuantityDao.findByCommodityId(commodityId);
 	}
 	
 	public Page<FuturesPreQuantity> pagePre(final FuturesPreQuantityQuery query){
@@ -51,9 +52,9 @@ public class FuturesPreQuantityService {
 			@Override
 			public Predicate toPredicate(Root<FuturesPreQuantity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				Join<FuturesPreQuantity,FuturesContract> join = root.join("contract", JoinType.LEFT);
-				if(query.getContractId() !=null ){
-					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getContractId()));
+				Join<FuturesPreQuantity,FuturesCommodity> join = root.join("commodity", JoinType.LEFT);
+				if(query.getCommodityId() !=null ){
+					predicateList.add(criteriaBuilder.equal(join.get("id").as(Long.class), query.getCommodityId()));
 				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));

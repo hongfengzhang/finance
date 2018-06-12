@@ -1,5 +1,9 @@
 package com.waben.stock.applayer.tactics.business.futures;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +25,7 @@ import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.service.futures.FuturesOrderInterface;
 import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
+import com.waben.stock.interfaces.util.StringUtil;
 
 @Service
 public class FuturesContractBusiness {
@@ -40,6 +45,8 @@ public class FuturesContractBusiness {
 	@Autowired
 	@Qualifier("futuresBrokerInterface")
 	private FuturesBrokerInterface futuresBrokerInterface;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
 	public CapitalAccountDto findByPublisherId(Long publisherId) {
 		Response<CapitalAccountDto> response = service.fetchByPublisherId(publisherId);
@@ -76,18 +83,23 @@ public class FuturesContractBusiness {
 				quotation.setBigPrice(market.getBigPrice());
 				quotation.setBidSize(market.getBidSize());
 				quotation.setVolume(market.getVolume());
+				quotation.setCurrentHoldingTime(
+						timeZoneConversion(quotation.getTimeZoneGap(), quotation.getCurrentHoldingTime()));
+				quotation.setNextTradingTime(
+						timeZoneConversion(quotation.getTimeZoneGap(), quotation.getNextTradingTime()));
+
 			}
 		}
 		return quotationList;
 	}
 
-	/*public FuturesBrokerDto findBybrokerId(Long brokerId) {
-		Response<FuturesBrokerDto> response = futuresBrokerInterface.findByrokerId(brokerId);
-		if ("200".equals(response.getCode())) {
-			return response.getResult();
-		}
-		throw new ServiceException(response.getCode());
-	}*/
+	/*
+	 * public FuturesBrokerDto findBybrokerId(Long brokerId) {
+	 * Response<FuturesBrokerDto> response =
+	 * futuresBrokerInterface.findByrokerId(brokerId); if
+	 * ("200".equals(response.getCode())) { return response.getResult(); } throw
+	 * new ServiceException(response.getCode()); }
+	 */
 
 	public FuturesContractDto getContractByOne(FuturesContractQuery query) {
 		Response<PageInfo<FuturesContractDto>> response = futuresContractInterface.pagesContract(query);
@@ -100,11 +112,13 @@ public class FuturesContractBusiness {
 					// 该合约不存在
 					throw new ServiceException(ExceptionConstant.CONTRACT_DOESNOT_EXIST_EXCEPTION);
 				}
-				/*FuturesBrokerDto brokerDto = findBybrokerId(contractDto.getGatewayId());
-				if (brokerDto == null || !brokerDto.getEnable()) {
-					// 期货网关不支持该合约
-					throw new ServiceException(ExceptionConstant.GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION);
-				}*/
+				/*
+				 * FuturesBrokerDto brokerDto =
+				 * findBybrokerId(contractDto.getGatewayId()); if (brokerDto ==
+				 * null || !brokerDto.getEnable()) { // 期货网关不支持该合约 throw new
+				 * ServiceException(ExceptionConstant.
+				 * GATEWAY_DOESNOT_SUPPORT_CONTRACT_EXCEPTION); }
+				 */
 				if (contractDto.getExchangeEnable() != null && !contractDto.getExchangeEnable()) {
 					// 该合约交易所不可用
 					throw new ServiceException(ExceptionConstant.EXCHANGE_ISNOT_AVAILABLE_EXCEPTION);
@@ -123,6 +137,36 @@ public class FuturesContractBusiness {
 			return contractDto;
 		}
 		throw new ServiceException(response.getCode());
+	}
+
+	/**
+	 * 将时间转成国内时间
+	 * 
+	 * @param timeZoneGap
+	 *            时差
+	 * @param time
+	 *            国外时间
+	 * @return 国内时间
+	 */
+	private String timeZoneConversion(Integer timeZoneGap, String time) {
+		String timeStr = "";
+		try {
+			if (StringUtil.isEmpty(time)) {
+				return "";
+			}
+			timeStr = sdf.format(retriveExchangeTime(sdf.parse(time), timeZoneGap));
+		} catch (ParseException e) {
+			return "";
+		}
+
+		return timeStr;
+	}
+
+	private Date retriveExchangeTime(Date localTime, Integer timeZoneGap) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(localTime);
+		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap);
+		return cal.getTime();
 	}
 
 }

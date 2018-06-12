@@ -148,27 +148,36 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.PARTCONTRACT_NOTINTRADETIME_EXCEPTION, "一键平仓部分订单在非交易时间段");
 		exceptionMap.put(ExceptionConstant.BACKHANDSOURCEORDER_NOTUNWIND_EXCEPTION, "反手源订单暂未平仓");
 		exceptionMap.put(ExceptionConstant.FUTURESORDER_ALREADYBACKHAND_EXCEPTION, "订单已反手，不能重复反手");
-		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION, "合约在被订单使用，不能删除");
+		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION, "合约在被订单使用");
 		exceptionMap.put(ExceptionConstant.CONTRACT_CORDON_UNITUNWINDPOINT_EXCEPTION, "警戒线低于强平点");
-		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION, "合约没有可用的合约期限");
+		exceptionMap.put(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION, "品种没有可用的合约");
 		exceptionMap.put(ExceptionConstant.CONTRACT_PREQUANTITY_EXCEPTION, "合约没有预设置手数");
 		exceptionMap.put(ExceptionConstant.NOT_OPEN_GRANARY_PROVIDE_RELIEF_EXCEPTION, "当前时间该交易品种禁止开仓");
 		exceptionMap.put(ExceptionConstant.CLOSE_POSITION_EXCEPTION, "当前时间该交易品种禁止平仓");
 		exceptionMap.put(ExceptionConstant.USER_ORDER_DOESNOT_EXIST_EXCEPTION, "该用户订单不存在");
 		exceptionMap.put(ExceptionConstant.ORDER_HAS_BEEN_CLOSED_EXCEPTION, "该订单已平仓不能修改");
 
-		exceptionMap.put(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION, "%s成本保证金不能比全局设置的低");
+		exceptionMap.put(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION, "%s%s成本保证金不能比上级设置的%s%s低");
 		exceptionMap.put(ExceptionConstant.COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-				"%s成本开仓手续费不能比全局设置的低");
+				"%s%s成本开仓手续费不能比上级设置的%s%s低");
 		exceptionMap.put(ExceptionConstant.SALES_OPENINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
-				"%s销售开仓手续费不能比成本开仓手续费的低");
-		exceptionMap.put(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION, "%s成本平仓手续费不能比全局设置的低");
+				"%s%s销售开仓手续费不能比成本开仓手续费的低");
+		exceptionMap.put(ExceptionConstant.COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION, "%s%s成本平仓手续费不能比上级设置的%s%s低");
 		exceptionMap.put(ExceptionConstant.SALES_CLOSINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION,
-				"%s销售平仓手续费不能比成本开仓手续费的低");
+				"%s%s销售平仓手续费不能比成本开仓手续费的低");
 		exceptionMap.put(ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
-				"%s成本递延费不能比全局设置的低");
+				"%s%s成本递延费不能比上级设置的%s%s低");
 		exceptionMap.put(ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
-				"%s销售递延费不能比成本递延费的低");
+				"%s%s销售递延费不能比成本递延费的低");
+
+		exceptionMap.put(ExceptionConstant.NOT_GLOBAL_COST_PRICE_ISSET_EXCEPTION, "没有设置全局成本价");
+		exceptionMap.put(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_THAN_GLOBAL_SETTING_EXCEPTION,
+				"%s%s成本保证金不能比全局设置的%s%s低");
+		exceptionMap.put(ExceptionConstant.COST_OPENING_WAREHOUSE_SHOULDNOT_LOWER_OVERALL_SETTING_EXCEPTION,
+				"%s%s成本开仓手续费不能比全局设置的%s%s低");
+		exceptionMap.put(ExceptionConstant.COST_ISNOT_LOWER_OVERALL_SETTING_EXCEPTION, "%s%s成本平仓手续费不能比全局设置的%s%s低");
+		exceptionMap.put(ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOTBE_LOWER_GLOBAL_SETTING_EXCEPTION,
+				"%s%s成本递延费不能比全局设置的%s%s低");
 
 	}
 }
