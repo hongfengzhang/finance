@@ -25,7 +25,7 @@ public class IdCardUtil {
 
 	public static boolean isBetten18And65(String idCard) throws ParseException {
 		Date age18 = getAgeDate(idCard, 18);
-		Date age65 = getAgeDate(idCard, 65);
+		Date age65 = getAgeDate(idCard, 68);
 		Date now = new Date();
 		if (now.getTime() >= age18.getTime() && now.getTime() < age65.getTime()) {
 			return true;
