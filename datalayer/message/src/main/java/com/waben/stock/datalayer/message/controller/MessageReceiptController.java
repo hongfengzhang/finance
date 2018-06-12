@@ -1,8 +1,5 @@
 package com.waben.stock.datalayer.message.controller;
 
-import com.waben.stock.datalayer.message.service.OutsideMessageService;
-import com.waben.stock.interfaces.dto.message.MessagingDto;
-import com.waben.stock.interfaces.pojo.message.OutsideMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,17 +16,12 @@ import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.service.message.MessageReceiptInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @RestController
 @RequestMapping("/messageReceipt")
 public class MessageReceiptController implements MessageReceiptInterface{
 
 	@Autowired
 	private MessageReceiptService messageReceiptService;
-	@Autowired
-	private OutsideMessageService servcie;
 	@Override
 	public Response<MessageReceiptDto> addMessageReceipt(@RequestBody MessageReceiptDto messageReceiptDto) {
 		MessageReceipt requestMessaging = CopyBeanUtils.copyBeanProperties(MessageReceipt.class, messageReceiptDto, false);

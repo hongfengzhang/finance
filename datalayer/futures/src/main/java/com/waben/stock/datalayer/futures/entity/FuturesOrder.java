@@ -71,12 +71,6 @@ public class FuturesOrder {
 	@JoinColumn(name = "contract_id")
 	private FuturesContract contract;
 	/**
-	 * 对应的合约期限
-	 */
-	@ManyToOne
-	@JoinColumn(name = "contract_term_id")
-	private FuturesContractTerm contractTerm;
-	/**
 	 * 合约代码（取期货合约设置快照）
 	 */
 	private String contractSymbol;
@@ -580,14 +574,6 @@ public class FuturesOrder {
 		this.isTest = isTest;
 	}
 
-	public FuturesContractTerm getContractTerm() {
-		return contractTerm;
-	}
-
-	public void setContractTerm(FuturesContractTerm contractTerm) {
-		this.contractTerm = contractTerm;
-	}
-
 	public BigDecimal getSettlementRate() {
 		return settlementRate;
 	}
@@ -612,8 +598,8 @@ public class FuturesOrder {
 	}
 
 	public String getExchangeName() {
-		if (contract != null && contract.getExchange() != null) {
-			return contract.getExchange().getName();
+		if (contract != null && contract.getCommodity().getExchange() != null) {
+			return contract.getCommodity().getExchange().getName();
 		}
 		return exchangeName;
 	}

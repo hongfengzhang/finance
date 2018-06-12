@@ -54,14 +54,14 @@ public class FuturesContractService {
 
 	@Autowired
 	private FuturesContractDao futuresContractDao;
-	
+
 	@Autowired
 	private FuturesOrderService orderService;
-	
+
 	@Autowired
 	private FuturesContractTermService termService;
-	
-	public int isCurrent(Boolean current,Long id){
+
+	public int isCurrent(Boolean current, Long id) {
 		return futuresContractDao.isCurrent(current, id);
 	}
 
@@ -73,15 +73,20 @@ public class FuturesContractService {
 			public Predicate toPredicate(Root<FuturesContract> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				// Join<FuturesExchange, FuturesContract> parentJoin =
-				// root.join("exchange", JoinType.LEFT);
 				if (query.getContractId() != null && query.getContractId() != 0) {
 					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getContractId()));
 				}
 				if (!StringUtil.isEmpty(query.getSymbol())) {
 					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
 				}
-
+				if (query.getAppContract() != null) {
+					predicateList.add(
+							criteriaBuilder.equal(root.get("appContract").as(Boolean.class), query.getAppContract()));
+				}
+				if (query.getPcContract() != null) {
+					predicateList.add(
+							criteriaBuilder.equal(root.get("pcContract").as(Boolean.class), query.getPcContract()));
+				}
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
@@ -101,10 +106,11 @@ public class FuturesContractService {
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
 				Join<FuturesContract, FuturesExchange> join = root.join("exchange", JoinType.LEFT);
-				if(query.getExchangcode() != null && !"".equals(query.getExchangcode())){
-					predicateList.add(criteriaBuilder.or(criteriaBuilder.like(join.get("code").as(String.class), query.getExchangcode()+"%"),criteriaBuilder.like(join.get("name").as(String.class), query.getExchangcode()+"%")));
+				if (query.getExchangcode() != null && !"".equals(query.getExchangcode())) {
+					predicateList.add(criteriaBuilder.or(
+							criteriaBuilder.like(join.get("code").as(String.class), query.getExchangcode() + "%"),
+							criteriaBuilder.like(join.get("name").as(String.class), query.getExchangcode() + "%")));
 				}
-				
 
 				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
 					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
@@ -238,29 +244,29 @@ public class FuturesContractService {
 	public FuturesContract findByContractId(Long contractId) {
 		return futuresContractDao.retrieve(contractId);
 	}
-	
-	public List<FuturesContract> findByExchangId(Long exchangeId){
+
+	public List<FuturesContract> findByExchangId(Long exchangeId) {
 		return futuresContractDao.findByExchangId(exchangeId);
 	}
-	
-	public Response<String> deleteContract(Long id){
+
+	public Response<String> deleteContract(Long id) {
 		List<Long> contractId = new ArrayList<Long>();
 		contractId.add(id);
 		List<FuturesOrder> list = orderService.findByContractId(contractId);
-		if(list.size()>0){
+		if (list.size() > 0) {
 			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 		}
-		
+
 		List<FuturesContractTerm> termList = termService.findByListContractId(id);
-		if(termList.size()>0){
+		if (termList.size() > 0) {
 			for (FuturesContractTerm term : termList) {
 				contractId.clear();
 				contractId.add(term.getId());
 			}
 			list = orderService.findByContractTermId(contractId);
-			if(list.size()>0){
+			if (list.size() > 0) {
 				throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
-			}else{
+			} else {
 				int count = termService.deleteBycontractId(id);
 			}
 		}
@@ -271,10 +277,6 @@ public class FuturesContractService {
 		response.setMessage("响应成功");
 		response.setResult("1");
 		return response;
-	}
-
-	public List<FuturesContractTerm> findByListContractId(Long contractId) {
-		return futuresContractDao.findByListContractId(contractId);
 	}
 
 	public Page<FuturesContract> pagesContractAdmin(final FuturesContract query, int page, int limit) {
@@ -312,4 +314,3 @@ public class FuturesContractService {
 		return pages;
 	}
 }
-

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
-import com.waben.stock.datalayer.futures.entity.FuturesContractTerm;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesContractRepository;
 
@@ -59,11 +58,6 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 	@Override
 	public List<FuturesContract> list() {
 		return repository.findAll();
-	}
-
-	@Override
-	public List<FuturesContractTerm> findByListContractId(Long contractId) {
-		return repository.findByListContractId(contractId);
 	}
 
 	@Override

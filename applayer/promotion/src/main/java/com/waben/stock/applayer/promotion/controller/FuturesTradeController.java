@@ -11,20 +11,24 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.promotion.business.futures.FuturesTradeBusiness;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.applayer.promotion.util.PoiUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FutresOrderEntrustDto;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderAdminDto;
+import com.waben.stock.interfaces.dto.admin.futures.FuturesOrderCountDto;
+import com.waben.stock.interfaces.dto.organization.FuturesFowDto;
 import com.waben.stock.interfaces.dto.organization.FuturesTradeOrganizationDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesTradeAdminQuery;
+import com.waben.stock.interfaces.pojo.query.organization.FuturesFowQuery;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -39,16 +43,31 @@ public class FuturesTradeController {
 	
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
+	@RequestMapping(value = "/FuturesFow/", method = RequestMethod.GET)
+	@ApiOperation(value = "查询期货交易流水")
+	public Response<PageInfo<FuturesFowDto>> futuresFowPageByQuery(FuturesFowQuery query){
+		query.setCurrentOrgId(SecurityUtil.getUserDetails().getOrgId());
+		PageInfo<FuturesFowDto> result = business.futuresFowPageByQuery(query);
+		
+		return new Response<>(result);
+	}
+	
 	@RequestMapping(value = "/organizationOrder/pages", method = RequestMethod.POST)
 	@ApiOperation(value = "查询订单")
 	public Response<PageInfo<FuturesTradeOrganizationDto>> pagesOrganizationOrder(FuturesTradeAdminQuery query){
 		return business.pagesOrganizationOrder(query);
 	}
 	
-	@RequestMapping(value = "organizationOrder/pagesEntrust", method = RequestMethod.POST)
+	@RequestMapping(value = "/organizationOrder/pagesEntrust", method = RequestMethod.POST)
 	@ApiOperation(value = "查询委托订单")
 	public Response<PageInfo<FutresOrderEntrustDto>> pagesOrganizationEntrustOrder(FuturesTradeAdminQuery query){
 		return business.pagesOrganizationEntrustOrder(query);
+	}
+	
+	@GetMapping("/organizationOrder/countOrderState")
+	@ApiOperation(value = "订单总计")
+	public Response<FuturesOrderCountDto> countOrderState(FuturesTradeAdminQuery query){
+		return business.countOrderState(query);
 	}
 	
 	@RequestMapping(value = "/export", method = RequestMethod.GET)

@@ -32,6 +32,8 @@ public class OrganizationQuery extends PageAndSortQuery {
 	private Long loginOrgId;
 
 	private boolean onlyLoginOrg;
+	
+	private String treeCode;
 
 	/**
 	 * 代理商名称
@@ -105,6 +107,14 @@ public class OrganizationQuery extends PageAndSortQuery {
 
 	public void setOrgId(Long orgId) {
 		this.orgId = orgId;
+	}
+
+	public String getTreeCode() {
+		return treeCode;
+	}
+
+	public void setTreeCode(String treeCode) {
+		this.treeCode = treeCode;
 	}
 
 }

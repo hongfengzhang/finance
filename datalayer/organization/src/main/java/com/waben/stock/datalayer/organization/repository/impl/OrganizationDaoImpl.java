@@ -108,4 +108,9 @@ public class OrganizationDaoImpl implements OrganizationDao {
 		return null;
 	}
 
+	@Override
+	public String queryChlidOrgId(Long orgId) {
+		return repository.queryChildOrgId(orgId);
+	}
+
 }

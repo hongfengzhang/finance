@@ -30,4 +30,5 @@ public interface OrganizationDao extends BaseDao<Organization, Long> {
 
 	Organization getNewestOrg();
 
+	String queryChlidOrgId(Long orgId);
 }
