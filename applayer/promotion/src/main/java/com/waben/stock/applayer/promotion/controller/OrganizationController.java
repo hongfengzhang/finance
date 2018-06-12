@@ -29,6 +29,7 @@ import com.waben.stock.applayer.promotion.security.SecurityUtil;
 import com.waben.stock.applayer.promotion.util.PoiUtil;
 import com.waben.stock.applayer.promotion.util.QRCodeUtil;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationStaDto;
@@ -192,6 +193,24 @@ public class OrganizationController {
 	@ApiOperation(value = "添加期货代理价格")
 	public Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> agentPriceDto) {
 		return new Response<>(business.saveFuturesAgentPrice(agentPriceDto));
+	}
+
+	@RequestMapping(value = "/current/{orgId}/{contractId}", method = RequestMethod.GET)
+	@ApiOperation(value = "根据合约ID和代理商ID获取当前期货代理价格")
+	public Response<FuturesAgentPriceDto> getCurrentAgentPrice(Long orgId, Long contractId) {
+		return new Response<>(business.getCurrentAgentPrice(orgId, contractId));
+	}
+
+	@RequestMapping(value = "/superior/{orgId}/{contractId}", method = RequestMethod.GET)
+	@ApiOperation(value = "根据合约ID和代理商ID获取上级期货代理价格")
+	public Response<FuturesAgentPriceDto> getSuperiorAgentPrice(Long orgId, Long contractId) {
+		return new Response<>(business.getSuperiorAgentPrice(orgId, contractId));
+	}
+
+	@RequestMapping(value = "/futures/{contractId}", method = RequestMethod.GET)
+	@ApiOperation(value = "根据合约ID获取合约数据")
+	public Response<FuturesContractDto> getFuturesByContractId(@PathVariable Long contractId) {
+		return new Response<>(business.getFuturesByContractId(contractId));
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)

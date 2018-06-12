@@ -213,8 +213,8 @@ public class OrganizationService {
 	public List<Organization> list() {
 		return organizationDao.list();
 	}
-	
-	public String queryChildOrgId(Long orgId){
+
+	public String queryChildOrgId(Long orgId) {
 		return organizationDao.queryChlidOrgId(orgId);
 	}
 
@@ -242,8 +242,9 @@ public class OrganizationService {
 						predicateList
 								.add(criteriaBuilder.equal(parentJoin.get("id").as(Long.class), query.getParentId()));
 					}
-					if(query.getTreeCode()!=null && !"".equals(query.getTreeCode().trim())){
-						predicateList.add(criteriaBuilder.like(root.get("treeCode").as(String.class), "%"+query.getTreeCode()+"%"));
+					if (query.getTreeCode() != null && !"".equals(query.getTreeCode().trim())) {
+						predicateList.add(criteriaBuilder.like(root.get("treeCode").as(String.class),
+								"%" + query.getTreeCode() + "%"));
 					}
 				}
 				if (predicateList.size() > 0) {
@@ -565,8 +566,8 @@ public class OrganizationService {
 		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
 				totalElements != null ? totalElements.longValue() : 0);
 	}
-	
-	public Page<FuturesFowDto> futuresFowPageByQuery(FuturesFowQuery query){
+
+	public Page<FuturesFowDto> futuresFowPageByQuery(FuturesFowQuery query) {
 		String customerNameQuery = "";
 		if (!StringUtil.isEmpty(query.getPublisherName())) {
 			customerNameQuery = " and t4.name like '%" + query.getPublisherName() + "%'";
@@ -599,12 +600,12 @@ public class OrganizationService {
 			agentCodeNameQuery = " and (t10.code like '%" + query.getOrgCodeOrName() + "%' or t10.name like '%"
 					+ query.getOrgCodeOrName() + "%')";
 		}
-		
+
 		String treeCodeQuery = "";
-		if(!StringUtil.isEmpty(query.getTreeCode())){
-			treeCodeQuery = " and t10.tree_code like '%"+query.getTreeCode()+"%'";
+		if (!StringUtil.isEmpty(query.getTreeCode())) {
+			treeCodeQuery = " and t10.tree_code like '%" + query.getTreeCode() + "%'";
 		}
-		
+
 		String sql = String.format(
 				"select t1.id, t4.name as publisher_name, t5.phone, t1.flow_no, t1.occurrence_time, t1.type, t1.amount, t1.available_balance, "
 						+ " IF(t12.symbol IS NULL,t2.stock_code,t12.symbol) AS symbol,  IF(t12.name IS NULL,t2.stock_name,t12.name) AS contract_name,"
@@ -621,8 +622,8 @@ public class OrganizationService {
 						+ " LEFT JOIN f_futures_contract t12 ON t3.contract_id = t12.id "
 						+ " WHERE 1=1 and t10.id is not null  %s %s %s %s %s %s %s %s order by t1.occurrence_time desc limit "
 						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				customerNameQuery, tradingNumberQuery, startTimeCondition, endTimeCondition, orderTypeQuery, contractCodeQuery,
-				agentCodeNameQuery,treeCodeQuery);
+				customerNameQuery, tradingNumberQuery, startTimeCondition, endTimeCondition, orderTypeQuery,
+				contractCodeQuery, agentCodeNameQuery, treeCodeQuery);
 		String countSql = "select count(*) from (" + sql.substring(0, sql.indexOf("limit")) + ") c";
 		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
 		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class })); // ID
@@ -910,6 +911,16 @@ public class OrganizationService {
 			}
 		}
 		return currentPrice;
+	}
+
+	public FuturesAgentPrice currentAgentPrice(Long orgId, Long contractId) {
+
+		return agentPriceDao.findByContractIdAndOrgId(contractId, orgId);
+	}
+
+	public FuturesAgentPrice superiorAgentPrice(Long orgId, Long contractId) {
+		OrganizationDto organization = agentPriceBusiness.fetchByOrgId(orgId);
+		return agentPriceDao.findByContractIdAndOrgId(contractId, organization.getParentId());
 	}
 
 }
