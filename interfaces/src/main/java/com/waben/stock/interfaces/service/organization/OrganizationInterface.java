@@ -189,8 +189,9 @@ public interface OrganizationInterface {
 	/**
 	 * 
 	 * @param futuresAgentPricedto
+	 *            期货代理价格
 	 * @return
 	 */
-	@RequestMapping(value = "/save/agent/price", method = RequestMethod.POST)
+	@RequestMapping(value = "/save/agent/price", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<Integer> saveFuturesAgentPrice(@RequestBody List<FuturesAgentPriceDto> futuresAgentPricedto);
 }

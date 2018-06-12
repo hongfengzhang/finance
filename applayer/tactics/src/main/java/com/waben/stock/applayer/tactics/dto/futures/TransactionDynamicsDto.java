@@ -41,6 +41,9 @@ public class TransactionDynamicsDto {
 	@ApiModelProperty(value = "数量（手）")
 	private BigDecimal totalQuantity;
 
+	@ApiModelProperty(value = "期货合约状态,1 交易中;2 休市中;3 异常")
+	private Integer state;
+
 	public Long getPublisherId() {
 		return publisherId;
 	}
@@ -111,6 +114,14 @@ public class TransactionDynamicsDto {
 
 	public void setContractId(Long contractId) {
 		this.contractId = contractId;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 }
