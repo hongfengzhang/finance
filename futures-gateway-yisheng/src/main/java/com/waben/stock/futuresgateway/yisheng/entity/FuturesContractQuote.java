@@ -22,8 +22,12 @@ public class FuturesContractQuote {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	/** 合约标识 */
-	private String symbol;
+	/** 品种ID */
+	private Long commodityId;
+	/** 品种编号 */
+	private String commodityNo;
+	/** 合约ID */
+	private Long contractId;
 	/** 合约编号 */
 	private String contractNo;
 	/** 时间 */
@@ -123,12 +127,28 @@ public class FuturesContractQuote {
 		this.id = id;
 	}
 
-	public String getSymbol() {
-		return symbol;
+	public Long getCommodityId() {
+		return commodityId;
 	}
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
+	public void setCommodityId(Long commodityId) {
+		this.commodityId = commodityId;
+	}
+
+	public String getCommodityNo() {
+		return commodityNo;
+	}
+
+	public void setCommodityNo(String commodityNo) {
+		this.commodityNo = commodityNo;
+	}
+
+	public Long getContractId() {
+		return contractId;
+	}
+
+	public void setContractId(Long contractId) {
+		this.contractId = contractId;
 	}
 
 	public Date getTime() {

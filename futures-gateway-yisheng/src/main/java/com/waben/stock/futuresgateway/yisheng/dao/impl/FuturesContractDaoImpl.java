@@ -24,43 +24,43 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 	private FuturesContractRepository futuresContractRepository;
 
 	@Override
-	public FuturesContract createContract(FuturesContract futuresContract) {
+	public FuturesContract createFuturesContract(FuturesContract futuresContract) {
 		return futuresContractRepository.save(futuresContract);
 	}
 
 	@Override
-	public void deleteContractById(Long id) {
+	public void deleteFuturesContractById(Long id) {
 		futuresContractRepository.delete(id);
 	}
 
 	@Override
-	public FuturesContract updateContract(FuturesContract futuresContract) {
+	public FuturesContract updateFuturesContract(FuturesContract futuresContract) {
 		return futuresContractRepository.save(futuresContract);
 	}
 
 	@Override
-	public FuturesContract retrieveContractById(Long id) {
+	public FuturesContract retrieveFuturesContractById(Long id) {
 		return futuresContractRepository.findById(id);
 	}
 
 	@Override
-	public Page<FuturesContract> pageContract(int page, int limit) {
+	public Page<FuturesContract> pageFuturesContract(int page, int limit) {
 		return futuresContractRepository.findAll(new PageRequest(page, limit));
 	}
 
 	@Override
-	public List<FuturesContract> listContract() {
+	public List<FuturesContract> listFuturesContract() {
 		return futuresContractRepository.findAll();
 	}
 
 	@Override
-	public FuturesContract retrieveContractBySymbol(String symbol) {
-		return futuresContractRepository.findBySymbolIgnoreCase(symbol);
+	public FuturesContract retrieveByCommodityNoAndContractNo(String commodityNo, String contractNo) {
+		return futuresContractRepository.findByCommodityNoAndContractNo(commodityNo, contractNo);
 	}
 
 	@Override
-	public FuturesContract retrieveContractByEnableAndSymbol(boolean enable, String symbol) {
-		return futuresContractRepository.findByEnableAndSymbolIgnoreCase(enable, symbol);
+	public List<FuturesContract> retriveByEnable(Boolean enable) {
+		return futuresContractRepository.findByEnable(enable);
 	}
 
 }
