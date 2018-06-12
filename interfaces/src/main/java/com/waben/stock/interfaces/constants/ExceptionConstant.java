@@ -198,20 +198,31 @@ public class ExceptionConstant {
 	public static final String RAKEBACK_RATIO_WRONG_EXCEPTION = "8018";
 	// 提现金额不足以支付提现手续费
 	public static final String PROCESSFEE_NOT_ENOUGH_EXCEPTION = "8019";
-	// 成本保证金不能比全局设置的低
+	// 成本保证金不能比上级设置的低
 	public static final String COST_MARGIN_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION = "8020";
-	// 成本开仓手续费不能比全局设置的低
+	// 成本开仓手续费不能比上级设置的低
 	public static final String COST_OPENINGCHARGES_CANNOT_LOWER_GLOBAL_SETTING_EXCEPTION = "8021";
 	// 销售开仓手续费不能比成本开仓手续费的低
 	public static final String SALES_OPENINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION = "8022";
-	// 成本平仓手续费不能比全局设置的低
+	// 成本平仓手续费不能比上级设置的低
 	public static final String COST_NOT_LOWER_OVERALL_SETTING_EXCEPTION = "8023";
 	// 销售平仓手续费不能比成本开仓手续费的低
 	public static final String SALES_CLOSINGFEE_CANNOT_LOWER_COST_OPENINGFEE_EXCEPTION = "8024";
-	// 成本递延费不能比全局设置的低
+	// 成本递延费不能比上级设置的低
 	public static final String COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION = "8025";
 	// 销售递延费不能比成本递延费的低
 	public static final String SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION = "8026";
+
+	// 没有设置全局成本价
+	public static final String NOT_GLOBAL_COST_PRICE_ISSET_EXCEPTION = "8027";
+	// 成本保证金不能比全局设置的低
+	public static final String COST_MARGIN_CANNOT_LOWER_THAN_GLOBAL_SETTING_EXCEPTION = "8028";
+	// 成本开仓手续费不能比全局设置的低
+	public static final String COST_OPENING_WAREHOUSE_SHOULDNOT_LOWER_OVERALL_SETTING_EXCEPTION = "8029";
+	// 成本平仓手续费不能比全局设置的低
+	public static final String COST_ISNOT_LOWER_OVERALL_SETTING_EXCEPTION = "8030";
+	// 成本递延费不能比全局设置的低
+	public static final String COST_DEFERREDFEE_SHOULD_NOTBE_LOWER_GLOBAL_SETTING_EXCEPTION = "8031";
 
 	// 期权服务异常
 	// 名义本金20万起，且必须为10万的整数倍
