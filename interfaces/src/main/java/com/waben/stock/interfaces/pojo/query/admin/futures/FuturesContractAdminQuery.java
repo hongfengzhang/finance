@@ -10,25 +10,6 @@ public class FuturesContractAdminQuery extends PageAndSortQuery {
 	private Long id;
 	
 	/**
-	 * 交易所代码
-	 */
-	private String exchangcode;
-	
-	/**
-	 * 交易所全称
-	 */
-	private String exchangename;
-	
-	/**
-	 * 交易所类型
-	 * <ul>
-	 * <li>1外盘</li>
-	 * <li>2内盘</li>
-	 * </ul>
-	 */
-	private Integer exchangeType;
-	
-	/**
 	 * 产品代码
 	 */
 	private String symbol;
@@ -54,30 +35,6 @@ public class FuturesContractAdminQuery extends PageAndSortQuery {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getExchangcode() {
-		return exchangcode;
-	}
-
-	public void setExchangcode(String exchangcode) {
-		this.exchangcode = exchangcode;
-	}
-
-	public String getExchangename() {
-		return exchangename;
-	}
-
-	public void setExchangename(String exchangename) {
-		this.exchangename = exchangename;
-	}
-
-	public Integer getExchangeType() {
-		return exchangeType;
-	}
-
-	public void setExchangeType(Integer exchangeType) {
-		this.exchangeType = exchangeType;
 	}
 
 	public String getSymbol() {

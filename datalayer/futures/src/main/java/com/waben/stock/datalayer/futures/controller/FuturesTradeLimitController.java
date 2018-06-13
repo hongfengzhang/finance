@@ -91,6 +91,16 @@ public class FuturesTradeLimitController implements FuturesTradeLimitInterface {
 			FuturesTradeLimit li = page.getContent().get(i);
 			if(li.getContract()!=null){
 				pages.getContent().get(i).setContractId(li.getContract().getId());
+				pages.getContent().get(i).setContractNo(li.getContract().getContractNo());
+				if(li.getContract().getCommodity()!=null){
+					pages.getContent().get(i).setSymbol(li.getContract().getCommodity().getSymbol());
+					pages.getContent().get(i).setName(li.getContract().getCommodity().getName());
+					if(li.getContract().getCommodity().getExchange()!=null){
+						pages.getContent().get(i).setExchangcode(li.getContract().getCommodity().getExchange().getCode());
+						pages.getContent().get(i).setExchangename(li.getContract().getCommodity().getExchange().getName());
+						pages.getContent().get(i).setExchangeType(li.getContract().getCommodity().getExchange().getExchangeType());
+					}
+				}
 			}
 			if(li.getLimitType()!=null){
 				FuturesTradeLimitTypeConverter converter = new FuturesTradeLimitTypeConverter();

@@ -39,5 +39,9 @@ public class FuturesCommodityBusiness {
 	public Response<FuturesTradeTimeDto> queryTradeTime(Long commodityId){
 		return  reference.queryTradeTime(commodityId);
 	}
+	
+	public Response<String> isCurrency(Long commodityId){
+		return reference.isCurrency(commodityId);
+	}
 
 }

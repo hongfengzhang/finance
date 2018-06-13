@@ -169,6 +169,8 @@ public class ExceptionMap {
 				"%s成本递延费不能比全局设置的低");
 		exceptionMap.put(ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
 				"%s销售递延费不能比成本递延费的低");
+		exceptionMap.put(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION, "合约参数不全");
+		exceptionMap.put(ExceptionConstant.COMMODITY_TRADETIME_ISNULL_EXCEPTION, "品种没有设置交易时间");
 
 	}
 }

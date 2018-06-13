@@ -208,6 +208,8 @@ public class FuturesCommodity {
 	 */
 	@OneToMany(cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER, mappedBy = "commodity")
 	private Set<FuturesPreQuantity> preQuantitySet;
+	
+	private Date createTime;
 
 	/***************** 分割线，以下字段为非数据库字段 ********************/
 
@@ -564,6 +566,14 @@ public class FuturesCommodity {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }
