@@ -14,20 +14,20 @@ import com.waben.stock.futuresgateway.yisheng.entity.FuturesContract;
  */
 public interface FuturesContractDao {
 
-	public FuturesContract createContract(FuturesContract futuresContract);
+	public FuturesContract createFuturesContract(FuturesContract futuresContract);
 
-	public void deleteContractById(Long id);
+	public void deleteFuturesContractById(Long id);
 
-	public FuturesContract updateContract(FuturesContract futuresContract);
+	public FuturesContract updateFuturesContract(FuturesContract futuresContract);
 
-	public FuturesContract retrieveContractById(Long id);
+	public FuturesContract retrieveFuturesContractById(Long id);
 
-	public Page<FuturesContract> pageContract(int page, int limit);
+	public Page<FuturesContract> pageFuturesContract(int page, int limit);
+	
+	public List<FuturesContract> listFuturesContract();
 
-	public List<FuturesContract> listContract();
+	public FuturesContract retrieveByCommodityNoAndContractNo(String commodityNo, String contractNo);
 
-	public FuturesContract retrieveContractBySymbol(String symbol);
-
-	public FuturesContract retrieveContractByEnableAndSymbol(boolean enable, String symbol);
+	public List<FuturesContract> retriveByEnable(Boolean enable);
 
 }

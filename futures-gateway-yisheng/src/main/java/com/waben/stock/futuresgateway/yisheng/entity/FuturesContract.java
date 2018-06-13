@@ -1,7 +1,5 @@
 package com.waben.stock.futuresgateway.yisheng.entity;
 
-import java.math.BigDecimal;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,20 +19,20 @@ public class FuturesContract {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	/** 合约标识 */
-	private String symbol;
+	/** 合约编号 */
+	private String contractNo;
 	/** 合约名称 */
-	private String name;
-	/** 安全类型 */
-	private String secType;
-	/** 货币 */
-	private String currency;
-	/** 最小变动价位 */
-	private BigDecimal minWave;
-	/** 交易所ID */
-	private Long exchangeId;
-	/** 交易所（代码） */
-	private String exchange;
+	private String contractName;
+	/** 首次通知日期 */
+	private String firstNoticeDate;
+	/** 最后交易日期 */
+	private String lastTradeDate;
+	/** 合约到期日期 */
+	private String contractExpDate;
+	/** 品种ID */
+	private Long commodityId;
+	/** 品种编号 */
+	private String commodityNo;
 	/** 是否可用 */
 	private Boolean enable;
 
@@ -46,60 +44,60 @@ public class FuturesContract {
 		this.id = id;
 	}
 
-	public String getSymbol() {
-		return symbol;
+	public String getContractNo() {
+		return contractNo;
 	}
 
-	public void setSymbol(String symbol) {
-		this.symbol = symbol;
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
-	public String getSecType() {
-		return secType;
+	public String getContractName() {
+		return contractName;
 	}
 
-	public void setSecType(String secType) {
-		this.secType = secType;
+	public void setContractName(String contractName) {
+		this.contractName = contractName;
 	}
 
-	public String getCurrency() {
-		return currency;
+	public String getFirstNoticeDate() {
+		return firstNoticeDate;
 	}
 
-	public void setCurrency(String currency) {
-		this.currency = currency;
+	public void setFirstNoticeDate(String firstNoticeDate) {
+		this.firstNoticeDate = firstNoticeDate;
 	}
 
-	public String getExchange() {
-		return exchange;
+	public String getLastTradeDate() {
+		return lastTradeDate;
 	}
 
-	public void setExchange(String exchange) {
-		this.exchange = exchange;
+	public void setLastTradeDate(String lastTradeDate) {
+		this.lastTradeDate = lastTradeDate;
 	}
 
-	public Long getExchangeId() {
-		return exchangeId;
+	public String getContractExpDate() {
+		return contractExpDate;
 	}
 
-	public void setExchangeId(Long exchangeId) {
-		this.exchangeId = exchangeId;
+	public void setContractExpDate(String contractExpDate) {
+		this.contractExpDate = contractExpDate;
 	}
 
-	public BigDecimal getMinWave() {
-		return minWave;
+	public Long getCommodityId() {
+		return commodityId;
 	}
 
-	public void setMinWave(BigDecimal minWave) {
-		this.minWave = minWave;
+	public void setCommodityId(Long commodityId) {
+		this.commodityId = commodityId;
 	}
 
-	public String getName() {
-		return name;
+	public String getCommodityNo() {
+		return commodityNo;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setCommodityNo(String commodityNo) {
+		this.commodityNo = commodityNo;
 	}
 
 	public Boolean getEnable() {

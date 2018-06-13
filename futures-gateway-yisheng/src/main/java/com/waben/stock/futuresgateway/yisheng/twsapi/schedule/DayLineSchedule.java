@@ -99,9 +99,9 @@ public class DayLineSchedule {
 					for (FuturesContract futuresContract : contractList) {
 						Contract contract = new Contract();
 						// contract.localSymbol(futuresContract.getLocalSymbolName());
-						contract.secType(futuresContract.getSecType());
-						contract.currency(futuresContract.getCurrency());
-						contract.exchange(futuresContract.getExchange());
+//						contract.secType(futuresContract.getSecType());
+//						contract.currency(futuresContract.getCurrency());
+//						contract.exchange(futuresContract.getExchange());
 						int tickerId = Integer.parseInt(prefix + String.valueOf(futuresContract.getId()));
 						twsEngine.historicalDataRequests(twsEngine.getClient(), contract, tickerId, timeFrame,
 								timeSize);

@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.future.api.es.external.quote.bean.TapAPIQuoteCommodityInfo;
-import com.waben.stock.futuresgateway.yisheng.entity.FuturesContract;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesCommodity;
 import com.waben.stock.futuresgateway.yisheng.esapi.EsEngine;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.RabbitmqConfiguration;
-import com.waben.stock.futuresgateway.yisheng.service.FuturesContractService;
+import com.waben.stock.futuresgateway.yisheng.service.FuturesCommodityService;
 import com.waben.stock.futuresgateway.yisheng.util.JacksonUtil;
 
 @Component
@@ -23,7 +23,7 @@ public class CommodityConsumer {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private FuturesContractService contractService;
+	private FuturesCommodityService commodityService;
 
 	@Autowired
 	private EsEngine engine;
@@ -32,29 +32,41 @@ public class CommodityConsumer {
 	public void handlerMessage(String message) {
 		TapAPIQuoteCommodityInfo msgObj = JacksonUtil.decode(message, TapAPIQuoteCommodityInfo.class);
 		try {
-			String symbol = msgObj.getCommodity().getCommodityNo();
+			String commodityNo = msgObj.getCommodity().getCommodityNo();
 			char commodityType = msgObj.getCommodity().getCommodityType();
 			if (commodityType == 'F') {
 				// 保存品种信息
-				FuturesContract contract = contractService.getContractInfoBySymbol(symbol);
-				if (contract != null) {
-					contract.setExchange(msgObj.getCommodity().getExchangeNo());
-					contract.setMinWave(new BigDecimal(msgObj.getCommodityTickSize()));
-					contractService.addContract(contract);
+				FuturesCommodity commodity = commodityService.getByCommodityNo(commodityNo);
+				if (commodity != null) {
+					commodity.setCommodityContractLen(msgObj.getCommodityContractLen());
+					commodity.setCommodityEngName(msgObj.getCommodityEngName());
+					commodity.setCommodityName(msgObj.getCommodityName());
+					commodity.setCommodityNo(msgObj.getCommodity().getCommodityNo());
+					commodity.setCommodityTickSize(new BigDecimal(msgObj.getCommodityTickSize()));
+					commodity.setCommodityType(String.valueOf(msgObj.getCommodity().getCommodityType()));
+					commodity.setContractSize(new BigDecimal(msgObj.getContractSize()));
+					commodity.setExchangeNo(msgObj.getCommodity().getExchangeNo());
+					commodityService.modifyFuturesCommodity(commodity);
 				} else {
-					contract = new FuturesContract();
-					contract.setSymbol(symbol);
-					contract.setExchange(msgObj.getCommodity().getExchangeNo());
-					contract.setMinWave(new BigDecimal(msgObj.getCommodityTickSize()));
-					contractService.modifyContract(contract);
+					commodity = new FuturesCommodity();
+					commodity.setCommodityContractLen(msgObj.getCommodityContractLen());
+					commodity.setCommodityEngName(msgObj.getCommodityEngName());
+					commodity.setCommodityName(msgObj.getCommodityName());
+					commodity.setCommodityNo(msgObj.getCommodity().getCommodityNo());
+					commodity.setCommodityTickSize(new BigDecimal(msgObj.getCommodityTickSize()));
+					commodity.setCommodityType(String.valueOf(msgObj.getCommodity().getCommodityType()));
+					commodity.setContractSize(new BigDecimal(msgObj.getContractSize()));
+					commodity.setExchangeNo(msgObj.getCommodity().getExchangeNo());
+					commodityService.addFuturesCommodity(commodity);
 				}
 				// 查询品种合约信息
-				if (contract.getEnable() != null && contract.getEnable()) {
+				if (commodity.getEnable() != null && commodity.getEnable()) {
 					engine.qryContract(msgObj.getCommodity());
+					Thread.sleep(1000);
 				}
 			}
 		} catch (Exception ex) {
-			logger.error("消费Commodity消息异常!", ex);
+			logger.error("消费易盛Commodity消息异常!", ex);
 		}
 	}
 

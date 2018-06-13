@@ -142,7 +142,7 @@ public class FuturesOrderService {
 		if (!isConnected()) {
 			throw new ServiceException(ExceptionEnum.Client_NotConnected);
 		}
-		FuturesContract futuresContract = futuresContractDao.retrieveContractBySymbol(symbol);
+		FuturesContract futuresContract = futuresContractDao.retrieveByCommodityNoAndContractNo(null, symbol);
 		if (futuresContract == null) {
 			throw new ServiceException(ExceptionEnum.Symbol_NotSupported);
 		}
@@ -156,7 +156,7 @@ public class FuturesOrderService {
 		FuturesOrder futuresOrder = new FuturesOrder();
 		futuresOrder.setDomain(domain);
 		futuresOrder.setContractId(futuresContract.getId());
-		futuresOrder.setCurrency(futuresContract.getCurrency());
+//		futuresOrder.setCurrency(futuresContract.getCurrency());
 		futuresOrder.setAction(action);
 		futuresOrder.setUserOrderType(userOrderType);
 		futuresOrder.setOuterOrderId(outerOrderId);
@@ -185,9 +185,9 @@ public class FuturesOrderService {
 		}
 		Contract contract = new Contract();
 		// contract.localSymbol(futuresContract.getLocalSymbolName());
-		contract.secType(futuresContract.getSecType());
-		contract.currency(futuresContract.getCurrency());
-		contract.exchange(futuresContract.getExchange());
+//		contract.secType(futuresContract.getSecType());
+//		contract.currency(futuresContract.getCurrency());
+//		contract.exchange(futuresContract.getExchange());
 		client.placeOrder(twsOrderId, contract, order);
 		return futuresOrderDao.createFuturesOrder(futuresOrder);
 	}
