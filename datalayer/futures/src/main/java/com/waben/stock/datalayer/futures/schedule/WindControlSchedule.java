@@ -99,7 +99,7 @@ public class WindControlSchedule {
 							continue;
 						}
 						// step 5 : 获取合约行情
-						FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getContractSymbol());
+						FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getCommoditySymbol());
 						// step 6 : 是否达到止盈点
 						if (orderService.isTradeTime(timeZoneGap, contract) && isReachProfitPoint(order, market)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachProfitPoint,
@@ -162,7 +162,7 @@ public class WindControlSchedule {
 		BigDecimal minWave = order.getContract().getCommodity().getMinWave();
 		BigDecimal perWaveMoney = order.getContract().getCommodity().getPerWaveMoney();
 		// 货币汇率
-		FuturesCurrencyRate rate = rateService.findByCurrency(order.getContractCurrency());
+		FuturesCurrencyRate rate = rateService.findByCurrency(order.getCommodityCurrency());
 		if (buyingPrice != null && perUnitLimitProfitAmount != null) {
 			if (limitProfitType != null && limitProfitType == 1 && perUnitLimitProfitAmount != null) {
 				// type为行情价格
@@ -233,7 +233,7 @@ public class WindControlSchedule {
 		BigDecimal minWave = order.getContract().getCommodity().getMinWave();
 		BigDecimal perWaveMoney = order.getContract().getCommodity().getPerWaveMoney();
 		// 货币汇率
-		FuturesCurrencyRate rate = rateService.findByCurrency(order.getContractCurrency());
+		FuturesCurrencyRate rate = rateService.findByCurrency(order.getCommodityCurrency());
 		if (buyingPrice != null) {
 			// 获取合约设置的止损价格
 			BigDecimal contractSetNeedWavePrice = null;

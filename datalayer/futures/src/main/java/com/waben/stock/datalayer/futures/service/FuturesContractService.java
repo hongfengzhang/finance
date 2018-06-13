@@ -57,6 +57,9 @@ public class FuturesContractService {
 
 	@Autowired
 	private FuturesOrderService orderService;
+	
+	@Autowired
+	private FuturesTradeLimitService limitService;
 
 	public int isCurrent(Long id) {
 		FuturesContract contract = futuresContractDao.retrieve(id);
@@ -208,8 +211,8 @@ public class FuturesContractService {
 		if (list.size() > 0) {
 			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 		}
-
-
+		
+		limitService.deleteByContractId(id);
 		futuresContractDao.delete(id);
 		Response<String> response = new Response<>();
 		response.setCode("200");

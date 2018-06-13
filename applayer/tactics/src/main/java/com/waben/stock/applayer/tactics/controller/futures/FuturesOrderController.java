@@ -1,5 +1,7 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
+import static org.mockito.Matchers.contains;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -150,9 +152,10 @@ public class FuturesOrderController {
 		orderDto.setReserveFund(reserveAmount);
 		// 服务费
 		orderDto.setServiceFee(comprehensiveAmount);
-		orderDto.setContractSymbol(contractDto.getSymbol());
-		orderDto.setContractName(contractDto.getName());
-		orderDto.setContractCurrency(contractDto.getCurrency());
+		orderDto.setCommoditySymbol(contractDto.getSymbol());
+		orderDto.setCommodityName((contractDto.getName()));
+		orderDto.setCommodityCurrency(contractDto.getCurrency());
+		orderDto.setContractNo(contractDto.getContractNo());
 		orderDto.setOpenwindServiceFee(contractDto.getOpenwindServiceFee());
 		orderDto.setUnwindServiceFee(contractDto.getUnwindServiceFee());
 		orderDto.setPerUnitUnwindPoint(contractDto.getPerUnitUnwindPoint());
@@ -523,7 +526,7 @@ public class FuturesOrderController {
 				sellPrice = String.valueOf(trade.getSellingEntrustPrice());
 			}
 			data.add(trade.getTradeNo() == null ? "" : trade.getTradeNo());
-			data.add(trade.getContractName() == null ? "" : trade.getContractName());
+			data.add(trade.getCommodityName() == null ? "" : trade.getCommodityName());
 			data.add(trade.getExchangeName() == null ? "" : trade.getExchangeName());
 			data.add(business);
 			data.add(trade.getState() == null ? "" : trade.getState().getType());
