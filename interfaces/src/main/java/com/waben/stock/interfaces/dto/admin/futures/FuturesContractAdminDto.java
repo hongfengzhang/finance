@@ -115,6 +115,11 @@ public class FuturesContractAdminDto {
 	private Boolean enable;
 	
 	/**
+	 * 合约状态
+	 */
+	private Integer state;
+	
+	/**
 	 * 是否app合约
 	 */
 	private Boolean appContract;
@@ -286,6 +291,14 @@ public class FuturesContractAdminDto {
 
 	public void setEnable(Boolean enable) {
 		this.enable = enable;
+	}
+
+	public Integer getState() {
+		return state;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 
 	public Boolean getAppContract() {

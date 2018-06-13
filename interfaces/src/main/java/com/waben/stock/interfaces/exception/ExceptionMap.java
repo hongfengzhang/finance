@@ -180,6 +180,7 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.COST_ISNOT_LOWER_OVERALL_SETTING_EXCEPTION, "%s成本平仓手续费不能比全局设置的%s低");
 		exceptionMap.put(ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOTBE_LOWER_GLOBAL_SETTING_EXCEPTION,
 				"%s成本递延费不能比全局设置的%s低");
+		exceptionMap.put(ExceptionConstant.CONTRACT_COMMODITYID_ISNULL_EXCEPTION, "合约没有选择品种");
 
 	}
 }

@@ -319,4 +319,6 @@ public class ExceptionConstant {
 	public static final String CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION = "13028";
 	//品种没有设置交易时间
 	public static final String COMMODITY_TRADETIME_ISNULL_EXCEPTION = "13029";
+	//合约没有选择品种
+	public static final String CONTRACT_COMMODITYID_ISNULL_EXCEPTION = "13030";
 }
