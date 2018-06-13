@@ -26,8 +26,8 @@ public interface FuturesContractRepository extends Repository<FuturesContract, L
 
 	FuturesContract findById(Long id);
 
-	FuturesContract findBySymbolIgnoreCase(String symbol);
+	FuturesContract findByCommodityNoAndContractNo(String commodityNo, String contractNo);
 
-	FuturesContract findByEnableAndSymbolIgnoreCase(boolean enable, String symbol);
+	List<FuturesContract> findByEnable(Boolean enable);
 	
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.future.api.es.external.common.bean.TapAPICommodity;
+import com.future.api.es.external.common.bean.TapAPIContract;
 
 @Component
 public class EsEngine {
@@ -16,6 +17,10 @@ public class EsEngine {
 
 	public int qryContract(TapAPICommodity commodity) {
 		return quoteWrapper.getApi().qryContract(commodity);
+	}
+
+	public int subscribeQuote(TapAPIContract contract) {
+		return quoteWrapper.getApi().subscribeQuote(contract);
 	}
 
 }

@@ -22,51 +22,51 @@ public class FuturesContractService {
 	@Autowired
 	private FuturesContractDao futuresContractDao;
 
-	public FuturesContract getContractInfoByEnableAndSymbol(String symbol) {
-		return futuresContractDao.retrieveContractByEnableAndSymbol(true, symbol);
+	public FuturesContract getFuturesContractInfo(Long id) {
+		return futuresContractDao.retrieveFuturesContractById(id);
+	}
+
+	@Transactional
+	public FuturesContract addFuturesContract(FuturesContract futuresContract) {
+		return futuresContractDao.createFuturesContract(futuresContract);
+	}
+
+	@Transactional
+	public FuturesContract modifyFuturesContract(FuturesContract futuresContract) {
+		return futuresContractDao.updateFuturesContract(futuresContract);
+	}
+
+	@Transactional
+	public void deleteFuturesContract(Long id) {
+		futuresContractDao.deleteFuturesContractById(id);
 	}
 	
-	public FuturesContract getContractInfoBySymbol(String symbol) {
-		return futuresContractDao.retrieveContractBySymbol(symbol);
-	}
-
-	public FuturesContract getContractInfo(Long id) {
-		return futuresContractDao.retrieveContractById(id);
-	}
-
 	@Transactional
-	public FuturesContract addContract(FuturesContract futuresContract) {
-		return futuresContractDao.createContract(futuresContract);
-	}
-
-	@Transactional
-	public FuturesContract modifyContract(FuturesContract futuresContract) {
-		return futuresContractDao.updateContract(futuresContract);
-	}
-
-	@Transactional
-	public void deleteContract(Long id) {
-		futuresContractDao.deleteContractById(id);
-	}
-
-	@Transactional
-	public void deleteContracts(String ids) {
-		if (ids != null) {
-			String[] idArr = ids.split(",");
-			for (String id : idArr) {
-				if (!"".equals(id.trim())) {
-					futuresContractDao.deleteContractById(Long.parseLong(id.trim()));
+	public void deleteFuturesContracts(String ids) {
+		if(ids != null) {
+			String[] idArr= ids.split(",");
+			for(String id : idArr) {
+				if(!"".equals(id.trim())) {
+					futuresContractDao.deleteFuturesContractById(Long.parseLong(id.trim()));
 				}
 			}
 		}
 	}
 
 	public Page<FuturesContract> futuresContracts(int page, int limit) {
-		return futuresContractDao.pageContract(page, limit);
+		return futuresContractDao.pageFuturesContract(page, limit);
+	}
+	
+	public List<FuturesContract> list() {
+		return futuresContractDao.listFuturesContract();
 	}
 
-	public List<FuturesContract> list() {
-		return futuresContractDao.listContract();
+	public FuturesContract getByCommodityNoAndContractNo(String commodityNo, String contractNo) {
+		return futuresContractDao.retrieveByCommodityNoAndContractNo(commodityNo, contractNo);
+	}
+
+	public List<FuturesContract> getByEnable(boolean enable) {
+		return futuresContractDao.retriveByEnable(enable);
 	}
 
 }

@@ -2,6 +2,8 @@ package com.waben.stock.futuresgateway.yisheng.esapi;
 
 import javax.annotation.PostConstruct;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -14,12 +16,8 @@ import com.future.api.es.external.quote.bean.TapAPIQuoteContractInfo;
 import com.future.api.es.external.quote.bean.TapAPIQuoteLoginAuth;
 import com.future.api.es.external.quote.bean.TapAPIQuoteWhole;
 import com.future.api.es.external.quote.listener.QuoteApiListener;
-import com.future.api.es.external.util.JacksonUtil;
-import com.waben.stock.futuresgateway.yisheng.cache.RedisCache;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.RabbitmqProducer;
-import com.waben.stock.futuresgateway.yisheng.rabbitmq.message.TapAPIQuoteContractInfoWithSession;
-import com.waben.stock.futuresgateway.yisheng.util.CopyBeanUtils;
 
 /**
  * 易盛行情
@@ -29,6 +27,8 @@ import com.waben.stock.futuresgateway.yisheng.util.CopyBeanUtils;
  */
 @Component
 public class EsQuoteWrapper implements QuoteApiListener {
+
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	/** 行情IP */
 	@Value("${es.quote.ip}")
@@ -105,28 +105,23 @@ public class EsQuoteWrapper implements QuoteApiListener {
 
 	@Override
 	public void onRspQryContract(int sessionID, int errorCode, boolean isLast, TapAPIQuoteContractInfo info) {
-		TapAPIQuoteContractInfoWithSession sessionInfo = CopyBeanUtils
-				.copyBeanProperties(TapAPIQuoteContractInfoWithSession.class, info, false);
-		sessionInfo.setSessionID(sessionID);
-		rabbitmqProducer.sendMessage(RabbitmqConfiguration.contractQueueName, sessionInfo);
+		rabbitmqProducer.sendMessage(RabbitmqConfiguration.contractQueueName, info);
 	}
 
 	@Override
 	public void onRspSubscribeQuote(int sessionID, int errorCode, boolean isLast, TapAPIQuoteWhole quoteWhole) {
-		// TODO Auto-generated method stub
-
+		logger.info("品种{}，合约{}，行情订阅成功!", quoteWhole.getContract().getCommodity().getCommodityNo(),
+				quoteWhole.getContract().getContractNo1());
 	}
 
 	@Override
 	public void onRspUnSubscribeQuote(int sessionID, int errorCode, boolean isLast, TapAPIContract info) {
-		// TODO Auto-generated method stub
-
+		logger.info("品种{}，合约{}，取消行情订阅成功!", info.getCommodity().getCommodityNo(), info.getContractNo1());
 	}
 
 	@Override
 	public void onRtnQuote(TapAPIQuoteWhole info) {
-		// TODO Auto-generated method stub
-
+		rabbitmqProducer.sendMessage(RabbitmqConfiguration.quoteQueueName, info);
 	}
 
 }

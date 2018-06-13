@@ -65,9 +65,9 @@ public class TwsEngine {
 			for (FuturesContract futuresContract : contractList) {
 				Contract contract = new Contract();
 				// contract.localSymbol(futuresContract.getLocalSymbolName());
-				contract.secType(futuresContract.getSecType());
-				contract.currency(futuresContract.getCurrency());
-				contract.exchange(futuresContract.getExchange());
+//				contract.secType(futuresContract.getSecType());
+//				contract.currency(futuresContract.getCurrency());
+//				contract.exchange(futuresContract.getExchange());
 				// 日K
 				int dayLineTickerId = Integer
 						.parseInt(TwsConstant.DayLine_TickerId_Prefix + String.valueOf(futuresContract.getId()));
@@ -110,9 +110,9 @@ public class TwsEngine {
 	public void reqMktData(EClientSocket client, FuturesContract futuresContract, boolean snapshot) {
 		Contract contract = new Contract();
 		// contract.localSymbol(futuresContract.getLocalSymbolName());
-		contract.secType(futuresContract.getSecType());
-		contract.currency(futuresContract.getCurrency());
-		contract.exchange(futuresContract.getExchange());
+//		contract.secType(futuresContract.getSecType());
+//		contract.currency(futuresContract.getCurrency());
+//		contract.exchange(futuresContract.getExchange());
 
 		// TODO 因还未订阅数据，先写死合约
 		contract = new Contract();

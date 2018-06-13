@@ -1,6 +1,8 @@
 package com.waben.stock.interfaces.dto.admin.futures;
 
 import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
 
 public class FuturesCommodityAdminDto {
 
@@ -166,6 +168,10 @@ public class FuturesCommodityAdminDto {
 	 * 返还隔夜保证金的时间（交易所时间）
 	 */
 	private String returnOvernightReserveFundTime;
+	
+	private List<FuturesPreQuantityDto> preQuantityDto;
+	
+	private Date createTime;
 
 	public Long getId() {
 		return id;
@@ -413,5 +419,21 @@ public class FuturesCommodityAdminDto {
 
 	public void setReturnOvernightReserveFundTime(String returnOvernightReserveFundTime) {
 		this.returnOvernightReserveFundTime = returnOvernightReserveFundTime;
+	}
+
+	public List<FuturesPreQuantityDto> getPreQuantityDto() {
+		return preQuantityDto;
+	}
+
+	public void setPreQuantityDto(List<FuturesPreQuantityDto> preQuantityDto) {
+		this.preQuantityDto = preQuantityDto;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 }

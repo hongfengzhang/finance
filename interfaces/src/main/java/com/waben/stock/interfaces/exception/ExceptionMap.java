@@ -168,7 +168,9 @@ public class ExceptionMap {
 		exceptionMap.put(ExceptionConstant.COST_DEFERREDFEE_SHOULD_NOT_LOWER_GLOBAL_SETTING_EXCEPTION,
 				"%s%s成本递延费不能比上级设置的%s%s低");
 		exceptionMap.put(ExceptionConstant.SALES_DEFERRED_CHARGES_CANNOT_LOWER_COST_DEFERRED_CHARGES_EXCEPTION,
-				"%s%s销售递延费不能比成本递延费的低");
+				"%s销售递延费不能比成本递延费的低");
+		exceptionMap.put(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION, "合约参数不全");
+		exceptionMap.put(ExceptionConstant.COMMODITY_TRADETIME_ISNULL_EXCEPTION, "品种没有设置交易时间");
 
 		exceptionMap.put(ExceptionConstant.NOT_GLOBAL_COST_PRICE_ISSET_EXCEPTION, "没有设置全局成本价");
 		exceptionMap.put(ExceptionConstant.COST_MARGIN_CANNOT_LOWER_THAN_GLOBAL_SETTING_EXCEPTION,

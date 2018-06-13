@@ -41,15 +41,16 @@ public class FuturesMarketService {
 	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public FuturesContract market(String symbol) {
-		return contractDao.retrieveContractBySymbol(symbol);
+		// return contractDao.retrieveContractBySymbol(symbol);
+		return null;
 	}
 
 	public List<FuturesContractLineData> timeLine(String symbol, Integer dayCount) {
 		List<FuturesContractLineData> result = new ArrayList<>();
 		// 从redis中获取
-		FuturesContract contract = contractDao.retrieveContractBySymbol(symbol);
+		FuturesContract contract = contractDao.retrieveByCommodityNoAndContractNo(null, symbol);
 		Map<String, String> map = redisCache
-				.hgetAll(String.format(TwsConstant.TimeLine_RedisKey, contract.getId() + "_" + contract.getSymbol()));
+				.hgetAll(String.format(TwsConstant.TimeLine_RedisKey, contract.getId() + "_" + contract.getContractNo()));
 		List<String> datas = new ArrayList<>(map.values());
 		// 按时间倒序排序
 		Collections.sort(datas, new TimeStringDownComparator());
@@ -98,9 +99,9 @@ public class FuturesMarketService {
 			startTime = cal.getTime();
 		}
 		// 从redis中获取
-		FuturesContract contract = contractDao.retrieveContractBySymbol(symbol);
+		FuturesContract contract = contractDao.retrieveByCommodityNoAndContractNo(null, symbol);
 		Map<String, String> map = redisCache
-				.hgetAll(String.format(TwsConstant.DayLine_RedisKey, contract.getId() + "_" + contract.getSymbol()));
+				.hgetAll(String.format(TwsConstant.DayLine_RedisKey, contract.getId() + "_" + symbol));
 		List<String> datas = new ArrayList<>(map.values());
 		// 按时间倒序排序
 		Collections.sort(datas, new TimeStringDownComparator());
@@ -131,9 +132,9 @@ public class FuturesMarketService {
 		} else {
 			return result;
 		}
-		FuturesContract contract = contractDao.retrieveContractBySymbol(symbol);
+		FuturesContract contract = contractDao.retrieveByCommodityNoAndContractNo(null, symbol);
 		Map<String, String> map = redisCache
-				.hgetAll(String.format(redisKey, contract.getId() + "_" + contract.getSymbol()));
+				.hgetAll(String.format(redisKey, contract.getId() + "_" + symbol));
 		List<String> datas = new ArrayList<>(map.values());
 		// 按时间倒序排序
 		Collections.sort(datas, new TimeStringDownComparator());

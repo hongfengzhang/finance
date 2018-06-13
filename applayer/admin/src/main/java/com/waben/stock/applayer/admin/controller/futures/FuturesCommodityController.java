@@ -47,6 +47,12 @@ public class FuturesCommodityController {
 	@Autowired
 	private FuturesCommodityBusiness business;
 	
+	@RequestMapping(value = "/isCurrency", method = RequestMethod.POST)
+	@ApiOperation(value = "上线/下线品种")
+	public Response<String> isCurrency(Long commodityId){
+		return business.isCurrency(commodityId);
+	}
+	
 	@RequestMapping(value = "/tradeTime/saveAndModify", method = RequestMethod.POST)
 	@ApiOperation(value = "添加品种交易时间")
 	public Response<FuturesTradeTimeDto> saveAndModify(FuturesTradeTimeDto dto){

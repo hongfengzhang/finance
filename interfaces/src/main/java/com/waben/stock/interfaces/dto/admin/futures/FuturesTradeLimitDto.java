@@ -32,13 +32,18 @@ public class FuturesTradeLimitDto {
 	private Long contractId;
 	
 	/**
-	 * 合约代码
+	 * 交易代码
 	 */
 	private String symbol;
 	/**
-	 * 合约名称
+	 * 交易名称
 	 */
 	private String name;
+	
+	/**
+	 * 合约代码
+	 */
+	private String contractNo;
 	
 	/**
 	 * 限制类型
@@ -132,6 +137,14 @@ public class FuturesTradeLimitDto {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 	public String getLimitType() {

@@ -20,20 +20,16 @@ public class FuturesExchange {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 交易所名称
+	 * 交易所编号
 	 * <p>
 	 * 一般为代码
 	 * </p>
 	 */
-	private String exchange;
+	private String exchangeNo;
 	/**
 	 * 交易所全称
 	 */
 	private String exchangeFullName;
-	/**
-	 * 北京时间的时差和交易所
-	 */
-	private Integer timeZoneGap;
 
 	public Long getId() {
 		return id;
@@ -43,12 +39,12 @@ public class FuturesExchange {
 		this.id = id;
 	}
 
-	public String getExchange() {
-		return exchange;
+	public String getExchangeNo() {
+		return exchangeNo;
 	}
 
-	public void setExchange(String exchange) {
-		this.exchange = exchange;
+	public void setExchangeNo(String exchangeNo) {
+		this.exchangeNo = exchangeNo;
 	}
 
 	public String getExchangeFullName() {
@@ -57,14 +53,6 @@ public class FuturesExchange {
 
 	public void setExchangeFullName(String exchangeFullName) {
 		this.exchangeFullName = exchangeFullName;
-	}
-
-	public Integer getTimeZoneGap() {
-		return timeZoneGap;
-	}
-
-	public void setTimeZoneGap(Integer timeZoneGap) {
-		this.timeZoneGap = timeZoneGap;
 	}
 
 }
