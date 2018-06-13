@@ -71,31 +71,35 @@ public class FuturesOrder {
 	@JoinColumn(name = "contract_id")
 	private FuturesContract contract;
 	/**
-	 * 合约代码（取期货合约设置快照）
+	 * 品种代码（取期货品种设置快照）
 	 */
-	private String contractSymbol;
+	private String commoditySymbol;
 	/**
-	 * 合约名称（取期货合约设置快照）
+	 * 品种名称（取期货品种设置快照）
 	 */
-	private String contractName;
+	private String commodityName;
 	/**
-	 * 货币（取期货合约设置快照）
+	 * 合约编号（取期货合约设置快照）
 	 */
-	private String contractCurrency;
+	private String contractNo;
 	/**
-	 * 开仓手续费（取期货合约设置快照）
+	 * 货币（取期货品种设置快照）
+	 */
+	private String commodityCurrency;
+	/**
+	 * 开仓手续费（取期货品种设置快照）
 	 */
 	private BigDecimal openwindServiceFee;
 	/**
-	 * 平仓手续费（取期货合约设置快照）
+	 * 平仓手续费（取期货品种设置快照）
 	 */
 	private BigDecimal unwindServiceFee;
 	/**
-	 * 一手强平点（取期货合约设置快照）
+	 * 一手强平点（取期货品种设置快照）
 	 */
 	private BigDecimal perUnitUnwindPoint;
 	/**
-	 * 强平点类型（取期货合约设置快照）
+	 * 强平点类型（取期货品种设置快照）
 	 * <ul>
 	 * <li>1比例</li>
 	 * <li>2金额</li>
@@ -103,11 +107,11 @@ public class FuturesOrder {
 	 */
 	private Integer unwindPointType;
 	/**
-	 * 一手隔夜保证金（取期货合约设置快照）
+	 * 一手隔夜保证金（取期货品种设置快照）
 	 */
 	private BigDecimal overnightPerUnitReserveFund;
 	/**
-	 * 一手隔夜递延费（取期货合约设置快照）
+	 * 一手隔夜递延费（取期货品种设置快照）
 	 */
 	private BigDecimal overnightPerUnitDeferredFee;
 	/**
@@ -526,28 +530,36 @@ public class FuturesOrder {
 		this.windControlType = windControlType;
 	}
 
-	public String getContractSymbol() {
-		return contractSymbol;
+	public String getCommoditySymbol() {
+		return commoditySymbol;
 	}
 
-	public void setContractSymbol(String contractSymbol) {
-		this.contractSymbol = contractSymbol;
+	public void setCommoditySymbol(String commoditySymbol) {
+		this.commoditySymbol = commoditySymbol;
 	}
 
-	public String getContractName() {
-		return contractName;
+	public String getCommodityName() {
+		return commodityName;
 	}
 
-	public void setContractName(String contractName) {
-		this.contractName = contractName;
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
 	}
 
-	public String getContractCurrency() {
-		return contractCurrency;
+	public String getContractNo() {
+		return contractNo;
 	}
 
-	public void setContractCurrency(String contractCurrency) {
-		this.contractCurrency = contractCurrency;
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
+	}
+
+	public String getCommodityCurrency() {
+		return commodityCurrency;
+	}
+
+	public void setCommodityCurrency(String commodityCurrency) {
+		this.commodityCurrency = commodityCurrency;
 	}
 
 	public Integer getLimitProfitType() {

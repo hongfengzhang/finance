@@ -64,6 +64,22 @@ public class FuturesOrderAdminDto {
 	private String state;
 	
 	/**
+	 * 合约代码（取期货合约设置快照）
+	 */
+	private String commoditySymbol;
+	
+	/**
+	 * 合约名称（取期货合约设置快照）
+	 */
+	private String commodityName;
+	
+	/**
+	 * 货币（取期货合约设置快照）
+	 */
+	private String commodityCurrency;
+	
+	
+	/**
 	 * 数量（手）
 	 */
 	private BigDecimal totalQuantity;
@@ -415,6 +431,31 @@ public class FuturesOrderAdminDto {
 	public void setServiceFee(BigDecimal serviceFee) {
 		this.serviceFee = serviceFee;
 	}
+
+	public String getCommoditySymbol() {
+		return commoditySymbol;
+	}
+
+	public void setCommoditySymbol(String commoditySymbol) {
+		this.commoditySymbol = commoditySymbol;
+	}
+
+	public String getCommodityName() {
+		return commodityName;
+	}
+
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
+	}
+
+	public String getCommodityCurrency() {
+		return commodityCurrency;
+	}
+
+	public void setCommodityCurrency(String commodityCurrency) {
+		this.commodityCurrency = commodityCurrency;
+	}
+
 
 	
 }

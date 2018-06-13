@@ -169,7 +169,10 @@ public class FuturesOrderService {
 				}
 
 				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
-					predicateList.add(criteriaBuilder.like(join.get("symbol").as(String.class), query.getSymbol()));
+					predicateList.add(criteriaBuilder.like(root.get("commoditySymbol").as(String.class), "%"+query.getSymbol()+"%"));
+				}
+				if (query.getName() != null && !"".equals(query.getName())) {
+					predicateList.add(criteriaBuilder.like(root.get("commodityName").as(String.class), "%"+query.getName()+"%"));
 				}
 
 				if (query.getOrderState() != null) {
@@ -401,7 +404,7 @@ public class FuturesOrderService {
 		FuturesActionType action = order.getOrderType() == FuturesOrderType.BuyUp ? FuturesActionType.BUY
 				: FuturesActionType.SELL;
 		Integer userOrderType = order.getBuyingPriceType() == FuturesTradePriceType.MKT ? 1 : 2;
-		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(),
+		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getCommoditySymbol(),
 				order.getId(), action, order.getTotalQuantity(), userOrderType, order.getBuyingEntrustPrice());
 		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
 		// step 7 : 更新订单状态
@@ -490,27 +493,27 @@ public class FuturesOrderService {
 			message.setExtras(extras);
 			switch (state) {
 			case BuyingEntrust:
-				message.setContent(String.format("您所购买的“%s”期货已进入“买入委托”状态", order.getContractName()));
+				message.setContent(String.format("您所购买的“%s”期货已进入“买入委托”状态", order.getCommodityName()));
 				extras.put("content",
-						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“买入委托”状态", order.getContractName()));
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“买入委托”状态", order.getCommodityName()));
 				extras.put("type", OutsideMessageType.Futures_BuyingEntrust.getIndex());
 				break;
 			case BuyingCanceled:
-				message.setContent(String.format("您所购买的“%s”期货已进入“取消买入委托”状态", order.getContractName()));
+				message.setContent(String.format("您所购买的“%s”期货已进入“取消买入委托”状态", order.getCommodityName()));
 				extras.put("content",
-						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已取消”状态", order.getContractName()));
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已取消”状态", order.getCommodityName()));
 				extras.put("type", OutsideMessageType.Futures_BuyingCanceled.getIndex());
 				break;
 			case Position:
-				message.setContent(String.format("您所购买的“%s”期货已进入“持仓中”状态", order.getContractName()));
+				message.setContent(String.format("您所购买的“%s”期货已进入“持仓中”状态", order.getCommodityName()));
 				extras.put("content",
-						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“持仓中”状态", order.getContractName()));
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“持仓中”状态", order.getCommodityName()));
 				extras.put("type", OutsideMessageType.Futures_Position.getIndex());
 				break;
 			case Unwind:
-				message.setContent(String.format("您所购买的“%s”期货已进入“已平仓”状态", order.getContractName()));
+				message.setContent(String.format("您所购买的“%s”期货已进入“已平仓”状态", order.getCommodityName()));
 				extras.put("content",
-						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已平仓”状态", order.getContractName()));
+						String.format("您所购买的“<span id=\"futures\">%s</span>”期货已进入“已平仓”状态", order.getCommodityName()));
 				extras.put("type", OutsideMessageType.Futures_DayUnwind.getIndex());
 				break;
 			default:
@@ -651,7 +654,7 @@ public class FuturesOrderService {
 				order.getBuyingPrice(), sellingPrice, order.getContract().getCommodity().getMinWave(),
 				order.getContract().getCommodity().getPerWaveMoney());
 		// 盈亏（人民币）
-		BigDecimal rate = rateService.findByCurrency(order.getContractCurrency()).getRate();
+		BigDecimal rate = rateService.findByCurrency(order.getCommodityCurrency()).getRate();
 		BigDecimal profitOrLoss = currencyProfitOrLoss.multiply(rate).setScale(2, RoundingMode.DOWN);
 		// 给用户结算
 		CapitalAccountDto account = accountBusiness.futuresOrderSettlement(order.getPublisherId(), order.getId(),
@@ -750,7 +753,7 @@ public class FuturesOrderService {
 		FuturesActionType action = order.getOrderType() == FuturesOrderType.BuyUp ? FuturesActionType.SELL
 				: FuturesActionType.BUY;
 		Integer userOrderType = priceType == FuturesTradePriceType.MKT ? 1 : 2;
-		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getContractSymbol(),
+		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getCommoditySymbol(),
 				order.getId(), action, order.getTotalQuantity(), userOrderType, entrustPrice);
 		order.setCloseGatewayOrderId(gatewayOrder.getId());
 		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
@@ -933,9 +936,10 @@ public class FuturesOrderService {
 		backhandOrder.setReserveFund(reserveFund);
 		backhandOrder.setServiceFee(serviceFee);
 		FuturesCommodity commodity = contract.getCommodity();
-		backhandOrder.setContractSymbol(commodity.getSymbol());
-		backhandOrder.setContractName(commodity.getName());
-		backhandOrder.setContractCurrency(commodity.getCurrency());
+		backhandOrder.setCommoditySymbol(commodity.getSymbol());
+		backhandOrder.setCommodityName(commodity.getName());
+		backhandOrder.setCommodityCurrency(commodity.getCurrency());
+		backhandOrder.setContractNo(contract.getContractNo());
 		backhandOrder.setOpenwindServiceFee(commodity.getOpenwindServiceFee());
 		backhandOrder.setUnwindServiceFee(commodity.getUnwindServiceFee());
 		backhandOrder.setPerUnitUnwindPoint(commodity.getPerUnitUnwindPoint());
