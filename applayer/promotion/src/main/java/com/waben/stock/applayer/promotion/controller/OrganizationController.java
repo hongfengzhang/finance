@@ -197,13 +197,15 @@ public class OrganizationController {
 
 	@RequestMapping(value = "/current/{orgId}/{contractId}", method = RequestMethod.GET)
 	@ApiOperation(value = "根据合约ID和代理商ID获取当前期货代理价格")
-	public Response<FuturesAgentPriceDto> getCurrentAgentPrice(Long orgId, Long contractId) {
+	public Response<FuturesAgentPriceDto> getCurrentAgentPrice(@PathVariable Long orgId,
+			@PathVariable Long contractId) {
 		return new Response<>(business.getCurrentAgentPrice(orgId, contractId));
 	}
 
 	@RequestMapping(value = "/superior/{orgId}/{contractId}", method = RequestMethod.GET)
 	@ApiOperation(value = "根据合约ID和代理商ID获取上级期货代理价格")
-	public Response<FuturesAgentPriceDto> getSuperiorAgentPrice(Long orgId, Long contractId) {
+	public Response<FuturesAgentPriceDto> getSuperiorAgentPrice(@PathVariable Long orgId,
+			@PathVariable Long contractId) {
 		return new Response<>(business.getSuperiorAgentPrice(orgId, contractId));
 	}
 

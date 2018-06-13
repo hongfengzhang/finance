@@ -1,0 +1,188 @@
+package com.waben.stock.applayer.promotion.controller;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.waben.stock.applayer.promotion.business.AgentCapitalManageBusiness;
+import com.waben.stock.applayer.promotion.security.SecurityUtil;
+import com.waben.stock.applayer.promotion.util.PoiUtil;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
+import com.waben.stock.interfaces.dto.organization.AgentCapitalManageDto;
+import com.waben.stock.interfaces.exception.ServiceException;
+import com.waben.stock.interfaces.pojo.Response;
+import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.AgentCapitalManageQuery;
+
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
+
+/**
+ * 代理商资金管理
+ * 
+ * @author sl
+ *
+ */
+@RestController
+@RequestMapping("/agentcapital")
+@Api(description = "代理商资金管理")
+public class AgentCapitalManageController {
+
+	@Autowired
+	public AgentCapitalManageBusiness agentCapitalManageBusiness;
+
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+	@RequestMapping(value = "/capitalFlow", method = RequestMethod.GET)
+	@ApiOperation(value = "资金流水")
+	@ApiImplicitParams({
+			@ApiImplicitParam(paramType = "query", dataType = "String", name = "types", value = "流水类型", required = false),
+			@ApiImplicitParam(paramType = "query", dataType = "String", name = "contractCodeOrName", value = "合约代码/名称", required = false),
+			@ApiImplicitParam(paramType = "query", dataType = "String", name = "orgCodeOrName", value = "代理商代码/名称", required = false) })
+	public Response<PageInfo<AgentCapitalManageDto>> pagesCapitalFlow(int page, int size, String types,
+			String contractCodeOrName, String orgCodeOrName) {
+		AgentCapitalManageQuery query = new AgentCapitalManageQuery();
+		query.setPage(page);
+		query.setSize(size);
+		query.setContractCodeOrName(contractCodeOrName);
+		query.setOrgCodeOrName(orgCodeOrName);
+		query.setTypes(types);
+		query.setTreeCode(SecurityUtil.getUserDetails().getTreeCode());
+		return new Response<>(agentCapitalManageBusiness.pageAgentCapitalManage(query));
+	}
+
+	@RequestMapping(value = "/commission/settlement", method = RequestMethod.GET)
+	@ApiOperation(value = "佣金结算")
+	public Response<PageInfo<AgentCapitalManageDto>> pagesCommissionSettlement(AgentCapitalManageQuery query) {
+		query.setTreeCode(SecurityUtil.getUserDetails().getTreeCode());
+		return new Response<>(agentCapitalManageBusiness.pageAgentCapitalManage(query));
+	}
+
+	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	@ApiImplicitParam(paramType = "query", dataType = "int", name = "queryType", value = "1 资金流水，2 佣金结算", required = true)
+	public void export(AgentCapitalManageQuery query, Integer queryType, HttpServletResponse svrResponse) {
+		query.setPage(0);
+		query.setSize(Integer.MAX_VALUE);
+		query.setTreeCode(SecurityUtil.getUserDetails().getTreeCode());
+		PageInfo<AgentCapitalManageDto> result = agentCapitalManageBusiness.pageAgentCapitalManage(query);
+		File file = null;
+		FileInputStream is = null;
+		String fileName = "";
+		try {
+			// queryType = 1 ? 资金流水 ： 佣金结算
+			if (queryType != null && queryType == 1) {
+				fileName = "capitalflow__" + String.valueOf(System.currentTimeMillis());
+				file = File.createTempFile(fileName, ".xls");
+				List<String> columnDescList = columnDescList();
+				List<List<String>> dataList = dataList(result.getContent());
+				PoiUtil.writeDataToExcel("资金流水", file, columnDescList, dataList);
+			} else {
+				fileName = "commission__" + String.valueOf(System.currentTimeMillis());
+				file = File.createTempFile(fileName, ".xls");
+				List<String> columnDescList = columnCommList();
+				List<List<String>> dataList = dataCommList(result.getContent());
+				PoiUtil.writeDataToExcel("佣金结算", file, columnDescList, dataList);
+			}
+
+			is = new FileInputStream(file);
+			svrResponse.setContentType("application/vnd.ms-excel");
+			svrResponse.setHeader("Content-Disposition", "attachment;filename=" + fileName + ".xls");
+			IOUtils.copy(is, svrResponse.getOutputStream());
+			svrResponse.getOutputStream().flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new ServiceException(ExceptionConstant.UNKNOW_EXCEPTION, "导出代理商资金数据到excel异常：" + e.getMessage());
+		} finally {
+			if (is != null) {
+				try {
+					is.close();
+				} catch (IOException e) {
+				}
+			}
+			if (file != null) {
+				file.delete();
+			}
+		}
+	}
+
+	// 资金流水
+	private List<List<String>> dataList(List<AgentCapitalManageDto> content) {
+		List<List<String>> result = new ArrayList<>();
+		for (AgentCapitalManageDto trade : content) {
+			List<String> data = new ArrayList<>();
+			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
+			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
+			data.add(trade.getResourceType() == null ? "" : trade.getResourceType().getType());
+			data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
+			data.add(String.valueOf(trade.getAvailableBalance() == null ? "" : trade.getAvailableBalance()));
+			data.add(trade.getContractSymbol() == null ? "" : trade.getContractSymbol());
+			data.add(trade.getContractName() == null ? "" : trade.getContractName());
+			data.add(trade.getAgentCode() + "/" + trade.getAgentName());
+			result.add(data);
+		}
+		return result;
+	}
+
+	private List<String> columnDescList() {
+		List<String> result = new ArrayList<>();
+		result.add("订单编号");
+		result.add("交易时间");
+		result.add("交易类型");
+		result.add("交易金额");
+		result.add("账户余额");
+		result.add("合约代码");
+		result.add("交易品种");
+		result.add("所属代理商代码/名称");
+		return result;
+	}
+
+	// 佣金结算
+	private List<List<String>> dataCommList(List<AgentCapitalManageDto> content) {
+		List<List<String>> result = new ArrayList<>();
+		for (AgentCapitalManageDto trade : content) {
+			List<String> data = new ArrayList<>();
+			data.add(String.valueOf(trade.getId() == null ? "" : trade.getId()));
+			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
+			data.add(trade.getCustomerName() == null ? "" : trade.getCustomerName());
+			data.add(trade.getCustomerPhone() == null ? "" : trade.getCustomerPhone());
+			data.add(trade.getContractSymbol() == null ? "" : trade.getContractSymbol());
+			data.add(trade.getContractName() == null ? "" : trade.getContractName());
+			data.add(trade.getResourceType() == null ? "" : trade.getResourceType().getType());
+			data.add(String.valueOf(trade.getCommission() == null ? "" : trade.getCommission()));
+			data.add(String.valueOf(trade.getAmountRemaid() == null ? "" : trade.getAmountRemaid()));
+			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
+			data.add(trade.getAgentCode() + "/" + trade.getAgentName());
+			result.add(data);
+		}
+		return result;
+	}
+
+	private List<String> columnCommList() {
+		List<String> result = new ArrayList<>();
+		result.add("订单编号");
+		result.add("流水号");
+		result.add("客户姓名");
+		result.add("客户账号");
+		result.add("合约代码");
+		result.add("产品名称");
+		result.add("佣金类型");
+		result.add("交易佣金");
+		result.add("返佣金额");
+		result.add("流水时间");
+		result.add("所属代理商代码/名称");
+		return result;
+	}
+}

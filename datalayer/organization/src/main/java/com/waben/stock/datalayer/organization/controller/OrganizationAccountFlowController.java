@@ -14,10 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.datalayer.organization.service.OrganizationAccountFlowService;
+import com.waben.stock.interfaces.dto.organization.AgentCapitalManageDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowWithTradeInfoDto;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
+import com.waben.stock.interfaces.pojo.query.organization.AgentCapitalManageQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 import com.waben.stock.interfaces.service.organization.OrganizationAccountFlowInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
@@ -36,35 +38,46 @@ import io.swagger.annotations.ApiOperation;
 @Api(description = "机构账户流水接口列表")
 public class OrganizationAccountFlowController implements OrganizationAccountFlowInterface {
 
-    Logger logger = LoggerFactory.getLogger(getClass());
+	Logger logger = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    public OrganizationAccountFlowService organizationAccountFlowService;
+	@Autowired
+	public OrganizationAccountFlowService organizationAccountFlowService;
 
-    @GetMapping("/{id}")
-    @ApiOperation(value = "根据id获取机构账户流水")
-    public Response<OrganizationAccountFlow> fetchById(@PathVariable Long id) {
-        return new Response<>(organizationAccountFlowService.getOrganizationAccountFlowInfo(id));
-    }
+	@GetMapping("/{id}")
+	@ApiOperation(value = "根据id获取机构账户流水")
+	public Response<OrganizationAccountFlow> fetchById(@PathVariable Long id) {
+		return new Response<>(organizationAccountFlowService.getOrganizationAccountFlowInfo(id));
+	}
 
-    @GetMapping("/page")
-    @ApiOperation(value = "获取机构账户流水分页数据")
-    public Response<Page<OrganizationAccountFlow>> organizationAccountFlows(int page, int limit) {
-        return new Response<>((Page<OrganizationAccountFlow>) organizationAccountFlowService.organizationAccountFlows(page, limit));
-    }
+	@GetMapping("/page")
+	@ApiOperation(value = "获取机构账户流水分页数据")
+	public Response<Page<OrganizationAccountFlow>> organizationAccountFlows(int page, int limit) {
+		return new Response<>(
+				(Page<OrganizationAccountFlow>) organizationAccountFlowService.organizationAccountFlows(page, limit));
+	}
 
-    @GetMapping("/list")
-    @ApiOperation(value = "获取机构账户流水列表")
-    public Response<List<OrganizationAccountFlowDto>> list() {
-        return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(organizationAccountFlowService.list(),
-                OrganizationAccountFlowDto.class));
-    }
+	@GetMapping("/list")
+	@ApiOperation(value = "获取机构账户流水列表")
+	public Response<List<OrganizationAccountFlowDto>> list() {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(organizationAccountFlowService.list(),
+				OrganizationAccountFlowDto.class));
+	}
 
-    @Override
-    public Response<PageInfo<OrganizationAccountFlowWithTradeInfoDto>> pagesWithTradeInfo(@RequestBody OrganizationAccountFlowQuery query) {
-    	Page<OrganizationAccountFlowWithTradeInfoDto> page = organizationAccountFlowService.pagesWithTradeInfoByQuery(query);
-		PageInfo<OrganizationAccountFlowWithTradeInfoDto> result = PageToPageInfo.pageToPageInfo(page, OrganizationAccountFlowWithTradeInfoDto.class);
+	@Override
+	public Response<PageInfo<OrganizationAccountFlowWithTradeInfoDto>> pagesWithTradeInfo(
+			@RequestBody OrganizationAccountFlowQuery query) {
+		Page<OrganizationAccountFlowWithTradeInfoDto> page = organizationAccountFlowService
+				.pagesWithTradeInfoByQuery(query);
+		PageInfo<OrganizationAccountFlowWithTradeInfoDto> result = PageToPageInfo.pageToPageInfo(page,
+				OrganizationAccountFlowWithTradeInfoDto.class);
 		return new Response<>(result);
-    }
+	}
+
+	@Override
+	public Response<PageInfo<AgentCapitalManageDto>> pageAgentCapitalManage(
+			@RequestBody AgentCapitalManageQuery query) {
+		return new Response<>(PageToPageInfo.pageToPageInfo(
+				organizationAccountFlowService.pageAgentCapitalManage(query), AgentCapitalManageDto.class));
+	}
 
 }
