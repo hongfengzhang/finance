@@ -15,6 +15,11 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 	 * 当前登陆用户所属的代理商ID
 	 */
 	private Long currentOrgId;
+
+	/**
+	 * 当前登录树结构代码
+	 */
+	private String treeCode;
 	/**
 	 * 交易编号
 	 */
@@ -156,6 +161,14 @@ public class OrganizationAccountFlowQuery extends PageAndSortQuery {
 
 	public void setTypes(String types) {
 		this.types = types;
+	}
+
+	public String getTreeCode() {
+		return treeCode;
+	}
+
+	public void setTreeCode(String treeCode) {
+		this.treeCode = treeCode;
 	}
 
 }

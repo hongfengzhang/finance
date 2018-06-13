@@ -69,7 +69,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		"/ticket/**",
 		"/drawactivity/**",
 		"/futuresMarket/**",
-		"/futuresContract/pagesContract",
+		"/futuresContract/**",
 		"/futuresOrder/transaction/dynamics"
 	};
 
