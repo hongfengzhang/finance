@@ -60,7 +60,7 @@ public class BuyRecordController {
 
 	@Autowired
 	private StockBusiness stockBusiness;
-	
+
 	@Autowired
 	private ExperienceBusiness experienceBusiness;
 
@@ -87,6 +87,9 @@ public class BuyRecordController {
 			@RequestParam(required = true) Boolean deferred, BigDecimal deferredFee,
 			@RequestParam(required = true) String paymentPassword) {
 		logger.info("APP调用接口发布人{}点买股票{}，申请资金{}!", SecurityUtil.getUserId(), stockCode, applyAmount);
+		if (true) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_STOPTRADE_EXCEPTION);
+		}
 		// 检查交易时间段
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
@@ -139,7 +142,7 @@ public class BuyRecordController {
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}
-		if(strategyTypeId.longValue() == 3) {
+		if (strategyTypeId.longValue() == 3) {
 			experienceBusiness.join();
 		}
 		// 初始化点买数据

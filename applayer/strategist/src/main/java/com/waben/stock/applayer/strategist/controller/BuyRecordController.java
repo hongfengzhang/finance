@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,8 @@ import io.swagger.annotations.ApiOperation;
 @RequestMapping("/buyRecord")
 @Api(description = "点买交易")
 public class BuyRecordController {
+	
+	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
 	private BuyRecordBusiness buyRecordBusiness;
@@ -76,6 +80,10 @@ public class BuyRecordController {
 			Integer lossMultiple, @RequestParam(required = true) String stockCode,
 			@RequestParam(required = true) Boolean deferred, BigDecimal deferredFee,
 			@RequestParam(required = true) String paymentPassword) {
+		logger.info("APP调用接口发布人{}点买股票{}，申请资金{}!", SecurityUtil.getUserId(), stockCode, applyAmount);
+		if (true) {
+			throw new ServiceException(ExceptionConstant.BUYRECORD_STOPTRADE_EXCEPTION);
+		}
 		// 检查交易时间段
 		boolean isTradeTime = holidayBusiness.isTradeTime();
 		if (!isTradeTime) {
