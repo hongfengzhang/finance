@@ -22,7 +22,7 @@ import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlow
 import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.dto.organization.AgentCapitalManageDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowWithTradeInfoDto;
-import com.waben.stock.interfaces.enums.ResourceType;
+import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
 import com.waben.stock.interfaces.pojo.query.organization.AgentCapitalManageQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 import com.waben.stock.interfaces.util.StringUtil;
@@ -197,7 +197,7 @@ public class OrganizationAccountFlowService {
 	public Page<AgentCapitalManageDto> pageAgentCapitalManage(AgentCapitalManageQuery query) {
 		String types = "";
 		if (!StringUtil.isEmpty(query.getTypes())) {
-			types = " and t1.resource_type in(" + query.getTypes() + ")";
+			types = " and t1.type in(" + query.getTypes() + ")";
 		}
 		String contractCodeOrName = "";
 		if (!StringUtil.isEmpty(query.getContractCodeOrName())) {
@@ -215,12 +215,12 @@ public class OrganizationAccountFlowService {
 			flowNo = " and t1.flow_no like '" + query.getFlowNo() + "'";
 		}
 		String customerName = "";
-		if (!StringUtil.isEmpty(query.getCustomerName())) {
-			customerName = " and t5.name like '" + query.getCustomerName() + "'";
+		if (!StringUtil.isEmpty(query.getPublisherName())) {
+			customerName = " and t5.name like '" + query.getPublisherName() + "'";
 		}
 		String customerPhone = "";
-		if (!StringUtil.isEmpty(query.getCustomerPhone())) {
-			customerPhone = " and t6.phone like '" + query.getCustomerPhone() + "'";
+		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
+			customerPhone = " and t6.phone like '" + query.getPublisherPhone() + "'";
 		}
 
 		String startTimeCondition = "";
@@ -234,13 +234,14 @@ public class OrganizationAccountFlowService {
 
 		String sql = String.format(
 				"SELECT t1.id, t1.flow_no, t5.name AS customer_name, t6.phone, t2.contract_symbol, t2.contract_name, "
-						+ "t1.resource_type, t7.sale_unwind_service_fee, (t7.cost_unwind_service_fee - IF (t8.cost_unwind_service_fee IS NULL,0,t8.cost_unwind_service_fee)) AS maid_fee, "
+						+ "t1.type, IF(t1.type = 7,t7.sale_openwind_service_fee,IF(t1.type=8,t7.sale_unwind_service_fee,IF(t1.type=9,t7.sale_deferred_fee,0))) AS amount_remaid, "
+						+ "(IF(t1.type = 7,t7.cost_openwind_service_fee,IF(t1.type=8,t7.cost_unwind_service_fee,IF(t1.type=9,t7.cost_deferred_fee,0))) - "
+						+ "IF(t1.type = 7,t8.cost_openwind_service_fee,IF(t1.type=8,t8.cost_unwind_service_fee,IF(t1.type=9,t8.cost_deferred_fee,0)))) AS maid_fee, "
 						+ "t1.occurrence_time, t1.amount, t1.available_balance, t3.code AS agent_code, t3. NAME AS agent_name "
 						+ "from p_organization_account_flow t1 "
-						+ "LEFT JOIN f_futures_order t2 ON t2.id = t1.resource_id "
+						+ "LEFT JOIN f_futures_order t2 ON t2.id = t1.resource_id  AND t1.resource_type=6 "
 						+ "LEFT JOIN p_organization t3 ON t3.id = t1.org_id "
-						+ "LEFT JOIN buy_record t4 ON t4.id = t2.publisher_id "
-						+ "LEFT JOIN real_name t5 ON t5.resource_id = t2.publisher_id "
+						+ "LEFT JOIN real_name t5 ON t5.resource_id = t2.publisher_id and t5.resource_type=2 "
 						+ "LEFT JOIN publisher t6 ON t6.id = t2.publisher_id "
 						+ "LEFT JOIN p_futures_agent_price t7 ON t7.contract_id = t2.contract_id "
 						+ "AND t7.org_id = t3.id "
@@ -258,9 +259,10 @@ public class OrganizationAccountFlowService {
 		setMethodMap.put(new Integer(3), new MethodDesc("setCustomerPhone", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(4), new MethodDesc("setContractSymbol", new Class<?>[] { String.class }));
 		setMethodMap.put(new Integer(5), new MethodDesc("setContractName", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(6), new MethodDesc("setResourceType", new Class<?>[] { ResourceType.class }));
-		setMethodMap.put(new Integer(7), new MethodDesc("setCommission", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(8), new MethodDesc("setAmountRemaid", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(6),
+				new MethodDesc("setType", new Class<?>[] { OrganizationAccountFlowType.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setCommission", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setAmountRemaid", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(9), new MethodDesc("setOccurrenceTime", new Class<?>[] { Date.class }));
 		setMethodMap.put(new Integer(10), new MethodDesc("setAmount", new Class<?>[] { BigDecimal.class }));
 		setMethodMap.put(new Integer(11), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));

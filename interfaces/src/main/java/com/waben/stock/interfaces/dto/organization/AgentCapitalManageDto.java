@@ -3,7 +3,7 @@ package com.waben.stock.interfaces.dto.organization;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import com.waben.stock.interfaces.enums.ResourceType;
+import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
 
 import io.swagger.annotations.ApiModelProperty;
 
@@ -45,14 +45,14 @@ public class AgentCapitalManageDto {
 	@ApiModelProperty(value = "产品名称")
 	private String contractName;
 
-	@ApiModelProperty(value = "佣金类型")
-	private ResourceType resourceType;
+	@ApiModelProperty(value = "佣金及流水类型")
+	private OrganizationAccountFlowType type;
 
 	@ApiModelProperty(value = "交易 佣金")
-	private String commission;
+	private BigDecimal commission;
 
 	@ApiModelProperty(value = "返佣金额")
-	private String amountRemaid;
+	private BigDecimal amountRemaid;
 
 	@ApiModelProperty(value = "所属代理商代码")
 	private String agentCode;
@@ -140,27 +140,27 @@ public class AgentCapitalManageDto {
 		this.contractName = contractName;
 	}
 
-	public ResourceType getResourceType() {
-		return resourceType;
+	public OrganizationAccountFlowType getType() {
+		return type;
 	}
 
-	public void setResourceType(ResourceType resourceType) {
-		this.resourceType = resourceType;
+	public void setType(OrganizationAccountFlowType type) {
+		this.type = type;
 	}
 
-	public String getCommission() {
+	public BigDecimal getCommission() {
 		return commission;
 	}
 
-	public void setCommission(String commission) {
+	public void setCommission(BigDecimal commission) {
 		this.commission = commission;
 	}
 
-	public String getAmountRemaid() {
+	public BigDecimal getAmountRemaid() {
 		return amountRemaid;
 	}
 
-	public void setAmountRemaid(String amountRemaid) {
+	public void setAmountRemaid(BigDecimal amountRemaid) {
 		this.amountRemaid = amountRemaid;
 	}
 

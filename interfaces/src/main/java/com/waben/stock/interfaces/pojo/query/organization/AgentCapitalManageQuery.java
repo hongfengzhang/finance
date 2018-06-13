@@ -28,12 +28,12 @@ public class AgentCapitalManageQuery extends PageAndSortQuery {
 	 * 客户姓名
 	 */
 	@ApiModelProperty(value = "客户姓名")
-	private String customerName;
+	private String publisherName;
 	/**
 	 * 客户账号
 	 */
 	@ApiModelProperty(value = "客户账号")
-	private String customerPhone;
+	private String publisherPhone;
 	/**
 	 * 当前登录树结构代码
 	 */
@@ -78,20 +78,20 @@ public class AgentCapitalManageQuery extends PageAndSortQuery {
 		this.currentOrgId = currentOrgId;
 	}
 
-	public String getCustomerName() {
-		return customerName;
+	public String getPublisherName() {
+		return publisherName;
 	}
 
-	public void setCustomerName(String customerName) {
-		this.customerName = customerName;
+	public void setPublisherName(String publisherName) {
+		this.publisherName = publisherName;
 	}
 
-	public String getCustomerPhone() {
-		return customerPhone;
+	public String getPublisherPhone() {
+		return publisherPhone;
 	}
 
-	public void setCustomerPhone(String customerPhone) {
-		this.customerPhone = customerPhone;
+	public void setPublisherPhone(String publisherPhone) {
+		this.publisherPhone = publisherPhone;
 	}
 
 	public String getTreeCode() {
