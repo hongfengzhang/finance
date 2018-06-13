@@ -55,13 +55,13 @@ public class FuturesCommodityController {
 	
 	@RequestMapping(value = "/tradeTime/saveAndModify", method = RequestMethod.POST)
 	@ApiOperation(value = "添加品种交易时间")
-	public Response<FuturesTradeTimeDto> saveAndModify(FuturesTradeTimeDto dto){
+	public Response<FuturesCommodityAdminDto> saveAndModify(FuturesTradeTimeDto dto){
 		return business.saveAndModify(dto);
 	}
 	
 	@GetMapping("/tradeTime/queryTradeTime")
 	@ApiOperation(value = "查询品种交易时间")
-	public Response<FuturesTradeTimeDto> queryTradeTime(Long commodityId){
+	public Response<FuturesCommodityAdminDto> queryTradeTime(Long commodityId){
 		return business.queryTradeTime(commodityId);
 	}
 	

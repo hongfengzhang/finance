@@ -23,8 +23,10 @@ import com.waben.stock.datalayer.futures.service.FuturesCommodityService;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
+import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesContractAdminQuery;
@@ -240,9 +242,24 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
+		//判断是否唯一app合约
+		if(contractDto.getAppContract()){
+			if(contractDto.getCommodityId() == null){
+				throw new ServiceException(ExceptionConstant.CONTRACT_COMMODITYID_ISNULL_EXCEPTION);
+			}
+			List<FuturesContract> contList = futuresContractService.findByCommodity(contractDto.getCommodityId());
+			for(FuturesContract con:contList){
+				if(con.getAppContract()){
+					con.setAppContract(false);
+					futuresContractService.modifyExchange(con);
+				}
+			}
+		}
+		
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 		fcontract.setCommodity(commodityService.retrieve(contractDto.getCommodityId()));
 		fcontract.setEnable(false);
+		fcontract.setCreateTime(new Date());
 		FuturesContract result = futuresContractService.saveExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
@@ -256,7 +273,7 @@ public class FuturesContractController implements FuturesContractInterface {
 
 		fcontract.setCommodity(commodityService.retrieve(contractDto.getCommodityId()));
 		fcontract.setEnable(false);
-
+		fcontract.setCreateTime(new Date());
 		FuturesContract result = futuresContractService.modifyExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
@@ -290,7 +307,20 @@ public class FuturesContractController implements FuturesContractInterface {
 						result.getContent().get(i).setExchangeType(fcom.getExchange().getExchangeType());
 					}
 				}
+				if(contract.get(i).getEnable()){
+					result.getContent().get(i).setState(1);
+				}else{
+					result.getContent().get(i).setState(1);
+				}
+				if(contract.get(i).getExpirationDate()!=null){
+					Date expira = contract.get(i).getExpirationDate();
+					Date current = new Date();
+					if(current.getTime()>expira.getTime()){
+						result.getContent().get(i).setState(3);
+					}
+				}
 			}
+				
 		}
 		
 		return new Response<>(result);

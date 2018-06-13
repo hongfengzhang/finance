@@ -28,10 +28,10 @@ public interface FuturesCommodityInterface {
 	Response<String> deleteCommodity(@PathVariable("id") Long id);
 	
 	@RequestMapping(value = "/tradeTime/{id}", method = RequestMethod.POST, consumes = "application/json")
-	Response<FuturesTradeTimeDto> queryTradeTime(@PathVariable("id") Long id);
+	Response<FuturesCommodityAdminDto> queryTradeTime(@PathVariable("id") Long id);
 	
 	@RequestMapping(value = "/tradeTime/saveAndModify", method = RequestMethod.POST, consumes = "application/json")
-	Response<FuturesTradeTimeDto> saveAndModify(@RequestBody FuturesTradeTimeDto dto);
+	Response<FuturesCommodityAdminDto> saveAndModify(@RequestBody FuturesTradeTimeDto dto);
 	
 	@RequestMapping(value = "/isCurrency/{id}", method = RequestMethod.POST, consumes = "application/json")
 	Response<String> isCurrency(@PathVariable("id") Long id);
