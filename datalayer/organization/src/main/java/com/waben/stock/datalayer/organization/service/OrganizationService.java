@@ -745,6 +745,7 @@ public class OrganizationService {
 		return content;
 	}
 
+	@Transactional
 	public Integer saveFuturesAgentPrice(List<FuturesAgentPriceDto> futuresAgentPricedto) {
 		List<FuturesAgentPrice> futuresAgentPrice = CopyBeanUtils.copyListBeanPropertiesToList(futuresAgentPricedto,
 				FuturesAgentPrice.class);

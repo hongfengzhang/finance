@@ -72,6 +72,7 @@ public class AgentCapitalManageController {
 	}
 
 	@RequestMapping(value = "/export", method = RequestMethod.GET)
+	@ApiOperation(value = "资金流水及佣金结算导出")
 	@ApiImplicitParam(paramType = "query", dataType = "int", name = "queryType", value = "1 资金流水，2 佣金结算", required = true)
 	public void export(AgentCapitalManageQuery query, Integer queryType, HttpServletResponse svrResponse) {
 		query.setPage(0);
@@ -125,7 +126,7 @@ public class AgentCapitalManageController {
 			List<String> data = new ArrayList<>();
 			data.add(trade.getFlowNo() == null ? "" : trade.getFlowNo());
 			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
-			data.add(trade.getResourceType() == null ? "" : trade.getResourceType().getType());
+			data.add(trade.getType() == null ? "" : trade.getType().getType());
 			data.add(String.valueOf(trade.getAmount() == null ? "" : trade.getAmount()));
 			data.add(String.valueOf(trade.getAvailableBalance() == null ? "" : trade.getAvailableBalance()));
 			data.add(trade.getContractSymbol() == null ? "" : trade.getContractSymbol());
@@ -160,7 +161,7 @@ public class AgentCapitalManageController {
 			data.add(trade.getCustomerPhone() == null ? "" : trade.getCustomerPhone());
 			data.add(trade.getContractSymbol() == null ? "" : trade.getContractSymbol());
 			data.add(trade.getContractName() == null ? "" : trade.getContractName());
-			data.add(trade.getResourceType() == null ? "" : trade.getResourceType().getType());
+			data.add(trade.getType() == null ? "" : trade.getType().getType());
 			data.add(String.valueOf(trade.getCommission() == null ? "" : trade.getCommission()));
 			data.add(String.valueOf(trade.getAmountRemaid() == null ? "" : trade.getAmountRemaid()));
 			data.add(trade.getOccurrenceTime() != null ? sdf.format(trade.getOccurrenceTime()) : "");
