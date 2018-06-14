@@ -82,7 +82,7 @@ public class RetriveFuturesOverHttp {
 
 	public static List<FuturesContractLineData> dayLine(String commodityNo, String contractNo, String startTime,
 			String endTime) {
-		String url = getBaseUrl() + "market/" + commodityNo + "/" + contractNo + "/dayline";
+		String url = getBaseUrl() + "market/" + commodityNo + "/" + contractNo + "/dayline?";
 		if (!StringUtil.isEmpty(startTime)) {
 			url += "&startTime=" + startTime;
 		}

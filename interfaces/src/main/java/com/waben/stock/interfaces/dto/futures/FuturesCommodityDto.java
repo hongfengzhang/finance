@@ -34,6 +34,11 @@ public class FuturesCommodityDto {
 	@ApiModelProperty(value = "交易单位")
 	private String tradeUnit;
 	/**
+	 * 报价单位
+	 */
+	@ApiModelProperty(value = "报价单位")
+	private String qutoteUnit;
+	/**
 	 * 图标
 	 */
 	@ApiModelProperty(value = "图标")
@@ -562,6 +567,14 @@ public class FuturesCommodityDto {
 
 	public void setUpdateTime(Date updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String getQutoteUnit() {
+		return qutoteUnit;
+	}
+
+	public void setQutoteUnit(String qutoteUnit) {
+		this.qutoteUnit = qutoteUnit;
 	}
 
 }
