@@ -21,7 +21,7 @@ public enum ResourceType implements CommonalityEnum {
 
 	ORGANIZATION("5", "机构"),
 
-	FUTURESORDER("6", "期货订单");
+	FUTURESORDER("6", "期货订单交易记录");
 
 	private String index;
 	private String type;

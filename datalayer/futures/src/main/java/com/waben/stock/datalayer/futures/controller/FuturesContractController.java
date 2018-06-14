@@ -15,19 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesCurrencyRate;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
-import com.waben.stock.datalayer.futures.entity.FuturesPreQuantity;
-import com.waben.stock.datalayer.futures.entity.enumconverter.FuturesProductTypeConverter;
+import com.waben.stock.datalayer.futures.service.FuturesCommodityService;
 import com.waben.stock.datalayer.futures.service.FuturesContractService;
 import com.waben.stock.datalayer.futures.service.FuturesCurrencyRateService;
 import com.waben.stock.datalayer.futures.service.FuturesExchangeService;
-import com.waben.stock.datalayer.futures.service.FuturesPreQuantityService;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesPreQuantityDto;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesTermAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -53,13 +50,11 @@ public class FuturesContractController implements FuturesContractInterface {
 	private FuturesExchangeService exchangeService;
 
 	@Autowired
-	private FuturesCurrencyRateService rateService;
-
-	@Autowired
 	private FuturesCurrencyRateService futuresCurrencyRateService;
-
+	
 	@Autowired
-	private FuturesPreQuantityService quantityService;
+	private FuturesCommodityService commodityService;
+
 
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -247,9 +242,24 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
+		//判断是否唯一app合约
+		if(contractDto.getAppContract()){
+			if(contractDto.getCommodityId() == null){
+				throw new ServiceException(ExceptionConstant.CONTRACT_COMMODITYID_ISNULL_EXCEPTION);
+			}
+			List<FuturesContract> contList = futuresContractService.findByCommodity(contractDto.getCommodityId());
+			for(FuturesContract con:contList){
+				if(con.getAppContract()){
+					con.setAppContract(false);
+					futuresContractService.modifyExchange(con);
+				}
+			}
+		}
+		
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
-
+		fcontract.setCommodity(commodityService.retrieve(contractDto.getCommodityId()));
 		fcontract.setEnable(false);
+		fcontract.setCreateTime(new Date());
 		FuturesContract result = futuresContractService.saveExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
@@ -261,8 +271,9 @@ public class FuturesContractController implements FuturesContractInterface {
 
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 
-
-
+		fcontract.setCommodity(commodityService.retrieve(contractDto.getCommodityId()));
+		fcontract.setEnable(false);
+		fcontract.setCreateTime(new Date());
 		FuturesContract result = futuresContractService.modifyExchange(fcontract);
 		FuturesContractAdminDto resultDto = CopyBeanUtils.copyBeanProperties(result, new FuturesContractAdminDto(),
 				false);
@@ -280,6 +291,38 @@ public class FuturesContractController implements FuturesContractInterface {
 			@RequestBody FuturesContractAdminQuery query) {
 		Page<FuturesContract> page = futuresContractService.pagesContractAdmin(query);
 		PageInfo<FuturesContractAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractAdminDto.class);
+		if(result!=null&&result.getContent()!=null){
+			List<FuturesContract> contract = page.getContent();
+			for(int i=0;i<contract.size();i++){
+				if(contract.get(i).getCommodity()!=null){
+					result.getContent().get(i).setSymbol(contract.get(i).getCommodity().getSymbol());
+					result.getContent().get(i).setName(contract.get(i).getCommodity().getName());
+					result.getContent().get(i).setProductType(contract.get(i).getCommodity().getProductType().getValue());
+					result.getContent().get(i).setCommodityId(contract.get(i).getCommodity().getId());
+					FuturesCommodity fcom = commodityService.retrieve(contract.get(i).getCommodity().getId());
+					if(fcom != null && fcom.getExchange() != null){
+						result.getContent().get(i).setExchangcode(fcom.getExchange().getCode());
+						result.getContent().get(i).setExchangeId(fcom.getExchange().getId());
+						result.getContent().get(i).setExchangename(fcom.getExchange().getName());
+						result.getContent().get(i).setExchangeType(fcom.getExchange().getExchangeType());
+					}
+				}
+				if(contract.get(i).getEnable()){
+					result.getContent().get(i).setState(1);
+				}else{
+					result.getContent().get(i).setState(1);
+				}
+				if(contract.get(i).getExpirationDate()!=null){
+					Date expira = contract.get(i).getExpirationDate();
+					Date current = new Date();
+					if(current.getTime()>expira.getTime()){
+						result.getContent().get(i).setState(3);
+					}
+				}
+			}
+				
+		}
+		
 		return new Response<>(result);
 	}
 
@@ -291,24 +334,14 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<String> isCurrent(@RequestParam(value = "id") Long id) {
-		FuturesContract contract = futuresContractService.findByContractId(id);
-		Boolean current = false;
-		if (contract.getEnable() != null) {
-			if (contract.getEnable()) {
-				current = false;
-			} else {
-				current = true;
-			}
-		} else {
-			current = false;
+		Integer i = futuresContractService.isCurrent(id);
+		Response<String> response = new Response<String>();
+		if(i==1){
+			response.setCode("200");
+			response.setMessage("响应成功");
+			response.setResult(i.toString());
 		}
-
-//		Integer i = futuresContractService.isCurrent(current, id);
-		Response<String> res = new Response<String>();
-		res.setCode("200");
-		res.setMessage("启用/停用成功");
-//		res.setResult(i.toString());
-		return res;
+		return response;
 	}
 
 }

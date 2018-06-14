@@ -34,6 +34,10 @@ public class CustomUserDetails implements UserDetails {
 	 * 角色ID
 	 */
 	private Long roleId;
+	/**
+	 * 树结构代码
+	 */
+	private String treeCode;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
@@ -159,4 +163,13 @@ public class CustomUserDetails implements UserDetails {
 	public void setRoleId(Long roleId) {
 		this.roleId = roleId;
 	}
+
+	public String getTreeCode() {
+		return treeCode;
+	}
+
+	public void setTreeCode(String treeCode) {
+		this.treeCode = treeCode;
+	}
+
 }

@@ -145,6 +145,8 @@ public class FuturesOrderBusiness {
 				}else{
 					return new PageInfo<FuturesOrderAdminDto>();
 				}
+			}else{
+				return new PageInfo<FuturesOrderAdminDto>();
 			};
 		}else if(query.getPublisherName()!=null && !"".equals(query.getPublisherName())){
 			List<RealNameDto> real = realnameInterface.findByName(query.getPublisherName()).getResult();

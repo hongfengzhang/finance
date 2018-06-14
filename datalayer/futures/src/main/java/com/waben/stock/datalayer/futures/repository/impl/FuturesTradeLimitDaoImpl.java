@@ -60,4 +60,9 @@ public class FuturesTradeLimitDaoImpl implements FuturesTradeLimitDao {
 		return repository.findByContractId(contractId);
 	}
 
+	@Override
+	public void deleteByContractId(Long contractId) {
+		repository.deleteBycontractId(contractId);
+	}
+
 }

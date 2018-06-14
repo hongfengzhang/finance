@@ -16,12 +16,18 @@ public enum OrganizationAccountFlowType implements CommonalityEnum {
 	DeferredChargesAssign("2", "递延费分成"),
 
 	RightMoneyAssign("3", "期权权利金收益分成"),
-	
+
 	Withdrawals("4", "提现"),
-	
+
 	WithdrawalsFailure("5", "提现失败退回"),
-	
-	ProcessFee("6", "手续费");
+
+	ProcessFee("6", "手续费"),
+
+	FuturesOpeningFee("7", "期货开仓手续费"),
+
+	FuturesCloseFee("8", "期货平仓手续费"),
+
+	FuturesDeferredFee("9", "期货递延费");
 
 	private String index;
 

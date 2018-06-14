@@ -43,6 +43,10 @@ public class FuturesTradeLimitService {
 		limitDao.delete(id);;
 	}
 	
+	public void deleteByContractId(Long contractId){
+		limitDao.deleteByContractId(contractId);
+	}
+	
 	public List<FuturesTradeLimit> findByContractId(Long contractId){
 		return limitDao.findByContractId(contractId);
 	}

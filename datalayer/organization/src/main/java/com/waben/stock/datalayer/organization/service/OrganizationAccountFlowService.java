@@ -20,7 +20,10 @@ import com.waben.stock.datalayer.organization.entity.OrganizationAccountFlow;
 import com.waben.stock.datalayer.organization.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.organization.repository.OrganizationAccountFlowDao;
 import com.waben.stock.datalayer.organization.repository.impl.MethodDesc;
+import com.waben.stock.interfaces.dto.organization.AgentCapitalManageDto;
 import com.waben.stock.interfaces.dto.organization.OrganizationAccountFlowWithTradeInfoDto;
+import com.waben.stock.interfaces.enums.OrganizationAccountFlowType;
+import com.waben.stock.interfaces.pojo.query.organization.AgentCapitalManageQuery;
 import com.waben.stock.interfaces.pojo.query.organization.OrganizationAccountFlowQuery;
 import com.waben.stock.interfaces.util.StringUtil;
 
@@ -58,11 +61,13 @@ public class OrganizationAccountFlowService {
 
 	public Page<OrganizationAccountFlowWithTradeInfoDto> pagesWithTradeInfoByQuery(OrganizationAccountFlowQuery query) {
 		String queryTypeCondition = " and (t7.level=1 or (t4.id=t7.id or t4.parent_id=t7.id and t7.level>1)) ";
-//		if (query.getQueryType() != null && query.getQueryType() == 1) {
-//			queryTypeCondition = " and t1.org_id=" + query.getCurrentOrgId() + " ";
-//		} else {
-//			queryTypeCondition = " and (t7.level=1 or (t4.id=t7.id or t4.parent_id=t7.id and t7.level>1)) ";
-//		}
+		// if (query.getQueryType() != null && query.getQueryType() == 1) {
+		// queryTypeCondition = " and t1.org_id=" + query.getCurrentOrgId() + "
+		// ";
+		// } else {
+		// queryTypeCondition = " and (t7.level=1 or (t4.id=t7.id or
+		// t4.parent_id=t7.id and t7.level>1)) ";
+		// }
 		String tradeNoCondition = "";
 		if (!StringUtil.isEmpty(query.getTradeNo())) {
 			tradeNoCondition = " and  t1.resource_trade_no like '%" + query.getTradeNo() + "%' ";
@@ -187,6 +192,87 @@ public class OrganizationAccountFlowService {
 
 	public List<OrganizationAccountFlow> list() {
 		return organizationAccountFlowDao.list();
+	}
+
+	public Page<AgentCapitalManageDto> pageAgentCapitalManage(AgentCapitalManageQuery query) {
+		String types = "";
+		if (!StringUtil.isEmpty(query.getTypes())) {
+			types = " and t1.type in(" + query.getTypes() + ")";
+		}
+		String contractCodeOrName = "";
+		if (!StringUtil.isEmpty(query.getContractCodeOrName())) {
+			contractCodeOrName = " and t2.contract_symbol like '" + query.getContractCodeOrName()
+					+ "' or t2.contract_name like '" + query.getContractCodeOrName() + "'";
+		}
+		String orgCodeOrName = "";
+		if (!StringUtil.isEmpty(query.getOrgCodeOrName())) {
+			orgCodeOrName = " and t3.code like '" + query.getOrgCodeOrName() + "' or t3. NAME like '"
+					+ query.getOrgCodeOrName() + "'";
+		}
+
+		String flowNo = "";
+		if (!StringUtil.isEmpty(query.getFlowNo())) {
+			flowNo = " and t1.flow_no like '" + query.getFlowNo() + "'";
+		}
+		String customerName = "";
+		if (!StringUtil.isEmpty(query.getPublisherName())) {
+			customerName = " and t5.name like '" + query.getPublisherName() + "'";
+		}
+		String customerPhone = "";
+		if (!StringUtil.isEmpty(query.getPublisherPhone())) {
+			customerPhone = " and t6.phone like '" + query.getPublisherPhone() + "'";
+		}
+
+		String startTimeCondition = "";
+		if (query.getStartTime() != null) {
+			startTimeCondition = " and t1.occurrence_time >='" + sdf.format(query.getStartTime()) + "' ";
+		}
+		String endTimeCondition = "";
+		if (query.getEndTime() != null) {
+			endTimeCondition = " and t1.occurrence_time <'" + sdf.format(query.getEndTime()) + "' ";
+		}
+
+		String sql = String.format(
+				"SELECT t1.id, t1.flow_no, t5.name AS customer_name, t6.phone, t2.contract_symbol, t2.contract_name, "
+						+ "t1.type, IF(t1.type = 7,t7.sale_openwind_service_fee,IF(t1.type=8,t7.sale_unwind_service_fee,IF(t1.type=9,t7.sale_deferred_fee,0))) AS amount_remaid, "
+						+ "(IF(t1.type = 7,t7.cost_openwind_service_fee,IF(t1.type=8,t7.cost_unwind_service_fee,IF(t1.type=9,t7.cost_deferred_fee,0))) - "
+						+ "IF(t1.type = 7,t8.cost_openwind_service_fee,IF(t1.type=8,t8.cost_unwind_service_fee,IF(t1.type=9,t8.cost_deferred_fee,0)))) AS maid_fee, "
+						+ "t1.occurrence_time, t1.amount, t1.available_balance, t3.code AS agent_code, t3. NAME AS agent_name "
+						+ "from p_organization_account_flow t1 "
+						+ "LEFT JOIN f_futures_order t2 ON t2.id = t1.resource_id  AND t1.resource_type=6 "
+						+ "LEFT JOIN p_organization t3 ON t3.id = t1.org_id "
+						+ "LEFT JOIN real_name t5 ON t5.resource_id = t2.publisher_id and t5.resource_type=2 "
+						+ "LEFT JOIN publisher t6 ON t6.id = t2.publisher_id "
+						+ "LEFT JOIN p_futures_agent_price t7 ON t7.contract_id = t2.contract_id "
+						+ "AND t7.org_id = t3.id "
+						+ "LEFT JOIN p_futures_agent_price t8 ON t8.contract_id = t2.contract_id "
+						+ "AND t7.org_id = t3.parent_id " + "WHERE t3.tree_code LIKE CONCAT('" + query.getTreeCode()
+						+ "', '%%') %s %s %s %s %s %s %s %s ORDER BY t1.occurrence_time DESC limit "
+						+ query.getPage() * query.getSize() + "," + query.getSize(),
+				types, contractCodeOrName, orgCodeOrName, flowNo, customerName, customerPhone, startTimeCondition,
+				endTimeCondition);
+		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.indexOf("limit"));
+		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
+		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
+		setMethodMap.put(new Integer(1), new MethodDesc("setFlowNo", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(2), new MethodDesc("setCustomerName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(3), new MethodDesc("setCustomerPhone", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(4), new MethodDesc("setContractSymbol", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(5), new MethodDesc("setContractName", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(6),
+				new MethodDesc("setType", new Class<?>[] { OrganizationAccountFlowType.class }));
+		setMethodMap.put(new Integer(7), new MethodDesc("setCommission", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(8), new MethodDesc("setAmountRemaid", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(9), new MethodDesc("setOccurrenceTime", new Class<?>[] { Date.class }));
+		setMethodMap.put(new Integer(10), new MethodDesc("setAmount", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(11), new MethodDesc("setAvailableBalance", new Class<?>[] { BigDecimal.class }));
+		setMethodMap.put(new Integer(12), new MethodDesc("setAgentCode", new Class<?>[] { String.class }));
+		setMethodMap.put(new Integer(13), new MethodDesc("setAgentName", new Class<?>[] { String.class }));
+		List<AgentCapitalManageDto> content = dynamicQuerySqlDao.execute(AgentCapitalManageDto.class, sql,
+				setMethodMap);
+		BigInteger totalElements = dynamicQuerySqlDao.executeComputeSql(countSql);
+		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
+				totalElements != null ? totalElements.longValue() : 0);
 	}
 
 }

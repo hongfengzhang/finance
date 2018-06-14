@@ -167,7 +167,7 @@ public class FuturesOrderBusiness {
 					break;
 				}
 				// 获取汇率信息
-				FuturesCurrencyRateDto rate = findByCurrency(orderMarket.getContractCurrency());
+				FuturesCurrencyRateDto rate = findByCurrency(orderMarket.getCommodityCurrency());
 				orderMarket.setRate(rate.getRate());
 				orderMarket.setCurrencySign(rate.getCurrencySign());
 				// 买入价
@@ -207,7 +207,7 @@ public class FuturesOrderBusiness {
 				if (orderMarket.getState() != FuturesOrderState.BuyingCanceled
 						&& orderMarket.getState() != FuturesOrderState.BuyingFailure) {
 					// 获取行情信息
-					FuturesContractMarket market = RetriveFuturesOverHttp.market(orderMarket.getContractSymbol());
+					FuturesContractMarket market = RetriveFuturesOverHttp.market(orderMarket.getCommoditySymbol());
 					if (market == null) {
 						break;
 					}
@@ -272,8 +272,8 @@ public class FuturesOrderBusiness {
 				TransactionDynamicsDto unwind = new TransactionDynamicsDto();
 				unwind.setPublisherProfitOrLoss(unwindOrder.getPublisherProfitOrLoss());
 				unwind.setContractId(unwindOrder.getContractId());
-				unwind.setContractName(unwindOrder.getContractName());
-				unwind.setContractSymbol(unwindOrder.getContractSymbol());
+				unwind.setContractName(unwindOrder.getCommodityName());
+				unwind.setContractSymbol(unwindOrder.getCommoditySymbol());
 				unwind.setPublisherId(unwindOrder.getPublisherId());
 				unwind.setTotalQuantity(unwindOrder.getTotalQuantity());
 				unwind.setOrderType(unwindOrder.getOrderType());
@@ -295,8 +295,8 @@ public class FuturesOrderBusiness {
 								: positionOrder.getTotalQuantity().intValue()) + "手");
 					}
 					position.setContractId(positionOrder.getContractId());
-					position.setContractName(positionOrder.getContractName());
-					position.setContractSymbol(positionOrder.getContractSymbol());
+					position.setContractName(positionOrder.getCommodityName());
+					position.setContractSymbol(positionOrder.getCommoditySymbol());
 					position.setPublisherId(positionOrder.getPublisherId());
 					position.setTotalQuantity(positionOrder.getTotalQuantity());
 					position.setOrderType(positionOrder.getOrderType());

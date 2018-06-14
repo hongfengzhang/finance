@@ -67,7 +67,7 @@ public class FuturesContract {
 	 * 强平时间
 	 */
 	private Date forceUnwindDate;
-	/**
+	/**`	
 	 * 是否主力合约
 	 */
 	private Boolean mainForce;
@@ -87,6 +87,8 @@ public class FuturesContract {
 	 * 更新时间
 	 */
 	private Date updateTime;
+	
+	private Date createTime;
 	/**
 	 * 对应的品种
 	 */
@@ -220,6 +222,14 @@ public class FuturesContract {
 
 	public void setPcContract(Boolean pcContract) {
 		this.pcContract = pcContract;
+	}
+
+	public Date getCreateTime() {
+		return createTime;
+	}
+
+	public void setCreateTime(Date createTime) {
+		this.createTime = createTime;
 	}
 
 }

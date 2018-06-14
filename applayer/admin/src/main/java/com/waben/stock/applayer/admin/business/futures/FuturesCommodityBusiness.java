@@ -32,12 +32,16 @@ public class FuturesCommodityBusiness {
 		return reference.deleteCommodity(id);
 	}
 	
-	public Response<FuturesTradeTimeDto> saveAndModify(FuturesTradeTimeDto dto){
+	public Response<FuturesCommodityAdminDto> saveAndModify(FuturesTradeTimeDto dto){
 		return reference.saveAndModify(dto);
+	}	
+	
+	public Response<FuturesCommodityAdminDto> queryTradeTime(Long commodityId){
+		return  reference.queryTradeTime(commodityId);
 	}
 	
-	public Response<FuturesTradeTimeDto> queryTradeTime(Long commodityId){
-		return  reference.queryTradeTime(commodityId);
+	public Response<String> isCurrency(Long commodityId){
+		return reference.isCurrency(commodityId);
 	}
 
 }

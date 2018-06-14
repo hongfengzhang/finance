@@ -45,10 +45,6 @@ public class RetriveFuturesOverHttp {
 			}
 		}else{
 			FuturesContractMarket market = new FuturesContractMarket();
-			// TODO 因盈透测试账户没有返回最新价，此处先写死一个最新价返回给前端调试，后续删除
-			if(market==null){
-				market = new FuturesContractMarket();
-			}
 			market.setLastPrice(
 					new BigDecimal(1300).add(new BigDecimal(Math.random() * 2)).setScale(4, RoundingMode.DOWN));
 			return market;

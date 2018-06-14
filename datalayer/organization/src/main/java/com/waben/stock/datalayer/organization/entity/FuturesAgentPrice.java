@@ -30,6 +30,10 @@ public class FuturesAgentPrice {
 	 */
 	private Long orgId;
 	/**
+	 * 代理商父级ID
+	 */
+	private Long parentId;
+	/**
 	 * 保证金（成本价格，一手）
 	 */
 	private BigDecimal costReserveFund;
@@ -136,6 +140,14 @@ public class FuturesAgentPrice {
 
 	public void setSaleDeferredFee(BigDecimal saleDeferredFee) {
 		this.saleDeferredFee = saleDeferredFee;
+	}
+
+	public Long getParentId() {
+		return parentId;
+	}
+
+	public void setParentId(Long parentId) {
+		this.parentId = parentId;
 	}
 
 }

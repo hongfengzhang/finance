@@ -23,6 +23,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
@@ -56,11 +57,37 @@ public class FuturesContractService {
 
 	@Autowired
 	private FuturesOrderService orderService;
+	
+	@Autowired
+	private FuturesTradeLimitService limitService;
 
 	public int isCurrent(Long id) {
 		FuturesContract contract = futuresContractDao.retrieve(id);
-//		boolean isCurrent = contract
-		return 0;
+		boolean isCurrent = contract.getEnable();
+		if(isCurrent){
+			List<Long> contractId = new ArrayList<Long>();
+			contractId.add(contract.getId());
+			List<FuturesOrder> order = orderService.findByContractId(contractId);
+			if(order.size()>0){
+				throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
+			}else{
+				contract.setEnable(false);
+				futuresContractDao.update(contract);
+			}
+		}else{
+			if(contract.getExpirationDate()==null||"".equals(contract.getExpirationDate())){
+				throw new ServiceException(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION);
+			}
+			if(contract.getForceUnwindDate()==null||"".equals(contract.getForceUnwindDate())){
+				throw new ServiceException(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION);
+			}
+			if(contract.getLastTradingDate()==null||"".equals(contract.getLastTradingDate())){
+				throw new ServiceException(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION);
+			}
+			contract.setEnable(true);
+			futuresContractDao.update(contract);
+		}
+		return 1;
 	}
 
 	public Page<FuturesContract> pagesContract(final FuturesContractQuery query) {
@@ -103,24 +130,14 @@ public class FuturesContractService {
 			public Predicate toPredicate(Root<FuturesContract> root, CriteriaQuery<?> criteriaQuery,
 					CriteriaBuilder criteriaBuilder) {
 				List<Predicate> predicateList = new ArrayList<Predicate>();
-				Join<FuturesContract, FuturesExchange> join = root.join("exchange", JoinType.LEFT);
-				if (query.getExchangcode() != null && !"".equals(query.getExchangcode())) {
-					predicateList.add(criteriaBuilder.or(
-							criteriaBuilder.like(join.get("code").as(String.class), query.getExchangcode() + "%"),
-							criteriaBuilder.like(join.get("name").as(String.class), query.getExchangcode() + "%")));
-				}
-
+				Join<FuturesContract, FuturesCommodity> join = root.join("commodity", JoinType.LEFT);
 				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
-					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
-				}
-
-				if (query.getName() != null && !"".equals(query.getName())) {
-					predicateList.add(criteriaBuilder.equal(root.get("name").as(String.class), query.getName()));
-				}
-
-				if (query.getProductType() != null && !"".equals(query.getProductType())) {
 					predicateList.add(
-							criteriaBuilder.equal(root.get("productType").as(String.class), query.getProductType()));
+							criteriaBuilder.like(join.get("symbol").as(String.class), "%"+query.getSymbol() + "%"));
+				}
+				
+				if(query.getName() !=null && !"".equals(query.getName())){
+					predicateList.add(criteriaBuilder.like(join.get("name").as(String.class), "%"+query.getName()+"%"));
 				}
 
 				if (predicateList.size() > 0) {
@@ -131,66 +148,6 @@ public class FuturesContractService {
 			}
 		}, pageable);
 		return pages;
-	}
-
-	public Page<FuturesContractAdminDto> pagesByAdminQuery(final FuturesContractAdminQuery query) {
-		String exchangeCodeCondition = "";
-		if (!StringUtil.isEmpty(query.getExchangcode())) {
-			exchangeCodeCondition = " and f2.code like '%" + query.getExchangcode() + "%' ";
-		}
-		String exchangeNameCondition = "";
-		if (!StringUtil.isEmpty(query.getExchangename())) {
-			exchangeNameCondition = " and f2.name like '%" + query.getExchangename() + "%' ";
-		}
-		String contractCodeCondition = "";
-		if (!StringUtil.isEmpty(query.getSymbol())) {
-			contractCodeCondition = " and f1.symbol like '%" + query.getSymbol() + "%' ";
-		}
-		String productTypeCondition = "";
-		if (!StringUtil.isEmpty(query.getProductType())) {
-			productTypeCondition = " and f1.product_type like '%" + query.getProductType() + "%' ";
-		}
-		String sql = String.format(
-				"select f1.id,f2.code as exchangecode,f2.name as exchangename,f2.exchange_type as exchangeType,f1.code,f1.name,"
-						+ "f1.currency,f3.rate,f1.product_type as productType,f1.multiplier,f1.min_wave,f1.per_wave_money,f1.per_unit_reserve_fund,"
-						+ "f1.per_unit_unwind_point,f1.unwind_point_type,f1.total_limit,f1.per_order_limit,f1.openwind_service_fee,"
-						+ "f1.unwind_service_fee,f1.overnight_time,f1.overnight_per_unit_deferred_fee,f1.overnight_per_unit_reserve_fund,"
-						+ "f1.enable "
-						+ " from f_futures_contract f1 LEFT JOIN f_futures_exchange f2 on f1.exchange_id = f2.id"
-						+ " LEFT JOIN futures_currency_rate f3 on f1.rate_id = f3.id " + " where 1=1 %s %s %s %s limit "
-						+ query.getPage() * query.getSize() + "," + query.getSize(),
-				exchangeCodeCondition, exchangeNameCondition, contractCodeCondition, productTypeCondition);
-		String countSql = "select count(*) " + sql.substring(sql.indexOf("from"), sql.length() - 3);
-		Map<Integer, MethodDesc> setMethodMap = new HashMap<>();
-		setMethodMap.put(new Integer(0), new MethodDesc("setId", new Class<?>[] { Long.class }));
-		setMethodMap.put(new Integer(1), new MethodDesc("setExchangecode", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(2), new MethodDesc("setExchangename", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(3), new MethodDesc("setExchangeType", new Class<?>[] { Integer.class }));
-		setMethodMap.put(new Integer(4), new MethodDesc("setCode", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(5), new MethodDesc("setName", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(6), new MethodDesc("setCurrency", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(7), new MethodDesc("setRate", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(8), new MethodDesc("setProductType", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(9), new MethodDesc("setMultiplier", new Class<?>[] { Integer.class }));
-		setMethodMap.put(new Integer(10), new MethodDesc("setMinWave", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(11), new MethodDesc("setPerWaveMoney", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(12), new MethodDesc("setPerUnitReserveFund", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(13), new MethodDesc("setPerUnitUnwindPoint", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(14), new MethodDesc("setUnwindPointType", new Class<?>[] { Integer.class }));
-		setMethodMap.put(new Integer(15), new MethodDesc("setTotalLimit", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(16), new MethodDesc("setPerOrderLimit", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(17), new MethodDesc("setOpenwindServiceFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(18), new MethodDesc("setUnwindServiceFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(19), new MethodDesc("setOvernightTime", new Class<?>[] { String.class }));
-		setMethodMap.put(new Integer(20),
-				new MethodDesc("setOvernightPerUnitDeferredFee", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(23),
-				new MethodDesc("setOvernightPerUnitReserveFund", new Class<?>[] { BigDecimal.class }));
-		setMethodMap.put(new Integer(22), new MethodDesc("setEnable", new Class<?>[] { Boolean.class }));
-		List<FuturesContractAdminDto> content = sqlDao.execute(FuturesContractAdminDto.class, sql, setMethodMap);
-		BigInteger totalElements = sqlDao.executeComputeSql(countSql);
-		return new PageImpl<>(content, new PageRequest(query.getPage(), query.getSize()),
-				totalElements != null ? totalElements.longValue() : 0);
 	}
 
 	public Page<FuturesContractDto> pagesByQuery(final FuturesContractQuery query) {
@@ -254,8 +211,8 @@ public class FuturesContractService {
 		if (list.size() > 0) {
 			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 		}
-
-
+		
+		limitService.deleteByContractId(id);
 		futuresContractDao.delete(id);
 		Response<String> response = new Response<>();
 		response.setCode("200");
