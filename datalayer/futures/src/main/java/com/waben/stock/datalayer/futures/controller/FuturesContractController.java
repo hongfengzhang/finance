@@ -66,6 +66,9 @@ public class FuturesContractController implements FuturesContractInterface {
 		// 组装分页数据的content
 		List<FuturesContractDto> content = new ArrayList<>();
 		for (FuturesContract contract : page.getContent()) {
+			if (contract.getCommodity() == null) {
+				break;
+			}
 			FuturesContractDto dto = CopyBeanUtils.copyBeanProperties(FuturesContractDto.class, contract.getCommodity(),
 					false);
 			dto = CopyBeanUtils.copyBeanProperties(contract, dto);
