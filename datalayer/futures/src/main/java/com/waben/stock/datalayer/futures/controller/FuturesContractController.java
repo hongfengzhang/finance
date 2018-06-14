@@ -51,10 +51,9 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Autowired
 	private FuturesCurrencyRateService futuresCurrencyRateService;
-	
+
 	@Autowired
 	private FuturesCommodityService commodityService;
-
 
 	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -66,8 +65,9 @@ public class FuturesContractController implements FuturesContractInterface {
 		PageInfo<FuturesContractDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractDto.class);
 		// 组装分页数据的content
 		List<FuturesContractDto> content = new ArrayList<>();
-		for(FuturesContract contract : page.getContent()) {
-			FuturesContractDto dto = CopyBeanUtils.copyBeanProperties(FuturesContractDto.class, contract.getCommodity(), false);
+		for (FuturesContract contract : page.getContent()) {
+			FuturesContractDto dto = CopyBeanUtils.copyBeanProperties(FuturesContractDto.class, contract.getCommodity(),
+					false);
 			dto = CopyBeanUtils.copyBeanProperties(contract, dto);
 			content.add(dto);
 		}
@@ -94,7 +94,7 @@ public class FuturesContractController implements FuturesContractInterface {
 				break;
 			}
 			// 判断合约是否可用
-			if (contractDto.getEnable() != null && ! contractDto.getEnable()) {
+			if (contractDto.getEnable() != null && !contractDto.getEnable()) {
 				contractDto.setState(3);
 				contractDto.setCurrentTradeTimeDesc("交易异常");
 				break;
@@ -243,20 +243,20 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractAdminDto> addContract(@RequestBody FuturesContractAdminDto contractDto) {
-		//判断是否唯一app合约
-		if(contractDto.getAppContract()){
-			if(contractDto.getCommodityId() == null){
+		// 判断是否唯一app合约
+		if (contractDto.getAppContract()) {
+			if (contractDto.getCommodityId() == null) {
 				throw new ServiceException(ExceptionConstant.CONTRACT_COMMODITYID_ISNULL_EXCEPTION);
 			}
 			List<FuturesContract> contList = futuresContractService.findByCommodity(contractDto.getCommodityId());
-			for(FuturesContract con:contList){
-				if(con.getAppContract()){
+			for (FuturesContract con : contList) {
+				if (con.getAppContract()) {
 					con.setAppContract(false);
 					futuresContractService.modifyExchange(con);
 				}
 			}
 		}
-		
+
 		FuturesContract fcontract = CopyBeanUtils.copyBeanProperties(FuturesContract.class, contractDto, false);
 		fcontract.setCommodity(commodityService.retrieve(contractDto.getCommodityId()));
 		fcontract.setEnable(false);
@@ -292,52 +292,56 @@ public class FuturesContractController implements FuturesContractInterface {
 			@RequestBody FuturesContractAdminQuery query) {
 		Page<FuturesContract> page = futuresContractService.pagesContractAdmin(query);
 		PageInfo<FuturesContractAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesContractAdminDto.class);
-		if(result!=null&&result.getContent()!=null){
+		if (result != null && result.getContent() != null) {
 			List<FuturesContract> contract = page.getContent();
-			for(int i=0;i<contract.size();i++){
-				if(contract.get(i).getCommodity()!=null){
+			for (int i = 0; i < contract.size(); i++) {
+				if (contract.get(i).getCommodity() != null) {
 					result.getContent().get(i).setSymbol(contract.get(i).getCommodity().getSymbol());
 					result.getContent().get(i).setName(contract.get(i).getCommodity().getName());
-					result.getContent().get(i).setProductType(contract.get(i).getCommodity().getProductType().getValue());
+					result.getContent().get(i)
+							.setProductType(contract.get(i).getCommodity().getProductType().getValue());
 					result.getContent().get(i).setCommodityId(contract.get(i).getCommodity().getId());
 					FuturesCommodity fcom = commodityService.retrieve(contract.get(i).getCommodity().getId());
-					if(fcom != null && fcom.getExchange() != null){
+					if (fcom != null && fcom.getExchange() != null) {
 						result.getContent().get(i).setExchangcode(fcom.getExchange().getCode());
 						result.getContent().get(i).setExchangeId(fcom.getExchange().getId());
 						result.getContent().get(i).setExchangename(fcom.getExchange().getName());
 						result.getContent().get(i).setExchangeType(fcom.getExchange().getExchangeType());
 					}
 				}
-				if(contract.get(i).getEnable()){
+				if (contract.get(i).getEnable()) {
 					result.getContent().get(i).setState(1);
-				}else{
+				} else {
 					result.getContent().get(i).setState(1);
 				}
-				if(contract.get(i).getExpirationDate()!=null){
+				if (contract.get(i).getExpirationDate() != null) {
 					Date expira = contract.get(i).getExpirationDate();
 					Date current = new Date();
-					if(current.getTime()>expira.getTime()){
+					if (current.getTime() > expira.getTime()) {
 						result.getContent().get(i).setState(3);
 					}
 				}
 			}
-				
+
 		}
-		
+
 		return new Response<>(result);
 	}
 
 	@Override
 	public Response<FuturesContractDto> findByContractId(@PathVariable Long contractId) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesContractDto.class,
-				futuresContractService.findByContractId(contractId), false));
+		FuturesContract contract = futuresContractService.findByContractId(contractId);
+		FuturesContractDto dto = CopyBeanUtils.copyBeanProperties(FuturesContractDto.class, contract.getCommodity(),
+				false);
+		dto = CopyBeanUtils.copyBeanProperties(contract, dto);
+		return new Response<>(dto);
 	}
 
 	@Override
 	public Response<String> isCurrent(@RequestParam(value = "id") Long id) {
 		Integer i = futuresContractService.isCurrent(id);
 		Response<String> response = new Response<String>();
-		if(i==1){
+		if (i == 1) {
 			response.setCode("200");
 			response.setMessage("响应成功");
 			response.setResult(i.toString());

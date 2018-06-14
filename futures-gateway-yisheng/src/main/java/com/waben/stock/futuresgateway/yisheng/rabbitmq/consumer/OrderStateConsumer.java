@@ -32,7 +32,7 @@ public class OrderStateConsumer {
 		try {
 			int orderSessionId = msgObj.getSessionID();
 			FuturesOrder order = orderDao.retrieveByOrderSessionId(orderSessionId);
-			if (order != null) {
+			if (order != null && order.getOrderState() != 6) {
 				order.setFilled(new BigDecimal(msgObj.getOrderInfo().getOrderMatchQty()));
 				order.setLastFillPrice(new BigDecimal(msgObj.getOrderInfo().getOrderMatchPrice()));
 				order.setOrderState(Integer.parseInt(String.valueOf(msgObj.getOrderInfo().getOrderState())));

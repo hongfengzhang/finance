@@ -49,10 +49,10 @@ public class WindControlSchedule {
 	/**
 	 * 监控间隔
 	 * <p>
-	 * 如果是工作日，每间隔5秒中获取持仓中的股票，判断持仓中的股票
+	 * 如果是工作日，每间隔1秒中获取持仓中的股票，判断持仓中的股票
 	 * </p>
 	 */
-	public static final long Execute_Interval = 5 * 1000;
+	public static final long Execute_Interval = 1 * 1000;
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 

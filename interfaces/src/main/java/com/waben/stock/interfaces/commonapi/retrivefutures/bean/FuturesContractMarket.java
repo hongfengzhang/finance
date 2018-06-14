@@ -3,6 +3,8 @@ package com.waben.stock.interfaces.commonapi.retrivefutures.bean;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -12,6 +14,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @author luomengan
  *
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @ApiModel(description = "期货合约行情")
 public class FuturesContractMarket {
 
