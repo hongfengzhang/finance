@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.service.futures;
 
+import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -57,7 +59,6 @@ public interface FuturesContractInterface {
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.GET)
 	Response<String> deleteContract(@PathVariable("id") Long id);
 
-
 	/**
 	 * 根据合约ID获取期货合约信息
 	 * 
@@ -67,8 +68,11 @@ public interface FuturesContractInterface {
 	 */
 	@RequestMapping(value = "/contract/{contractId}", method = RequestMethod.GET)
 	Response<FuturesContractDto> findByContractId(@PathVariable("contractId") Long contractId);
-	
-	@RequestMapping(value ="/contract/isEnable", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
+
+	@RequestMapping(value = "/contract/isEnable", method = RequestMethod.GET, consumes = MediaType.APPLICATION_JSON_VALUE)
 	Response<String> isCurrent(@RequestParam(value = "id") Long id);
+
+	@RequestMapping(value = "/lists/{commodityId}", method = RequestMethod.GET)
+	Response<List<FuturesContractDto>> listByCommodityId(@PathVariable("commodityId") Long commodityId);
 
 }

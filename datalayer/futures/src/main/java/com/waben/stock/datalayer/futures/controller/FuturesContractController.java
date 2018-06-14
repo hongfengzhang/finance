@@ -352,4 +352,10 @@ public class FuturesContractController implements FuturesContractInterface {
 		return response;
 	}
 
+	@Override
+	public Response<List<FuturesContractDto>> listByCommodityId(@PathVariable Long commodityId) {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(
+				futuresContractService.listByCommodityId(commodityId), FuturesContractDto.class));
+	}
+
 }

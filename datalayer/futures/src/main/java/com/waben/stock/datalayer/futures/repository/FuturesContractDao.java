@@ -2,6 +2,7 @@ package com.waben.stock.datalayer.futures.repository;
 
 import java.util.List;
 
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 
 /**
@@ -11,8 +12,11 @@ import com.waben.stock.datalayer.futures.entity.FuturesContract;
  *
  */
 public interface FuturesContractDao extends BaseDao<FuturesContract, Long> {
-	
-	int isCurrent(Boolean current,Long id);
-	
+
+	int isCurrent(Boolean current, Long id);
+
 	List<FuturesContract> findByCommodityId(Long commodityId);
+
+	List<FuturesContract> retrieveByCommodity(FuturesCommodity commodity);
+
 }

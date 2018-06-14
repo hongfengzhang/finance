@@ -26,6 +26,7 @@ import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesCommodityAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesPreQuantityDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeTimeDto;
+import com.waben.stock.interfaces.dto.futures.FuturesCommodityDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -36,7 +37,6 @@ import com.waben.stock.interfaces.util.PageToPageInfo;
 
 import io.swagger.annotations.Api;
 
-
 @RestController
 @RequestMapping("/commodity")
 @Api(description = "期货品种接口列表")
@@ -44,41 +44,41 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 
 	@Autowired
 	private FuturesCommodityService commodityService;
-	
+
 	@Autowired
 	private FuturesContractService contractService;
-	
+
 	@Autowired
 	private FuturesExchangeService exchangeService;
-	
+
 	@Autowired
 	private FuturesCurrencyRateService rateService;
-	
+
 	@Autowired
 	private FuturesPreQuantityService quantityService;
-	
+
 	@Override
 	public Response<PageInfo<FuturesCommodityAdminDto>> pagesAdmin(@RequestBody FuturesCommodityAdminQuery query) {
 		Page<FuturesCommodity> page = commodityService.pages(query);
 		PageInfo<FuturesCommodityAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesCommodityAdminDto.class);
 		FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
-		if(result!=null && result.getContent()!=null){
-			for(int i=0;i<result.getContent().size();i++){
+		if (result != null && result.getContent() != null) {
+			for (int i = 0; i < result.getContent().size(); i++) {
 				FuturesCommodity commodity = page.getContent().get(i);
 				result.getContent().get(i).setExchangcode(commodity.getExchange().getCode());
 				result.getContent().get(i).setExchangename(commodity.getExchange().getName());
 				result.getContent().get(i).setExchangeType(commodity.getExchange().getExchangeType());
 				result.getContent().get(i).setExchangeId(commodity.getExchange().getId());
 				result.getContent().get(i).setProductType(commodity.getProductType().getValue());
-				//查询汇率
+				// 查询汇率
 				FuturesCurrencyRate rate = rateService.findByCurrency(commodity.getCurrency());
-				if(rate!=null){
+				if (rate != null) {
 					result.getContent().get(i).setRate(rate.getRate());
 				}
 				List<FuturesPreQuantity> quantity = quantityService.findByCommodityId(commodity.getId());
 				List<FuturesPreQuantityDto> quDto = new ArrayList<FuturesPreQuantityDto>();
-				for(FuturesPreQuantity fq:quantity){
-					quDto.add(CopyBeanUtils.copyBeanProperties(fq, new FuturesPreQuantityDto(),false));
+				for (FuturesPreQuantity fq : quantity) {
+					quDto.add(CopyBeanUtils.copyBeanProperties(fq, new FuturesPreQuantityDto(), false));
 				}
 				result.getContent().get(i).setPreQuantityDto(quDto);
 			}
@@ -89,7 +89,7 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 	@Override
 	public Response<FuturesCommodityAdminDto> save(@RequestBody FuturesCommodityAdminDto dto) {
 		FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
-		
+
 		FuturesCommodity commodity = CopyBeanUtils.copyBeanProperties(FuturesCommodity.class, dto, false);
 		FuturesExchange exchange = exchangeService.findById(dto.getExchangeId());
 		commodity.setExchange(exchange);
@@ -98,17 +98,18 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 		commodity.setProductType(converter.convertToEntityAttribute(Integer.valueOf(dto.getProductType())));
 		commodity.setCreateTime(new Date());
 		FuturesCommodity result = commodityService.save(commodity);
-		FuturesCommodityAdminDto response = CopyBeanUtils.copyBeanProperties(result, new FuturesCommodityAdminDto(), false);
-		
-		if(response!=null){
+		FuturesCommodityAdminDto response = CopyBeanUtils.copyBeanProperties(result, new FuturesCommodityAdminDto(),
+				false);
+
+		if (response != null) {
 			response.setExchangcode(exchange.getCode());
 			response.setExchangename(exchange.getName());
 			response.setExchangeId(exchange.getId());
 			response.setExchangeType(exchange.getExchangeType());
-			
-			//查询汇率
+
+			// 查询汇率
 			FuturesCurrencyRate rate = rateService.findByCurrency(response.getCurrency());
-			if(rate!=null){
+			if (rate != null) {
 				response.setRate(rate.getRate());
 			}
 		}
@@ -118,9 +119,9 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 	@Override
 	public Response<FuturesCommodityAdminDto> modify(@RequestBody FuturesCommodityAdminDto dto) {
 		FuturesProductTypeConverter converter = new FuturesProductTypeConverter();
-		
+
 		FuturesCommodity commodity = CopyBeanUtils.copyBeanProperties(FuturesCommodity.class, dto, false);
-		
+
 		FuturesExchange exchange = exchangeService.findById(dto.getExchangeId());
 		commodity.setExchange(exchange);
 		commodity.setEnable(false);
@@ -128,17 +129,18 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 		commodity.setProductType(converter.convertToEntityAttribute(Integer.valueOf(dto.getProductType())));
 		commodity.setCreateTime(new Date());
 		FuturesCommodity result = commodityService.modify(commodity);
-		FuturesCommodityAdminDto response = CopyBeanUtils.copyBeanProperties(result, new FuturesCommodityAdminDto(), false);
-		
-		if(response!=null){
+		FuturesCommodityAdminDto response = CopyBeanUtils.copyBeanProperties(result, new FuturesCommodityAdminDto(),
+				false);
+
+		if (response != null) {
 			response.setExchangcode(exchange.getCode());
 			response.setExchangename(exchange.getName());
 			response.setExchangeId(exchange.getId());
 			response.setExchangeType(exchange.getExchangeType());
-			
-			//查询汇率
+
+			// 查询汇率
 			FuturesCurrencyRate rate = rateService.findByCurrency(response.getCurrency());
-			if(rate!=null){
+			if (rate != null) {
 				response.setRate(rate.getRate());
 			}
 		}
@@ -148,7 +150,7 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 	@Override
 	public Response<String> deleteCommodity(@PathVariable("id") Long id) {
 		List<FuturesContract> result = contractService.findByCommodity(id);
-		for(int i=0;i<result.size();i++){
+		for (int i = 0; i < result.size(); i++) {
 			contractService.deleteContract(result.get(i).getId());
 		}
 		commodityService.delete(id);
@@ -172,7 +174,7 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 		FuturesCommodity commodity = commodityService.retrieve(dto.getCommodityId());
 		commodity.setFriTradeTime(dto.getFriTradeTime());
 		commodity.setFriTradeTimeDesc(dto.getFriTradeTimeDesc());
-		
+
 		commodity.setMonTradeTime(dto.getMonTradeTime());
 		commodity.setMonTradeTimeDesc(dto.getMonTradeTimeDesc());
 		commodity.setSatTradeTime(dto.getSatTradeTime());
@@ -183,23 +185,24 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 		commodity.setThuTradeTimeDesc(dto.getThuTradeTimeDesc());
 		commodity.setTueTradeTime(dto.getTueTradeTime());
 		commodity.setTueTradeTimeDesc(dto.getTueTradeTimeDesc());
-		
+
 		commodity.setWedTradeTime(dto.getWedTradeTime());
 		commodity.setWedTradeTimeDesc(dto.getWedTradeTimeDesc());
 		commodity.setUpdateTime(new Date());
 		commodityService.modify(commodity);
 		FuturesCommodity result = commodityService.modify(commodity);
-		FuturesCommodityAdminDto response = CopyBeanUtils.copyBeanProperties(result, new FuturesCommodityAdminDto(), false);
-		
-		if(response!=null){
+		FuturesCommodityAdminDto response = CopyBeanUtils.copyBeanProperties(result, new FuturesCommodityAdminDto(),
+				false);
+
+		if (response != null) {
 			response.setExchangcode(result.getExchange().getCode());
 			response.setExchangename(result.getExchange().getName());
 			response.setExchangeId(result.getExchange().getId());
 			response.setExchangeType(result.getExchange().getExchangeType());
-			
-			//查询汇率
+
+			// 查询汇率
 			FuturesCurrencyRate rate = rateService.findByCurrency(response.getCurrency());
-			if(rate!=null){
+			if (rate != null) {
 				response.setRate(rate.getRate());
 			}
 		}
@@ -211,35 +214,35 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 		FuturesCommodity commodity = commodityService.retrieve(id);
 		boolean isCurrency = commodity.getEnable();
 		List<FuturesContract> list = contractService.findByCommodity(commodity.getId());
-		if(!isCurrency){
-			for(FuturesContract contract : list){
-				if(contract.getEnable()){
+		if (!isCurrency) {
+			for (FuturesContract contract : list) {
+				if (contract.getEnable()) {
 					isCurrency = true;
 				}
 			}
-			if(isCurrency){
+			if (isCurrency) {
 				commodity.setEnable(isCurrency);
-			}else{
+			} else {
 				throw new ServiceException(ExceptionConstant.CONTRACTTERM_ISCURRENT_EXCEPTION);
 			}
-			
+
 			List<FuturesPreQuantity> quantity = quantityService.findByCommodityId(commodity.getId());
-			if(quantity==null && quantity.size()==0){
+			if (quantity == null && quantity.size() == 0) {
 				throw new ServiceException(ExceptionConstant.CONTRACT_PREQUANTITY_EXCEPTION);
 			}
-			
-			if(commodity.getFriTradeTime()==null || "".equals(commodity.getFriTradeTime())){
+
+			if (commodity.getFriTradeTime() == null || "".equals(commodity.getFriTradeTime())) {
 				throw new ServiceException(ExceptionConstant.COMMODITY_TRADETIME_ISNULL_EXCEPTION);
 			}
-			
-		}else{
-			for(FuturesContract contract : list){
-				if(contract.getEnable()){
+
+		} else {
+			for (FuturesContract contract : list) {
+				if (contract.getEnable()) {
 					contractService.isCurrent(contract.getId());
 				}
 			}
 			commodity.setEnable(false);
-			
+
 		}
 		commodityService.modify(commodity);
 		Response<String> res = new Response<String>();
@@ -247,6 +250,12 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 		res.setMessage("响应成功");
 		res.setResult("1");
 		return res;
+	}
+
+	@Override
+	public Response<List<FuturesCommodityDto>> listByExchangeId(@PathVariable Long exchangeId) {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(commodityService.listByExchangeId(exchangeId),
+				FuturesCommodityDto.class));
 	}
 
 }

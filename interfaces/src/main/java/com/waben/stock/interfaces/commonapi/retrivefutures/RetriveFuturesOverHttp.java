@@ -1,7 +1,5 @@
 package com.waben.stock.interfaces.commonapi.retrivefutures;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 import org.springframework.web.client.RestTemplate;
@@ -46,25 +44,10 @@ public class RetriveFuturesOverHttp {
 		String response = restTemplate.getForObject(url, String.class);
 		Response<FuturesContractMarket> responseObj = JacksonUtil.decode(response,
 				JacksonUtil.getGenericType(Response.class, FuturesContractMarket.class));
-		if (responseObj != null) {
-			if ("200".equals(responseObj.getCode())) {
-				FuturesContractMarket market = responseObj.getResult();
-				// TODO 因盈透测试账户没有返回最新价，此处先写死一个最新价返回给前端调试，后续删除
-				if (market == null) {
-					market = new FuturesContractMarket();
-				}
-				market.setLastPrice(
-						new BigDecimal(1300).add(new BigDecimal(Math.random() * 2)).setScale(4, RoundingMode.DOWN));
-				responseObj.setResult(market);
-				return responseObj.getResult();
-			} else {
-				throw new RuntimeException("http获取期货行情异常!" + responseObj.getCode());
-			}
+		if ("200".equals(responseObj.getCode())) {
+			return responseObj.getResult();
 		} else {
-			FuturesContractMarket market = new FuturesContractMarket();
-			market.setLastPrice(
-					new BigDecimal(1300).add(new BigDecimal(Math.random() * 2)).setScale(4, RoundingMode.DOWN));
-			return market;
+			throw new RuntimeException("http获取期货行情异常!" + responseObj.getCode());
 		}
 	}
 
