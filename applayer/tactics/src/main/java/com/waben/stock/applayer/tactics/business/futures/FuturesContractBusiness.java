@@ -59,7 +59,7 @@ public class FuturesContractBusiness {
 	@Qualifier("organizationPublisherInterface")
 	private OrganizationPublisherInterface organizationPublisherInterface;
 
-	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-M-d HH:mm");
 
 	public CapitalAccountDto findByPublisherId(Long publisherId) {
 		Response<CapitalAccountDto> response = service.fetchByPublisherId(publisherId);

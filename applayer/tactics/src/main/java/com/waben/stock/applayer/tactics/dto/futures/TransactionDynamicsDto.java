@@ -44,6 +44,9 @@ public class TransactionDynamicsDto {
 	@ApiModelProperty(value = "期货合约状态,1 交易中;2 休市中;3 异常")
 	private Integer state;
 
+	@ApiModelProperty(value = "合约编号")
+	private String contractNo;
+
 	public Long getPublisherId() {
 		return publisherId;
 	}
@@ -122,6 +125,14 @@ public class TransactionDynamicsDto {
 
 	public void setState(Integer state) {
 		this.state = state;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
 	}
 
 }

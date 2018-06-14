@@ -273,6 +273,7 @@ public class FuturesOrderBusiness {
 				TransactionDynamicsDto unwind = new TransactionDynamicsDto();
 				unwind.setPublisherProfitOrLoss(unwindOrder.getPublisherProfitOrLoss());
 				unwind.setContractId(unwindOrder.getContractId());
+				unwind.setContractNo(unwindOrder.getContractNo());
 				unwind.setContractName(unwindOrder.getCommodityName());
 				unwind.setContractSymbol(unwindOrder.getCommoditySymbol());
 				unwind.setPublisherId(unwindOrder.getPublisherId());
