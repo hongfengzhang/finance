@@ -115,15 +115,6 @@ public class FuturesOrderController {
 			throw new ServiceException(ExceptionConstant.UPPER_LIMIT_HOLDING_CAPACITY_EXCEPTION);
 		}
 
-		// 验证支付密码
-		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(SecurityUtil.getUserId());
-		String storePaymentPassword = capitalAccount.getPaymentPassword();
-		if (storePaymentPassword == null || "".equals(storePaymentPassword)) {
-			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_NOTSET_EXCEPTION);
-		}
-		if (!PasswordCrypt.match(buysellDto.getPaymentPassword(), storePaymentPassword)) {
-			throw new ServiceException(ExceptionConstant.PAYMENTPASSWORD_WRONG_EXCEPTION);
-		}
 		// 总金额
 		BigDecimal totalFee = new BigDecimal(0);
 		// 保证金金额
@@ -138,6 +129,7 @@ public class FuturesOrderController {
 		totalFee = reserveAmount.add(comprehensiveAmount);
 
 		// 检查余额
+		CapitalAccountDto capitalAccount = futuresContractBusiness.findByPublisherId(SecurityUtil.getUserId());
 		if (totalFee.compareTo(capitalAccount.getAvailableBalance()) > 0) {
 			throw new ServiceException(ExceptionConstant.AVAILABLE_BALANCE_NOTENOUGH_EXCEPTION);
 		}

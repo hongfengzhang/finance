@@ -70,4 +70,9 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 		return null;
 	}
 
+	@Override
+	public FuturesOrder retrieveByOrderNo(String orderNo) {
+		return futuresOrderRepository.findByOrderNo(orderNo);
+	}
+
 }

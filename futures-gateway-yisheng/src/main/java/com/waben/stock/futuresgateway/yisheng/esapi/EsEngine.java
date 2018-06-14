@@ -9,6 +9,7 @@ import com.future.api.es.external.common.bean.TapAPICommodity;
 import com.future.api.es.external.common.bean.TapAPIContract;
 import com.future.api.es.external.common.constants.Constants;
 import com.future.api.es.external.trade.bean.TapAPINewOrder;
+import com.future.api.es.external.trade.bean.TapAPIOrderCancelReq;
 import com.waben.stock.futuresgateway.yisheng.entity.FuturesCommodity;
 import com.waben.stock.futuresgateway.yisheng.entity.FuturesContract;
 import com.waben.stock.futuresgateway.yisheng.exception.ExceptionEnum;
@@ -66,6 +67,12 @@ public class EsEngine {
 			order.setOrderSide(Constants.TAPI_SIDE_SELL);
 		}
 		return tradeWrapper.getApi().insertOrder(order);
+	}
+
+	public int cancelOrder(String orderNo) {
+		TapAPIOrderCancelReq req = new TapAPIOrderCancelReq();
+		req.setOrderNo(orderNo);
+		return tradeWrapper.getApi().cancelOrder(req);
 	}
 
 }

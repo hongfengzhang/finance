@@ -30,4 +30,6 @@ public interface FuturesOrderDao {
 
 	public FuturesOrder retrieveByOrderSessionId(int orderSessionId);
 
+	public FuturesOrder retrieveByOrderNo(String orderNo);
+
 }

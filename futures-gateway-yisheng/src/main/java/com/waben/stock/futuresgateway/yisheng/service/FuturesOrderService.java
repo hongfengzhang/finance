@@ -97,7 +97,18 @@ public class FuturesOrderService {
 		if (!isConnected()) {
 			throw new ServiceException(ExceptionEnum.Client_NotConnected);
 		}
-		return null;
+		FuturesOrder order = futuresOrderDao.retrieveFuturesOrderById(id);
+		if (order == null) {
+			throw new ServiceException(ExceptionEnum.Order_NotExist);
+		}
+		if (order.getOrderState() == 4) {
+			esEngine.cancelOrder(order.getOrderNo());
+		} else if (order.getOrderState() == 5) {
+			throw new ServiceException(ExceptionEnum.PartFilled_CannotCancel);
+		} else {
+			throw new ServiceException(ExceptionEnum.CurrentStatus_CannotCancel);
+		}
+		return order;
 	}
 
 	/**
