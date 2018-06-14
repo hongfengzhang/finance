@@ -1,7 +1,5 @@
 package com.waben.stock.applayer.tactics.controller.futures;
 
-import static org.mockito.Matchers.contains;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;

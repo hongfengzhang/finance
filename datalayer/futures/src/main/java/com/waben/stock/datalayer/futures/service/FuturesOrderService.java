@@ -169,10 +169,12 @@ public class FuturesOrderService {
 				}
 
 				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
-					predicateList.add(criteriaBuilder.like(root.get("commoditySymbol").as(String.class), "%"+query.getSymbol()+"%"));
+					predicateList.add(criteriaBuilder.like(root.get("commoditySymbol").as(String.class),
+							"%" + query.getSymbol() + "%"));
 				}
 				if (query.getName() != null && !"".equals(query.getName())) {
-					predicateList.add(criteriaBuilder.like(root.get("commodityName").as(String.class), "%"+query.getName()+"%"));
+					predicateList.add(criteriaBuilder.like(root.get("commodityName").as(String.class),
+							"%" + query.getName() + "%"));
 				}
 
 				if (query.getOrderState() != null) {
@@ -343,8 +345,8 @@ public class FuturesOrderService {
 				if (predicateList.size() > 0) {
 					criteriaQuery.where(predicateList.toArray(new Predicate[predicateList.size()]));
 				}
-				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("buyingTime").as(Date.class)),
-						criteriaBuilder.desc(root.get("sellingTime").as(Date.class)));
+				criteriaQuery.orderBy(criteriaBuilder.desc(root.get("sellingTime").as(Date.class)),
+						criteriaBuilder.desc(root.get("buyingTime").as(Date.class)));
 
 				return criteriaQuery.getRestriction();
 			}

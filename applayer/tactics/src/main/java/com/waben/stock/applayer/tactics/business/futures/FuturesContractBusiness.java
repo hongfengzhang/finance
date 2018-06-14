@@ -11,10 +11,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
+import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.commonapi.retrivefutures.RetriveFuturesOverHttp;
 import com.waben.stock.interfaces.commonapi.retrivefutures.bean.FuturesContractMarket;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
+import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.dto.publisher.CapitalAccountDto;
 import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
@@ -23,6 +26,8 @@ import com.waben.stock.interfaces.pojo.query.futures.FuturesContractQuery;
 import com.waben.stock.interfaces.service.futures.FuturesBrokerInterface;
 import com.waben.stock.interfaces.service.futures.FuturesContractInterface;
 import com.waben.stock.interfaces.service.futures.FuturesOrderInterface;
+import com.waben.stock.interfaces.service.organization.OrganizationInterface;
+import com.waben.stock.interfaces.service.organization.OrganizationPublisherInterface;
 import com.waben.stock.interfaces.service.publisher.CapitalAccountInterface;
 import com.waben.stock.interfaces.util.CopyBeanUtils;
 import com.waben.stock.interfaces.util.StringUtil;
@@ -45,6 +50,14 @@ public class FuturesContractBusiness {
 	@Autowired
 	@Qualifier("futuresBrokerInterface")
 	private FuturesBrokerInterface futuresBrokerInterface;
+
+	@Autowired
+	@Qualifier("organizationInterface")
+	private OrganizationInterface organizationInterface;
+
+	@Autowired
+	@Qualifier("organizationPublisherInterface")
+	private OrganizationPublisherInterface organizationPublisherInterface;
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
@@ -87,7 +100,6 @@ public class FuturesContractBusiness {
 						timeZoneConversion(quotation.getTimeZoneGap(), quotation.getCurrentHoldingTime()));
 				quotation.setNextTradingTime(
 						timeZoneConversion(quotation.getTimeZoneGap(), quotation.getNextTradingTime()));
-
 			}
 		}
 		return quotationList;
@@ -132,6 +144,17 @@ public class FuturesContractBusiness {
 					// 该合约不在交易中
 					throw new ServiceException(ExceptionConstant.CONTRACT_ISNOTIN_TRADE_EXCEPTION);
 				}
+
+				OrganizationPublisherDto publisher = fetchOrgPublisher(SecurityUtil.getUserDetails().getUserId());
+				if (publisher != null) {
+					FuturesAgentPriceDto agentPrice = getCurrentAgentPrice(publisher.getOrgId(), contractDto.getId());
+					if (agentPrice != null) {
+						contractDto.setPerUnitReserveFund(agentPrice.getCostReserveFund());
+						contractDto.setOpenwindServiceFee(agentPrice.getSaleOpenwindServiceFee());
+						contractDto.setUnwindServiceFee(agentPrice.getSaleUnwindServiceFee());
+						contractDto.setOvernightPerUnitDeferredFee(agentPrice.getSaleDeferredFee());
+					}
+				}
 			}
 
 			return contractDto;
@@ -167,6 +190,38 @@ public class FuturesContractBusiness {
 		cal.setTime(localTime);
 		cal.add(Calendar.HOUR_OF_DAY, timeZoneGap);
 		return cal.getTime();
+	}
+
+	/**
+	 * 获取当前期货代理价格数据
+	 * 
+	 * @param orgId
+	 *            代理商ID
+	 * @param contractId
+	 *            合约ID
+	 * @return 期货代理价格
+	 */
+	public FuturesAgentPriceDto getCurrentAgentPrice(Long orgId, Long contractId) {
+		Response<FuturesAgentPriceDto> response = organizationInterface.getCurrentAgentPrice(orgId, contractId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
+	}
+
+	/**
+	 * 根据用户获取代理商用户信息
+	 * 
+	 * @param publisherId
+	 *            用户iD
+	 * @return 代理商用户
+	 */
+	public OrganizationPublisherDto fetchOrgPublisher(Long publisherId) {
+		Response<OrganizationPublisherDto> response = organizationPublisherInterface.fetchOrgPublisher(publisherId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
 	}
 
 }

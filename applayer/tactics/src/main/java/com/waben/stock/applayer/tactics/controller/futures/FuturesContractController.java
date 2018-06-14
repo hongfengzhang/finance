@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.waben.stock.applayer.tactics.business.futures.FuturesContractBusiness;
 import com.waben.stock.applayer.tactics.dto.futures.FuturesContractQuotationDto;
+import com.waben.stock.applayer.tactics.security.SecurityUtil;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
+import com.waben.stock.interfaces.dto.organization.FuturesAgentPriceDto;
+import com.waben.stock.interfaces.dto.organization.OrganizationPublisherDto;
 import com.waben.stock.interfaces.enums.FuturesProductType;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
@@ -95,6 +98,18 @@ public class FuturesContractController {
 		FuturesContractQuotationDto result = null;
 		if (quotationList != null && quotationList.size() > 0) {
 			result = quotationList.get(0);
+			OrganizationPublisherDto publisher = futuresContractBusiness
+					.fetchOrgPublisher(SecurityUtil.getUserDetails().getUserId());
+			if (publisher != null) {
+				FuturesAgentPriceDto agentPrice = futuresContractBusiness.getCurrentAgentPrice(publisher.getOrgId(),
+						result.getId());
+				if (agentPrice != null) {
+					result.setPerUnitReserveFund(agentPrice.getCostReserveFund());
+					result.setOpenwindServiceFee(agentPrice.getSaleOpenwindServiceFee());
+					result.setUnwindServiceFee(agentPrice.getSaleUnwindServiceFee());
+					result.setOvernightPerUnitDeferredFee(agentPrice.getSaleDeferredFee());
+				}
+			}
 		}
 		return new Response<>(result);
 	}
