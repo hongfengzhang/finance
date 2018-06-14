@@ -1,100 +1,65 @@
-package com.waben.stock.interfaces.commonapi.retrivefutures.bean;
+package com.waben.stock.futuresgateway.yisheng.pojo;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-
-/**
- * 期货合约行情
- * 
- * @author luomengan
- *
- */
-@ApiModel(description = "期货合约行情")
-public class FuturesContractMarket {
+public class FuturesQuoteData {
 
 	/**
 	 * 品种编号
 	 */
-	@ApiModelProperty(value = "品种编号")
 	private String commodityNo;
 	/**
 	 * 合约编号
 	 */
-	@ApiModelProperty(value = "合约编号")
 	private String contractNo;
 	/**
 	 * 最高价投标合同（买方开价）
 	 */
-	@ApiModelProperty(value = "最高价投标合同（买方开价）")
 	private BigDecimal bidPrice;
 	/**
 	 * 以投标价格提供的合同或批次数量（买方开价）
 	 */
-	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（买方开价）")
 	private Long bidSize;
 	/**
 	 * 最低价投标合同（卖方开价）
 	 */
-	@ApiModelProperty(value = "最低价投标合同（卖方开价）")
 	private BigDecimal askPrice;
 	/**
 	 * 以投标价格提供的合同或批次数量（卖方开价）
 	 */
-	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（卖方开价）")
 	private Long askSize;
 	/**
 	 * 最新价
 	 */
-	@ApiModelProperty(value = "最新价")
 	private BigDecimal lastPrice;
 	/**
 	 * 以最新价交易的合同或批次数量
 	 */
-	@ApiModelProperty(value = "以最新价交易的合同或批次数量")
 	private Long lastSize;
 	/**
 	 * 今天的开盘价
 	 */
-	@ApiModelProperty(value = "今天的开盘价")
 	private BigDecimal openPrice;
 	/**
 	 * 当天最高价
 	 */
-	@ApiModelProperty(value = "当天最高价")
 	private BigDecimal highPrice;
 	/**
 	 * 当天最低价
 	 */
-	@ApiModelProperty(value = "当天最低价")
 	private BigDecimal lowPrice;
 	/**
 	 * 昨天的收盘价
 	 */
-	@ApiModelProperty(value = "昨天的收盘价")
 	private BigDecimal closePrice;
 	/**
 	 * 当天成交量
 	 */
-	@ApiModelProperty(value = "当天成交量")
 	private Long volume;
 	/**
 	 * 当日总成交量
 	 */
-	@ApiModelProperty(value = "当日总成交量")
 	private Long totalVolume;
-	/**
-	 * 跌涨价格
-	 */
-	@ApiModelProperty(value = "跌涨价格")
-	private BigDecimal upDropPrice;
-	/**
-	 * 跌涨幅度
-	 */
-	@ApiModelProperty(value = "跌涨幅度")
-	private BigDecimal upDropSpeed;
 
 	public String getCommodityNo() {
 		return commodityNo;
@@ -206,28 +171,6 @@ public class FuturesContractMarket {
 
 	public void setTotalVolume(Long totalVolume) {
 		this.totalVolume = totalVolume;
-	}
-
-	public void setUpDropPrice(BigDecimal upDropPrice) {
-		this.upDropPrice = upDropPrice;
-	}
-
-	public void setUpDropSpeed(BigDecimal upDropSpeed) {
-		this.upDropSpeed = upDropSpeed;
-	}
-
-	public BigDecimal getUpDropPrice() {
-		if (closePrice != null && lastPrice != null && closePrice.compareTo(BigDecimal.ZERO) > 0) {
-			return lastPrice.subtract(closePrice);
-		}
-		return upDropPrice;
-	}
-
-	public BigDecimal getUpDropSpeed() {
-		if (closePrice != null && lastPrice != null && closePrice.compareTo(BigDecimal.ZERO) > 0) {
-			return lastPrice.subtract(closePrice).divide(closePrice, 4, RoundingMode.DOWN);
-		}
-		return upDropSpeed;
 	}
 
 }

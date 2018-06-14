@@ -1,5 +1,6 @@
 package com.waben.stock.futuresgateway.yisheng.entity;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -31,10 +32,22 @@ public class FuturesQuoteMinuteKGroup {
 	private Long contractId;
 	/** 合约编号 */
 	private String contractNo;
-	/** 开始时间 */
-	private Date startTime;
-	/** 结束时间 */
-	private Date endTime;
+	/** 时间 */
+	private Date time;
+	/** 时间字符串 */
+	private String timeStr;
+	/** 开盘价 */
+	private BigDecimal openPrice;
+	/** 最高价 */
+	private BigDecimal highPrice;
+	/** 最低价 */
+	private BigDecimal lowPrice;
+	/** 收盘价 */
+	private BigDecimal closePrice;
+	/** 成交量 */
+	private long volume;
+	/** 当天总成交量 */
+	private long totalVolume;
 	/** 组合数据，json数组存放分钟K */
 	@Type(type = "text")
 	private String groupData;
@@ -79,20 +92,68 @@ public class FuturesQuoteMinuteKGroup {
 		this.contractNo = contractNo;
 	}
 
-	public Date getStartTime() {
-		return startTime;
+	public Date getTime() {
+		return time;
 	}
 
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
+	public void setTime(Date time) {
+		this.time = time;
 	}
 
-	public Date getEndTime() {
-		return endTime;
+	public String getTimeStr() {
+		return timeStr;
 	}
 
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
+	public void setTimeStr(String timeStr) {
+		this.timeStr = timeStr;
+	}
+
+	public BigDecimal getOpenPrice() {
+		return openPrice;
+	}
+
+	public void setOpenPrice(BigDecimal openPrice) {
+		this.openPrice = openPrice;
+	}
+
+	public BigDecimal getHighPrice() {
+		return highPrice;
+	}
+
+	public void setHighPrice(BigDecimal highPrice) {
+		this.highPrice = highPrice;
+	}
+
+	public BigDecimal getLowPrice() {
+		return lowPrice;
+	}
+
+	public void setLowPrice(BigDecimal lowPrice) {
+		this.lowPrice = lowPrice;
+	}
+
+	public BigDecimal getClosePrice() {
+		return closePrice;
+	}
+
+	public void setClosePrice(BigDecimal closePrice) {
+		this.closePrice = closePrice;
+	}
+
+	public long getVolume() {
+		return volume;
+	}
+
+	public void setVolume(long volume) {
+		this.volume = volume;
+	}
+
+	public long getTotalVolume() {
+		return totalVolume;
+	}
+
+	public void setTotalVolume(long totalVolume) {
+		this.totalVolume = totalVolume;
 	}
 
 	public String getGroupData() {

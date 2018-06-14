@@ -99,7 +99,8 @@ public class WindControlSchedule {
 							continue;
 						}
 						// step 5 : 获取合约行情
-						FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getCommoditySymbol());
+						FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getCommoditySymbol(),
+								order.getContractNo());
 						// step 6 : 是否达到止盈点
 						if (orderService.isTradeTime(timeZoneGap, contract) && isReachProfitPoint(order, market)) {
 							orderService.sellingEntrust(order, FuturesWindControlType.ReachProfitPoint,

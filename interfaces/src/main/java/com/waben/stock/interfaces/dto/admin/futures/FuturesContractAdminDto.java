@@ -71,6 +71,16 @@ public class FuturesContractAdminDto {
 	private BigDecimal userTotalLimit;
 	
 	/**
+	 * 买涨持仓总额度
+	 */
+	private BigDecimal buyUpTotalLimit;
+	
+	/**
+	 * 买跌持仓总额度
+	 */
+	private BigDecimal buyFullTotalLimit;
+	
+	/**
 	 * 单笔订单额度限制（手）
 	 */
 	private BigDecimal perOrderLimit;
@@ -227,6 +237,22 @@ public class FuturesContractAdminDto {
 
 	public void setUserTotalLimit(BigDecimal userTotalLimit) {
 		this.userTotalLimit = userTotalLimit;
+	}
+
+	public BigDecimal getBuyUpTotalLimit() {
+		return buyUpTotalLimit;
+	}
+
+	public void setBuyUpTotalLimit(BigDecimal buyUpTotalLimit) {
+		this.buyUpTotalLimit = buyUpTotalLimit;
+	}
+
+	public BigDecimal getBuyFullTotalLimit() {
+		return buyFullTotalLimit;
+	}
+
+	public void setBuyFullTotalLimit(BigDecimal buyFullTotalLimit) {
+		this.buyFullTotalLimit = buyFullTotalLimit;
 	}
 
 	public BigDecimal getPerOrderLimit() {

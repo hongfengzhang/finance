@@ -25,6 +25,10 @@ public class RabbitmqConfiguration {
 
 	public static final String deleteQuoteQueueName = "futures-gateway-yisheng-deletequote";
 
+	public static final String orderStateQueueName = "futures-gateway-yisheng-orderstate";
+
+	public static final String orderActionQueueName = "futures-gateway-yisheng-orderaction";
+
 	@Autowired
 	private ConnectionFactory connectionFactory;
 
@@ -44,7 +48,7 @@ public class RabbitmqConfiguration {
 		factory.setMaxConcurrentConsumers(50);
 		return factory;
 	}
-	
+
 	@Bean(name = { "deleteQuoteListenerContainerFactory" })
 	public SimpleRabbitListenerContainerFactory deleteQuoteListenerContainerFactory() {
 		SimpleRabbitListenerContainerFactory factory = new SimpleRabbitListenerContainerFactory();
@@ -84,6 +88,22 @@ public class RabbitmqConfiguration {
 	@Bean
 	public Queue deleteQuoteQueue() {
 		return new Queue(deleteQuoteQueueName);
+	}
+
+	/**
+	 * 创建 订单状态回调 队列
+	 */
+	@Bean
+	public Queue orderStateQuoteQueue() {
+		return new Queue(orderStateQueueName);
+	}
+
+	/**
+	 * 创建 订单动作回调 队列
+	 */
+	@Bean
+	public Queue orderActionQuoteQueue() {
+		return new Queue(orderActionQueueName);
 	}
 
 }

@@ -15,19 +15,42 @@ import com.waben.stock.interfaces.util.StringUtil;
 public class RetriveFuturesOverHttp {
 
 	private static RestTemplate restTemplate = new RestTemplate();
+	/**
+	 * 盈透api基础路径
+	 */
+	private static String yingtouBaseUrl = "http://10.0.0.48:9092/";
+	/**
+	 * 易盛api基础路径
+	 */
+	private static String yishengBaseUrl = "http://10.0.0.99:9093/";
+	/**
+	 * api类型
+	 * <ul>
+	 * <li>1盈透</li>
+	 * <li>2易盛</li>
+	 * </ul>
+	 */
+	private static Integer apiType = 2;
 
-	private static String baseUrl = "http://10.0.0.48:9092/";
+	private static String getBaseUrl() {
+		if (apiType == 1) {
+			return yingtouBaseUrl;
+		} else if (apiType == 2) {
+			return yishengBaseUrl;
+		}
+		return "";
+	}
 
-	public static FuturesContractMarket market(String symbol) {
-		String url = baseUrl + "market/" + symbol;
+	public static FuturesContractMarket market(String commodityNo, String contractNo) {
+		String url = getBaseUrl() + "market/" + commodityNo + "/" + contractNo;
 		String response = restTemplate.getForObject(url, String.class);
 		Response<FuturesContractMarket> responseObj = JacksonUtil.decode(response,
 				JacksonUtil.getGenericType(Response.class, FuturesContractMarket.class));
-		if(responseObj!=null){
+		if (responseObj != null) {
 			if ("200".equals(responseObj.getCode())) {
 				FuturesContractMarket market = responseObj.getResult();
 				// TODO 因盈透测试账户没有返回最新价，此处先写死一个最新价返回给前端调试，后续删除
-				if(market==null){
+				if (market == null) {
 					market = new FuturesContractMarket();
 				}
 				market.setLastPrice(
@@ -37,7 +60,7 @@ public class RetriveFuturesOverHttp {
 			} else {
 				throw new RuntimeException("http获取期货行情异常!" + responseObj.getCode());
 			}
-		}else{
+		} else {
 			FuturesContractMarket market = new FuturesContractMarket();
 			market.setLastPrice(
 					new BigDecimal(1300).add(new BigDecimal(Math.random() * 2)).setScale(4, RoundingMode.DOWN));
@@ -45,11 +68,8 @@ public class RetriveFuturesOverHttp {
 		}
 	}
 
-	public static List<FuturesContractLineData> timeLine(String symbol, Integer dayCount) {
-		String url = baseUrl + "market/" + symbol + "/timeline?flag=1";
-		if (dayCount != null) {
-			url += "&dayCount=" + dayCount;
-		}
+	public static List<FuturesContractLineData> timeLine(String commodityNo, String contractNo) {
+		String url = getBaseUrl() + "market/" + commodityNo + "/" + contractNo + "/minsline";
 		String response = restTemplate.getForObject(url, String.class);
 		Response<List<FuturesContractLineData>> responseObj = JacksonUtil.decode(response, JacksonUtil
 				.getGenericType(Response.class, JacksonUtil.getGenericType(List.class, FuturesContractLineData.class)));
@@ -60,8 +80,9 @@ public class RetriveFuturesOverHttp {
 		}
 	}
 
-	public static List<FuturesContractLineData> dayLine(String symbol, String startTime, String endTime) {
-		String url = baseUrl + "market/" + symbol + "/dayline?flag=1";
+	public static List<FuturesContractLineData> dayLine(String commodityNo, String contractNo, String startTime,
+			String endTime) {
+		String url = getBaseUrl() + "market/" + commodityNo + "/" + contractNo + "/dayline";
 		if (!StringUtil.isEmpty(startTime)) {
 			url += "&startTime=" + startTime;
 		}
@@ -78,14 +99,8 @@ public class RetriveFuturesOverHttp {
 		}
 	}
 
-	public static List<FuturesContractLineData> minsLine(String symbol, Integer mins, Integer dayCount) {
-		String url = baseUrl + "market/" + symbol + "/minsline?flag=1";
-		if (mins != null) {
-			url += "&mins=" + mins;
-		}
-		if (dayCount != null) {
-			url += "&dayCount=" + dayCount;
-		}
+	public static List<FuturesContractLineData> minsLine(String commodityNo, String contractNo, Integer mins) {
+		String url = getBaseUrl() + "market/" + commodityNo + "/" + contractNo + "/minsline";
 		String response = restTemplate.getForObject(url, String.class);
 		Response<List<FuturesContractLineData>> responseObj = JacksonUtil.decode(response, JacksonUtil
 				.getGenericType(Response.class, JacksonUtil.getGenericType(List.class, FuturesContractLineData.class)));

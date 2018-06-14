@@ -10,14 +10,14 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 期货合约行情
+ * 期货合约行情-最新
  * 
  * @author luomengan
  *
  */
 @Entity
-@Table(name = "f_gateway_futures_es_contract_quote")
-public class FuturesContractQuote {
+@Table(name = "f_gateway_futures_es_quote_last")
+public class FuturesQuoteLast {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -7,14 +7,17 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class FuturesContractDto extends FuturesCommodityDto {
 
+	@ApiModelProperty(value = "合约ID")
 	private Long id;
 	/**
 	 * 合约编号
 	 */
+	@ApiModelProperty(value = "合约编号")
 	private String contractNo;
 	/**
 	 * 合约名称
 	 */
+	@ApiModelProperty(value = "合约名称")
 	private String contractName;
 	/**
 	 * 该合约总计的可使用的额度（手）
@@ -23,53 +26,65 @@ public class FuturesContractDto extends FuturesCommodityDto {
 	 * 需将所有未平仓的订单量相加，买涨的为正数，买跌的为负数，相加结果取绝对值再和这个总额度比较
 	 * </p>
 	 */
+	@ApiModelProperty(value = "该合约总计的可使用的额度（手）")
 	private BigDecimal userTotalLimit;
 	/**
 	 * 单笔订单额度限制（手）
 	 */
+	@ApiModelProperty(value = "单笔订单额度限制（手）")
 	private BigDecimal perOrderLimit;
 	/**
 	 * The first day on which a notice of intent to deliver a commodity can be
 	 * made by a clearinghouse to a buyer in order to fulfill a given futures
 	 * contract
 	 */
+	@ApiModelProperty(value = "")
 	private Date firstNoticeDate;
 	/**
 	 * The first day when an invesor who is short a commodify futures contract
 	 * may notify the clearinghouse of the intention to deliver the commodity
 	 */
+	@ApiModelProperty(value = "")
 	private Date firstPositonDate;
 	/**
 	 * 最后交易日
 	 */
+	@ApiModelProperty(value = "")
 	private Date lastTradingDate;
 	/**
 	 * 到期日期
 	 */
+	@ApiModelProperty(value = "")
 	private Date expirationDate;
 	/**
 	 * 强平时间
 	 */
+	@ApiModelProperty(value = "")
 	private Date forceUnwindDate;
 	/**
 	 * 是否主力合约
 	 */
+	@ApiModelProperty(value = "是否主力合约")
 	private Boolean mainForce;
 	/**
 	 * 是否可用
 	 */
+	@ApiModelProperty(value = "是否可用")
 	private Boolean enable;
 	/**
 	 * 是否app合约
 	 */
+	@ApiModelProperty(value = "是否app合约")
 	private Boolean appContract;
 	/**
 	 * 是否pc合约
 	 */
+	@ApiModelProperty(value = "是否pc合约")
 	private Boolean pcContract;
 	/**
 	 * 更新时间
 	 */
+	@ApiModelProperty(value = "更新时间")
 	private Date updateTime;
 
 	/*********************** 一些额外的属性 ***********************/

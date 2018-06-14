@@ -49,7 +49,7 @@ public class FuturesCommodity {
 	 * 交易单位
 	 */
 	private String tradeUnit;
-	
+
 	/**
 	 * 报价单位
 	 */
@@ -208,7 +208,7 @@ public class FuturesCommodity {
 	 */
 	@OneToMany(cascade = { CascadeType.REMOVE }, fetch = FetchType.EAGER, mappedBy = "commodity")
 	private Set<FuturesPreQuantity> preQuantitySet;
-	
+
 	private Date createTime;
 
 	/***************** 分割线，以下字段为非数据库字段 ********************/
@@ -433,6 +433,9 @@ public class FuturesCommodity {
 	}
 
 	public Long getExchangeId() {
+		if (exchange != null) {
+			return exchange.getId();
+		}
 		return exchangeId;
 	}
 
@@ -441,6 +444,9 @@ public class FuturesCommodity {
 	}
 
 	public String getExchangeName() {
+		if(exchange != null) {
+			return exchange.getName();
+		}
 		return exchangeName;
 	}
 

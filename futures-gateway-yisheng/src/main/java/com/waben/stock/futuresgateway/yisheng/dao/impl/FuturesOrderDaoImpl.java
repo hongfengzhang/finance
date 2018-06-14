@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.futuresgateway.yisheng.dao.FuturesOrderDao;
@@ -47,20 +49,25 @@ public class FuturesOrderDaoImpl implements FuturesOrderDao {
 	public Page<FuturesOrder> pageFuturesOrder(int page, int limit) {
 		return futuresOrderRepository.findAll(new PageRequest(page, limit));
 	}
-	
+
 	@Override
 	public List<FuturesOrder> listFuturesOrder() {
 		return futuresOrderRepository.findAll();
 	}
 
 	@Override
-	public FuturesOrder retrieveFuturesOrderByTwsOrderId(int twsOrderId) {
-		return futuresOrderRepository.findByTwsOrderId(twsOrderId);
+	public FuturesOrder retrieveFuturesOrderByDomainAndOuterOrderId(String domain, Long outerOrderId) {
+		return futuresOrderRepository.findByDomainAndOuterOrderId(domain, outerOrderId);
 	}
 
 	@Override
-	public FuturesOrder retrieveFuturesOrderByDomainAndOuterOrderId(String domain, Long outerOrderId) {
-		return futuresOrderRepository.findByDomainAndOuterOrderId(domain, outerOrderId);
+	public FuturesOrder retrieveByOrderSessionId(int orderSessionId) {
+		Sort sort = new Sort(new Sort.Order(Direction.DESC, "createTime"));
+		List<FuturesOrder> orderList = futuresOrderRepository.findByOrderSessionId(orderSessionId, sort);
+		if (orderList != null && orderList.size() > 0) {
+			return orderList.get(0);
+		}
+		return null;
 	}
 
 }

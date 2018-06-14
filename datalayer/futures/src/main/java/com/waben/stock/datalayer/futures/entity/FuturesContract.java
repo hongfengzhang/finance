@@ -40,6 +40,16 @@ public class FuturesContract {
 	 * </p>
 	 */
 	private BigDecimal userTotalLimit;
+	
+	/**
+	 * 买涨持仓总额度
+	 */
+	private BigDecimal buyUpTotalLimit;
+	
+	/**
+	 * 买跌持仓总额度
+	 */
+	private BigDecimal buyFullTotalLimit;
 	/**
 	 * 单笔订单额度限制（手）
 	 */
@@ -87,7 +97,9 @@ public class FuturesContract {
 	 * 更新时间
 	 */
 	private Date updateTime;
-	
+	/**
+	 * 创建时间
+	 */
 	private Date createTime;
 	/**
 	 * 对应的品种
@@ -126,6 +138,22 @@ public class FuturesContract {
 
 	public void setUserTotalLimit(BigDecimal userTotalLimit) {
 		this.userTotalLimit = userTotalLimit;
+	}
+
+	public BigDecimal getBuyUpTotalLimit() {
+		return buyUpTotalLimit;
+	}
+
+	public void setBuyUpTotalLimit(BigDecimal buyUpTotalLimit) {
+		this.buyUpTotalLimit = buyUpTotalLimit;
+	}
+
+	public BigDecimal getBuyFullTotalLimit() {
+		return buyFullTotalLimit;
+	}
+
+	public void setBuyFullTotalLimit(BigDecimal buyFullTotalLimit) {
+		this.buyFullTotalLimit = buyFullTotalLimit;
 	}
 
 	public BigDecimal getPerOrderLimit() {
