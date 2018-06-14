@@ -32,4 +32,10 @@ public interface FuturesQuoteMinuteKDao {
 
 	public FuturesQuoteMinuteK retrieveNewestByCommodityNoAndContractNo(String commodityNo, String contractNo);
 
+	public List<FuturesQuoteMinuteK> retriveByCommodityNoAndContractNoAndTimeStrLike(String commodityNo,
+			String contractNo, String timeStr);
+
+	public List<FuturesQuoteMinuteK> retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(
+			String commodityNo, String contractNo, Date startTime, Date endTime);
+
 }

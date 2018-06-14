@@ -1,5 +1,6 @@
 package com.waben.stock.futuresgateway.yisheng.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,17 @@ public class FuturesQuoteMinuteKGroupService {
 
 	public List<FuturesQuoteMinuteKGroup> list() {
 		return futuresQuoteMinuteKGroupDao.listFuturesQuoteMinuteKGroup();
+	}
+
+	public FuturesQuoteMinuteKGroup getByCommodityNoAndContractNoAndTime(String commodityNo, String contractNo,
+			Date time) {
+		return futuresQuoteMinuteKGroupDao.retrieveByCommodityNoAndContractNoAndTime(commodityNo, contractNo, time);
+	}
+
+	public List<FuturesQuoteMinuteKGroup> getByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(
+			String commodityNo, String contractNo, Date startTime, Date endTime) {
+		return futuresQuoteMinuteKGroupDao.retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(
+				commodityNo, contractNo, startTime, endTime);
 	}
 
 }

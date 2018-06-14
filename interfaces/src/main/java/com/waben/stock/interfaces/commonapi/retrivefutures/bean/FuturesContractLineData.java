@@ -15,41 +15,52 @@ import io.swagger.annotations.ApiModelProperty;
 @ApiModel(description = "期货合约历史图数据（分时、日K、分钟K）")
 public class FuturesContractLineData {
 
-	/**
-	 * 时间
-	 */
+	/** 品种编号 */
+	@ApiModelProperty(value = "时间")
+	private String commodityNo;
+	/** 合约编号 */
+	@ApiModelProperty(value = "时间")
+	private String contractNo;
+	/** 时间 */
 	@ApiModelProperty(value = "时间")
 	private Date time;
-	/**
-	 * 开盘
-	 */
-	@ApiModelProperty(value = "开盘")
-	private BigDecimal open;
-	/**
-	 * 最高
-	 */
-	@ApiModelProperty(value = "最高")
-	private BigDecimal high;
-	/**
-	 * 最低
-	 */
-	@ApiModelProperty(value = "最低")
-	private BigDecimal low;
-	/**
-	 * 收盘
-	 */
-	@ApiModelProperty(value = "收盘")
-	private BigDecimal close;
-	/**
-	 * 交易量
-	 */
-	@ApiModelProperty(value = "交易量")
-	private Integer volume;
-	/**
-	 * 总交易量?
-	 */
-	@ApiModelProperty(value = "总交易量?")
-	private Integer count;
+	/** 时间字符串 */
+	@ApiModelProperty(value = "时间")
+	private String timeStr;
+	/** 开盘价 */
+	@ApiModelProperty(value = "时间")
+	private BigDecimal openPrice;
+	/** 最高价 */
+	@ApiModelProperty(value = "时间")
+	private BigDecimal highPrice;
+	/** 最低价 */
+	@ApiModelProperty(value = "时间")
+	private BigDecimal lowPrice;
+	/** 收盘价 */
+	@ApiModelProperty(value = "时间")
+	private BigDecimal closePrice;
+	/** 成交量 */
+	@ApiModelProperty(value = "时间")
+	private Long volume;
+	/** 当天总成交量 */
+	@ApiModelProperty(value = "时间")
+	private Long totalVolume;
+
+	public String getCommodityNo() {
+		return commodityNo;
+	}
+
+	public void setCommodityNo(String commodityNo) {
+		this.commodityNo = commodityNo;
+	}
+
+	public String getContractNo() {
+		return contractNo;
+	}
+
+	public void setContractNo(String contractNo) {
+		this.contractNo = contractNo;
+	}
 
 	public Date getTime() {
 		return time;
@@ -59,58 +70,66 @@ public class FuturesContractLineData {
 		this.time = time;
 	}
 
-	public BigDecimal getOpen() {
-		return open;
+	public String getTimeStr() {
+		return timeStr;
 	}
 
-	public void setOpen(BigDecimal open) {
-		this.open = open;
+	public void setTimeStr(String timeStr) {
+		this.timeStr = timeStr;
 	}
 
-	public BigDecimal getHigh() {
-		return high;
+	public BigDecimal getOpenPrice() {
+		return openPrice;
 	}
 
-	public void setHigh(BigDecimal high) {
-		this.high = high;
+	public void setOpenPrice(BigDecimal openPrice) {
+		this.openPrice = openPrice;
 	}
 
-	public BigDecimal getLow() {
-		return low;
+	public BigDecimal getHighPrice() {
+		return highPrice;
 	}
 
-	public void setLow(BigDecimal low) {
-		this.low = low;
+	public void setHighPrice(BigDecimal highPrice) {
+		this.highPrice = highPrice;
 	}
 
-	public BigDecimal getClose() {
-		return close;
+	public BigDecimal getLowPrice() {
+		return lowPrice;
 	}
 
-	public void setClose(BigDecimal close) {
-		this.close = close;
+	public void setLowPrice(BigDecimal lowPrice) {
+		this.lowPrice = lowPrice;
 	}
 
-	public Integer getVolume() {
+	public BigDecimal getClosePrice() {
+		return closePrice;
+	}
+
+	public void setClosePrice(BigDecimal closePrice) {
+		this.closePrice = closePrice;
+	}
+
+	public Long getVolume() {
 		if (volume == null || volume < 0) {
-			return 0;
+			return 0L;
 		}
 		return volume;
 	}
 
-	public void setVolume(Integer volume) {
+	public void setVolume(Long volume) {
 		this.volume = volume;
 	}
 
-	public Integer getCount() {
-		if (count == null || count < 0) {
-			return 0;
+	public Long getTotalVolume() {
+		if (totalVolume == null || totalVolume < 0) {
+			return 0L;
 		}
-		return count;
+		return totalVolume;
 	}
 
-	public void setCount(Integer count) {
-		this.count = count;
+	public void setTotalVolume(Long totalVolume) {
+		this.totalVolume = totalVolume;
 	}
 
 }

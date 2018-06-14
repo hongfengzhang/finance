@@ -73,4 +73,20 @@ public class FuturesQuoteMinuteKDaoImpl implements FuturesQuoteMinuteKDao {
 		return null;
 	}
 
+	@Override
+	public List<FuturesQuoteMinuteK> retriveByCommodityNoAndContractNoAndTimeStrLike(String commodityNo,
+			String contractNo, String timeStr) {
+		Sort sort = new Sort(new Sort.Order(Direction.ASC, "time"));
+		return futuresQuoteMinuteKRepository.findByCommodityNoAndContractNoAndTimeStrLike(commodityNo, contractNo,
+				timeStr, sort);
+	}
+
+	@Override
+	public List<FuturesQuoteMinuteK> retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(
+			String commodityNo, String contractNo, Date startTime, Date endTime) {
+		Sort sort = new Sort(new Sort.Order(Direction.ASC, "time"));
+		return futuresQuoteMinuteKRepository.findByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(
+				commodityNo, contractNo, startTime, endTime, sort);
+	}
+
 }

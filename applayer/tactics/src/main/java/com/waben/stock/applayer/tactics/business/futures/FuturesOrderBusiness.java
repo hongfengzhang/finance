@@ -207,7 +207,8 @@ public class FuturesOrderBusiness {
 				if (orderMarket.getState() != FuturesOrderState.BuyingCanceled
 						&& orderMarket.getState() != FuturesOrderState.BuyingFailure) {
 					// 获取行情信息
-					FuturesContractMarket market = RetriveFuturesOverHttp.market(orderMarket.getCommoditySymbol());
+					FuturesContractMarket market = RetriveFuturesOverHttp.market(orderMarket.getCommoditySymbol(),
+							orderMarket.getContractNo());
 					if (market == null) {
 						break;
 					}

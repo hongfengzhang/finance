@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.Repository;
 
 import com.waben.stock.futuresgateway.yisheng.entity.FuturesOrder;
@@ -21,13 +22,15 @@ public interface FuturesOrderRepository extends Repository<FuturesOrder, Long> {
 	void delete(Long id);
 
 	Page<FuturesOrder> findAll(Pageable pageable);
-	
+
 	List<FuturesOrder> findAll();
 
 	FuturesOrder findById(Long id);
 
-	FuturesOrder findByTwsOrderId(int twsOrderId);
+	FuturesOrder findByOrderNo(String orderNo);
+
+	List<FuturesOrder> findByOrderSessionId(Integer orderSessionId, Sort sort);
 
 	FuturesOrder findByDomainAndOuterOrderId(String domain, Long outerOrderId);
-	
+
 }

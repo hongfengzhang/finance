@@ -43,18 +43,20 @@ public class FuturesMarketController {
 
 	private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
-	@GetMapping("/{symbol}")
+	@GetMapping("/{symbol}/{contractNo}")
 	@ApiOperation(value = "期货合约行情")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "symbol", value = "期货合约标识", dataType = "string", paramType = "path", required = true) })
-	public Response<FuturesContractMarketDto> market(@PathVariable("symbol") String symbol) {
+			@ApiImplicitParam(name = "symbol", value = "品种代码", dataType = "string", paramType = "path", required = true),
+			@ApiImplicitParam(name = "contractNo", value = "合约编号", dataType = "string", paramType = "path", required = true) })
+	public Response<FuturesContractMarketDto> market(@PathVariable("symbol") String symbol,
+			@PathVariable("contractNo") String contractNo) {
 		FuturesContractQuery query = new FuturesContractQuery();
 		query.setPage(0);
 		query.setSize(1);
 		query.setSymbol(symbol);
 		FuturesContractDto contractPage = futuresContractBusiness.pagesContract(query).getContent().get(0);
 		FuturesContractMarketDto marketDto = CopyBeanUtils.copyBeanProperties(FuturesContractMarketDto.class,
-				RetriveFuturesOverHttp.market(symbol), false);
+				RetriveFuturesOverHttp.market(symbol, contractNo), false);
 		marketDto.setContractName(contractPage.getName());
 		marketDto.setCurrencySign(contractPage.getCurrencySign());
 		marketDto.setContractState(contractPage.getState());
@@ -66,35 +68,37 @@ public class FuturesMarketController {
 		return new Response<>(marketDto);
 	}
 
-	@GetMapping("/{symbol}/timeline")
+	@GetMapping("/{symbol}/{contractNo}/timeline")
 	@ApiOperation(value = "期货合约分时图")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "symbol", value = "期货合约标识", dataType = "string", paramType = "path", required = true),
-			@ApiImplicitParam(name = "dayCount", value = "统计的天数，不设置值默认为1天", dataType = "integer", paramType = "query", required = false) })
-	public Response<List<FuturesContractLineData>> timeLine(@PathVariable("symbol") String symbol, Integer dayCount) {
-		return new Response<>(RetriveFuturesOverHttp.timeLine(symbol, dayCount));
+			@ApiImplicitParam(name = "symbol", value = "品种代码", dataType = "string", paramType = "path", required = true),
+			@ApiImplicitParam(name = "contractNo", value = "合约编号", dataType = "string", paramType = "path", required = true) })
+	public Response<List<FuturesContractLineData>> timeLine(@PathVariable("symbol") String symbol,
+			@PathVariable("contractNo") String contractNo) {
+		return new Response<>(RetriveFuturesOverHttp.timeLine(symbol, contractNo));
 	}
 
-	@GetMapping("/{symbol}/dayline")
+	@GetMapping("/{symbol}/{contractNo}/dayline")
 	@ApiOperation(value = "期货合约日K线", notes = "startTime和endTime格式为:yyyy-MM-DD HH:mm:ss")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "symbol", value = "期货合约标识", dataType = "string", paramType = "path", required = true),
+			@ApiImplicitParam(name = "symbol", value = "品种代码", dataType = "string", paramType = "path", required = true),
+			@ApiImplicitParam(name = "contractNo", value = "合约编号", dataType = "string", paramType = "path", required = true),
 			@ApiImplicitParam(name = "startTime", value = "开始时间", dataType = "string", paramType = "query", required = false),
 			@ApiImplicitParam(name = "endTime", value = "结束时间", dataType = "string", paramType = "query", required = false) })
-	public Response<List<FuturesContractLineData>> dayLine(@PathVariable("symbol") String symbol, String startTime,
-			String endTime) {
-		return new Response<>(RetriveFuturesOverHttp.dayLine(symbol, startTime, endTime));
+	public Response<List<FuturesContractLineData>> dayLine(@PathVariable("symbol") String symbol,
+			@PathVariable("contractNo") String contractNo, String startTime, String endTime) {
+		return new Response<>(RetriveFuturesOverHttp.dayLine(symbol, contractNo, startTime, endTime));
 	}
 
-	@GetMapping("/{symbol}/minsline")
+	@GetMapping("/{symbol}/{contractNo}/minsline")
 	@ApiOperation(value = "期货合约分K线")
 	@ApiImplicitParams({
-			@ApiImplicitParam(name = "symbol", value = "期货合约标识", dataType = "string", paramType = "path", required = true),
-			@ApiImplicitParam(name = "mins", value = "分钟", dataType = "integer", paramType = "query", required = true),
-			@ApiImplicitParam(name = "dayCount", value = "统计的天数，不设置值默认为1天", dataType = "integer", paramType = "query", required = false) })
-	public Response<List<FuturesContractLineData>> minsLine(@PathVariable("symbol") String symbol, Integer mins,
-			Integer dayCount) {
-		return new Response<>(RetriveFuturesOverHttp.minsLine(symbol, mins, dayCount));
+			@ApiImplicitParam(name = "symbol", value = "品种代码", dataType = "string", paramType = "path", required = true),
+			@ApiImplicitParam(name = "contractNo", value = "合约编号", dataType = "string", paramType = "path", required = true),
+			@ApiImplicitParam(name = "mins", value = "分钟", dataType = "integer", paramType = "query", required = true) })
+	public Response<List<FuturesContractLineData>> minsLine(@PathVariable("symbol") String symbol,
+			@PathVariable("contractNo") String contractNo, Integer mins) {
+		return new Response<>(RetriveFuturesOverHttp.minsLine(symbol, contractNo, mins));
 	}
 
 	/**

@@ -62,17 +62,18 @@ public class FuturesOrderController {
 	public Response<Boolean> checkConnection() {
 		return new Response<>(futuresOrderService.isConnected());
 	}
-	
+
 	@PostMapping("/")
 	@ApiOperation(value = "期货下单")
-	public Response<FuturesOrder> addition(@RequestParam(required = true) String domain,
-			@RequestParam(required = true) String symbol, @RequestParam(required = true) Long outerOrderId,
-			@RequestParam(required = true) String action, @RequestParam(required = true) BigDecimal totalQuantity,
-			@RequestParam(required = true) Integer userOrderType, BigDecimal entrustPrice) {
-		return new Response<>(futuresOrderService.addFuturesOrder(domain, symbol, outerOrderId, action, totalQuantity,
-				userOrderType, entrustPrice));
+	public Response<FuturesOrder> palceOrder(@RequestParam(required = true) String domain,
+			@RequestParam(required = true) String commodityNo, @RequestParam(required = true) String contractNo,
+			@RequestParam(required = true) Long outerOrderId, @RequestParam(required = true) String action,
+			@RequestParam(required = true) BigDecimal totalQuantity, @RequestParam(required = true) Integer orderType,
+			BigDecimal entrustPrice) {
+		return new Response<>(futuresOrderService.placeOrder(domain, commodityNo, contractNo, outerOrderId, action,
+				totalQuantity, orderType, entrustPrice));
 	}
-	
+
 	@PostMapping("/cancalOrder/{domain}/{gatewayOrderId}")
 	@ApiOperation(value = "期货取消订单")
 	public Response<FuturesOrder> cancalOrder(@PathVariable String domain, @PathVariable Long gatewayOrderId) {

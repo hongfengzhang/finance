@@ -53,12 +53,12 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 	 * 最高价投标合同（买方开价）
 	 */
 	@ApiModelProperty(value = "最高价投标合同（买方开价）")
-	private BigDecimal bigPrice;
+	private BigDecimal bidPrice;
 	/**
 	 * 以投标价格提供的合同或批次数量（买方开价）
 	 */
 	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（买方开价）")
-	private Integer bidSize;
+	private Long bidSize;
 	/**
 	 * 最低价投标合同（卖方开价）
 	 */
@@ -68,12 +68,12 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 	 * 以投标价格提供的合同或批次数量（卖方开价）
 	 */
 	@ApiModelProperty(value = "以投标价格提供的合同或批次数量（卖方开价）")
-	private Integer askSize;
+	private Long askSize;
 	/**
 	 * 当天成交量
 	 */
 	@ApiModelProperty(value = "当天成交量")
-	private Integer volume;
+	private Long volume;
 	/**
 	 * 品种分类名称
 	 */
@@ -143,27 +143,19 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 		this.lowPrice = lowPrice;
 	}
 
-	public Integer getVolume() {
-		return volume;
+	public BigDecimal getBidPrice() {
+		return bidPrice;
 	}
 
-	public void setVolume(Integer volume) {
-		this.volume = volume;
+	public void setBidPrice(BigDecimal bidPrice) {
+		this.bidPrice = bidPrice;
 	}
 
-	public BigDecimal getBigPrice() {
-		return bigPrice;
-	}
-
-	public void setBigPrice(BigDecimal bigPrice) {
-		this.bigPrice = bigPrice;
-	}
-
-	public Integer getBidSize() {
+	public Long getBidSize() {
 		return bidSize;
 	}
 
-	public void setBidSize(Integer bidSize) {
+	public void setBidSize(Long bidSize) {
 		this.bidSize = bidSize;
 	}
 
@@ -175,12 +167,24 @@ public class FuturesContractQuotationDto extends FuturesContractDto {
 		this.askPrice = askPrice;
 	}
 
-	public Integer getAskSize() {
+	public Long getAskSize() {
 		return askSize;
 	}
 
-	public void setAskSize(Integer askSize) {
+	public void setAskSize(Long askSize) {
 		this.askSize = askSize;
+	}
+
+	public Long getVolume() {
+		return volume;
+	}
+
+	public void setVolume(Long volume) {
+		this.volume = volume;
+	}
+
+	public void setProductTypeName(String productTypeName) {
+		this.productTypeName = productTypeName;
 	}
 
 }

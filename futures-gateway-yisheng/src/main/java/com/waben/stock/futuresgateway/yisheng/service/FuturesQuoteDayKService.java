@@ -1,5 +1,6 @@
 package com.waben.stock.futuresgateway.yisheng.service;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,10 @@ public class FuturesQuoteDayKService {
 
 	public List<FuturesQuoteDayK> list() {
 		return futuresQuoteDayKDao.listFuturesQuoteDayK();
+	}
+
+	public FuturesQuoteDayK getByCommodityNoAndContractNoAndTime(String commodityNo, String contractNo, Date time) {
+		return futuresQuoteDayKDao.retrieveByCommodityNoAndContractNoAndTime(commodityNo, contractNo, time);
 	}
 
 }

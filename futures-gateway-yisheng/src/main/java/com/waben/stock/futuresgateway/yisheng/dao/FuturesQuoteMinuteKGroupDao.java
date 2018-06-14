@@ -1,5 +1,6 @@
 package com.waben.stock.futuresgateway.yisheng.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -25,5 +26,11 @@ public interface FuturesQuoteMinuteKGroupDao {
 	public Page<FuturesQuoteMinuteKGroup> pageFuturesQuoteMinuteKGroup(int page, int limit);
 	
 	public List<FuturesQuoteMinuteKGroup> listFuturesQuoteMinuteKGroup();
+
+	public FuturesQuoteMinuteKGroup retrieveByCommodityNoAndContractNoAndTime(String commodityNo, String contractNo,
+			Date time);
+
+	public List<FuturesQuoteMinuteKGroup> retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(
+			String commodityNo, String contractNo, Date startTime, Date endTime);
 
 }

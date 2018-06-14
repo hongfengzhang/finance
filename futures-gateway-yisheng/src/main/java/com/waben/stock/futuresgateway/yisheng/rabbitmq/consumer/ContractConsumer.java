@@ -28,7 +28,6 @@ public class ContractConsumer {
 
 	@RabbitHandler
 	public void handlerMessage(String message) {
-		logger.info("消费易盛Contract消息:" + message);
 		TapAPIQuoteContractInfo msgObj = JacksonUtil.decode(message, TapAPIQuoteContractInfo.class);
 		try {
 			String commodityNo = msgObj.getContract().getCommodity().getCommodityNo();
@@ -58,7 +57,6 @@ public class ContractConsumer {
 				// 订阅行情
 				if (contract.getEnable() != null && contract.getEnable()) {
 					engine.subscribeQuote(msgObj.getContract());
-					Thread.sleep(5000);
 				}
 			}
 		} catch (Exception ex) {
