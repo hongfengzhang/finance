@@ -40,142 +40,152 @@ import com.waben.stock.interfaces.util.PageToPageInfo;
 public class FuturesTradeController implements FuturesTradeInterface {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
-	
+
 	@Autowired
 	private FuturesOrderService futuresOrderService;
-	
+
 	@Autowired
 	private FuturesOvernightRecordService overnightService;
-	
+
 	@Autowired
 	private FuturesCurrencyRateService rateService;
-	
+
 	@Autowired
 	private FuturesTradeLimitService limitService;
-	
-	SimpleDateFormat dateFm = new SimpleDateFormat("HH:mm:ss"); 
-	
-	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); 
-	SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); 
-	
+
+	SimpleDateFormat dateFm = new SimpleDateFormat("HH:mm:ss");
+
+	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	@Override
-	public Response<PageInfo<FutresOrderEntrustDto>> pagesOrderEntrust(@RequestBody FuturesTradeAdminQuery query){
+	public Response<PageInfo<FutresOrderEntrustDto>> pagesOrderEntrust(@RequestBody FuturesTradeAdminQuery query) {
 		Page<FuturesOrder> page = futuresOrderService.pagesOrderAdmin(query);
 		PageInfo<FutresOrderEntrustDto> result = PageToPageInfo.pageToPageInfo(page, FutresOrderEntrustDto.class);
 		List<FuturesOrder> orderList = page.getContent();
-		for(int i=0;i<orderList.size();i++){
+		for (int i = 0; i < orderList.size(); i++) {
 			FuturesOrder order = orderList.get(i);
-			
+
 			result.getContent().get(i).setPublisherId(order.getPublisherId());
-			if(order.getOrderType()!=null){
+			if (order.getOrderType() != null) {
 				result.getContent().get(i).setOrderType(order.getOrderType().getType());
 			}
-			if(order.getState()!=null){
+			if (order.getState() != null) {
 				result.getContent().get(i).setState(order.getState().getType());
 			}
-			if(order.getCommoditySymbol()!=null && !"".equals(order.getCommoditySymbol())){
+			if (order.getCommoditySymbol() != null && !"".equals(order.getCommoditySymbol())) {
 				String symbol = order.getCommoditySymbol();
-				FuturesContractMarket market = RetriveFuturesOverHttp.market(symbol);
-				if(market!=null){
+				FuturesContractMarket market = RetriveFuturesOverHttp.market(symbol, order.getContractNo());
+				if (market != null) {
 					result.getContent().get(i).setLastPrice(market.getLastPrice());
 				}
 			}
 			result.getContent().get(i).setEntrustAppointPrice(order.getBuyingEntrustPrice());
-			if(order.getState().getIndex().equals("8")){
+			if (order.getState().getIndex().equals("8")) {
 				result.getContent().get(i).setDealTime(order.getSellingTime());
-			}else{
+			} else {
 				result.getContent().get(i).setDealTime(order.getBuyingTime());
 			}
 		}
 		return new Response<>(result);
 	}
-	
+
 	@Override
 	public Response<PageInfo<FuturesOrderAdminDto>> adminPagesByQuery(@RequestBody FuturesTradeAdminQuery query) {
-//		Page<FuturesOrderAdminDto> page = futuresOrderService.adminPagesByQuery(query);
+		// Page<FuturesOrderAdminDto> page =
+		// futuresOrderService.adminPagesByQuery(query);
 		Page<FuturesOrder> page = futuresOrderService.pagesOrderAdmin(query);
 		PageInfo<FuturesOrderAdminDto> result = PageToPageInfo.pageToPageInfo(page, FuturesOrderAdminDto.class);
-		for (int i=0; i<page.getContent().size();i++) {
+		for (int i = 0; i < page.getContent().size(); i++) {
 			FuturesOrder order = page.getContent().get(i);
-			if(order.getOpenwindServiceFee()!=null){
-				if(order.getTotalQuantity()!=null){
-					result.getContent().get(i).setOpenwindServiceFee(order.getOpenwindServiceFee().multiply(order.getTotalQuantity()));
+			if (order.getOpenwindServiceFee() != null) {
+				if (order.getTotalQuantity() != null) {
+					result.getContent().get(i)
+							.setOpenwindServiceFee(order.getOpenwindServiceFee().multiply(order.getTotalQuantity()));
 				}
 			}
-			if(order.getUnwindServiceFee()!=null){
-				if(order.getTotalQuantity()!=null){
-					result.getContent().get(i).setUnwindServiceFee(order.getUnwindServiceFee().multiply(order.getTotalQuantity()));
+			if (order.getUnwindServiceFee() != null) {
+				if (order.getTotalQuantity() != null) {
+					result.getContent().get(i)
+							.setUnwindServiceFee(order.getUnwindServiceFee().multiply(order.getTotalQuantity()));
 				}
 			}
 			List<FuturesOvernightRecord> recordList = overnightService.findAll(order);
 			double count = 0.00;
 			for (FuturesOvernightRecord futuresOvernightRecord : recordList) {
-				count+=futuresOvernightRecord.getOvernightDeferredFee().doubleValue();
+				count += futuresOvernightRecord.getOvernightDeferredFee().doubleValue();
 			}
 			result.getContent().get(i).setPublisherId(order.getPublisherId());
 			result.getContent().get(i).setOvernightServiceFee(new BigDecimal(count));
-			if(order.getWindControlType()!=null){
+			if (order.getWindControlType() != null) {
 				result.getContent().get(i).setWindControlType(order.getWindControlType().getType());
 			}
-			if(order.getSellingTime()!=null){
+			if (order.getSellingTime() != null) {
 				result.getContent().get(i).setPositionEndTime(order.getSellingTime());
 			}
-			if(order.getOrderType()!=null){
+			if (order.getOrderType() != null) {
 				result.getContent().get(i).setOrderType(order.getOrderType().getType());
 			}
-			if(order.getState()!=null){
+			if (order.getState() != null) {
 				result.getContent().get(i).setState(order.getState().getType());
 			}
-			if(order.getBuyingTime()!=null){
+			if (order.getBuyingTime() != null) {
 				Long date = order.getBuyingTime().getTime();
 				Long current = new Date().getTime();
-				
-				Long hours = (current - date)/(60*60*1000);
+
+				Long hours = (current - date) / (60 * 60 * 1000);
 				result.getContent().get(i).setPositionDays(Math.abs(hours.intValue()));
 			}
 			FuturesCurrencyRate rate = rateService.queryByName(order.getContract().getCommodity().getCurrency());
-			if(order.getState().getIndex().equals("9")){
+			if (order.getState().getIndex().equals("9")) {
 				result.getContent().get(i).setProfit(order.getProfitOrLoss());
 				result.getContent().get(i).setSellingProfit(order.getProfitOrLoss());
-				if(order.getSellingTime()!=null){
+				if (order.getSellingTime() != null) {
 					Long laseDate = order.getSellingTime().getTime();
 					Long date = order.getBuyingTime().getTime();
-					Long hours = (laseDate - date)/(60*60*1000);
+					Long hours = (laseDate - date) / (60 * 60 * 1000);
 					result.getContent().get(i).setPositionDays(Math.abs(hours.intValue()));
 				}
-			}else{
-				FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getCommoditySymbol());
-				if(market!=null){
+			} else {
+				FuturesContractMarket market = RetriveFuturesOverHttp.market(order.getCommoditySymbol(),
+						order.getContractNo());
+				if (market != null) {
 					BigDecimal lastPrice = market.getLastPrice();
-					if(lastPrice!=null){
-						BigDecimal profit = futuresOrderService.computeProfitOrLoss(order.getOrderType(), order.getTotalQuantity(), order.getBuyingPrice(), lastPrice, order.getContract().getCommodity().getMinWave(), order.getContract().getCommodity().getPerWaveMoney());
-						if(rate!=null && rate.getRate()!=null){
+					if (lastPrice != null) {
+						BigDecimal profit = futuresOrderService.computeProfitOrLoss(order.getOrderType(),
+								order.getTotalQuantity(), order.getBuyingPrice(), lastPrice,
+								order.getContract().getCommodity().getMinWave(),
+								order.getContract().getCommodity().getPerWaveMoney());
+						if (rate != null && rate.getRate() != null) {
 							result.getContent().get(i).setProfit(profit.multiply(rate.getRate()));
 						}
 					}
 				}
 				List<FuturesTradeLimit> limit = limitService.findByContractId(order.getContract().getId());
-				if(limit!=null){
+				if (limit != null) {
 					Date da = new Date();
 					String curreyDay = sdf.format(da);
 					int weekDays = getWeekOfDate(da);
-					for(int j=0;j<limit.size();j++){
-						if(limit.get(j).getWeekDay()==weekDays){
+					for (int j = 0; j < limit.size(); j++) {
+						if (limit.get(j).getWeekDay() == weekDays) {
 							try {
 								Date start = null;
-								Date end =null;
-								if(limit.get(j).getStartLimitTime()!=null && !"".equals(limit.get(j).getStartLimitTime())){
-									String startStr = curreyDay+" "+limit.get(j).getStartLimitTime();
+								Date end = null;
+								if (limit.get(j).getStartLimitTime() != null
+										&& !"".equals(limit.get(j).getStartLimitTime())) {
+									String startStr = curreyDay + " " + limit.get(j).getStartLimitTime();
 									start = sdf1.parse(startStr);
 								}
-								if(limit.get(j).getEndLimitTime()!=null && !"".equals(limit.get(j).getEndLimitTime())){
-									String endStr = curreyDay+" "+limit.get(j).getEndLimitTime();
+								if (limit.get(j).getEndLimitTime() != null
+										&& !"".equals(limit.get(j).getEndLimitTime())) {
+									String endStr = curreyDay + " " + limit.get(j).getEndLimitTime();
 									end = sdf1.parse(endStr);
 								}
-								if(start!=null&&end!=null){
-									if(da.getTime()>start.getTime()&&da.getTime()<end.getTime()){
-										result.getContent().get(i).setWindControlState(limit.get(j).getLimitType().getType());
-									}else{
+								if (start != null && end != null) {
+									if (da.getTime() > start.getTime() && da.getTime() < end.getTime()) {
+										result.getContent().get(i)
+												.setWindControlState(limit.get(j).getLimitType().getType());
+									} else {
 										result.getContent().get(i).setWindControlState("正常");
 									}
 								}
@@ -183,57 +193,59 @@ public class FuturesTradeController implements FuturesTradeInterface {
 								e.printStackTrace();
 							}
 						}
-						if(result.getContent().get(i).getWindControlState()==null&&"".equals(result.getContent().get(i).getWindControlState())){
+						if (result.getContent().get(i).getWindControlState() == null
+								&& "".equals(result.getContent().get(i).getWindControlState())) {
 							result.getContent().get(i).setWindControlState("正常");
 						}
 					}
 				}
-				
+
 			}
 		}
 		return new Response<>(result);
 	}
-	
-	private int getWeekOfDate(Date date) {  
-//        String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };  
-        Calendar cal = Calendar.getInstance();  
-        cal.setTime(date);  
-        int w = cal.get(Calendar.DAY_OF_WEEK);  
-        if (w < 0)  
-            w = 0;  
-        return w;  
-    }
+
+	private int getWeekOfDate(Date date) {
+		// String[] weekDays = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"
+		// };
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		int w = cal.get(Calendar.DAY_OF_WEEK);
+		if (w < 0)
+			w = 0;
+		return w;
+	}
 
 	@Override
 	public Response<Object[]> countOrderState(String state) {
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		if(state.indexOf(",")>0){
+		if (state.indexOf(",") > 0) {
 			String[] array = state.split(",");
 			for (String temp : array) {
 				list.add(Integer.valueOf(temp));
 			}
-		}else{
+		} else {
 			list.add(Integer.valueOf(state));
 		}
 		List<Object> map = futuresOrderService.queryByState(list);
 		FuturesOrderCountDto dto = new FuturesOrderCountDto();
-		Object[] bitge = (Object[])map.get(0);
-		for(int i = 0;i<map.size();i++){
-//			Object[] bitge = (Object[])map.get(i);
-//			String quantity =bitge[0] == null ? "" : bitge[0].toString();
-//			String fund = bitge[1] == null ? "" : bitge[1].toString();
-//			String fee = bitge[2] == null ? "" : bitge[2].toString();
-//			String deferred = bitge[3] == null ? "" : bitge[3].toString();
-//			dto.setQuantity(quantity.toString());
-//			dto.setFund(fund.toString());
-//			dto.setFee(fee.toString());
-//			dto.setDeferred(deferred.toString());
+		Object[] bitge = (Object[]) map.get(0);
+		for (int i = 0; i < map.size(); i++) {
+			// Object[] bitge = (Object[])map.get(i);
+			// String quantity =bitge[0] == null ? "" : bitge[0].toString();
+			// String fund = bitge[1] == null ? "" : bitge[1].toString();
+			// String fee = bitge[2] == null ? "" : bitge[2].toString();
+			// String deferred = bitge[3] == null ? "" : bitge[3].toString();
+			// dto.setQuantity(quantity.toString());
+			// dto.setFund(fund.toString());
+			// dto.setFee(fee.toString());
+			// dto.setDeferred(deferred.toString());
 		}
 		Response<Object[]> res = new Response<Object[]>();
 		res.setCode("200");
 		res.setResult(bitge);
 		res.setMessage("响应成功");
 		return res;
-	} 
+	}
 
 }

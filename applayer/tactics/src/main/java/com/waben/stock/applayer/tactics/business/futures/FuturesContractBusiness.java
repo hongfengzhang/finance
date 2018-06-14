@@ -69,7 +69,8 @@ public class FuturesContractBusiness {
 				FuturesContractQuotationDto.class);
 		if (quotationList.size() > 0) {
 			for (FuturesContractQuotationDto quotation : quotationList) {
-				FuturesContractMarket market = RetriveFuturesOverHttp.market(quotation.getSymbol());
+				FuturesContractMarket market = RetriveFuturesOverHttp.market(quotation.getSymbol(),
+						quotation.getContractNo());
 				// 设置行情信息
 				quotation.setLastPrice(market.getLastPrice());
 				quotation.setUpDropPrice(market.getUpDropPrice());
@@ -80,7 +81,7 @@ public class FuturesContractBusiness {
 				quotation.setClosePrice(market.getClosePrice());
 				quotation.setAskPrice(market.getAskPrice());
 				quotation.setAskSize(market.getAskSize());
-				quotation.setBigPrice(market.getBigPrice());
+				quotation.setBidPrice(market.getBidPrice());
 				quotation.setBidSize(market.getBidSize());
 				quotation.setVolume(market.getVolume());
 				quotation.setCurrentHoldingTime(
