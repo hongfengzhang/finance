@@ -405,9 +405,10 @@ public class FuturesOrderService {
 		// step 6 : 调用期货网关委托下单
 		FuturesActionType action = order.getOrderType() == FuturesOrderType.BuyUp ? FuturesActionType.BUY
 				: FuturesActionType.SELL;
-		Integer userOrderType = order.getBuyingPriceType() == FuturesTradePriceType.MKT ? 1 : 2;
+		Integer orderType = order.getBuyingPriceType() == FuturesTradePriceType.MKT ? 1 : 2;
 		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getCommoditySymbol(),
-				order.getId(), action, order.getTotalQuantity(), userOrderType, order.getBuyingEntrustPrice());
+				order.getContractNo(), order.getId(), action, order.getTotalQuantity(), orderType,
+				order.getBuyingEntrustPrice());
 		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
 		// step 7 : 更新订单状态
 		order.setState(FuturesOrderState.BuyingEntrust);
@@ -754,9 +755,10 @@ public class FuturesOrderService {
 		// 委托卖出
 		FuturesActionType action = order.getOrderType() == FuturesOrderType.BuyUp ? FuturesActionType.SELL
 				: FuturesActionType.BUY;
-		Integer userOrderType = priceType == FuturesTradePriceType.MKT ? 1 : 2;
+		Integer orderType = priceType == FuturesTradePriceType.MKT ? 1 : 2;
 		FuturesGatewayOrder gatewayOrder = TradeFuturesOverHttp.placeOrder(domain, order.getCommoditySymbol(),
-				order.getId(), action, order.getTotalQuantity(), userOrderType, entrustPrice);
+				order.getContractNo(), order.getId(), action, order.getTotalQuantity(), orderType,
+				order.getBuyingEntrustPrice());
 		order.setCloseGatewayOrderId(gatewayOrder.getId());
 		// TODO 委托下单异常情况处理，此处默认为所有的委托都能成功
 		// 放入委托查询队列（平仓）

@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 
 /**
@@ -24,4 +25,6 @@ public interface FuturesContractRepository extends CustomJpaRepository<FuturesCo
 	
 	@Query("select f from FuturesContract f where f.commodity.id=?1")
 	List<FuturesContract> findByCommodityId(Long commodityId);
+
+	List<FuturesContract> findByCommodity(FuturesCommodity commodity);
 }

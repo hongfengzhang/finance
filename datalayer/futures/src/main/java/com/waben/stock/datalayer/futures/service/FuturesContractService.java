@@ -27,6 +27,7 @@ import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
+import com.waben.stock.datalayer.futures.repository.FuturesCommodityDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
@@ -54,32 +55,35 @@ public class FuturesContractService {
 	private FuturesContractDao futuresContractDao;
 
 	@Autowired
+	private FuturesCommodityDao commodityDao;
+
+	@Autowired
 	private FuturesOrderService orderService;
-	
+
 	@Autowired
 	private FuturesTradeLimitService limitService;
 
 	public int isCurrent(Long id) {
 		FuturesContract contract = futuresContractDao.retrieve(id);
 		boolean isCurrent = contract.getEnable();
-		if(isCurrent){
+		if (isCurrent) {
 			List<Long> contractId = new ArrayList<Long>();
 			contractId.add(contract.getId());
 			List<FuturesOrder> order = orderService.findByContractId(contractId);
-			if(order.size()>0){
+			if (order.size() > 0) {
 				throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
-			}else{
+			} else {
 				contract.setEnable(false);
 				futuresContractDao.update(contract);
 			}
-		}else{
-			if(contract.getExpirationDate()==null||"".equals(contract.getExpirationDate())){
+		} else {
+			if (contract.getExpirationDate() == null || "".equals(contract.getExpirationDate())) {
 				throw new ServiceException(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION);
 			}
-			if(contract.getForceUnwindDate()==null||"".equals(contract.getForceUnwindDate())){
+			if (contract.getForceUnwindDate() == null || "".equals(contract.getForceUnwindDate())) {
 				throw new ServiceException(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION);
 			}
-			if(contract.getLastTradingDate()==null||"".equals(contract.getLastTradingDate())){
+			if (contract.getLastTradingDate() == null || "".equals(contract.getLastTradingDate())) {
 				throw new ServiceException(ExceptionConstant.CONTRACT_PARAMETER_INCOMPLETE_EXCEPTION);
 			}
 			contract.setEnable(true);
@@ -132,11 +136,12 @@ public class FuturesContractService {
 				Join<FuturesContract, FuturesCommodity> join = root.join("commodity", JoinType.LEFT);
 				if (query.getSymbol() != null && !"".equals(query.getSymbol())) {
 					predicateList.add(
-							criteriaBuilder.like(join.get("symbol").as(String.class), "%"+query.getSymbol() + "%"));
+							criteriaBuilder.like(join.get("symbol").as(String.class), "%" + query.getSymbol() + "%"));
 				}
-				
-				if(query.getName() !=null && !"".equals(query.getName())){
-					predicateList.add(criteriaBuilder.like(join.get("name").as(String.class), "%"+query.getName()+"%"));
+
+				if (query.getName() != null && !"".equals(query.getName())) {
+					predicateList
+							.add(criteriaBuilder.like(join.get("name").as(String.class), "%" + query.getName() + "%"));
 				}
 
 				if (predicateList.size() > 0) {
@@ -210,7 +215,7 @@ public class FuturesContractService {
 		if (list.size() > 0) {
 			throw new ServiceException(ExceptionConstant.CONTRACTTERM_ORDER_OCCUPIED_EXCEPTION);
 		}
-		
+
 		limitService.deleteByContractId(id);
 		futuresContractDao.delete(id);
 		Response<String> response = new Response<>();
@@ -218,6 +223,15 @@ public class FuturesContractService {
 		response.setMessage("响应成功");
 		response.setResult("1");
 		return response;
+	}
+
+	public List<FuturesContract> listByCommodityId(Long commodityId) {
+		FuturesCommodity commodity = commodityDao.retrieve(commodityId);
+		if (commodity != null) {
+			return futuresContractDao.retrieveByCommodity(commodity);
+		} else {
+			return new ArrayList<>();
+		}
 	}
 
 }

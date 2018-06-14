@@ -257,4 +257,9 @@ public class FuturesCommodityController implements FuturesCommodityInterface {
 				commodityService.retrieve(commodityId), false));
 	}
 
+	public Response<List<FuturesCommodityDto>> listByExchangeId(@PathVariable Long exchangeId) {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(commodityService.listByExchangeId(exchangeId),
+				FuturesCommodityDto.class));
+	}
+
 }

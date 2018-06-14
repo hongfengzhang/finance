@@ -20,11 +20,35 @@ public class TradeFuturesOverHttp {
 
 	private static RestTemplate restTemplate = new RestTemplate();
 
-	private static String baseUrl = "http://10.0.0.48:9092/";
+	/**
+	 * 盈透api基础路径
+	 */
+	private static String yingtouBaseUrl = "http://10.0.0.48:9092/";
+	/**
+	 * 易盛api基础路径
+	 */
+	private static String yishengBaseUrl = "http://10.0.0.99:9093/";
+	/**
+	 * api类型
+	 * <ul>
+	 * <li>1盈透</li>
+	 * <li>2易盛</li>
+	 * </ul>
+	 */
+	public static Integer apiType = 2;
+
+	private static String getBaseUrl() {
+		if (apiType == 1) {
+			return yingtouBaseUrl;
+		} else if (apiType == 2) {
+			return yishengBaseUrl;
+		}
+		return "";
+	}
 
 	public static boolean checkConnection() {
 		try {
-			String url = baseUrl + "futuresOrder/checkConnection";
+			String url = getBaseUrl() + "futuresOrder/checkConnection";
 			String response = restTemplate.getForObject(url, String.class);
 			Response<Boolean> responseObj = JacksonUtil.decode(response,
 					JacksonUtil.getGenericType(Response.class, Boolean.class));
@@ -39,7 +63,7 @@ public class TradeFuturesOverHttp {
 	}
 
 	public static FuturesGatewayOrder retriveByGatewayId(Long gatewayOrderId) {
-		String url = baseUrl + "futuresOrder/" + gatewayOrderId;
+		String url = getBaseUrl() + "futuresOrder/" + gatewayOrderId;
 		String response = restTemplate.getForObject(url, String.class);
 		Response<FuturesGatewayOrder> responseObj = JacksonUtil.decode(response,
 				JacksonUtil.getGenericType(Response.class, FuturesGatewayOrder.class));
@@ -72,16 +96,18 @@ public class TradeFuturesOverHttp {
 	 *            委托价格
 	 * @return 期货网关订单
 	 */
-	public static FuturesGatewayOrder placeOrder(String domain, String symbol, Long outerOrderId,
-			FuturesActionType action, BigDecimal totalQuantity, Integer userOrderType, BigDecimal entrustPrice) {
-		String url = baseUrl + "futuresOrder/";
+	public static FuturesGatewayOrder placeOrder(String domain, String commodityNo, String contractNo,
+			Long outerOrderId, FuturesActionType action, BigDecimal totalQuantity, Integer orderType,
+			BigDecimal entrustPrice) {
+		String url = getBaseUrl() + "futuresOrder/";
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("domain", domain);
-		paramMap.put("symbol", symbol);
+		paramMap.put("commodityNo", commodityNo);
+		paramMap.put("contractNo", contractNo);
 		paramMap.put("outerOrderId", outerOrderId);
 		paramMap.put("action", action.name());
 		paramMap.put("totalQuantity", totalQuantity);
-		paramMap.put("userOrderType", userOrderType);
+		paramMap.put("orderType", orderType);
 		if (entrustPrice != null) {
 			paramMap.put("entrustPrice", entrustPrice);
 		}
@@ -101,7 +127,7 @@ public class TradeFuturesOverHttp {
 	}
 
 	public static FuturesGatewayOrder cancelOrder(String domain, Long gateOrderId) {
-		String url = baseUrl + "futuresOrder/cancalOrder/" + domain + "/" + gateOrderId;
+		String url = getBaseUrl() + "futuresOrder/cancalOrder/" + domain + "/" + gateOrderId;
 		try {
 			HttpEntity<String> requestEntity = new HttpEntity<String>("");
 			String response = restTemplate.postForObject(url, requestEntity, String.class);
@@ -122,8 +148,8 @@ public class TradeFuturesOverHttp {
 		}
 	}
 
-	public static void testMain(String[] args) {
-		placeOrder("test.com", "GC", 1L, FuturesActionType.BUY, new BigDecimal(1), 1, null);
+	public static void main(String[] args) {
+		placeOrder("zhangsan.com", "GC", "1808", 1L, FuturesActionType.BUY, new BigDecimal(1), 1, null);
 	}
 
 }

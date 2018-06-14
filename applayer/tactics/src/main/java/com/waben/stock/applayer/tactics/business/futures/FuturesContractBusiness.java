@@ -148,13 +148,13 @@ public class FuturesContractBusiness {
 
 				OrganizationPublisherDto publisher = fetchOrgPublisher(SecurityUtil.getUserDetails().getUserId());
 				if (publisher != null) {
-					FuturesAgentPriceDto agentPrice = getCurrentAgentPrice(publisher.getOrgId(), contractDto.getId());
-					if (agentPrice != null) {
-						contractDto.setPerUnitReserveFund(agentPrice.getCostReserveFund());
-						contractDto.setOpenwindServiceFee(agentPrice.getSaleOpenwindServiceFee());
-						contractDto.setUnwindServiceFee(agentPrice.getSaleUnwindServiceFee());
-						contractDto.setOvernightPerUnitDeferredFee(agentPrice.getSaleDeferredFee());
-					}
+//					FuturesAgentPriceDto agentPrice = getCurrentAgentPrice(publisher.getOrgId(), contractDto.getId());
+//					if (agentPrice != null) {
+//						contractDto.setPerUnitReserveFund(agentPrice.getCostReserveFund());
+//						contractDto.setOpenwindServiceFee(agentPrice.getSaleOpenwindServiceFee());
+//						contractDto.setUnwindServiceFee(agentPrice.getSaleUnwindServiceFee());
+//						contractDto.setOvernightPerUnitDeferredFee(agentPrice.getSaleDeferredFee());
+//					}
 				}
 			}
 

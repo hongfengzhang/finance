@@ -1,5 +1,7 @@
 package com.waben.stock.interfaces.service.futures;
 
+import java.util.List;
+
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,4 +48,7 @@ public interface FuturesCommodityInterface {
 	 */
 	@RequestMapping(value = "/commodity/{commodityId}", method = RequestMethod.GET)
 	Response<FuturesCommodityDto> getFuturesByCommodityId(@PathVariable("commodityId") Long commodityId);
+
+	@RequestMapping(value = "/lists/{exchangeId}", method = RequestMethod.GET)
+	Response<List<FuturesCommodityDto>> listByExchangeId(@PathVariable("exchangeId") Long exchangeId);
 }

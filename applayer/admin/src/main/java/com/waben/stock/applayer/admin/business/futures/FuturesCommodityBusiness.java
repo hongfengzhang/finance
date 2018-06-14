@@ -1,10 +1,14 @@
 package com.waben.stock.applayer.admin.business.futures;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.waben.stock.interfaces.dto.admin.futures.FuturesCommodityAdminDto;
 import com.waben.stock.interfaces.dto.admin.futures.FuturesTradeTimeDto;
+import com.waben.stock.interfaces.dto.futures.FuturesCommodityDto;
+import com.waben.stock.interfaces.exception.ServiceException;
 import com.waben.stock.interfaces.pojo.Response;
 import com.waben.stock.interfaces.pojo.query.PageInfo;
 import com.waben.stock.interfaces.pojo.query.admin.futures.FuturesCommodityAdminQuery;
@@ -15,33 +19,41 @@ public class FuturesCommodityBusiness {
 
 	@Autowired
 	private FuturesCommodityInterface reference;
-	
-	public Response<PageInfo<FuturesCommodityAdminDto>> pagesCommodity(FuturesCommodityAdminQuery query){
+
+	public Response<PageInfo<FuturesCommodityAdminDto>> pagesCommodity(FuturesCommodityAdminQuery query) {
 		return reference.pagesAdmin(query);
 	}
-	
-	public Response<FuturesCommodityAdminDto> save(FuturesCommodityAdminDto dto){
+
+	public Response<FuturesCommodityAdminDto> save(FuturesCommodityAdminDto dto) {
 		return reference.save(dto);
 	}
-	
-	public Response<FuturesCommodityAdminDto> modify(FuturesCommodityAdminDto dto){
+
+	public Response<FuturesCommodityAdminDto> modify(FuturesCommodityAdminDto dto) {
 		return reference.modify(dto);
 	}
-	
-	public Response<String> delete(Long id){
+
+	public Response<String> delete(Long id) {
 		return reference.deleteCommodity(id);
 	}
-	
-	public Response<FuturesCommodityAdminDto> saveAndModify(FuturesTradeTimeDto dto){
+
+	public Response<FuturesCommodityAdminDto> saveAndModify(FuturesTradeTimeDto dto) {
 		return reference.saveAndModify(dto);
-	}	
-	
-	public Response<FuturesCommodityAdminDto> queryTradeTime(Long commodityId){
-		return  reference.queryTradeTime(commodityId);
 	}
-	
-	public Response<String> isCurrency(Long commodityId){
+
+	public Response<FuturesCommodityAdminDto> queryTradeTime(Long commodityId) {
+		return reference.queryTradeTime(commodityId);
+	}
+
+	public Response<String> isCurrency(Long commodityId) {
 		return reference.isCurrency(commodityId);
+	}
+
+	public List<FuturesCommodityDto> listByExchangeId(Long exchangeId) {
+		Response<List<FuturesCommodityDto>> response = reference.listByExchangeId(exchangeId);
+		if ("200".equals(response.getCode())) {
+			return response.getResult();
+		}
+		throw new ServiceException(response.getCode());
 	}
 
 }

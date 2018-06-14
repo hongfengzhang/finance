@@ -333,8 +333,11 @@ public class FuturesContractController implements FuturesContractInterface {
 
 	@Override
 	public Response<FuturesContractDto> findByContractId(@PathVariable Long contractId) {
-		return new Response<>(CopyBeanUtils.copyBeanProperties(FuturesContractDto.class,
-				futuresContractService.findByContractId(contractId), false));
+		FuturesContract contract = futuresContractService.findByContractId(contractId);
+		FuturesContractDto dto = CopyBeanUtils.copyBeanProperties(FuturesContractDto.class, contract.getCommodity(),
+				false);
+		dto = CopyBeanUtils.copyBeanProperties(contract, dto);
+		return new Response<>(dto);
 	}
 
 	@Override
@@ -347,6 +350,12 @@ public class FuturesContractController implements FuturesContractInterface {
 			response.setResult(i.toString());
 		}
 		return response;
+	}
+
+	@Override
+	public Response<List<FuturesContractDto>> listByCommodityId(@PathVariable Long commodityId) {
+		return new Response<>(CopyBeanUtils.copyListBeanPropertiesToList(
+				futuresContractService.listByCommodityId(commodityId), FuturesContractDto.class));
 	}
 
 }

@@ -30,9 +30,17 @@ public class OrderStateConsumer {
 		logger.info("消费易盛OrderState通知消息:" + message);
 		TapAPIOrderInfoNotice msgObj = JacksonUtil.decode(message, TapAPIOrderInfoNotice.class);
 		try {
-			int orderSessionId = msgObj.getSessionID();
-			FuturesOrder order = orderDao.retrieveByOrderSessionId(orderSessionId);
-			if (order != null) {
+			String orderNo = msgObj.getOrderInfo().getOrderNo();
+			FuturesOrder order = orderDao.retrieveByOrderNo(orderNo);
+			if (order == null) {
+				int orderSessionId = msgObj.getSessionID();
+				order = orderDao.retrieveByOrderSessionId(orderSessionId);
+				if (order != null && order.getOrderNo() != null
+						&& !order.getOrderNo().trim().equals(msgObj.getOrderInfo().getOrderNo())) {
+					order = null;
+				}
+			}
+			if (order != null && order.getOrderState() != 6) {
 				order.setFilled(new BigDecimal(msgObj.getOrderInfo().getOrderMatchQty()));
 				order.setLastFillPrice(new BigDecimal(msgObj.getOrderInfo().getOrderMatchPrice()));
 				order.setOrderState(Integer.parseInt(String.valueOf(msgObj.getOrderInfo().getOrderState())));

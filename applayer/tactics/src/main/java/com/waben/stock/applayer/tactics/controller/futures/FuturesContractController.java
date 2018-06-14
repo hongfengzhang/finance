@@ -101,14 +101,14 @@ public class FuturesContractController {
 			OrganizationPublisherDto publisher = futuresContractBusiness
 					.fetchOrgPublisher(SecurityUtil.getUserDetails().getUserId());
 			if (publisher != null) {
-				FuturesAgentPriceDto agentPrice = futuresContractBusiness.getCurrentAgentPrice(publisher.getOrgId(),
-						result.getId());
-				if (agentPrice != null) {
-					result.setPerUnitReserveFund(agentPrice.getCostReserveFund());
-					result.setOpenwindServiceFee(agentPrice.getSaleOpenwindServiceFee());
-					result.setUnwindServiceFee(agentPrice.getSaleUnwindServiceFee());
-					result.setOvernightPerUnitDeferredFee(agentPrice.getSaleDeferredFee());
-				}
+//				FuturesAgentPriceDto agentPrice = futuresContractBusiness.getCurrentAgentPrice(publisher.getOrgId(),
+//						result.getId());
+//				if (agentPrice != null) {
+//					result.setPerUnitReserveFund(agentPrice.getCostReserveFund());
+//					result.setOpenwindServiceFee(agentPrice.getSaleOpenwindServiceFee());
+//					result.setUnwindServiceFee(agentPrice.getSaleUnwindServiceFee());
+//					result.setOvernightPerUnitDeferredFee(agentPrice.getSaleDeferredFee());
+//				}
 			}
 		}
 		return new Response<>(result);

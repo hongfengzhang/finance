@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
+import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesContractRepository;
@@ -68,6 +69,11 @@ public class FuturesContractDaoImpl implements FuturesContractDao {
 	@Override
 	public List<FuturesContract> findByCommodityId(Long commodityId) {
 		return repository.findByCommodityId(commodityId);
+	}
+
+	@Override
+	public List<FuturesContract> retrieveByCommodity(FuturesCommodity commodity) {
+		return repository.findByCommodity(commodity);
 	}
 
 }

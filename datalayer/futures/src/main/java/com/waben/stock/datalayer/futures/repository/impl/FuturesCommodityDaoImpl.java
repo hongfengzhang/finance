@@ -10,12 +10,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
 
 import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
+import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.repository.FuturesCommodityDao;
 import com.waben.stock.datalayer.futures.repository.impl.jpa.FuturesCommodityRepository;
 
 @Repository
 public class FuturesCommodityDaoImpl implements FuturesCommodityDao {
-	
+
 	@Autowired
 	private FuturesCommodityRepository repository;
 
@@ -52,6 +53,11 @@ public class FuturesCommodityDaoImpl implements FuturesCommodityDao {
 	@Override
 	public List<FuturesCommodity> list() {
 		return repository.findAll();
+	}
+
+	@Override
+	public List<FuturesCommodity> retrieveByExchange(FuturesExchange exchange) {
+		return repository.findByExchange(exchange);
 	}
 
 }
