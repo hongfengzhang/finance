@@ -9,17 +9,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ib.client.Contract;
-import com.ib.client.EClientSocket;
-import com.ib.client.Order;
-import com.ib.client.OrderType;
+import com.waben.stock.futuresgateway.yisheng.dao.FuturesCommodityDao;
 import com.waben.stock.futuresgateway.yisheng.dao.FuturesContractDao;
 import com.waben.stock.futuresgateway.yisheng.dao.FuturesOrderDao;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesCommodity;
 import com.waben.stock.futuresgateway.yisheng.entity.FuturesContract;
 import com.waben.stock.futuresgateway.yisheng.entity.FuturesOrder;
+import com.waben.stock.futuresgateway.yisheng.esapi.EsEngine;
 import com.waben.stock.futuresgateway.yisheng.exception.ExceptionEnum;
 import com.waben.stock.futuresgateway.yisheng.exception.ServiceException;
-import com.waben.stock.futuresgateway.yisheng.twsapi.TwsEngine;
 
 /**
  * 期货订单 Service
@@ -31,13 +29,16 @@ import com.waben.stock.futuresgateway.yisheng.twsapi.TwsEngine;
 public class FuturesOrderService {
 
 	@Autowired
-	private FuturesOrderDao futuresOrderDao;
+	private FuturesCommodityDao commodityDao;
 
 	@Autowired
 	private FuturesContractDao futuresContractDao;
 
-	// @Autowired
-	private TwsEngine twsEngine;
+	@Autowired
+	private FuturesOrderDao futuresOrderDao;
+
+	@Autowired
+	private EsEngine esEngine;
 
 	public FuturesOrder getFuturesOrderInfo(Long id) {
 		FuturesOrder order = futuresOrderDao.retrieveFuturesOrderById(id);
@@ -74,17 +75,13 @@ public class FuturesOrderService {
 		return futuresOrderDao.listFuturesOrder();
 	}
 
-	public FuturesOrder getFuturesOrderInfoByTwsOrderId(int twsOrderId) {
-		return futuresOrderDao.retrieveFuturesOrderByTwsOrderId(twsOrderId);
-	}
-
 	/**
 	 * 检查API连接是否已连接
 	 * 
 	 * @return 是否已连接
 	 */
 	public boolean isConnected() {
-		return twsEngine.getClient().isConnected();
+		return true;
 	}
 
 	/**
@@ -100,21 +97,7 @@ public class FuturesOrderService {
 		if (!isConnected()) {
 			throw new ServiceException(ExceptionEnum.Client_NotConnected);
 		}
-		EClientSocket client = twsEngine.getClient();
-		FuturesOrder order = futuresOrderDao.retrieveFuturesOrderById(id);
-		if (order == null) {
-			throw new ServiceException(ExceptionEnum.Order_NotExist);
-		}
-		if ("Submitted".equals(order.getStatus()) && order.getFilled() != null
-				&& order.getFilled().compareTo(BigDecimal.ZERO) == 0) {
-			client.cancelOrder(order.getTwsOrderId());
-		} else if ("Submitted".equals(order.getStatus()) && order.getRemaining() != null
-				&& order.getRemaining().compareTo(BigDecimal.ZERO) > 0) {
-			throw new ServiceException(ExceptionEnum.PartFilled_CannotCancel);
-		} else {
-			throw new ServiceException(ExceptionEnum.CurrentStatus_CannotCancel);
-		}
-		return order;
+		return null;
 	}
 
 	/**
@@ -122,74 +105,60 @@ public class FuturesOrderService {
 	 * 
 	 * @param domain
 	 *            应用域
-	 * @param symbol
-	 *            合约标识
+	 * @param commodityNo
+	 *            品种编号
+	 * @param contractNo
+	 *            合约编号
 	 * @param outerOrderId
 	 *            外部订单ID
 	 * @param action
 	 *            交易方向
 	 * @param totalQuantity
 	 *            交易总量
-	 * @param userOrderType
-	 *            用户订单类型
+	 * @param orderType
+	 *            订单类型
 	 * @param entrustPrice
 	 *            委托价格
 	 * @return 订单
 	 */
 	@Transactional
-	public synchronized FuturesOrder addFuturesOrder(String domain, String symbol, Long outerOrderId, String action,
-			BigDecimal totalQuantity, Integer userOrderType, BigDecimal entrustPrice) {
+	public synchronized FuturesOrder placeOrder(String domain, String commodityNo, String contractNo, Long outerOrderId,
+			String action, BigDecimal totalQuantity, Integer orderType, BigDecimal entrustPrice) {
 		if (!isConnected()) {
 			throw new ServiceException(ExceptionEnum.Client_NotConnected);
 		}
-		FuturesContract futuresContract = futuresContractDao.retrieveByCommodityNoAndContractNo(null, symbol);
-		if (futuresContract == null) {
-			throw new ServiceException(ExceptionEnum.Symbol_NotSupported);
+		FuturesCommodity commodity = commodityDao.retrieveByCommodityNo(commodityNo);
+		FuturesContract contract = futuresContractDao.retrieveByCommodityNoAndContractNo(commodityNo, contractNo);
+		if (commodity == null || contract == null || commodity.getEnable() == null || !commodity.getEnable()
+				|| contract.getEnable() == null || !contract.getEnable()) {
+			throw new ServiceException(ExceptionEnum.Contract_NotSupported);
 		}
 		if (!("BUY".equals(action) || "SELL".equals(action))) {
 			throw new ServiceException(ExceptionEnum.Action_NotSupported);
 		}
-		if (!((userOrderType != null && userOrderType == 1) || (userOrderType != null && userOrderType == 2))) {
-			throw new ServiceException(ExceptionEnum.UserOrderType_NotSupported);
+		if (!((orderType != null && orderType == 1) || (orderType != null && orderType == 2))) {
+			throw new ServiceException(ExceptionEnum.OrderType_NotSupported);
 		}
-		// step 1 : 保存订单
-		FuturesOrder futuresOrder = new FuturesOrder();
-		futuresOrder.setDomain(domain);
-		futuresOrder.setContractId(futuresContract.getId());
-//		futuresOrder.setCurrency(futuresContract.getCurrency());
-		futuresOrder.setAction(action);
-		futuresOrder.setUserOrderType(userOrderType);
-		futuresOrder.setOuterOrderId(outerOrderId);
-		futuresOrder.setTotalQuantity(totalQuantity);
-		futuresOrder.setEntrustPrice(entrustPrice);
-		futuresOrder.setStatus("Init");
-		Integer twsOrderId = twsEngine.getWrapper().getCurrentOrderId();
-		twsEngine.getWrapper().setCurrentOrderId(twsOrderId + 1);
-		String account = twsEngine.getAccount();
-		futuresOrder.setAccount(account);
-		futuresOrder.setTwsOrderId(twsOrderId);
-		futuresOrder.setCreateTime(new Date());
-		// step 2 : 请求tws下单
-		EClientSocket client = twsEngine.getClient();
-		Order order = new Order();
-		order.action(futuresOrder.getAction());
-		order.totalQuantity(futuresOrder.getTotalQuantity().doubleValue());
-		order.account(account);
-		if (futuresOrder.getUserOrderType() == 2) {
-			order.orderType(OrderType.LMT);
-			order.lmtPrice(futuresOrder.getEntrustPrice().doubleValue());
-			futuresOrder.setTwsOrderType(OrderType.LMT.toString());
-		} else {
-			order.orderType(OrderType.MKT);
-			futuresOrder.setTwsOrderType(OrderType.MKT.toString());
-		}
-		Contract contract = new Contract();
-		// contract.localSymbol(futuresContract.getLocalSymbolName());
-//		contract.secType(futuresContract.getSecType());
-//		contract.currency(futuresContract.getCurrency());
-//		contract.exchange(futuresContract.getExchange());
-		client.placeOrder(twsOrderId, contract, order);
-		return futuresOrderDao.createFuturesOrder(futuresOrder);
+		// step 1 : 初始化部分订单信息
+		FuturesOrder order = new FuturesOrder();
+		order.setAccount(esEngine.getAccount());
+		order.setAction(action);
+		order.setCommodityNo(commodityNo);
+		order.setContractNo(contractNo);
+		order.setCreateTime(new Date());
+		order.setDomain(domain);
+		order.setEntrustPrice(entrustPrice);
+		order.setOrderState(0);
+		order.setOrderType(orderType);
+		order.setOuterOrderId(outerOrderId);
+		order.setTotalQuantity(totalQuantity);
+		order.setUpdateTime(new Date());
+		order = futuresOrderDao.createFuturesOrder(order);
+		// step 2 : 请求上游下单
+		int orderSessionId = esEngine.placeOrder(commodity, contract, action, totalQuantity, orderType, entrustPrice);
+		order.setOrderSessionId(orderSessionId);
+		order.setUpdateTime(new Date());
+		return futuresOrderDao.updateFuturesOrder(order);
 	}
 
 }

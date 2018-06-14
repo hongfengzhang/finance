@@ -23,11 +23,11 @@ public interface FuturesOrderDao {
 	public FuturesOrder retrieveFuturesOrderById(Long id);
 
 	public Page<FuturesOrder> pageFuturesOrder(int page, int limit);
-	
+
 	public List<FuturesOrder> listFuturesOrder();
 
-	public FuturesOrder retrieveFuturesOrderByTwsOrderId(int twsOrderId);
-
 	public FuturesOrder retrieveFuturesOrderByDomainAndOuterOrderId(String domain, Long outerOrderId);
+
+	public FuturesOrder retrieveByOrderSessionId(int orderSessionId);
 
 }

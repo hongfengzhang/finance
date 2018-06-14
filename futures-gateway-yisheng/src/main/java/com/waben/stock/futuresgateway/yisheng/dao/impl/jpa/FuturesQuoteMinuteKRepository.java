@@ -32,4 +32,10 @@ public interface FuturesQuoteMinuteKRepository extends Repository<FuturesQuoteMi
 
 	List<FuturesQuoteMinuteK> findByCommodityNoAndContractNo(String commodityNo, String contractNo, Sort sort);
 
+	List<FuturesQuoteMinuteK> findByCommodityNoAndContractNoAndTimeStrLike(String commodityNo, String contractNo,
+			String timeStr, Sort sort);
+
+	List<FuturesQuoteMinuteK> findByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(String commodityNo,
+			String contractNo, Date startTime, Date endTime, Sort sort);
+
 }

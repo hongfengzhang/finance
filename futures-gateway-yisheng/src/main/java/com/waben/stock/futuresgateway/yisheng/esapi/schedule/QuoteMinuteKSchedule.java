@@ -13,17 +13,18 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import com.waben.stock.futuresgateway.yisheng.entity.FuturesCommodity;
 import com.waben.stock.futuresgateway.yisheng.entity.FuturesContract;
-import com.waben.stock.futuresgateway.yisheng.entity.FuturesContractQuote;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuote;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuoteLast;
 import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuoteMinuteK;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.RabbitmqProducer;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.message.DeleteQuoteMessage;
-import com.waben.stock.futuresgateway.yisheng.service.FuturesCommodityService;
-import com.waben.stock.futuresgateway.yisheng.service.FuturesContractQuoteService;
 import com.waben.stock.futuresgateway.yisheng.service.FuturesContractService;
+import com.waben.stock.futuresgateway.yisheng.service.FuturesQuoteLastService;
 import com.waben.stock.futuresgateway.yisheng.service.FuturesQuoteMinuteKService;
+import com.waben.stock.futuresgateway.yisheng.service.FuturesQuoteService;
+import com.waben.stock.futuresgateway.yisheng.util.CopyBeanUtils;
 
 /**
  * 行情分钟作业
@@ -38,13 +39,13 @@ public class QuoteMinuteKSchedule {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private FuturesCommodityService commodityService;
-
-	@Autowired
 	private FuturesContractService contractService;
 
 	@Autowired
-	private FuturesContractQuoteService quoteService;
+	private FuturesQuoteService quoteService;
+
+	@Autowired
+	private FuturesQuoteLastService quoteLastService;
 
 	@Autowired
 	private FuturesQuoteMinuteKService minuteKServcie;
@@ -63,6 +64,7 @@ public class QuoteMinuteKSchedule {
 		List<FuturesContract> contractList = contractService.getByEnable(true);
 		// step 2 : 获取上一分钟
 		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.MILLISECOND, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.add(Calendar.MINUTE, -1);
 		Date before = cal.getTime();
@@ -70,52 +72,31 @@ public class QuoteMinuteKSchedule {
 		for (FuturesContract contract : contractList) {
 			String commodityNo = contract.getCommodityNo();
 			String contractNo = contract.getContractNo();
-			// step 3.1 : 获取时差
-			FuturesCommodity commodity = commodityService.getByCommodityNo(commodityNo);
-			if (commodity == null || commodity.getTimeZoneGap() == null) {
-				continue;
-			}
-			Integer timeZoneGap = commodity.getTimeZoneGap();
-			// step 3.2 : 判断之前是否有计算过
+			// step 3.1 : 判断之前是否有计算过
 			FuturesQuoteMinuteK beforeMinuteK = minuteKServcie.getByCommodityNoAndContractNoAndTime(commodityNo,
 					contractNo, before);
 			if (beforeMinuteK != null) {
 				continue;
 			}
-			// step 3.3 : 根据时间获取所有的行情
-			List<FuturesContractQuote> quoteList = quoteService.getByCommodityNoAndContractNoAndDateTimeStampLike(
-					commodityNo, contractNo, minSdf.format(before) + "%");
+			// step 3.2 : 根据时间获取所有的行情
+			List<FuturesQuote> quoteList = quoteService.getByCommodityNoAndContractNoAndDateTimeStampLike(commodityNo,
+					contractNo, minSdf.format(before) + "%");
 			if (quoteList != null && quoteList.size() > 0) {
-				// step 3.4 : 获取上上分钟的minuteK
-				cal.add(Calendar.MINUTE, -1);
-				FuturesQuoteMinuteK beforeBeforeMinuteK = minuteKServcie
-						.getNewestByCommodityNoAndContractNo(commodityNo, contractNo);
-				// step 3.5 : 根据上上分钟的minuteK计算成交量
-				long volume = 0;
-				if (beforeBeforeMinuteK != null) {
-					if (isExchangeSameDay(before, beforeBeforeMinuteK.getTime(), timeZoneGap)) {
-						volume = quoteList.get(quoteList.size() - 1).getTotalQty()
-								- beforeBeforeMinuteK.getTotalVolume();
-					} else {
-						volume = quoteList.get(quoteList.size() - 1).getTotalQty();
-					}
-				} else {
-					volume = quoteList.get(quoteList.size() - 1).getTotalQty();
-				}
-				// step 3.6 : 初始化部分数据
+				// step 3.3 : 初始化部分数据
 				beforeMinuteK = new FuturesQuoteMinuteK();
 				beforeMinuteK.setCommodityNo(commodityNo);
 				beforeMinuteK.setContractNo(contractNo);
 				beforeMinuteK.setTime(before);
 				beforeMinuteK.setTimeStr(fullSdf.format(before));
 				beforeMinuteK.setTotalVolume(quoteList.get(quoteList.size() - 1).getTotalQty());
-				beforeMinuteK.setVolume(volume);
+				beforeMinuteK
+						.setVolume(quoteList.get(quoteList.size() - 1).getTotalQty() - quoteList.get(0).getTotalQty());
 				beforeMinuteK.setOpenPrice(quoteList.get(0).getOpeningPrice());
 				beforeMinuteK.setClosePrice(quoteList.get(quoteList.size() - 1).getClosingPrice());
-				// step 3.7 : 计算最高价、最低价
+				// step 3.4 : 计算最高价、最低价
 				BigDecimal highPrice = quoteList.get(0).getHighPrice();
 				BigDecimal lowPrice = quoteList.get(0).getLowPrice();
-				for (FuturesContractQuote quote : quoteList) {
+				for (FuturesQuote quote : quoteList) {
 					if (quote.getHighPrice().compareTo(highPrice) > 0) {
 						highPrice = quote.getHighPrice();
 					}
@@ -125,19 +106,34 @@ public class QuoteMinuteKSchedule {
 				}
 				beforeMinuteK.setHighPrice(highPrice);
 				beforeMinuteK.setLowPrice(lowPrice);
-				// step 3.8 : 保存计算出来的分K数据
+				// step 3.5 : 保存计算出来的分K数据
 				minuteKServcie.addFuturesQuoteMinuteK(beforeMinuteK);
-				// step 3.9 : 删除该分钟的行情数据
-				for (FuturesContractQuote quote : quoteList) {
+				// step 3.6 : 删除该分钟的行情数据
+				for (int i = 0; i < quoteList.size(); i++) {
+					FuturesQuote quote = quoteList.get(i);
 					DeleteQuoteMessage delQuote = new DeleteQuoteMessage();
 					delQuote.setQuoteId(quote.getId());
+					delQuote.setType(1);
 					producer.sendMessage(RabbitmqConfiguration.deleteQuoteQueueName, delQuote);
+					if (i == quoteList.size() - 1) {
+						// 判断当前分钟有没有行情数据，如果没有的话，将这条数据保存到FuturesQuoteLast中
+						cal.add(Calendar.MINUTE, 1);
+						Date currentMin = cal.getTime();
+						Long count = quoteService.countByTimeGreaterThanEqual(currentMin);
+						if (count <= 0) {
+							FuturesQuoteLast quoteLast = CopyBeanUtils.copyBeanProperties(FuturesQuoteLast.class, quote,
+									false);
+							quoteLast.setId(null);
+							quoteLastService.addFuturesQuoteLast(quoteLast);
+						}
+					}
 				}
 			}
 		}
 		logger.info("计算分K数据结束:" + fullSdf.format(new Date()));
 	}
 
+	@SuppressWarnings("unused")
 	private boolean isExchangeSameDay(Date d1, Date d2, int timeZoneGap) {
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(d1);

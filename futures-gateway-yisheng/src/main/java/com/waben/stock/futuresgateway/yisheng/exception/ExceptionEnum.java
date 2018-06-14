@@ -6,11 +6,11 @@ public enum ExceptionEnum {
 	
 	Client_NotConnected("1001", "API连接异常!"),
 
-	Symbol_NotSupported("1002", "不支持的合约类型!"),
+	Contract_NotSupported("1002", "不支持的合约类型!"),
 
 	Action_NotSupported("1003", "不支持的交易方向!"),
 
-	UserOrderType_NotSupported("1004", "不支持的合约类型!"),
+	OrderType_NotSupported("1004", "不支持的订单类型!"),
 
 	Order_NotExist("1005", "订单不存在!"),
 

@@ -1,24 +1,33 @@
 package com.waben.stock.futuresgateway.yisheng.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.waben.stock.futuresgateway.yisheng.cache.RedisCache;
-import com.waben.stock.futuresgateway.yisheng.dao.FuturesContractDao;
-import com.waben.stock.futuresgateway.yisheng.entity.FuturesContract;
+import com.waben.stock.futuresgateway.yisheng.dao.FuturesCommodityDao;
+import com.waben.stock.futuresgateway.yisheng.dao.FuturesQuoteDao;
+import com.waben.stock.futuresgateway.yisheng.dao.FuturesQuoteDayKDao;
+import com.waben.stock.futuresgateway.yisheng.dao.FuturesQuoteLastDao;
+import com.waben.stock.futuresgateway.yisheng.dao.FuturesQuoteMinuteKDao;
+import com.waben.stock.futuresgateway.yisheng.dao.FuturesQuoteMinuteKGroupDao;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesCommodity;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuote;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuoteDayK;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuoteLast;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuoteMinuteK;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuoteMinuteKGroup;
 import com.waben.stock.futuresgateway.yisheng.pojo.FuturesContractLineData;
-import com.waben.stock.futuresgateway.yisheng.twsapi.TwsConstant;
+import com.waben.stock.futuresgateway.yisheng.pojo.FuturesQuoteData;
+import com.waben.stock.futuresgateway.yisheng.util.CopyBeanUtils;
 import com.waben.stock.futuresgateway.yisheng.util.JacksonUtil;
 import com.waben.stock.futuresgateway.yisheng.util.StringUtil;
 
@@ -32,50 +41,101 @@ import com.waben.stock.futuresgateway.yisheng.util.StringUtil;
 public class FuturesMarketService {
 
 	@Autowired
-	private FuturesContractDao contractDao;
+	private FuturesCommodityDao commodityDao;
 
 	@Autowired
-	private RedisCache redisCache;
+	private FuturesQuoteDao quoteDao;
 
-	private SimpleDateFormat daySdf = new SimpleDateFormat("yyyy-MM-dd");
+	@Autowired
+	private FuturesQuoteLastDao quoteLastDao;
+
+	@Autowired
+	private FuturesQuoteMinuteKDao minuteKDao;
+
+	@Autowired
+	private FuturesQuoteMinuteKGroupDao minuteKGroupDao;
+
+	@Autowired
+	private FuturesQuoteDayKDao dayKDao;
+
 	private SimpleDateFormat fullSdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-	public FuturesContract market(String symbol) {
-		// return contractDao.retrieveContractBySymbol(symbol);
-		return null;
-	}
-
-	public List<FuturesContractLineData> timeLine(String symbol, Integer dayCount) {
-		List<FuturesContractLineData> result = new ArrayList<>();
-		// 从redis中获取
-		FuturesContract contract = contractDao.retrieveByCommodityNoAndContractNo(null, symbol);
-		Map<String, String> map = redisCache
-				.hgetAll(String.format(TwsConstant.TimeLine_RedisKey, contract.getId() + "_" + contract.getContractNo()));
-		List<String> datas = new ArrayList<>(map.values());
-		// 按时间倒序排序
-		Collections.sort(datas, new TimeStringDownComparator());
-		// 返回特定天数的分时数据
-		if (dayCount == null || dayCount <= 0) {
-			dayCount = 1;
-		}
-		Map<String, Boolean> dayMap = new HashMap<>();
-		for (String data : datas) {
-			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
-			String timeStr = daySdf.format(lineData.getTime());
-			if (dayMap.containsKey(timeStr)) {
-				result.add(lineData);
-			} else {
-				if (dayMap.keySet().size() < dayCount) {
-					result.add(lineData);
-					dayMap.put(timeStr, true);
-				}
+	public FuturesQuoteData quote(String commodityNo, String contractNo) {
+		FuturesQuoteData result = new FuturesQuoteData();
+		result.setCommodityNo(commodityNo);
+		result.setContractNo(contractNo);
+		// 查询品种
+		FuturesCommodity commodity = commodityDao.retrieveByCommodityNo(commodityNo);
+		if (commodity != null && commodity.getCommodityTickSize() != null) {
+			Integer scale = getScale(commodity.getCommodityTickSize());
+			// 查询行情
+			FuturesQuote quote = quoteDao.retriveNewest(commodityNo, contractNo);
+			if (quote != null) {
+				List<BigDecimal> askPriceList = JacksonUtil.decode(quote.getAskPrice(),
+						JacksonUtil.getGenericType(List.class, BigDecimal.class));
+				List<Long> askSizeList = JacksonUtil.decode(quote.getAskQty(),
+						JacksonUtil.getGenericType(List.class, Long.class));
+				List<BigDecimal> bidPriceList = JacksonUtil.decode(quote.getBidPrice(),
+						JacksonUtil.getGenericType(List.class, BigDecimal.class));
+				List<Long> bidSizeList = JacksonUtil.decode(quote.getBidQty(),
+						JacksonUtil.getGenericType(List.class, Long.class));
+				result.setAskPrice(askPriceList.get(0).setScale(scale, RoundingMode.HALF_UP));
+				result.setAskSize(askSizeList.get(0));
+				result.setBidPrice(bidPriceList.get(0).setScale(scale, RoundingMode.HALF_UP));
+				result.setBidSize(bidSizeList.get(0));
+				result.setClosePrice(quote.getClosingPrice());
+				result.setHighPrice(quote.getHighPrice());
+				result.setLastPrice(quote.getLastPrice());
+				result.setLastSize(quote.getLastQty());
+				result.setLowPrice(quote.getLowPrice());
+				result.setOpenPrice(quote.getOpeningPrice());
+				result.setVolume(quote.getLastQty());
+				result.setTotalVolume(quote.getTotalQty());
+				return result;
+			}
+			// 行情中没有查询到，查新行情-最新
+			FuturesQuoteLast quoteLast = quoteLastDao.retriveNewest(commodityNo, contractNo);
+			if (quoteLast != null) {
+				List<BigDecimal> askPriceList = JacksonUtil.decode(quoteLast.getAskPrice(),
+						JacksonUtil.getGenericType(List.class, BigDecimal.class));
+				List<Long> askSizeList = JacksonUtil.decode(quoteLast.getAskQty(),
+						JacksonUtil.getGenericType(List.class, Long.class));
+				List<BigDecimal> bidPriceList = JacksonUtil.decode(quoteLast.getBidPrice(),
+						JacksonUtil.getGenericType(List.class, BigDecimal.class));
+				List<Long> bidSizeList = JacksonUtil.decode(quoteLast.getBidQty(),
+						JacksonUtil.getGenericType(List.class, Long.class));
+				result.setAskPrice(askPriceList.get(0).setScale(scale, RoundingMode.HALF_UP));
+				result.setAskSize(askSizeList.get(0));
+				result.setBidPrice(bidPriceList.get(0).setScale(scale, RoundingMode.HALF_UP));
+				result.setBidSize(bidSizeList.get(0));
+				result.setClosePrice(quoteLast.getClosingPrice());
+				result.setHighPrice(quoteLast.getHighPrice());
+				result.setLastPrice(quoteLast.getLastPrice());
+				result.setLastSize(quoteLast.getLastQty());
+				result.setLowPrice(quoteLast.getLowPrice());
+				result.setOpenPrice(quoteLast.getOpeningPrice());
+				result.setVolume(quoteLast.getLastQty());
+				result.setTotalVolume(quoteLast.getTotalQty());
+				return result;
 			}
 		}
+		// 未查询到最新行情，全部初始化值为0
+		result.setAskPrice(BigDecimal.ZERO);
+		result.setAskSize(0L);
+		result.setBidSize(0L);
+		result.setBidPrice(BigDecimal.ZERO);
+		result.setClosePrice(BigDecimal.ZERO);
+		result.setHighPrice(BigDecimal.ZERO);
+		result.setLastPrice(BigDecimal.ZERO);
+		result.setLastSize(0L);
+		result.setLowPrice(BigDecimal.ZERO);
+		result.setTotalVolume(0L);
+		result.setVolume(0L);
 		return result;
 	}
 
-	public List<FuturesContractLineData> dayLine(String symbol, String startTimeStr, String endTimeStr) {
-		List<FuturesContractLineData> result = new ArrayList<>();
+	public List<FuturesContractLineData> dayLine(String commodityNo, String contractNo, String startTimeStr,
+			String endTimeStr) {
 		// 获取开始和结束时间
 		Date startTime = null;
 		Date endTime = null;
@@ -98,75 +158,74 @@ public class FuturesMarketService {
 			cal.add(Calendar.YEAR, -1);
 			startTime = cal.getTime();
 		}
-		// 从redis中获取
-		FuturesContract contract = contractDao.retrieveByCommodityNoAndContractNo(null, symbol);
-		Map<String, String> map = redisCache
-				.hgetAll(String.format(TwsConstant.DayLine_RedisKey, contract.getId() + "_" + symbol));
-		List<String> datas = new ArrayList<>(map.values());
-		// 按时间倒序排序
-		Collections.sort(datas, new TimeStringDownComparator());
-		for (String data : datas) {
-			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
-			Date time = lineData.getTime();
-			if (time.getTime() >= startTime.getTime() && time.getTime() <= endTime.getTime()) {
-				result.add(lineData);
-			}
-		}
-		return result;
+		// 获取日K数据
+		List<FuturesQuoteDayK> dayKList = dayKDao
+				.retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(commodityNo, contractNo,
+						startTime, endTime);
+		return CopyBeanUtils.copyListBeanPropertiesToList(dayKList, FuturesContractLineData.class);
 	}
 
-	public List<FuturesContractLineData> minsLine(String symbol, Integer mins, Integer dayCount) {
+	public List<FuturesContractLineData> minsLine(String commodityNo, String contractNo, String startTimeStr,
+			String endTimeStr) {
+		// 获取开始和结束时间
+		Date startTime = null;
+		Date endTime = null;
+		try {
+			if (!StringUtil.isEmpty(startTimeStr)) {
+				startTime = fullSdf.parse(startTimeStr);
+			}
+			if (!StringUtil.isEmpty(endTimeStr)) {
+				endTime = fullSdf.parse(endTimeStr);
+			}
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		if (endTime == null) {
+			endTime = new Date();
+		}
+		if (startTime == null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(endTime);
+			cal.set(Calendar.HOUR_OF_DAY, 0);
+			cal.set(Calendar.MINUTE, 0);
+			cal.set(Calendar.SECOND, 0);
+			cal.set(Calendar.MILLISECOND, 0);
+			startTime = cal.getTime();
+		}
+		// 查询分时数据
+		List<FuturesQuoteMinuteK> minuteKList = minuteKDao
+				.retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(commodityNo, contractNo,
+						startTime, endTime);
+		// 查询小时数据
+		List<FuturesQuoteMinuteKGroup> minuteKGoupList = minuteKGroupDao
+				.retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(commodityNo, contractNo,
+						startTime, endTime);
+		// 统计
 		List<FuturesContractLineData> result = new ArrayList<>();
-		// 从redis中获取
-		String redisKey = null;
-		if (mins == null || mins < 1) {
-			redisKey = TwsConstant.Min1Line_RedisKey;
-		} else if (mins == 1) {
-			redisKey = TwsConstant.Min1Line_RedisKey;
-		} else if (mins == 3) {
-			redisKey = TwsConstant.Mins3Line_RedisKey;
-		} else if (mins == 5) {
-			redisKey = TwsConstant.Mins5Line_RedisKey;
-		} else if (mins == 15) {
-			redisKey = TwsConstant.Mins15Line_RedisKey;
-		} else {
-			return result;
+		for (FuturesQuoteMinuteK minuteK : minuteKList) {
+			result.add(CopyBeanUtils.copyBeanProperties(FuturesContractLineData.class, minuteK, false));
 		}
-		FuturesContract contract = contractDao.retrieveByCommodityNoAndContractNo(null, symbol);
-		Map<String, String> map = redisCache
-				.hgetAll(String.format(redisKey, contract.getId() + "_" + symbol));
-		List<String> datas = new ArrayList<>(map.values());
-		// 按时间倒序排序
-		Collections.sort(datas, new TimeStringDownComparator());
-		// 返回特定天数的分时数据
-		if (dayCount == null || dayCount <= 0) {
-			dayCount = 1;
+		for (FuturesQuoteMinuteKGroup minuteKGoup : minuteKGoupList) {
+			List<FuturesContractLineData> data = JacksonUtil.decode(minuteKGoup.getGroupData(),
+					JacksonUtil.getGenericType(ArrayList.class, FuturesContractLineData.class));
+			result.addAll(data);
 		}
-		Map<String, Boolean> dayMap = new HashMap<>();
-		for (String data : datas) {
-			FuturesContractLineData lineData = JacksonUtil.decode(data, FuturesContractLineData.class);
-			String timeStr = daySdf.format(lineData.getTime());
-			if (dayMap.containsKey(timeStr)) {
-				result.add(lineData);
-			} else {
-				if (dayMap.keySet().size() < dayCount) {
-					result.add(lineData);
-					dayMap.put(timeStr, true);
-				}
-			}
-		}
+		// 排序
+		Collections.sort(result);
 		return result;
 	}
 
-	private class TimeStringDownComparator implements Comparator<String> {
-		@Override
-		public int compare(String o1, String o2) {
-			int time1Index = o1.indexOf("\"time\"");
-			String time1 = o1.substring(time1Index + 8, time1Index + 25);
-			int time2Index = o2.indexOf("\"time\"");
-			String time2 = o2.substring(time2Index + 8, time2Index + 25);
-			return time2.compareTo(time1);
+	private int getScale(BigDecimal num) {
+		StringBuilder numStrBuilder = new StringBuilder(num.toString());
+		while (true) {
+			char last = numStrBuilder.charAt(numStrBuilder.length() - 1);
+			if (last == 48) {
+				numStrBuilder.deleteCharAt(numStrBuilder.length() - 1);
+			} else {
+				break;
+			}
 		}
+		return new BigDecimal(numStrBuilder.toString()).scale();
 	}
-	
+
 }

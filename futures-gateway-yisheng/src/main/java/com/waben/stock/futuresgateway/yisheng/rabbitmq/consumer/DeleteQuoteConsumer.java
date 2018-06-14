@@ -9,24 +9,32 @@ import org.springframework.stereotype.Component;
 
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.RabbitmqConfiguration;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.message.DeleteQuoteMessage;
-import com.waben.stock.futuresgateway.yisheng.service.FuturesContractQuoteService;
+import com.waben.stock.futuresgateway.yisheng.service.FuturesQuoteService;
+import com.waben.stock.futuresgateway.yisheng.service.FuturesQuoteMinuteKService;
 import com.waben.stock.futuresgateway.yisheng.util.JacksonUtil;
 
 @Component
-@RabbitListener(queues = { RabbitmqConfiguration.deleteQuoteQueueName }, containerFactory = "deleteQuoteListenerContainerFactory")
+@RabbitListener(queues = {
+		RabbitmqConfiguration.deleteQuoteQueueName }, containerFactory = "deleteQuoteListenerContainerFactory")
 public class DeleteQuoteConsumer {
 
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private FuturesContractQuoteService quoteService;
+	private FuturesQuoteService quoteService;
+
+	@Autowired
+	private FuturesQuoteMinuteKService minuteKService;
 
 	@RabbitHandler
 	public void handlerMessage(String message) {
 		DeleteQuoteMessage msgObj = JacksonUtil.decode(message, DeleteQuoteMessage.class);
 		try {
-			Long quoteId = msgObj.getQuoteId();
-			quoteService.deleteFuturesContractQuote(quoteId);
+			if (msgObj.getType() != null && msgObj.getType() == 1) {
+				quoteService.deleteFuturesQuote(msgObj.getQuoteId());
+			} else if (msgObj.getType() != null && msgObj.getType() == 2) {
+				minuteKService.deleteFuturesQuoteMinuteK(msgObj.getQuoteId());
+			}
 		} catch (Exception ex) {
 			logger.error("消费删除易盛Quote消息异常!", ex);
 		}

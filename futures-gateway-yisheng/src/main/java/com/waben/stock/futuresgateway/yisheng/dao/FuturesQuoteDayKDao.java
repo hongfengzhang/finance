@@ -1,5 +1,6 @@
 package com.waben.stock.futuresgateway.yisheng.dao;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
@@ -25,5 +26,10 @@ public interface FuturesQuoteDayKDao {
 	public Page<FuturesQuoteDayK> pageFuturesQuoteDayK(int page, int limit);
 	
 	public List<FuturesQuoteDayK> listFuturesQuoteDayK();
+
+	public FuturesQuoteDayK retrieveByCommodityNoAndContractNoAndTime(String commodityNo, String contractNo, Date time);
+
+	public List<FuturesQuoteDayK> retrieveByCommodityNoAndContractNoAndTimeGreaterThanEqualAndTimeLessThan(
+			String commodityNo, String contractNo, Date startTime, Date endTime);
 
 }

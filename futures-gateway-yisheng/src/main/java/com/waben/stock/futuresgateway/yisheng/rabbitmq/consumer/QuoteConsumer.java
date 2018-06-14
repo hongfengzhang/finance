@@ -12,9 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.future.api.es.external.quote.bean.TapAPIQuoteWhole;
-import com.waben.stock.futuresgateway.yisheng.entity.FuturesContractQuote;
+import com.waben.stock.futuresgateway.yisheng.entity.FuturesQuote;
 import com.waben.stock.futuresgateway.yisheng.rabbitmq.RabbitmqConfiguration;
-import com.waben.stock.futuresgateway.yisheng.service.FuturesContractQuoteService;
+import com.waben.stock.futuresgateway.yisheng.service.FuturesQuoteService;
 import com.waben.stock.futuresgateway.yisheng.util.JacksonUtil;
 
 @Component
@@ -24,7 +24,7 @@ public class QuoteConsumer {
 	Logger logger = LoggerFactory.getLogger(getClass());
 
 	@Autowired
-	private FuturesContractQuoteService quoteService;
+	private FuturesQuoteService quoteService;
 
 	@RabbitHandler
 	public void handlerMessage(String message) {
@@ -36,7 +36,7 @@ public class QuoteConsumer {
 			if (commodityType == 'F') {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 				// 保存行情信息
-				FuturesContractQuote quote = new FuturesContractQuote();
+				FuturesQuote quote = new FuturesQuote();
 				quote.setAskPrice(JacksonUtil.encode(msgObj.getQAskPrice()));
 				quote.setAskQty(JacksonUtil.encode(msgObj.getQAskQty()));
 				quote.setAveragePrice(new BigDecimal(msgObj.getQAveragePrice()));
@@ -84,7 +84,7 @@ public class QuoteConsumer {
 				quote.setTotalTurnover(new BigDecimal(msgObj.getQTotalTurnover()));
 				quote.setTotalValue(new BigDecimal(msgObj.getQTotalValue()));
 				quote.setTurnoverRate(new BigDecimal(msgObj.getQTurnoverRate()));
-				quoteService.addFuturesContractQuote(quote);
+				quoteService.addFuturesQuote(quote);
 			}
 		} catch (Exception ex) {
 			logger.error("消费易盛Quote消息异常!", ex);

@@ -16,10 +16,16 @@ public class RetriveFuturesOverHttp {
 
 	private static RestTemplate restTemplate = new RestTemplate();
 
-	private static String baseUrl = "http://10.0.0.48:9092/";
+	private static String yingtouBaseUrl = "http://10.0.0.48:9092/";
+	
+	private static String yishengBaseUrl = "http://10.0.0.99:9093/";
+	/**
+	 * 
+	 */
+	private static Integer apiType = 2;
 
-	public static FuturesContractMarket market(String symbol) {
-		String url = baseUrl + "market/" + symbol;
+	public static FuturesContractMarket market(String commodityNo, String contractNo) {
+		String url = yishengBaseUrl + "market/" + symbol;
 		String response = restTemplate.getForObject(url, String.class);
 		Response<FuturesContractMarket> responseObj = JacksonUtil.decode(response,
 				JacksonUtil.getGenericType(Response.class, FuturesContractMarket.class));

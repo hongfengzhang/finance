@@ -70,4 +70,9 @@ public class FuturesQuoteMinuteKService {
 		return futuresQuoteMinuteKDao.retrieveNewestByCommodityNoAndContractNo(commodityNo, contractNo);
 	}
 
+	public List<FuturesQuoteMinuteK> getByCommodityNoAndContractNoAndTimeStrLike(String commodityNo, String contractNo,
+			String timeStr) {
+		return futuresQuoteMinuteKDao.retriveByCommodityNoAndContractNoAndTimeStrLike(commodityNo, contractNo, timeStr);
+	}
+
 }
