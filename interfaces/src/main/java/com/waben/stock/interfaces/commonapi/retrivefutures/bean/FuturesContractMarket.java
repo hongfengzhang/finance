@@ -217,14 +217,14 @@ public class FuturesContractMarket {
 	}
 
 	public BigDecimal getUpDropPrice() {
-		if (closePrice != null && lastPrice != null) {
+		if (closePrice != null && lastPrice != null && closePrice.compareTo(BigDecimal.ZERO) > 0) {
 			return lastPrice.subtract(closePrice);
 		}
 		return upDropPrice;
 	}
 
 	public BigDecimal getUpDropSpeed() {
-		if (closePrice != null && lastPrice != null) {
+		if (closePrice != null && lastPrice != null && closePrice.compareTo(BigDecimal.ZERO) > 0) {
 			return lastPrice.subtract(closePrice).divide(closePrice, 4, RoundingMode.DOWN);
 		}
 		return upDropSpeed;

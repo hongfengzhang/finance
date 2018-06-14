@@ -57,18 +57,22 @@ public class FuturesOrderDto {
 	/**
 	 * 品种代码（取期货品种设置快照）
 	 */
+	@ApiModelProperty(value = "品种代码（取期货品种设置快照）")
 	private String commoditySymbol;
 	/**
 	 * 品种名称（取期货品种设置快照）
 	 */
+	@ApiModelProperty(value = "品种名称（取期货品种设置快照）")
 	private String commodityName;
 	/**
 	 * 合约编号（取期货合约设置快照）
 	 */
+	@ApiModelProperty(value = "合约编号（取期货合约设置快照）")
 	private String contractNo;
 	/**
 	 * 货币（取期货品种设置快照）
 	 */
+	@ApiModelProperty(value = "货币（取期货品种设置快照）")
 	private String commodityCurrency;
 	/**
 	 * 开仓手续费（取期货合约设置快照）

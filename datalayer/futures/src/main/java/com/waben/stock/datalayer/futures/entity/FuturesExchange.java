@@ -20,10 +20,6 @@ public class FuturesExchange {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	/**
-	 * 对应的网关交易所ID
-	 */
-	private Long gatewayId;
-	/**
 	 * 交易所代码
 	 */
 	private String code;
@@ -54,14 +50,6 @@ public class FuturesExchange {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getGatewayId() {
-		return gatewayId;
-	}
-
-	public void setGatewayId(Long gatewayId) {
-		this.gatewayId = gatewayId;
 	}
 
 	public String getCode() {

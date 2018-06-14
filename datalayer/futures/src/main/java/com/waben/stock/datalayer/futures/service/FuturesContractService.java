@@ -25,13 +25,11 @@ import org.springframework.stereotype.Service;
 
 import com.waben.stock.datalayer.futures.entity.FuturesCommodity;
 import com.waben.stock.datalayer.futures.entity.FuturesContract;
-import com.waben.stock.datalayer.futures.entity.FuturesExchange;
 import com.waben.stock.datalayer.futures.entity.FuturesOrder;
 import com.waben.stock.datalayer.futures.repository.DynamicQuerySqlDao;
 import com.waben.stock.datalayer.futures.repository.FuturesContractDao;
 import com.waben.stock.datalayer.futures.repository.impl.MethodDesc;
 import com.waben.stock.interfaces.constants.ExceptionConstant;
-import com.waben.stock.interfaces.dto.admin.futures.FuturesContractAdminDto;
 import com.waben.stock.interfaces.dto.futures.FuturesContractDto;
 import com.waben.stock.interfaces.enums.OrganizationState;
 import com.waben.stock.interfaces.exception.ServiceException;
@@ -102,7 +100,8 @@ public class FuturesContractService {
 					predicateList.add(criteriaBuilder.equal(root.get("id").as(Long.class), query.getContractId()));
 				}
 				if (!StringUtil.isEmpty(query.getSymbol())) {
-					predicateList.add(criteriaBuilder.equal(root.get("symbol").as(String.class), query.getSymbol()));
+					Join<FuturesContract, FuturesCommodity> join = root.join("commodity", JoinType.LEFT);
+					predicateList.add(criteriaBuilder.equal(join.get("symbol").as(String.class), query.getSymbol()));
 				}
 				if (query.getAppContract() != null) {
 					predicateList.add(

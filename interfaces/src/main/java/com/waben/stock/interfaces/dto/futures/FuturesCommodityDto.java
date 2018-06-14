@@ -8,60 +8,75 @@ import java.util.TreeSet;
 
 import com.waben.stock.interfaces.enums.FuturesProductType;
 
+import io.swagger.annotations.ApiModelProperty;
+
 public class FuturesCommodityDto {
 
 	private Long id;
 	/**
 	 * 品种代码
 	 */
+	@ApiModelProperty(value = "品种代码")
 	private String symbol;
 	/**
 	 * 品种名称
 	 */
+	@ApiModelProperty(value = "品种名称")
 	private String name;
 	/**
 	 * 货币
 	 */
+	@ApiModelProperty(value = "货币")
 	private String currency;
 	/**
 	 * 交易单位
 	 */
+	@ApiModelProperty(value = "交易单位")
 	private String tradeUnit;
 	/**
 	 * 图标
 	 */
+	@ApiModelProperty(value = "图标")
 	private String icon;
 	/**
 	 * 描述
 	 */
+	@ApiModelProperty(value = "描述")
 	private String contractDesc;
 	/**
 	 * 品种分类
 	 */
+	@ApiModelProperty(value = "品种分类")
 	private FuturesProductType productType;
 	/**
 	 * 乘数（1手等于多少股）
 	 */
+	@ApiModelProperty(value = "乘数（1手等于多少股）")
 	private Integer multiplier;
 	/**
 	 * 最小波动
 	 */
+	@ApiModelProperty(value = "最小波动")
 	private BigDecimal minWave;
 	/**
 	 * 1手合约价值
 	 */
+	@ApiModelProperty(value = "1手合约价值")
 	private BigDecimal perContractValue;
 	/**
 	 * 波动一次盈亏金额，单位为该品种的货币单位
 	 */
+	@ApiModelProperty(value = "波动一次盈亏金额，单位为该品种的货币单位")
 	private BigDecimal perWaveMoney;
 	/**
 	 * 一手保证金
 	 */
+	@ApiModelProperty(value = "一手保证金")
 	private BigDecimal perUnitReserveFund;
 	/**
 	 * 一手强平点（亏损到剩余）
 	 */
+	@ApiModelProperty(value = "一手强平点（亏损到剩余）")
 	private BigDecimal perUnitUnwindPoint;
 	/**
 	 * 强平点类型
@@ -70,18 +85,22 @@ public class FuturesCommodityDto {
 	 * <li>2金额</li>
 	 * </ul>
 	 */
+	@ApiModelProperty(value = "强平点类型")
 	private Integer unwindPointType;
 	/**
 	 * 警戒线
 	 */
+	@ApiModelProperty(value = "警戒线")
 	private BigDecimal cordon;
 	/**
 	 * 开仓手续费（人民币）
 	 */
+	@ApiModelProperty(value = "开仓手续费（人民币）")
 	private BigDecimal openwindServiceFee;
 	/**
 	 * 平仓手续费（人民币）
 	 */
+	@ApiModelProperty(value = "平仓手续费（人民币）")
 	private BigDecimal unwindServiceFee;
 	/**
 	 * 隔夜时间（交易所时间）
@@ -89,18 +108,22 @@ public class FuturesCommodityDto {
 	 * 格式如04:50:00，该时间为收取隔夜手续费和递延费的时间
 	 * </p>
 	 */
+	@ApiModelProperty(value = "隔夜时间（交易所时间）")
 	private String overnightTime;
 	/**
 	 * 返还隔夜保证金的时间（交易所时间）
 	 */
+	@ApiModelProperty(value = "返还隔夜保证金的时间（交易所时间）")
 	private String returnOvernightReserveFundTime;
 	/**
 	 * 一手隔夜保证金
 	 */
+	@ApiModelProperty(value = "一手隔夜保证金")
 	private BigDecimal overnightPerUnitReserveFund;
 	/**
 	 * 一手隔夜递延费
 	 */
+	@ApiModelProperty(value = "一手隔夜递延费")
 	private BigDecimal overnightPerUnitDeferredFee;
 	/**
 	 * 周一交易时间(交易所)
@@ -108,70 +131,87 @@ public class FuturesCommodityDto {
 	 * 时间段用“-”隔开，多个时间段用“,”隔开，如“18:00-23:59”、“00:00-17:00,18:00-23:59”
 	 * <p>
 	 */
+	@ApiModelProperty(value = "周一交易时间(交易所)")
 	private String monTradeTime;
 	/**
 	 * 周一交易时间描述
 	 */
+	@ApiModelProperty(value = "周一交易时间描述")
 	private String monTradeTimeDesc;
 	/**
 	 * 周二交易时间(交易所)
 	 */
+	@ApiModelProperty(value = "周二交易时间(交易所)")
 	private String tueTradeTime;
 	/**
 	 * 周二交易时间描述
 	 */
+	@ApiModelProperty(value = "周二交易时间描述")
 	private String tueTradeTimeDesc;
 	/**
 	 * 周三交易时间(交易所)
 	 */
+	@ApiModelProperty(value = "周三交易时间(交易所)")
 	private String wedTradeTime;
 	/**
 	 * 周三交易时间描述
 	 */
+	@ApiModelProperty(value = "周三交易时间描述")
 	private String wedTradeTimeDesc;
 	/**
 	 * 周四交易时间(交易所)
 	 */
+	@ApiModelProperty(value = "周四交易时间(交易所)")
 	private String thuTradeTime;
 	/**
 	 * 周四交易时间描述
 	 */
+	@ApiModelProperty(value = "周四交易时间描述")
 	private String thuTradeTimeDesc;
 	/**
 	 * 周五交易时间(交易所)
 	 */
+	@ApiModelProperty(value = "周五交易时间(交易所)")
 	private String friTradeTime;
 	/**
 	 * 周五交易时间描述
 	 */
+	@ApiModelProperty(value = "周五交易时间描述")
 	private String friTradeTimeDesc;
 	/**
 	 * 周六交易时间(交易所)
 	 */
+	@ApiModelProperty(value = "周六交易时间(交易所)")
 	private String satTradeTime;
 	/**
 	 * 周六交易时间描述
 	 */
+	@ApiModelProperty(value = "周六交易时间描述")
 	private String satTradeTimeDesc;
 	/**
 	 * 周日交易时间(交易所)
 	 */
+	@ApiModelProperty(value = "周日交易时间(交易所)")
 	private String sunTradeTime;
 	/**
 	 * 周日交易时间描述
 	 */
+	@ApiModelProperty(value = "周日交易时间描述")
 	private String sunTradeTimeDesc;
 	/**
 	 * 是否可用
 	 */
+	@ApiModelProperty(value = "是否可用")
 	private Boolean enable;
 	/**
 	 * 更新时间
 	 */
+	@ApiModelProperty(value = "更新时间")
 	private Date updateTime;
 	/**
 	 * 预设置的手数列表
 	 */
+	@ApiModelProperty(value = "预设置的手数列表")
 	private Set<FuturesPreQuantityDto> preQuantitySet;
 
 	/***************** 分割线，以下字段为非数据库字段 ********************/
@@ -179,10 +219,12 @@ public class FuturesCommodityDto {
 	/**
 	 * 交易所ID
 	 */
+	@ApiModelProperty(value = "交易所ID")
 	private Long exchangeId;
 	/**
 	 * 交易所名称
 	 */
+	@ApiModelProperty(value = "交易所名称")
 	private String exchangeName;
 
 	public Long getId() {
